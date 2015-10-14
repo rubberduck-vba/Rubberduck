@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 

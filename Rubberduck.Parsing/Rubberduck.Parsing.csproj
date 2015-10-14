@@ -70,6 +70,7 @@
     <Compile Include="Grammar\VBAVisitor.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
+    <Compile Include="Symbols\MemberProcessedEventArgs.cs" />
     <Compile Include="Symbols\SyntaxErrorException.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />

@@ -30,13 +30,16 @@ namespace Rubberduck.Parsing
     public class ResolutionProgressEventArgs : EventArgs
     {
         private readonly VBComponent _component;
+        private readonly decimal _percentProgress;
 
-        public ResolutionProgressEventArgs(VBComponent component)
+        public ResolutionProgressEventArgs(VBComponent component, decimal percentProgress)
         {
             _component = component;
+            _percentProgress = percentProgress;
         }
 
         public VBComponent Component { get { return _component; } }
+        public decimal PercentProgress { get { return _percentProgress; } }
     }
 
     public class ParseProgressEventArgs : EventArgs

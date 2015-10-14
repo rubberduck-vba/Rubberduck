@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
@@ -34,32 +35,45 @@ namespace Rubberduck.Parsing
 
         public event EventHandler<ResolutionProgressEventArgs> Progress;
 
-        private void OnProgress(VBComponentParseResult result)
+        private void OnProgress(ResolutionProgressEventArgs args)
         {
             var handler = Progress;
             if (handler != null)
             {
-                handler(null, new ResolutionProgressEventArgs(result.Component));
+                handler(this, args);
             }
         }
 
-        public void Resolve()
+        public async Task ResolveAsync()
         {
             foreach (var componentParseResult in _parseResults)
             {
-                OnProgress(componentParseResult);
+                var component = componentParseResult;
+                Task.Run(() => Resolve(component));
+            }
+        }
 
-                try
+        private void Resolve(VBComponentParseResult componentParseResult)
+        {
+            try
+            {
+                var memberCount = componentParseResult.Declarations.Count(item => item.DeclarationType.HasFlag(DeclarationType.Member));
+                var processedCount = 0;
+
+                var resolver = new IdentifierReferenceResolver(componentParseResult.QualifiedName, _declarations);
+                var listener = new IdentifierReferenceListener(resolver);
+                listener.MemberProcessed += delegate
                 {
-                    var resolver = new IdentifierReferenceResolver(componentParseResult.QualifiedName, _declarations);
-                    var listener = new IdentifierReferenceListener(resolver);
-                    var walker = new ParseTreeWalker();
-                    walker.Walk(listener, componentParseResult.ParseTree);
-                }
-                catch (InvalidOperationException)
-                {
-                    // could not resolve all identifier references in this module.
-                }
+                    processedCount++;
+                    OnProgress(new ResolutionProgressEventArgs(componentParseResult.Component, (decimal)processedCount / memberCount));
+                };
+
+                var walker = new ParseTreeWalker();
+                walker.Walk(listener, componentParseResult.ParseTree);
+            }
+            catch (InvalidOperationException)
+            {
+                // could not resolve all identifier references in this module.
             }
         }
 

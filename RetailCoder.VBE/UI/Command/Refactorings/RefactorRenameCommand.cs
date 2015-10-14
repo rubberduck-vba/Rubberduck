@@ -5,6 +5,7 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.UI.ParserProgress;
 using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI.Command.Refactorings

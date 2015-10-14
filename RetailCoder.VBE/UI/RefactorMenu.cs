@@ -13,6 +13,7 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.UI.FindSymbol;
+using Rubberduck.UI.ParserProgress;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
@@ -35,13 +36,13 @@ namespace Rubberduck.UI
             IDeclarationNavigator referenceNavigator)
             : base(vbe, addin)
         {
-            _parser = parser;
-            _editor = editor;
-            _implementationsNavigator = implementationsNavigator;
-            _referenceNavigator = referenceNavigator;
-            _wrapperWrapperFactory = wrapperFactory;
+            //_parser = parser;
+            //_editor = editor;
+            //_implementationsNavigator = implementationsNavigator;
+            //_referenceNavigator = referenceNavigator;
+            //_wrapperWrapperFactory = wrapperFactory;
 
-            _iconCache = new SearchResultIconCache();
+            //_iconCache = new SearchResultIconCache();
         }
 
         private CommandBarButton _extractMethodButton;
@@ -147,15 +148,15 @@ namespace Rubberduck.UI
 
         private void FindSymbol()
         {
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, IDE.ActiveVBProject);
-            var declarations = result.Declarations;
-            var vm = new FindSymbolViewModel(declarations.Items.Where(item => !item.IsBuiltIn), _iconCache);
-            using (var view = new FindSymbolDialog(vm))
-            {
-                view.Navigate += view_Navigate;
-                view.ShowDialog();
-            }
+            //var progress = new ParsingProgressPresenter();
+            //var result = progress.Parse(_parser, IDE.ActiveVBProject);
+            //var declarations = result.Declarations;
+            //var vm = new FindSymbolViewModel(declarations.Items.Where(item => !item.IsBuiltIn), _iconCache);
+            //using (var view = new FindSymbolDialog(vm))
+            //{
+            //    view.Navigate += view_Navigate;
+            //    view.ShowDialog();
+            //}
         }
 
         private void view_Navigate(object sender, NavigateCodeEventArgs e)

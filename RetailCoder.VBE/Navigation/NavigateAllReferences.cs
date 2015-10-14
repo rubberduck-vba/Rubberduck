@@ -6,6 +6,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.IdentifierReferences;
+using Rubberduck.UI.ParserProgress;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
@@ -30,27 +31,27 @@ namespace Rubberduck.Navigation
 
         public void Find()
         {
-            var codePane = _wrapperFactory.Create(_vbe.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, _vbe.ActiveVBProject);
-            if (result == null)
-            {
-                return; // bug/todo: something's definitely wrong, exception thrown in resolver code
-            }
+            //var codePane = _wrapperFactory.Create(_vbe.ActiveCodePane);
+            //var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
+            //var progress = new ParsingProgressPresenter();
+            //var result = progress.Parse(_parser, _vbe.ActiveVBProject);
+            //if (result == null)
+            //{
+            //    return; // bug/todo: something's definitely wrong, exception thrown in resolver code
+            //}
 
-            var declarations = result.Declarations.Items
-                .Where(item => item.DeclarationType != DeclarationType.ModuleOption)
-                .ToList();
+            //var declarations = result.Declarations.Items
+            //    .Where(item => item.DeclarationType != DeclarationType.ModuleOption)
+            //    .ToList();
 
-            var target = declarations.SingleOrDefault(item =>
-                item.IsSelected(selection)
-                || item.References.Any(r => r.IsSelected(selection)));
+            //var target = declarations.SingleOrDefault(item =>
+            //    item.IsSelected(selection)
+            //    || item.References.Any(r => r.IsSelected(selection)));
 
-            if (target != null)
-            {
-                Find(target);
-            }
+            //if (target != null)
+            //{
+            //    Find(target);
+            //}
         }
 
         public void Find(Declaration target)

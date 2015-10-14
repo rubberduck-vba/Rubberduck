@@ -4,6 +4,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using System.Runtime.InteropServices;
 using Rubberduck.Refactorings.RemoveParameters;
+using Rubberduck.UI.ParserProgress;
 using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI.Command.Refactorings

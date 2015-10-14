@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.IdentifierReferences;
+using Rubberduck.UI.ParserProgress;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
@@ -32,42 +33,42 @@ namespace Rubberduck.Navigation
 
         public void Find()
         {
-            var codePane = _wrapperFactory.Create(_vbe.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
-            var progress = new ParsingProgressPresenter();
-            var parseResult = progress.Parse(_parser, _vbe.ActiveVBProject);
+            //var codePane = _wrapperFactory.Create(_vbe.ActiveCodePane);
+            //var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
+            //var progress = new ParsingProgressPresenter();
+            //var parseResult = progress.Parse(_parser, _vbe.ActiveVBProject);
 
-            var implementsStatement = parseResult.Declarations.FindInterfaces()
-                .SelectMany(i => i.References.Where(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
-                .SingleOrDefault(r => r.QualifiedModuleName == selection.QualifiedName && r.Selection.Contains(selection.Selection));
+            //var implementsStatement = parseResult.Declarations.FindInterfaces()
+            //    .SelectMany(i => i.References.Where(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
+            //    .SingleOrDefault(r => r.QualifiedModuleName == selection.QualifiedName && r.Selection.Contains(selection.Selection));
 
-            if (implementsStatement != null)
-            {
-                Find(implementsStatement.Declaration, parseResult);
-            }
+            //if (implementsStatement != null)
+            //{
+            //    Find(implementsStatement.Declaration, parseResult);
+            //}
 
-            var member = parseResult.Declarations.FindInterfaceImplementationMembers()
-                .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
-                                      && m.ComponentName == selection.QualifiedName.ComponentName
-                                      && m.Selection.Contains(selection.Selection)) ??
-                         parseResult.Declarations.FindInterfaceMembers()
-                                          .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
-                                                                && m.ComponentName == selection.QualifiedName.ComponentName
-                                                                && m.Selection.Contains(selection.Selection));
+            //var member = parseResult.Declarations.FindInterfaceImplementationMembers()
+            //    .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
+            //                          && m.ComponentName == selection.QualifiedName.ComponentName
+            //                          && m.Selection.Contains(selection.Selection)) ??
+            //             parseResult.Declarations.FindInterfaceMembers()
+            //                              .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
+            //                                                    && m.ComponentName == selection.QualifiedName.ComponentName
+            //                                                    && m.Selection.Contains(selection.Selection));
 
-            if (member == null)
-            {
-                return;
-            }
+            //if (member == null)
+            //{
+            //    return;
+            //}
 
-            Find(member, parseResult);
+            //Find(member, parseResult);
         }
 
         public void Find(Declaration target)
         {
-            var progress = new ParsingProgressPresenter();
-            var parseResult = progress.Parse(_parser, _vbe.ActiveVBProject);
-            Find(target, parseResult);
+            //var progress = new ParsingProgressPresenter();
+            //var parseResult = progress.Parse(_parser, _vbe.ActiveVBProject);
+            //Find(target, parseResult);
         }
 
         private void Find(Declaration target, VBProjectParseResult parseResult)

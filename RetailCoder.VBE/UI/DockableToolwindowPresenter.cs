@@ -48,7 +48,7 @@ namespace Rubberduck.UI
                 logEvent.Properties.Add("EventID", 1);
 
                 _logger.Error(logEvent);
-                throw;
+                return null; //throw;
             }
             var userControlHost = (_DockableWindowHost)userControlObject;
             toolWindow.Visible = true; //window resizing doesn't work without this

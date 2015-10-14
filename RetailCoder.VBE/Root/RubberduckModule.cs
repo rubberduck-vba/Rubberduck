@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Conventions;
+using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
@@ -32,6 +34,8 @@ namespace Rubberduck.Root
 
         public override void Load()
         {
+            Debug.Print("in RubberduckModule.Load()");
+
             _kernel.Bind<App>().ToSelf();
 
             // bind VBE and AddIn dependencies to host-provided instances.
@@ -62,6 +66,8 @@ namespace Rubberduck.Root
                 .WhenInjectedInto<RunCodeInspectionsCommand>()
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>()});
+
+            Debug.Print("completed RubberduckModule.Load()");
         }
 
         private void ApplyDefaultInterfacesConvention(IEnumerable<Assembly> assemblies)
@@ -71,7 +77,7 @@ namespace Rubberduck.Root
                 // inspections & factories have their own binding rules
                 .Where(type => !type.Name.EndsWith("Factory") && !type.GetInterfaces().Contains(typeof(IInspection)))
                 .BindDefaultInterface()
-                .Configure(binding => binding.InThreadScope())); // TransientScope wouldn't dispose disposables
+                .Configure(binding => binding.InCallScope())); // TransientScope wouldn't dispose disposables
         }
 
         // note: settings namespace classes are injected in singleton scope
