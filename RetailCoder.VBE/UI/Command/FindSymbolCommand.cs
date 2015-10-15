@@ -14,10 +14,10 @@ namespace Rubberduck.UI.Command
     public class FindSymbolCommand : CommandBase
     {
         private readonly VBE _vbe;
-        private readonly ParsingProgressPresenter _parserProgress;
+        private readonly IParsingProgressPresenter _parserProgress;
         private readonly SearchResultIconCache _iconCache;
 
-        public FindSymbolCommand(VBE vbe, ParsingProgressPresenter parserProgress, SearchResultIconCache iconCache)
+        public FindSymbolCommand(VBE vbe, IParsingProgressPresenter parserProgress, SearchResultIconCache iconCache)
         {
             _vbe = vbe;
             _parserProgress = parserProgress;

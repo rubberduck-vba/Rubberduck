@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorRenameCommand(VBE vbe, ParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
+        public RefactorRenameCommand(VBE vbe, IParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
             : base (vbe, parserProgress, editor)
         {
             _wrapperWrapperFactory = wrapperWrapperFactory;

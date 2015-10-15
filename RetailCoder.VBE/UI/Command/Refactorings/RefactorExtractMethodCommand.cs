@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Command.Refactorings
     [ComVisible(false)]
     public class RefactorExtractMethodCommand : RefactorCommandBase
     {
-        public RefactorExtractMethodCommand(VBE vbe, ParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor)
+        public RefactorExtractMethodCommand(VBE vbe, IParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor)
             : base (vbe, parserProgress, editor)
         {
         }

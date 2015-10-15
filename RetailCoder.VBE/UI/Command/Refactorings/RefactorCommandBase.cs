@@ -8,11 +8,11 @@ namespace Rubberduck.UI.Command.Refactorings
 {
     public abstract class RefactorCommandBase : CommandBase
     {
-        protected readonly ParsingProgressPresenter ParserProgress;
+        protected readonly IParsingProgressPresenter ParserProgress;
         protected readonly IActiveCodePaneEditor Editor;
         protected readonly VBE Vbe;
 
-        protected RefactorCommandBase(VBE vbe, ParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor)
+        protected RefactorCommandBase(VBE vbe, IParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor)
         {
             Vbe = vbe;
             ParserProgress = parserProgress;

@@ -3,7 +3,12 @@ using Rubberduck.Parsing;
 
 namespace Rubberduck.UI.ParserProgress
 {
-    public class ParsingProgressPresenter
+    public interface IParsingProgressPresenter
+    {
+        VBProjectParseResult Parse(VBProject project);
+    }
+
+    public class ParsingProgressPresenter : IParsingProgressPresenter
     {
         private readonly IRubberduckParser _parser;
 
@@ -14,8 +19,7 @@ namespace Rubberduck.UI.ParserProgress
 
         public VBProjectParseResult Parse(VBProject project)
         {
-            var viewModel = new ParserProgessViewModel(_parser, project);
-            using (var view = new ProgressDialog(viewModel))
+            using (var view = new ProgressDialog(new ParserProgessViewModel(_parser, project)))
             {
                 view.ShowDialog();
                 return view.Result;
