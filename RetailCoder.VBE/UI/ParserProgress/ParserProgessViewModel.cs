@@ -40,7 +40,7 @@ namespace Rubberduck.UI.ParserProgress
         }
 
         private readonly ObservableCollection<ComponentProgressViewModel> _details;
-        public IEnumerable<ComponentProgressViewModel> Details { get { return _details; } }
+        public ObservableCollection<ComponentProgressViewModel> Details { get { return _details; } }
 
         public void Start()
         {            
