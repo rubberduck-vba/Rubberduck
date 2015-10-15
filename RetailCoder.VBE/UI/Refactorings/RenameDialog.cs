@@ -71,11 +71,11 @@ namespace Rubberduck.UI.Refactorings
 
         private void ValidateNewName()
         {
-            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValueDirect(new TypedReference())).Cast<string>().Select(item => item.ToLower());
+            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
 
             OkButton.Enabled = NewName != Target.IdentifierName
                                && char.IsLetter(NewName.FirstOrDefault())
-                               && !tokenValues.Contains(NewName.ToLower())
+                               && !tokenValues.Contains(NewName, StringComparer.InvariantCultureIgnoreCase)
                                && !NewName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
 
             InvalidNameValidationIcon.Visible = !OkButton.Enabled;
