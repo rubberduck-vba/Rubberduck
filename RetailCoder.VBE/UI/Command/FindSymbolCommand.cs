@@ -14,23 +14,22 @@ namespace Rubberduck.UI.Command
     public class FindSymbolCommand : CommandBase
     {
         private readonly VBE _vbe;
-        private readonly IRubberduckParser _parser;
+        private readonly ParsingProgressPresenter _parserProgress;
         private readonly SearchResultIconCache _iconCache;
 
-        public FindSymbolCommand(VBE vbe, IRubberduckParser parser, SearchResultIconCache iconCache)
+        public FindSymbolCommand(VBE vbe, ParsingProgressPresenter parserProgress, SearchResultIconCache iconCache)
         {
             _vbe = vbe;
-            _parser = parser;
+            _parserProgress = parserProgress;
             _iconCache = iconCache;
         }
 
         public override void Execute(object parameter)
         {
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_vbe.ActiveVBProject);
+            var result = _parserProgress.Parse(_vbe.ActiveVBProject);
             var declarations = result.Declarations;
-            var vm = new FindSymbolViewModel(declarations.Items.Where(item => !item.IsBuiltIn), _iconCache);
-            using (var view = new FindSymbolDialog(vm))
+            var viewModel = new FindSymbolViewModel(declarations.Items.Where(item => !item.IsBuiltIn), _iconCache);
+            using (var view = new FindSymbolDialog(viewModel))
             {
                 view.ShowDialog();
             }

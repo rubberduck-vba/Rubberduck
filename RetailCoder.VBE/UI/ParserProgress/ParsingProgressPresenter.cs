@@ -14,7 +14,8 @@ namespace Rubberduck.UI.ParserProgress
 
         public VBProjectParseResult Parse(VBProject project)
         {
-            using (var view = new ProgressDialog(_parser, project))
+            var viewModel = new ParserProgessViewModel(_parser, project);
+            using (var view = new ProgressDialog(viewModel))
             {
                 view.ShowDialog();
                 return view.Result;
