@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
+using Rubberduck.Common;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.UI.ParserProgress;
 
@@ -15,9 +15,10 @@ namespace Rubberduck.UI.Command
     {
         private readonly VBE _vbe;
         private readonly IParsingProgressPresenter _parserProgress;
-        private readonly SearchResultIconCache _iconCache;
+        private readonly DeclarationIconCache _iconCache;
+        private readonly NavigateCommand _navigateCommand = new NavigateCommand();
 
-        public FindSymbolCommand(VBE vbe, IParsingProgressPresenter parserProgress, SearchResultIconCache iconCache)
+        public FindSymbolCommand(VBE vbe, IParsingProgressPresenter parserProgress, DeclarationIconCache iconCache)
         {
             _vbe = vbe;
             _parserProgress = parserProgress;
@@ -31,6 +32,7 @@ namespace Rubberduck.UI.Command
             var viewModel = new FindSymbolViewModel(declarations.Items.Where(item => !item.IsBuiltIn), _iconCache);
             using (var view = new FindSymbolDialog(viewModel))
             {
+                viewModel.Navigate += (sender, e) => { _navigateCommand.Execute(e); view.Hide(); };
                 view.ShowDialog();
             }
         }

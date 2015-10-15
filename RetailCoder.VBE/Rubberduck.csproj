@@ -269,6 +269,7 @@
   <ItemGroup>
     <Compile Include="AppMenu.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
+    <Compile Include="Common\DeclarationExtensions.cs" />
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspectionResult.cs" />
     <Compile Include="Inspections\WriteOnlyPropertyInspection.cs" />
@@ -456,7 +457,7 @@
     </Compile>
     <Compile Include="UI\FindSymbol\FindSymbolViewModel.cs" />
     <Compile Include="UI\FindSymbol\SearchResult.cs" />
-    <Compile Include="UI\FindSymbol\SearchResultIconCache.cs" />
+    <Compile Include="Common\DeclarationIconCache.cs" />
     <Compile Include="UI\GridViewSort.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
     <Compile Include="UI\IdentifierReferences\ImplementationListItem.cs" />

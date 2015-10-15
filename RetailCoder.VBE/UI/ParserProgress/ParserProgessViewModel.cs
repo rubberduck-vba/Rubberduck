@@ -4,9 +4,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
+using Rubberduck.Properties;
 
 namespace Rubberduck.UI.ParserProgress
 {
@@ -66,11 +69,20 @@ namespace Rubberduck.UI.ParserProgress
                 return;
             }
             row.ResolutionProgressPercent = e.PercentProgress;
+            row.ComponentIcon = e.PercentProgress == 1 
+                ? GetImageSource(Resources.hourglass) 
+                : DeclarationIconCache.ComponentIcon(e.Component.Type);
         }
 
         void _parser_ParseProgress(object sender, ParseProgressEventArgs e)
         {
             StatusText = string.Format(RubberduckUI.ParseProgress, e.Component.Collection.Parent.Name + "." + e.Component.Name);
+            var row = _details.SingleOrDefault(vm => vm.ComponentName == e.Component.Name);
+            if (row == null)
+            {
+                return;
+            }
+            row.ComponentIcon = GetImageSource(Resources.tick);
         }
 
         void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
@@ -86,7 +98,17 @@ namespace Rubberduck.UI.ParserProgress
             ComponentName = component.Name;
         }
 
-        public BitmapImage ComponentIcon { get; private set; } // todo: derive icon from component type
+        private BitmapImage _componentIcon;
+        public BitmapImage ComponentIcon
+        {
+            get { return _componentIcon; }
+            set 
+            { 
+                _componentIcon = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string ComponentName { get; private set; }
 
         private decimal _value;

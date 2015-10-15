@@ -1,8 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 
 namespace Rubberduck.UI.ParserProgress

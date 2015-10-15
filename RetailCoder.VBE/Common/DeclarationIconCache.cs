@@ -2,20 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 
-namespace Rubberduck.UI.FindSymbol
+namespace Rubberduck.Common
 {
-    public class SearchResultIconCache
+    public class DeclarationIconCache
     {
-        private readonly IDictionary<Tuple<DeclarationType, Accessibility>, BitmapImage> _images;
+        private static readonly IDictionary<Tuple<DeclarationType, Accessibility>, BitmapImage> Images;
 
-        public SearchResultIconCache()
+        static DeclarationIconCache()
         {
             var types = Enum.GetValues(typeof (DeclarationType)).Cast<DeclarationType>();
             var accessibilities = Enum.GetValues(typeof (Accessibility)).Cast<Accessibility>();
 
-            _images = types.SelectMany(t => accessibilities.Select(a => Tuple.Create(t, a)))
+            Images = types.SelectMany(t => accessibilities.Select(a => Tuple.Create(t, a)))
                 .ToDictionary(key => key, key => new BitmapImage(GetIconUri(key.Item1, key.Item2)));
         }
 
@@ -24,11 +25,36 @@ namespace Rubberduck.UI.FindSymbol
             get
             {
                 var key = Tuple.Create(declaration.DeclarationType, declaration.Accessibility);
-                return _images[key];
+                return Images[key];
             }
         }
 
-        private Uri GetIconUri(DeclarationType declarationType, Accessibility accessibility)
+        public static BitmapImage ComponentIcon(vbext_ComponentType componentType)
+        {
+            Tuple<DeclarationType, Accessibility> key;
+            switch (componentType)
+            {
+                case vbext_ComponentType.vbext_ct_StdModule:
+                    key = Tuple.Create(DeclarationType.Module, Accessibility.Public);
+                    break;
+                case vbext_ComponentType.vbext_ct_ClassModule:
+                    key = Tuple.Create(DeclarationType.Class, Accessibility.Public);
+                    break;
+                case vbext_ComponentType.vbext_ct_Document:
+                    key = Tuple.Create(DeclarationType.Document, Accessibility.Public);
+                    break;
+                case vbext_ComponentType.vbext_ct_MSForm:
+                    key = Tuple.Create(DeclarationType.UserForm, Accessibility.Public);
+                    break;
+                default:
+                    key = Tuple.Create(DeclarationType.Project, Accessibility.Public);
+                    break;
+            }
+
+            return Images[key];
+        }
+
+        private static Uri GetIconUri(DeclarationType declarationType, Accessibility accessibility)
         {
             const string baseUri = @"../../Resources/Microsoft/PNG/";
 
