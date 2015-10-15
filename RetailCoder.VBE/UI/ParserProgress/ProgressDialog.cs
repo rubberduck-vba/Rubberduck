@@ -9,7 +9,6 @@ namespace Rubberduck.UI.ParserProgress
 {
     public partial class ProgressDialog : Form
     {
-        private readonly ParserProgessViewModel _viewModel;
         private readonly int _initialSize;
         private const int ExpandedSize = 255;
 
@@ -18,28 +17,34 @@ namespace Rubberduck.UI.ParserProgress
         {
             _initialSize = Height;
 
-            _viewModel = viewModel;
-            _viewModel.Completed += viewModel_Completed;
+            viewModel.Completed += viewModel_Completed;
 
-            parserProgessControl.DataContext = _viewModel;
+            parserProgessControl.DataContext = viewModel;
             parserProgessControl.ExpanderStateChanged += parserProgessControl_ExpanderStateChanged;
-        }
-
-        void viewModel_Completed(object sender, ParseCompletedEventArgs e)
-        {
-            Result = e.ParseResults.FirstOrDefault();
-            BeginInvoke((MethodInvoker) Hide);
-        }
-
-        void parserProgessControl_ExpanderStateChanged(object sender, ParserProgessControl.ExpanderStateChangedEventArgs e)
-        {
-            Height = e.IsExpanded ? ExpandedSize : _initialSize;
         }
 
         //public for designer only
         public ProgressDialog()
         {
             InitializeComponent();
+        }
+
+        private void viewModel_Completed(object sender, ParseCompletedEventArgs e)
+        {
+            Result = e.ParseResults.FirstOrDefault();
+            if (InvokeRequired)
+            {
+                BeginInvoke((MethodInvoker) Hide);
+            }
+            else
+            {
+                Hide();
+            }
+        }
+
+        private void parserProgessControl_ExpanderStateChanged(object sender, ParserProgessControl.ExpanderStateChangedEventArgs e)
+        {
+            Height = e.IsExpanded ? ExpandedSize : _initialSize;
         }
 
         public VBProjectParseResult Result { get; private set; }
