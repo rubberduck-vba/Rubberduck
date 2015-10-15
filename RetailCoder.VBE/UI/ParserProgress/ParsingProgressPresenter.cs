@@ -5,9 +5,16 @@ namespace Rubberduck.UI.ParserProgress
 {
     public class ParsingProgressPresenter
     {
-        public VBProjectParseResult Parse(IRubberduckParser parser, VBProject project)
+        private readonly IRubberduckParser _parser;
+
+        public ParsingProgressPresenter(IRubberduckParser parser)
         {
-            using (var view = new ProgressDialog(parser, project))
+            _parser = parser;
+        }
+
+        public VBProjectParseResult Parse(VBProject project)
+        {
+            using (var view = new ProgressDialog(_parser, project))
             {
                 view.ShowDialog();
                 return view.Result;

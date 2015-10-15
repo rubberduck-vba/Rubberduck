@@ -457,7 +457,6 @@
     <Compile Include="UI\FindSymbol\FindSymbolViewModel.cs" />
     <Compile Include="UI\FindSymbol\SearchResult.cs" />
     <Compile Include="UI\FindSymbol\SearchResultIconCache.cs" />
-    <Compile Include="UI\FormContextMenu.cs" />
     <Compile Include="UI\GridViewSort.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
     <Compile Include="UI\IdentifierReferences\ImplementationListItem.cs" />
@@ -465,7 +464,6 @@
     <Compile Include="UI\IdentifierReferences\ListItemActionEventArgs.cs" />
     <Compile Include="UI\ParserErrors\ParserErrorsPresenter.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodModel.cs" />
-    <Compile Include="UI\ProjectExplorerContextMenu.cs" />
     <Compile Include="UI\SimpleListControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -628,7 +626,6 @@
     </Compile>
     <Compile Include="App.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerDockablePresenter.cs" />
-    <Compile Include="UI\CodeExplorer\CodeExplorerMenu.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -637,8 +634,6 @@
     </Compile>
     <Compile Include="UI\CodeInspections\CodeInspectionResultGridViewItem.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsDockablePresenter.cs" />
-    <Compile Include="UI\CodeInspections\CodeInspectionsMenu.cs" />
-    <Compile Include="UI\CodeInspections\CodeInspectionsToolbar.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -652,7 +647,6 @@
     <Compile Include="Settings\ToDoListSettings.cs" />
     <Compile Include="Settings\ToDoMarkers.cs" />
     <Compile Include="UI\IDockableUserControl.cs" />
-    <Compile Include="UI\Menu.cs" />
     <Compile Include="UI\Settings\CodeInspectionSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -689,9 +683,7 @@
     <Compile Include="UI\UnitTesting\TestExplorerModelBase.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerViewModel.cs" />
     <Compile Include="UI\UnitTesting\TestResultExtensions.cs" />
-    <Compile Include="UI\RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
-    <Compile Include="UI\ToDoItems\ToDoItemsMenu.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -704,7 +696,6 @@
     <Compile Include="UI\DockableWindowHost.Designer.cs">
       <DependentUpon>DockableWindowHost.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\RefactorMenu.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>

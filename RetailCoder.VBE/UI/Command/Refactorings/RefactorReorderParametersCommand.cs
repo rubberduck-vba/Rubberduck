@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Command.Refactorings
             // duplicates ReorderParameters Implementation until here... extract common method?
             // TryGetQualifiedSelection?
             var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(Parser, Vbe.ActiveVBProject);
+            var result = progress.Parse(Vbe.ActiveVBProject);
 
             using (var view = new ReorderParametersDialog())
             {

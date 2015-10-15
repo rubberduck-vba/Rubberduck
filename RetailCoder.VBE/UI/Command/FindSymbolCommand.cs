@@ -27,7 +27,7 @@ namespace Rubberduck.UI.Command
         public override void Execute(object parameter)
         {
             var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, _vbe.ActiveVBProject);
+            var result = progress.Parse(_vbe.ActiveVBProject);
             var declarations = result.Declarations;
             var vm = new FindSymbolViewModel(declarations.Items.Where(item => !item.IsBuiltIn), _iconCache);
             using (var view = new FindSymbolDialog(vm))

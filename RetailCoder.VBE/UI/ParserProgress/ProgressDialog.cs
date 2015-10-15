@@ -9,25 +9,26 @@ namespace Rubberduck.UI.ParserProgress
 {
     public partial class ProgressDialog : Form
     {
+        private readonly ParserProgessViewModel _viewModel;
         private readonly int _initialSize;
         private const int ExpandedSize = 255;
 
-        public ProgressDialog(IRubberduckParser parser, VBProject project)
+        public ProgressDialog(ParserProgessViewModel viewModel)
             : this()
         {
             _initialSize = Height;
 
-            var viewModel = new ParserProgessViewModel(parser, project);
-            viewModel.Completed += viewModel_Completed;
+            _viewModel = viewModel;
+            _viewModel.Completed += viewModel_Completed;
 
-            parserProgessControl.DataContext = viewModel;
+            parserProgessControl.DataContext = _viewModel;
             parserProgessControl.ExpanderStateChanged += parserProgessControl_ExpanderStateChanged;
         }
 
         void viewModel_Completed(object sender, ParseCompletedEventArgs e)
         {
             Result = e.ParseResults.FirstOrDefault();
-            Invoke((MethodInvoker) Hide);
+            BeginInvoke((MethodInvoker) Hide);
         }
 
         void parserProgessControl_ExpanderStateChanged(object sender, ParserProgessControl.ExpanderStateChangedEventArgs e)

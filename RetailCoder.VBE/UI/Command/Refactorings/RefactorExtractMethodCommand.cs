@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Command.Refactorings
         public override void Execute(object parameter)
         {
             var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(Parser, Vbe.ActiveVBProject);
+            var result = progress.Parse(Vbe.ActiveVBProject);
 
             var declarations = result.Declarations;
             var factory = new ExtractMethodPresenterFactory(Editor, declarations);
