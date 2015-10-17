@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Conventions;
@@ -58,20 +56,15 @@ namespace Rubberduck.Root
 
             Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>(); // note: ThisOutlookSessionTestExplorerModel is useless
 
-            var testExplorerViewModel = _kernel.Get<TestExplorerViewModel>();
-            //var app = _kernel.Get<App>();
-            //testExplorerViewModel.Ready += delegate { app.AppMenus.SetCommandButtonEnabledState(RubberduckUI.RubberduckMenu_UnitTests); };
-            //testExplorerViewModel.Busy += delegate { app.AppMenus.SetCommandButtonEnabledState(RubberduckUI.RubberduckMenu_UnitTests, false); };
-
             Bind<IPresenter>().To<TestExplorerDockablePresenter>()
                 .WhenInjectedInto<TestExplorerCommand>()
                 .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new TestExplorerWindow { ViewModel = testExplorerViewModel });
+                .WithConstructorArgument<IDockableUserControl>(new TestExplorerWindow { ViewModel = _kernel.Get<TestExplorerViewModel>() });
 
             Bind<IPresenter>().To<CodeInspectionsDockablePresenter>()
                 .WhenInjectedInto<RunCodeInspectionsCommand>()
                 .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>()});
+                .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>() });
 
             Debug.Print("completed RubberduckModule.Load()");
         }
