@@ -4,5 +4,6 @@ namespace Rubberduck.UI.Command.MenuItems
     {
         void Localize();
         void Initialize();
+        void SetCommandButtonEnabledState(string key, bool isEnabled = true);
     }
 }

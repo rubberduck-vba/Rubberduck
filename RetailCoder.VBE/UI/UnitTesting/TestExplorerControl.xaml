@@ -94,7 +94,9 @@
                            TextWrapping="NoWrap"/>
             </StackPanel>
         </HierarchicalDataTemplate>
-        
+
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+
     </UserControl.Resources>
     
     <Grid>
@@ -106,17 +108,19 @@
             <RowDefinition Height="Auto" MinHeight="48"/>
         </Grid.RowDefinitions>
  
-        <Border Grid.Row="0" Grid.RowSpan="5" Background="#FFEEF5FD" />
+        <resx:BusyIndicator Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}, Mode=OneWay}" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Width="32" Height="32" />
         
-        <ToolBar Grid.Row="0">
+        <Border Grid.Row="0" Grid.RowSpan="5" Background="#FFEEF5FD" />
 
-            <Button Command="{Binding RefreshCommand}">
+        <ToolBar Grid.Row="0" IsEnabled="{Binding IsReady, Mode=OneWay}">
+
+            <Button Command="{Binding RefreshCommand}" IsEnabled="{Binding IsReady, Mode=OneWay}">
                 <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
             </Button>
 
             <Separator />
 
-            <Menu>
+            <Menu IsEnabled="{Binding IsReady, Mode=OneWay}">
                 <MenuItem VerticalAlignment="Center" Header="{x:Static resx:RubberduckUI.Run}">
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/control.png" />
@@ -171,7 +175,7 @@
             </Menu>
             <Separator />
 
-            <Button Command="{Binding CopyResultsCommand}">
+            <Button Command="{Binding CopyResultsCommand}" IsEnabled="{Binding IsReady, Mode=OneWay}">
                 <Image Height="16" Source="../../Resources/document-copy.png" />
             </Button>
             
@@ -195,7 +199,8 @@
                   MouseDoubleClick="TreeView_MouseDoubleClick"
                   ItemsSource="{Binding Source={StaticResource OutcomeGroupViewSource}, Path=Groups}"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
-                  ItemTemplate="{StaticResource OutcomeTemplate}">
+                  ItemTemplate="{StaticResource OutcomeTemplate}"
+                  IsEnabled="{Binding IsReady, Mode=OneWay}">
             <i:Interaction.Behaviors>
                 <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
@@ -203,7 +208,8 @@
                 <ContextMenu>
                     <MenuItem VerticalAlignment="Center" 
                               Header="{x:Static resx:RubberduckUI.Run}" 
-                              Command="{Binding RunSelectedTestCommand}">
+                              Command="{Binding RunSelectedTestCommand}"
+                              IsEnabled="{Binding IsReady, Mode=OneWay}">
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/control.png" />
                         </MenuItem.Icon>

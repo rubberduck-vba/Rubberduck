@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Conventions;
@@ -36,7 +37,7 @@ namespace Rubberduck.Root
         {
             Debug.Print("in RubberduckModule.Load()");
 
-            _kernel.Bind<App>().ToSelf();
+            _kernel.Bind<App>().ToSelf().InSingletonScope();
 
             // bind VBE and AddIn dependencies to host-provided instances.
             _kernel.Bind<VBE>().ToConstant(_vbe);
@@ -57,10 +58,15 @@ namespace Rubberduck.Root
 
             Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>(); // note: ThisOutlookSessionTestExplorerModel is useless
 
+            var testExplorerViewModel = _kernel.Get<TestExplorerViewModel>();
+            //var app = _kernel.Get<App>();
+            //testExplorerViewModel.Ready += delegate { app.AppMenus.SetCommandButtonEnabledState(RubberduckUI.RubberduckMenu_UnitTests); };
+            //testExplorerViewModel.Busy += delegate { app.AppMenus.SetCommandButtonEnabledState(RubberduckUI.RubberduckMenu_UnitTests, false); };
+
             Bind<IPresenter>().To<TestExplorerDockablePresenter>()
                 .WhenInjectedInto<TestExplorerCommand>()
                 .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new TestExplorerWindow { ViewModel = _kernel.Get<TestExplorerViewModel>()});
+                .WithConstructorArgument<IDockableUserControl>(new TestExplorerWindow { ViewModel = testExplorerViewModel });
 
             Bind<IPresenter>().To<CodeInspectionsDockablePresenter>()
                 .WhenInjectedInto<RunCodeInspectionsCommand>()

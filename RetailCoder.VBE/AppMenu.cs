@@ -21,6 +21,14 @@ namespace Rubberduck
             }
         }
 
+        public void SetCommandButtonEnabledState(string key, bool isEnabled = true)
+        {
+            foreach (var menu in _menus)
+            {
+                menu.SetCommandButtonEnabledState(key, isEnabled);
+            }
+        }
+
         public void Localize()
         {
             foreach (var menu in _menus)

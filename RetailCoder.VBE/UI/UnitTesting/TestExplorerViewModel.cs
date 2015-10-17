@@ -118,7 +118,7 @@ namespace Rubberduck.UI.UnitTesting
         private readonly ICommand _runSelectedTestCommand;
         public ICommand RunSelectedTestCommand { get { return _runSelectedTestCommand; } }
 
-        private bool _isBusy;
+        private bool _isBusy; /* not working. WHY??? */
         public bool IsBusy 
         { 
             get { return _isBusy; }
@@ -127,6 +127,43 @@ namespace Rubberduck.UI.UnitTesting
                 _isBusy = value; 
                 OnPropertyChanged(); 
             } 
+        }
+
+        private bool _isReady = true;
+        public bool IsReady
+        {
+            get { return _isReady; }
+            private set
+            {
+                _isReady = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Indicates that the Test Explorer is busy discovering or executing unit tests.
+        /// </summary>
+        public event EventHandler Busy;
+        /// <summary>
+        /// Indicates that the Test Explorer is ready to run unit tests.
+        /// </summary>
+        public event EventHandler Ready;
+
+        private void OnBusyStatusChanged(bool isBusy)
+        {
+            IsBusy = isBusy;
+            IsReady = !isBusy;
+
+            var busyHandler = Busy;
+            var readyHandler = Ready;
+            if (isBusy && busyHandler != null)
+            {
+                busyHandler.Invoke(this, EventArgs.Empty);
+            }
+            else if (!isBusy && readyHandler != null)
+            {
+                readyHandler.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public TestExplorerModelBase Model { get { return _model; } }
@@ -138,10 +175,10 @@ namespace Rubberduck.UI.UnitTesting
                 return;
             }
 
-            IsBusy = true;
+            OnBusyStatusChanged(true);
             _model.Refresh();
             SelectedItem = null;
-            IsBusy = false;
+            OnBusyStatusChanged(false);
         }
 
         private void EvaluateCanExecute()
@@ -159,9 +196,9 @@ namespace Rubberduck.UI.UnitTesting
             var tests = _model.LastRun.ToList();
             _model.ClearLastRun();
 
-            IsBusy = true;
+            OnBusyStatusChanged(true);
             _testEngine.Run(tests);
-            IsBusy = false;
+            OnBusyStatusChanged(false);
             EvaluateCanExecute();
         }
 
@@ -169,9 +206,9 @@ namespace Rubberduck.UI.UnitTesting
         {
             _model.ClearLastRun();
 
-            IsBusy = true;
+            OnBusyStatusChanged(true);
             _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Unknown));
-            IsBusy = false;
+            OnBusyStatusChanged(false);
             EvaluateCanExecute();
         }
 
@@ -179,9 +216,9 @@ namespace Rubberduck.UI.UnitTesting
         {
             _model.ClearLastRun();
 
-            IsBusy = true;
+            OnBusyStatusChanged(true);
             _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Failed));
-            IsBusy = false;
+            OnBusyStatusChanged(false);
             EvaluateCanExecute();
         }
 
@@ -189,9 +226,9 @@ namespace Rubberduck.UI.UnitTesting
         {
             _model.ClearLastRun();
 
-            IsBusy = true;
+            OnBusyStatusChanged(true);
             _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Succeeded));
-            IsBusy = false;
+            OnBusyStatusChanged(false);
             EvaluateCanExecute();
         }
 
@@ -209,9 +246,9 @@ namespace Rubberduck.UI.UnitTesting
 
             _model.ClearLastRun();
 
-            IsBusy = true;
-            _testEngine.Run(new[]{SelectedItem});
-            IsBusy = false;
+            OnBusyStatusChanged(true);
+            _testEngine.Run(new[] { SelectedItem });
+            OnBusyStatusChanged(false);
             EvaluateCanExecute();
         }
 

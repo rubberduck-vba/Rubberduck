@@ -16,6 +16,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.UI.Command.Refactorings;
+using Rubberduck.UI.UnitTesting;
 
 namespace Rubberduck.Root
 {
