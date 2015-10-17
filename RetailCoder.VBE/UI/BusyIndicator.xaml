@@ -8,8 +8,7 @@
     
     <!-- source: http://fredgrass.blogspot.ca/2015/07/wpf-busy-indicator.html -->
     
-    <Viewbox Width="{Binding Width, ElementName=BusyIndicator}" Height="{Binding Height, ElementName=BusyIndicator}"      
-        HorizontalAlignment="Center" VerticalAlignment="Center">
+    <Viewbox>
         <Grid Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Canvas RenderTransformOrigin="0.5,0.5"  
                     HorizontalAlignment="Center"         

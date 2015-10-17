@@ -233,10 +233,7 @@
             </i:Interaction.Behaviors>
         </TreeView>
         
-        <resx:BusyIndicator Grid.Row="1"
-                            VerticalAlignment="Center" HorizontalAlignment="Center"
-                            Width="50" Height="50"
-                            Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+        <resx:BusyIndicator Grid.Row="1" Width="36" Height="36" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
         <GridSplitter Grid.Row="2" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 
@@ -252,7 +249,7 @@
                 
                 <TextBlock Margin="8" Text="{Binding SelectedItem.QualifiedSelection}" TextWrapping="Wrap" />
                 
-                <WrapPanel Orientation="Horizontal">
+                <WrapPanel>
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteQuickFixInModule, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding QuickFixInModuleCommand}"

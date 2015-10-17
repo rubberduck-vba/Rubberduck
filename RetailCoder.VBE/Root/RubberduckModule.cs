@@ -54,7 +54,7 @@ namespace Rubberduck.Root
             ApplyDefaultInterfacesConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
 
-            Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>(); // note: ThisOutlookSessionTestExplorerModel is useless
+            Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>().InSingletonScope();
 
             Bind<IPresenter>().To<TestExplorerDockablePresenter>()
                 .WhenInjectedInto<TestExplorerCommand>()

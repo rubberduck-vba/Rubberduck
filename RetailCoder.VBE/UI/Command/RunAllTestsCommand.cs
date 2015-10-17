@@ -21,7 +21,9 @@ namespace Rubberduck.UI.Command
         {
             _model.Refresh();
             _model.ClearLastRun();
+            _model.IsBusy = true;
             _engine.Run(_model.Tests);
+            _model.IsBusy = false;
         }
     }
 }

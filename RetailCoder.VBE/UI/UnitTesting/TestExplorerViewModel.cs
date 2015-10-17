@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.UI.Command;
@@ -118,77 +116,22 @@ namespace Rubberduck.UI.UnitTesting
         private readonly ICommand _runSelectedTestCommand;
         public ICommand RunSelectedTestCommand { get { return _runSelectedTestCommand; } }
 
-        private bool _isBusy; /* not working. WHY??? */
-        public bool IsBusy 
-        { 
-            get { return _isBusy; }
-            private set
-            {
-                _isBusy = value; 
-                OnPropertyChanged(); 
-            } 
-        }
-
-        private bool _isReady = true;
-        public bool IsReady
-        {
-            get { return _isReady; }
-            private set
-            {
-                _isReady = value;
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Indicates that the Test Explorer is busy discovering or executing unit tests.
-        /// </summary>
-        public event EventHandler Busy;
-        /// <summary>
-        /// Indicates that the Test Explorer is ready to run unit tests.
-        /// </summary>
-        public event EventHandler Ready;
-
-        private void OnBusyStatusChanged(bool isBusy)
-        {
-            IsBusy = isBusy;
-            IsReady = !isBusy;
-
-            var busyHandler = Busy;
-            var readyHandler = Ready;
-            if (isBusy && busyHandler != null)
-            {
-                busyHandler.Invoke(this, EventArgs.Empty);
-            }
-            else if (!isBusy && readyHandler != null)
-            {
-                readyHandler.Invoke(this, EventArgs.Empty);
-            }
-        }
-
         public TestExplorerModelBase Model { get { return _model; } }
 
         private void ExecuteRefreshCommand(object parameter)
         {
-            if (_isBusy)
+            if (Model.IsBusy)
             {
                 return;
             }
 
-            OnBusyStatusChanged(true);
             _model.Refresh();
             SelectedItem = null;
-            OnBusyStatusChanged(false);
-        }
-
-        private void EvaluateCanExecute()
-        {
-            Dispatcher.CurrentDispatcher.Invoke(CommandManager.InvalidateRequerySuggested);
         }
 
         private bool CanExecuteRefreshCommand(object parameter)
         {
-            return !IsBusy;
+            return !Model.IsBusy;
         }
 
         private void ExecuteRepeatLastRunCommand(object parameter)
@@ -196,45 +139,41 @@ namespace Rubberduck.UI.UnitTesting
             var tests = _model.LastRun.ToList();
             _model.ClearLastRun();
 
-            OnBusyStatusChanged(true);
+            Model.IsBusy = true;
             _testEngine.Run(tests);
-            OnBusyStatusChanged(false);
-            EvaluateCanExecute();
+            Model.IsBusy = false;
         }
 
         private void ExecuteRunNotExecutedTestsCommand(object parameter)
         {
             _model.ClearLastRun();
 
-            OnBusyStatusChanged(true);
+            Model.IsBusy = true;
             _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Unknown));
-            OnBusyStatusChanged(false);
-            EvaluateCanExecute();
+            Model.IsBusy = false;
         }
 
         private void ExecuteRunFailedTestsCommand(object parameter)
         {
             _model.ClearLastRun();
 
-            OnBusyStatusChanged(true);
+            Model.IsBusy = true;
             _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Failed));
-            OnBusyStatusChanged(false);
-            EvaluateCanExecute();
+            Model.IsBusy = false;
         }
 
         private void ExecuteRunPassedTestsCommand(object parameter)
         {
             _model.ClearLastRun();
 
-            OnBusyStatusChanged(true);
+            Model.IsBusy = true;
             _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Succeeded));
-            OnBusyStatusChanged(false);
-            EvaluateCanExecute();
+            Model.IsBusy = false;
         }
 
         private bool CanExecuteSelectedTestCommand(object obj)
         {
-            return true; //SelectedItem != null;
+            return !Model.IsBusy; //true; //SelectedItem != null;
         }
 
         private void ExecuteSelectedTestCommand(object obj)
@@ -246,10 +185,9 @@ namespace Rubberduck.UI.UnitTesting
 
             _model.ClearLastRun();
 
-            OnBusyStatusChanged(true);
+            Model.IsBusy = true;
             _testEngine.Run(new[] { SelectedItem });
-            OnBusyStatusChanged(false);
-            EvaluateCanExecute();
+            Model.IsBusy = false;
         }
 
         private void ExecuteCopyResultsCommand(object parameter)
