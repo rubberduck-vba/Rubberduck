@@ -10,20 +10,19 @@ namespace Rubberduck.UI.Command.Refactorings
     [ComVisible(false)]
     public class RefactorExtractMethodCommand : RefactorCommandBase
     {
-        public RefactorExtractMethodCommand (VBE vbe, IRubberduckParser parser, IActiveCodePaneEditor editor)
-            : base (vbe, parser, editor)
+        public RefactorExtractMethodCommand(VBE vbe, IParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor)
+            : base (vbe, parserProgress, editor)
         {
         }
 
         public override void Execute(object parameter)
         {
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(Parser, Vbe.ActiveVBProject);
+            var result = ParserProgress.Parse(Vbe.ActiveVBProject);
 
             var declarations = result.Declarations;
             var factory = new ExtractMethodPresenterFactory(Editor, declarations);
             var refactoring = new ExtractMethodRefactoring(factory, Editor);
-            refactoring.InvalidSelection += refactoring_InvalidSelection;
+            refactoring.InvalidSelection += HandleInvalidSelection;
             refactoring.Refactor();
         }
     }

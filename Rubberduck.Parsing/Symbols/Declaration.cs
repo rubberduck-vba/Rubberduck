@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Rubberduck.Parsing.Symbols
     /// Defines a declared identifier.
     /// </summary>
     [DebuggerDisplay("({DeclarationType}) {Accessibility} {IdentifierName} As {AsTypeName} | {Selection}")]
-    public class Declaration
+    public class Declaration : IEquatable<Declaration>
     {
         public Declaration(QualifiedMemberName qualifiedName, Declaration parentDeclaration, string parentScope,
             string asTypeName, bool isSelfAssigned, bool isWithEvents,
@@ -252,14 +253,16 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        public bool Equals(Declaration other)
+        {
+            return other.IdentifierName == IdentifierName
+                && other.Context == Context
+                && other.QualifiedName.Equals(QualifiedName);
+        }
+
         public override bool Equals(object obj)
         {
-            if (!(obj is Declaration))
-            {
-                return false;
-            }
-
-            return GetHashCode() == ((Declaration)obj).GetHashCode();
+            return Equals(obj as Declaration);
         }
 
         public override int GetHashCode()

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Media;
 using Rubberduck.Parsing.Reflection;
 using Rubberduck.Reflection;
 using Rubberduck.UnitTesting;
@@ -33,10 +34,60 @@ namespace Rubberduck.UI.UnitTesting
         public void AddExecutedTest(TestMethod test)
         {
             _lastRun.Add(test);
+            ExecutedCount = _tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
+
+            ProgressBarColor = _tests.Any(t => t.Result.Outcome == TestOutcome.Failed)
+                ? Colors.Red
+                : _tests.Any(t => t.Result.Outcome == TestOutcome.Inconclusive) 
+                    ? Colors.Gold
+                    : Colors.LimeGreen;
         }
 
-        public int TestCount { get { return _tests.Count; } }
-        public int ExecutedCount { get { return _tests.Count(test => test.Result.Outcome != TestOutcome.Unknown); } }
+        private int _executedCount;
+        public int ExecutedCount
+        {
+            get { return _executedCount; }
+            protected set
+            {
+                _executedCount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Color _progressBarColor = Colors.DimGray;
+        public Color ProgressBarColor
+        {
+            get { return _progressBarColor; }
+            set
+            {
+                _progressBarColor = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isBusy;
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+            set
+            {
+                _isBusy = value;
+                OnPropertyChanged();
+
+                IsReady = !_isBusy;
+            }
+        }
+
+        private bool _isReady = true;
+        public bool IsReady
+        {
+            get { return _isReady; }
+            private set
+            {
+                _isReady = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// A method that determines whether a <see cref="Member"/> is a test method or not.
@@ -45,6 +96,7 @@ namespace Rubberduck.UI.UnitTesting
         /// <returns>Returns <c>true</c> if specified member is a test method.</returns>
         protected static bool IsTestMethod(Member member)
         {
+            // todo: reimplement using declarations/annotations
             var isIgnoredMethod = member.HasAttribute<TestInitializeAttribute>()
                                   || member.HasAttribute<TestCleanupAttribute>()
                                   || member.HasAttribute<ModuleInitializeAttribute>()

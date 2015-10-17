@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
@@ -10,8 +9,6 @@ using Ninject;
 using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
 using Rubberduck.Navigation;
-using Rubberduck.Settings;
-using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;

@@ -90,7 +90,8 @@ namespace Rubberduck.Parsing.VBA
             if (mustResolve)
             {
                 parseResult.Progress += parseResult_Progress;
-                Task.Run(async () => await parseResult.ResolveAsync()).Wait();
+                // resolve asynchronously, but don't return until all modules are resolved:
+                Task.WaitAll(Task.Run(async () => await parseResult.ResolveAsync()));
             }
             if (owner != null)
             {

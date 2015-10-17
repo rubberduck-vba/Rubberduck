@@ -67,6 +67,29 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             Debug.Print("'{0}' ({1}) parent menu initialized, hash code {2}.", _key, GetHashCode(), Item.GetHashCode());
         }
 
+        public void SetCommandButtonEnabledState(string key, bool isEnabled = true)
+        {
+            foreach (var item in _items.Keys)
+            {
+                var parent = item as IParentMenuItem;
+                if (parent != null)
+                {
+                    parent.SetCommandButtonEnabledState(key, isEnabled);
+                }
+
+                SetEnabledState(item, isEnabled);
+            }
+        }
+
+        private void SetEnabledState(IMenuItem item, bool isEnabled)
+        {
+            CommandBarControl control;
+            if (_items.TryGetValue(item, out control))
+            {
+                control.Enabled = isEnabled;
+            }
+        }
+
         private CommandBarControl InitializeChildControl(IParentMenuItem item)
         {
             if (item == null)
