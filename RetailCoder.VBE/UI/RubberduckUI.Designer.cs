@@ -1054,20 +1054,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit reference to active worksheet.
+        ///   Looks up a localized string similar to &apos;{0}&apos; is an implicit reference to the active worksheet.
         /// </summary>
-        public static string ImplicitActiveSheetReference {
+        public static string ImplicitActiveSheetReference_ {
             get {
-                return ResourceManager.GetString("ImplicitActiveSheetReference", resourceCulture);
+                return ResourceManager.GetString("ImplicitActiveSheetReference_", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit reference to active workbook.
+        ///   Looks up a localized string similar to &apos;{0}&apos; is an implicit reference to the active workbook.
         /// </summary>
-        public static string ImplicitActiveWorkbookReference {
+        public static string ImplicitActiveWorkbookReference_ {
             get {
-                return ResourceManager.GetString("ImplicitActiveWorkbookReference", resourceCulture);
+                return ResourceManager.GetString("ImplicitActiveWorkbookReference_", resourceCulture);
             }
         }
         

@@ -54,8 +54,13 @@ namespace Rubberduck.Parsing.Symbols
         private readonly ParserRuleContext _context;
         public ParserRuleContext Context { get { return _context; } }
 
-        private readonly ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
+        private ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
         public IEnumerable<IdentifierReference> References { get { return _references; } }
+
+        public void ClearReferences()
+        {
+            _references = new ConcurrentBag<IdentifierReference>();
+        }
 
         private readonly string _annotations;
         public string Annotations { get { return _annotations; } }

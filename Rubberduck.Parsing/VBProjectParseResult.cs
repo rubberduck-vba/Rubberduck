@@ -25,6 +25,7 @@ namespace Rubberduck.Parsing
 
             foreach (var declaration in VbaStandardLib.Declarations)
             {
+                declaration.ClearReferences();
                 _declarations.Add(declaration);
             }
 
@@ -32,6 +33,7 @@ namespace Rubberduck.Parsing
             {
                 foreach (var declaration in ExcelObjectModel.Declarations)
                 {
+                    declaration.ClearReferences();
                     _declarations.Add(declaration);
                 }
             }

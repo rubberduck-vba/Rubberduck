@@ -78,7 +78,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var modules = project.VBComponents.Cast<VBComponent>();
-            var mustResolve = false;
+            var mustResolve = true; // false;
             foreach (var vbComponent in modules)
             {
                 OnParseProgress(vbComponent);
@@ -88,13 +88,20 @@ namespace Rubberduck.Parsing.VBA
                 
                 if (componentResult != null)
                 {
-                    mustResolve = mustResolve || !fromCache;
+                    //mustResolve = mustResolve || !fromCache;
+                    if (fromCache)
+                    {
+                        foreach (var declaration in componentResult.Declarations)
+                        {
+                            declaration.ClearReferences();
+                        }
+                    }
                     results.Add(componentResult);
                 }
             }
 
             var parseResult = new VBProjectParseResult(project, results, _hostApplication);
-            if (mustResolve)
+            //if (mustResolve)
             {
                 parseResult.Progress += parseResult_Progress;
                 // resolve asynchronously, but don't return until all modules are resolved:
@@ -104,11 +111,11 @@ namespace Rubberduck.Parsing.VBA
                 parseResult.Resolve();
                 OnResolutionCompleted(new[] { parseResult }, owner); // ParseProgress dialog closes on resolution completed
             }
-            else if (owner != null)
-            {
+            //else if (owner != null)
+            //{
                 OnParseCompleted(new[] {parseResult}, owner);
-                OnResolutionCompleted(new[] {parseResult}, owner); // ParseProgress dialog closes on resolution completed
-            }
+            //    OnResolutionCompleted(new[] {parseResult}, owner); // ParseProgress dialog closes on resolution completed
+            //}
 
             return parseResult;
         }
