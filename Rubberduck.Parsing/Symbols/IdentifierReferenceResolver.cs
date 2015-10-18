@@ -264,7 +264,7 @@ namespace Rubberduck.Parsing.Symbols
                 callee = FindLocalScopeDeclaration(identifierName, localScope, parentContext, isAssignmentTarget)
                             ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
                             ?? FindModuleScopeDeclaration(identifierName, localScope)
-                            ?? FindProjectScopeDeclaration(identifierName, hasStringQualifier);
+                            ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, hasStringQualifier);
             }
 
             if (callee == null)
@@ -275,7 +275,7 @@ namespace Rubberduck.Parsing.Symbols
                 callee = FindLocalScopeDeclaration(identifierName, localScope, parentContext, isAssignmentTarget)
                          ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
                          ?? FindModuleScopeDeclaration(identifierName, localScope)
-                         ?? FindProjectScopeDeclaration(identifierName, hasStringQualifier);
+                         ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, hasStringQualifier);
             }
 
             if (callee == null)
@@ -826,10 +826,16 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private Declaration FindProjectScopeDeclaration(string identifierName, bool hasStringQualifier = false)
+        private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, bool hasStringQualifier = false)
         {
             var matches = _declarations.Items.Where(item => !item.IsBuiltIn && item.IdentifierName == identifierName
                 || item.IdentifierName == identifierName + (hasStringQualifier ? "$" : string.Empty)).ToList();
+
+            if (matches.Count == 1)
+            {
+                return matches.Single();
+            }
+
             try
             {
                 return matches.SingleOrDefault(item => !item.IsBuiltIn &&
@@ -840,11 +846,9 @@ namespace Rubberduck.Parsing.Symbols
                         || _moduleTypes.Contains(item.DeclarationType)))
                 // todo: refactor
                 ?? matches.SingleOrDefault(item => item.IsBuiltIn 
-                    //!item.DeclarationType.HasFlag(DeclarationType.Member)
                     && item.DeclarationType != DeclarationType.Event 
-                    && (item.Accessibility == Accessibility.Public
-                        || item.Accessibility == Accessibility.Global
-                        || _moduleTypes.Contains(item.DeclarationType)));
+                    && ((localScope == null && item.Accessibility == Accessibility.Global)
+                        || (localScope != null && (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Global) && localScope.IdentifierName == item.ParentDeclaration.IdentifierName)));
             }
             catch (InvalidOperationException)
             {

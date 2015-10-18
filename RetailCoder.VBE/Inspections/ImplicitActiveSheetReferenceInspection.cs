@@ -44,7 +44,7 @@ namespace Rubberduck.Inspections
             }
 
             var issues = parseResult.Declarations.Items.Where(item => item.IsBuiltIn 
-                && item.ParentScope.StartsWith("Excel.Global")
+                && item.ParentScope == "Excel.Global"
                 && Targets.Contains(item.IdentifierName)
                 && item.References.Any())
                 .SelectMany(declaration => declaration.References);
