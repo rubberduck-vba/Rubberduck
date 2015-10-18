@@ -33,7 +33,7 @@
             </Expander.HeaderTemplate>
             <ListView Margin="2" FlowDirection="LeftToRight" ItemsSource="{Binding Details}">
                 <ListView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate DataType="local:ComponentProgressViewModel">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="20" />
@@ -42,7 +42,7 @@
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" Margin="2" Width="16" Source="{Binding ComponentIcon}" />
                             <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding ComponentName}" TextWrapping="Wrap" />
-                            <ProgressBar Grid.Column="2" Value="{Binding ResolutionProgressPercent}" Minimum="0" Maximum="100" HorizontalAlignment="Stretch" />
+                            <ProgressBar Grid.Column="2" Value="{Binding ResolutionProgressPercent, Mode=OneWay}" Minimum="0" Maximum="100" HorizontalAlignment="Stretch" />
                         </Grid>                        
                     </DataTemplate>
                 </ListView.ItemTemplate>

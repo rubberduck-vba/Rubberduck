@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
@@ -24,7 +26,9 @@ namespace RubberduckTests.Inspections
                 .Build().Object;
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var inspection = new ObsoleteCommentSyntaxInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
@@ -44,7 +48,9 @@ namespace RubberduckTests.Inspections
                 .Build().Object;
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var inspection = new ObsoleteCommentSyntaxInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
@@ -66,7 +72,9 @@ Rem test2";
                 .Build().Object;
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var inspection = new ObsoleteCommentSyntaxInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
@@ -88,7 +96,9 @@ Rem test2";
                 .Build().Object;
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var inspection = new ObsoleteCommentSyntaxInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
@@ -113,7 +123,9 @@ Rem test2";
             var module = project.VBComponents.Item(0).CodeModule;
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var inspection = new ObsoleteCommentSyntaxInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
@@ -140,7 +152,9 @@ Rem test2";
             var module = project.VBComponents.Item(0).CodeModule;
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var inspection = new ObsoleteCommentSyntaxInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);

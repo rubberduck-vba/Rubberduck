@@ -10,6 +10,7 @@ using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 using MessageBox = Rubberduck.UI.MessageBox;
@@ -40,7 +41,9 @@ End Sub";
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -80,7 +83,9 @@ End Sub";
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -120,7 +125,9 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -160,7 +167,9 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -210,7 +219,9 @@ End Sub
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -250,7 +261,9 @@ End Function"; //note: The IDE strips out the extra whitespace
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -290,7 +303,9 @@ End Function"; //note: The IDE strips out the extra whitespace
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -340,7 +355,9 @@ End Sub
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -380,7 +397,9 @@ End Property"; //note: The IDE strips out the extra whitespace
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -420,7 +439,9 @@ End Property"; //note: The IDE strips out the extra whitespace
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -459,7 +480,9 @@ End Property"; //note: The IDE strips out the extra whitespace
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -509,7 +532,9 @@ End Sub
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -559,7 +584,9 @@ End Sub
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -621,7 +648,9 @@ End Sub
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -655,7 +684,9 @@ End Property";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -680,7 +711,9 @@ End Property";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -717,7 +750,9 @@ End Property"; //note: The IDE strips out the extra whitespace
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -763,7 +798,9 @@ End Property"; //note: The IDE strips out the extra whitespace
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -811,7 +848,9 @@ End Sub";
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -855,7 +894,9 @@ End Sub";   // note: IDE removes excess spaces
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -899,7 +940,9 @@ End Sub";   // note: IDE removes excess spaces
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -957,7 +1000,9 @@ End Sub
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1011,7 +1056,9 @@ End Sub";   // note: IDE removes excess spaces
             var component = project.VBComponents.Item(0);
             
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1069,7 +1116,9 @@ End Sub";   // note: IDE removes excess spaces
             var component = project.VBComponents.Item(0);
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1138,7 +1187,9 @@ End Sub";   // note: IDE removes excess spaces
             var component = project.VBComponents.Item(0);
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1198,7 +1249,9 @@ End Sub";   // note: IDE removes excess spaces
             var component = project.VBComponents.Item(0);
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1256,7 +1309,9 @@ End Sub";   // note: IDE removes excess spaces
             var component = project.VBComponents.Item(0);
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1325,7 +1380,9 @@ End Sub";   // note: IDE removes excess spaces
             var component = project.VBComponents.Item(0);
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1386,7 +1443,9 @@ End Sub";
             var component = project.VBComponents.Item(0);
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1437,7 +1496,9 @@ End Sub";
             var component = project.VBComponents.Item(0);
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1465,7 +1526,9 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1508,7 +1571,9 @@ End Sub";
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
@@ -1539,7 +1604,9 @@ End Sub";
             var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1572,7 +1639,9 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1603,9 +1672,11 @@ End Sub";
             var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
 
             //Arrange
-            var project = SetupMockProject(inputCode);
+            var project = SetupMockProject(inputCode).Object;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -1619,8 +1690,7 @@ End Sub";
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new RemoveParametersPresenterFactory(editor.Object, view.Object,
-                parseResult, null);
+            var factory = new RemoveParametersPresenterFactory(editor.Object, view.Object, parseResult, null);
 
             var presenter = factory.Create();
 
@@ -1637,9 +1707,11 @@ End Sub";
             var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
 
             //Arrange
-            var project = SetupMockProject(inputCode);
+            var project = SetupMockProject(inputCode).Object;
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -1649,8 +1721,7 @@ End Sub";
             var model = new RemoveParametersModel(parseResult, qualifiedSelection, new MessageBox());
             model.Parameters[0].IsRemoved = true;
             
-            var factory = new RemoveParametersPresenterFactory(editor.Object, null,
-                parseResult, null);
+            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parseResult, null);
 
             var presenter = factory.Create();
 
@@ -1674,7 +1745,9 @@ End Sub";
             builder.AddProject(project);
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.Object.VBE).Parse(project.Object);
 
             var codePane = project.Object.VBComponents.Item(0).CodeModule.CodePane;
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), selection);
@@ -1709,7 +1782,9 @@ End Sub";
             builder.AddProject(project);
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.Object.VBE).Parse(project.Object);
 
             var codePane = project.Object.VBComponents.Item(0).CodeModule.CodePane;
             var ext = codePaneFactory.Create(codePane);
@@ -1743,7 +1818,9 @@ End Sub";
             builder.AddProject(project);
 
             var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.Object.VBE).Parse(project.Object);
             
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?) null);

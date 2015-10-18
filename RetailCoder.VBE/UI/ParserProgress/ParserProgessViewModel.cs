@@ -24,7 +24,7 @@ namespace Rubberduck.UI.ParserProgress
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParseProgress += _parser_ParseProgress;
             _parser.ResolutionProgress += _parser_ResolutionProgress;
-            _parser.ParseCompleted += _parser_ParseCompleted;
+            _parser.ResolutionCompleted += _parser_Completed;
 
             _project = project;
             var details = _project.VBComponents.Cast<VBComponent>().Select(component => new ComponentProgressViewModel(component)).ToList();
@@ -51,7 +51,7 @@ namespace Rubberduck.UI.ParserProgress
         }
 
         public event EventHandler<ParseCompletedEventArgs> Completed;
-        void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
+        void _parser_Completed(object sender, ParseCompletedEventArgs e)
         {
             var handler = Completed;
             if (handler != null)
@@ -69,20 +69,11 @@ namespace Rubberduck.UI.ParserProgress
                 return;
             }
             row.ResolutionProgressPercent = e.PercentProgress;
-            row.ComponentIcon = e.PercentProgress == 1 
-                ? GetImageSource(Resources.hourglass) 
-                : DeclarationIconCache.ComponentIcon(e.Component.Type);
         }
 
         void _parser_ParseProgress(object sender, ParseProgressEventArgs e)
         {
             StatusText = string.Format(RubberduckUI.ParseProgress, e.Component.Collection.Parent.Name + "." + e.Component.Name);
-            var row = _details.SingleOrDefault(vm => vm.ComponentName == e.Component.Name);
-            if (row == null)
-            {
-                return;
-            }
-            row.ComponentIcon = GetImageSource(Resources.tick);
         }
 
         void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
@@ -93,20 +84,17 @@ namespace Rubberduck.UI.ParserProgress
 
     public class ComponentProgressViewModel : ViewModelBase
     {
+        private readonly VBComponent _component;
+
         public ComponentProgressViewModel(VBComponent component)
         {
+            _component = component;
             ComponentName = component.Name;
         }
 
-        private BitmapImage _componentIcon;
         public BitmapImage ComponentIcon
         {
-            get { return _componentIcon; }
-            set 
-            { 
-                _componentIcon = value;
-                OnPropertyChanged();
-            }
+            get { return DeclarationIconCache.ComponentIcon(_component.Type); }
         }
 
         public string ComponentName { get; private set; }

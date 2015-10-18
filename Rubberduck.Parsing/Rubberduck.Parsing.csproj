@@ -68,6 +68,7 @@
     <Compile Include="Grammar\VBAListener.cs" />
     <Compile Include="Grammar\VBAParser.cs" />
     <Compile Include="Grammar\VBAVisitor.cs" />
+    <Compile Include="Symbols\ExcelObjectModel.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
     <Compile Include="Symbols\MemberProcessedEventArgs.cs" />

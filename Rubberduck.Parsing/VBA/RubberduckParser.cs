@@ -15,6 +15,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing.VBA
@@ -30,17 +31,18 @@ namespace Rubberduck.Parsing.VBA
             new ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult>();
 
         private static ICodePaneWrapperFactory _wrapperFactory;
+        private readonly VBE _vbe;
+        private IHostApplication _hostApplication;
 
         private static bool _isParsing;
 
         private readonly Logger _logger;
 
-        public RubberduckParser(ICodePaneWrapperFactory wrapperFactory)
+        public RubberduckParser(ICodePaneWrapperFactory wrapperFactory, VBE vbe)
         {
             _logger = LogManager.GetCurrentClassLogger();
-
             _wrapperFactory = wrapperFactory;
-            
+            _vbe = vbe;
         }
 
         public void RemoveProject(VBProject project)
@@ -64,10 +66,15 @@ namespace Rubberduck.Parsing.VBA
                 OnParseStarted(new[]{project.Name}, owner);
             }
 
+            if (_hostApplication == null)
+            {
+                _hostApplication = _vbe.HostApplication();
+            }
+
             var results = new List<VBComponentParseResult>();
             if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
-                return new VBProjectParseResult(project, results);
+                return new VBProjectParseResult(project, results, _hostApplication);
             }
 
             var modules = project.VBComponents.Cast<VBComponent>();
@@ -78,7 +85,7 @@ namespace Rubberduck.Parsing.VBA
 
                 bool fromCache;
                 var componentResult = Parse(vbComponent, out fromCache);
-
+                
                 if (componentResult != null)
                 {
                     mustResolve = mustResolve || !fromCache;
@@ -86,16 +93,21 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            var parseResult = new VBProjectParseResult(project, results);
+            var parseResult = new VBProjectParseResult(project, results, _hostApplication);
             if (mustResolve)
             {
                 parseResult.Progress += parseResult_Progress;
                 // resolve asynchronously, but don't return until all modules are resolved:
-                Task.WaitAll(Task.Run(async () => await parseResult.ResolveAsync()));
+                //Task.Run(async () => await parseResult.ResolveAsync())
+                //    .ContinueWith(t => OnResolutionCompleted(new[] { parseResult }, owner))
+                //    .Wait();
+                parseResult.Resolve();
+                OnResolutionCompleted(new[] { parseResult }, owner); // ParseProgress dialog closes on resolution completed
             }
-            if (owner != null)
+            else if (owner != null)
             {
                 OnParseCompleted(new[] {parseResult}, owner);
+                OnResolutionCompleted(new[] {parseResult}, owner); // ParseProgress dialog closes on resolution completed
             }
 
             return parseResult;
@@ -182,8 +194,7 @@ namespace Rubberduck.Parsing.VBA
             var offendingComponent = component.Name;
             var offendingLine = component.CodeModule.Lines[exception.LineNumber, 1];
 
-            var message = string.Format("Parser encountered a syntax error in {0}.{1}, line {2}. Content: '{3}'", offendingProject, offendingComponent, exception.LineNumber, offendingLine);
-            _logger.Error(exception, message);
+            _logger.Error(exception, "Parser encountered a syntax error in {0}.{1}, line {2}. Content: '{3}'", offendingProject, offendingComponent, exception.LineNumber, offendingLine);
         }
 
         private IEnumerable<CommentNode> ParseComments(QualifiedModuleName qualifiedName)
@@ -244,6 +255,16 @@ namespace Rubberduck.Parsing.VBA
             if (handler != null)
             {
                 handler(this, args);
+            }
+        }
+
+        public event EventHandler<ParseCompletedEventArgs> ResolutionCompleted;
+        private void OnResolutionCompleted(IEnumerable<VBProjectParseResult> results, object owner)
+        {
+            var handler = ResolutionCompleted;
+            if (handler != null)
+            {
+                handler(owner, new ParseCompletedEventArgs(results));
             }
         }
 

@@ -146,7 +146,7 @@ namespace Rubberduck.Parsing.Symbols
                 ? "Implicit" // "Private"
                 : visibilityContext.GetText();
 
-            return (Accessibility)Enum.Parse(typeof(Accessibility), visibility);
+            return (Accessibility)Enum.Parse(typeof(Accessibility), visibility, true);
         }
 
         /// <summary>

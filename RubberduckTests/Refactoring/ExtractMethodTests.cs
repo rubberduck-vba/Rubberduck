@@ -8,6 +8,7 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
@@ -46,7 +47,9 @@ End Function
             var project = ide.Object.VBProjects.Item(0);
             var module = component.CodeModule;
 
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
             var editor = new ActiveCodePaneEditor(module.VBE, codePaneFactory);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(module.Parent), new Selection(4, 1, 4, 20));

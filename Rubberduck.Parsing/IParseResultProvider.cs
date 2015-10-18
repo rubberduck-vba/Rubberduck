@@ -61,5 +61,6 @@ namespace Rubberduck.Parsing
         event EventHandler<ResolutionProgressEventArgs> ResolutionProgress;
         event EventHandler<ParseProgressEventArgs> ParseProgress;
         event EventHandler<ParseCompletedEventArgs> ParseCompleted;
+        event EventHandler<ParseCompletedEventArgs> ResolutionCompleted;
     }
 }
