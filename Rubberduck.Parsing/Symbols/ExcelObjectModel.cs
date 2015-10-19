@@ -107,10 +107,9 @@ namespace Rubberduck.Parsing.Symbols
             public static Declaration Columns = new Declaration(new QualifiedMemberName(ExcelModuleName, "Columns"), Global, "Excel.Global", "Range", false, false, Accessibility.Global, DeclarationType.PropertyGet);
             public static Declaration Rows = new Declaration(new QualifiedMemberName(ExcelModuleName, "Rows"), Global, "Excel.Global", "Range", false, false, Accessibility.Global, DeclarationType.PropertyGet);
 
-            // cheating on declaration type (they're property getters):
-            public static Declaration ActiveCell = new Declaration(new QualifiedMemberName(ExcelModuleName, "ActiveCell"), Global, "Excel.Global", "Range", false, false, Accessibility.Global, DeclarationType.Variable);
-            public static Declaration ActiveSheet = new Declaration(new QualifiedMemberName(ExcelModuleName, "ActiveSheet"), Global, "Excel.Global", "Worksheet", false, false, Accessibility.Global, DeclarationType.Variable); // cheating on return type
-            public static Declaration ActiveWorkbook = new Declaration(new QualifiedMemberName(ExcelModuleName, "ActiveWorkbook"), Global, "Excel.Global", "Workbook", false, false, Accessibility.Global, DeclarationType.Variable);
+            public static Declaration ActiveCell = new Declaration(new QualifiedMemberName(ExcelModuleName, "ActiveCell"), Global, "Excel.Global", "Range", false, false, Accessibility.Global, DeclarationType.PropertyGet);
+            public static Declaration ActiveSheet = new Declaration(new QualifiedMemberName(ExcelModuleName, "ActiveSheet"), Global, "Excel.Global", "Worksheet", false, false, Accessibility.Global, DeclarationType.PropertyGet); // cheating on return type
+            public static Declaration ActiveWorkbook = new Declaration(new QualifiedMemberName(ExcelModuleName, "ActiveWorkbook"), Global, "Excel.Global", "Workbook", false, false, Accessibility.Global, DeclarationType.PropertyGet);
         }
     }
 }
