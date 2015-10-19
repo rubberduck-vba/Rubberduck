@@ -306,7 +306,13 @@ namespace Rubberduck.Parsing.Symbols
             var identifierContext = context.ambiguousIdentifier();
             var fieldCall = context.dictionaryCallStmt();
 
-            return ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
+            var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
+            if (result != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
+            {
+                localScope.AddMemberCall(CreateReference(context.ambiguousIdentifier(), result));
+            }
+
+            return result;
         }
 
         private Declaration ResolveInternal(VBAParser.DictionaryCallStmtContext fieldCall, Declaration parent, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
@@ -350,7 +356,13 @@ namespace Rubberduck.Parsing.Symbols
             var fieldCall = context.dictionaryCallStmt();
             // todo: understand WTF [baseType] is doing in that grammar rule...
 
-            return ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
+            var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
+            if (result != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
+            {
+                localScope.AddMemberCall(CreateReference(context.ambiguousIdentifier(), result));
+            }
+
+            return result;
         }
 
         private Declaration ResolveInternal(VBAParser.ICS_S_MembersCallContext context, ContextAccessorType accessorType, Declaration localScope = null, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
@@ -396,7 +408,7 @@ namespace Rubberduck.Parsing.Symbols
                     return null;
                 }
 
-                member.AddMemberCall(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
+                //member.AddMemberCall(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
                 parent = ResolveType(member);
             }
 
@@ -486,7 +498,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var reference = CreateReference(identifierContext, member);
 
-                parentScope.AddMemberCall(CreateReference(context.ambiguousIdentifier(), parentScope));
+                parentScope.AddMemberCall(CreateReference(context.ambiguousIdentifier(), member));
                 member.AddReference(reference);
                 _alreadyResolved.Add(reference.Context);
             }
