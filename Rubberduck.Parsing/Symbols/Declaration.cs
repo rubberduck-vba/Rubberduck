@@ -57,6 +57,9 @@ namespace Rubberduck.Parsing.Symbols
         private ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
         public IEnumerable<IdentifierReference> References { get { return _references; } }
 
+        private ConcurrentBag<IdentifierReference> _memberCalls = new ConcurrentBag<IdentifierReference>();
+        public IEnumerable<IdentifierReference> MemberCalls { get { return _memberCalls; } }
+
         public void ClearReferences()
         {
             _references = new ConcurrentBag<IdentifierReference>();
@@ -82,6 +85,16 @@ namespace Rubberduck.Parsing.Symbols
             {
                 _references.Add(reference);
             }
+        }
+
+        public void AddMemberCall(IdentifierReference reference)
+        {
+            if (reference == null || reference.Declaration.Context == reference.Context)
+            {
+                return;
+            }
+
+            _memberCalls.Add(reference);
         }
 
         private readonly Selection _selection;

@@ -396,6 +396,7 @@ namespace Rubberduck.Parsing.Symbols
                     return null;
                 }
 
+                member.AddMemberCall(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
                 parent = ResolveType(member);
             }
 
@@ -484,6 +485,8 @@ namespace Rubberduck.Parsing.Symbols
             if (member != null)
             {
                 var reference = CreateReference(identifierContext, member);
+
+                parentScope.AddMemberCall(CreateReference(context.ambiguousIdentifier(), parentScope));
                 member.AddReference(reference);
                 _alreadyResolved.Add(reference.Context);
             }
@@ -550,6 +553,7 @@ namespace Rubberduck.Parsing.Symbols
                     return;
                 }
 
+                member.AddMemberCall(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
                 parent = ResolveType(member);
             }
 
@@ -561,6 +565,28 @@ namespace Rubberduck.Parsing.Symbols
 
             ResolveInternal(fieldCall, parent);
             _alreadyResolved.Add(context);
+        }
+
+        private VBAParser.AmbiguousIdentifierContext GetMemberCallIdentifierContext(VBAParser.ICS_S_MemberCallContext callContext)
+        {
+            if (callContext == null)
+            {
+                return null;
+            }
+
+            var procedureOrArrayCall = callContext.iCS_S_ProcedureOrArrayCall();
+            if (procedureOrArrayCall != null)
+            {
+                return procedureOrArrayCall.ambiguousIdentifier();
+            }
+
+            var variableOrProcedureCall = callContext.iCS_S_VariableOrProcedureCall();
+            if (variableOrProcedureCall != null)
+            {
+                return variableOrProcedureCall.ambiguousIdentifier();
+            }
+
+            return null;
         }
 
         public void Resolve(VBAParser.ICS_S_DictionaryCallContext context)
