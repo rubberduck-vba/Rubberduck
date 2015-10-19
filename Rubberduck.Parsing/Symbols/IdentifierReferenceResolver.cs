@@ -99,8 +99,7 @@ namespace Rubberduck.Parsing.Symbols
             if (context.NEW() == null)
             {
                 // with block is using an identifier declared elsewhere.
-                var callee = ResolveInternal(context.implicitCallStmt_InStmt(), _currentScope, ContextAccessorType.GetValueOrReference);
-                qualifier = ResolveType(callee);
+                qualifier = ResolveInternal(context.implicitCallStmt_InStmt(), _currentScope, ContextAccessorType.GetValueOrReference);
             }
             else
             {
@@ -122,7 +121,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 else
                 {
-                    qualifier = ResolveType(typeContext.complexType());
+                    //qualifier = ResolveType(typeContext.complexType());
                 }
             }
 
@@ -385,8 +384,6 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 parent = ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), localScope, accessorType, hasExplicitLetStatement)
                       ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), localScope, accessorType, hasExplicitLetStatement);
-
-                parent = ResolveType(parent);
             }
 
             var chainedCalls = context.iCS_S_MemberCall();
@@ -400,15 +397,16 @@ namespace Rubberduck.Parsing.Symbols
                     : ContextAccessorType.GetValueOrReference;
                 var isTarget = isLast && isAssignmentTarget;
 
-                var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parent, accessor, hasExplicitLetStatement, isTarget)
-                             ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parent, accessor, hasExplicitLetStatement, isTarget);
+                var parentType = ResolveType(parent);
+                var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType, accessor, hasExplicitLetStatement, isTarget)
+                             ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType, accessor, hasExplicitLetStatement, isTarget);
 
                 if (member == null)
                 {
                     return null;
                 }
 
-                //member.AddMemberCall(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
+                member.AddMemberCall(CreateReference(GetMemberCallIdentifierContext(memberCall), parent));
                 parent = ResolveType(member);
             }
 
@@ -480,7 +478,7 @@ namespace Rubberduck.Parsing.Symbols
 
             if (_withBlockQualifiers.Any())
             {
-                parentType = _withBlockQualifiers.Peek();
+                parentType = ResolveType(_withBlockQualifiers.Peek());
                 parentScope = ResolveInternal(context.implicitCallStmt_InStmt(), parentType, ContextAccessorType.GetValueOrReference)
                               ?? ResolveInternal(context.ambiguousIdentifier(), parentType);
                 parentType = ResolveType(parentScope);
@@ -527,7 +525,7 @@ namespace Rubberduck.Parsing.Symbols
             Declaration parent;
             if (_withBlockQualifiers.Any())
             {
-                parent = _withBlockQualifiers.Peek();
+                parent = ResolveType(_withBlockQualifiers.Peek());
             }
             else
             {
@@ -872,6 +870,11 @@ namespace Rubberduck.Parsing.Symbols
             if (matches.Count == 1)
             {
                 return matches.Single();
+            }
+
+            if (localScope == null && _withBlockQualifiers.Any())
+            {
+                localScope = _withBlockQualifiers.Peek();
             }
 
             try
