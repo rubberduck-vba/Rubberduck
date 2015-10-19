@@ -265,6 +265,8 @@ namespace Rubberduck.Parsing.Symbols
                     case DeclarationType.PropertyLet:
                     case DeclarationType.PropertySet:
                         return _qualifiedName.QualifiedModuleName + "." + _identifierName;
+                    case DeclarationType.Event:
+                        return _parentScope + "." + _identifierName;
                     default:
                         return _parentScope;
                 }

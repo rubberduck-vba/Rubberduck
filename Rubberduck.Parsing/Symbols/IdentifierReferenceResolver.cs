@@ -249,6 +249,11 @@ namespace Rubberduck.Parsing.Symbols
             var parentContext = callSiteContext.Parent;
             var identifierName = callSiteContext.GetText();
 
+            if (identifierName == "OwnerInstance")
+            {
+                
+            }
+
             var sibling = parentContext.ChildCount > 1 ? parentContext.GetChild(1) : null;
             var hasStringQualifier = sibling is VBAParser.TypeHintContext && sibling.GetText() == "$";
 
@@ -790,7 +795,7 @@ namespace Rubberduck.Parsing.Symbols
             try
             {
                 var results = matches.Where(item =>
-                    item.ParentScope == localScope.Scope
+                    (item.ParentScope == localScope.Scope || (isAssignmentTarget && item.Scope == localScope.Scope))
                     && localScope.Context.GetSelection().Contains(item.Selection)
                     && !_moduleTypes.Contains(item.DeclarationType))
                     .ToList();

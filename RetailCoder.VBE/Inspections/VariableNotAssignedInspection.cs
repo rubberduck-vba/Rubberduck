@@ -28,6 +28,7 @@ namespace Rubberduck.Inspections
             var declarations = parseResult.Declarations.Items.Where(declaration =>
                 declaration.DeclarationType == DeclarationType.Variable
                 && !declaration.IsBuiltIn 
+                && !declaration.IsWithEvents
                 && !arrays.Contains(declaration)
                 && !parseResult.Declarations.Items.Any(item => 
                     item.IdentifierName == declaration.AsTypeName 
@@ -35,10 +36,8 @@ namespace Rubberduck.Inspections
                 && !declaration.IsSelfAssigned
                 && !declaration.References.Any(reference => reference.IsAssignment));
 
-            foreach (var issue in declarations)
-            {
-                yield return new IdentifierNotAssignedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName);
-            }
+            return declarations.Select(issue => 
+                new IdentifierNotAssignedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
         }
     }
 }
