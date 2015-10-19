@@ -790,7 +790,7 @@ namespace Rubberduck.Parsing.Symbols
             try
             {
                 var results = matches.Where(item =>
-                    item.ParentScope == localScope.Scope
+                    (item.ParentScope == localScope.Scope || (isAssignmentTarget && item.Scope == localScope.Scope))
                     && localScope.Context.GetSelection().Contains(item.Selection)
                     && !_moduleTypes.Contains(item.DeclarationType))
                     .ToList();

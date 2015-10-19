@@ -60,7 +60,6 @@ namespace Rubberduck.Inspections
                 !ignoredScopes.Contains(declaration.ParentScope)
                 && declaration.DeclarationType == DeclarationType.Parameter
                 && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
-                //&& PrimitiveTypes.Contains(declaration.AsTypeName) // suggest passing object types ByRef?
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(parseResult.Declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
