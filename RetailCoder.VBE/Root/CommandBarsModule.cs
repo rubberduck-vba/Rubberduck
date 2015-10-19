@@ -56,7 +56,8 @@ namespace Rubberduck.Root
         {
             const int listMembersMenuId = 2529;
             var parent = _kernel.Get<VBE>().CommandBars[CodeWindow].Controls;
-            var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == listMembersMenuId).Index;
+            var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == listMembersMenuId);
+            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
 
             var items = GetCodePaneContextMenuItems();
             BindParentMenuItem<CodePaneContextParentMenu>(parent, beforeIndex, items);
@@ -66,7 +67,8 @@ namespace Rubberduck.Root
         {
             const int viewCodeMenuId = 2558;
             var parent = _kernel.Get<VBE>().CommandBars[MsForms].Controls;
-            var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == viewCodeMenuId).Index;
+            var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == viewCodeMenuId);
+            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
 
             var items = GetFormDesignerContextMenuItems();
             BindParentMenuItem<FormDesignerContextParentMenu>(parent, beforeIndex, items);
@@ -76,7 +78,8 @@ namespace Rubberduck.Root
         {
             const int viewCodeMenuId = 2558;
             var parent = _kernel.Get<VBE>().CommandBars[MsFormsControl].Controls;
-            var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == viewCodeMenuId).Index;
+            var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == viewCodeMenuId);
+            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
 
             var items = GetFormDesignerContextMenuItems();
             BindParentMenuItem<FormDesignerControlContextParentMenu>(parent, beforeIndex, items);
@@ -86,7 +89,8 @@ namespace Rubberduck.Root
         {
             const int projectPropertiesMenuId = 2578;
             var parent = _kernel.Get<VBE>().CommandBars[ProjectWindow].Controls;
-            var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == projectPropertiesMenuId).Index;
+            var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == projectPropertiesMenuId);
+            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
 
             var items = GetProjectWindowContextMenuItems();
             BindParentMenuItem<ProjectWindowContextParentMenu>(parent, beforeIndex, items);

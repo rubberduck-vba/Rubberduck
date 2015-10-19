@@ -1191,4 +1191,16 @@ Are you sure you want to proceed with this rename?</value>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Details</value>
   </data>
+  <data name="ImplicitActiveSheetReference_" xml:space="preserve">
+    <value>'{0}' is an implicit reference to the active worksheet</value>
+  </data>
+  <data name="ImplicitActiveWorkbookReference_" xml:space="preserve">
+    <value>'{0}' is an implicit reference to the active workbook</value>
+  </data>
+  <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
+    <value>Make ActiveSheet reference explicit</value>
+  </data>
+  <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
+    <value>Make ActiveWorkbook reference explicit</value>
+  </data>
 </root>

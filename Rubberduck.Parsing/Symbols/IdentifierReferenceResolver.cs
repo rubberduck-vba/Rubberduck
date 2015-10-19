@@ -99,8 +99,7 @@ namespace Rubberduck.Parsing.Symbols
             if (context.NEW() == null)
             {
                 // with block is using an identifier declared elsewhere.
-                var callee = ResolveInternal(context.implicitCallStmt_InStmt(), _currentScope, ContextAccessorType.GetValueOrReference);
-                qualifier = ResolveType(callee);
+                qualifier = ResolveInternal(context.implicitCallStmt_InStmt(), _currentScope, ContextAccessorType.GetValueOrReference);
             }
             else
             {
@@ -122,7 +121,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 else
                 {
-                    qualifier = ResolveType(typeContext.complexType());
+                    //qualifier = ResolveType(typeContext.complexType());
                 }
             }
 
@@ -199,21 +198,25 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var result = _declarations[parent.AsTypeName].SingleOrDefault(item =>
+            var identifier = parent.AsTypeName.Contains(".")
+                ? parent.AsTypeName.Split('.').Last()
+                : parent.AsTypeName;
+
+            var result = _declarations[identifier].SingleOrDefault(item =>
                 item.DeclarationType == DeclarationType.UserDefinedType
                 && item.Project == _currentScope.Project
                 && item.ComponentName == _currentScope.ComponentName);
 
             if (result == null)
             {
-                result = _declarations[parent.AsTypeName].SingleOrDefault(item =>
+                result = _declarations[identifier].SingleOrDefault(item =>
                     _moduleTypes.Contains(item.DeclarationType)
                     && item.Project == _currentScope.Project);                
             }
 
             if (result == null)
             {
-                result = _declarations[parent.AsTypeName].SingleOrDefault(item =>
+                result = _declarations[identifier].SingleOrDefault(item =>
                     _moduleTypes.Contains(item.DeclarationType));
             }
 
@@ -264,7 +267,7 @@ namespace Rubberduck.Parsing.Symbols
                 callee = FindLocalScopeDeclaration(identifierName, localScope, parentContext, isAssignmentTarget)
                             ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
                             ?? FindModuleScopeDeclaration(identifierName, localScope)
-                            ?? FindProjectScopeDeclaration(identifierName, hasStringQualifier);
+                            ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, hasStringQualifier);
             }
 
             if (callee == null)
@@ -275,7 +278,7 @@ namespace Rubberduck.Parsing.Symbols
                 callee = FindLocalScopeDeclaration(identifierName, localScope, parentContext, isAssignmentTarget)
                          ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
                          ?? FindModuleScopeDeclaration(identifierName, localScope)
-                         ?? FindProjectScopeDeclaration(identifierName, hasStringQualifier);
+                         ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, hasStringQualifier);
             }
 
             if (callee == null)
@@ -306,7 +309,13 @@ namespace Rubberduck.Parsing.Symbols
             var identifierContext = context.ambiguousIdentifier();
             var fieldCall = context.dictionaryCallStmt();
 
-            return ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
+            var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
+            if (result != null && localScope != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
+            {
+                localScope.AddMemberCall(CreateReference(context.ambiguousIdentifier(), result));
+            }
+
+            return result;
         }
 
         private Declaration ResolveInternal(VBAParser.DictionaryCallStmtContext fieldCall, Declaration parent, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
@@ -350,7 +359,13 @@ namespace Rubberduck.Parsing.Symbols
             var fieldCall = context.dictionaryCallStmt();
             // todo: understand WTF [baseType] is doing in that grammar rule...
 
-            return ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
+            var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
+            if (result != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
+            {
+                localScope.AddMemberCall(CreateReference(context.ambiguousIdentifier(), result));
+            }
+
+            return result;
         }
 
         private Declaration ResolveInternal(VBAParser.ICS_S_MembersCallContext context, ContextAccessorType accessorType, Declaration localScope = null, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
@@ -373,8 +388,6 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 parent = ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), localScope, accessorType, hasExplicitLetStatement)
                       ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), localScope, accessorType, hasExplicitLetStatement);
-
-                parent = ResolveType(parent);
             }
 
             var chainedCalls = context.iCS_S_MemberCall();
@@ -388,14 +401,16 @@ namespace Rubberduck.Parsing.Symbols
                     : ContextAccessorType.GetValueOrReference;
                 var isTarget = isLast && isAssignmentTarget;
 
-                var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parent, accessor, hasExplicitLetStatement, isTarget)
-                             ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parent, accessor, hasExplicitLetStatement, isTarget);
+                var parentType = ResolveType(parent);
+                var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType, accessor, hasExplicitLetStatement, isTarget)
+                             ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType, accessor, hasExplicitLetStatement, isTarget);
 
                 if (member == null)
                 {
                     return null;
                 }
 
+                member.AddMemberCall(CreateReference(GetMemberCallIdentifierContext(memberCall), parent));
                 parent = ResolveType(member);
             }
 
@@ -467,7 +482,7 @@ namespace Rubberduck.Parsing.Symbols
 
             if (_withBlockQualifiers.Any())
             {
-                parentType = _withBlockQualifiers.Peek();
+                parentType = ResolveType(_withBlockQualifiers.Peek());
                 parentScope = ResolveInternal(context.implicitCallStmt_InStmt(), parentType, ContextAccessorType.GetValueOrReference)
                               ?? ResolveInternal(context.ambiguousIdentifier(), parentType);
                 parentType = ResolveType(parentScope);
@@ -484,6 +499,8 @@ namespace Rubberduck.Parsing.Symbols
             if (member != null)
             {
                 var reference = CreateReference(identifierContext, member);
+
+                parentScope.AddMemberCall(CreateReference(context.ambiguousIdentifier(), member));
                 member.AddReference(reference);
                 _alreadyResolved.Add(reference.Context);
             }
@@ -512,7 +529,7 @@ namespace Rubberduck.Parsing.Symbols
             Declaration parent;
             if (_withBlockQualifiers.Any())
             {
-                parent = _withBlockQualifiers.Peek();
+                parent = ResolveType(_withBlockQualifiers.Peek());
             }
             else
             {
@@ -550,6 +567,7 @@ namespace Rubberduck.Parsing.Symbols
                     return;
                 }
 
+                member.AddMemberCall(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
                 parent = ResolveType(member);
             }
 
@@ -561,6 +579,28 @@ namespace Rubberduck.Parsing.Symbols
 
             ResolveInternal(fieldCall, parent);
             _alreadyResolved.Add(context);
+        }
+
+        private VBAParser.AmbiguousIdentifierContext GetMemberCallIdentifierContext(VBAParser.ICS_S_MemberCallContext callContext)
+        {
+            if (callContext == null)
+            {
+                return null;
+            }
+
+            var procedureOrArrayCall = callContext.iCS_S_ProcedureOrArrayCall();
+            if (procedureOrArrayCall != null)
+            {
+                return procedureOrArrayCall.ambiguousIdentifier();
+            }
+
+            var variableOrProcedureCall = callContext.iCS_S_VariableOrProcedureCall();
+            if (variableOrProcedureCall != null)
+            {
+                return variableOrProcedureCall.ambiguousIdentifier();
+            }
+
+            return null;
         }
 
         public void Resolve(VBAParser.ICS_S_DictionaryCallContext context)
@@ -826,10 +866,21 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private Declaration FindProjectScopeDeclaration(string identifierName, bool hasStringQualifier = false)
+        private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, bool hasStringQualifier = false)
         {
             var matches = _declarations.Items.Where(item => !item.IsBuiltIn && item.IdentifierName == identifierName
                 || item.IdentifierName == identifierName + (hasStringQualifier ? "$" : string.Empty)).ToList();
+
+            if (matches.Count == 1)
+            {
+                return matches.Single();
+            }
+
+            if (localScope == null && _withBlockQualifiers.Any())
+            {
+                localScope = _withBlockQualifiers.Peek();
+            }
+
             try
             {
                 return matches.SingleOrDefault(item => !item.IsBuiltIn &&
@@ -840,11 +891,9 @@ namespace Rubberduck.Parsing.Symbols
                         || _moduleTypes.Contains(item.DeclarationType)))
                 // todo: refactor
                 ?? matches.SingleOrDefault(item => item.IsBuiltIn 
-                    //!item.DeclarationType.HasFlag(DeclarationType.Member)
                     && item.DeclarationType != DeclarationType.Event 
-                    && (item.Accessibility == Accessibility.Public
-                        || item.Accessibility == Accessibility.Global
-                        || _moduleTypes.Contains(item.DeclarationType)));
+                    && ((localScope == null && item.Accessibility == Accessibility.Global)
+                        || (localScope != null && (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Global) && localScope.IdentifierName == item.ParentDeclaration.IdentifierName)));
             }
             catch (InvalidOperationException)
             {

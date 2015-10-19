@@ -6,12 +6,13 @@ using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Parsing
 {
     public class VBProjectParseResult
     {
-        public VBProjectParseResult(VBProject project, IEnumerable<VBComponentParseResult> parseResults)
+        public VBProjectParseResult(VBProject project, IEnumerable<VBComponentParseResult> parseResults, IHostApplication hostApplication)
         {
             _project = project;
             _parseResults = parseResults;
@@ -24,7 +25,26 @@ namespace Rubberduck.Parsing
 
             foreach (var declaration in VbaStandardLib.Declarations)
             {
+                declaration.ClearReferences();
                 _declarations.Add(declaration);
+            }
+
+            if (hostApplication != null && hostApplication.ApplicationName == "Excel")
+            {
+                foreach (var declaration in ExcelObjectModel.Declarations)
+                {
+                    declaration.ClearReferences();
+                    _declarations.Add(declaration);
+                }
+            }
+
+            if (project.References != null && project.References.Cast<Reference>().Any(r => r.Name == "ADODB"))
+            {
+                foreach (var declaration in AdodbObjectModel.Declarations)
+                {
+                    declaration.ClearReferences();
+                    _declarations.Add(declaration);
+                }
             }
 
             foreach (var declaration in _parseResults.SelectMany(item => item.Declarations))
@@ -41,6 +61,15 @@ namespace Rubberduck.Parsing
             if (handler != null)
             {
                 handler(this, args);
+            }
+        }
+
+        public void Resolve()
+        {
+            foreach (var componentParseResult in _parseResults)
+            {
+                var component = componentParseResult;
+                Resolve(component);
             }
         }
 

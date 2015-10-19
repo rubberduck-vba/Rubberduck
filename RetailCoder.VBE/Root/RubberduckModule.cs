@@ -14,6 +14,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.UnitTesting;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Root

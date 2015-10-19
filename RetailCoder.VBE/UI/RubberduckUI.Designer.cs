@@ -1054,6 +1054,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is an implicit reference to the active worksheet.
+        /// </summary>
+        public static string ImplicitActiveSheetReference_ {
+            get {
+                return ResourceManager.GetString("ImplicitActiveSheetReference_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is an implicit reference to the active workbook.
+        /// </summary>
+        public static string ImplicitActiveWorkbookReference_ {
+            get {
+                return ResourceManager.GetString("ImplicitActiveWorkbookReference_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is passed ByRef implicitly.
         /// </summary>
         public static string ImplicitByRef_ {
@@ -1365,6 +1383,24 @@ namespace Rubberduck.UI {
         public static string LoadConfigError {
             get {
                 return ResourceManager.GetString("LoadConfigError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make ActiveSheet reference explicit.
+        /// </summary>
+        public static string MakeActiveSheetReferenceExplicit {
+            get {
+                return ResourceManager.GetString("MakeActiveSheetReferenceExplicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make ActiveWorkbook reference explicit.
+        /// </summary>
+        public static string MakeActiveWorkbookReferenceExplicit {
+            get {
+                return ResourceManager.GetString("MakeActiveWorkbookReferenceExplicit", resourceCulture);
             }
         }
         
