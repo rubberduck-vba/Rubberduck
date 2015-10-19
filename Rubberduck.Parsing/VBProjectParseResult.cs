@@ -38,6 +38,15 @@ namespace Rubberduck.Parsing
                 }
             }
 
+            if (project.References.Cast<Reference>().Any(r => r.Name == "ADODB"))
+            {
+                foreach (var declaration in AdodbObjectModel.Declarations)
+                {
+                    declaration.ClearReferences();
+                    _declarations.Add(declaration);
+                }
+            }
+
             foreach (var declaration in _parseResults.SelectMany(item => item.Declarations))
             {
                 _declarations.Add(declaration);

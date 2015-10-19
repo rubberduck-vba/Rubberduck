@@ -198,21 +198,25 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var result = _declarations[parent.AsTypeName].SingleOrDefault(item =>
+            var identifier = parent.AsTypeName.Contains(".")
+                ? parent.AsTypeName.Split('.').Last()
+                : parent.AsTypeName;
+
+            var result = _declarations[identifier].SingleOrDefault(item =>
                 item.DeclarationType == DeclarationType.UserDefinedType
                 && item.Project == _currentScope.Project
                 && item.ComponentName == _currentScope.ComponentName);
 
             if (result == null)
             {
-                result = _declarations[parent.AsTypeName].SingleOrDefault(item =>
+                result = _declarations[identifier].SingleOrDefault(item =>
                     _moduleTypes.Contains(item.DeclarationType)
                     && item.Project == _currentScope.Project);                
             }
 
             if (result == null)
             {
-                result = _declarations[parent.AsTypeName].SingleOrDefault(item =>
+                result = _declarations[identifier].SingleOrDefault(item =>
                     _moduleTypes.Contains(item.DeclarationType));
             }
 

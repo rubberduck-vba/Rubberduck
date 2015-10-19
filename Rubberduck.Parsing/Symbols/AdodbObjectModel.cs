@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 if (_adodbDeclarations == null)
                 {
-                    var nestedTypes = typeof(ExcelObjectModel).GetNestedTypes(BindingFlags.NonPublic);
+                    var nestedTypes = typeof(AdodbObjectModel).GetNestedTypes(BindingFlags.NonPublic);
                     var fields = nestedTypes.SelectMany(t => t.GetFields());
                     var values = fields.Select(f => f.GetValue(null));
                     _adodbDeclarations = values.Cast<Declaration>();
@@ -268,6 +268,8 @@ namespace Rubberduck.Parsing.Symbols
 
             public static readonly Declaration ConnectionTimeoutGet = new Declaration(new QualifiedMemberName(ConnectionModuleName, "ConnectionTimeout"), Connection, "ADODB.Connection", "Long", false, false, Accessibility.Public, DeclarationType.PropertyGet);
             public static readonly Declaration ConnectionTimeoutLet = new Declaration(new QualifiedMemberName(ConnectionModuleName, "ConnectionTimeout"), Connection, "ADODB.Connection", null, false, false, Accessibility.Public, DeclarationType.PropertyLet);
+
+            public static readonly Declaration Close = new Declaration(new QualifiedMemberName(ConnectionModuleName, "Close"), Connection, "ADODB.Connection", null, false, false, Accessibility.Public, DeclarationType.Procedure);
 
             public static readonly Declaration CursorLocationGet = new Declaration(new QualifiedMemberName(ConnectionModuleName, "CursorLocation"), Connection, "ADODB.Connection", "CursorLocationEnum", false, false, Accessibility.Public, DeclarationType.PropertyGet);
             public static readonly Declaration CursorLocationLet = new Declaration(new QualifiedMemberName(ConnectionModuleName, "CursorLocation"), Connection, "ADODB.Connection", null, false, false, Accessibility.Public, DeclarationType.PropertyLet);
