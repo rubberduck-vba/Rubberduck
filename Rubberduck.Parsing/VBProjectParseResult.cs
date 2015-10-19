@@ -38,7 +38,7 @@ namespace Rubberduck.Parsing
                 }
             }
 
-            if (project.References.Cast<Reference>().Any(r => r.Name == "ADODB"))
+            if (project.References != null && project.References.Cast<Reference>().Any(r => r.Name == "ADODB"))
             {
                 foreach (var declaration in AdodbObjectModel.Declarations)
                 {

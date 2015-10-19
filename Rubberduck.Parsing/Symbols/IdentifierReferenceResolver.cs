@@ -310,7 +310,7 @@ namespace Rubberduck.Parsing.Symbols
             var fieldCall = context.dictionaryCallStmt();
 
             var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
-            if (result != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
+            if (result != null && localScope != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
             {
                 localScope.AddMemberCall(CreateReference(context.ambiguousIdentifier(), result));
             }
