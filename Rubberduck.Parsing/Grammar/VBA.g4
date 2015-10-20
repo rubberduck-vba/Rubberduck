@@ -236,7 +236,7 @@ constSubStmt : ambiguousIdentifier typeHint? (WS asTypeClause)? WS? EQ WS? value
 
 dateStmt : DATE WS? EQ WS? valueStmt;
 
-declareStmt : (visibility WS)? DECLARE WS (PTRSAFE WS)? (FUNCTION | SUB) WS ambiguousIdentifier WS LIB WS STRINGLITERAL (WS ALIAS WS STRINGLITERAL)? (WS? argList)? (WS asTypeClause)?;
+declareStmt : (visibility WS)? DECLARE WS (PTRSAFE WS)? ((FUNCTION typeHint?) | SUB) WS ambiguousIdentifier WS LIB WS STRINGLITERAL (WS ALIAS WS STRINGLITERAL)? (WS? argList)? (WS asTypeClause)?;
 
 deftypeStmt : 
 	(
@@ -296,7 +296,7 @@ forNextStmt :
 ; 
 
 functionStmt :
-	(visibility WS)? (STATIC WS)? FUNCTION WS ambiguousIdentifier (WS? argList)? (WS asTypeClause)? NEWLINE+
+	(visibility WS)? (STATIC WS)? FUNCTION WS ambiguousIdentifier typeHint? (WS? argList)? (WS asTypeClause)? NEWLINE+
 	(block NEWLINE+)?
 	END_FUNCTION
 ;
@@ -397,7 +397,7 @@ outputList_Expression :
 printStmt : PRINT WS fileNumber WS? ',' (WS? outputList)?;
 
 propertyGetStmt : 
-	(visibility WS)? (STATIC WS)? PROPERTY_GET WS ambiguousIdentifier (WS? argList)? (WS asTypeClause)? NEWLINE+ 
+	(visibility WS)? (STATIC WS)? PROPERTY_GET WS ambiguousIdentifier typeHint? (WS? argList)? (WS asTypeClause)? NEWLINE+ 
 	(block NEWLINE+)? 
 	END_PROPERTY
 ;
