@@ -868,6 +868,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, bool hasStringQualifier = false)
         {
+            // the "$" in e.g. "UCase$" isn't picked up as part of the identifierName, so we need to add it manually:
             var matches = _declarations.Items.Where(item => !item.IsBuiltIn && item.IdentifierName == identifierName
                 || item.IdentifierName == identifierName + (hasStringQualifier ? "$" : string.Empty)).ToList();
 
@@ -883,17 +884,8 @@ namespace Rubberduck.Parsing.Symbols
 
             try
             {
-                return matches.SingleOrDefault(item => !item.IsBuiltIn &&
-                    !item.DeclarationType.HasFlag(DeclarationType.Member)
-                    && item.DeclarationType != DeclarationType.Event // events can't be called outside the class they're declared in
-                    && (item.Accessibility == Accessibility.Public
-                        || item.Accessibility == Accessibility.Global
-                        || _moduleTypes.Contains(item.DeclarationType)))
-                // todo: refactor
-                ?? matches.SingleOrDefault(item => item.IsBuiltIn 
-                    && item.DeclarationType != DeclarationType.Event 
-                    && ((localScope == null && item.Accessibility == Accessibility.Global)
-                        || (localScope != null && (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Global) && localScope.IdentifierName == item.ParentDeclaration.IdentifierName)));
+                return matches.SingleOrDefault(IsUserDeclarationInProjectScope)
+                ?? matches.SingleOrDefault(item => IsBuiltInDeclarationInScope(item, localScope));
             }
             catch (InvalidOperationException)
             {
@@ -901,7 +893,39 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private bool IsProcedure(Declaration item, Declaration localScope)
+        private static bool IsPublicOrGlobal(Declaration item)
+        {
+            return item.Accessibility == Accessibility.Global
+                || item.Accessibility == Accessibility.Public;
+        }
+
+        private bool IsUserDeclarationInProjectScope(Declaration item)
+        {
+            var isNonMemberUserDeclaration = !item.IsBuiltIn 
+                && !item.DeclarationType.HasFlag(DeclarationType.Member)
+                // events can't be called outside the class they're declared in, exclude them as well:
+                && item.DeclarationType != DeclarationType.Event;
+
+            // declaration is in-scope if it's public/global, or if it's a module/class:
+            return isNonMemberUserDeclaration && (IsPublicOrGlobal(item) || _moduleTypes.Contains(item.DeclarationType));
+        }
+
+        private static bool IsBuiltInDeclarationInScope(Declaration item, Declaration localScope)
+        {
+            var isBuiltInNonEvent = item.IsBuiltIn && item.DeclarationType != DeclarationType.Event;
+            
+            // if localScope is null, we can only resolve to a global:
+            // note: built-in declarations are designed that way
+            var isBuiltInGlobal = localScope == null && item.Accessibility == Accessibility.Global;
+
+            // if localScope is not null, we can resolve to any public or global in that scope:
+            var isInLocalScope = localScope != null && IsPublicOrGlobal(item)
+                && localScope.IdentifierName == item.ParentDeclaration.IdentifierName;
+
+            return isBuiltInNonEvent && (isBuiltInGlobal || isInLocalScope);
+        }
+
+        private static bool IsProcedure(Declaration item, Declaration localScope)
         {
             var isProcedure = item.DeclarationType == DeclarationType.Procedure
                               || item.DeclarationType == DeclarationType.Function;
