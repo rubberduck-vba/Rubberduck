@@ -1183,4 +1183,19 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Blockiere diese Untersuchung</value>
   </data>
+  <data name="ImplicitActiveWorkbookReference_" xml:space="preserve">
+    <value>'{0}' ist eine implizierte Referenz auf das 'ActiveWorkbook'</value>
+  </data>
+  <data name="ImplicitActiveSheetReference_" xml:space="preserve">
+    <value>'{0}' ist eine implizite Referenz auf das aktive Tabellenblatt</value>
+  </data>
+  <data name="ParserProgress_ShowDetails" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
+    <value>Setze die Referenz explizit auf das 'ActiveWorkbook'</value>
+  </data>
+  <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
+    <value>Setze die Referenz explizit auf das 'ActiveSheet'</value>
+  </data>
 </root>
