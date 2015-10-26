@@ -1184,10 +1184,10 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
     <value>Blockiere diese Untersuchung</value>
   </data>
   <data name="ImplicitActiveWorkbookReference_" xml:space="preserve">
-    <value>'{0}' ist eine implizierte Referenz auf das 'ActiveWorkbook'</value>
+    <value>'{0}' ist eine implizite Referenz auf das 'ActiveWorkbook'</value>
   </data>
   <data name="ImplicitActiveSheetReference_" xml:space="preserve">
-    <value>'{0}' ist eine implizite Referenz auf das aktive Tabellenblatt</value>
+    <value>'{0}' ist eine implizite Referenz auf das 'ActiveSheet'</value>
   </data>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Details</value>
