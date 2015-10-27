@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing;
 
@@ -6,12 +7,14 @@ namespace Rubberduck.UI.ParserProgress
 {
     public partial class ProgressDialog : Form
     {
+        private readonly ParserProgessViewModel _viewModel;
         private readonly int _initialSize;
         private const int ExpandedSize = 255;
 
         public ProgressDialog(ParserProgessViewModel viewModel)
             : this()
         {
+            _viewModel = viewModel;
             _initialSize = Height;
 
             viewModel.Completed += viewModel_Completed;
@@ -26,9 +29,9 @@ namespace Rubberduck.UI.ParserProgress
             InitializeComponent();
         }
 
-        private void viewModel_Completed(object sender, ParseCompletedEventArgs e)
+        private void viewModel_Completed(object sender, EventArgs e)
         {
-            Result = e.ParseResults.FirstOrDefault();
+            Result = _viewModel.Parser.Declarations;
             if (InvokeRequired)
             {
                 BeginInvoke((MethodInvoker) Hide);

@@ -18,12 +18,22 @@ namespace Rubberduck.Parsing
             _parseTree = parseTree;
             _comments = comments;
             _tokenStream = tokenStream;
+        }
 
+        public void WalkForDeclarations()
+        {
             var listener = new DeclarationSymbolsListener(_qualifiedName, Accessibility.Implicit, _component.Type, _comments);
+            listener.NewDeclaration += listener_NewDeclaration;
             var walker = new ParseTreeWalker();
             walker.Walk(listener, _parseTree);
 
-            _declarations.AddRange(listener.Declarations.Items);
+            _declarations.AddRange(listener.Declarations.Items);           
+        }
+
+
+        private void listener_NewDeclaration(object sender, DeclarationEventArgs e)
+        {
+            throw new System.NotImplementedException();
         }
 
         private readonly List<Declaration> _declarations = new List<Declaration>();

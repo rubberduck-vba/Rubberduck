@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public class Declarations
+    public class Declarations : IEnumerable<Declaration>
     {
         private readonly ConcurrentBag<Declaration> _declarations = new ConcurrentBag<Declaration>();
 
@@ -320,6 +321,16 @@ namespace Rubberduck.Parsing.Symbols
                 }
             }
             return target;
+        }
+
+        public IEnumerator<Declaration> GetEnumerator()
+        {
+            return _declarations.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _declarations.GetEnumerator();
         }
     }
 }

@@ -29,7 +29,7 @@ namespace RubberduckTests.Inspections
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+            var parseResult = new RubberduckParser().Parse(project);
 
             var inspection = new ObsoleteGlobalInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
@@ -53,7 +53,7 @@ Global var2 As String";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+            var parseResult = new RubberduckParser().Parse(project);
 
             var inspection = new ObsoleteGlobalInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
@@ -76,7 +76,7 @@ Global var2 As String";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+            var parseResult = new RubberduckParser().Parse(project);
 
             var inspection = new ObsoleteGlobalInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
@@ -100,7 +100,7 @@ Global var2 As Date";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+            var parseResult = new RubberduckParser().Parse(project);
 
             var inspection = new ObsoleteGlobalInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
@@ -127,7 +127,7 @@ Global var2 As Date";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+            var parseResult = new RubberduckParser().Parse(project);
 
             var inspection = new ObsoleteGlobalInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);

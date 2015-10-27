@@ -27,7 +27,7 @@ namespace RubberduckTests
             mockHost.SetupAllProperties();
             
             //Act
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+            var parseResult = new RubberduckParser().Parse(project);
 
             //Assert
             Assert.IsTrue(parseResult.Declarations.Items.Any(item => item.IsBuiltIn));
@@ -47,7 +47,7 @@ namespace RubberduckTests
             mockHost.SetupAllProperties();
 
             //Act
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+            var parseResult = new RubberduckParser().Parse(project);
 
             //Assert
             Assert.IsFalse(parseResult.Declarations.Items.Any(item => item.IsBuiltIn && item.ParentScope.StartsWith("Excel")));
@@ -67,7 +67,7 @@ namespace RubberduckTests
             var codePaneFactory = new CodePaneWrapperFactory();
 
             //Act
-            var parseResult = new RubberduckParser(codePaneFactory, vbe.Object).Parse(project.Object);
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             //Assert
             Assert.IsTrue(parseResult.Declarations.Items.Any(item => item.IsBuiltIn && item.ParentScope.StartsWith("Excel")));

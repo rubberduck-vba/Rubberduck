@@ -30,7 +30,7 @@ namespace Rubberduck.UI.CodeExplorer
             _wrapperFactory = wrapperFactory;
         }
 
-        private void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
+        private void _parser_ParseCompleted(object sender, EventArgs e)
         {
             if (sender == this)
             {

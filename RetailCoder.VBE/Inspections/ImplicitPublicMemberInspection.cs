@@ -3,6 +3,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
@@ -28,10 +29,13 @@ namespace Rubberduck.Inspections
             DeclarationType.PropertySet
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        private string AnnotationName { get { return Name.Replace("Inspection", string.Empty); } }
+
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var issues = from item in parseResult.Declarations.Items
-                         where !item.IsBuiltIn
+            var issues = from item in parseResult.Declarations()
+                         where !item.IsInspectionDisabled(AnnotationName) 
+                               && !item.IsBuiltIn
                                && ProcedureTypes.Contains(item.DeclarationType)
                                && item.Accessibility == Accessibility.Implicit
                          let context = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)

@@ -85,12 +85,28 @@ namespace Rubberduck.Parsing.Symbols
                 false, 
                 FindAnnotations());
 
-            _declarations.Add(_moduleDeclaration);
             _parentDeclaration = _moduleDeclaration;
+        }
 
-            if (type == vbext_ComponentType.vbext_ct_MSForm)
+        public void CreateModuleDeclarations()
+        {
+            OnNewDeclaration(_moduleDeclaration);
+            _declarations.Add(_moduleDeclaration);
+
+            var component = _moduleDeclaration.QualifiedName.QualifiedModuleName.Component;
+            if (component.Type == vbext_ComponentType.vbext_ct_MSForm || component.Designer != null)
             {
-                DeclareControlsAsMembers(qualifiedName.Component);
+                DeclareControlsAsMembers(component);
+            }
+        }
+
+        public event EventHandler<DeclarationEventArgs> NewDeclaration;
+        private void OnNewDeclaration(Declaration declaration)
+        {
+            var handler = NewDeclaration;
+            if (handler != null)
+            {
+                handler.Invoke(this, new DeclarationEventArgs(declaration));
             }
         }
 
@@ -102,27 +118,28 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         private void DeclareControlsAsMembers(VBComponent form)
         {
-            if (form.Type != vbext_ComponentType.vbext_ct_MSForm)
-            {
-                throw new InvalidOperationException();
-            }
-
             var designer = form.Designer;
             if (designer == null)
             {
                 return;
             }
 
+            // using dynamic typing here, because not only MSForms could have a Controls collection (e.g. MS-Access forms are 'document' modules).
             foreach (var control in ((dynamic)designer).Controls)
             {
-                _declarations.Add(new Declaration(_qualifiedName.QualifyMemberName(control.Name), _parentDeclaration, _currentScope, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home));
+                var declaration = new Declaration(_qualifiedName.QualifyMemberName(control.Name), _parentDeclaration, _currentScope, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home);
+                OnNewDeclaration(declaration);
+                _declarations.Add(declaration);
             }
         }
 
         private Declaration CreateDeclaration(string identifierName, string asTypeName, Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool selfAssigned = false, bool withEvents = false)
         {
             var annotations = FindAnnotations(selection.StartLine);
-            return new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScope, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations);
+            var result = new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScope, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations);
+
+            OnNewDeclaration(result);
+            return result;
         }
 
         /// <summary>

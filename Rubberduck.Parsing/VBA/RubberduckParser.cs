@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +13,19 @@ using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing.VBA
 {
+    public enum ResolutionState
+    {
+        Unresolved,
+        InProgress,
+        Resolved
+    }
+
     public interface IRubberduckParserFactory
     {
         IRubberduckParser Create();
@@ -30,179 +36,17 @@ namespace Rubberduck.Parsing.VBA
         private static readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> ParseResultCache = 
             new ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult>();
 
-        private static ICodePaneWrapperFactory _wrapperFactory;
-        private readonly VBE _vbe;
         private IHostApplication _hostApplication;
-
-        private static bool _isParsing;
 
         private readonly Logger _logger;
 
-        public RubberduckParser(ICodePaneWrapperFactory wrapperFactory, VBE vbe)
+        public RubberduckParser()
         {
             _logger = LogManager.GetCurrentClassLogger();
-            _wrapperFactory = wrapperFactory;
-            _vbe = vbe;
         }
 
-        public void RemoveProject(VBProject project)
-        {
-            foreach (var key in ParseResultCache.Keys.Where(k => k.Project.Equals(project)))
-            {
-                VBComponentParseResult result;
-                ParseResultCache.TryRemove(key, out result);
-            }
-        }
-
-        public VBProjectParseResult Parse(VBProject project, object owner = null)
-        {
-            if (project == null)
-            {
-                return null;
-            }
-
-            if (owner != null)
-            {
-                OnParseStarted(new[]{project.Name}, owner);
-            }
-
-            if (_hostApplication == null)
-            {
-                _hostApplication = _vbe.HostApplication();
-            }
-
-            var results = new List<VBComponentParseResult>();
-            if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
-            {
-                return new VBProjectParseResult(project, results, _hostApplication);
-            }
-
-            var modules = project.VBComponents.Cast<VBComponent>();
-            var mustResolve = true; // false;
-            foreach (var vbComponent in modules)
-            {
-                OnParseProgress(vbComponent);
-
-                bool fromCache;
-                var componentResult = Parse(vbComponent, out fromCache);
-                
-                if (componentResult != null)
-                {
-                    //mustResolve = mustResolve || !fromCache;
-                    if (fromCache)
-                    {
-                        foreach (var declaration in componentResult.Declarations)
-                        {
-                            declaration.ClearReferences();
-                        }
-                    }
-                    results.Add(componentResult);
-                }
-            }
-
-            var parseResult = new VBProjectParseResult(project, results, _hostApplication);
-            //if (mustResolve)
-            {
-                parseResult.Progress += parseResult_Progress;
-                // resolve asynchronously, but don't return until all modules are resolved:
-                //Task.Run(async () => await parseResult.ResolveAsync())
-                //    .ContinueWith(t => OnResolutionCompleted(new[] { parseResult }, owner))
-                //    .Wait();
-                parseResult.Resolve();
-                OnResolutionCompleted(new[] { parseResult }, owner); // ParseProgress dialog closes on resolution completed
-            }
-            //else if (owner != null)
-            //{
-                OnParseCompleted(new[] {parseResult}, owner);
-            //    OnResolutionCompleted(new[] {parseResult}, owner); // ParseProgress dialog closes on resolution completed
-            //}
-
-            return parseResult;
-        }
-
-        private void parseResult_Progress(object sender, ResolutionProgressEventArgs e)
-        {
-            OnResolveProgress(e);
-        }
-
-        public IParseTree Parse(string code, out ITokenStream outStream)
-        {
-            var input = new AntlrInputStream(code);
-            var lexer = new VBALexer(input);
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new VBAParser(tokens);
-            parser.AddErrorListener(new ExceptionErrorListener());
-            outStream = tokens;
-
-            var result = parser.startRule();
-            return result;
-        }
-
-        private VBComponentParseResult Parse(VBComponent component, out bool cached)
-        {
-            try
-            {
-                VBComponentParseResult cachedValue;
-                var name = new QualifiedModuleName(component); // already a performance hit
-                if (ParseResultCache.TryGetValue(name, out cachedValue))
-                {
-                    cached = true;
-                    return cachedValue;
-                }
-
-                var codeModule = component.CodeModule;
-                var lines = codeModule.Lines();
-
-                ITokenStream stream;
-                var parseTree = Parse(lines, out stream);
-                var comments = ParseComments(name);
-                var result = new VBComponentParseResult(component, parseTree, comments, stream, _wrapperFactory);
-
-                var existing = ParseResultCache.Keys.SingleOrDefault(k => k.Project == name.Project && k.ComponentName == name.ComponentName);
-                VBComponentParseResult removed;
-                ParseResultCache.TryRemove(existing, out removed);
-                ParseResultCache.AddOrUpdate(name, module => result, (qName, module) => result);
-
-                cached = false;
-                return result;
-            }
-            catch (SyntaxErrorException exception)
-            {
-                OnParserError(exception, component);
-                cached = false;
-                return null;
-            }
-            catch (COMException)
-            {
-                cached = false;
-                return null;
-            }
-        }
-
-        public event EventHandler<ParseErrorEventArgs> ParserError;
-
-        private void OnParserError(SyntaxErrorException exception, VBComponent component)
-        {
-            if (LogManager.IsLoggingEnabled())
-            {
-                LogParseException(exception, component);
-            }
-
-            var handler = ParserError;
-            if (handler != null)
-            {
-                handler(this, new ParseErrorEventArgs(exception, component, new CodePaneWrapperFactory()));
-            }
-        }
-
-        private void LogParseException(SyntaxErrorException exception, VBComponent component)
-        {
-            var offendingProject = component.Collection.Parent.Name;
-            var offendingComponent = component.Name;
-            var offendingLine = component.CodeModule.Lines[exception.LineNumber, 1];
-
-            _logger.Error(exception, "Parser encountered a syntax error in {0}.{1}, line {2}. Content: '{3}'", offendingProject, offendingComponent, exception.LineNumber, offendingLine);
-        }
+        private readonly RubberduckParserState _state = new RubberduckParserState();
+        public RubberduckParserState State { get { return _state; } }
 
         private IEnumerable<CommentNode> ParseComments(QualifiedModuleName qualifiedName)
         {
@@ -245,69 +89,78 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public event EventHandler<ParseStartedEventArgs> ParseStarted;
-        private void OnParseStarted(IEnumerable<string> projectNames, object owner)
+        private static IParseTree Parse(string code, IParseTreeListener listener, out ITokenStream outStream)
         {
-            var handler = ParseStarted;
-            if (handler != null)
+            var input = new AntlrInputStream(code);
+            var lexer = new VBALexer(input);
+            var tokens = new CommonTokenStream(lexer);
+            var parser = new VBAParser(tokens);
+
+            parser.AddErrorListener(new ExceptionErrorListener());
+            parser.AddParseListener(listener);
+
+            outStream = tokens;
+
+            var result = parser.startRule();
+            return result;
+        }
+
+        private async Task<Tuple<IParseTree, ITokenStream, Action>> ParseAsync(string code, IParseTreeListener listener)
+        {
+            return await Task.Run(() =>
             {
-                handler(owner, new ParseStartedEventArgs(projectNames));
+                ITokenStream stream;
+                var tree = Parse(code, listener, out stream);
+                return Tuple.Create(tree, stream, new Action(() => { ResolveReferences(tree); }));
+            });
+        }
+
+        public void Parse(VBE vbe)
+        {
+            foreach (var task in vbe.VBProjects.Cast<VBProject>()
+                .Select(project => new Task(() => Parse(project))))
+            {
+                task.Start();
             }
         }
 
-        public event EventHandler<ResolutionProgressEventArgs> ResolutionProgress;
-        private void OnResolveProgress(ResolutionProgressEventArgs args)
+        public void Parse(VBProject vbProject)
         {
-            var handler = ResolutionProgress;
-            if (handler != null)
+            foreach (var task in vbProject.VBComponents.Cast<VBComponent>()
+                .Select(component => new Task(() => ParseAsync(component))))
             {
-                handler(this, args);
+                task.Start();
             }
         }
 
-        public event EventHandler<ParseCompletedEventArgs> ResolutionCompleted;
-        private void OnResolutionCompleted(IEnumerable<VBProjectParseResult> results, object owner)
+        public async Task ParseAsync(VBComponent vbComponent)
         {
-            var handler = ResolutionCompleted;
-            if (handler != null)
-            {
-                handler(owner, new ParseCompletedEventArgs(results));
-            }
+            var qualifiedName = new QualifiedModuleName(vbComponent);
+            var comments = ParseComments(qualifiedName);
+            var listener = new DeclarationSymbolsListener(qualifiedName, Accessibility.Implicit, vbComponent.Type, comments);
+
+            var code = vbComponent.CodeModule.Lines();
+            var result = await ParseAsync(code, listener);
+
+            var scope = vbComponent.Collection.Parent.Name + "." + vbComponent.Name;
+            _state.MarkForResolution(scope);
+            _state.AddTokenStream(vbComponent, result.Item2);            
         }
 
-        public event EventHandler<ParseProgressEventArgs> ParseProgress;
-        private void OnParseProgress(VBComponent component)
+        private void ResolveReferences(IParseTree tree)
         {
-            var handler = ParseProgress;
-            if (handler != null)
+            var tasks = _state.UnresolvedDeclarations
+                .GroupBy(declaration => declaration.QualifiedSelection.QualifiedName)
+                .Select(grouping => new Task(() =>
+                {
+                    var resolver = new IdentifierReferenceResolver(grouping.Key, grouping);
+                    var listener = new IdentifierReferenceListener(resolver);
+                    var walker = new ParseTreeWalker();
+                    walker.Walk(listener, tree);
+                }));
+            foreach (var task in tasks)
             {
-                handler(this, new ParseProgressEventArgs(component));
-            }
-        }
-
-        public event EventHandler<ParseCompletedEventArgs> ParseCompleted;
-        private void OnParseCompleted(IEnumerable<VBProjectParseResult> results, object owner)
-        {
-            var handler = ParseCompleted;
-            if (handler != null)
-            {
-                handler(owner, new ParseCompletedEventArgs(results));
-            }
-
-            _isParsing = false;
-        }
-
-        public void Parse(VBE vbe, object owner)
-        {
-            if (!_isParsing)
-            {
-                _isParsing = true;
-
-                var projects = vbe.VBProjects.Cast<VBProject>().ToList();
-                OnParseStarted(projects.Select(project => project.Name), owner);
-
-                var results = projects.AsParallel().Select(project => Parse(project)).ToList();
-                OnParseCompleted(results, owner);
+                task.Start();
             }
         }
     }

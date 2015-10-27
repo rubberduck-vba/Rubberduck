@@ -53,14 +53,4 @@ namespace Rubberduck.Parsing
 
         public VBComponent Component { get { return _result; } }
     }
-
-    public interface IParseResultProvider
-    {
-        event EventHandler<ParseErrorEventArgs> ParserError;
-        event EventHandler<ParseStartedEventArgs> ParseStarted;
-        event EventHandler<ResolutionProgressEventArgs> ResolutionProgress;
-        event EventHandler<ParseProgressEventArgs> ParseProgress;
-        event EventHandler<ParseCompletedEventArgs> ParseCompleted;
-        event EventHandler<ParseCompletedEventArgs> ResolutionCompleted;
-    }
 }

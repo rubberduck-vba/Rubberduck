@@ -3,6 +3,7 @@ using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
@@ -19,12 +20,15 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        private string AnnotationName { get { return Name.Replace("Inspection", string.Empty); } }
+
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
             var interfaceMembers = parseResult.Declarations.FindInterfaceImplementationMembers();
 
-            var issues = (from item in parseResult.Declarations.Items
-                where item.DeclarationType == DeclarationType.Parameter
+            var issues = (from item in parseResult.Declarations()
+                where !item.IsInspectionDisabled(AnnotationName)
+                    && item.DeclarationType == DeclarationType.Parameter
                     && !item.IsBuiltIn
                     && !interfaceMembers.Select(m => m.Scope).Contains(item.ParentScope)
                 let arg = item.Context as VBAParser.ArgContext

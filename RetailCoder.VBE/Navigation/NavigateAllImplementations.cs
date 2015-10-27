@@ -6,6 +6,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.ParserProgress;
@@ -71,7 +72,7 @@ namespace Rubberduck.Navigation
             //Find(target, parseResult);
         }
 
-        private void Find(Declaration target, VBProjectParseResult parseResult)
+        private void Find(Declaration target, RubberduckParserState parseResult)
         {
             string name;
             var implementations = (target.DeclarationType == DeclarationType.Class
@@ -109,7 +110,7 @@ namespace Rubberduck.Navigation
             }
         }
 
-        private IEnumerable<Declaration> FindAllImplementationsOfClass(Declaration target, VBProjectParseResult parseResult, out string name)
+        private IEnumerable<Declaration> FindAllImplementationsOfClass(Declaration target, RubberduckParserState parseResult, out string name)
         {
             if (target.DeclarationType != DeclarationType.Class)
             {
@@ -117,16 +118,18 @@ namespace Rubberduck.Navigation
                 return null;
             }
 
+            var identifiers = parseResult.Declarations().ToList();
+
             var result = target.References
                 .Where(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext)
-                .SelectMany(reference => parseResult.Declarations[reference.QualifiedModuleName.ComponentName])
+                .SelectMany(reference => identifiers.Where(identifier => identifier.IdentifierName == reference.QualifiedModuleName.ComponentName))
                 .ToList();
 
             name = target.ComponentName;
             return result;
         }
 
-        private IEnumerable<Declaration> FindAllImplementationsOfMember(Declaration target, VBProjectParseResult parseResult, out string name)
+        private IEnumerable<Declaration> FindAllImplementationsOfMember(Declaration target, RubberduckParserState parseResult, out string name)
         {
             if (!target.DeclarationType.HasFlag(DeclarationType.Member))
             {

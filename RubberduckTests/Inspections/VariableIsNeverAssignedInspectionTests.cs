@@ -31,7 +31,7 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+            var parseResult = new RubberduckParser().Parse(project);
 
             var inspection = new VariableNotAssignedInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
@@ -57,7 +57,7 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+            var parseResult = new RubberduckParser().Parse(project);
 
             var inspection = new VariableNotAssignedInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
@@ -83,7 +83,7 @@ End Function";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+            var parseResult = new RubberduckParser().Parse(project);
 
             var inspection = new VariableNotAssignedInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
@@ -111,7 +111,7 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+            var parseResult = new RubberduckParser().Parse(project);
 
             var inspection = new VariableNotAssignedInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
@@ -141,7 +141,7 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+            var parseResult = new RubberduckParser().Parse(project);
 
             var inspection = new VariableNotAssignedInspection();
             inspection.GetInspectionResults(parseResult).First().QuickFixes.First().Fix();

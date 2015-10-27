@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBA;
 
 namespace Rubberduck.Refactorings.RemoveParameters

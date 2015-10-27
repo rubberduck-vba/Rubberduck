@@ -4,6 +4,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -21,18 +22,20 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var classes = parseResult.Declarations.Items.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Class).ToList();
-            var modules = parseResult.Declarations.Items.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Module).ToList();
+            var declarations = parseResult.Declarations().ToList();
 
-            var handlers = parseResult.Declarations.Items.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Control)
+            var classes = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Class).ToList();
+            var modules = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Module).ToList();
+
+            var handlers = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Control)
                 .SelectMany(control => parseResult.Declarations.FindEventHandlers(control)).ToList();
 
-            var withEventFields = parseResult.Declarations.Items.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Variable && item.IsWithEvents);
+            var withEventFields = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Variable && item.IsWithEvents);
             handlers.AddRange(withEventFields.SelectMany(field => parseResult.Declarations.FindEventProcedures(field)));
 
-            var forms = parseResult.Declarations.Items.Where(
+            var forms = declarations.Where(
                 item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Class
                         && item.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_MSForm)
                 .ToList();
@@ -42,7 +45,7 @@ namespace Rubberduck.Inspections
                 handlers.AddRange(forms.SelectMany(form => parseResult.Declarations.FindFormEventHandlers(form)));
             }
 
-            var issues = parseResult.Declarations.Items
+            var issues = declarations
                 .Where(item => !item.IsBuiltIn && !IsIgnoredDeclaration(parseResult.Declarations, item, handlers, classes, modules))
                 .Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
 

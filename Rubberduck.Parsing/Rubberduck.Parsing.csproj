@@ -69,6 +69,7 @@
     <Compile Include="Grammar\VBAParser.cs" />
     <Compile Include="Grammar\VBAVisitor.cs" />
     <Compile Include="Symbols\AdodbObjectModel.cs" />
+    <Compile Include="Symbols\DeclarationEventArgs.cs" />
     <Compile Include="Symbols\ExcelObjectModel.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
     <Compile Include="VBA\ParseErrorEventArgs.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
+    <Compile Include="VBA\RubberduckParserState.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
     <Compile Include="VBA\WalkerCancelledException.cs" />
     <Compile Include="VBComponentExtensions.cs" />

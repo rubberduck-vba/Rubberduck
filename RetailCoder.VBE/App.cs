@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.Inspections;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI;
@@ -21,9 +20,7 @@ namespace Rubberduck
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
 
-        private IParserErrorsPresenter _parserErrorsPresenter;
         private readonly Logger _logger;
-        private IRubberduckParser _parser;
 
         private Configuration _config;
 
@@ -87,24 +84,11 @@ namespace Rubberduck
 
         private void Setup()
         {
-            _parser = _parserFactory.Create();
-            _parser.ParseStarted += _parser_ParseStarted;
-            _parser.ParserError += _parser_ParserError;
+            _parserFactory.Create();
 
             _inspectorFactory.Create();
 
-            _parserErrorsPresenter = _parserErrorsPresenterFactory.Create();
-        }
-
-        private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
-        {
-            _parserErrorsPresenter.Clear();
-        }
-
-        private void _parser_ParserError(object sender, ParseErrorEventArgs e)
-        {
-            _parserErrorsPresenter.AddError(e);
-            _parserErrorsPresenter.Show();
+            _parserErrorsPresenterFactory.Create();
         }
 
         public void Dispose()
@@ -121,11 +105,6 @@ namespace Rubberduck
 
         private void CleanUp()
         {
-            if (_parser != null)
-            {
-                _parser.ParseStarted -= _parser_ParseStarted;
-                _parser.ParserError -= _parser_ParserError;
-            }
         }
     }
 }

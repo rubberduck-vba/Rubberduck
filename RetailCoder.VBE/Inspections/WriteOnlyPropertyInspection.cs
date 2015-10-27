@@ -4,6 +4,7 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -21,16 +22,17 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var setters = parseResult.Declarations.Items
+            var declarations = parseResult.Declarations().ToList();
+            var setters = declarations
                 .Where(item => !item.IsBuiltIn 
                     && (item.Accessibility == Accessibility.Implicit || 
                         item.Accessibility == Accessibility.Public || 
                         item.Accessibility == Accessibility.Global)
                     && (item.DeclarationType == DeclarationType.PropertyLet ||
                         item.DeclarationType == DeclarationType.PropertySet)
-                    && !parseResult.Declarations[item.IdentifierName]
+                    && !declarations.Where(declaration => declaration.IdentifierName == item.IdentifierName)
                         .Any(accessor => !accessor.IsBuiltIn && accessor.DeclarationType == DeclarationType.PropertyGet));
 
             //note: if property has both Set and Let accessors, this generates 2 results.

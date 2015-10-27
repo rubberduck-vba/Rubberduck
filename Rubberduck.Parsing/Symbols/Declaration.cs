@@ -42,7 +42,45 @@ namespace Rubberduck.Parsing.Symbols
             _annotations = annotations;
         }
 
+        /// <summary>
+        /// Copies this declaration, optionally modifying one or more values.
+        /// </summary>
+        /// <returns></returns>
+        public Declaration Copy(
+            QualifiedMemberName? qualifiedName = null, 
+            Declaration parentDeclaration = null, 
+            string parentScope = null,
+            string asTypeName = null, 
+            bool? isSelfAssigned = null, 
+            bool? isWithEvents = null,
+            Accessibility? accessibility = null, 
+            ParserRuleContext context = null, 
+            Selection? selection = null, 
+            string annotations = null)
+        {
+            var newQualifiedName = qualifiedName ?? _qualifiedName;
+            var newParentDeclaration = parentDeclaration ?? _parentDeclaration;
+            var newParentScope = parentScope ?? _parentScope;
+            var newAsTypeName = asTypeName ?? _asTypeName;
+            var newIsSelfAssigned = isSelfAssigned ?? _isSelfAssigned;
+            var newIsWithEvents = isWithEvents ?? _isWithEvents;
+            var newAccessibility = accessibility ?? _accessibility;
+            var newContext = context ?? _context;
+            var newSelection = selection ?? _selection;
+            var newAnnotations = annotations ?? _annotations;
+
+            return new Declaration(newQualifiedName, newParentDeclaration, newParentScope, newAsTypeName, newIsSelfAssigned, newIsWithEvents, newAccessibility, _declarationType, newContext, newSelection, _isBuiltIn, newAnnotations);
+        }
+
+        /// <summary>
+        /// Marks the declaration for the <see cref="IdentifierReferenceResolver"/> to process.
+        /// </summary>
+        public bool IsDirty { get; set; }
+
         private readonly bool _isBuiltIn;
+        /// <summary>
+        /// Marks a declaration as non-user code, e.g. the <see cref="VbaStandardLib"/> or <see cref="ExcelObjectModel"/>.
+        /// </summary>
         public bool IsBuiltIn { get { return _isBuiltIn; } }
 
         private readonly Declaration _parentDeclaration;
@@ -55,10 +93,10 @@ namespace Rubberduck.Parsing.Symbols
         public ParserRuleContext Context { get { return _context; } }
 
         private ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
-        public IEnumerable<IdentifierReference> References { get { return _references; } }
+        public IEnumerable<IdentifierReference> References { get { return _references.ToList(); } }
 
-        private ConcurrentBag<IdentifierReference> _memberCalls = new ConcurrentBag<IdentifierReference>();
-        public IEnumerable<IdentifierReference> MemberCalls { get { return _memberCalls; } }
+        private readonly ConcurrentBag<IdentifierReference> _memberCalls = new ConcurrentBag<IdentifierReference>();
+        public IEnumerable<IdentifierReference> MemberCalls { get { return _memberCalls.ToList(); } }
 
         public void ClearReferences()
         {
@@ -67,6 +105,12 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly string _annotations;
         public string Annotations { get { return _annotations; } }
+
+        public bool IsInspectionDisabled(string inspectionName)
+        {
+            return _annotations.Contains(Grammar.Annotations.IgnoreInspection) 
+                && _annotations.Contains(inspectionName);
+        }
 
         public void AddReference(IdentifierReference reference)
         {
@@ -275,9 +319,11 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool Equals(Declaration other)
         {
-            return other.IdentifierName == IdentifierName
-                && other.Context == Context
-                && other.QualifiedName.Equals(QualifiedName);
+            return other.Project == Project
+                && other.IdentifierName == IdentifierName
+                && other.DeclarationType == DeclarationType
+                && other.Scope == Scope
+                && other.ParentScope == ParentScope;
         }
 
         public override bool Equals(object obj)
@@ -287,7 +333,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override int GetHashCode()
         {
-            return string.Concat(QualifiedName.QualifiedModuleName.ProjectHashCode, ProjectName, ComponentName, _parentScope, _identifierName).GetHashCode();
+            return string.Concat(QualifiedName.QualifiedModuleName.ProjectHashCode, _identifierName, _declarationType, Scope, _parentScope).GetHashCode();
         }
     }
 }

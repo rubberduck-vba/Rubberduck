@@ -31,6 +31,8 @@ namespace Rubberduck.UI.ParserProgress
             _details = new ObservableCollection<ComponentProgressViewModel>(details);
         }
 
+        public IRubberduckParser Parser { get { return _parser; } }
+
         private string _statusText;
         public string StatusText
         {
@@ -50,8 +52,8 @@ namespace Rubberduck.UI.ParserProgress
             _parser.Parse(_project, this);
         }
 
-        public event EventHandler<ParseCompletedEventArgs> Completed;
-        void _parser_Completed(object sender, ParseCompletedEventArgs e)
+        public event EventHandler<EventArgs> Completed;
+        void _parser_Completed(object sender, EventArgs e)
         {
             var handler = Completed;
             if (handler != null)

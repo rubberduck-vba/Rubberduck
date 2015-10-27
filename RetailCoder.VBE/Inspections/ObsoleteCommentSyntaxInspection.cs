@@ -2,6 +2,7 @@
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
@@ -21,7 +22,7 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get {return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
             var modules = parseResult.ComponentParseResults.ToList();
             foreach (var comment in modules.SelectMany(module => module.Comments))

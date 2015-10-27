@@ -3,6 +3,7 @@ using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
@@ -26,12 +27,12 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
             var interfaceMemberScopes = parseResult.Declarations.FindInterfaceMembers().Select(m => m.Scope).ToList();
             var interfaceImplementationMemberScopes = parseResult.Declarations.FindInterfaceImplementationMembers().Select(m => m.Scope).ToList();
 
-            var parameters = parseResult.Declarations.Items.Where(parameter => !parameter.IsBuiltIn
+            var parameters = parseResult.Declarations().Where(parameter => !parameter.IsBuiltIn
                 && parameter.DeclarationType == DeclarationType.Parameter
                 && !(parameter.Context.Parent.Parent is VBAParser.EventStmtContext)
                 && !(parameter.Context.Parent.Parent is VBAParser.DeclareStmtContext));
