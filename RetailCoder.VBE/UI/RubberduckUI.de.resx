@@ -434,7 +434,7 @@ Wollen sie die Standardkonfiguration wiederherstellen?
 Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird unter '{3}' gespeichert.</value>
   </data>
   <data name="ResolutionProgress" xml:space="preserve">
-    <value>Löse '{0}' auf...</value>
+    <value>Löse auf ...</value>
   </data>
   <data name="RubberduckLoadFailure" xml:space="preserve">
     <value>Konnte das Rubberduck Add-In nicht laden</value>
