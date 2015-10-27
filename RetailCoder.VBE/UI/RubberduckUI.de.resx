@@ -278,7 +278,7 @@
     <value>Rubberduck - Methode Extrahieren</value>
   </data>
   <data name="ExtractMethod_InstructionsText" xml:space="preserve">
-    <value>Bitte spezifizieren Sie Methodenname, Rückgabetyp und/oder Parameter (falls Anwendbar), sowie andere Optionen.</value>
+    <value>Bitte spezifizieren Sie Methodenname, Rückgabetyp und/oder Parameter (falls anwendbar), sowie andere Optionen.</value>
   </data>
   <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
     <value>Parameter:</value>
