@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -28,7 +27,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var options = parseResult.Declarations()
+            var options = parseResult.AllDeclarations
                 .Where(declaration => !declaration.IsInspectionDisabled(AnnotationName)
                                       && !declaration.IsBuiltIn
                                       && declaration.DeclarationType == DeclarationType.ModuleOption

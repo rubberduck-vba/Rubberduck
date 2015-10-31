@@ -1,4 +1,5 @@
-﻿using Microsoft.Vbe.Interop;
+﻿using System.Collections.Generic;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 
@@ -6,7 +7,7 @@ namespace Rubberduck.UI.ParserProgress
 {
     public interface IParsingProgressPresenter
     {
-        Declarations Parse(VBProject project);
+        IEnumerable<Declaration> Parse(VBProject project);
     }
 
     public class ParsingProgressPresenter : IParsingProgressPresenter
@@ -18,12 +19,12 @@ namespace Rubberduck.UI.ParserProgress
             _parser = parser;
         }
 
-        public Declarations Parse(VBProject project)
+        public IEnumerable<Declaration> Parse(VBProject project)
         {
             using (var view = new ProgressDialog(new ParserProgessViewModel(_parser, project)))
             {
                 view.ShowDialog();
-                return view.Result.Declarations;
+                return view.Result.AllDeclarations;
             }
         }
     }

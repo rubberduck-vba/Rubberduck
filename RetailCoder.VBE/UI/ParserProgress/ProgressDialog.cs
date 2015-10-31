@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.UI.ParserProgress
 {
@@ -31,7 +30,7 @@ namespace Rubberduck.UI.ParserProgress
 
         private void viewModel_Completed(object sender, EventArgs e)
         {
-            Result = _viewModel.Parser.Declarations;
+            Result = _viewModel.Parser.State;
             if (InvokeRequired)
             {
                 BeginInvoke((MethodInvoker) Hide);
@@ -47,6 +46,6 @@ namespace Rubberduck.UI.ParserProgress
             Height = e.IsExpanded ? ExpandedSize : _initialSize;
         }
 
-        public VBProjectParseResult Result { get; private set; }
+        public RubberduckParserState Result { get; private set; }
     }
 }

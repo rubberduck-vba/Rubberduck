@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
@@ -89,7 +87,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private static IParseTree Parse(string code, IParseTreeListener listener, out ITokenStream outStream)
+        private static IParseTree Parse(string code, IEnumerable<IParseTreeListener> listeners, out ITokenStream outStream)
         {
             var input = new AntlrInputStream(code);
             var lexer = new VBALexer(input);
@@ -97,7 +95,10 @@ namespace Rubberduck.Parsing.VBA
             var parser = new VBAParser(tokens);
 
             parser.AddErrorListener(new ExceptionErrorListener());
-            parser.AddParseListener(listener);
+            foreach (var listener in listeners)
+            {
+                parser.AddParseListener(listener);
+            }
 
             outStream = tokens;
 
@@ -105,12 +106,12 @@ namespace Rubberduck.Parsing.VBA
             return result;
         }
 
-        private async Task<Tuple<IParseTree, ITokenStream, Action>> ParseAsync(string code, IParseTreeListener listener)
+        private async Task<Tuple<IParseTree, ITokenStream, Action>> ParseAsync(string code, IEnumerable<IParseTreeListener> listeners)
         {
             return await Task.Run(() =>
             {
                 ITokenStream stream;
-                var tree = Parse(code, listener, out stream);
+                var tree = Parse(code, listeners, out stream);
                 return Tuple.Create(tree, stream, new Action(() => { ResolveReferences(tree); }));
             });
         }
@@ -136,15 +137,28 @@ namespace Rubberduck.Parsing.VBA
         public async Task ParseAsync(VBComponent vbComponent)
         {
             var qualifiedName = new QualifiedModuleName(vbComponent);
-            var comments = ParseComments(qualifiedName);
-            var listener = new DeclarationSymbolsListener(qualifiedName, Accessibility.Implicit, vbComponent.Type, comments);
+            _state.Comments = ParseComments(qualifiedName);
+            
+            var declarationsListener = new DeclarationSymbolsListener(qualifiedName, Accessibility.Implicit, vbComponent.Type, _state.Comments);
+            var obsoleteCallsListener = new ObsoleteCallStatementListener();
+            var obsoleteLetListener = new ObsoleteLetStatementListener();
+
+            var listeners = new IParseTreeListener[]
+            {
+                declarationsListener,
+                obsoleteCallsListener,
+                obsoleteLetListener
+            };
 
             var code = vbComponent.CodeModule.Lines();
-            var result = await ParseAsync(code, listener);
+            var result = await ParseAsync(code, listeners);
+
+            _state.ObsoleteCallContexts = obsoleteCallsListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
+            _state.ObsoleteLetContexts = obsoleteLetListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
 
             var scope = vbComponent.Collection.Parent.Name + "." + vbComponent.Name;
             _state.MarkForResolution(scope);
-            _state.AddTokenStream(vbComponent, result.Item2);            
+            _state.AddTokenStream(vbComponent, result.Item2);
         }
 
         private void ResolveReferences(IParseTree tree)
@@ -161,6 +175,44 @@ namespace Rubberduck.Parsing.VBA
             foreach (var task in tasks)
             {
                 task.Start();
+            }
+        }
+    }
+
+    public class ObsoleteCallStatementListener : VBABaseListener
+    {
+        private readonly IList<VBAParser.ExplicitCallStmtContext> _contexts = new List<VBAParser.ExplicitCallStmtContext>();
+        public IEnumerable<VBAParser.ExplicitCallStmtContext> Contexts { get { return _contexts; } }
+
+        public override void EnterExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
+        {
+            var procedureCall = context.eCS_ProcedureCall();
+            if (procedureCall != null)
+            {
+                if (procedureCall.CALL() != null)
+                {
+                    _contexts.Add(context);
+                    return;
+                }
+            }
+
+            var memberCall = context.eCS_MemberProcedureCall();
+            if (memberCall == null) return;
+            if (memberCall.CALL() == null) return;
+            _contexts.Add(context);
+        }
+    }
+
+    public class ObsoleteLetStatementListener : VBABaseListener
+    {
+        private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
+        public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
+
+        public override void EnterLetStmt(VBAParser.LetStmtContext context)
+        {
+            if (context.LET() != null)
+            {
+                _contexts.Add(context);
             }
         }
     }

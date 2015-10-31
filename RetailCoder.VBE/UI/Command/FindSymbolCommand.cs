@@ -28,8 +28,7 @@ namespace Rubberduck.UI.Command
         public override void Execute(object parameter)
         {
             var result = _parserProgress.Parse(_vbe.ActiveVBProject);
-            var declarations = result.Declarations;
-            var viewModel = new FindSymbolViewModel(declarations.Items.Where(item => !item.IsBuiltIn), _iconCache);
+            var viewModel = new FindSymbolViewModel(result.Where(item => !item.IsBuiltIn), _iconCache);
             using (var view = new FindSymbolDialog(viewModel))
             {
                 viewModel.Navigate += (sender, e) => { _navigateCommand.Execute(e); view.Hide(); };

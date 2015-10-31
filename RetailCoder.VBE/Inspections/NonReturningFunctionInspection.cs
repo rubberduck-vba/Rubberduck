@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -28,10 +29,12 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var interfaceMembers = parseResult.Declarations.FindInterfaceMembers();
-            var interfaceImplementationMembers = parseResult.Declarations.FindInterfaceImplementationMembers();
+            var declarations = parseResult.AllDeclarations.ToList();
 
-            var functions = parseResult.Declarations()
+            var interfaceMembers = declarations.FindInterfaceMembers();
+            var interfaceImplementationMembers = declarations.FindInterfaceImplementationMembers();
+
+            var functions = declarations
                 .Where(declaration => !declaration.IsBuiltIn && ReturningMemberTypes.Contains(declaration.DeclarationType)
                     && !interfaceMembers.Contains(declaration)).ToList();
 

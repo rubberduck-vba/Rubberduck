@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -21,7 +20,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var items = parseResult.Declarations().ToList();
+            var items = parseResult.AllDeclarations.ToList();
 
             // ignore arrays. todo: ArrayIndicesNotAccessedInspection
             var arrays = items.Where(declaration =>

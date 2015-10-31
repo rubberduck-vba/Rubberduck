@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var issues = from item in parseResult.Declarations()
+            var issues = from item in parseResult.AllDeclarations
                          where !item.IsBuiltIn && item.Accessibility == Accessibility.Global
                          && item.Context != null
                          select new ObsoleteGlobalInspectionResult(this, Description, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context));

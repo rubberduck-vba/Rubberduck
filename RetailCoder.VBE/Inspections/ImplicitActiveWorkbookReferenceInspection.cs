@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor.Extensions;
@@ -38,7 +37,7 @@ namespace Rubberduck.Inspections
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 
-            var issues = parseResult.Declarations().Where(item => item.IsBuiltIn 
+            var issues = parseResult.AllDeclarations.Where(item => item.IsBuiltIn 
                                                                       && item.ParentScope == "Excel.Global"
                                                                       && Targets.Contains(item.IdentifierName)
                                                                       && item.References.Any())

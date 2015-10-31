@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var issues = from item in parseResult.Declarations()
+            var issues = from item in parseResult.AllDeclarations
                          where !item.IsInspectionDisabled(AnnotationName) 
                                && !item.IsBuiltIn
                                && ProcedureTypes.Contains(item.DeclarationType)

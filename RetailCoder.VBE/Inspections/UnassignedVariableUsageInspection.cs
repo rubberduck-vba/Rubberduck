@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var usages = parseResult.Declarations().Where(declaration => !declaration.IsBuiltIn 
+            var usages = parseResult.AllDeclarations.Where(declaration => !declaration.IsBuiltIn 
                 && declaration.DeclarationType == DeclarationType.Variable
                 && !declaration.References.Any(reference => reference.IsAssignment))
                 .SelectMany(declaration => declaration.References);

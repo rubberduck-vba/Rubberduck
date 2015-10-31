@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -24,9 +25,11 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var interfaceMembers = parseResult.Declarations.FindInterfaceImplementationMembers();
+            var declarations = parseResult.AllDeclarations.ToList();
 
-            var issues = (from item in parseResult.Declarations()
+            var interfaceMembers = declarations.FindInterfaceImplementationMembers();
+
+            var issues = (from item in declarations
                 where !item.IsInspectionDisabled(AnnotationName)
                     && item.DeclarationType == DeclarationType.Parameter
                     && !item.IsBuiltIn

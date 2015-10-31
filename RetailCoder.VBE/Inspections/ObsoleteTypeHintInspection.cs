@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var results = parseResult.Declarations().ToList();
+            var results = parseResult.AllDeclarations.ToList();
 
             var declarations = from item in results
                 where !item.IsBuiltIn && item.HasTypeHint()

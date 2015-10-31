@@ -17,4 +17,5 @@ namespace Rubberduck.Parsing
         void Parse(VBE vbe);
         void Parse(VBProject vbProject);
         Task ParseAsync(VBComponent vbComponent);
+    }
 }

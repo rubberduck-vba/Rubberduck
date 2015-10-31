@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
@@ -18,17 +18,15 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var results = parseResult.Declarations.Items.Where(declaration =>
+            var results = parseResult.AllDeclarations.Where(declaration =>
                 !declaration.IsBuiltIn 
                 && declaration.DeclarationType == DeclarationType.Constant
                 && !declaration.References.Any());
 
-            foreach (var issue in results)
-            {
-                yield return new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName.QualifiedModuleName);
-            }
+            return results.Select(issue => 
+                new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName.QualifiedModuleName)).Cast<CodeInspectionResultBase>();
         }
     }
 }

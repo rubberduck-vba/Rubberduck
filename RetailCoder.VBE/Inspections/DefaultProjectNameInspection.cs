@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
@@ -22,9 +22,9 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var issues = parseResult.Declarations.Items
+            var issues = parseResult.AllDeclarations
                             .Where(declaration => !declaration.IsBuiltIn 
                                                 && declaration.DeclarationType == DeclarationType.Project
                                                 && declaration.IdentifierName.StartsWith("VBAProject"))

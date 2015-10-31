@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -24,14 +23,8 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var modules = parseResult.ComponentParseResults.ToList();
-            foreach (var comment in modules.SelectMany(module => module.Comments))
-            {
-                if (comment.Marker == Tokens.Rem)
-                {
-                    yield return new ObsoleteCommentSyntaxInspectionResult(this, comment);
-                }
-            }
+            return (parseResult.Comments.Where(comment => comment.Marker == Tokens.Rem)
+                .Select(comment => new ObsoleteCommentSyntaxInspectionResult(this, comment)));
         }
     }
 }

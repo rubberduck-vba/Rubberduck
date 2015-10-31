@@ -1,8 +1,8 @@
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using System.Runtime.InteropServices;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.ParserProgress;
@@ -13,11 +13,13 @@ namespace Rubberduck.UI.Command.Refactorings
     [ComVisible(false)]
     public class RefactorRenameCommand : RefactorCommandBase
     {
+        private readonly IRubberduckParser _parser;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorRenameCommand(VBE vbe, IParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
+        public RefactorRenameCommand(VBE vbe, IRubberduckParser parser, IParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
             : base (vbe, parserProgress, editor)
         {
+            _parser = parser;
             _wrapperWrapperFactory = wrapperWrapperFactory;
         }
 
@@ -35,7 +37,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(Vbe, view, result, new MessageBox(), _wrapperWrapperFactory);
+                var factory = new RenamePresenterFactory(Vbe, view, _parser.State, new MessageBox(), _wrapperWrapperFactory);
                 var refactoring = new RenameRefactoring(factory, Editor, new MessageBox());
 
                 var target = parameter as Declaration;

@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
-using Rubberduck.Properties;
 
 namespace Rubberduck.UI.ParserProgress
 {
@@ -21,10 +16,6 @@ namespace Rubberduck.UI.ParserProgress
         public ParserProgessViewModel(IRubberduckParser parser, VBProject project)
         {
             _parser = parser;
-            _parser.ParseStarted += _parser_ParseStarted;
-            _parser.ParseProgress += _parser_ParseProgress;
-            _parser.ResolutionProgress += _parser_ResolutionProgress;
-            _parser.ResolutionCompleted += _parser_Completed;
 
             _project = project;
             var details = _project.VBComponents.Cast<VBComponent>().Select(component => new ComponentProgressViewModel(component)).ToList();
@@ -49,7 +40,7 @@ namespace Rubberduck.UI.ParserProgress
 
         public void Start()
         {            
-            _parser.Parse(_project, this);
+            _parser.Parse(_project);
         }
 
         public event EventHandler<EventArgs> Completed;

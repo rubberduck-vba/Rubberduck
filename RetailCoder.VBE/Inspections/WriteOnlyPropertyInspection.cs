@@ -1,12 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -24,7 +20,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var declarations = parseResult.Declarations().ToList();
+            var declarations = parseResult.AllDeclarations.ToList();
             var setters = declarations
                 .Where(item => !item.IsBuiltIn 
                     && (item.Accessibility == Accessibility.Implicit || 

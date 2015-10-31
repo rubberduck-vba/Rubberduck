@@ -4,18 +4,42 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.VBA
 {
     public class RubberduckParserState
     {
+        public enum State
+        {
+            /// <summary>
+            /// Parser state is in sync with the actual code in the VBE.
+            /// </summary>
+            Ready,
+            /// <summary>
+            /// One or more modules were modified, but parsing hasn't started yet.
+            /// </summary>
+            Dirty,
+            /// <summary>
+            /// Code from modified modules is being parsed.
+            /// </summary>
+            Parsing,
+            /// <summary>
+            /// Resolving identifier references.
+            /// </summary>
+            Resolving,
+        }
+
         // keys are the declarations; values indicate whether a declaration is resolved.
         private readonly ConcurrentDictionary<Declaration, ResolutionState> _declarations =
             new ConcurrentDictionary<Declaration, ResolutionState>();
 
         private readonly ConcurrentDictionary<VBComponent, ITokenStream> _tokenStreams =
             new ConcurrentDictionary<VBComponent, ITokenStream>();
+
+        private State _status;
+        public State Status { get { return _status; } }
 
         /// <summary>
         /// Gets all unresolved declarations.
@@ -27,28 +51,6 @@ namespace Rubberduck.Parsing.VBA
                 return _declarations.Where(d => d.Value == ResolutionState.Unresolved)
                     .Select(d => d.Key);
             }
-        }
-
-        /// <summary>
-        /// Gets a copy of the collected declarations of the specified <see cref="DeclarationType"/>.
-        /// </summary>
-        /// <param name="declarationType"></param>
-        /// <returns></returns>
-        public IEnumerable<Declaration> OfType(DeclarationType declarationType)
-        {
-            return AllDeclarations.Where(declaration =>
-                declaration.DeclarationType == declarationType);
-        }
-
-        /// <summary>
-        /// Gets a copy of the collected declarations of any one of the specified <see cref="DeclarationType"/> values.
-        /// </summary>
-        /// <param name="declarationTypes"></param>
-        /// <returns></returns>
-        public IEnumerable<Declaration> OfType(params DeclarationType[] declarationTypes)
-        {
-            return AllDeclarations.Where(declaration =>
-                declarationTypes.Any(type => declaration.DeclarationType == type));
         }
 
         /// <summary>
@@ -67,21 +69,35 @@ namespace Rubberduck.Parsing.VBA
                 declaration.QualifiedName.QualifiedModuleName.Component == component);
         }
 
+        private IEnumerable<QualifiedContext> _obsoleteCallContexts = new List<QualifiedContext>();
+
         /// <summary>
-        /// Gets a copy of the collected declarations containing all identifiers declared in or below the specified <see cref="scope"/>.
+        /// Gets <see cref="ParserRuleContext"/> objects representing 'Call' statements in the parse tree.
         /// </summary>
-        /// <param name="scope"></param>
-        /// <returns></returns>
-        public IEnumerable<Declaration> Declarations(string scope = null)
+        public IEnumerable<QualifiedContext> ObsoleteCallContexts
         {
-            var skip = string.IsNullOrEmpty(scope);
-            return AllDeclarations.Where(declaration => skip || declaration.Scope.StartsWith(scope ?? string.Empty));
+            get { return _obsoleteCallContexts; }
+            internal set { _obsoleteCallContexts = value; }
         }
+
+        private IEnumerable<QualifiedContext> _obsoleteLetContexts = new List<QualifiedContext>();
+
+        /// <summary>
+        /// Gets <see cref="ParserRuleContext"/> objects representing explicit 'Let' statements in the parse tree.
+        /// </summary>
+        public IEnumerable<QualifiedContext> ObsoleteLetContexts
+        {
+            get { return _obsoleteLetContexts; }
+            internal set { _obsoleteLetContexts = value; }
+        }
+
+        private IEnumerable<CommentNode> _comments = new List<CommentNode>(); 
+        public IEnumerable<CommentNode> Comments { get { return _comments; } internal set { _comments = value; } }
 
         /// <summary>
         /// Gets a copy of the collected declarations.
         /// </summary>
-        private IEnumerable<Declaration> AllDeclarations { get { return _declarations.Keys.ToList(); } }
+        public IEnumerable<Declaration> AllDeclarations { get { return _declarations.Keys.ToList(); } }
 
         /// <summary>
         /// Adds the specified <see cref="Declaration"/> to the collection.
@@ -104,6 +120,11 @@ namespace Rubberduck.Parsing.VBA
         public bool AddTokenStream(VBComponent component, ITokenStream stream)
         {
             return _tokenStreams.TryAdd(component, stream);
+        }
+
+        public TokenStreamRewriter GetRewriter(VBComponent component)
+        {
+            return new TokenStreamRewriter(_tokenStreams[component]);
         }
 
         /// <summary>

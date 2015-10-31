@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.UI.ParserProgress;
 using Rubberduck.UI.Refactorings;
@@ -11,11 +12,13 @@ namespace Rubberduck.UI.Command.Refactorings
     [ComVisible(false)]
     class RefactorReorderParametersCommand : RefactorCommandBase
     {
+        private readonly IRubberduckParser _parser;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorReorderParametersCommand(VBE vbe, IParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
+        public RefactorReorderParametersCommand(VBE vbe, IRubberduckParser parser, IParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
             : base (vbe, parserProgress, editor)
         {
+            _parser = parser;
             _wrapperWrapperFactory = wrapperWrapperFactory;
         }
 
@@ -33,7 +36,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
             using (var view = new ReorderParametersDialog())
             {
-                var factory = new ReorderParametersPresenterFactory(Editor, view, result, new MessageBox());
+                var factory = new ReorderParametersPresenterFactory(Editor, view, _parser.State, new MessageBox());
                 var refactoring = new ReorderParametersRefactoring(factory, Editor, new MessageBox());
                 refactoring.Refactor(selection);
             }

@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections
         {
             var name = AnnotationName;
             var assignedByValParameters =
-                parseResult.Declarations().Where(declaration => !declaration.IsInspectionDisabled(name)
+                parseResult.AllDeclarations.Where(declaration => !declaration.IsInspectionDisabled(name)
                     && !declaration.IsBuiltIn 
                     && declaration.DeclarationType == DeclarationType.Parameter
                     && ((VBAParser.ArgContext)declaration.Context).BYVAL() != null

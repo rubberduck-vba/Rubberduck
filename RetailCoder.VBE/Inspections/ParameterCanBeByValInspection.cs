@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -39,14 +39,15 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var interfaceMembers = parseResult.Declarations.FindInterfaceMembers()
-                .Concat(parseResult.Declarations.FindInterfaceImplementationMembers())
+            var declarations = parseResult.AllDeclarations.ToList();
+
+            var interfaceMembers = declarations.FindInterfaceMembers()
+                .Concat(declarations.FindInterfaceImplementationMembers())
                 .ToList();
 
-            var formEventHandlerScopes = parseResult.Declarations.FindFormEventHandlers()
+            var formEventHandlerScopes = declarations.FindFormEventHandlers()
                 .Select(handler => handler.Scope);
 
-            var declarations = parseResult.Declarations().ToList();
             var eventScopes = declarations.Where(item => 
                 !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event)
                 .Select(e => e.Scope);

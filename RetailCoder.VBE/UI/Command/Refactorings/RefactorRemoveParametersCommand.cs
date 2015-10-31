@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
@@ -12,11 +13,13 @@ namespace Rubberduck.UI.Command.Refactorings
     [ComVisible(false)]
     public class RefactorRemoveParametersCommand : RefactorCommandBase
     {
+        private readonly IRubberduckParser _parser;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorRemoveParametersCommand(VBE vbe, IParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
+        public RefactorRemoveParametersCommand(VBE vbe, IRubberduckParser parser, IParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
             : base (vbe, parserProgress, editor)
         {
+            _parser = parser;
             _wrapperWrapperFactory = wrapperWrapperFactory;
         }
 
@@ -34,7 +37,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
             using (var view = new RemoveParametersDialog())
             {
-                var factory = new RemoveParametersPresenterFactory(Editor, view, result, new MessageBox());
+                var factory = new RemoveParametersPresenterFactory(Editor, view, _parser.State, new MessageBox());
                 var refactoring = new RemoveParametersRefactoring(factory, Editor);
                 refactoring.Refactor(selection);
             }

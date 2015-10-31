@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var issues = parseResult.Declarations()
+            var issues = parseResult.AllDeclarations
                 .Where(item => !item.IsInspectionDisabled(AnnotationName) && !item.IsBuiltIn)
                 .Where(item => item.DeclarationType == DeclarationType.Variable
                             || item.DeclarationType == DeclarationType.Constant)

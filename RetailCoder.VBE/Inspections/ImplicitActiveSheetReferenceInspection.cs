@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
@@ -44,7 +39,7 @@ namespace Rubberduck.Inspections
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 
-            var issues = parseResult.Declarations().Where(item => item.IsBuiltIn 
+            var issues = parseResult.AllDeclarations.Where(item => item.IsBuiltIn 
                 && item.ParentScope == "Excel.Global"
                 && Targets.Contains(item.IdentifierName)
                 && item.References.Any())

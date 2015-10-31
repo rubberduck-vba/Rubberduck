@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -21,16 +20,14 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var declarations = parseResult.Declarations().Where(declaration =>
+            var declarations = parseResult.AllDeclarations.Where(declaration =>
                 !declaration.IsBuiltIn 
                 && !declaration.IsWithEvents
                 && declaration.DeclarationType == DeclarationType.Variable
                 && declaration.References.All(reference => reference.IsAssignment));
 
-            foreach (var issue in declarations)
-            {
-                yield return new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName.QualifiedModuleName);
-            }
+            return declarations.Select(issue => 
+                new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName.QualifiedModuleName));
         }
     }
 }

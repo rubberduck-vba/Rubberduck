@@ -9,6 +9,7 @@ using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor;
@@ -17,14 +18,16 @@ namespace Rubberduck.UI.CodeInspections
 {
     public class InspectionResultsViewModel : ViewModelBase
     {
+        private readonly IRubberduckParser _parser;
         private readonly IInspector _inspector;
         private readonly VBE _vbe;
         private readonly INavigateCommand _navigateCommand;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
 
-        public InspectionResultsViewModel(IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, IGeneralConfigService configService)
+        public InspectionResultsViewModel(IRubberduckParser parser, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, IGeneralConfigService configService)
         {
+            _parser = parser;
             _inspector = inspector;
             _vbe = vbe;
             _navigateCommand = navigateCommand;
@@ -137,8 +140,7 @@ namespace Rubberduck.UI.CodeInspections
         {
             CanRefresh = false; // if commands' CanExecute worked as expected, this junk wouldn't be needed
             IsBusy = true;
-            var projectParseResult = await _inspector.Parse(_vbe.ActiveVBProject, this);
-            var results = await _inspector.FindIssuesAsync(projectParseResult, CancellationToken.None);
+            var results = await _inspector.FindIssuesAsync(_parser.State, CancellationToken.None);
             Results = new ObservableCollection<ICodeInspectionResult>(results);
             CanRefresh = true;
             IsBusy = false;
