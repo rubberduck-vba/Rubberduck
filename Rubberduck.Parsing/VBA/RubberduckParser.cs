@@ -116,6 +116,8 @@ namespace Rubberduck.Parsing.VBA
             });
         }
 
+        // todo: ensure a new parse task cancels the previous ...but only if needed.
+
         public void Parse(VBE vbe)
         {
             foreach (var task in vbe.VBProjects.Cast<VBProject>()
@@ -123,6 +125,11 @@ namespace Rubberduck.Parsing.VBA
             {
                 task.Start();
             }
+        }
+
+        public void Parse(VBComponent vbComponent)
+        {
+            Task.Run(() => ParseAsync(vbComponent));
         }
 
         public void Parse(VBProject vbProject)

@@ -40,7 +40,7 @@ namespace Rubberduck.UI.ParserProgress
 
         public void Start()
         {            
-            _parser.Parse(_project);
+            _parser.Parse(_project.VBE);
         }
 
         public event EventHandler<EventArgs> Completed;

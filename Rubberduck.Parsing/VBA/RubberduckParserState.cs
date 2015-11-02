@@ -38,8 +38,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, ITokenStream> _tokenStreams =
             new ConcurrentDictionary<VBComponent, ITokenStream>();
 
-        private State _status;
-        public State Status { get { return _status; } }
+        public State Status { get; internal set; }
 
         /// <summary>
         /// Gets all unresolved declarations.
@@ -104,7 +103,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns>Returns true when successful, replaces existing key reference.</returns>
-        public bool AddDeclaration(Declaration declaration)
+        public bool AddUnresolvedDeclaration(Declaration declaration)
         {
             if (!_declarations.TryAdd(declaration, ResolutionState.Unresolved))
             {
@@ -117,9 +116,9 @@ namespace Rubberduck.Parsing.VBA
             return false;
         }
 
-        public bool AddTokenStream(VBComponent component, ITokenStream stream)
+        public void AddTokenStream(VBComponent component, ITokenStream stream)
         {
-            return _tokenStreams.TryAdd(component, stream);
+            _tokenStreams.TryAdd(component, stream);
         }
 
         public TokenStreamRewriter GetRewriter(VBComponent component)

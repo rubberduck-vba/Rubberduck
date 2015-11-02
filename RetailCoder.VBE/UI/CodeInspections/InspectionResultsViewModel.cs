@@ -13,6 +13,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -127,7 +128,7 @@ namespace Rubberduck.UI.CodeInspections
         private readonly ICommand _copyResultsCommand;
         public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
 
-        private bool _canRefresh = true;
+        private bool _canRefresh;
         public bool CanRefresh { get { return _canRefresh; } private set { _canRefresh = value; OnPropertyChanged(); } }
 
         private bool _canQuickFix;
@@ -138,6 +139,12 @@ namespace Rubberduck.UI.CodeInspections
 
         private async void ExecuteRefreshCommandAsync(object parameter)
         {
+            CanRefresh = _vbe.HostApplication() != null;
+            if (!CanRefresh)
+            {
+                return;
+            }
+
             CanRefresh = false; // if commands' CanExecute worked as expected, this junk wouldn't be needed
             IsBusy = true;
             var results = await _inspector.FindIssuesAsync(_parser.State, CancellationToken.None);

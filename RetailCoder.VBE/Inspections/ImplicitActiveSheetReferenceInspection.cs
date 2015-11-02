@@ -13,11 +13,11 @@ namespace Rubberduck.Inspections
 {
     public class ImplicitActiveSheetReferenceInspection : IInspection
     {
-        private readonly Lazy<IHostApplication> _hostApp;
+        private readonly Func<IHostApplication> _hostApp;
 
         public ImplicitActiveSheetReferenceInspection(VBE vbe)
         {
-            _hostApp = new Lazy<IHostApplication>(vbe.HostApplication);
+            _hostApp = vbe.HostApplication;
             Severity = CodeInspectionSeverity.Warning;
         }
 
@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            if (_hostApp.Value.ApplicationName != "Excel")
+            if (_hostApp().ApplicationName != "Excel")
             {
                 return new CodeInspectionResultBase[] {};
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.

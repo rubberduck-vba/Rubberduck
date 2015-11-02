@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
 using NLog;
+using Rubberduck.Common;
 using Rubberduck.Inspections;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing;
 using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
@@ -13,33 +15,45 @@ namespace Rubberduck
 {
     public class App : IDisposable
     {
+        private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
         private readonly IParserErrorsPresenterFactory _parserErrorsPresenterFactory;
-        private readonly IRubberduckParserFactory _parserFactory;
+        private readonly IRubberduckParser _parser;
         private readonly IInspectorFactory _inspectorFactory;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
+        private readonly KeyHook _hook;
 
         private readonly Logger _logger;
 
         private Configuration _config;
 
-        public App(IMessageBox messageBox,
+        public App(VBE vbe, IMessageBox messageBox,
             IParserErrorsPresenterFactory parserErrorsPresenterFactory,
-            IRubberduckParserFactory parserFactory,
+            IRubberduckParser parser,
             IInspectorFactory inspectorFactory, 
             IGeneralConfigService configService,
-            IAppMenu appMenus)
+            IAppMenu appMenus,
+            KeyHook hook)
         {
+            _vbe = vbe;
             _messageBox = messageBox;
             _parserErrorsPresenterFactory = parserErrorsPresenterFactory;
-            _parserFactory = parserFactory;
+            _parser = parser;
             _inspectorFactory = inspectorFactory;
             _configService = configService;
             _appMenus = appMenus;
+            _hook = hook;
             _logger = LogManager.GetCurrentClassLogger();
 
+            _hook.Attach();
+            _hook.KeyPressed += _hook_KeyPressed;
             _configService.SettingsChanged += _configService_SettingsChanged;
+        }
+
+        private void _hook_KeyPressed(object sender, KeyHookEventArgs e)
+        {
+            _parser.Parse(_vbe);
         }
 
         public void Startup()
@@ -84,10 +98,7 @@ namespace Rubberduck
 
         private void Setup()
         {
-            _parserFactory.Create();
-
             _inspectorFactory.Create();
-
             _parserErrorsPresenterFactory.Create();
         }
 
@@ -101,6 +112,7 @@ namespace Rubberduck
             if (!disposing) { return; }
 
             CleanUp();
+            _hook.Detach();
         }
 
         private void CleanUp()
