@@ -55,7 +55,11 @@ namespace Rubberduck.Common
 
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode < 0 || wParam != (IntPtr)WM_KEYDOWN)
+            // This is the window handle.  See if this is the value given by the ActiveWindow handle in the VBE.
+            var windowHandle = GetForegroundWindow();
+            var vbeWindow = _vbe.MainWindow.HWnd;
+
+            if (windowHandle != (IntPtr)vbeWindow || nCode < 0 || wParam != (IntPtr)WM_KEYDOWN)
             {
                 return CallNextHookEx(_hookID, nCode, wParam, lParam);
             }
@@ -64,9 +68,6 @@ namespace Rubberduck.Common
             var vkCode = Marshal.ReadInt32(lParam);
             var key = (Keys)vkCode;
             
-            // This is the window handle.  See if this is the value given by the ActiveWindow handle in the VBE.
-            var windowHandle = GetForegroundWindow();
-
             // If the above does not work, this gives us the process handle
             int processId;
             GetWindowThreadProcessId(windowHandle, out processId);
