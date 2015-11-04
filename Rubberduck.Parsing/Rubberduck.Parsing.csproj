@@ -100,7 +100,6 @@
     <Compile Include="VBA\StringExtensions.cs" />
     <Compile Include="VBA\WalkerCancelledException.cs" />
     <Compile Include="VBComponentExtensions.cs" />
-    <Compile Include="VBComponentParseResult.cs" />
     <Compile Include="VBProjectParseResult.cs" />
   </ItemGroup>
   <ItemGroup>

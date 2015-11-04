@@ -53,7 +53,7 @@ namespace Rubberduck
 
         private void _hook_KeyPressed(object sender, KeyHookEventArgs e)
         {
-            _parser.Parse(_vbe);
+            _parser.Parse(e.Component);
         }
 
         public void Startup()

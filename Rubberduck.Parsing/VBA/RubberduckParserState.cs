@@ -47,16 +47,13 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                return _declarations.Where(d => d.Value == ResolutionState.Unresolved)
-                    .Select(d => d.Key);
+                return _declarations.Select(d => d.Key);
             }
         }
 
         /// <summary>
         /// Gets a copy of the collected declarations containing all identifiers declared for the specified <see cref="component"/>.
         /// </summary>
-        /// <param name="component"></param>
-        /// <returns></returns>
         public IEnumerable<Declaration> Declarations(VBComponent component)
         {
             if (component == null)
@@ -99,21 +96,32 @@ namespace Rubberduck.Parsing.VBA
         public IEnumerable<Declaration> AllDeclarations { get { return _declarations.Keys.ToList(); } }
 
         /// <summary>
-        /// Adds the specified <see cref="Declaration"/> to the collection.
+        /// Adds the specified <see cref="Declaration"/> to the collection (replaces existing).
         /// </summary>
-        /// <param name="declaration"></param>
-        /// <returns>Returns true when successful, replaces existing key reference.</returns>
-        public bool AddUnresolvedDeclaration(Declaration declaration)
+        public void AddDeclaration(Declaration declaration)
         {
-            if (!_declarations.TryAdd(declaration, ResolutionState.Unresolved))
+            if (_declarations.TryAdd(declaration, ResolutionState.Unresolved))
             {
-                if (RemoveDeclaration(declaration))
-                {
-                    return _declarations.TryAdd(declaration, ResolutionState.Unresolved);
-                }
+                return;
             }
 
-            return false;
+            if (RemoveDeclaration(declaration))
+            {
+                _declarations.TryAdd(declaration, ResolutionState.Unresolved);
+            }
+        }
+
+        public void ClearDeclarations(VBComponent component)
+        {
+            var declarations = _declarations.Keys.Where(k =>
+                k.QualifiedName.QualifiedModuleName.Project == component.Collection.Parent
+                && k.ComponentName == component.Name);
+
+            foreach (var declaration in declarations)
+            {
+                ResolutionState state;
+                _declarations.TryRemove(declaration, out state);
+            }
         }
 
         public void AddTokenStream(VBComponent component, ITokenStream stream)
@@ -133,25 +141,8 @@ namespace Rubberduck.Parsing.VBA
         /// <returns>Returns true when successful.</returns>
         private bool RemoveDeclaration(Declaration declaration)
         {
-            foreach (var reference in declaration.References)
-            {
-                MarkForResolution(reference.ParentScope);
-            }
-            foreach (var reference in declaration.MemberCalls)
-            {
-                MarkForResolution(reference.ParentScope);
-            }
-
             ResolutionState state;
             return _declarations.TryRemove(declaration, out state);
-        }
-
-        public void MarkForResolution(string scope)
-        {
-            foreach (var declaration in _declarations.Keys.Where(d => !d.IsDirty && (d.Scope == scope || d.ParentScope == scope)))
-            {
-                declaration.IsDirty = true;
-            }
         }
     }
 }

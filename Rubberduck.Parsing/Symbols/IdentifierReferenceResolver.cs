@@ -41,7 +41,6 @@ namespace Rubberduck.Parsing.Symbols
             {
                 DeclarationType.Module, 
                 DeclarationType.Class,
-                DeclarationType.Project,
             });
 
             _memberTypes = new List<DeclarationType>(new[]
@@ -74,7 +73,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void SetCurrentScope()
         {
-            _currentScope = _declarations.Single(item =>
+            _currentScope = _declarations.SingleOrDefault(item => 
                 _moduleTypes.Contains(item.DeclarationType)
                 && item.Project == _qualifiedModuleName.Project
                 && item.ComponentName == _qualifiedModuleName.ComponentName);
@@ -84,7 +83,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void SetCurrentScope(string memberName, DeclarationType? accessor = null)
         {
-            _currentScope = _declarations.Single(item =>
+            _currentScope = _declarations.SingleOrDefault(item =>
                 _memberTypes.Contains(item.DeclarationType)
                 && (!accessor.HasValue || item.DeclarationType == accessor.Value)
                 && item.Project == _qualifiedModuleName.Project

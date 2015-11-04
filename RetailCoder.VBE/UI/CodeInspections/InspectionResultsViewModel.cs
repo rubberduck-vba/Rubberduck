@@ -12,7 +12,6 @@ using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.CodeInspections
@@ -128,8 +127,17 @@ namespace Rubberduck.UI.CodeInspections
         private readonly ICommand _copyResultsCommand;
         public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
 
-        private bool _canRefresh;
-        public bool CanRefresh { get { return _canRefresh; } private set { _canRefresh = value; OnPropertyChanged(); } }
+        private bool _canRefresh = true;
+
+        public bool CanRefresh
+        {
+            get { return _canRefresh; }
+            private set
+            {
+                _canRefresh = value; 
+                OnPropertyChanged();
+            }
+        }
 
         private bool _canQuickFix;
         public bool CanQuickFix { get { return _canQuickFix; } set { _canQuickFix = value; OnPropertyChanged(); } }
