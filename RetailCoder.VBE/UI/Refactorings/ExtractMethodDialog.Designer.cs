@@ -121,12 +121,10 @@ namespace Rubberduck.UI.Refactorings
             // 
             // InstructionsLabel
             // 
-            this.InstructionsLabel.AutoSize = true;
-            this.InstructionsLabel.Location = new System.Drawing.Point(16, 37);
-            this.InstructionsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.InstructionsLabel.Location = new System.Drawing.Point(12, 30);
             this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(5);
-            this.InstructionsLabel.Size = new System.Drawing.Size(609, 27);
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.InstructionsLabel.Size = new System.Drawing.Size(550, 34);
             this.InstructionsLabel.TabIndex = 3;
             this.InstructionsLabel.Text = "Please specify method name, return type and/or parameters (if applicable), and ot" +
     "her options.";
