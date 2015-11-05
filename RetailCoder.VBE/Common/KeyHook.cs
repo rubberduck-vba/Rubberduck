@@ -53,6 +53,28 @@ namespace Rubberduck.Common
             }
         }
 
+        private static readonly Keys[] IgnoredKeys = 
+        {
+            Keys.Down,
+            Keys.Up,
+            Keys.Left,
+            Keys.Right,
+            Keys.PageDown,
+            Keys.PageUp,
+            Keys.CapsLock,
+            Keys.Escape,
+            Keys.Home,
+            Keys.End,
+            Keys.Shift,
+            Keys.ShiftKey,
+            Keys.LShiftKey,
+            Keys.RShiftKey,
+            Keys.Control,
+            Keys.ControlKey,
+            Keys.LControlKey,
+            Keys.RControlKey,
+        };
+
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
             // This is the window handle.  See if this is the value given by the ActiveWindow handle in the VBE.
@@ -67,7 +89,11 @@ namespace Rubberduck.Common
             // These two lines tell us what key is pressed
             var vkCode = Marshal.ReadInt32(lParam);
             var key = (Keys)vkCode;
-            
+            if (IgnoredKeys.Contains(key))
+            {
+                return CallNextHookEx(_hookID, nCode, wParam, lParam);
+            }
+
             // If the above does not work, this gives us the process handle
             int processId;
             GetWindowThreadProcessId(windowHandle, out processId);
