@@ -29,6 +29,10 @@ namespace Rubberduck.Parsing.VBA
             /// Resolving identifier references.
             /// </summary>
             Resolving,
+            /// <summary>
+            /// Parsing could not be completed for one or more modules.
+            /// </summary>
+            Error
         }
 
         // keys are the declarations; values indicate whether a declaration is resolved.
@@ -38,7 +42,21 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, ITokenStream> _tokenStreams =
             new ConcurrentDictionary<VBComponent, ITokenStream>();
 
-        public State Status { get; internal set; }
+        public event EventHandler StateChanged;
+
+        private void OnStateChanged()
+        {
+            var handler = StateChanged;
+            if (handler != null)
+            {
+                handler.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private State _status;
+        public State Status { get { return _status; } internal set { _status = value; OnStateChanged(); } }
+
+        public SyntaxErrorException Exception { get; internal set; }
 
         /// <summary>
         /// Gets all unresolved declarations.

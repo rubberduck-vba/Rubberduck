@@ -79,14 +79,14 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private static IParseTree Parse(string code, IEnumerable<IParseTreeListener> listeners, out ITokenStream outStream)
+        private IParseTree Parse(string code, IEnumerable<IParseTreeListener> listeners, out ITokenStream outStream)
         {
             var input = new AntlrInputStream(code);
             var lexer = new VBALexer(input);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAParser(tokens);
 
-            //parser.AddErrorListener(new ExceptionErrorListener());
+            parser.AddErrorListener(new ExceptionErrorListener());
             foreach (var listener in listeners)
             {
                 parser.AddParseListener(listener);
@@ -94,8 +94,18 @@ namespace Rubberduck.Parsing.VBA
 
             outStream = tokens;
 
-            var result = parser.startRule();
-            return result;
+            try
+            {
+                _state.Exception = null;
+                return parser.startRule();
+            }
+            catch (SyntaxErrorException e)
+            {
+                _state.Status = RubberduckParserState.State.Error;
+                _state.Exception = e;
+            }
+
+            return null;
         }
 
         private Tuple<IParseTree, ITokenStream, Action> Parse(VBComponent component, IEnumerable<IParseTreeListener> listeners, CancellationToken token)
@@ -136,6 +146,10 @@ namespace Rubberduck.Parsing.VBA
 
             _state.Status = RubberduckParserState.State.Parsing;
             var result = Parse(vbComponent, listeners, token);
+            if (result.Item1 == null)
+            {
+                return;
+            }
 
             // cannot locate declarations in one pass *the way it's currently implemented*,
             // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.

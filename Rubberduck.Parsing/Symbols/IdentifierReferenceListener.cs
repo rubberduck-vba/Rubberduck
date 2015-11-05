@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBA;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -22,75 +23,95 @@ namespace Rubberduck.Parsing.Symbols
             handler.Invoke(this, args);
         }
 
+        private void TrySetCurrentScope(string identifier = null, DeclarationType? accessor = null)
+        {
+            try
+            {
+                if (identifier == null)
+                {
+                    _resolver.SetCurrentScope();
+                }
+                else
+                {
+                    _resolver.SetCurrentScope(identifier, accessor);
+                }
+            }
+            catch (Exception exception)
+            {
+                // if we can't resolve the current scope, we can't resolve anything under it: force-cancel the walk.
+                throw new WalkerCancelledException();
+            }
+        }
+
         public IdentifierReferenceListener(IdentifierReferenceResolver resolver, CancellationToken token)
         {
             _resolver = resolver;
             _token = token;
-            _resolver.SetCurrentScope();
+            TrySetCurrentScope();
         }
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
             _token.ThrowIfCancellationRequested();
-            _resolver.SetCurrentScope(context.ambiguousIdentifier().GetText());
+            TrySetCurrentScope(context.ambiguousIdentifier().GetText());
         }
 
         public override void ExitSubStmt(VBAParser.SubStmtContext context)
         {
             _token.ThrowIfCancellationRequested();
-            _resolver.SetCurrentScope();
+            TrySetCurrentScope();
             OnMemberProcessed(context.ambiguousIdentifier().GetText());
         }
 
         public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
             _token.ThrowIfCancellationRequested();
-            _resolver.SetCurrentScope(context.ambiguousIdentifier().GetText());
+            TrySetCurrentScope(context.ambiguousIdentifier().GetText());
         }
 
         public override void ExitFunctionStmt(VBAParser.FunctionStmtContext context)
         {
             _token.ThrowIfCancellationRequested();
-            _resolver.SetCurrentScope();
+            TrySetCurrentScope();
             OnMemberProcessed(context.ambiguousIdentifier().GetText());
         }
 
         public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
             _token.ThrowIfCancellationRequested();
-            _resolver.SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyGet);
+            TrySetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyGet);
         }
 
         public override void ExitPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
             _token.ThrowIfCancellationRequested();
-            _resolver.SetCurrentScope();
+            TrySetCurrentScope();
             OnMemberProcessed(context.ambiguousIdentifier().GetText());
         }
 
         public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
             _token.ThrowIfCancellationRequested();
-            _resolver.SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyLet);
+            TrySetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyLet);
         }
 
         public override void ExitPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
             _token.ThrowIfCancellationRequested();
-            _resolver.SetCurrentScope();
+            TrySetCurrentScope();
             OnMemberProcessed(context.ambiguousIdentifier().GetText());
         }
 
         public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
             _token.ThrowIfCancellationRequested();
-            _resolver.SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertySet);
+            TrySetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertySet);
         }
 
         public override void ExitPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
             _token.ThrowIfCancellationRequested();
-            _resolver.SetCurrentScope();
+            TrySetCurrentScope();
             OnMemberProcessed(context.ambiguousIdentifier().GetText());
         }
 

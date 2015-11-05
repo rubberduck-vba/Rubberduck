@@ -141,7 +141,10 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             item.Command.Execute(null);
         }
 
-        private static void SetButtonImage(CommandBarButton button, Image image, Image mask)
+        /// <summary>
+        /// Creates a transparent <see cref="IPictureDisp"/> icon for the specified <see cref="CommandBarButton"/>.
+        /// </summary>
+        public static void SetButtonImage(CommandBarButton button, Image image, Image mask)
         {
             button.FaceId = 0;
             if (image == null || mask == null)

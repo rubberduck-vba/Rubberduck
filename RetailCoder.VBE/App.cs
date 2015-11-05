@@ -22,6 +22,7 @@ namespace Rubberduck
         private readonly IInspectorFactory _inspectorFactory;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
+        private readonly ParserStateCommandBar _stateBar;
         private readonly KeyHook _hook;
 
         private readonly Logger _logger;
@@ -34,6 +35,7 @@ namespace Rubberduck
             IInspectorFactory inspectorFactory, 
             IGeneralConfigService configService,
             IAppMenu appMenus,
+            ParserStateCommandBar stateBar,
             KeyHook hook)
         {
             _vbe = vbe;
@@ -43,6 +45,7 @@ namespace Rubberduck
             _inspectorFactory = inspectorFactory;
             _configService = configService;
             _appMenus = appMenus;
+            _stateBar = stateBar;
             _hook = hook;
             _logger = LogManager.GetCurrentClassLogger();
 
@@ -62,6 +65,8 @@ namespace Rubberduck
 
             _appMenus.Initialize();
             _appMenus.Localize();
+
+            _parser.Parse(_vbe);
         }
 
         private void CleanReloadConfig()

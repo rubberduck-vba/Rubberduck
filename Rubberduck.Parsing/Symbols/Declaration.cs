@@ -133,7 +133,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void AddMemberCall(IdentifierReference reference)
         {
-            if (reference == null || reference.Declaration.Context == reference.Context)
+            if (reference == null || reference.Declaration == null || reference.Declaration.Context == reference.Context)
             {
                 return;
             }
