@@ -101,10 +101,10 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (SyntaxErrorException e)
             {
-                _state.Status = RubberduckParserState.State.Error;
                 _state.Exception = e;
             }
 
+            _state.Status = RubberduckParserState.State.Error;
             return null;
         }
 
@@ -116,14 +116,33 @@ namespace Rubberduck.Parsing.VBA
             return Tuple.Create(tree, stream, new Action(() => { ResolveReferences(tree, token); }));
         }
 
+        private bool _canStartResolving;
+        private readonly ConcurrentQueue<Action> _resolverTasks = new ConcurrentQueue<Action>();
+
         public void Parse(VBE vbe)
         {
+            _canStartResolving = false;
             var components = vbe.VBProjects.Cast<VBProject>()
                                 .SelectMany(project => project.VBComponents.Cast<VBComponent>());
 
-            foreach (var task in components.Select(component => new Task(() => Parse(component))))
+            var tasks = components.Select(component => Task.Factory.StartNew(() => Parse(component))).ToArray();
+            if (tasks.Any())
             {
-                task.Start();
+                Task.Factory.ContinueWhenAll(tasks, t =>
+                {
+                    _canStartResolving = true;
+                    while (!_resolverTasks.IsEmpty)
+                    {
+                        Action action;
+                        if (_resolverTasks.TryDequeue(out action))
+                        {
+                            Task.Factory.StartNew(action);
+                        }
+                    }
+                }).ContinueWith(t =>
+                {
+                    _state.Status = RubberduckParserState.State.Ready;
+                });
             }
         }
 
@@ -146,6 +165,7 @@ namespace Rubberduck.Parsing.VBA
 
             _state.Status = RubberduckParserState.State.Parsing;
             var result = Parse(vbComponent, listeners, token);
+
             if (result.Item1 == null)
             {
                 return;
@@ -167,8 +187,15 @@ namespace Rubberduck.Parsing.VBA
 
             _state.AddTokenStream(vbComponent, result.Item2);
 
-            result.Item3.Invoke();
-            _state.Status = RubberduckParserState.State.Ready;
+            if (_canStartResolving)
+            {
+                result.Item3.Invoke();
+                _state.Status = RubberduckParserState.State.Ready;
+            }
+            else
+            {
+                _resolverTasks.Enqueue(result.Item3);
+            }
         }
 
         private void declarationsListener_NewDeclaration(object sender, DeclarationEventArgs e)
@@ -184,7 +211,14 @@ namespace Rubberduck.Parsing.VBA
             CancellationTokenSource tokenSource;
             if (_cancellationTokens.TryGetValue(vbComponent, out tokenSource))
             {
-                tokenSource.Cancel();
+                try
+                {
+                    tokenSource.Cancel();
+                }
+                catch (TaskCanceledException)
+                {
+                    _state.Status = RubberduckParserState.State.Ready;
+                }
             }
             var cancelTokenSource = new CancellationTokenSource();
             _cancellationTokens[vbComponent] = cancelTokenSource;
