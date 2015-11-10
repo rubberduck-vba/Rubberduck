@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,25 +15,20 @@ using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public enum ResolutionState
-    {
-        Unresolved,
-        // any other state is useless... this enum is useless...
-    }
-
     public class RubberduckParser : IRubberduckParser
     {
-        private IHostApplication _hostApplication;
-
+        private readonly VBE _vbe;
+        private readonly ParseCoordinator _coordinator;
         private readonly Logger _logger;
 
-        public RubberduckParser()
+        public RubberduckParser(VBE vbe)
         {
+            _vbe = vbe;
             _logger = LogManager.GetCurrentClassLogger();
+            _coordinator = new ParseCoordinator(state => State.Status = state);
         }
 
         private readonly RubberduckParserState _state = new RubberduckParserState();
@@ -116,37 +112,25 @@ namespace Rubberduck.Parsing.VBA
             return Tuple.Create(tree, stream, new Action(() => { ResolveReferences(tree, token); }));
         }
 
-        private bool _canStartResolving;
-        private readonly ConcurrentQueue<Action> _resolverTasks = new ConcurrentQueue<Action>();
-
         public void Parse(VBE vbe)
         {
-            _canStartResolving = false;
-            var components = vbe.VBProjects.Cast<VBProject>()
-                                .SelectMany(project => project.VBComponents.Cast<VBComponent>());
+            var components = vbe.VBProjects
+                .Cast<VBProject>()
+                .SelectMany(project => project.VBComponents.Cast<VBComponent>());
 
-            var tasks = components.Select(component => Task.Factory.StartNew(() => Parse(component))).ToArray();
-            if (tasks.Any())
+            _state.AddBuiltInDeclarations(_vbe.HostApplication());
+            foreach (var vbComponent in components)
             {
-                Task.Factory.ContinueWhenAll(tasks, t =>
-                {
-                    _canStartResolving = true;
-                    while (!_resolverTasks.IsEmpty)
-                    {
-                        Action action;
-                        if (_resolverTasks.TryDequeue(out action))
-                        {
-                            Task.Factory.StartNew(action);
-                        }
-                    }
-                }).ContinueWith(t =>
-                {
-                    _state.Status = RubberduckParserState.State.Ready;
-                });
+                Parse(vbComponent);
             }
         }
 
         public void Parse(VBComponent vbComponent)
+        {
+            _coordinator.Start(vbComponent, () => ParseInternal(vbComponent));
+        }
+
+        private Action ParseInternal(VBComponent vbComponent)
         {
             var token = CancelPreviousTask(vbComponent);
             _state.ClearDeclarations(vbComponent);
@@ -168,7 +152,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (result.Item1 == null)
             {
-                return;
+                return null;
             }
 
             // cannot locate declarations in one pass *the way it's currently implemented*,
@@ -187,15 +171,7 @@ namespace Rubberduck.Parsing.VBA
 
             _state.AddTokenStream(vbComponent, result.Item2);
 
-            if (_canStartResolving)
-            {
-                result.Item3.Invoke();
-                _state.Status = RubberduckParserState.State.Ready;
-            }
-            else
-            {
-                _resolverTasks.Enqueue(result.Item3);
-            }
+            return result.Item3;
         }
 
         private void declarationsListener_NewDeclaration(object sender, DeclarationEventArgs e)

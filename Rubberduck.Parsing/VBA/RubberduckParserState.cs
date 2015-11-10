@@ -6,6 +6,7 @@ using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -17,10 +18,6 @@ namespace Rubberduck.Parsing.VBA
             /// Parser state is in sync with the actual code in the VBE.
             /// </summary>
             Ready,
-            /// <summary>
-            /// One or more modules were modified, but parsing hasn't started yet.
-            /// </summary>
-            Dirty,
             /// <summary>
             /// Code from modified modules is being parsed.
             /// </summary>
@@ -161,6 +158,31 @@ namespace Rubberduck.Parsing.VBA
         {
             ResolutionState state;
             return _declarations.TryRemove(declaration, out state);
+        }
+
+        /// <summary>
+        /// Ensures parser state accounts for built-in declarations.
+        /// This method has no effect if built-in declarations have already been loaded.
+        /// </summary>
+        public void AddBuiltInDeclarations(IHostApplication hostApplication)
+        {
+            if (_declarations.Any(declaration => declaration.Key.IsBuiltIn))
+            {
+                return;
+            }
+
+            var builtInDeclarations = VbaStandardLib.Declarations;
+
+            // cannot be strongly-typed here because of constraints on COM interop and generics in the inheritance hierarchy. </rant>
+            if (hostApplication /*is ExcelApp*/ .ApplicationName == "Excel") 
+            {
+                builtInDeclarations = builtInDeclarations.Concat(ExcelObjectModel.Declarations);
+            }
+
+            foreach (var declaration in builtInDeclarations)
+            {
+                AddDeclaration(declaration);
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 

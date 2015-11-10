@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using NLog;
@@ -10,6 +12,7 @@ using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.ParserErrors;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck
 {
@@ -66,7 +69,7 @@ namespace Rubberduck
             _appMenus.Initialize();
             _appMenus.Localize();
 
-            _parser.Parse(_vbe);
+            Task.Delay(1000).ContinueWith(t => _parser.Parse(_vbe));
         }
 
         private void CleanReloadConfig()
