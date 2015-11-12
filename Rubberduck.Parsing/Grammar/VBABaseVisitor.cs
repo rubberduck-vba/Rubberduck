@@ -1452,17 +1452,6 @@ public partial class VBABaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	public virtual Result VisitIfConditionStmt([NotNull] VBAParser.IfConditionStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.moduleBlock"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitModuleBlock([NotNull] VBAParser.ModuleBlockContext context) { return VisitChildren(context); }
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.vsLeq"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>

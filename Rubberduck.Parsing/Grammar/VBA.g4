@@ -60,6 +60,7 @@
 *   - added macroConstStmt (#CONST) rule.
 *   - amended block rule to support instruction separators.
 *   - amended selectCaseStmt rules to support all valid syntaxes.
+*   - blockStmt is now illegal in declarations section.
 *
 *======================================================================================
 *
@@ -116,8 +117,7 @@ moduleOption :
 ;
 
 moduleDeclarationsElement :
-	moduleBlock
-	| declareStmt
+	declareStmt
 	| enumerationStmt 
 	| eventStmt
 	| macroConstStmt
@@ -130,9 +130,9 @@ moduleBody :
 	moduleBodyElement (NEWLINE+ moduleBodyElement)*;
 
 moduleBodyElement : 
-	moduleBlock
-	| functionStmt 
+	functionStmt 
 	| macroIfThenElseStmt
+	| macroConstStmt
 	| propertyGetStmt 
 	| propertySetStmt 
 	| propertyLetStmt 
@@ -141,8 +141,6 @@ moduleBodyElement :
 
 
 // block ----------------------------------
-
-moduleBlock : block;
 
 attributeStmt : ATTRIBUTE WS implicitCallStmt_InStmt WS? EQ WS? literal (WS? ',' WS? literal)*;
 

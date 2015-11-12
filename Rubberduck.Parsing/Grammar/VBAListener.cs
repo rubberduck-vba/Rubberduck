@@ -1507,17 +1507,6 @@ public interface IVBAListener : IParseTreeListener {
 	void ExitIfConditionStmt([NotNull] VBAParser.IfConditionStmtContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.moduleBlock"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterModuleBlock([NotNull] VBAParser.ModuleBlockContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.moduleBlock"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitModuleBlock([NotNull] VBAParser.ModuleBlockContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by the <c>vsLeq</c>
 	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
 	/// </summary>
