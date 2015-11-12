@@ -60,14 +60,14 @@
   <ItemGroup>
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
-    <Compile Include="IParseResultProvider.cs" />
-    <Compile Include="IRubberduckParser.cs" />
     <Compile Include="Grammar\VBABaseListener.cs" />
     <Compile Include="Grammar\VBABaseVisitor.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
     <Compile Include="Grammar\VBAListener.cs" />
     <Compile Include="Grammar\VBAParser.cs" />
     <Compile Include="Grammar\VBAVisitor.cs" />
+    <Compile Include="IParseResultProvider.cs" />
+    <Compile Include="IRubberduckParser.cs" />
     <Compile Include="Symbols\AdodbObjectModel.cs" />
     <Compile Include="Symbols\DeclarationEventArgs.cs" />
     <Compile Include="Symbols\ExcelObjectModel.cs" />

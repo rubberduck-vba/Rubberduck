@@ -21,9 +21,9 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
             new ConcurrentDictionary<VBComponent, CancellationTokenSource>();
 
-        private readonly Action<RubberduckParserState.State> _setParserState;
+        private readonly Action<VBComponent, RubberduckParserState.State> _setParserState;
 
-        public ParseCoordinator(Action<RubberduckParserState.State> setParserState)
+        public ParseCoordinator(Action<VBComponent, RubberduckParserState.State> setParserState)
         {
             _setParserState = setParserState;
         }
@@ -39,7 +39,13 @@ namespace Rubberduck.Parsing.VBA
             CancellationTokenSource existingTokenSource;
             if (_tokenSources.TryGetValue(component, out existingTokenSource))
             {
-                existingTokenSource.Cancel();
+                try
+                {
+                    existingTokenSource.Cancel();
+                }
+                catch (ObjectDisposedException)
+                {
+                }
             }
 
             var tokenSource = new CancellationTokenSource();
@@ -50,27 +56,52 @@ namespace Rubberduck.Parsing.VBA
         private void StartParserTask(VBComponent component, Func<Action> parseAction, CancellationTokenSource tokenSource)
         {
             Task<Action> existingParseTask;
-            if (_parseTasks.TryGetValue(component, out existingParseTask))
+            if (_parseTasks.TryGetValue(component, out existingParseTask) && existingParseTask.Status == TaskStatus.Running)
             {
                 // wait for the task to actually respond to cancellation
                 existingParseTask.Wait();
             }
 
-            _setParserState.Invoke(RubberduckParserState.State.Parsing);
+            _setParserState.Invoke(component, RubberduckParserState.State.Parsing);
+            CancellationToken token;
+            try
+            {
+                token = tokenSource.Token;
+            }
+            catch (ObjectDisposedException)
+            {
+                UpdateTokenSource(component);
+                token = _tokenSources[component].Token;
+            }
 
-            _parseTasks[component] = Task.Factory
-                .StartNew(parseAction, tokenSource.Token);
-
+            _parseTasks[component] = Task.Factory.StartNew(parseAction, token);
             _parseTasks[component].ContinueWith(t =>
             {
                 if (t.IsFaulted)
                 {
-                    _setParserState.Invoke(RubberduckParserState.State.Error);
+                    _setParserState.Invoke(component, RubberduckParserState.State.Error);
                 }
                 else
                 {
-                    SetResolverTask(component, t.Result, tokenSource.Token);
-                    ResolveWhenReady(tokenSource.Token);
+                    if (t.IsCompleted)
+                    {
+                        SetResolverTask(component, t.Result, token);
+                        ResolveWhenReady(token);
+                    }
+                    else
+                    {
+                        Task<Action> parseTask;
+                        _parseTasks.TryRemove(component, out parseTask);
+                    }
+                }
+            }, token)
+            .ContinueWith(t =>
+            {
+                CancellationTokenSource cts;
+                _tokenSources.TryRemove(component, out cts);
+                if (cts != null)
+                {
+                    cts.Dispose();
                 }
             });
         }
@@ -83,14 +114,13 @@ namespace Rubberduck.Parsing.VBA
             }
 
             Task existingResolverTask;
-            if (_resolverTasks.TryGetValue(component, out existingResolverTask))
+            if (_resolverTasks.TryGetValue(component, out existingResolverTask) && existingResolverTask.Status == TaskStatus.Running)
             {
                 // wait for the task to actually respond to cancellation
                 existingResolverTask.Wait();
             }
 
-            _resolverTasks[component] = new Task(resolverAction, token)
-                .ContinueWith(t => ReportReadyState(token), token);
+            _resolverTasks[component] = new Task(resolverAction, token);
         }
 
         private void ResolveWhenReady(CancellationToken token)
@@ -103,24 +133,18 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            _setParserState.Invoke(RubberduckParserState.State.Resolving);
-            foreach (var resolverTask in _resolverTasks.Values)
+            foreach (var resolverTask in _resolverTasks)
             {
-                resolverTask.Start();
+                var component = resolverTask.Key;
+                _setParserState.Invoke(component, RubberduckParserState.State.Resolving);
+                resolverTask.Value.Start();
+                resolverTask.Value.ContinueWith(t => ReportReadyState(component), token);
             }
         }
 
-        private void ReportReadyState(CancellationToken token)
+        private void ReportReadyState(VBComponent component)
         {
-            var resolverTasks = _resolverTasks.Values.ToArray();
-            Task.WaitAll(resolverTasks, token);
-
-            if (_resolverTasks.Values.Any(task => !task.IsCompleted || task.IsCanceled))
-            {
-                return;
-            }
-
-            _setParserState.Invoke(RubberduckParserState.State.Ready);
+            _setParserState.Invoke(component, RubberduckParserState.State.Ready);
         }
     }
 }

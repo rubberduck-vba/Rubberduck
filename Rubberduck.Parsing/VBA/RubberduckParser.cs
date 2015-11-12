@@ -28,7 +28,7 @@ namespace Rubberduck.Parsing.VBA
         {
             _vbe = vbe;
             _logger = LogManager.GetCurrentClassLogger();
-            _coordinator = new ParseCoordinator(state => State.Status = state);
+            _coordinator = new ParseCoordinator((component, state) => State.SetModuleState(component, state));
         }
 
         private readonly RubberduckParserState _state = new RubberduckParserState();
@@ -89,19 +89,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             outStream = tokens;
-
-            try
-            {
-                _state.Exception = null;
-                return parser.startRule();
-            }
-            catch (SyntaxErrorException e)
-            {
-                _state.Exception = e;
-            }
-
-            _state.Status = RubberduckParserState.State.Error;
-            return null;
+            return parser.startRule();
         }
 
         private Tuple<IParseTree, ITokenStream, Action> Parse(VBComponent component, IEnumerable<IParseTreeListener> listeners, CancellationToken token)
@@ -136,7 +124,7 @@ namespace Rubberduck.Parsing.VBA
             _state.ClearDeclarations(vbComponent);
 
             var qualifiedName = new QualifiedModuleName(vbComponent);
-            _state.Comments = ParseComments(qualifiedName);
+            _state.SetModuleComments(vbComponent, ParseComments(qualifiedName));
 
             var obsoleteCallsListener = new ObsoleteCallStatementListener();
             var obsoleteLetListener = new ObsoleteLetStatementListener();
@@ -149,11 +137,6 @@ namespace Rubberduck.Parsing.VBA
 
             _state.Status = RubberduckParserState.State.Parsing;
             var result = Parse(vbComponent, listeners, token);
-
-            if (result.Item1 == null)
-            {
-                return null;
-            }
 
             // cannot locate declarations in one pass *the way it's currently implemented*,
             // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.

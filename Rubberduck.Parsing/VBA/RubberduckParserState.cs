@@ -50,6 +50,21 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        private readonly ConcurrentDictionary<VBComponent, State> _moduleStates =
+            new ConcurrentDictionary<VBComponent, State>();
+
+        public void SetModuleState(VBComponent component, State state)
+        {
+            _moduleStates[component] = state;
+            Status = _moduleStates.Values.Any(value => value == State.Error)
+                ? State.Error
+                : _moduleStates.Values.Any(value => value == State.Parsing)
+                    ? State.Parsing
+                    : _moduleStates.Values.Any(value => value == State.Resolving)
+                        ? State.Resolving
+                        : State.Ready;
+        }
+
         private State _status;
         public State Status { get { return _status; } internal set { _status = value; OnStateChanged(); } }
 
@@ -102,8 +117,21 @@ namespace Rubberduck.Parsing.VBA
             internal set { _obsoleteLetContexts = value; }
         }
 
-        private IEnumerable<CommentNode> _comments = new List<CommentNode>(); 
-        public IEnumerable<CommentNode> Comments { get { return _comments; } internal set { _comments = value; } }
+        private readonly ConcurrentDictionary<VBComponent, IEnumerable<CommentNode>> _comments =
+            new ConcurrentDictionary<VBComponent, IEnumerable<CommentNode>>();
+
+        public IEnumerable<CommentNode> Comments
+        {
+            get 
+            {
+                return _comments.Values.SelectMany(comments => comments);
+            }
+        }
+
+        public void SetModuleComments(VBComponent component, IEnumerable<CommentNode> comments)
+        {
+            _comments[component] = comments;
+        }
 
         /// <summary>
         /// Gets a copy of the collected declarations.
