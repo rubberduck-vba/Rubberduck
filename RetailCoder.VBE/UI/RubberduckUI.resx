@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1202,5 +1202,11 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
     <value>Make ActiveWorkbook reference explicit</value>
+  </data>
+  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
+    <value>Add a component to the active project</value>
+  </data>
+  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
+    <value>Display style</value>
   </data>
 </root>
