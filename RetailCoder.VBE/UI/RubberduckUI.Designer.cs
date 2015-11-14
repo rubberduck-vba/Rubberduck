@@ -1018,6 +1018,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Find symbol ähnelt.
+        /// </summary>
+        public static string FindSymbolDialog_Caption {
+            get {
+                return ResourceManager.GetString("FindSymbolDialog_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Fix ähnelt.
         /// </summary>
         public static string Fix {
