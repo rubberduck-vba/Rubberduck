@@ -630,7 +630,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Wählen Sie einen Parameter und benutzen Sie die Schaltflächen oder doppelklicken Sie um ihn zu bewegen oder zu löschen</value>
   </data>
   <data name="Restore" xml:space="preserve">
-    <value>Wieder-herstellen</value>
+    <value>Wiederherstellen</value>
   </data>
   <data name="ParseErrors_Caption" xml:space="preserve">
     <value>Rubberduck - Parser Fehler</value>
