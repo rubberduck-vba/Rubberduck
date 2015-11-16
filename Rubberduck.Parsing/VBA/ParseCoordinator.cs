@@ -12,14 +12,14 @@ namespace Rubberduck.Parsing.VBA
     /// </summary>
     public class ParseCoordinator
     {
-        private readonly ConcurrentDictionary<VBComponent, Task<Action>> _parseTasks =
-            new ConcurrentDictionary<VBComponent, Task<Action>>();
+    private readonly ConcurrentDictionary<VBComponent, Task<Action>> _parseTasks =
+        new ConcurrentDictionary<VBComponent, Task<Action>>();
 
-        private readonly ConcurrentDictionary<VBComponent, Task> _resolverTasks =
-            new ConcurrentDictionary<VBComponent, Task>();
+    private readonly ConcurrentDictionary<VBComponent, Task> _resolverTasks =
+        new ConcurrentDictionary<VBComponent, Task>();
 
-        private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
-            new ConcurrentDictionary<VBComponent, CancellationTokenSource>();
+    private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
+        new ConcurrentDictionary<VBComponent, CancellationTokenSource>();
 
         private readonly Action<VBComponent, RubberduckParserState.State> _setParserState;
 
@@ -28,7 +28,7 @@ namespace Rubberduck.Parsing.VBA
             _setParserState = setParserState;
         }
 
-        public void Start(VBComponent component, Func<Action> parseAction)
+        public async Task StartAsync(VBComponent component, Func<Action> parseAction, CancellationToken token)
         {
             var tokenSource = UpdateTokenSource(component);
             StartParserTask(component, parseAction, tokenSource);
@@ -118,6 +118,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 // wait for the task to actually respond to cancellation
                 existingResolverTask.Wait();
+                UpdateTokenSource(component);
             }
 
             _resolverTasks[component] = new Task(resolverAction, token);
@@ -133,12 +134,19 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            foreach (var resolverTask in _resolverTasks)
+            foreach (var resolverTask in _resolverTasks.Where(t => t.Value.Status != TaskStatus.Running))
             {
                 var component = resolverTask.Key;
                 _setParserState.Invoke(component, RubberduckParserState.State.Resolving);
-                resolverTask.Value.Start();
-                resolverTask.Value.ContinueWith(t => ReportReadyState(component), token);
+                try
+                {
+                    resolverTask.Value.Start();
+                    resolverTask.Value.ContinueWith(t => ReportReadyState(component), token);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
         }
 

@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -100,7 +99,7 @@ namespace Rubberduck.Parsing.VBA
             return Tuple.Create(tree, stream, new Action(() => { ResolveReferences(tree, token); }));
         }
 
-        public void Parse(VBE vbe)
+        public async Task ParseAsync(VBE vbe, CancellationToken token)
         {
             var components = vbe.VBProjects
                 .Cast<VBProject>()
@@ -109,13 +108,15 @@ namespace Rubberduck.Parsing.VBA
             _state.AddBuiltInDeclarations(_vbe.HostApplication());
             foreach (var vbComponent in components)
             {
-                Parse(vbComponent);
+                await ParseAsync(vbComponent, token);
             }
         }
 
-        public void Parse(VBComponent vbComponent)
+
+
+        public async Task ParseAsync(VBComponent vbComponent, CancellationToken token)
         {
-            _coordinator.Start(vbComponent, () => ParseInternal(vbComponent));
+            await _coordinator.StartAsync(vbComponent, () => ParseInternal(vbComponent), token);
         }
 
         private Action ParseInternal(VBComponent vbComponent)

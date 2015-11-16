@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,7 +14,6 @@ using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.ParserErrors;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck
 {
@@ -57,9 +58,27 @@ namespace Rubberduck
             _configService.SettingsChanged += _configService_SettingsChanged;
         }
 
-        private void _hook_KeyPressed(object sender, KeyHookEventArgs e)
+        private readonly IDictionary<VBComponent, CancellationTokenSource> _tokenSources =
+            new Dictionary<VBComponent, CancellationTokenSource>(); 
+
+        private async void _hook_KeyPressed(object sender, KeyHookEventArgs e)
         {
-            _parser.Parse(e.Component);
+            await ParseComponentAsync(e.Component);
+        }
+
+        private async Task ParseComponentAsync(VBComponent component)
+        {
+            if (_tokenSources.ContainsKey(component))
+            {
+                var existingTokenSource = _tokenSources[component];
+                existingTokenSource.Cancel();
+                existingTokenSource.Dispose();
+            }
+
+            var tokenSource = new CancellationTokenSource();
+            _tokenSources[component] = tokenSource;
+
+            await _parser.ParseAsync(component, tokenSource.Token);
         }
 
         public void Startup()
@@ -69,9 +88,17 @@ namespace Rubberduck
             _appMenus.Initialize();
             _appMenus.Localize();
 
-            Task.Delay(1000).ContinueWith(t => _parser.Parse(_vbe));
+            Task.Delay(1000).ContinueWith(t =>
+            {
+                var components = _vbe.VBProjects.Cast<VBProject>()
+                    .SelectMany(project => project.VBComponents.Cast<VBComponent>());
+                foreach (var component in components)
+                {
+                    ParseComponentAsync(component);
+                }
+            });
         }
-
+ 
         private void CleanReloadConfig()
         {
             LoadConfig();

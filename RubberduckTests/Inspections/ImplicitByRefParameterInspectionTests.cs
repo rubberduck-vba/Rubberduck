@@ -11,229 +11,229 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
-    public class ImplicitByRefParameterInspectionTests
-    {
-        [TestMethod]
-        public void ImplicitByRefParameter_ReturnsResult()
-        {
-            const string inputCode =
-@"Sub Foo(arg1 As Integer)
-End Sub";
+//    [TestClass]
+//    public class ImplicitByRefParameterInspectionTests
+//    {
+//        [TestMethod]
+//        public void ImplicitByRefParameter_ReturnsResult()
+//        {
+//            const string inputCode =
+//@"Sub Foo(arg1 As Integer)
+//End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+//            //Arrange
+//            var builder = new MockVbeBuilder();
+//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+//                .Build().Object;
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser().Parse(project);
+//            var codePaneFactory = new CodePaneWrapperFactory();
+//            var mockHost = new Mock<IHostApplication>();
+//            mockHost.SetupAllProperties();
+//            var parseResult = new RubberduckParser().Parse(project);
 
-            var inspection = new ImplicitByRefParameterInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            var inspection = new ImplicitByRefParameterInspection();
+//            var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
+//            Assert.AreEqual(1, inspectionResults.Count());
+//        }
 
-        [TestMethod]
-        public void ImplicitByRefParameter_ReturnsResult_MultipleParams()
-        {
-            const string inputCode =
-@"Sub Foo(arg1 As Integer, arg2 As Date)
-End Sub";
+//        [TestMethod]
+//        public void ImplicitByRefParameter_ReturnsResult_MultipleParams()
+//        {
+//            const string inputCode =
+//@"Sub Foo(arg1 As Integer, arg2 As Date)
+//End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+//            //Arrange
+//            var builder = new MockVbeBuilder();
+//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+//                .Build().Object;
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser().Parse(project);
+//            var codePaneFactory = new CodePaneWrapperFactory();
+//            var mockHost = new Mock<IHostApplication>();
+//            mockHost.SetupAllProperties();
+//            var parseResult = new RubberduckParser().Parse(project);
 
-            var inspection = new ImplicitByRefParameterInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            var inspection = new ImplicitByRefParameterInspection();
+//            var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            Assert.AreEqual(2, inspectionResults.Count());
-        }
+//            Assert.AreEqual(2, inspectionResults.Count());
+//        }
 
-        [TestMethod]
-        public void ImplicitByRefParameter_DoesNotReturnResult_ByRef()
-        {
-            const string inputCode =
-@"Sub Foo(ByRef arg1 As Integer)
-End Sub";
+//        [TestMethod]
+//        public void ImplicitByRefParameter_DoesNotReturnResult_ByRef()
+//        {
+//            const string inputCode =
+//@"Sub Foo(ByRef arg1 As Integer)
+//End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+//            //Arrange
+//            var builder = new MockVbeBuilder();
+//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+//                .Build().Object;
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser().Parse(project);
+//            var codePaneFactory = new CodePaneWrapperFactory();
+//            var mockHost = new Mock<IHostApplication>();
+//            mockHost.SetupAllProperties();
+//            var parseResult = new RubberduckParser().Parse(project);
 
-            var inspection = new ImplicitByRefParameterInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            var inspection = new ImplicitByRefParameterInspection();
+//            var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
+//            Assert.AreEqual(0, inspectionResults.Count());
+//        }
 
-        [TestMethod]
-        public void ImplicitByRefParameter_DoesNotReturnResult_ByVal()
-        {
-            const string inputCode =
-@"Sub Foo(ByVal arg1 As Integer)
-End Sub";
+//        [TestMethod]
+//        public void ImplicitByRefParameter_DoesNotReturnResult_ByVal()
+//        {
+//            const string inputCode =
+//@"Sub Foo(ByVal arg1 As Integer)
+//End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+//            //Arrange
+//            var builder = new MockVbeBuilder();
+//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+//                .Build().Object;
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser().Parse(project);
+//            var codePaneFactory = new CodePaneWrapperFactory();
+//            var mockHost = new Mock<IHostApplication>();
+//            mockHost.SetupAllProperties();
+//            var parseResult = new RubberduckParser().Parse(project);
 
-            var inspection = new ImplicitByRefParameterInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            var inspection = new ImplicitByRefParameterInspection();
+//            var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
+//            Assert.AreEqual(0, inspectionResults.Count());
+//        }
 
-        [TestMethod]
-        public void ImplicitByRefParameter_ReturnsResult_SomePassedByRefImplicitely()
-        {
-            const string inputCode =
-@"Sub Foo(ByVal arg1 As Integer, arg2 As Date)
-End Sub";
+//        [TestMethod]
+//        public void ImplicitByRefParameter_ReturnsResult_SomePassedByRefImplicitely()
+//        {
+//            const string inputCode =
+//@"Sub Foo(ByVal arg1 As Integer, arg2 As Date)
+//End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+//            //Arrange
+//            var builder = new MockVbeBuilder();
+//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+//                .Build().Object;
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser().Parse(project);
+//            var codePaneFactory = new CodePaneWrapperFactory();
+//            var mockHost = new Mock<IHostApplication>();
+//            mockHost.SetupAllProperties();
+//            var parseResult = new RubberduckParser().Parse(project);
 
-            var inspection = new ImplicitByRefParameterInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            var inspection = new ImplicitByRefParameterInspection();
+//            var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
+//            Assert.AreEqual(1, inspectionResults.Count());
+//        }
 
-        [TestMethod]
-        public void ImplicitByRefParameter_ReturnsResult_InterfaceImplementation()
-        {
-            //Input
-            const string inputCode1 =
-@"Sub Foo(arg1 As Integer)
-End Sub";
-            const string inputCode2 =
-@"Implements IClass1
+//        [TestMethod]
+//        public void ImplicitByRefParameter_ReturnsResult_InterfaceImplementation()
+//        {
+//            //Input
+//            const string inputCode1 =
+//@"Sub Foo(arg1 As Integer)
+//End Sub";
+//            const string inputCode2 =
+//@"Implements IClass1
+//
+//Sub IClass1_Foo(arg1 As Integer)
+//End Sub";
 
-Sub IClass1_Foo(arg1 As Integer)
-End Sub";
+//            //Arrange
+//            var builder = new MockVbeBuilder();
+//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+//                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+//                .Build().Object;
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
-                .Build().Object;
+//            var codePaneFactory = new CodePaneWrapperFactory();
+//            var mockHost = new Mock<IHostApplication>();
+//            mockHost.SetupAllProperties();
+//            var parseResult = new RubberduckParser().Parse(project);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser().Parse(project);
+//            var inspection = new ImplicitByRefParameterInspection();
+//            var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            var inspection = new ImplicitByRefParameterInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            Assert.AreEqual(1, inspectionResults.Count());
+//        }
 
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
+//        [TestMethod]
+//        public void ImplicitByRefParameter_QuickFixWorks_PassByRef()
+//        {
+//            const string inputCode =
+//@"Sub Foo(arg1 As Integer)
+//End Sub";
 
-        [TestMethod]
-        public void ImplicitByRefParameter_QuickFixWorks_PassByRef()
-        {
-            const string inputCode =
-@"Sub Foo(arg1 As Integer)
-End Sub";
+//            const string expectedCode =
+//@"Sub Foo(ByRef arg1 As Integer)
+//End Sub";
 
-            const string expectedCode =
-@"Sub Foo(ByRef arg1 As Integer)
-End Sub";
+//            //Arrange
+//            var builder = new MockVbeBuilder();
+//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+//                .Build().Object;
+//            var module = project.VBComponents.Item(0).CodeModule;
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
-            var module = project.VBComponents.Item(0).CodeModule;
+//            var codePaneFactory = new CodePaneWrapperFactory();
+//            var mockHost = new Mock<IHostApplication>();
+//            mockHost.SetupAllProperties();
+//            var parseResult = new RubberduckParser().Parse(project);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser().Parse(project);
+//            var inspection = new ImplicitByRefParameterInspection();
+//            var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            var inspection = new ImplicitByRefParameterInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            inspectionResults.First().QuickFixes.First().Fix();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+//            Assert.AreEqual(expectedCode, module.Lines());
+//        }
 
-            Assert.AreEqual(expectedCode, module.Lines());
-        }
+//        [TestMethod]
+//        public void ImplicitByRefParameter_QuickFixWorks_ParamArrayMustBePassedByRef()
+//        {
+//            const string inputCode =
+//@"Sub Foo(ParamArray arg1 As Integer)
+//End Sub";
 
-        [TestMethod]
-        public void ImplicitByRefParameter_QuickFixWorks_ParamArrayMustBePassedByRef()
-        {
-            const string inputCode =
-@"Sub Foo(ParamArray arg1 As Integer)
-End Sub";
+//            //Arrange
+//            var builder = new MockVbeBuilder();
+//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+//                .Build().Object;
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+//            var codePaneFactory = new CodePaneWrapperFactory();
+//            var mockHost = new Mock<IHostApplication>();
+//            mockHost.SetupAllProperties();
+//            var parseResult = new RubberduckParser().Parse(project);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser().Parse(project);
+//            var inspection = new ImplicitByRefParameterInspection();
+//            var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            var inspection = new ImplicitByRefParameterInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            Assert.AreEqual(1, inspectionResults.First().QuickFixes.Count());
+//        }
 
-            Assert.AreEqual(1, inspectionResults.First().QuickFixes.Count());
-        }
+//        [TestMethod]
+//        public void InspectionType()
+//        {
+//            var inspection = new ImplicitByRefParameterInspection();
+//            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
+//        }
 
-        [TestMethod]
-        public void InspectionType()
-        {
-            var inspection = new ImplicitByRefParameterInspection();
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
-        }
+//        [TestMethod]
+//        public void InspectionName()
+//        {
+//            const string inspectionName = "ImplicitByRefParameterInspection";
+//            var inspection = new ImplicitByRefParameterInspection();
 
-        [TestMethod]
-        public void InspectionName()
-        {
-            const string inspectionName = "ImplicitByRefParameterInspection";
-            var inspection = new ImplicitByRefParameterInspection();
-
-            Assert.AreEqual(inspectionName, inspection.Name);
-        }
-    }
+//            Assert.AreEqual(inspectionName, inspection.Name);
+//        }
+//    }
 }

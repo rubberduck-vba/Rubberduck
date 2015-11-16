@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
+using Rubberduck.Parsing.VBA;
 using stdole;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
@@ -67,26 +68,22 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             Debug.Print("'{0}' ({1}) parent menu initialized, hash code {2}.", _key, GetHashCode(), Item.GetHashCode());
         }
 
-        public void SetCommandButtonEnabledState(string key, bool isEnabled = true)
+        public void EvaluateCanExecute(RubberduckParserState state)
         {
-            foreach (var item in _items.Keys)
+            foreach (var kvp in _items)
             {
-                var parent = item as IParentMenuItem;
-                if (parent != null)
+                var parentItem = kvp.Key as IParentMenuItem;
+                if (parentItem != null)
                 {
-                    parent.SetCommandButtonEnabledState(key, isEnabled);
+                    parentItem.EvaluateCanExecute(state);
+                    continue;
                 }
 
-                SetEnabledState(item, isEnabled);
-            }
-        }
-
-        private void SetEnabledState(IMenuItem item, bool isEnabled)
-        {
-            CommandBarControl control;
-            if (_items.TryGetValue(item, out control))
-            {
-                control.Enabled = isEnabled;
+                var commandItem = kvp.Key as ICommandMenuItem;
+                if (commandItem != null)
+                {
+                    kvp.Value.Enabled = commandItem.EvaluateCanExecute(state);
+                }
             }
         }
 
