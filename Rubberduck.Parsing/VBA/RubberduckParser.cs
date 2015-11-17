@@ -99,21 +99,6 @@ namespace Rubberduck.Parsing.VBA
             return Tuple.Create(tree, stream, new Action(() => { ResolveReferences(tree, token); }));
         }
 
-        public async Task ParseAsync(VBE vbe, CancellationToken token)
-        {
-            var components = vbe.VBProjects
-                .Cast<VBProject>()
-                .SelectMany(project => project.VBComponents.Cast<VBComponent>());
-
-            _state.AddBuiltInDeclarations(_vbe.HostApplication());
-            foreach (var vbComponent in components)
-            {
-                await ParseAsync(vbComponent, token);
-            }
-        }
-
-
-
         public async Task ParseAsync(VBComponent vbComponent, CancellationToken token)
         {
             await _coordinator.StartAsync(vbComponent, () => ParseInternal(vbComponent), token);

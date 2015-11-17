@@ -94,7 +94,8 @@ namespace Rubberduck
                     .SelectMany(project => project.VBComponents.Cast<VBComponent>());
                 foreach (var component in components)
                 {
-                    ParseComponentAsync(component);
+                    var vbComponent = component;
+                    Task.Run(() => ParseComponentAsync(vbComponent));
                 }
             });
         }

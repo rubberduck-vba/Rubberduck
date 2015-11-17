@@ -92,7 +92,7 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            foreach (var resolverTask in _resolverTasks.Where(t => t.Value.Status != TaskStatus.Running))
+            foreach (var resolverTask in _resolverTasks.Where(t => t.Value.Status == TaskStatus.WaitingToRun))
             {
                 var component = resolverTask.Key;
                 _setParserState.Invoke(component, RubberduckParserState.State.Resolving);
