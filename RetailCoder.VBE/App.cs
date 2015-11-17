@@ -57,6 +57,12 @@ namespace Rubberduck
             _hook.Attach();
             _hook.KeyPressed += _hook_KeyPressed;
             _configService.SettingsChanged += _configService_SettingsChanged;
+            _parser.State.StateChanged += Parser_StateChanged;
+        }
+
+        private void Parser_StateChanged(object sender, EventArgs e)
+        {
+            _appMenus.EvaluateCanExecute(_parser.State);
         }
 
         private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
