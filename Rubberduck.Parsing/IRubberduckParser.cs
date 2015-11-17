@@ -9,5 +9,6 @@ namespace Rubberduck.Parsing
     {
         RubberduckParserState State { get; }
         Task ParseAsync(VBComponent component, CancellationToken token);
+        void Resolve(CancellationToken token);
     }
 }

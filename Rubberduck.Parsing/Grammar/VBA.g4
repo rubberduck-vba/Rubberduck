@@ -120,6 +120,8 @@ moduleDeclarationsElement :
 	declareStmt
 	| enumerationStmt 
 	| eventStmt
+	| constStmt
+	| variableStmt
 	| macroConstStmt
 	| macroIfThenElseStmt
 	| moduleOption

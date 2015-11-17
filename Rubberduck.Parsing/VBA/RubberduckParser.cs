@@ -91,22 +91,27 @@ namespace Rubberduck.Parsing.VBA
             return parser.startRule();
         }
 
-        private Tuple<IParseTree, ITokenStream, Action> Parse(VBComponent component, IEnumerable<IParseTreeListener> listeners, CancellationToken token)
-        {
-            ITokenStream stream;
-            var code = component.CodeModule.Lines();
-            var tree = Parse(code, listeners, out stream);
-            return Tuple.Create(tree, stream, new Action(() => { ResolveReferences(tree, token); }));
-        }
-
         public async Task ParseAsync(VBComponent vbComponent, CancellationToken token)
         {
-            await _coordinator.StartAsync(vbComponent, () => ParseInternal(vbComponent), token);
+            await _coordinator.StartAsync(vbComponent, Task.Run(() => ParseInternal(vbComponent, token), token));
         }
 
-        private Action ParseInternal(VBComponent vbComponent)
+        public void Resolve(CancellationToken token)
         {
-            var token = CancelPreviousTask(vbComponent);
+            _state.Status = RubberduckParserState.State.Resolving;
+
+            var options = new ParallelOptions { CancellationToken = token };
+            Parallel.ForEach(_state.ParseTrees, options, kvp =>
+            {
+                token.ThrowIfCancellationRequested();
+                ResolveReferences(kvp.Key, kvp.Value, token);
+            });
+
+            _state.Status = RubberduckParserState.State.Ready;
+        }
+
+        private void ParseInternal(VBComponent vbComponent, CancellationToken token)
+        {
             _state.ClearDeclarations(vbComponent);
 
             var qualifiedName = new QualifiedModuleName(vbComponent);
@@ -122,7 +127,15 @@ namespace Rubberduck.Parsing.VBA
             };
 
             _state.Status = RubberduckParserState.State.Parsing;
-            var result = Parse(vbComponent, listeners, token);
+            token.ThrowIfCancellationRequested();
+
+            ITokenStream stream;
+            var code = vbComponent.CodeModule.Lines();
+            var tree = Parse(code, listeners, out stream);
+
+            token.ThrowIfCancellationRequested();
+            _state.AddTokenStream(vbComponent, stream);
+            _state.AddParseTree(vbComponent, tree);
 
             // cannot locate declarations in one pass *the way it's currently implemented*,
             // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
@@ -131,16 +144,13 @@ namespace Rubberduck.Parsing.VBA
             
             declarationsListener.NewDeclaration += declarationsListener_NewDeclaration;
             declarationsListener.CreateModuleDeclarations();
+
             var walker = new ParseTreeWalker();
-            walker.Walk(declarationsListener, result.Item1);
+            walker.Walk(declarationsListener, tree);
             declarationsListener.NewDeclaration -= declarationsListener_NewDeclaration;
 
             _state.ObsoleteCallContexts = obsoleteCallsListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
             _state.ObsoleteLetContexts = obsoleteLetListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
-
-            _state.AddTokenStream(vbComponent, result.Item2);
-
-            return result.Item3;
         }
 
         private void declarationsListener_NewDeclaration(object sender, DeclarationEventArgs e)
@@ -148,47 +158,15 @@ namespace Rubberduck.Parsing.VBA
              _state.AddDeclaration(e.Declaration);
         }
 
-        private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _cancellationTokens =
-            new ConcurrentDictionary<VBComponent, CancellationTokenSource>();
-
-        private CancellationToken CancelPreviousTask(VBComponent vbComponent)
-        {
-            CancellationTokenSource tokenSource;
-            if (_cancellationTokens.TryGetValue(vbComponent, out tokenSource))
-            {
-                try
-                {
-                    tokenSource.Cancel();
-                }
-                catch (TaskCanceledException)
-                {
-                    _state.Status = RubberduckParserState.State.Ready;
-                }
-            }
-            var cancelTokenSource = new CancellationTokenSource();
-            _cancellationTokens[vbComponent] = cancelTokenSource;
-
-            return cancelTokenSource.Token;
-        }
-
-        private void ResolveReferences(IParseTree tree, CancellationToken token)
+        private void ResolveReferences(VBComponent component, IParseTree tree, CancellationToken token)
         {
             _state.Status = RubberduckParserState.State.Resolving;
             var declarations = _state.AllDeclarations;
-            var tasks = _state.UnresolvedDeclarations
-                .GroupBy(declaration => declaration.QualifiedSelection.QualifiedName)
-                .Where(grouping => grouping.Key.ComponentName != null)
-                .Select(grouping => new Task(() =>
-                {
-                    var resolver = new IdentifierReferenceResolver(grouping.Key, declarations);
-                    var listener = new IdentifierReferenceListener(resolver, token);
-                    var walker = new ParseTreeWalker();
-                    walker.Walk(listener, tree);
-                }));
-            foreach (var task in tasks)
-            {
-                task.Start();
-            }
+
+            var resolver = new IdentifierReferenceResolver(new QualifiedModuleName(component), declarations);
+            var listener = new IdentifierReferenceListener(resolver, token);
+            var walker = new ParseTreeWalker();
+            walker.Walk(listener, tree);
         }
     }
 

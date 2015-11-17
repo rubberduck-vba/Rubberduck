@@ -12,8 +12,8 @@ namespace Rubberduck.Parsing.VBA
     /// </summary>
     public class ParseCoordinator
     {
-        private readonly ConcurrentDictionary<VBComponent, Task<Action>> _parseTasks =
-            new ConcurrentDictionary<VBComponent, Task<Action>>();
+        private readonly ConcurrentDictionary<VBComponent, Task> _parseTasks =
+            new ConcurrentDictionary<VBComponent, Task>();
 
         private readonly ConcurrentDictionary<VBComponent, Task> _resolverTasks =
             new ConcurrentDictionary<VBComponent, Task>();
@@ -25,45 +25,18 @@ namespace Rubberduck.Parsing.VBA
             _setParserState = setParserState;
         }
 
-        public async Task StartAsync(VBComponent component, Func<Action> parseAction, CancellationToken token)
+        public async Task StartAsync(VBComponent component, Task parseTask)
         {
-            StartParserTask(component, parseAction, token);
-        }
-
-        private void StartParserTask(VBComponent component, Func<Action> parseAction, CancellationToken token)
-        {
-            Task<Action> existingParseTask;
-            if (token.IsCancellationRequested
-                && _parseTasks.TryGetValue(component, out existingParseTask) 
-                && existingParseTask.Status == TaskStatus.Running)
-            {
-                // wait for the task to actually respond to cancellation
-                existingParseTask.Wait();
-            }
-
             _setParserState.Invoke(component, RubberduckParserState.State.Parsing);
+            _parseTasks[component] = parseTask;
 
-            _parseTasks[component] = Task.Factory.StartNew(parseAction, token);
-            _parseTasks[component].ContinueWith(t =>
+            await parseTask.ContinueWith(t =>
             {
                 if (t.IsFaulted)
                 {
                     _setParserState.Invoke(component, RubberduckParserState.State.Error);
                 }
-                else
-                {
-                    if (t.IsCompleted)
-                    {
-                        SetResolverTask(component, t.Result, token);
-                        ResolveWhenReady(token);
-                    }
-                    else
-                    {
-                        Task<Action> parseTask;
-                        _parseTasks.TryRemove(component, out parseTask);
-                    }
-                }
-            }, token);
+            });
         }
 
         private void SetResolverTask(VBComponent component, Action resolverAction, CancellationToken token)

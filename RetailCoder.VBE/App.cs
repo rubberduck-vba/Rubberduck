@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -58,19 +59,20 @@ namespace Rubberduck
             _configService.SettingsChanged += _configService_SettingsChanged;
         }
 
-        private readonly IDictionary<VBComponent, CancellationTokenSource> _tokenSources =
-            new Dictionary<VBComponent, CancellationTokenSource>(); 
+        private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
+            new ConcurrentDictionary<VBComponent, CancellationTokenSource>(); 
 
         private async void _hook_KeyPressed(object sender, KeyHookEventArgs e)
         {
             await ParseComponentAsync(e.Component);
         }
 
-        private async Task ParseComponentAsync(VBComponent component)
+        private async Task ParseComponentAsync(VBComponent component, bool resolve = true)
         {
             if (_tokenSources.ContainsKey(component))
             {
-                var existingTokenSource = _tokenSources[component];
+                CancellationTokenSource existingTokenSource;
+                _tokenSources.TryRemove(component, out existingTokenSource);
                 existingTokenSource.Cancel();
                 existingTokenSource.Dispose();
             }
@@ -78,7 +80,16 @@ namespace Rubberduck
             var tokenSource = new CancellationTokenSource();
             _tokenSources[component] = tokenSource;
 
-            await _parser.ParseAsync(component, tokenSource.Token);
+            var token = tokenSource.Token;
+            await _parser.ParseAsync(component, token);
+
+            if (resolve && !token.IsCancellationRequested)
+            {
+                using (var source = new CancellationTokenSource())
+                {
+                    _parser.Resolve(source.Token);
+                }
+            }
         }
 
         public void Startup()
@@ -92,10 +103,18 @@ namespace Rubberduck
             {
                 var components = _vbe.VBProjects.Cast<VBProject>()
                     .SelectMany(project => project.VBComponents.Cast<VBComponent>());
-                foreach (var component in components)
+
+                var result = Parallel.ForEach(components, async component =>
                 {
-                    var vbComponent = component;
-                    Task.Run(() => ParseComponentAsync(vbComponent));
+                    await ParseComponentAsync(component, false);
+                });
+
+                if (result.IsCompleted)
+                {
+                    using (var tokenSource = new CancellationTokenSource())
+                    {
+                        _parser.Resolve(tokenSource.Token);
+                    }
                 }
             });
         }

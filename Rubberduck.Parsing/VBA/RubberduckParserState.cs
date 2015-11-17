@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
@@ -38,6 +39,9 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly ConcurrentDictionary<VBComponent, ITokenStream> _tokenStreams =
             new ConcurrentDictionary<VBComponent, ITokenStream>();
+
+        private readonly ConcurrentDictionary<VBComponent, IParseTree> _parseTrees =
+            new ConcurrentDictionary<VBComponent, IParseTree>();
 
         public event EventHandler StateChanged;
 
@@ -169,8 +173,15 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddTokenStream(VBComponent component, ITokenStream stream)
         {
-            _tokenStreams.TryAdd(component, stream);
+            _tokenStreams[component] = stream;
         }
+
+        public void AddParseTree(VBComponent component, IParseTree parseTree)
+        {
+            _parseTrees[component] = parseTree;
+        }
+
+        public IEnumerable<KeyValuePair<VBComponent, IParseTree>> ParseTrees { get { return _parseTrees; } }
 
         public TokenStreamRewriter GetRewriter(VBComponent component)
         {
