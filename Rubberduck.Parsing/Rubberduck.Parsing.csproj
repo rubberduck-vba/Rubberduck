@@ -85,7 +85,6 @@
     <Compile Include="Symbols\Accessibility.cs" />
     <Compile Include="Symbols\DeclarationSymbolsListener.cs" />
     <Compile Include="Symbols\DeclarationType.cs" />
-    <Compile Include="Symbols\Declarations.cs" />
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
     <Compile Include="Symbols\MsFormsLib.cs" />
