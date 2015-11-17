@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 
@@ -17,15 +16,12 @@ namespace Rubberduck.Inspections
 
     public class Inspector : IInspector, IDisposable
     {
-        private readonly IRubberduckParser _parser;
         private readonly IGeneralConfigService _configService;
         private readonly IEnumerable<IInspection> _inspections;
 
-        public Inspector(IRubberduckParser parser, IGeneralConfigService configService, IEnumerable<IInspection> inspections)
+        public Inspector(IGeneralConfigService configService, IEnumerable<IInspection> inspections)
         {
             _inspections = inspections;
-
-            _parser = parser;
 
             _configService = configService;
             configService.SettingsChanged += ConfigServiceSettingsChanged;
@@ -53,9 +49,9 @@ namespace Rubberduck.Inspections
             }
         }
 
-        public async Task<IList<ICodeInspectionResult>> FindIssuesAsync(RubberduckParserState project, CancellationToken token)
+        public async Task<IList<ICodeInspectionResult>> FindIssuesAsync(RubberduckParserState state, CancellationToken token)
         {
-            if (project == null)
+            if (state == null || !state.AllDeclarations.Any())
             {
                 return new ICodeInspectionResult[]{};
             }
@@ -72,7 +68,7 @@ namespace Rubberduck.Inspections
                     new Task(() =>
                     {
                         token.ThrowIfCancellationRequested();
-                        var inspectionResults = inspection.GetInspectionResults(project);
+                        var inspectionResults = inspection.GetInspectionResults(state);
                         var results = inspectionResults as IList<CodeInspectionResultBase> ?? inspectionResults.ToList();
 
                         if (results.Any())
