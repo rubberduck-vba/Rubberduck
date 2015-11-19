@@ -35,6 +35,9 @@ namespace Rubberduck
 
         private Configuration _config;
 
+        private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
+            new ConcurrentDictionary<VBComponent, CancellationTokenSource>(); 
+
         public App(VBE vbe, IMessageBox messageBox,
             IParserErrorsPresenterFactory parserErrorsPresenterFactory,
             IRubberduckParser parser,
@@ -65,9 +68,6 @@ namespace Rubberduck
         {
             _appMenus.EvaluateCanExecute(_parser.State);
         }
-
-        private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
-            new ConcurrentDictionary<VBComponent, CancellationTokenSource>(); 
 
         private async void _hook_KeyPressed(object sender, KeyHookEventArgs e)
         {
@@ -135,7 +135,6 @@ namespace Rubberduck
         private void CleanReloadConfig()
         {
             LoadConfig();
-            CleanUp();
             Setup();
         }
 
@@ -179,14 +178,18 @@ namespace Rubberduck
         {
             if (!disposing) { return; }
 
-            CleanUp();
-            
             var hook = _hook as IDisposable;
             if (hook != null) hook.Dispose();
+
+            if (_tokenSources.Any())
+            {
+                foreach (var tokenSource in _tokenSources)
+                {
+                    tokenSource.Value.Cancel();
+                    tokenSource.Value.Dispose();
+                }
+            }
         }
 
-        private void CleanUp()
-        {
-        }
     }
 }
