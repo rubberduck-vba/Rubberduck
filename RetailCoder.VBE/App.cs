@@ -171,15 +171,7 @@ namespace Rubberduck
 
         public void Dispose()
         {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing) { return; }
-
-            var hook = _hook as IDisposable;
-            if (hook != null) hook.Dispose();
+            _hook.KeyPressed -= _hook_KeyPressed;
 
             if (_tokenSources.Any())
             {
@@ -190,6 +182,5 @@ namespace Rubberduck
                 }
             }
         }
-
     }
 }
