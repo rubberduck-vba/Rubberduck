@@ -172,6 +172,8 @@ namespace Rubberduck
         public void Dispose()
         {
             _hook.KeyPressed -= _hook_KeyPressed;
+            _configService.SettingsChanged -= _configService_SettingsChanged;
+            _parser.State.StateChanged -= Parser_StateChanged;
 
             if (_tokenSources.Any())
             {
