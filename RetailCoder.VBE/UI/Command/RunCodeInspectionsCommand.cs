@@ -41,7 +41,7 @@ namespace Rubberduck.UI.Command
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {
-            return state.Status == RubberduckParserState.State.Ready;
+            return state.Status == ParserState.Ready;
         }
     }
 }

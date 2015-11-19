@@ -13,26 +13,6 @@ namespace Rubberduck.Parsing.VBA
 {
     public class RubberduckParserState
     {
-        public enum State
-        {
-            /// <summary>
-            /// Parser state is in sync with the actual code in the VBE.
-            /// </summary>
-            Ready,
-            /// <summary>
-            /// Code from modified modules is being parsed.
-            /// </summary>
-            Parsing,
-            /// <summary>
-            /// Resolving identifier references.
-            /// </summary>
-            Resolving,
-            /// <summary>
-            /// Parsing could not be completed for one or more modules.
-            /// </summary>
-            Error
-        }
-
         // keys are the declarations; values indicate whether a declaration is resolved.
         private readonly ConcurrentDictionary<Declaration, ResolutionState> _declarations =
             new ConcurrentDictionary<Declaration, ResolutionState>();
@@ -54,50 +34,34 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private readonly ConcurrentDictionary<VBComponent, State> _moduleStates =
-            new ConcurrentDictionary<VBComponent, State>();
+        private readonly ConcurrentDictionary<VBComponent, ParserState> _moduleStates =
+            new ConcurrentDictionary<VBComponent, ParserState>();
 
-        public void SetModuleState(VBComponent component, State state)
+        private readonly ConcurrentDictionary<VBComponent, SyntaxErrorException> _moduleExceptions =
+            new ConcurrentDictionary<VBComponent, SyntaxErrorException>();
+
+        public void SetModuleState(VBComponent component, ParserState state, SyntaxErrorException parserError = null)
         {
             _moduleStates[component] = state;
-            Status = _moduleStates.Values.Any(value => value == State.Error)
-                ? State.Error
-                : _moduleStates.Values.Any(value => value == State.Parsing)
-                    ? State.Parsing
-                    : _moduleStates.Values.Any(value => value == State.Resolving)
-                        ? State.Resolving
-                        : State.Ready;
+            _moduleExceptions[component] = parserError;
+
+            Status = _moduleStates.Values.Any(value => value == ParserState.Error)
+                ? ParserState.Error
+                : _moduleStates.Values.Any(value => value == ParserState.Parsing)
+                    ? ParserState.Parsing
+                    : _moduleStates.Values.Any(value => value == ParserState.Resolving)
+                        ? ParserState.Resolving
+                        : ParserState.Ready;
+
         }
 
-        private State _status;
-        public State Status { get { return _status; } internal set { _status = value; OnStateChanged(); } }
-
-        public SyntaxErrorException Exception { get; internal set; }
-
-        /// <summary>
-        /// Gets all unresolved declarations.
-        /// </summary>
-        public IEnumerable<Declaration> UnresolvedDeclarations
+        public ParserState GetModuleState(VBComponent component)
         {
-            get
-            {
-                return _declarations.Select(d => d.Key);
-            }
+            return _moduleStates[component];
         }
 
-        /// <summary>
-        /// Gets a copy of the collected declarations containing all identifiers declared for the specified <see cref="component"/>.
-        /// </summary>
-        public IEnumerable<Declaration> Declarations(VBComponent component)
-        {
-            if (component == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            return AllDeclarations.Where(declaration =>
-                declaration.QualifiedName.QualifiedModuleName.Component == component);
-        }
+        private ParserState _status;
+        public ParserState Status { get { return _status; } private set { _status = value; OnStateChanged(); } }
 
         private IEnumerable<QualifiedContext> _obsoleteCallContexts = new List<QualifiedContext>();
 

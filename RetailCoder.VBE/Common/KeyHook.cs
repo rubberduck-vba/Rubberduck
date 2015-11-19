@@ -11,7 +11,14 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Common
 {
-    public class KeyHook
+    public interface IKeyHook
+    {
+        void Attach();
+        void Detach();
+        event EventHandler<KeyHookEventArgs> KeyPressed;
+    }
+
+    public class KeyHook : IKeyHook, IDisposable
     {
         private readonly VBE _vbe;
         // reference: http://blogs.msdn.com/b/toub/archive/2006/05/03/589423.aspx
@@ -149,6 +156,11 @@ namespace Rubberduck.Common
                 }
 
             });
+        }
+
+        public void Dispose()
+        {
+            Detach();
         }
     }
 

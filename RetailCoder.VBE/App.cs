@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -28,7 +29,7 @@ namespace Rubberduck
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
         private readonly ParserStateCommandBar _stateBar;
-        private readonly KeyHook _hook;
+        private readonly IKeyHook _hook;
 
         private readonly Logger _logger;
 
@@ -41,7 +42,7 @@ namespace Rubberduck
             IGeneralConfigService configService,
             IAppMenu appMenus,
             ParserStateCommandBar stateBar,
-            KeyHook hook)
+            IKeyHook hook)
         {
             _vbe = vbe;
             _messageBox = messageBox;
@@ -75,16 +76,7 @@ namespace Rubberduck
 
         private async Task ParseComponentAsync(VBComponent component, bool resolve = true)
         {
-            if (_tokenSources.ContainsKey(component))
-            {
-                CancellationTokenSource existingTokenSource;
-                _tokenSources.TryRemove(component, out existingTokenSource);
-                existingTokenSource.Cancel();
-                existingTokenSource.Dispose();
-            }
-
-            var tokenSource = new CancellationTokenSource();
-            _tokenSources[component] = tokenSource;
+            var tokenSource = RenewTokenSource(component);
 
             var token = tokenSource.Token;
             await _parser.ParseAsync(component, token);
@@ -96,6 +88,21 @@ namespace Rubberduck
                     _parser.Resolve(source.Token);
                 }
             }
+        }
+
+        private CancellationTokenSource RenewTokenSource(VBComponent component)
+        {
+            if (_tokenSources.ContainsKey(component))
+            {
+                CancellationTokenSource existingTokenSource;
+                _tokenSources.TryRemove(component, out existingTokenSource);
+                existingTokenSource.Cancel();
+                existingTokenSource.Dispose();
+            }
+
+            var tokenSource = new CancellationTokenSource();
+            _tokenSources[component] = tokenSource;
+            return tokenSource;
         }
 
         public void Startup()
@@ -173,7 +180,9 @@ namespace Rubberduck
             if (!disposing) { return; }
 
             CleanUp();
-            _hook.Detach();
+            
+            var hook = _hook as IDisposable;
+            if (hook != null) hook.Dispose();
         }
 
         private void CleanUp()

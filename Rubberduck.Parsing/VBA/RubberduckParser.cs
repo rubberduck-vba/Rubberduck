@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,18 +20,48 @@ namespace Rubberduck.Parsing.VBA
     public class RubberduckParser : IRubberduckParser
     {
         private readonly VBE _vbe;
-        private readonly ParseCoordinator _coordinator;
         private readonly Logger _logger;
 
-        public RubberduckParser(VBE vbe)
+        public RubberduckParser(VBE vbe, RubberduckParserState state)
         {
             _vbe = vbe;
+            _state = state;
             _logger = LogManager.GetCurrentClassLogger();
-            _coordinator = new ParseCoordinator((component, state) => State.SetModuleState(component, state));
         }
 
-        private readonly RubberduckParserState _state = new RubberduckParserState();
+        private readonly RubberduckParserState _state;
         public RubberduckParserState State { get { return _state; } }
+
+        public async Task ParseAsync(VBComponent vbComponent, CancellationToken token)
+        {
+            var component = vbComponent;
+
+            var parseTask = Task.Run(() => ParseInternal(component, token), token);
+
+            try
+            {
+                await parseTask;
+            }
+            catch (SyntaxErrorException exception)
+            {
+                State.SetModuleState(component, ParserState.Error, exception);
+            }
+            catch (OperationCanceledException)
+            {
+                //we've already started another parser task when this exception is thrown
+                //State.SetModuleState(vbComponent, ParserState.Parsing); 
+            } 
+        }
+
+        public void Resolve(CancellationToken token)
+        {
+            var options = new ParallelOptions { CancellationToken = token };
+            Parallel.ForEach(_state.ParseTrees, options, kvp =>
+            {
+                token.ThrowIfCancellationRequested();
+                ResolveReferences(kvp.Key, kvp.Value, token);
+            });
+        }
 
         private IEnumerable<CommentNode> ParseComments(QualifiedModuleName qualifiedName)
         {
@@ -44,7 +74,7 @@ namespace Rubberduck.Parsing.VBA
 
             for (var i = 0; i < code.Length; i++)
             {
-                var line = code[i];                
+                var line = code[i];
                 var index = 0;
 
                 if (continuing || line.HasComment(out index))
@@ -62,19 +92,66 @@ namespace Rubberduck.Parsing.VBA
 
                         var result = new CommentNode(commentBuilder.ToString(), new QualifiedSelection(qualifiedName, selection));
                         commentBuilder.Clear();
-                        
+
                         yield return result;
                     }
                     else
                     {
                         // ignore line continuations in comment text:
-                        commentBuilder.Append(line.Substring(index, commentLength).TrimStart()); 
+                        commentBuilder.Append(line.Substring(index, commentLength).TrimStart());
                     }
                 }
             }
         }
 
-        private IParseTree Parse(string code, IEnumerable<IParseTreeListener> listeners, out ITokenStream outStream)
+        private void ParseInternal(VBComponent vbComponent, CancellationToken token)
+        {
+            _state.ClearDeclarations(vbComponent);
+            State.SetModuleState(vbComponent, ParserState.Parsing);
+
+            var qualifiedName = new QualifiedModuleName(vbComponent);
+            _state.SetModuleComments(vbComponent, ParseComments(qualifiedName));
+
+            var obsoleteCallsListener = new ObsoleteCallStatementListener();
+            var obsoleteLetListener = new ObsoleteLetStatementListener();
+
+            var listeners = new IParseTreeListener[]
+            {
+                obsoleteCallsListener,
+                obsoleteLetListener
+            };
+
+            token.ThrowIfCancellationRequested();
+
+            ITokenStream stream;
+            var code = vbComponent.CodeModule.Lines();
+            var tree = ParseInternal(code, listeners, out stream);
+
+            token.ThrowIfCancellationRequested();
+            _state.AddTokenStream(vbComponent, stream);
+            _state.AddParseTree(vbComponent, tree);
+
+            // cannot locate declarations in one pass *the way it's currently implemented*,
+            // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
+            // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
+            var declarationsListener = new DeclarationSymbolsListener(qualifiedName, Accessibility.Implicit, vbComponent.Type, _state.Comments, token);
+
+            token.ThrowIfCancellationRequested();
+            declarationsListener.NewDeclaration += declarationsListener_NewDeclaration;
+            declarationsListener.CreateModuleDeclarations();
+
+            token.ThrowIfCancellationRequested();
+            var walker = new ParseTreeWalker();
+            walker.Walk(declarationsListener, tree);
+            declarationsListener.NewDeclaration -= declarationsListener_NewDeclaration;
+
+            _state.ObsoleteCallContexts = obsoleteCallsListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
+            _state.ObsoleteLetContexts = obsoleteLetListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
+
+            State.SetModuleState(vbComponent, ParserState.Parsed);
+        }
+
+        private IParseTree ParseInternal(string code, IEnumerable<IParseTreeListener> listeners, out ITokenStream outStream)
         {
             var input = new AntlrInputStream(code);
             var lexer = new VBALexer(input);
@@ -91,68 +168,6 @@ namespace Rubberduck.Parsing.VBA
             return parser.startRule();
         }
 
-        public async Task ParseAsync(VBComponent vbComponent, CancellationToken token)
-        {
-            await _coordinator.StartAsync(vbComponent, Task.Run(() => ParseInternal(vbComponent, token), token));
-        }
-
-        public void Resolve(CancellationToken token)
-        {
-            _state.Status = RubberduckParserState.State.Resolving;
-
-            var options = new ParallelOptions { CancellationToken = token };
-            Parallel.ForEach(_state.ParseTrees, options, kvp =>
-            {
-                token.ThrowIfCancellationRequested();
-                ResolveReferences(kvp.Key, kvp.Value, token);
-            });
-
-            _state.Status = RubberduckParserState.State.Ready;
-        }
-
-        private void ParseInternal(VBComponent vbComponent, CancellationToken token)
-        {
-            _state.ClearDeclarations(vbComponent);
-
-            var qualifiedName = new QualifiedModuleName(vbComponent);
-            _state.SetModuleComments(vbComponent, ParseComments(qualifiedName));
-
-            var obsoleteCallsListener = new ObsoleteCallStatementListener();
-            var obsoleteLetListener = new ObsoleteLetStatementListener();
-
-            var listeners = new IParseTreeListener[]
-            {
-                obsoleteCallsListener,
-                obsoleteLetListener
-            };
-
-            _state.Status = RubberduckParserState.State.Parsing;
-            token.ThrowIfCancellationRequested();
-
-            ITokenStream stream;
-            var code = vbComponent.CodeModule.Lines();
-            var tree = Parse(code, listeners, out stream);
-
-            token.ThrowIfCancellationRequested();
-            _state.AddTokenStream(vbComponent, stream);
-            _state.AddParseTree(vbComponent, tree);
-
-            // cannot locate declarations in one pass *the way it's currently implemented*,
-            // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
-            // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
-            var declarationsListener = new DeclarationSymbolsListener(qualifiedName, Accessibility.Implicit, vbComponent.Type, _state.Comments, token);
-            
-            declarationsListener.NewDeclaration += declarationsListener_NewDeclaration;
-            declarationsListener.CreateModuleDeclarations();
-
-            var walker = new ParseTreeWalker();
-            walker.Walk(declarationsListener, tree);
-            declarationsListener.NewDeclaration -= declarationsListener_NewDeclaration;
-
-            _state.ObsoleteCallContexts = obsoleteCallsListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
-            _state.ObsoleteLetContexts = obsoleteLetListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
-        }
-
         private void declarationsListener_NewDeclaration(object sender, DeclarationEventArgs e)
         {
              _state.AddDeclaration(e.Declaration);
@@ -160,50 +175,57 @@ namespace Rubberduck.Parsing.VBA
 
         private void ResolveReferences(VBComponent component, IParseTree tree, CancellationToken token)
         {
-            _state.Status = RubberduckParserState.State.Resolving;
+            if (_state.GetModuleState(component) != ParserState.Parsed)
+            {
+                return;
+            }
+
+            _state.SetModuleState(component, ParserState.Resolving);
             var declarations = _state.AllDeclarations;
 
             var resolver = new IdentifierReferenceResolver(new QualifiedModuleName(component), declarations);
             var listener = new IdentifierReferenceListener(resolver, token);
             var walker = new ParseTreeWalker();
             walker.Walk(listener, tree);
+
+            _state.SetModuleState(component, ParserState.Ready);
         }
-    }
 
-    public class ObsoleteCallStatementListener : VBABaseListener
-    {
-        private readonly IList<VBAParser.ExplicitCallStmtContext> _contexts = new List<VBAParser.ExplicitCallStmtContext>();
-        public IEnumerable<VBAParser.ExplicitCallStmtContext> Contexts { get { return _contexts; } }
-
-        public override void EnterExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
+        private class ObsoleteCallStatementListener : VBABaseListener
         {
-            var procedureCall = context.eCS_ProcedureCall();
-            if (procedureCall != null)
+            private readonly IList<VBAParser.ExplicitCallStmtContext> _contexts = new List<VBAParser.ExplicitCallStmtContext>();
+            public IEnumerable<VBAParser.ExplicitCallStmtContext> Contexts { get { return _contexts; } }
+
+            public override void EnterExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
             {
-                if (procedureCall.CALL() != null)
+                var procedureCall = context.eCS_ProcedureCall();
+                if (procedureCall != null)
+                {
+                    if (procedureCall.CALL() != null)
+                    {
+                        _contexts.Add(context);
+                        return;
+                    }
+                }
+
+                var memberCall = context.eCS_MemberProcedureCall();
+                if (memberCall == null) return;
+                if (memberCall.CALL() == null) return;
+                _contexts.Add(context);
+            }
+        }
+
+        private class ObsoleteLetStatementListener : VBABaseListener
+        {
+            private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
+            public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
+
+            public override void EnterLetStmt(VBAParser.LetStmtContext context)
+            {
+                if (context.LET() != null)
                 {
                     _contexts.Add(context);
-                    return;
                 }
-            }
-
-            var memberCall = context.eCS_MemberProcedureCall();
-            if (memberCall == null) return;
-            if (memberCall.CALL() == null) return;
-            _contexts.Add(context);
-        }
-    }
-
-    public class ObsoleteLetStatementListener : VBABaseListener
-    {
-        private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
-        public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
-
-        public override void EnterLetStmt(VBAParser.LetStmtContext context)
-        {
-            if (context.LET() != null)
-            {
-                _contexts.Add(context);
             }
         }
     }
