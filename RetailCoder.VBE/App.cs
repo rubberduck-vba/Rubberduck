@@ -58,7 +58,6 @@ namespace Rubberduck
             _hook = hook;
             _logger = LogManager.GetCurrentClassLogger();
 
-            _hook.Attach();
             _hook.KeyPressed += _hook_KeyPressed;
             _configService.SettingsChanged += _configService_SettingsChanged;
             _parser.State.StateChanged += Parser_StateChanged;
@@ -130,6 +129,8 @@ namespace Rubberduck
                     }
                 }
             });
+
+            _hook.Attach();
         }
  
         private void CleanReloadConfig()
