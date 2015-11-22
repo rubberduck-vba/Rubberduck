@@ -9,7 +9,7 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class SourceControlPresenter : DockablePresenterBase
+    public class SourceControlPresenter : DockableToolwindowPresenter
     {
         private readonly IChangesPresenter _changesPresenter;
         private readonly IBranchesPresenter _branchesPresenter;

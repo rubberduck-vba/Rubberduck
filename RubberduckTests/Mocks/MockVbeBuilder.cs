@@ -40,6 +40,8 @@ namespace RubberduckTests.Mocks
                 _codePanes.Add(component.CodeModule.CodePane);
             }
 
+            _vbe.SetupGet(vbe => vbe.ActiveVBProject).Returns(project.Object);
+
             return this;
         }
 

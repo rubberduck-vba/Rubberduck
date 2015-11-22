@@ -1,4 +1,4 @@
-﻿using Rubberduck.Parsing;
+﻿using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -8,11 +8,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
     {
         private readonly IActiveCodePaneEditor _editor;
         private readonly IRemoveParametersView _view;
-        private readonly VBProjectParseResult _parseResult;
+        private readonly RubberduckParserState _parseResult;
         private readonly IMessageBox _messageBox;
 
         public RemoveParametersPresenterFactory(IActiveCodePaneEditor editor, IRemoveParametersView view,
-            VBProjectParseResult parseResult, IMessageBox messageBox)
+            RubberduckParserState parseResult, IMessageBox messageBox)
         {
             _editor = editor;
             _view = view;

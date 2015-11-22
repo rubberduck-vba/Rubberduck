@@ -3,7 +3,6 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Reflection;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -21,6 +20,9 @@ namespace Rubberduck.UI.UnitTesting
 
         public override void Refresh()
         {
+            IsBusy = true;
+
+            // todo: implement using IRubberduckParser and parse results.
             var tests = _vbe.VBProjects.Cast<VBProject>()
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
                 .SelectMany(project => project.VBComponents.Cast<VBComponent>())
@@ -30,12 +32,14 @@ namespace Rubberduck.UI.UnitTesting
                     new TestMethod(method.QualifiedMemberName, _vbe)));
 
             Tests.Clear();
+            ExecutedCount = 0;
             foreach (var test in tests)
             {                
                 Tests.Add(test);
             }
 
             OnPropertyChanged("Tests");
+            IsBusy = false;
         }
     }
 }

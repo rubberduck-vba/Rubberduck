@@ -13,7 +13,15 @@ namespace Rubberduck.VBEditor.VBEHost
         protected HostApplicationBase(string applicationName)
         {
             _applicationName = applicationName;
-            Application = (TApplication)Marshal.GetActiveObject(applicationName + ".Application");
+
+            try
+            {
+                Application = (TApplication)Marshal.GetActiveObject(applicationName + ".Application");
+            }
+            catch (COMException)
+            {
+                Application = null; // unit tests don't need it anyway.
+            }
         }
 
         ~HostApplicationBase()

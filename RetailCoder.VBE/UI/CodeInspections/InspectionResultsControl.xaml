@@ -10,6 +10,39 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeInspections:InspectionResultsViewModel}">
     <UserControl.Resources>
+        
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        
+        <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
+
+            <Setter Property="Width" Value="Auto"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter Content="{TemplateBinding Content}" 
+                                  ContentTemplate="{TemplateBinding  ContentTemplate}"
+                                  VerticalAlignment="Center">
+                            <ContentPresenter.Resources>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="TextDecorations" Value="Underline" />
+                                </Style>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="Blue" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Foreground" Value="Gray" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
@@ -70,7 +103,7 @@
 
         <DataTemplate x:Key="InspectionResultTemplate" 
                       DataType="{x:Type inspections:ICodeInspectionResult}">
-            <StackPanel Orientation="Horizontal" Margin="2">
+            <StackPanel Orientation="Horizontal" Margin="2" HorizontalAlignment="Stretch">
                 <TextBlock VerticalAlignment="Center" 
                            Margin="4"
                            Text="{Binding Name}" 
@@ -83,18 +116,18 @@
                                   ItemsSource="{Binding Items}"
                                   ItemTemplate="{StaticResource InspectionResultTemplate}">
 
-            <StackPanel Orientation="Horizontal" Margin="2">
+            <StackPanel Orientation="Horizontal" Margin="2" HorizontalAlignment="Stretch">
                 <Image Style="{StaticResource IconStyle}" 
                        Source="{Binding Name, Converter={StaticResource InspectionIconConverter}}"
                        VerticalAlignment="Center" />
                 <TextBlock Margin="4" 
                            VerticalAlignment="Center" 
                            Text="{Binding Name, Converter={StaticResource InspectionDescriptionConverter}}"
-                           TextWrapping="NoWrap"/>
+                           TextWrapping="Wrap"/>
                 <TextBlock Margin="0,4,4,4" 
                            VerticalAlignment="Center" 
                            Text="{Binding ItemCount, StringFormat=({0})}" 
-                           TextWrapping="NoWrap"/>
+                           TextWrapping="Wrap"/>
             </StackPanel>
         </HierarchicalDataTemplate>
 
@@ -102,15 +135,15 @@
                                     DataType="{x:Type CollectionViewGroup}"
                                     ItemsSource="{Binding Items}"
                                     ItemTemplate="{StaticResource InspectionGroupsTemplate}">
-            <StackPanel Orientation="Horizontal" Margin="2">
+            <StackPanel Orientation="Horizontal" Margin="2" HorizontalAlignment="Stretch">
                 <TextBlock VerticalAlignment="Center" 
                            Text="{Binding Name}"
                            FontWeight="Bold"
-                           TextWrapping="NoWrap"/>
+                           TextWrapping="Wrap"/>
                 <TextBlock Margin="4,0,4,0" 
                            VerticalAlignment="Center" 
                            Text="{Binding ItemCount, StringFormat=({0})}" 
-                           TextWrapping="NoWrap"/>
+                           TextWrapping="Wrap"/>
             </StackPanel>
         </HierarchicalDataTemplate>
 
@@ -119,16 +152,16 @@
                                   ItemsSource="{Binding Items}"
                                   ItemTemplate="{StaticResource InspectionGroupsTemplate}">
 
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                 <Image Style="{StaticResource IconStyle}" Source="../../Resources/Microsoft/PNG/VSObject_Module.png" />
                 <TextBlock VerticalAlignment="Center" 
                            Text="{Binding Name}"
                            FontWeight="Bold"
-                           TextWrapping="NoWrap"/>
+                           TextWrapping="Wrap"/>
                 <TextBlock Margin="4,0,4,0" 
                            VerticalAlignment="Center" 
                            Text="{Binding ItemCount, StringFormat=({0})}" 
-                           TextWrapping="NoWrap"/>
+                           TextWrapping="Wrap"/>
             </StackPanel>
         </HierarchicalDataTemplate>
         
@@ -180,10 +213,6 @@
             <Button Command="{Binding CopyResultsCommand}">
                 <Image Height="16" Source="../../Resources/document-copy.png" />
             </Button>
-
-            <Button Command="{Binding ExportResultsCommand}">
-                <Image Height="16" Source="../../Resources/disk.png" />
-            </Button>
             
             <ToggleButton x:Name="TreeViewStyleToggle" Click="ToggleButton_Click">
                 <Image Style="{StaticResource IconStyle}"
@@ -193,26 +222,47 @@
         </ToolBar>
         
         <TreeView Grid.Row="1" x:Name="InspectionResultsTreeView"
+                  IsEnabled="{Binding CanRefresh}"
                   ItemsSource="{Binding Source={StaticResource InspectionTypeGroupViewSource}, Path=Groups}"
                   ItemTemplate="{StaticResource InspectionTypeGroupsTemplate}"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
+                  HorizontalContentAlignment="Stretch"
                   MouseDoubleClick="InspectionResultsTreeView_OnMouseDoubleClick">
             <i:Interaction.Behaviors>
                 <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
         </TreeView>
+        
+        <resx:BusyIndicator Grid.Row="1" Width="36" Height="36" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
         <GridSplitter Grid.Row="2" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 
         <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
 
             <StackPanel Orientation="Vertical" MinHeight="48" Background="Gainsboro">
+                
                 <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Stretch">
                     <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center" 
                            Source="{Binding SelectedItem.Inspection.Severity, Converter={StaticResource SeverityIconConverter}}"/>
                     <TextBlock Margin="4" Text="{Binding SelectedItem.Name}" FontWeight="Bold" TextWrapping="Wrap"/>
                 </StackPanel>
+                
                 <TextBlock Margin="8" Text="{Binding SelectedItem.QualifiedSelection}" TextWrapping="Wrap" />
+                
+                <WrapPanel>
+                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                            Visibility="{Binding CanExecuteQuickFixInModule, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding QuickFixInModuleCommand}"
+                            Content="{x:Static resx:RubberduckUI.QuickFix_ThisModule}" />
+                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                            Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding QuickFixInProjectCommand}"
+                            Content="{x:Static resx:RubberduckUI.QuickFix_ThisProject}" />
+                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                            Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding DisableInspectionCommand}"
+                            Content="{x:Static resx:RubberduckUI.DisableThisInspection}" />
+                </WrapPanel>
             </StackPanel>
         </Border>
         

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Moq;
+using Rubberduck.Parsing.Grammar;
 
 namespace RubberduckTests.Mocks
 {
@@ -25,6 +26,8 @@ namespace RubberduckTests.Mocks
         {
             _getVbe = getVbe;
             _mockVbeBuilder = mockVbeBuilder;
+
+
 
             _project = CreateProjectMock(name, protection);
 
@@ -67,10 +70,11 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="name">The name of the referenced library.</param>
         /// <param name="filePath">The path to the referenced library.</param>
+        /// <param name="isBuiltIn">Indicates whether the reference is a built-in reference.</param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
-        public MockProjectBuilder AddReference(string name, string filePath)
+        public MockProjectBuilder AddReference(string name, string filePath, bool isBuiltIn = false)
         {
-            var reference = CreateReferenceMock(name, filePath);
+            var reference = CreateReferenceMock(name, filePath, isBuiltIn);
             _references.Add(reference.Object);
             return this;
         }
@@ -150,7 +154,7 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
-        private Mock<Reference> CreateReferenceMock(string name, string filePath)
+        private Mock<Reference> CreateReferenceMock(string name, string filePath, bool isBuiltIn = true)
         {
             var result = new Mock<Reference>();
 
@@ -159,6 +163,8 @@ namespace RubberduckTests.Mocks
 
             result.SetupGet(m => m.Name).Returns(() => name);
             result.SetupGet(m => m.FullPath).Returns(() => filePath);
+
+            result.SetupGet(m => m.BuiltIn).Returns(isBuiltIn);
 
             return result;
         }
@@ -195,12 +201,19 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
+        private static readonly string[] ModuleBodyTokens =
+        {
+            Tokens.Sub, Tokens.Function, Tokens.Property
+        };
+
         private Mock<CodeModule> CreateCodeModuleMock(string content)
         {
             var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
             var codeModule = new Mock<CodeModule>();
             codeModule.SetupGet(c => c.CountOfLines).Returns(() => lines.Count);
+            codeModule.SetupGet(c => c.CountOfDeclarationLines).Returns(() =>
+                lines.TakeWhile(line => !ModuleBodyTokens.Any(line.Contains)).Count());
 
             // ReSharper disable once UseIndexedProperty
             codeModule.Setup(m => m.get_Lines(It.IsAny<int>(), It.IsAny<int>()))

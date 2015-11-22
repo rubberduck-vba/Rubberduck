@@ -882,11 +882,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disable this inspection.
+        /// </summary>
+        public static string DisableThisInspection {
+            get {
+                return ResourceManager.GetString("DisableThisInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         public static System.Drawing.Icon Ducky {
             get {
-                object obj = ResourceManager.GetObject("Ducky");
+                object obj = ResourceManager.GetObject("Ducky", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -1041,6 +1050,24 @@ namespace Rubberduck.UI {
         public static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is an implicit reference to the active worksheet.
+        /// </summary>
+        public static string ImplicitActiveSheetReference_ {
+            get {
+                return ResourceManager.GetString("ImplicitActiveSheetReference_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is an implicit reference to the active workbook.
+        /// </summary>
+        public static string ImplicitActiveWorkbookReference_ {
+            get {
+                return ResourceManager.GetString("ImplicitActiveWorkbookReference_", resourceCulture);
             }
         }
         
@@ -1360,6 +1387,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Make ActiveSheet reference explicit.
+        /// </summary>
+        public static string MakeActiveSheetReferenceExplicit {
+            get {
+                return ResourceManager.GetString("MakeActiveSheetReferenceExplicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make ActiveWorkbook reference explicit.
+        /// </summary>
+        public static string MakeActiveWorkbookReferenceExplicit {
+            get {
+                return ResourceManager.GetString("MakeActiveWorkbookReferenceExplicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Module Name.
         /// </summary>
         public static string ModuleName {
@@ -1603,6 +1648,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Details.
+        /// </summary>
+        public static string ParserProgress_ShowDetails {
+            get {
+                return ResourceManager.GetString("ParserProgress_ShowDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parsing project components....
         /// </summary>
         public static string ParseStarted {
@@ -1690,16 +1744,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This instance.
-        /// </summary>
-        public static string QuickFix_ThisInstance {
-            get {
-                return ResourceManager.GetString("QuickFix_ThisInstance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All instances in module.
+        ///   Looks up a localized string similar to Fix all occurrences in module.
         /// </summary>
         public static string QuickFix_ThisModule {
             get {
@@ -1708,11 +1753,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All instances in project.
+        ///   Looks up a localized string similar to Fix all occurrences in project.
         /// </summary>
         public static string QuickFix_ThisProject {
             get {
                 return ResourceManager.GetString("QuickFix_ThisProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use &apos;{0}$&apos; instead of &apos;{0}&apos;..
+        /// </summary>
+        public static string QuickFixUseTypedFunction_ {
+            get {
+                return ResourceManager.GetString("QuickFixUseTypedFunction_", resourceCulture);
             }
         }
         
@@ -2096,7 +2150,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Resolving &apos;{0}&apos;....
+        ///   Looks up a localized string similar to Resolving....
         /// </summary>
         public static string ResolutionProgress {
             get {

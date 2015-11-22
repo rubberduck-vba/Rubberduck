@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Rubberduck.UI.Command;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
@@ -19,6 +19,14 @@ namespace Rubberduck
             foreach (var menu in _menus)
             {
                 menu.Initialize();
+            }
+        }
+
+        public void EvaluateCanExecute(RubberduckParserState state)
+        {
+            foreach (var menu in _menus)
+            {
+                menu.EvaluateCanExecute(state);
             }
         }
 

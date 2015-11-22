@@ -1,6 +1,6 @@
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 
@@ -9,20 +9,19 @@ namespace Rubberduck.UI.Command.Refactorings
     [ComVisible(false)]
     public class RefactorExtractMethodCommand : RefactorCommandBase
     {
-        public RefactorExtractMethodCommand (VBE vbe, IRubberduckParser parser, IActiveCodePaneEditor editor)
-            : base (vbe, parser, editor)
+        private readonly RubberduckParserState _state;
+
+        public RefactorExtractMethodCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor)
+            : base (vbe, editor)
         {
+            _state = state;
         }
 
         public override void Execute(object parameter)
         {
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(Parser, Vbe.ActiveVBProject);
-
-            var declarations = result.Declarations;
-            var factory = new ExtractMethodPresenterFactory(Editor, declarations);
+            var factory = new ExtractMethodPresenterFactory(Editor, _state.AllDeclarations);
             var refactoring = new ExtractMethodRefactoring(factory, Editor);
-            refactoring.InvalidSelection += refactoring_InvalidSelection;
+            refactoring.InvalidSelection += HandleInvalidSelection;
             refactoring.Refactor();
         }
     }

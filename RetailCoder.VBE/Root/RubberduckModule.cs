@@ -1,17 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Conventions;
+using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI;
+using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.UnitTesting;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Root
@@ -31,11 +35,15 @@ namespace Rubberduck.Root
 
         public override void Load()
         {
-            _kernel.Bind<App>().ToSelf();
+            Debug.Print("in RubberduckModule.Load()");
+
+            _kernel.Bind<App>().ToSelf().InSingletonScope();
 
             // bind VBE and AddIn dependencies to host-provided instances.
             _kernel.Bind<VBE>().ToConstant(_vbe);
             _kernel.Bind<AddIn>().ToConstant(_addin);
+
+            _kernel.Bind<RubberduckParserState>().ToSelf().InSingletonScope();
 
             BindCodeInspectionTypes();
 
@@ -50,11 +58,19 @@ namespace Rubberduck.Root
             ApplyDefaultInterfacesConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
 
-            Bind<IPresenter>().To<TestExplorerDockablePresenter>().WhenInjectedInto<TestExplorerCommand>().InSingletonScope();
-            Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>(); // note: ThisOutlookSessionTestExplorerModel is useless
-            
-            Bind<IDockableUserControl>().To<TestExplorerWindow>().WhenInjectedInto<TestExplorerDockablePresenter>().InSingletonScope()
-                .WithPropertyValue("ViewModel", _kernel.Get<TestExplorerViewModel>());
+            Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>().InSingletonScope();
+
+            Bind<IPresenter>().To<TestExplorerDockablePresenter>()
+                .WhenInjectedInto<TestExplorerCommand>()
+                .InSingletonScope()
+                .WithConstructorArgument<IDockableUserControl>(new TestExplorerWindow { ViewModel = _kernel.Get<TestExplorerViewModel>() });
+
+            Bind<IPresenter>().To<CodeInspectionsDockablePresenter>()
+                .WhenInjectedInto<RunCodeInspectionsCommand>()
+                .InSingletonScope()
+                .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>() });
+
+            Debug.Print("completed RubberduckModule.Load()");
         }
 
         private void ApplyDefaultInterfacesConvention(IEnumerable<Assembly> assemblies)
@@ -64,7 +80,7 @@ namespace Rubberduck.Root
                 // inspections & factories have their own binding rules
                 .Where(type => !type.Name.EndsWith("Factory") && !type.GetInterfaces().Contains(typeof(IInspection)))
                 .BindDefaultInterface()
-                .Configure(binding => binding.InThreadScope())); // TransientScope wouldn't dispose disposables
+                .Configure(binding => binding.InCallScope())); // TransientScope wouldn't dispose disposables
         }
 
         // note: settings namespace classes are injected in singleton scope

@@ -1711,19 +1711,6 @@ public partial class VBABaseListener : IVBAListener {
 	public virtual void ExitIfConditionStmt([NotNull] VBAParser.IfConditionStmtContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.moduleBlock"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterModuleBlock([NotNull] VBAParser.ModuleBlockContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.moduleBlock"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitModuleBlock([NotNull] VBAParser.ModuleBlockContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.vsLeq"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

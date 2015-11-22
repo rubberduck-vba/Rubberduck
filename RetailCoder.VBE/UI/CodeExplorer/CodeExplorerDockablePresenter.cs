@@ -5,16 +5,18 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.CodeExplorer
 {
-    public class CodeExplorerDockablePresenter : DockablePresenterBase
+    public class CodeExplorerDockablePresenter : DockableToolwindowPresenter
     {
         private readonly IRubberduckParser _parser;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
@@ -24,64 +26,10 @@ namespace Rubberduck.UI.CodeExplorer
             : base(vbe, addIn, view)
         {
             _parser = parser;
-            _parser.ParseStarted += _parser_ParseStarted;
-            _parser.ParseCompleted += _parser_ParseCompleted;
+            //_parser.ParseStarted += _parser_ParseStarted;
+            //_parser.ParseCompleted += _parser_ParseCompleted;
             RegisterControlEvents();
             _wrapperFactory = wrapperFactory;
-        }
-
-        private void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
-        {
-            if (sender == this)
-            {
-                _parseResults = e.ParseResults;
-                Control.Invoke((MethodInvoker)delegate
-                {
-                    Control.SolutionTree.Nodes.Clear();
-                    foreach (var result in _parseResults)
-                    {
-                        var node = new TreeNode(result.Project.Name);
-                        node.ImageKey = "Hourglass";
-                        node.SelectedImageKey = node.ImageKey;
-
-                        AddProjectNodes(result, node);
-                        Control.SolutionTree.Nodes.Add(node);
-                    }
-                });
-            }
-            else
-            {
-                _parseResults = e.ParseResults;
-            }
-
-            Control.Invoke((MethodInvoker)delegate
-            {
-                Control.EnableRefresh();
-            });
-        }
-
-        private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
-        {
-            Control.Invoke((MethodInvoker)delegate
-            {
-                Control.EnableRefresh(false);
-            });
-
-            if (sender == this)
-            {
-                Control.Invoke((MethodInvoker) delegate
-                {
-                    Control.SolutionTree.Nodes.Clear();
-                    foreach (var name in e.ProjectNames)
-                    {
-                        var node = new TreeNode(string.Format(RubberduckUI.CodeExplorerDockablePresenter_ParseStarted, name));
-                        node.ImageKey = "Hourglass";
-                        node.SelectedImageKey = node.ImageKey;
-
-                        Control.SolutionTree.Nodes.Add(node);
-                    }
-                });
-            }
         }
 
         public override void Show()
@@ -255,32 +203,35 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void RefreshExplorerTreeView()
         {
-            Control.Invoke((MethodInvoker) delegate
-            {
-                Control.SolutionTree.Nodes.Clear();
-                Control.ShowDesignerButton.Enabled = false;
-            });
+            //Control.Invoke((MethodInvoker) delegate
+            //{
+            //    Control.SolutionTree.Nodes.Clear();
+            //    Control.ShowDesignerButton.Enabled = false;
+            //});
 
-            _parser.Parse(VBE, this);
+            //_parser.Parse(VBE, this);
         }
 
-        private void AddProjectNodes(VBProjectParseResult parseResult, TreeNode root)
+        private void AddProjectNodes(RubberduckParserState parseResult, TreeNode root)
         {
-            var project = parseResult.Project;
-            if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
+            var projects = parseResult.AllDeclarations.OfType(DeclarationType.Project);
+            foreach (var project in projects)
             {
+                if (project.Project.Protection == vbext_ProjectProtection.vbext_pp_locked)
+                {
                     root.ImageKey = "Locked";
-            }
-            else
-            {
-                var nodes = CreateModuleNodes(parseResult);
-                AddProjectFolders(project, root, nodes.ToArray());
-                root.ImageKey = "ClosedFolder";
-                root.Expand();
-            }
+                }
+                else
+                {
+                    var nodes = CreateModuleNodes(parseResult);
+                    AddProjectFolders(project.Project, root, nodes.ToArray());
+                    root.ImageKey = "ClosedFolder";
+                    root.Expand();
+                }
 
-            root.Tag = parseResult.Declarations[project.Name].SingleOrDefault(d => d.DeclarationType == DeclarationType.Project);
-            root.Text = project.Name;
+                root.Tag = project;
+                root.Text = project.ProjectName;
+            }
         }
 
         private static readonly IDictionary<vbext_ComponentType, string> ComponentTypeIcons =
@@ -292,8 +243,6 @@ namespace Rubberduck.UI.CodeExplorer
                 { vbext_ComponentType.vbext_ct_ActiveXDesigner, "ClassModule"},
                 { vbext_ComponentType.vbext_ct_MSForm, "Form"}
             };
-
-        private IEnumerable<VBProjectParseResult> _parseResults;
 
         private void AddProjectFolders(VBProject project, TreeNode root, TreeNode[] components)
         {
@@ -351,13 +300,14 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
-        private IEnumerable<TreeNode> CreateModuleNodes(VBProjectParseResult parseResult)
+        private IEnumerable<TreeNode> CreateModuleNodes(RubberduckParserState parseResult)
         {
+            var declarations = parseResult.AllDeclarations.ToList();
             var result = new List<TreeNode>();
-            foreach (var componentParseResult in parseResult.ComponentParseResults)
+            foreach (var componentParseResult in declarations.GroupBy(d => d.QualifiedName.QualifiedModuleName))
             {
-                var component = componentParseResult.Component;
-                var members = parseResult.Declarations.Items
+                var component = componentParseResult.Key.Component;
+                var members = declarations
                     .Where(declaration => declaration.ParentScope == component.Collection.Parent.Name + "." + component.Name
                         && declaration.DeclarationType != DeclarationType.Control
                         && declaration.DeclarationType != DeclarationType.ModuleOption);
@@ -365,7 +315,7 @@ namespace Rubberduck.UI.CodeExplorer
                 var node = new TreeNode(component.Name);
                 node.ImageKey = ComponentTypeIcons[component.Type];
                 node.SelectedImageKey = node.ImageKey;
-                node.Tag = parseResult.Declarations.Items.SingleOrDefault(item => 
+                node.Tag = declarations.SingleOrDefault(item => 
                     item.IdentifierName == component.Name 
                     && item.Project == component.Collection.Parent
                     && (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module));
@@ -389,7 +339,7 @@ namespace Rubberduck.UI.CodeExplorer
                         || declaration.DeclarationType == DeclarationType.Enumeration)
                     {
                         var subDeclaration = declaration;
-                        var subMembers = parseResult.Declarations.Items.Where(item => 
+                        var subMembers = declarations.Where(item => 
                             (item.DeclarationType == DeclarationType.EnumerationMember || item.DeclarationType == DeclarationType.UserDefinedTypeMember)
                             && item.Context != null && subDeclaration.Context.Equals(item.Context.Parent));
 
@@ -591,14 +541,6 @@ namespace Rubberduck.UI.CodeExplorer
             }
 
             return result;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            _parser.ParseStarted -= _parser_ParseStarted;
-            _parser.ParseCompleted -= _parser_ParseCompleted;
-
-            base.Dispose();
         }
     }
 }

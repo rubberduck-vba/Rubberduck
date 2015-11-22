@@ -219,7 +219,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConfigurationTests.cs" />
     <Compile Include="UnitTesting\AssertTests.cs" />
-    <Compile Include="CodeInspectionTests.cs" />
+    <Compile Include="RubberduckParserTests.cs" />
     <Compile Include="TodoControllerTests.cs" />
     <Compile Include="ComponentTypeExtensionTests.cs" />
     <Compile Include="SourceControl\SourceControlTests.cs" />

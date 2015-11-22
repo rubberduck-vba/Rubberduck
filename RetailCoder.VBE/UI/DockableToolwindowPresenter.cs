@@ -11,14 +11,14 @@ namespace Rubberduck.UI
         void Show();
     }
 
-    public abstract class DockablePresenterBase : IPresenter, IDisposable
+    public abstract class DockableToolwindowPresenter : IPresenter, IDisposable
     {
         private readonly AddIn _addin;
         private readonly Logger _logger;
         private readonly Window _window;
         protected readonly UserControl UserControl;
 
-        protected DockablePresenterBase(VBE vbe, AddIn addin, IDockableUserControl control)
+        protected DockableToolwindowPresenter(VBE vbe, AddIn addin, IDockableUserControl control)
         {
             _vbe = vbe;
             _addin = addin;
@@ -48,7 +48,7 @@ namespace Rubberduck.UI
                 logEvent.Properties.Add("EventID", 1);
 
                 _logger.Error(logEvent);
-                throw;
+                return null; //throw;
             }
             var userControlHost = (_DockableWindowHost)userControlObject;
             toolWindow.Visible = true; //window resizing doesn't work without this

@@ -268,7 +268,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppMenu.cs" />
+    <Compile Include="Common\ClipboardWriter.cs" />
+    <Compile Include="Common\DeclarationExtensions.cs" />
+    <Compile Include="Common\KeyHook.cs" />
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
+    <Compile Include="Inspections\ImplicitActiveSheetReferenceInspection.cs" />
+    <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspection.cs" />
+    <Compile Include="Inspections\UntypedFunctionUsageInspectionResult.cs" />
     <Compile Include="Inspections\WriteOnlyPropertyInspection.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspection.cs" />
     <Compile Include="Navigation\NavigateAllReferences.cs" />
@@ -335,6 +341,11 @@
     <Compile Include="Inspections\IdentifierNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
+    <Compile Include="UI\BusyIndicator.xaml.cs">
+      <DependentUpon>BusyIndicator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\CodeInspections\InspectionDescriptionConverter.cs" />
+    <Compile Include="UI\CodeInspections\InspectionImageSourceConverter.cs" />
     <Compile Include="UI\CodeInspections\InspectionResultsControl.xaml.cs">
       <DependentUpon>InspectionResultsControl.xaml</DependentUpon>
     </Compile>
@@ -366,8 +377,8 @@
     <Compile Include="UI\Command\FindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\NavigateParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\NavigationMenuItemDisplayOrder.cs" />
+    <Compile Include="UI\Command\MenuItems\ParserStateCommandBar.cs" />
     <Compile Include="UI\Command\MenuItems\RegexSearchReplaceCommandMenuItem.cs" />
-    <Compile Include="UI\Command\MenuItems\ToolStripItems\IParentToolStrip.cs" />
     <Compile Include="UI\Command\NavigateCommand.cs" />
     <Compile Include="UI\Command\OptionsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\OptionsCommandMenuItem.cs" />
@@ -377,9 +388,8 @@
     <Compile Include="UI\Command\MenuItems\ParentMenus\RefactoringsParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorRemoveParametersCommandMenuItem.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorRenameCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorRenameCommandMenuItem.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorReorderParametersCommand.cs" />
-    <Compile Include="UI\Command\RefactorRenameCommand.cs" />
-    <Compile Include="UI\Command\RefactorReorderParametersCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorReorderParametersCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\RubberduckParentMenu.cs" />
     <Compile Include="UI\Command\RegexSearchReplaceCommand.cs" />
@@ -393,7 +403,6 @@
     <Compile Include="UI\Command\ToDoExplorerCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ToDoExplorerCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\UnitTestingParentMenu.cs" />
-    <Compile Include="UI\Command\MenuItems\ToolStripItems\CommandToolStripItem.cs" />
     <Compile Include="UI\FolderBrowser.cs" />
     <Compile Include="UI\IMessageBox.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
@@ -435,7 +444,6 @@
     <Compile Include="Refactorings\ReorderParameters\Parameter.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
-    <Compile Include="UI\CodeInspections\ICodeInspectionsWindow.cs" />
     <Compile Include="UI\FindSymbol\FindSymbolControl.xaml.cs">
       <DependentUpon>FindSymbolControl.xaml</DependentUpon>
     </Compile>
@@ -447,8 +455,7 @@
     </Compile>
     <Compile Include="UI\FindSymbol\FindSymbolViewModel.cs" />
     <Compile Include="UI\FindSymbol\SearchResult.cs" />
-    <Compile Include="UI\FindSymbol\SearchResultIconCache.cs" />
-    <Compile Include="UI\FormContextMenu.cs" />
+    <Compile Include="Common\DeclarationIconCache.cs" />
     <Compile Include="UI\GridViewSort.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
     <Compile Include="UI\IdentifierReferences\ImplementationListItem.cs" />
@@ -456,7 +463,6 @@
     <Compile Include="UI\IdentifierReferences\ListItemActionEventArgs.cs" />
     <Compile Include="UI\ParserErrors\ParserErrorsPresenter.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodModel.cs" />
-    <Compile Include="UI\ProjectExplorerContextMenu.cs" />
     <Compile Include="UI\SimpleListControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -464,13 +470,6 @@
       <DependentUpon>SimpleListControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListDockablePresenter.cs" />
-    <Compile Include="UI\ProgressDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\ProgressDialog.Designer.cs">
-      <DependentUpon>ProgressDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ParsingProgressPresenter.cs" />
     <Compile Include="UI\Refactorings\RemoveParametersDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -619,7 +618,6 @@
     </Compile>
     <Compile Include="App.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerDockablePresenter.cs" />
-    <Compile Include="UI\CodeExplorer\CodeExplorerMenu.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -628,8 +626,6 @@
     </Compile>
     <Compile Include="UI\CodeInspections\CodeInspectionResultGridViewItem.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsDockablePresenter.cs" />
-    <Compile Include="UI\CodeInspections\CodeInspectionsMenu.cs" />
-    <Compile Include="UI\CodeInspections\CodeInspectionsToolbar.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -638,12 +634,11 @@
     </Compile>
     <Compile Include="UI\NavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeInspections\QuickFixEventArgs.cs" />
-    <Compile Include="UI\DockablePresenterBase.cs" />
+    <Compile Include="UI\DockableToolwindowPresenter.cs" />
     <Compile Include="Settings\Configuration.cs" />
     <Compile Include="Settings\ToDoListSettings.cs" />
     <Compile Include="Settings\ToDoMarkers.cs" />
     <Compile Include="UI\IDockableUserControl.cs" />
-    <Compile Include="UI\Menu.cs" />
     <Compile Include="UI\Settings\CodeInspectionSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -677,14 +672,10 @@
       <DependentUpon>TestExplorerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\UnitTesting\TestExplorerDockablePresenter.cs" />
-    <Compile Include="UI\UnitTesting\SelectedTestEventArgs.cs" />
-    <Compile Include="UI\UnitTesting\TestExplorerItem.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerModelBase.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerViewModel.cs" />
     <Compile Include="UI\UnitTesting\TestResultExtensions.cs" />
-    <Compile Include="UI\RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
-    <Compile Include="UI\ToDoItems\ToDoItemsMenu.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -697,7 +688,6 @@
     <Compile Include="UI\DockableWindowHost.Designer.cs">
       <DependentUpon>DockableWindowHost.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\RefactorMenu.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -706,8 +696,6 @@
     </Compile>
     <Compile Include="Extension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\UnitTesting\TestMenu.cs" />
-    <Compile Include="UI\UnitTesting\ThisOutlookSessionTestExplorerModel.cs" />
     <Compile Include="UI\ViewModelBase.cs" />
     <Compile Include="UnitTesting\AssertClass.cs" />
     <Compile Include="UnitTesting\AssertCompletedEventArgs.cs" />
@@ -771,9 +759,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SimpleListControl.resx">
       <DependentUpon>SimpleListControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\ProgressDialog.resx">
-      <DependentUpon>ProgressDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ExtractMethodDialog.resx">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
@@ -884,6 +869,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
+    <Folder Include="UI\ParserProgress\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\rubberduck.config" />
@@ -1213,6 +1199,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\BusyIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\CodeInspections\InspectionResultsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Rubberduck.Annotations;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.UI.FindSymbol
@@ -17,7 +18,7 @@ namespace Rubberduck.UI.FindSymbol
             DeclarationType.ModuleOption
         };
 
-        public FindSymbolViewModel(IEnumerable<Declaration> declarations, SearchResultIconCache cache)
+        public FindSymbolViewModel(IEnumerable<Declaration> declarations, DeclarationIconCache cache)
         {
             _declarations = declarations;
             _cache = cache;
@@ -53,7 +54,7 @@ namespace Rubberduck.UI.FindSymbol
         }
 
         private readonly IEnumerable<Declaration> _declarations;
-        private readonly SearchResultIconCache _cache;
+        private readonly DeclarationIconCache _cache;
 
         private void Search(string value)
         {

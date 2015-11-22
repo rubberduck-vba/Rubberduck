@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Moq;
+using Rubberduck.UI;
 
 namespace RubberduckTests.Mocks
 {
@@ -13,7 +14,7 @@ namespace RubberduckTests.Mocks
         /// Creates a mock <see cref="Window"/> that is particularly useful for passing into <see cref="MockWindowsCollection"/>'s ctor.
         /// </summary>
         /// <returns>
-        /// A <see cref="Mock{Window}"/>that has all the properties needed for <see cref="Rubberduck.UI.DockablePresenterBase"/> pre-setup.
+        /// A <see cref="Mock{Window}"/>that has all the properties needed for <see cref="DockableToolwindowPresenter"/> pre-setup.
         /// </returns>
         internal static Mock<Window> CreateWindowMock()
         {
@@ -31,7 +32,7 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="caption">The value to return from <see cref="Window.Caption"/>.</param>
         /// <returns>
-        /// A <see cref="Mock{Window}"/>that has all the properties needed for <see cref="Rubberduck.UI.DockablePresenterBase"/> pre-setup.
+        /// A <see cref="Mock{Window}"/>that has all the properties needed for <see cref="DockableToolwindowPresenter"/> pre-setup.
         /// </returns>
         internal static Mock<Window> CreateWindowMock(string caption)
         {

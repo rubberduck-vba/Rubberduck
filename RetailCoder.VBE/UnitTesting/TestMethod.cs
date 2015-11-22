@@ -27,8 +27,6 @@ namespace Rubberduck.UnitTesting
         private readonly VBE _vbe;
         public QualifiedMemberName QualifiedMemberName { get { return _qualifiedMemberName; } }
 
-        public QualifiedModuleName QualifiedModuleName { get { return _qualifiedMemberName.QualifiedModuleName; } }
-
         public void Run()
         {
             _assertResults.Clear(); //clear previous results to account for changes being made
@@ -51,10 +49,7 @@ namespace Rubberduck.UnitTesting
             Result = new TestResult(result, duration.Milliseconds);
         }
 
-        private TestResult _result = new TestResult(TestOutcome.Unknown);
-
-        public TestOutcome Outcome { get { return _result.Outcome; } }
-
+        private TestResult _result = TestResult.Unknown();
         public TestResult Result
         {
             get { return _result; } 
@@ -146,6 +141,11 @@ namespace Rubberduck.UnitTesting
 
             _cachedResult = null;
             IsEditing = false;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}: {1} ({2}ms) {3}", QualifiedMemberName, Result.Outcome, Result.Duration, Result.Output);
         }
     }
 }

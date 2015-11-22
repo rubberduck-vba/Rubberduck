@@ -49,9 +49,13 @@ namespace Rubberduck.VBEditor.Extensions
         }
 
         /// <summary> Returns the type of Office Application that is hosting the VBE. </summary>
-        /// <returns> Returns null if Unit Testing does not support Host Application.</returns>
         public static IHostApplication HostApplication(this VBE vbe)
         {
+            if (vbe.ActiveVBProject == null)
+            {
+                return null;
+            }
+
             foreach (var reference in vbe.ActiveVBProject.References.Cast<Reference>()
                 .Where(reference => reference.BuiltIn && reference.Name != "VBA"))
             {

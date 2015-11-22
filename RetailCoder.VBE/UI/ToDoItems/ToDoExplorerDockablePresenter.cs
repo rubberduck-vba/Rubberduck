@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -17,7 +16,7 @@ namespace Rubberduck.UI.ToDoItems
     /// <summary>
     /// Presenter for the to-do items explorer.
     /// </summary>
-    public class ToDoExplorerDockablePresenter : DockablePresenterBase
+    public class ToDoExplorerDockablePresenter : DockableToolwindowPresenter
     {
         private readonly IRubberduckParser _parser;
         private readonly IEnumerable<ToDoMarker> _markers;
@@ -86,24 +85,8 @@ namespace Rubberduck.UI.ToDoItems
 
         private async Task<IOrderedEnumerable<ToDoItem>> GetItems()
         {
-            //await Task.Yield();
-
-            var items = new ConcurrentBag<ToDoItem>();
-            var projects = VBE.VBProjects.Cast<VBProject>().Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked);
-            foreach(var project in projects)
-            {
-                var modules = _parser.Parse(project, this).ComponentParseResults;
-                foreach (var module in modules)
-                {
-                    var markers = module.Comments.SelectMany(GetToDoMarkers);
-                    foreach (var marker in markers)
-                    {
-                        items.Add(marker);
-                    }
-                }
-            }
-
-            var sortedItems = items.OrderByDescending(item => item.Priority)
+            var markers = _parser.State.Comments.SelectMany(GetToDoMarkers).ToList();
+            var sortedItems = markers.OrderByDescending(item => item.Priority)
                                    .ThenBy(item => item.ProjectName)
                                    .ThenBy(item => item.ModuleName)
                                    .ThenBy(item => item.LineNumber);
@@ -126,11 +109,6 @@ namespace Rubberduck.UI.ToDoItems
                             && p.VBComponents.Cast<VBComponent>()
                                 .Any(c => c.Name == e.SelectedItem.ModuleName)
                                 );
-
-            if (projects == null)
-            {
-                return;
-            }
 
             var firstOrDefault = projects.FirstOrDefault();
             if (firstOrDefault == null) { return; }

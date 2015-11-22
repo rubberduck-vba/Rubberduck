@@ -434,7 +434,7 @@ Would you like to restore default configuration?
 Warning: All customized settings will be lost.  Your old file will be saved in '{3}'.</value>
   </data>
   <data name="ResolutionProgress" xml:space="preserve">
-    <value>Resolving '{0}'...</value>
+    <value>Resolving...</value>
   </data>
   <data name="RubberduckLoadFailure" xml:space="preserve">
     <value>Rubberduck Add-In could not be loaded</value>
@@ -1170,19 +1170,37 @@ Are you sure you want to proceed with this rename?</value>
   <data name="Inspections_SpecifyOptionExplicit" xml:space="preserve">
     <value>Specify 'Option Explicit'</value>
   </data>
-  <data name="QuickFix_ThisInstance" xml:space="preserve">
-    <value>This instance</value>
-  </data>
   <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value>All instances in module</value>
+    <value>Fix all occurrences in module</value>
   </data>
   <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value>All instances in project</value>
+    <value>Fix all occurrences in project</value>
   </data>
   <data name="WriteOnlyProperty_" xml:space="preserve">
     <value>Property '{0}' has no getter.</value>
   </data>
   <data name="UntypedFunctionUsage_" xml:space="preserve">
     <value>Use of untyped function '{0}'. String-returning version '{0}$' is available.</value>
+  </data>
+  <data name="QuickFixUseTypedFunction_" xml:space="preserve">
+    <value>Use '{0}$' instead of '{0}'.</value>
+  </data>
+  <data name="DisableThisInspection" xml:space="preserve">
+    <value>Disable this inspection</value>
+  </data>
+  <data name="ParserProgress_ShowDetails" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="ImplicitActiveSheetReference_" xml:space="preserve">
+    <value>'{0}' is an implicit reference to the active worksheet</value>
+  </data>
+  <data name="ImplicitActiveWorkbookReference_" xml:space="preserve">
+    <value>'{0}' is an implicit reference to the active workbook</value>
+  </data>
+  <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
+    <value>Make ActiveSheet reference explicit</value>
+  </data>
+  <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
+    <value>Make ActiveWorkbook reference explicit</value>
   </data>
 </root>
