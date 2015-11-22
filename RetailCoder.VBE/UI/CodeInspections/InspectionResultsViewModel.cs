@@ -131,7 +131,7 @@ namespace Rubberduck.UI.CodeInspections
 
         public bool CanRefresh
         {
-            get { return _canRefresh; }
+            get { return true /*_canRefresh*/; }
             private set
             {
                 _canRefresh = value; 
@@ -259,6 +259,11 @@ namespace Rubberduck.UI.CodeInspections
 
         private void ExecuteCopyResultsCommand(object parameter)
         {
+            if (_results == null)
+            {
+                return;
+            }
+
             var results = string.Join("\n", _results.Select(result => result.ToString()), "\n");
             var resource = _results.Count == 1
                 ? RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular

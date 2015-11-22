@@ -104,12 +104,12 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         private readonly string _annotations;
-        public string Annotations { get { return _annotations; } }
+        public string Annotations { get { return _annotations ?? string.Empty; } }
 
         public bool IsInspectionDisabled(string inspectionName)
         {
-            return _annotations.Contains(Grammar.Annotations.IgnoreInspection) 
-                && _annotations.Contains(inspectionName);
+            return Annotations.Contains(Grammar.Annotations.IgnoreInspection) 
+                && Annotations.Contains(inspectionName);
         }
 
         public void AddReference(IdentifierReference reference)
