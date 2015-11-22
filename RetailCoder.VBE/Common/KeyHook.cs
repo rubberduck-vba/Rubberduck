@@ -56,8 +56,7 @@ namespace Rubberduck.Common
             using (var curProcess = Process.GetCurrentProcess())
             using (var curModule = curProcess.MainModule)
             {
-                return SetWindowsHookEx(WH_KEYBOARD_LL, proc,
-                    GetModuleHandle(curModule.ModuleName), 0);
+                return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
             }
         }
 
@@ -85,40 +84,28 @@ namespace Rubberduck.Common
 
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            // This is the window handle.  See if this is the value given by the ActiveWindow handle in the VBE.
-            var windowHandle = GetForegroundWindow();
-            var vbeWindow = _vbe.MainWindow.HWnd;
-
-            if (windowHandle != (IntPtr)vbeWindow || nCode < 0 || wParam != (IntPtr)WM_KEYUP)
-            {
-                return CallNextHookEx(HookId, nCode, wParam, lParam);
-            }
-
-            // These two lines tell us what key is pressed
             var vkCode = Marshal.ReadInt32(lParam);
             var key = (Keys)vkCode;
-            if (IgnoredKeys.Contains(key))
-            {
-                return CallNextHookEx(HookId, nCode, wParam, lParam);
-            }
 
-            // If the above does not work, this gives us the process handle
-            int processId;
-            GetWindowThreadProcessId(windowHandle, out processId);
-
-            //var process = Process.GetProcessById(processId);
-
-            // The process name must be something like "EXCEL" or "WINWORD"
-            // The MainWindowTitle must be something like "Microsoft Visual Basic for Applications - *"
-            //Console.WriteLine(process.ProcessName);
-            //Console.WriteLine(process.MainWindowTitle);
+            var windowHandle = GetForegroundWindow();
+            var vbeWindow = _vbe.MainWindow.HWnd;
             var codePane = _vbe.ActiveCodePane;
-            if (codePane != null)
+
+            Task.Run(() =>
             {
+                if (windowHandle != (IntPtr) vbeWindow 
+                    || wParam != (IntPtr) WM_KEYUP 
+                    || nCode < 0 
+                    || codePane == null
+                    || IgnoredKeys.Contains(key))
+                {
+                    return;
+                }
+
                 var component = codePane.CodeModule.Parent;
                 var args = new KeyHookEventArgs(key, component);
                 OnKeyPressed(args);
-            }
+            });
 
             return CallNextHookEx(HookId, nCode, wParam, lParam);
         }

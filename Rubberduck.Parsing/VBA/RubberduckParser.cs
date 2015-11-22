@@ -48,8 +48,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (OperationCanceledException)
             {
-                //we've already started another parser task when this exception is thrown
-                //State.SetModuleState(vbComponent, ParserState.Parsing); 
+                // no need to blow up
             } 
         }
 
