@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Rubberduck.Parsing.VBA;
@@ -149,8 +150,15 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 return;
             }
 
-            button.Picture = AxHostConverter.ImageToPictureDisp(image);
-            button.Mask = AxHostConverter.ImageToPictureDisp(mask);
+            try
+            {
+                button.Picture = AxHostConverter.ImageToPictureDisp(image);
+                button.Mask = AxHostConverter.ImageToPictureDisp(mask);
+            }
+            catch (COMException exception)
+            {
+                Debug.Print("Button image could not be set for button [" + button.Caption + "]\n" + exception);
+            }
         }
 
         private class AxHostConverter : AxHost

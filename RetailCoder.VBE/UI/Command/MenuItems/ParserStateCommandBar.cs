@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace Rubberduck.UI.Command.MenuItems
         private readonly IRubberduckParser _parser;
         private readonly VBE _vbe;
 
+        private CommandBarButton _refreshButton;
         private CommandBarButton _statusButton;
 
         public ParserStateCommandBar(IRubberduckParser parser, VBE vbe)
@@ -27,18 +29,55 @@ namespace Rubberduck.UI.Command.MenuItems
             Initialize();
         }
 
+        //private static readonly IDictionary<ParserState, Image> ParserIcons =
+        //    new Dictionary<ParserState, Image>
+        //    {
+        //        { ParserState.Error, Resources.balloon_prohibition },
+        //        { ParserState.Resolving, Resources.balloon_ellipsis },
+        //        { ParserState.Parsing, Resources.balloon_ellipsis },
+        //        { ParserState.Parsed, Resources.balloon_smiley },
+        //        { ParserState.Ready, Resources.balloon_smiley },
+        //    };
+
         private void State_StateChanged(object sender, EventArgs e)
         {
             _statusButton.Caption = _parser.State.Status.ToString();
+
+            // bug: apparently setting a button's icon *after* initialization blows Excel up
+            //var icon = ParserIcons[_parser.State.Status];
+            //ParentMenuItemBase.SetButtonImage(_statusButton, icon, Resources.balloon_mask);
+        }
+
+        public event EventHandler Refresh;
+
+        private void OnRefresh()
+        {
+            var handler = Refresh;
+            if (handler != null)
+            {
+                handler.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public void Initialize()
         {
             var commandbar = _vbe.CommandBars.Add("Parsing", MsoBarPosition.msoBarTop, false, true);
+
+            _refreshButton = (CommandBarButton)commandbar.Controls.Add(MsoControlType.msoControlButton);
+            ParentMenuItemBase.SetButtonImage(_refreshButton, Resources.arrow_circle_double, Resources.arrow_circle_double_mask);
+            _refreshButton.Style = MsoButtonStyle.msoButtonIcon;
+            _refreshButton.TooltipText = "Parse all opened projects";
+            _refreshButton.Click += refreshButton_Click;
+
             _statusButton = (CommandBarButton)commandbar.Controls.Add(MsoControlType.msoControlButton);
-            _statusButton.Style = MsoButtonStyle.msoButtonIconAndCaption;
-            ParentMenuItemBase.SetButtonImage(_statusButton, Resources.flask, Resources.flask_mask);
+            _statusButton.Style = MsoButtonStyle.msoButtonCaption;
+
             commandbar.Visible = true;
+        }
+
+        private void refreshButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            OnRefresh();
         }
     }
 }
