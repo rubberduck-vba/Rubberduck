@@ -28,7 +28,7 @@ namespace Rubberduck.Common
         private const int WM_KEYUP = 0x0101;
 
         private readonly LowLevelKeyboardProc _proc;
-        private static readonly IntPtr HookId = IntPtr.Zero;
+        private static IntPtr HookId = IntPtr.Zero;
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
@@ -118,7 +118,7 @@ namespace Rubberduck.Common
 
         public void Attach()
         {
-            SetHook(_proc);
+            HookId = SetHook(_proc);
         }
 
         public void Detach()
