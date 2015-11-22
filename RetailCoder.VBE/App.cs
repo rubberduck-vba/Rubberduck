@@ -16,6 +16,7 @@ using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.ParserErrors;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck
 {
@@ -119,6 +120,7 @@ namespace Rubberduck
 
             Task.Delay(1000).ContinueWith(t =>
             {
+                _parser.State.AddBuiltInDeclarations(_vbe.HostApplication());
                 ParseAll();
             });
 
