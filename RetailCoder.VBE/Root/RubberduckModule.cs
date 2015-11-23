@@ -95,7 +95,7 @@ namespace Rubberduck.Root
         {
             _kernel.Bind(t => t.From(assemblies)
                 .SelectAllInterfaces()
-                .Where(type => type.Name.EndsWith("Factory"))
+                .Where(type => type.Name.EndsWith("Factory")) 
                 .BindToFactory()
                 .Configure(binding => binding.InSingletonScope()));
         }
