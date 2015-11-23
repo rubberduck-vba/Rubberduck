@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
@@ -17,11 +13,11 @@ namespace Rubberduck.Inspections
 {
     public class ImplicitActiveSheetReferenceInspection : IInspection
     {
-        private readonly Lazy<IHostApplication> _hostApp;
+        private readonly Func<IHostApplication> _hostApp;
 
         public ImplicitActiveSheetReferenceInspection(VBE vbe)
         {
-            _hostApp = new Lazy<IHostApplication>(vbe.HostApplication);
+            _hostApp = vbe.HostApplication;
             Severity = CodeInspectionSeverity.Warning;
         }
 
@@ -35,15 +31,15 @@ namespace Rubberduck.Inspections
             "Cells", "Range", "Columns", "Rows"
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            if (_hostApp.Value.ApplicationName != "Excel")
+            if (_hostApp().ApplicationName != "Excel")
             {
                 return new CodeInspectionResultBase[] {};
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 
-            var issues = parseResult.Declarations.Items.Where(item => item.IsBuiltIn 
+            var issues = parseResult.AllDeclarations.Where(item => item.IsBuiltIn 
                 && item.ParentScope == "Excel.Global"
                 && Targets.Contains(item.IdentifierName)
                 && item.References.Any())

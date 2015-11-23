@@ -1,11 +1,10 @@
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI.ParserProgress;
 using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -13,11 +12,13 @@ namespace Rubberduck.UI.Command.Refactorings
     [ComVisible(false)]
     public class RefactorRenameCommand : RefactorCommandBase
     {
+        private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorRenameCommand(VBE vbe, IParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
-            : base (vbe, parserProgress, editor)
+        public RefactorRenameCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
+            : base (vbe, editor)
         {
+            _state = state;
             _wrapperWrapperFactory = wrapperWrapperFactory;
         }
 
@@ -27,15 +28,10 @@ namespace Rubberduck.UI.Command.Refactorings
             {
                 return;
             }
-            var codePane = _wrapperWrapperFactory.Create(Vbe.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
-            // duplicates ReorderParameters Implementation until here... extract common method?
-            // TryGetQualifiedSelection?
-            var result = ParserProgress.Parse(Vbe.ActiveVBProject);
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(Vbe, view, result, new MessageBox(), _wrapperWrapperFactory);
+                var factory = new RenamePresenterFactory(Vbe, view, _state, new MessageBox(), _wrapperWrapperFactory);
                 var refactoring = new RenameRefactoring(factory, Editor, new MessageBox());
 
                 var target = parameter as Declaration;

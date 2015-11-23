@@ -2,20 +2,17 @@
 using Rubberduck.VBEditor;
 using System;
 using System.Windows.Forms;
-using Rubberduck.UI.ParserProgress;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     public abstract class RefactorCommandBase : CommandBase
     {
-        protected readonly IParsingProgressPresenter ParserProgress;
         protected readonly IActiveCodePaneEditor Editor;
         protected readonly VBE Vbe;
 
-        protected RefactorCommandBase(VBE vbe, IParsingProgressPresenter parserProgress, IActiveCodePaneEditor editor)
+        protected RefactorCommandBase(VBE vbe, IActiveCodePaneEditor editor)
         {
             Vbe = vbe;
-            ParserProgress = parserProgress;
             Editor = editor;
         }
 

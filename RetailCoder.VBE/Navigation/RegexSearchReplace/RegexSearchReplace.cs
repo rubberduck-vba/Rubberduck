@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -126,12 +127,12 @@ namespace Rubberduck.Navigation.RegexSearchReplace
                         DeclarationType.PropertySet
                     };
 
-            var parseResult = _parser.Parse(_vbe.ActiveVBProject);
+            var parseResult = _parser.State;
             var results = GetResultsFromModule(_vbe.ActiveCodePane.CodeModule, searchPattern);
 
             var wrapper = _codePaneFactory.Create(_vbe.ActiveCodePane);
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(wrapper.CodeModule.Parent), wrapper.Selection);
-            dynamic block = parseResult.Declarations.FindSelection(qualifiedSelection, declarationTypes).Context.Parent;
+            dynamic block = parseResult.AllDeclarations.FindSelection(qualifiedSelection, declarationTypes).Context.Parent;
             var selection = new Selection(block.Start.Line, block.Start.Column, block.Stop.Line, block.Stop.Column);
             return results.Where(r => selection.Contains(r.Selection)).ToList();
         }

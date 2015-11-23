@@ -963,13 +963,6 @@ public interface IVBAVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitIfConditionStmt([NotNull] VBAParser.IfConditionStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.moduleBlock"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitModuleBlock([NotNull] VBAParser.ModuleBlockContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by the <c>vsLeq</c>
 	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
 	/// </summary>

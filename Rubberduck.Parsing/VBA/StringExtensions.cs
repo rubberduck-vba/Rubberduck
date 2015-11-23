@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.VBA
+namespace Rubberduck.Parsing.VBA
 {
     public static class StringExtensions
     {

@@ -1,48 +1,114 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
 using NLog;
+using Rubberduck.Common;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.ParserErrors;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck
 {
     public class App : IDisposable
     {
+        private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
         private readonly IParserErrorsPresenterFactory _parserErrorsPresenterFactory;
-        private readonly IRubberduckParserFactory _parserFactory;
+        private readonly IRubberduckParser _parser;
         private readonly IInspectorFactory _inspectorFactory;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
+        private readonly ParserStateCommandBar _stateBar;
+        private readonly IKeyHook _hook;
 
-        private IParserErrorsPresenter _parserErrorsPresenter;
         private readonly Logger _logger;
-        private IRubberduckParser _parser;
 
         private Configuration _config;
 
-        public App(IMessageBox messageBox,
+        private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
+            new ConcurrentDictionary<VBComponent, CancellationTokenSource>(); 
+
+        public App(VBE vbe, IMessageBox messageBox,
             IParserErrorsPresenterFactory parserErrorsPresenterFactory,
-            IRubberduckParserFactory parserFactory,
+            IRubberduckParser parser,
             IInspectorFactory inspectorFactory, 
             IGeneralConfigService configService,
-            IAppMenu appMenus)
+            IAppMenu appMenus,
+            ParserStateCommandBar stateBar,
+            IKeyHook hook)
         {
+            _vbe = vbe;
             _messageBox = messageBox;
             _parserErrorsPresenterFactory = parserErrorsPresenterFactory;
-            _parserFactory = parserFactory;
+            _parser = parser;
             _inspectorFactory = inspectorFactory;
             _configService = configService;
             _appMenus = appMenus;
+            _stateBar = stateBar;
+            _hook = hook;
             _logger = LogManager.GetCurrentClassLogger();
 
+            _hook.KeyPressed += _hook_KeyPressed;
             _configService.SettingsChanged += _configService_SettingsChanged;
+            _parser.State.StateChanged += Parser_StateChanged;
+            _stateBar.Refresh += _stateBar_Refresh;
+        }
+
+        private void _stateBar_Refresh(object sender, EventArgs e)
+        {
+            Task.Run(() => ParseAll());
+        }
+
+        private void Parser_StateChanged(object sender, EventArgs e)
+        {
+            _appMenus.EvaluateCanExecute(_parser.State);
+        }
+
+        private async void _hook_KeyPressed(object sender, KeyHookEventArgs e)
+        {
+            await ParseComponentAsync(e.Component);
+        }
+
+        private async Task ParseComponentAsync(VBComponent component, bool resolve = true)
+        {
+            var tokenSource = RenewTokenSource(component);
+
+            var token = tokenSource.Token;
+            await _parser.ParseAsync(component, token);
+
+            if (resolve && !token.IsCancellationRequested)
+            {
+                using (var source = new CancellationTokenSource())
+                {
+                    _parser.Resolve(source.Token);
+                }
+            }
+        }
+
+        private CancellationTokenSource RenewTokenSource(VBComponent component)
+        {
+            if (_tokenSources.ContainsKey(component))
+            {
+                CancellationTokenSource existingTokenSource;
+                _tokenSources.TryRemove(component, out existingTokenSource);
+                existingTokenSource.Cancel();
+                existingTokenSource.Dispose();
+            }
+
+            var tokenSource = new CancellationTokenSource();
+            _tokenSources[component] = tokenSource;
+            return tokenSource;
         }
 
         public void Startup()
@@ -51,12 +117,35 @@ namespace Rubberduck
 
             _appMenus.Initialize();
             _appMenus.Localize();
+
+            Task.Delay(1000).ContinueWith(t =>
+            {
+                _parser.State.AddBuiltInDeclarations(_vbe.HostApplication());
+                ParseAll();
+            });
+
+            _hook.Attach();
+        }
+
+        private void ParseAll()
+        {
+            var components = _vbe.VBProjects.Cast<VBProject>()
+                .SelectMany(project => project.VBComponents.Cast<VBComponent>());
+
+            var result = Parallel.ForEach(components, async component => { await ParseComponentAsync(component, false); });
+
+            if (result.IsCompleted)
+            {
+                using (var tokenSource = new CancellationTokenSource())
+                {
+                    _parser.Resolve(tokenSource.Token);
+                }
+            }
         }
 
         private void CleanReloadConfig()
         {
             LoadConfig();
-            CleanUp();
             Setup();
         }
 
@@ -87,44 +176,23 @@ namespace Rubberduck
 
         private void Setup()
         {
-            _parser = _parserFactory.Create();
-            _parser.ParseStarted += _parser_ParseStarted;
-            _parser.ParserError += _parser_ParserError;
-
             _inspectorFactory.Create();
-
-            _parserErrorsPresenter = _parserErrorsPresenterFactory.Create();
-        }
-
-        private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
-        {
-            _parserErrorsPresenter.Clear();
-        }
-
-        private void _parser_ParserError(object sender, ParseErrorEventArgs e)
-        {
-            _parserErrorsPresenter.AddError(e);
-            _parserErrorsPresenter.Show();
+            _parserErrorsPresenterFactory.Create();
         }
 
         public void Dispose()
         {
-            Dispose(true);
-        }
+            _hook.KeyPressed -= _hook_KeyPressed;
+            _configService.SettingsChanged -= _configService_SettingsChanged;
+            _parser.State.StateChanged -= Parser_StateChanged;
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing) { return; }
-
-            CleanUp();
-        }
-
-        private void CleanUp()
-        {
-            if (_parser != null)
+            if (_tokenSources.Any())
             {
-                _parser.ParseStarted -= _parser_ParseStarted;
-                _parser.ParserError -= _parser_ParserError;
+                foreach (var tokenSource in _tokenSources)
+                {
+                    tokenSource.Value.Cancel();
+                    tokenSource.Value.Dispose();
+                }
             }
         }
     }

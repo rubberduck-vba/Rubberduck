@@ -270,6 +270,7 @@
     <Compile Include="AppMenu.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
     <Compile Include="Common\DeclarationExtensions.cs" />
+    <Compile Include="Common\KeyHook.cs" />
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspection.cs" />
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspection.cs" />
@@ -376,8 +377,8 @@
     <Compile Include="UI\Command\FindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\NavigateParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\NavigationMenuItemDisplayOrder.cs" />
+    <Compile Include="UI\Command\MenuItems\ParserStateCommandBar.cs" />
     <Compile Include="UI\Command\MenuItems\RegexSearchReplaceCommandMenuItem.cs" />
-    <Compile Include="UI\Command\MenuItems\ToolStripItems\IParentToolStrip.cs" />
     <Compile Include="UI\Command\NavigateCommand.cs" />
     <Compile Include="UI\Command\OptionsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\OptionsCommandMenuItem.cs" />
@@ -402,14 +403,9 @@
     <Compile Include="UI\Command\ToDoExplorerCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ToDoExplorerCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\UnitTestingParentMenu.cs" />
-    <Compile Include="UI\Command\MenuItems\ToolStripItems\CommandToolStripItem.cs" />
     <Compile Include="UI\FolderBrowser.cs" />
     <Compile Include="UI\IMessageBox.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
-    <Compile Include="UI\ParserProgress\ParserProgessControl.xaml.cs">
-      <DependentUpon>ParserProgessControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ParserProgress\ParserProgessViewModel.cs" />
     <Compile Include="UI\RubberduckUI.de.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -474,13 +470,6 @@
       <DependentUpon>SimpleListControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListDockablePresenter.cs" />
-    <Compile Include="UI\ParserProgress\ProgressDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\ParserProgress\ProgressDialog.Designer.cs">
-      <DependentUpon>ProgressDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ParserProgress\ParsingProgressPresenter.cs" />
     <Compile Include="UI\Refactorings\RemoveParametersDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -771,9 +760,6 @@
     <EmbeddedResource Include="UI\SimpleListControl.resx">
       <DependentUpon>SimpleListControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\ParserProgress\ProgressDialog.resx">
-      <DependentUpon>ProgressDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ExtractMethodDialog.resx">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -883,6 +869,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
+    <Folder Include="UI\ParserProgress\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\rubberduck.config" />
@@ -1016,6 +1003,11 @@
     <Resource Include="Resources\flask_exclamation_mask.png" />
     <Resource Include="Resources\flask_mask.png" />
     <Resource Include="Resources\disk.png" />
+    <Content Include="Resources\arrow_circle_double_mask.bmp" />
+    <Content Include="Resources\balloon_ellipsis.bmp" />
+    <Content Include="Resources\balloon_mask.bmp" />
+    <Content Include="Resources\balloon_prohibition.bmp" />
+    <Content Include="Resources\balloon_smiley.bmp" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
@@ -1221,10 +1213,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\ParserProgress\ParserProgessControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

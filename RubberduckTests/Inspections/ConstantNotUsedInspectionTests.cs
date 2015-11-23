@@ -11,166 +11,166 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
-    public class ConstantNotUsedInspectionTests
-    {
-        [TestMethod]
-        public void ConstantNotUsed_ReturnsResult()
-        {
-            const string inputCode =
-@"Public Sub Foo()
-    Const const1 As Integer = 9
-End Sub";
+//    [TestClass]
+//    public class ConstantNotUsedInspectionTests
+//    {
+//        [TestMethod]
+//        public void ConstantNotUsed_ReturnsResult()
+//        {
+//            const string inputCode =
+//@"Public Sub Foo()
+//    Const const1 As Integer = 9
+//End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+//            //Arrange
+//            var builder = new MockVbeBuilder();
+//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+//                .Build().Object;
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+//            var codePaneFactory = new CodePaneWrapperFactory();
+//            var mockHost = new Mock<IHostApplication>();
+//            mockHost.SetupAllProperties();
+//            var parseResult = new RubberduckParser().Parse(project);
 
-            var inspection = new ConstantNotUsedInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            var inspection = new ConstantNotUsedInspection();
+//            var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
+//            Assert.AreEqual(1, inspectionResults.Count());
+//        }
 
-        [TestMethod]
-        public void ConstantNotUsed_ReturnsResult_MultipleConsts()
-        {
-            const string inputCode =
-@"Public Sub Foo()
-    Const const1 As Integer = 9
-    Const const2 As String = ""test""
-End Sub";
+//        [TestMethod]
+//        public void ConstantNotUsed_ReturnsResult_MultipleConsts()
+//        {
+//            const string inputCode =
+//@"Public Sub Foo()
+//    Const const1 As Integer = 9
+//    Const const2 As String = ""test""
+//End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+//            //Arrange
+//            var builder = new MockVbeBuilder();
+//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+//                .Build().Object;
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+//            var codePaneFactory = new CodePaneWrapperFactory();
+//            var mockHost = new Mock<IHostApplication>();
+//            mockHost.SetupAllProperties();
+//            var parseResult = new RubberduckParser().Parse(project);
 
-            var inspection = new ConstantNotUsedInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            var inspection = new ConstantNotUsedInspection();
+//            var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            Assert.AreEqual(2, inspectionResults.Count());
-        }
+//            Assert.AreEqual(2, inspectionResults.Count());
+//        }
 
-        [TestMethod]
-        public void ConstantNotUsed_DoesNotReturnResult()
-        {
-            const string inputCode =
-@"Public Sub Foo()
-    Const const1 As Integer = 9
-    Goo const1
-End Sub
+//        [TestMethod]
+//        public void ConstantNotUsed_DoesNotReturnResult()
+//        {
+//            const string inputCode =
+//@"Public Sub Foo()
+//    Const const1 As Integer = 9
+//    Goo const1
+//End Sub
+//
+//Public Sub Goo(ByVal arg1 As Integer)
+//End Sub";
 
-Public Sub Goo(ByVal arg1 As Integer)
-End Sub";
+//            //Arrange
+//            var builder = new MockVbeBuilder();
+//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+//                .Build().Object;
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+//            var codePaneFactory = new CodePaneWrapperFactory();
+//            var mockHost = new Mock<IHostApplication>();
+//            mockHost.SetupAllProperties();
+//            var parseResult = new RubberduckParser().Parse(project);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+//            var inspection = new ConstantNotUsedInspection();
+//            var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            var inspection = new ConstantNotUsedInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            Assert.AreEqual(0, inspectionResults.Count());
+//        }
 
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
+//        [TestMethod]
+//        public void ConstantNotUsed_ReturnsResult_SomeConstantsUsed()
+//        {
+//            const string inputCode =
+//@"Public Sub Foo()
+//    Const const1 As Integer = 9
+//    Goo const1
+//
+//    Const const2 As String = ""test""
+//End Sub
+//
+//Public Sub Goo(ByVal arg1 As Integer)
+//End Sub";
 
-        [TestMethod]
-        public void ConstantNotUsed_ReturnsResult_SomeConstantsUsed()
-        {
-            const string inputCode =
-@"Public Sub Foo()
-    Const const1 As Integer = 9
-    Goo const1
+//            //Arrange
+//            var builder = new MockVbeBuilder();
+//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+//                .Build().Object;
 
-    Const const2 As String = ""test""
-End Sub
+//            var codePaneFactory = new CodePaneWrapperFactory();
+//            var mockHost = new Mock<IHostApplication>();
+//            mockHost.SetupAllProperties();
+//            var parseResult = new RubberduckParser().Parse(project);
 
-Public Sub Goo(ByVal arg1 As Integer)
-End Sub";
+//            var inspection = new ConstantNotUsedInspection();
+//            var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+//            Assert.AreEqual(1, inspectionResults.Count());
+//        }
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+//        [TestMethod]
+//        public void ConstantNotUsed_QuickFixWorks()
+//        {
+//            const string inputCode =
+//@"Public Sub Foo()
+//    Const const1 As Integer = 9
+//End Sub";
 
-            var inspection = new ConstantNotUsedInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            const string expectedCode =
+//@"Public Sub Foo()
+//End Sub";
 
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
+//            //Arrange
+//            var builder = new MockVbeBuilder();
+//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+//                .Build().Object;
+//            var module = project.VBComponents.Item(0).CodeModule;
 
-        [TestMethod]
-        public void ConstantNotUsed_QuickFixWorks()
-        {
-            const string inputCode =
-@"Public Sub Foo()
-    Const const1 As Integer = 9
-End Sub";
+//            var codePaneFactory = new CodePaneWrapperFactory();
+//            var mockHost = new Mock<IHostApplication>();
+//            mockHost.SetupAllProperties();
+//            var parseResult = new RubberduckParser().Parse(project);
 
-            const string expectedCode =
-@"Public Sub Foo()
-End Sub";
+//            var inspection = new ConstantNotUsedInspection();
+//            var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
-            var module = project.VBComponents.Item(0).CodeModule;
+//            inspectionResults.First().QuickFixes.First().Fix();
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(codePaneFactory, project.VBE).Parse(project);
+//            Assert.AreEqual(expectedCode, module.Lines());
+//        }
 
-            var inspection = new ConstantNotUsedInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//        [TestMethod]
+//        public void InspectionType()
+//        {
+//            var inspection = new ConstantNotUsedInspection();
+//            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
+//        }
 
-            inspectionResults.First().QuickFixes.First().Fix();
+//        [TestMethod]
+//        public void InspectionName()
+//        {
+//            const string inspectionName = "ConstantNotUsedInspection";
+//            var inspection = new ConstantNotUsedInspection();
 
-            Assert.AreEqual(expectedCode, module.Lines());
-        }
-
-        [TestMethod]
-        public void InspectionType()
-        {
-            var inspection = new ConstantNotUsedInspection();
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        public void InspectionName()
-        {
-            const string inspectionName = "ConstantNotUsedInspection";
-            var inspection = new ConstantNotUsedInspection();
-
-            Assert.AreEqual(inspectionName, inspection.Name);
-        }
-    }
+//            Assert.AreEqual(inspectionName, inspection.Name);
+//        }
+//    }
 }

@@ -34,7 +34,10 @@ namespace Rubberduck.UI.CodeInspections
 
         private void InspectionResultsControl_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel.RefreshCommand.Execute(null);
+            if (ViewModel.CanRefresh)
+            {
+                ViewModel.RefreshCommand.Execute(null);
+            }
         }
 
         private bool _isModuleTemplate;

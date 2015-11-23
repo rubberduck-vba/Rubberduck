@@ -60,6 +60,7 @@
 *   - added macroConstStmt (#CONST) rule.
 *   - amended block rule to support instruction separators.
 *   - amended selectCaseStmt rules to support all valid syntaxes.
+*   - blockStmt is now illegal in declarations section.
 *
 *======================================================================================
 *
@@ -116,10 +117,11 @@ moduleOption :
 ;
 
 moduleDeclarationsElement :
-	moduleBlock
-	| declareStmt
+	declareStmt
 	| enumerationStmt 
 	| eventStmt
+	| constStmt
+	| variableStmt
 	| macroConstStmt
 	| macroIfThenElseStmt
 	| moduleOption
@@ -130,9 +132,9 @@ moduleBody :
 	moduleBodyElement (NEWLINE+ moduleBodyElement)*;
 
 moduleBodyElement : 
-	moduleBlock
-	| functionStmt 
+	functionStmt 
 	| macroIfThenElseStmt
+	| macroConstStmt
 	| propertyGetStmt 
 	| propertySetStmt 
 	| propertyLetStmt 
@@ -141,8 +143,6 @@ moduleBodyElement :
 
 
 // block ----------------------------------
-
-moduleBlock : block;
 
 attributeStmt : ATTRIBUTE WS implicitCallStmt_InStmt WS? EQ WS? literal (WS? ',' WS? literal)*;
 
@@ -236,7 +236,7 @@ constSubStmt : ambiguousIdentifier typeHint? (WS asTypeClause)? WS? EQ WS? value
 
 dateStmt : DATE WS? EQ WS? valueStmt;
 
-declareStmt : (visibility WS)? DECLARE WS (PTRSAFE WS)? (FUNCTION | SUB) WS ambiguousIdentifier WS LIB WS STRINGLITERAL (WS ALIAS WS STRINGLITERAL)? (WS? argList)? (WS asTypeClause)?;
+declareStmt : (visibility WS)? DECLARE WS (PTRSAFE WS)? ((FUNCTION typeHint?) | SUB) WS ambiguousIdentifier WS LIB WS STRINGLITERAL (WS ALIAS WS STRINGLITERAL)? (WS? argList)? (WS asTypeClause)?;
 
 deftypeStmt : 
 	(
@@ -296,7 +296,7 @@ forNextStmt :
 ; 
 
 functionStmt :
-	(visibility WS)? (STATIC WS)? FUNCTION WS ambiguousIdentifier (WS? argList)? (WS asTypeClause)? NEWLINE+
+	(visibility WS)? (STATIC WS)? FUNCTION WS ambiguousIdentifier typeHint? (WS? argList)? (WS asTypeClause)? NEWLINE+
 	(block NEWLINE+)?
 	END_FUNCTION
 ;
@@ -397,7 +397,7 @@ outputList_Expression :
 printStmt : PRINT WS fileNumber WS? ',' (WS? outputList)?;
 
 propertyGetStmt : 
-	(visibility WS)? (STATIC WS)? PROPERTY_GET WS ambiguousIdentifier (WS? argList)? (WS asTypeClause)? NEWLINE+ 
+	(visibility WS)? (STATIC WS)? PROPERTY_GET WS ambiguousIdentifier typeHint? (WS? argList)? (WS asTypeClause)? NEWLINE+ 
 	(block NEWLINE+)? 
 	END_PROPERTY
 ;
@@ -903,7 +903,7 @@ BYTELITERAL : ('0'..'9')+;
 IDENTIFIER : LETTER (LETTERORDIGIT)*;
 // whitespace, line breaks, comments, ...
 LINE_CONTINUATION : ' ' '_' '\r'? '\n' -> skip;
-NEWLINE : WS? ('\r'? '\n' | ':' ' ') WS?;
+NEWLINE : WS? ('\r'? '\n' | BYTELITERAL? ':' ' ') WS?; // note: if Hell breaks loose, it's because of this change
 COMMENT : WS? ('\'' | ':'? REM ' ') (LINE_CONTINUATION | ~('\n' | '\r'))* -> skip;
 WS : [ \t]+;
 

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
@@ -17,9 +18,9 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var usages = parseResult.Declarations.Items.Where(declaration => !declaration.IsBuiltIn 
+            var usages = parseResult.AllDeclarations.Where(declaration => !declaration.IsBuiltIn 
                 && declaration.DeclarationType == DeclarationType.Variable
                 && !declaration.References.Any(reference => reference.IsAssignment))
                 .SelectMany(declaration => declaration.References);

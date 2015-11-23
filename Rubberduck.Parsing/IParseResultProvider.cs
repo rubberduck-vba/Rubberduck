@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing
 {
@@ -14,17 +13,6 @@ namespace Rubberduck.Parsing
 
         private readonly IEnumerable<string> _projectNames;
         public IEnumerable<string> ProjectNames { get { return _projectNames; } }
-    }
-
-    public class ParseCompletedEventArgs : EventArgs
-    {
-        public ParseCompletedEventArgs(IEnumerable<VBProjectParseResult> results)
-        {
-            _results = results;
-        }
-
-        private readonly IEnumerable<VBProjectParseResult> _results;
-        public IEnumerable<VBProjectParseResult> ParseResults { get { return _results; } }
     }
 
     public class ResolutionProgressEventArgs : EventArgs
@@ -52,15 +40,5 @@ namespace Rubberduck.Parsing
         }
 
         public VBComponent Component { get { return _result; } }
-    }
-
-    public interface IParseResultProvider
-    {
-        event EventHandler<ParseErrorEventArgs> ParserError;
-        event EventHandler<ParseStartedEventArgs> ParseStarted;
-        event EventHandler<ResolutionProgressEventArgs> ResolutionProgress;
-        event EventHandler<ParseProgressEventArgs> ParseProgress;
-        event EventHandler<ParseCompletedEventArgs> ParseCompleted;
-        event EventHandler<ParseCompletedEventArgs> ResolutionCompleted;
     }
 }

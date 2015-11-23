@@ -1,12 +1,8 @@
 ﻿using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows.Input;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Inspections;
-using Rubberduck.UI.CodeInspections;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command
 {
@@ -27,7 +23,7 @@ namespace Rubberduck.UI.Command
         /// Runs code inspections 
         /// </summary>
         /// <param name="parameter"></param>
-        public override async void Execute(object parameter)
+        public override void Execute(object parameter)
         {
             _presenter.Show();
         }
@@ -42,5 +38,10 @@ namespace Rubberduck.UI.Command
 
         public override string Key { get { return "RubberduckMenu_CodeInspections"; } }
         public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.CodeInspections; } }
+
+        public override bool EvaluateCanExecute(RubberduckParserState state)
+        {
+            return state.Status == ParserState.Ready;
+        }
     }
 }

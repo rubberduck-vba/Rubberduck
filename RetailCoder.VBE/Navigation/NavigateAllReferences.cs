@@ -6,8 +6,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.IdentifierReferences;
-using Rubberduck.UI.ParserProgress;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Navigation

@@ -9,6 +9,7 @@ using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeInspections;
@@ -41,6 +42,8 @@ namespace Rubberduck.Root
             // bind VBE and AddIn dependencies to host-provided instances.
             _kernel.Bind<VBE>().ToConstant(_vbe);
             _kernel.Bind<AddIn>().ToConstant(_addin);
+
+            _kernel.Bind<RubberduckParserState>().ToSelf().InSingletonScope();
 
             BindCodeInspectionTypes();
 

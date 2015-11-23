@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
@@ -23,10 +23,13 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        private string AnnotationName { get { return Name.Replace("Inspection", string.Empty); } }
+
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var options = parseResult.Declarations.Items
-                .Where(declaration => !declaration.IsBuiltIn
+            var options = parseResult.AllDeclarations
+                .Where(declaration => !declaration.IsInspectionDisabled(AnnotationName)
+                                      && !declaration.IsBuiltIn
                                       && declaration.DeclarationType == DeclarationType.ModuleOption
                                       && declaration.Context is VBAParser.OptionBaseStmtContext)
                 .ToList();

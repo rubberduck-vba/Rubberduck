@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
@@ -21,11 +22,11 @@ namespace Rubberduck
             }
         }
 
-        public void SetCommandButtonEnabledState(string key, bool isEnabled = true)
+        public void EvaluateCanExecute(RubberduckParserState state)
         {
             foreach (var menu in _menus)
             {
-                menu.SetCommandButtonEnabledState(key, isEnabled);
+                menu.EvaluateCanExecute(state);
             }
         }
 
