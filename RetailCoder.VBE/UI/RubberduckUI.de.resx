@@ -1198,4 +1198,13 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
     <value>Setze die Referenz explizit auf das 'ActiveSheet'</value>
   </data>
+  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
+    <value>Style anzeigen</value>
+  </data>
+  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
+    <value>Füge eine Komponente zum aktiven Projekt hinzu</value>
+  </data>
+  <data name="FindSymbolDialog_Caption" xml:space="preserve">
+    <value>Finde Symbol</value>
+  </data>
 </root>

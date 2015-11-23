@@ -2,6 +2,7 @@
 using Ninject;
 using Ninject.Modules;
 using Rubberduck.Settings;
+using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -31,12 +32,11 @@ namespace Rubberduck.UI.SourceControl
             Bind<IMergeView>().To<MergeForm>();
 
             //factories 
-            // todo: check on note below
-            // ninject is complaining about also having a SourceControlProviderFactoryProxy and a FolderBrowserFactoryProxy
-            // I'm unsure about commenting these out. I have a feeling that it's not the "right thing", but everything seems to work.
 
-            //Bind<ISourceControlProviderFactory>().To<SourceControlProviderFactory>();
-            //Bind<IFolderBrowserFactory>().To<DialogFactory>();
+            // note: RubberduckModule sets up factory proxies by convention. 
+            // Replace these factory proxies with our existing concrete implementations.
+            Rebind<ISourceControlProviderFactory>().To<SourceControlProviderFactory>();
+            Rebind<IFolderBrowserFactory>().To<DialogFactory>();
         }
     }
 }
