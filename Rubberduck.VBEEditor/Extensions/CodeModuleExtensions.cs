@@ -18,7 +18,49 @@ namespace Rubberduck.VBEditor.Extensions
                 return new string[] { };
             }
 
-            return module.get_Lines(1, lines).Replace("\r", string.Empty).Split('\n');
+            var code = module.get_Lines(1, lines).Replace("\r", string.Empty).Split('\n');
+
+            StripLineNumbers(code);
+            return code;
+        }
+
+        private static void StripLineNumbers(string[] lines)
+        {
+            var result = new string[lines.Length];
+            for(var line = 0; line < lines.Length; line++)
+            {
+                var code = lines[line];
+                int? lineNumber;
+                if (HasNumberedLine(code, out lineNumber))
+                {
+                    var lineNumberLength = lineNumber.ToString().Length;
+                    if (lines[line].Length > lineNumberLength)
+                    {
+                        // replace line number with as many spaces as characters taken, to avoid shifting the tokens
+                        lines[line] = new string(' ', lineNumberLength) + code.Substring(lineNumber.ToString().Length + 1);
+                    }
+                }
+            }
+        }
+
+        private static bool HasNumberedLine(string codeLine, out int? lineNumber)
+        {
+            lineNumber = null;
+
+            if (string.IsNullOrWhiteSpace(codeLine.Trim()))
+            {
+                return false;
+            }
+
+            int line;
+            var firstToken = codeLine.TrimStart().Split(' ')[0];
+            if (int.TryParse(firstToken, out line))
+            {
+                lineNumber = line;
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
