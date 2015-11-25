@@ -14,6 +14,7 @@ using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBA;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -123,7 +124,7 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             ITokenStream stream;
-            var code = vbComponent.CodeModule.Lines();
+            var code = string.Join("\r\n", vbComponent.CodeModule.Code());
             var tree = ParseInternal(code, listeners, out stream);
 
             token.ThrowIfCancellationRequested();
@@ -185,7 +186,14 @@ namespace Rubberduck.Parsing.VBA
             var resolver = new IdentifierReferenceResolver(new QualifiedModuleName(component), declarations);
             var listener = new IdentifierReferenceListener(resolver, token);
             var walker = new ParseTreeWalker();
-            walker.Walk(listener, tree);
+            try
+            {
+                walker.Walk(listener, tree);
+            }
+            catch(WalkerCancelledException)
+            {
+                // move on
+            }
 
             _state.SetModuleState(component, ParserState.Ready);
         }
