@@ -43,8 +43,15 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Vbe.Interop, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -62,7 +69,6 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.vb" />
     <None Include="Legacy\CBtnEvents.cls" />
     <None Include="Legacy\clsConnect.cls" />
     <None Include="Legacy\CMemberInfo.cls" />
@@ -72,6 +78,14 @@
     <None Include="Legacy\modMenus.bas" />
     <None Include="Legacy\modRegistry.bas" />
     <None Include="Legacy\modVBEOnKey.bas" />
+    <Compile Include="frmVbeOnKey.Designer.vb">
+      <DependentUpon>frmVbeOnKey.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmVbeOnKey.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="modGlobals.vb" />
+    <Compile Include="VbeOnKey.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -89,6 +103,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="frmVbeOnKey.resx">
+      <DependentUpon>frmVbeOnKey.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
