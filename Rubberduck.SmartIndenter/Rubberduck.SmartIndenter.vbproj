@@ -78,6 +78,7 @@
     <None Include="Legacy\modMenus.bas" />
     <None Include="Legacy\modRegistry.bas" />
     <None Include="Legacy\modVBEOnKey.bas" />
+    <Compile Include="CBtnEvents.vb" />
     <Compile Include="CMemberInfo.vb" />
     <Compile Include="frmVbeOnKey.Designer.vb">
       <DependentUpon>frmVbeOnKey.vb</DependentUpon>
