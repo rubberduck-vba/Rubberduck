@@ -86,7 +86,10 @@
     <Compile Include="frmVbeOnKey.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Indenter.vb" />
+    <Compile Include="ISmartIndenterSettings.vb" />
     <Compile Include="modGlobals.vb" />
+    <Compile Include="IndentController.vb" />
     <Compile Include="VbeOnKey.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
