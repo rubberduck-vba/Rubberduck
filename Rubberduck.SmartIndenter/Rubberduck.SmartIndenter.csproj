@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IIndenterSettings.cs" />
     <Compile Include="Indenter.cs" />
     <Compile Include="IIndenter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
