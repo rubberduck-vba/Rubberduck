@@ -81,6 +81,12 @@ namespace Rubberduck.Common
 
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
+            if (_vbe.ActiveWindow.Type != vbext_WindowType.vbext_wt_CodeWindow)
+            {
+                // don't do anything if not in a code window
+                return CallNextHookEx(HookId, nCode, wParam, lParam);
+            }
+
             var vkCode = Marshal.ReadInt32(lParam);
             var key = (Keys)vkCode;
 
