@@ -105,6 +105,16 @@ LibGit2Sharp is the library that has allowed us to integrate Git right into the 
 
 Which basically means it's a reimplementation of Git in C. It also [happens to be the technology Microsoft uses for their own Git integration with Visual Studio](http://www.hanselman.com/blog/GitSupportForVisualStudioGitTFSAndVSPutIntoContext.aspx).
 
+###[Smart Indenter](http://www.oaltd.co.uk/Indenter/)
+
+**What is Smart Indenter?**
+
+> *The Smart Indenter is a utility to tidy up VBA code by rebuilding the indentation of each line. Most developers naturally indent code within control structures, such as For...Next, If...End If, etc. Many developers also indent all the code within a procedure, to ease identification of line labels, error handling blocks etc. From that point on, there is much more variety in indenting styles, ranging from how to treat declaration lines to handling end-of-line comments.*
+
+The Rubberduck project was graciously offered the source code for this formidable tool by Stephen Bullen and Rob Bovey. We've translated the VB6 source code to C# and embedded a managed indenting API that Rubberduck calls into, while decoupling the indenter logic from the Windows Registry so we could store indenter options together with the Rubberduck settings, and configure the indenter from Rubberduck's options dialog.
+
+If you're already using Smart Indenter, Rubberduck's options dialog allow importing the settings from the registry. If we did our part well, you can uninstall Smart Indenter after installing Rubberduck 2.0, and still benefit from the smartest indenting tool available for VBA.
+
 ##Icons
 
 We didn't come up with these icons ourselves! Here's who did what:
