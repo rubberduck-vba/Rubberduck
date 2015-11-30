@@ -12,7 +12,7 @@ namespace Rubberduck.SmartIndenter
         bool IndentComment { get; set; }
         bool IndentCase { get; set; }
         bool IndentDim { get; set; }
-        bool AlignCont { get; set; }
+        bool AlignContinuations { get; set; }
         bool IndentFirst { get; set; }
         bool AlignEndOfLine { get; set; }
         bool AlignDim { get; set; }
