@@ -271,6 +271,7 @@
     <Compile Include="Common\ClipboardWriter.cs" />
     <Compile Include="Common\DeclarationExtensions.cs" />
     <Compile Include="Common\KeyHook.cs" />
+    <Compile Include="Common\KeyHookEventArgs.cs" />
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspection.cs" />
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspection.cs" />
