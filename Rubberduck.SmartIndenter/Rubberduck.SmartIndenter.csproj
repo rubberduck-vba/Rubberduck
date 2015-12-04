@@ -47,6 +47,7 @@
     <Compile Include="IIndenterSettings.cs" />
     <Compile Include="Indenter.cs" />
     <Compile Include="IIndenter.cs" />
+    <Compile Include="IndenterProgressEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

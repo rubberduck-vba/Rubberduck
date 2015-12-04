@@ -45,6 +45,19 @@ namespace Rubberduck.SmartIndenter
         private int _originalTopLine;
         private Selection _originalSelection;
 
+        public event EventHandler ReportProgress;
+
+        private void OnReportProgress(string moduleName, int progress, int max)
+        {
+            var handler = ReportProgress;
+            if (handler != null)
+            {
+                var args = new IndenterProgressEventArgs(moduleName, progress, max);
+                handler.Invoke(this, args);
+            }
+        }
+
+
         public void Indent(VBProject project)
         {
             if (project == null)
