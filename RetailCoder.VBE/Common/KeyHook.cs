@@ -6,7 +6,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Castle.DynamicProxy.Contributors;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Common.WinAPI;
 
 namespace Rubberduck.Common
 {
@@ -17,80 +19,32 @@ namespace Rubberduck.Common
         event EventHandler<KeyHookEventArgs> KeyPressed;
     }
 
-    internal struct HookInfo
-    {
-        private readonly IntPtr _hookId;
-        private readonly int _keyCode;
-        private readonly int _shift;
-        private readonly Action _action;
-
-        public HookInfo(IntPtr hookId, int keyCode, int shift, Action action)
-        {
-            _hookId = hookId;
-            _keyCode = keyCode;
-            _shift = shift;
-            _action = action;
-        }
-
-        public IntPtr HookId { get { return _hookId; } }
-        public int KeyCode { get { return _keyCode; } }
-        public int Shift { get { return _shift; } }
-        public Action Action { get { return _action; } }
-    }
-
     public class KeyHook : IKeyHook, IDisposable
     {
         private readonly VBE _vbe;
-        // reference: http://blogs.msdn.com/b/toub/archive/2006/05/03/589423.aspx
 
         private readonly HashSet<HookInfo> _hookedKeys = new HashSet<HookInfo>();
 
-        private const int WH_KEYBOARD_LL = 13;
-        private const int WM_KEYDOWN = 0x0100;
-        private const int WM_KEYUP = 0x0101;
+        private const int GWL_WNDPROC = -4;
+        private const int WA_INACTIVE = 0;
+        private const int WA_ACTIVE = 1;
 
-        private readonly LowLevelKeyboardProc _proc;
+        private User32.WndProc _oldWndProc;
+        private IntPtr _hWndForm;
+        private IntPtr _hWndVbe;
+
+        private bool _isRegistered = false;
+
+        private readonly User32.HookProc _proc;
         private static IntPtr HookId = IntPtr.Zero;
 
-        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr RegisterHotKey(int hWnd, int id, int fsModifiers, int vk);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr UnRegisterHotKey(int hWnd, int id);
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr GlobalAddAtom(string lpString);
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr GlobalDeleteAtom(int nAtom);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool UnhookWindowsHookEx(IntPtr hhk);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr GetModuleHandle(string lpModuleName);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        private static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        private static extern IntPtr GetWindowThreadProcessId(IntPtr handle, out int processID);
-
-        private static IntPtr SetHook(LowLevelKeyboardProc proc)
+        private static IntPtr SetHook(User32.HookProc proc)
         {
             using (var curProcess = Process.GetCurrentProcess())
             using (var curModule = curProcess.MainModule)
             {
-                return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
+                return User32.SetWindowsHookEx(WindowsHook.KEYBOARD_LL, proc, Kernel32.GetModuleHandle(curModule.ModuleName), 0);
             }
         }
 
@@ -121,20 +75,20 @@ namespace Rubberduck.Common
             if (_vbe.ActiveWindow.Type != vbext_WindowType.vbext_wt_CodeWindow)
             {
                 // don't do anything if not in a code window
-                return CallNextHookEx(HookId, nCode, wParam, lParam);
+                return User32.CallNextHookEx(HookId, nCode, wParam, lParam);
             }
 
             var vkCode = Marshal.ReadInt32(lParam);
             var key = (Keys)vkCode;
 
-            var windowHandle = GetForegroundWindow();
-            var vbeWindow = _vbe.MainWindow.HWnd;
+            _hWndVbe = (IntPtr)_vbe.MainWindow.HWnd;
+            var windowHandle = User32.GetForegroundWindow();
             var codePane = _vbe.ActiveCodePane;
 
             Task.Run(() =>
             {
-                if (windowHandle != (IntPtr) vbeWindow 
-                    || wParam != (IntPtr) WM_KEYUP 
+                if (windowHandle != _hWndForm
+                    || wParam != (IntPtr) WM.KEYUP 
                     || nCode < 0 
                     || codePane == null
                     || IgnoredKeys.Contains(key))
@@ -147,7 +101,7 @@ namespace Rubberduck.Common
                 OnKeyPressed(args);
             });
 
-            return CallNextHookEx(HookId, nCode, wParam, lParam);
+            return User32.CallNextHookEx(HookId, nCode, wParam, lParam);
         }
 
         public KeyHook(VBE vbe)
@@ -163,7 +117,7 @@ namespace Rubberduck.Common
 
         public void Detach()
         {
-            UnhookWindowsHookEx(HookId);
+            User32.UnhookWindowsHookEx(HookId);
         }
 
         public event EventHandler<KeyHookEventArgs> KeyPressed;
@@ -225,6 +179,8 @@ namespace Rubberduck.Common
             { "{F16}", Keys.F16 },
         };
 
+        private IntPtr _timerId;
+
         private Keys GetKey(string keyCode)
         {
             var result = Keys.None;
@@ -260,10 +216,10 @@ namespace Rubberduck.Common
                 // HookWindow();
             }
 
-            var hookId = GlobalAddAtom(Guid.NewGuid().ToString());
-            RegisterHotKey(_vbe.MainWindow.HWnd, (int)hookId, shift, keyCode);
+            var hookId = (IntPtr)Kernel32.GlobalAddAtom(Guid.NewGuid().ToString());
+            User32.RegisterHotKey((IntPtr)_vbe.MainWindow.HWnd, hookId, (uint)shift, (uint)keyCode);
 
-            _hookedKeys.Add(new HookInfo(hookId, keyCode, shift, action));
+            _hookedKeys.Add(new HookInfo(hookId, (uint)keyCode, shift, action));
         }
 
         private void UnHookKey(int keyCode, int shift)
@@ -271,8 +227,8 @@ namespace Rubberduck.Common
             var hooks = _hookedKeys.Where(hook => hook.KeyCode == keyCode && hook.Shift == shift).ToList();
             foreach (var hook in hooks)
             {
-                UnRegisterHotKey(_vbe.MainWindow.HWnd, (int)hook.HookId);
-                GlobalDeleteAtom((int)hook.HookId);
+                User32.UnregisterHotKey((IntPtr)_vbe.MainWindow.HWnd, hook.HookId);
+                Kernel32.GlobalDeleteAtom((ushort)hook.HookId);
                 _hookedKeys.Remove(hook);
 
                 // if (!_hookedKeys.Any()) { UnHookWindow(); }
@@ -283,11 +239,95 @@ namespace Rubberduck.Common
         {
             foreach (var hook in _hookedKeys)
             {
-                UnRegisterHotKey(_vbe.MainWindow.HWnd, (int)hook.HookId);
-                GlobalDeleteAtom((int)hook.HookId);
+                User32.UnregisterHotKey((IntPtr)_vbe.MainWindow.HWnd, hook.HookId);
+                Kernel32.GlobalDeleteAtom((ushort)hook.HookId);
             }
 
             //UnHookWindow();
         }
+
+        private void HookWindow()
+        {
+            var hwnd = (IntPtr)_vbe.MainWindow.HWnd; // use OnKeyWindow?
+            _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(
+                    User32.SetWindowLongPtr(hwnd, WindowLongFlags.GWL_WNDPROC,
+                    Marshal.GetFunctionPointerForDelegate((User32.WndProc) WindowProc)), typeof (User32.WndProc));
+
+        }
+
+        private void UnHookWindow()
+        {
+            var hwnd = (IntPtr)_vbe.MainWindow.HWnd; // use OnKeyWindow?
+            User32.SetWindowLongPtr(hwnd, WindowLongFlags.GWL_WNDPROC, Marshal.GetFunctionPointerForDelegate(_oldWndProc));
+            hwnd = IntPtr.Zero;
+            _isRegistered = false;
+
+            User32.KillTimer(hwnd, _timerId);
+            Kernel32.GlobalDeleteAtom((ushort)_timerId);
+            _timerId = IntPtr.Zero;
+
+            // dispose OnKeyWindow instance
+        }
+
+        private IntPtr WindowProc(IntPtr hWnd, uint u, IntPtr wParam, IntPtr lParam)
+        {
+            var processed = false;
+            if (hWnd == _hWndForm)
+            {
+                switch ((WM)u)
+                {
+                    case WM.HOTKEY:
+                        // if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_hWndVBE))
+                        {
+                            var key = _hookedKeys.FirstOrDefault(k => (Keys) k.KeyCode == (Keys) wParam);
+                            key.Action.Invoke();
+                            processed = true;
+                        }
+                        break;
+
+                    case WM.ACTIVATEAPP:
+                        switch (LoWord((int)wParam))
+                        {
+                            case WA_ACTIVE:
+                                foreach (var key in _hookedKeys)
+                                {
+                                    User32.RegisterHotKey(_hWndForm, key.HookId, User32.MOD_SHIFT | User32.MOD_CONTROL, key.KeyCode);
+                                }
+                                _isRegistered = true;
+                                break;
+
+                            case WA_INACTIVE:
+                                foreach (var key in _hookedKeys)
+                                {
+                                    User32.UnregisterHotKey(_hWndForm, key.HookId);
+                                }
+                                _isRegistered = false;
+                                break;
+                        }
+
+                        break;
+                }
+            }
+
+            if (!processed)
+            {
+                return User32.CallWindowProc(_oldWndProc, hWnd, u, wParam, lParam);
+            }
+            return IntPtr.Zero;
+        }
+
+        private int LoWord(int dw)
+        {
+            return (dw & 0x8000) != 0 
+                ? 0x8000 | (dw & 0x7FFF) 
+                : dw & 0xFFFF;
+        }
+
+        private void TimerCallback(IntPtr hWnd, WindowLongFlags msg, IntPtr timerId, IntPtr time)
+        {
+            
+        }
+
+
     }
 }
