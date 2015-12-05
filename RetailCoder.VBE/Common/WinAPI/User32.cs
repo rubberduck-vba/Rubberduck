@@ -3,6 +3,14 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.Common.WinAPI
 {
+    public enum KeyModifier : uint
+    {
+        ALT = 0x1,
+        CONTROL = 0x2,
+        SHIFT = 0x4,
+        WIN = 0x8
+    }
+
     /// <summary>
     /// Exposes User32.dll API.
     /// </summary>
@@ -23,10 +31,7 @@ namespace Rubberduck.Common.WinAPI
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool RegisterHotKey(IntPtr hWnd, IntPtr id, uint fsModifiers, uint vk);
-        public const int MOD_ALT = 0x1;
-        public const int MOD_CONTROL = 0x2;
-        public const int MOD_SHIFT = 0x4;
-        public const int MOD_WIN = 0x8;
+
 
         /// <summary>
         /// Frees a hot key previously registered by the calling thread.
@@ -203,7 +208,7 @@ namespace Rubberduck.Common.WinAPI
         /// If the function fails to create a timer, the return value is zero. To get extended error information, call GetLastError.</returns>
         [DllImport("user32.dll", ExactSpelling = true)]
         public static extern IntPtr SetTimer(IntPtr hWnd, IntPtr nIDEvent, uint uElapse, TimerProc lpTimerFunc);
-        public delegate void TimerProc(IntPtr hWnd, uint uMsg, IntPtr nIDEvent, uint dwTime);
+        public delegate void TimerProc(IntPtr hWnd, WindowLongFlags uMsg, IntPtr nIDEvent, uint dwTime);
 
         /// <summary>
         /// Creates a timer with the specified time-out value.

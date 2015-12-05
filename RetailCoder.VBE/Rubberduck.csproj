@@ -275,6 +275,12 @@
     <Compile Include="Common\WinAPI\KBDLLHOOKSTRUCTFlags.cs" />
     <Compile Include="Common\WinAPI\MSLLHOOKSTRUCT.cs" />
     <Compile Include="Common\WinAPI\POINT.cs" />
+    <Compile Include="Common\WinAPI\VbeOnKey.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Common\WinAPI\VbeOnKey.Designer.cs">
+      <DependentUpon>VbeOnKey.cs</DependentUpon>
+    </Compile>
     <Compile Include="Common\WinAPI\WindowsHook.cs" />
     <Compile Include="Common\WinAPI\Kernel32.cs" />
     <Compile Include="Common\KeyHook.cs" />
@@ -736,6 +742,9 @@
     <Compile Include="UI\Command\Refactorings\RefactorRemoveParametersCommand.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Common\WinAPI\VbeOnKey.resx">
+      <DependentUpon>VbeOnKey.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>

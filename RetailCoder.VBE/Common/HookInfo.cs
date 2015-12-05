@@ -6,10 +6,10 @@ namespace Rubberduck.Common
     {
         private readonly IntPtr _hookId;
         private readonly uint _keyCode;
-        private readonly int _shift;
+        private readonly uint _shift;
         private readonly Action _action;
 
-        public HookInfo(IntPtr hookId, uint keyCode, int shift, Action action)
+        public HookInfo(IntPtr hookId, uint keyCode, uint shift, Action action)
         {
             _hookId = hookId;
             _keyCode = keyCode;
@@ -19,7 +19,7 @@ namespace Rubberduck.Common
 
         public IntPtr HookId { get { return _hookId; } }
         public uint KeyCode { get { return _keyCode; } }
-        public int Shift { get { return _shift; } }
+        public uint Shift { get { return _shift; } }
         public Action Action { get { return _action; } }
     }
 }

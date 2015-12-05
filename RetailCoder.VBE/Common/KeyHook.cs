@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Castle.DynamicProxy.Contributors;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common.WinAPI;
 
@@ -14,9 +12,24 @@ namespace Rubberduck.Common
 {
     public interface IKeyHook
     {
+        /// <summary>
+        /// Attaches a system keyhook that listens to all keypresses.
+        /// </summary>
         void Attach();
+        /// <summary>
+        /// Detaches system keyhook.
+        /// </summary>
         void Detach();
+        /// <summary>
+        /// Raised when system keyhook captures a keypress in the VBE.
+        /// </summary>
         event EventHandler<KeyHookEventArgs> KeyPressed;
+        /// <summary>
+        /// Registers specified delegate for specified key combination.
+        /// </summary>
+        /// <param name="key">The key combination string, including modifiers ('+': Shift, '%': Alt, '^': Control).</param>
+        /// <param name="action">Any <c>void</c>, parameterless method that handles the hotkey.</param>
+        void OnHotKey(string key, Action action = null);
     }
 
     public class KeyHook : IKeyHook, IDisposable
@@ -32,6 +45,7 @@ namespace Rubberduck.Common
         private User32.WndProc _oldWndProc;
         private IntPtr _hWndForm;
         private IntPtr _hWndVbe;
+        private VbeOnKey _hookForm = new VbeOnKey();
 
         private bool _isRegistered = false;
 
@@ -136,6 +150,61 @@ namespace Rubberduck.Common
             Detach();
         }
 
+        public void OnHotKey(string key, Action action = null)
+        {
+            var hotKey = key;
+            var lShift = GetModifierValue(ref hotKey);
+            var lKey = GetKey(hotKey);
+
+            if (lKey == Keys.None)
+            {
+                throw new InvalidOperationException("Invalid key.");
+            }
+
+            if (action == null)
+            {
+                UnHookKey((uint)lKey, lShift);
+            }
+            else
+            {
+                HookKey((uint)lKey, lShift, action);
+            }
+
+            _hWndVbe = (IntPtr)_vbe.MainWindow.HWnd;
+        }
+
+        /// <summary>
+        /// Gets the <see cref="KeyModifier"/> values out of a key combination.
+        /// </summary>
+        /// <param name="key">The hotkey string, returned without the modifiers.</param>
+        private static uint GetModifierValue(ref string key)
+        {
+            uint lShift = 0;
+            for (var i = 0; i < 3; i++)
+            {
+                var firstChar = key.Substring(0, 1);
+                if (firstChar == "+")
+                {
+                    lShift |= (uint)KeyModifier.SHIFT;
+                }
+                else if (firstChar == "%")
+                {
+                    lShift |= (uint)KeyModifier.ALT;
+                }
+                else if (firstChar == "^")
+                {
+                    lShift |= (uint)KeyModifier.CONTROL;
+                }
+                else
+                {
+                    break;
+                }
+
+                key = key.Substring(1);
+            }
+            return lShift;
+        }
+
         private static readonly IDictionary<string, Keys> _keys = new Dictionary<string, Keys>
         {
             { "{BACKSPACE}", Keys.Back },
@@ -207,127 +276,198 @@ namespace Rubberduck.Common
             return result;
         }
 
-        private void HookKey(int keyCode, int shift, Action action)
+        private void HookKey(uint keyCode, uint shift, Action action)
         {
             UnHookKey(keyCode, shift);
 
             if (!_hookedKeys.Any())
             {
-                // HookWindow();
+                HookWindow();
             }
 
             var hookId = (IntPtr)Kernel32.GlobalAddAtom(Guid.NewGuid().ToString());
-            User32.RegisterHotKey((IntPtr)_vbe.MainWindow.HWnd, hookId, (uint)shift, (uint)keyCode);
+            User32.RegisterHotKey(_hWndForm, hookId, shift, keyCode);
 
-            _hookedKeys.Add(new HookInfo(hookId, (uint)keyCode, shift, action));
+            _hookedKeys.Add(new HookInfo(hookId, keyCode, shift, action));
+            _isRegistered = true;
         }
 
-        private void UnHookKey(int keyCode, int shift)
+        private void UnHookKey(uint keyCode, uint shift)
         {
             var hooks = _hookedKeys.Where(hook => hook.KeyCode == keyCode && hook.Shift == shift).ToList();
             foreach (var hook in hooks)
             {
-                User32.UnregisterHotKey((IntPtr)_vbe.MainWindow.HWnd, hook.HookId);
+                User32.UnregisterHotKey(_hWndForm, hook.HookId);
                 Kernel32.GlobalDeleteAtom((ushort)hook.HookId);
                 _hookedKeys.Remove(hook);
 
-                // if (!_hookedKeys.Any()) { UnHookWindow(); }
+                if (!_hookedKeys.Any())
+                {
+                    UnHookWindow();
+                    break;
+                }
             }
         }
 
-        public void UnhookAll()
+        /// <summary>
+        /// Called when hook form goes out of scope, to remove all hooks.
+        /// </summary>
+        public void UnHookAll()
         {
             foreach (var hook in _hookedKeys)
             {
-                User32.UnregisterHotKey((IntPtr)_vbe.MainWindow.HWnd, hook.HookId);
+                User32.UnregisterHotKey(_hWndForm, hook.HookId);
                 Kernel32.GlobalDeleteAtom((ushort)hook.HookId);
             }
 
-            //UnHookWindow();
+            UnHookWindow();
+            Detach();
         }
 
         private void HookWindow()
         {
-            var hwnd = (IntPtr)_vbe.MainWindow.HWnd; // use OnKeyWindow?
-            _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(
-                    User32.SetWindowLongPtr(hwnd, WindowLongFlags.GWL_WNDPROC,
-                    Marshal.GetFunctionPointerForDelegate((User32.WndProc) WindowProc)), typeof (User32.WndProc));
+            try
+            {
+                _hookForm = new VbeOnKey();
+                _hookForm.Closed += _hookForm_Closed;
+                _hWndForm = _hookForm.Handle;
+                _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(
+                    User32.SetWindowLongPtr(_hWndForm, WindowLongFlags.GWL_WNDPROC,
+                        Marshal.GetFunctionPointerForDelegate((User32.WndProc) WindowProc)), typeof (User32.WndProc));
 
+                var timerId = (IntPtr)Kernel32.GlobalAddAtom(Guid.NewGuid().ToString());
+                User32.SetTimer(_hWndForm, timerId, 500, TimerCallback);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+        }
+
+        private void _hookForm_Closed(object sender, EventArgs e)
+        {
+            UnHookAll();
         }
 
         private void UnHookWindow()
         {
-            var hwnd = (IntPtr)_vbe.MainWindow.HWnd; // use OnKeyWindow?
-            User32.SetWindowLongPtr(hwnd, WindowLongFlags.GWL_WNDPROC, Marshal.GetFunctionPointerForDelegate(_oldWndProc));
-            hwnd = IntPtr.Zero;
-            _isRegistered = false;
+            try
+            {
+                User32.SetWindowLongPtr(_hWndForm, WindowLongFlags.GWL_WNDPROC, Marshal.GetFunctionPointerForDelegate(_oldWndProc));
+                _isRegistered = false;
 
-            User32.KillTimer(hwnd, _timerId);
-            Kernel32.GlobalDeleteAtom((ushort)_timerId);
-            _timerId = IntPtr.Zero;
+                User32.KillTimer(_hWndForm, _timerId);
+                Kernel32.GlobalDeleteAtom((ushort)_timerId);
 
-            // dispose OnKeyWindow instance
+                _timerId = IntPtr.Zero;
+                _hWndForm = IntPtr.Zero;
+
+                _hookForm.Close();
+                _hookForm.Closed -= _hookForm_Closed;
+                _hookForm.Dispose();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
         }
 
         private IntPtr WindowProc(IntPtr hWnd, uint u, IntPtr wParam, IntPtr lParam)
         {
-            var processed = false;
-            if (hWnd == _hWndForm)
+            try
             {
-                switch ((WM)u)
+                var processed = false;
+                if (hWnd == _hWndForm)
                 {
-                    case WM.HOTKEY:
-                        // if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_hWndVBE))
-                        {
-                            var key = _hookedKeys.FirstOrDefault(k => (Keys) k.KeyCode == (Keys) wParam);
-                            key.Action.Invoke();
-                            processed = true;
-                        }
-                        break;
+                    switch ((WM)u)
+                    {
+                        case WM.HOTKEY:
+                            if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_hWndVbe))
+                            {
+                                var key = _hookedKeys.FirstOrDefault(k => (Keys)k.KeyCode == (Keys)wParam);
+                                key.Action.Invoke();
+                                processed = true;
+                            }
+                            break;
 
-                    case WM.ACTIVATEAPP:
-                        switch (LoWord((int)wParam))
-                        {
-                            case WA_ACTIVE:
-                                foreach (var key in _hookedKeys)
-                                {
-                                    User32.RegisterHotKey(_hWndForm, key.HookId, User32.MOD_SHIFT | User32.MOD_CONTROL, key.KeyCode);
-                                }
-                                _isRegistered = true;
-                                break;
+                        case WM.ACTIVATEAPP:
+                            switch (LoWord((int)wParam))
+                            {
+                                case WA_ACTIVE:
+                                    foreach (var key in _hookedKeys)
+                                    {
+                                        User32.RegisterHotKey(_hWndForm, key.HookId, (uint)KeyModifier.CONTROL, key.KeyCode);
+                                    }
+                                    _isRegistered = true;
+                                    break;
 
-                            case WA_INACTIVE:
-                                foreach (var key in _hookedKeys)
-                                {
-                                    User32.UnregisterHotKey(_hWndForm, key.HookId);
-                                }
-                                _isRegistered = false;
-                                break;
-                        }
+                                case WA_INACTIVE:
+                                    foreach (var key in _hookedKeys)
+                                    {
+                                        User32.UnregisterHotKey(_hWndForm, key.HookId);
+                                    }
+                                    _isRegistered = false;
+                                    break;
+                            }
 
-                        break;
+                            break;
+                    }
+                }
+
+                if (!processed)
+                {
+                    return User32.CallWindowProc(_oldWndProc, hWnd, u, wParam, lParam);
                 }
             }
-
-            if (!processed)
+            catch (Exception exception)
             {
-                return User32.CallWindowProc(_oldWndProc, hWnd, u, wParam, lParam);
+                Console.WriteLine(exception);
             }
+
             return IntPtr.Zero;
         }
 
-        private int LoWord(int dw)
+        private IntPtr GetWindowThread(IntPtr hWnd)
+        {
+            uint hThread;
+            User32.GetWindowThreadProcessId(hWnd, out hThread);
+
+            return (IntPtr)hThread;
+        }
+
+        /// <summary>
+        /// Gets the integer portion of a word
+        /// </summary>
+        private static int LoWord(int dw)
         {
             return (dw & 0x8000) != 0 
                 ? 0x8000 | (dw & 0x7FFF) 
                 : dw & 0xFFFF;
         }
 
-        private void TimerCallback(IntPtr hWnd, WindowLongFlags msg, IntPtr timerId, IntPtr time)
+        private void TimerCallback(IntPtr hWnd, WindowLongFlags msg, IntPtr timerId, uint time)
         {
-            
+            // check if the VBE is still in the foreground
+            if (User32.GetForegroundWindow() == _hWndVbe && !_isRegistered)
+            {
+                // app got focus, re-register hotkeys and re-attach key hook
+                foreach (var key in _hookedKeys)
+                {
+                    User32.RegisterHotKey(_hWndForm, key.HookId, key.Shift, key.KeyCode);
+                }
+                _isRegistered = true;
+                Attach();
+            }
+            else
+            {
+                // app lost focus, unregister hotkeys and detach key hook
+                foreach (var key in _hookedKeys)
+                {
+                    User32.UnregisterHotKey(_hWndForm, key.HookId);
+                }
+                _isRegistered = false;
+                Detach();
+            }
         }
-
-
     }
 }
