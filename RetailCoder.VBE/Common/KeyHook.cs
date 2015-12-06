@@ -264,11 +264,7 @@ namespace Rubberduck.Common
                 default:
                     if (!string.IsNullOrEmpty(keyCode))
                     {
-                        int asciiCode;
-                        if (int.TryParse(keyCode.Substring(0, 1), out asciiCode))
-                        {
-                            result = (Keys)asciiCode;
-                        }
+                        result = (Keys)Enum.Parse(typeof(Keys), keyCode);
                     }
                     break;
             }

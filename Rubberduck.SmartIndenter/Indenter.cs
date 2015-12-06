@@ -58,6 +58,33 @@ namespace Rubberduck.SmartIndenter
         }
 
 
+        public void IndentCurrentProcedure()
+        {
+            var pane = _vbe.ActiveCodePane;
+
+            int startLine;
+            int startColumn;
+            int endLine;
+            int endColumn;
+            pane.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+            
+            vbext_ProcKind procKind;
+            var procName = pane.CodeModule.get_ProcOfLine(startLine, out procKind);
+
+            if (string.IsNullOrEmpty(procName))
+            {
+                procName = "Declarations";
+            }
+
+            Indent(pane.CodeModule.Parent, procName);
+        }
+
+        public void IndentCurrentModule()
+        {
+            var pane = _vbe.ActiveCodePane;
+            Indent(pane.CodeModule.Parent);
+        }
+
         public void Indent(VBProject project)
         {
             if (project == null)

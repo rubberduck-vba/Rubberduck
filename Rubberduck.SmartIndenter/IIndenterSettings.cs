@@ -24,5 +24,7 @@ namespace Rubberduck.SmartIndenter
         bool CompilerStuffColumn1 { get; set; }
         bool IndentCompilerStuff { get; set; }
         bool AlignIgnoreOps { get; set; }
+        bool EnableIndentProcedureHotKey { get; set; }
+        bool EnableIndentModuleHotKey { get; set; }
     }
 }

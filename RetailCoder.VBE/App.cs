@@ -13,6 +13,7 @@ using Rubberduck.Common;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Settings;
+using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.ParserErrors;
@@ -30,6 +31,7 @@ namespace Rubberduck
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
         private readonly ParserStateCommandBar _stateBar;
+        private readonly IIndenter _indenter;
         private readonly IKeyHook _hook;
 
         private readonly Logger _logger;
@@ -46,6 +48,7 @@ namespace Rubberduck
             IGeneralConfigService configService,
             IAppMenu appMenus,
             ParserStateCommandBar stateBar,
+            IIndenter indenter,
             IKeyHook hook)
         {
             _vbe = vbe;
@@ -56,6 +59,7 @@ namespace Rubberduck
             _configService = configService;
             _appMenus = appMenus;
             _stateBar = stateBar;
+            _indenter = indenter;
             _hook = hook;
             _logger = LogManager.GetCurrentClassLogger();
 
@@ -124,7 +128,19 @@ namespace Rubberduck
                 ParseAll();
             });
 
+            _hook.OnHotKey("+^P", IndentProcedure);
+            _hook.OnHotKey("+^M", IndentModule);
             _hook.Attach();
+        }
+
+        private void IndentProcedure()
+        {
+            _indenter.IndentCurrentProcedure();
+        }
+
+        private void IndentModule()
+        {
+            _indenter.IndentCurrentModule();
         }
 
         private void ParseAll()

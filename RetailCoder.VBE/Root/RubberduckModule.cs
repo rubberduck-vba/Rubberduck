@@ -11,11 +11,11 @@ using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
+using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.UnitTesting;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Root
@@ -37,8 +37,6 @@ namespace Rubberduck.Root
         {
             Debug.Print("in RubberduckModule.Load()");
 
-            _kernel.Bind<App>().ToSelf().InSingletonScope();
-
             // bind VBE and AddIn dependencies to host-provided instances.
             _kernel.Bind<VBE>().ToConstant(_vbe);
             _kernel.Bind<AddIn>().ToConstant(_addin);
@@ -51,13 +49,15 @@ namespace Rubberduck.Root
             {
                 Assembly.GetExecutingAssembly(),
                 Assembly.GetAssembly(typeof(IHostApplication)),
-                Assembly.GetAssembly(typeof(IRubberduckParser))
+                Assembly.GetAssembly(typeof(IRubberduckParser)),
+                Assembly.GetAssembly(typeof(IIndenter))
             };
 
             ApplyConfigurationConvention(assemblies);
             ApplyDefaultInterfacesConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
 
+            Rebind<IIndenterSettings>().To<IndenterSettings>();
             Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>().InSingletonScope();
 
             Bind<IPresenter>().To<TestExplorerDockablePresenter>()
