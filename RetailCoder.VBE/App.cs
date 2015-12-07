@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -122,25 +123,18 @@ namespace Rubberduck
             _appMenus.Initialize();
             _appMenus.Localize();
 
+            Debug.Print("Hooking up hotkeys");
+            _hook.OnHotKey("+^P", _indenter.IndentCurrentProcedure);
+            _hook.OnHotKey("+^M", _indenter.IndentCurrentModule);
+
             Task.Delay(1000).ContinueWith(t =>
             {
+                Debug.Print("Starting initial parse");
                 _parser.State.AddBuiltInDeclarations(_vbe.HostApplication());
                 ParseAll();
             });
 
-            _hook.OnHotKey("+^P", IndentProcedure);
-            _hook.OnHotKey("+^M", IndentModule);
-            _hook.Attach();
-        }
-
-        private void IndentProcedure()
-        {
-            _indenter.IndentCurrentProcedure();
-        }
-
-        private void IndentModule()
-        {
-            _indenter.IndentCurrentModule();
+            Debug.Print("Startup completed");
         }
 
         private void ParseAll()
@@ -198,6 +192,7 @@ namespace Rubberduck
 
         public void Dispose()
         {
+            _hook.UnHookAll();
             _hook.KeyPressed -= _hook_KeyPressed;
             _configService.SettingsChanged -= _configService_SettingsChanged;
             _parser.State.StateChanged -= Parser_StateChanged;

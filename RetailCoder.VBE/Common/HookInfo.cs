@@ -1,4 +1,5 @@
 using System;
+using Rubberduck.Annotations;
 
 namespace Rubberduck.Common
 {
@@ -9,7 +10,7 @@ namespace Rubberduck.Common
         private readonly uint _shift;
         private readonly Action _action;
 
-        public HookInfo(IntPtr hookId, uint keyCode, uint shift, Action action)
+        public HookInfo(IntPtr hookId, uint keyCode, uint shift, [NotNull] Action action)
         {
             _hookId = hookId;
             _keyCode = keyCode;
