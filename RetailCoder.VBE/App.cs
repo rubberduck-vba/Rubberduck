@@ -134,7 +134,7 @@ namespace Rubberduck
                 ParseAll();
             });
 
-            Debug.Print("Startup completed");
+            Debug.Print("Survived startup!");
         }
 
         private void ParseAll()

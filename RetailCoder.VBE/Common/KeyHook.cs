@@ -31,7 +31,7 @@ namespace Rubberduck.Common
     {
         private readonly VBE _vbe;
 
-        private readonly HashSet<HookInfo> _hookedKeys = new HashSet<HookInfo>();
+        private readonly IDictionary<IntPtr,HookInfo> _hookedKeys = new Dictionary<IntPtr,HookInfo>();
 
         private const int GWL_WNDPROC = -4;
         private const int WA_INACTIVE = 0;
@@ -271,7 +271,7 @@ namespace Rubberduck.Common
             return result;
         }
 
-        private void HookKey(uint keyCode, uint shift,[NotNull] Action action)
+        private void HookKey(uint keyCode, uint shift, Action action)
         {
             UnHookKey(keyCode, shift);
 
@@ -286,7 +286,7 @@ namespace Rubberduck.Common
 
             if (success)
             {
-                _hookedKeys.Add(new HookInfo(hookId, keyCode, shift, action));
+                _hookedKeys.Add(hookId,new HookInfo(hookId, keyCode, shift, action));
                 Debug.Print("Added hook id {0} for keycode {1}", hookId, keyCode);
                 _isRegistered = true;
             }
@@ -294,13 +294,13 @@ namespace Rubberduck.Common
 
         private void UnHookKey(uint keyCode, uint shift)
         {
-            var hooks = _hookedKeys.Where(hook => hook.KeyCode == keyCode && hook.Shift == shift).ToList();
-            foreach (var hook in hooks)
+            var hooks = _hookedKeys.Where(hook => hook.Value.KeyCode == keyCode && hook.Value.Shift == shift).ToList();
+            foreach (var hook in hooks.Select(h => h.Value))
             {
                 User32.UnregisterHotKey(_hWndVbe, hook.HookId);
                 Kernel32.GlobalDeleteAtom((ushort)hook.HookId);
                 Debug.Print("Removing hook id {0} (key code {1})", hook.HookId, keyCode);
-                _hookedKeys.Remove(hook);
+                _hookedKeys.Remove(hook.HookId);
 
                 if (!_hookedKeys.Any())
                 {
@@ -316,7 +316,7 @@ namespace Rubberduck.Common
         public void UnHookAll()
         {
             Debug.Print("Unhook all...");
-            foreach (var hook in _hookedKeys)
+            foreach (var hook in _hookedKeys.Values)
             {
                 User32.UnregisterHotKey(_hWndVbe, hook.HookId);
                 Kernel32.GlobalDeleteAtom((ushort)hook.HookId);
@@ -373,15 +373,12 @@ namespace Rubberduck.Common
                             Debug.Print("WindowProc message hook handles WM{0} message (hWnd {1})", (WM)uMsg, hWnd);
                             if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_hWndVbe))
                             {
-                                var key = _hookedKeys.FirstOrDefault(k => (Keys) k.KeyCode == (Keys) wParam);
+                                
+                                var key = _hookedKeys.FirstOrDefault(k => k.Key == (IntPtr)wParam).Value;
                                 if (key.Action != null)
                                 {
                                     key.Action.Invoke();
                                     processed = true;
-                                }
-                                else
-                                {
-                                    Debug.Print("key.Action is null.");
                                 }
                             }
                             else
@@ -396,7 +393,7 @@ namespace Rubberduck.Common
                             {
                                 case WA_ACTIVE:
                                     Debug.Print("handling WA_ACTIVE...");
-                                    foreach (var key in _hookedKeys)
+                                    foreach (var key in _hookedKeys.Values)
                                     {
                                         var result = User32.RegisterHotKey(_hWndVbe, key.HookId, (uint)KeyModifier.CONTROL, key.KeyCode);
                                         Debug.Print("RegisterHotKey({0},{1},{2},{3}) returned {4}", hWnd, key.HookId, (uint)KeyModifier.CONTROL, key.KeyCode, result);
@@ -406,7 +403,7 @@ namespace Rubberduck.Common
 
                                 case WA_INACTIVE:
                                     Debug.Print("handling WA_INACTIVE...");
-                                    foreach (var key in _hookedKeys)
+                                    foreach (var key in _hookedKeys.Values)
                                     {
                                         var result = User32.UnregisterHotKey(_hWndVbe, key.HookId);
                                         Debug.Print("Unregistered hotkey {0} (hWnd {1}) returned {2}", key.HookId, hWnd, result);
@@ -461,7 +458,7 @@ namespace Rubberduck.Common
             if (User32.GetForegroundWindow() == _hWndVbe && !_isRegistered)
             {
                 // app got focus, re-register hotkeys and re-attach key hook
-                foreach (var key in _hookedKeys)
+                foreach (var key in _hookedKeys.Values)
                 {
                     User32.RegisterHotKey(_hWndVbe, key.HookId, key.Shift, key.KeyCode);
                 }
@@ -471,7 +468,7 @@ namespace Rubberduck.Common
             else
             {
                 // app lost focus, unregister hotkeys and detach key hook
-                foreach (var key in _hookedKeys)
+                foreach (var key in _hookedKeys.Values)
                 {
                     User32.UnregisterHotKey(_hWndVbe, key.HookId);
                 }
