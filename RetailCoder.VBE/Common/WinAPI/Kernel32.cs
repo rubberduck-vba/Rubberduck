@@ -28,7 +28,7 @@ namespace Rubberduck.Common.WinAPI
         /// <param name="nAtom">The atom and character string to be deleted.</param>
         /// <returns>The function always returns (ATOM) 0.</returns>
         [DllImport("kernel32.dll", SetLastError=true, ExactSpelling=true)]
-        public static extern ushort GlobalDeleteAtom(ushort nAtom);
+        public static extern ushort GlobalDeleteAtom(IntPtr nAtom);
 
         /// <summary>
         /// Retrieves a module handle for the specified module. 

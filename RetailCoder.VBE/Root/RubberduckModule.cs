@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -7,6 +8,7 @@ using Ninject;
 using Ninject.Extensions.Conventions;
 using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
+using Rubberduck.Common;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
@@ -70,7 +72,19 @@ namespace Rubberduck.Root
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>() });
 
+            BindWindowsHooks();
             Debug.Print("completed RubberduckModule.Load()");
+        }
+
+        private void BindWindowsHooks()
+        {
+            _kernel.Rebind<ITimerHook>().To<TimerHook>()
+                .InSingletonScope()
+                .WithConstructorArgument("mainWindowHandle", (IntPtr)_vbe.MainWindow.HWnd);
+
+            _kernel.Rebind<IRubberduckHooks>().To<RubberduckHooks>()
+                .InSingletonScope()
+                .WithConstructorArgument("mainWindowHandle", (IntPtr)_vbe.MainWindow.HWnd);
         }
 
         private void ApplyDefaultInterfacesConvention(IEnumerable<Assembly> assemblies)

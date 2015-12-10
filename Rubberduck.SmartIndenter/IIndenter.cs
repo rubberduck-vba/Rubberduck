@@ -10,7 +10,7 @@ namespace Rubberduck.SmartIndenter
         void IndentCurrentModule();
         void Indent(VBProject project);
         void Indent(VBComponent module);
-        void Indent(VBComponent module, string procedureName);
+        void Indent(VBComponent module, string procedureName, Selection selection);
         void Indent(string[] lines, string moduleName, bool reportProgress = true, int linesAlreadyRebuilt = 0);
     }
 }

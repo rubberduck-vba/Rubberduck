@@ -1,0 +1,186 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Forms;
+using Rubberduck.Common.WinAPI;
+
+namespace Rubberduck.Common
+{
+    public class HotKeyHook : IHotKeyHook
+    {
+        private readonly Action _action;
+        private readonly IntPtr _hWndVbe;
+
+        public HookInfo HookInfo { get; private set; }
+
+        public HotKeyHook(IntPtr hWndVbe, string key, bool isTwoStepHotKey)
+        {
+            _hWndVbe = hWndVbe;
+            _action = OnMessageReceived;
+
+            IsTwoStepHotKey = isTwoStepHotKey;
+            Key = key;
+        }
+
+        public bool IsTwoStepHotKey { get; private set; }
+        public bool IsAttached { get; private set; }
+        public string Key { get; private set; }
+
+        public event EventHandler<HookEventArgs> MessageReceived;
+
+        public void OnMessageReceived()
+        {
+            var handler = MessageReceived;
+            if (handler != null)
+            {
+                var args = new HookEventArgs(GetKey(Key));
+                handler.Invoke(this, args);
+            }
+        }
+
+        public void Attach()
+        {
+            var hotKey = Key;
+            var lShift = GetModifierValue(ref hotKey);
+            var lKey = GetKey(hotKey);
+
+            if (lKey == Keys.None)
+            {
+                throw new InvalidOperationException("Invalid key.");
+            }
+
+            HookKey(lKey, lShift, _action);
+        }
+
+        public void Detach()
+        {
+            if (!IsAttached)
+            {
+                throw new InvalidOperationException("Hook is already detached.");
+            }
+
+            User32.UnregisterHotKey(_hWndVbe, HookInfo.HookId);
+            Kernel32.GlobalDeleteAtom(HookInfo.HookId);
+
+            IsAttached = false;
+        }
+
+        private void HookKey(Keys key, uint shift, Action action)
+        {
+            if (IsAttached)
+            {
+                throw new InvalidOperationException("Hook is already attached.");
+            }
+
+            var hookId = (IntPtr)Kernel32.GlobalAddAtom(Guid.NewGuid().ToString());
+            var success = User32.RegisterHotKey(_hWndVbe, hookId, shift, (uint)key);
+            if (!success)
+            {
+                throw new Win32Exception("HotKey was not registered.");
+            }
+
+            HookInfo = new HookInfo(hookId, key, shift, action);
+            IsAttached = true;
+        }
+
+        private static readonly IDictionary<char,uint> Modifiers = new Dictionary<char, uint>
+        {
+            { '+', (uint)KeyModifier.SHIFT },
+            { '%', (uint)KeyModifier.ALT },
+            { '^', (uint)KeyModifier.CONTROL },
+        };
+
+        /// <summary>
+        /// Gets the <see cref="KeyModifier"/> values out of a key combination.
+        /// </summary>
+        /// <param name="key">The hotkey string, returned without the modifiers.</param>
+        private static uint GetModifierValue(ref string key)
+        {
+            uint result = 0;
+
+            for (var i = 0; i < 3; i++)
+            {
+                var firstChar = key[i];
+                if (Modifiers.ContainsKey(firstChar))
+                {
+                    result |= Modifiers[firstChar];
+                }
+                else
+                {
+                    // first character isn't a modifier symbol:
+                    break;
+                }
+
+                // truncate first character for next iteration:
+                key = key.Substring(1);
+            }
+
+            return result;
+        }
+
+        private Keys GetKey(string keyCode)
+        {
+            var result = Keys.None;
+            switch (keyCode.Substring(0, 1))
+            {
+                case "{":
+                    _keys.TryGetValue(keyCode, out result);
+                    break;
+                case "~":
+                    result = Keys.Return;
+                    break;
+                default:
+                    if (!String.IsNullOrEmpty(keyCode))
+                    {
+                        result = (Keys)Enum.Parse(typeof(Keys), keyCode);
+                    }
+                    break;
+            }
+
+            return result;
+        }
+
+        private static readonly IDictionary<string, Keys> _keys = new Dictionary<string, Keys>
+        {
+            { "{BACKSPACE}", Keys.Back },
+            { "{BS}", Keys.Back },
+            { "{BKSP}", Keys.Back },
+            { "{CAPSLOCK}", Keys.CapsLock },
+            { "{DELETE}", Keys.Delete },
+            { "{DEL}", Keys.Delete },
+            { "{DOWN}", Keys.Down },
+            { "{END}", Keys.End },
+            { "{ENTER}", Keys.Enter },
+            { "{RETURN}", Keys.Enter },
+            { "{ESC}", Keys.Escape },
+            { "{HELP}", Keys.Help },
+            { "{HOME}", Keys.Home },
+            { "{INSERT}", Keys.Insert },
+            { "{INS}", Keys.Insert },
+            { "{LEFT}", Keys.Left },
+            { "{NUMLOCK}", Keys.NumLock },
+            { "{PGDN}", Keys.PageDown },
+            { "{PGUP}", Keys.PageUp },
+            { "{PRTSC}", Keys.PrintScreen },
+            { "{RIGHT}", Keys.Right },
+            { "{TAB}", Keys.Tab },
+            { "{UP}", Keys.Up },
+            { "{F1}", Keys.F1 },
+            { "{F2}", Keys.F2 },
+            { "{F3}", Keys.F3 },
+            { "{F4}", Keys.F4 },
+            { "{F5}", Keys.F5 },
+            { "{F6}", Keys.F6 },
+            { "{F7}", Keys.F7 },
+            { "{F8}", Keys.F8 },
+            { "{F9}", Keys.F9 },
+            { "{F10}", Keys.F10 },
+            { "{F11}", Keys.F11 },
+            { "{F12}", Keys.F12 },
+            { "{F13}", Keys.F13 },
+            { "{F14}", Keys.F14 },
+            { "{F15}", Keys.F15 },
+            { "{F16}", Keys.F16 },
+        };
+    }
+}

@@ -33,7 +33,7 @@ namespace Rubberduck
         private readonly IAppMenu _appMenus;
         private readonly ParserStateCommandBar _stateBar;
         private readonly IIndenter _indenter;
-        private readonly IKeyHook _hook;
+        private readonly IRubberduckHooks _hooks;
 
         private readonly Logger _logger;
 
@@ -50,7 +50,7 @@ namespace Rubberduck
             IAppMenu appMenus,
             ParserStateCommandBar stateBar,
             IIndenter indenter,
-            IKeyHook hook)
+            IRubberduckHooks hooks)
         {
             _vbe = vbe;
             _messageBox = messageBox;
@@ -61,13 +61,63 @@ namespace Rubberduck
             _appMenus = appMenus;
             _stateBar = stateBar;
             _indenter = indenter;
-            _hook = hook;
+            _hooks = hooks;
             _logger = LogManager.GetCurrentClassLogger();
 
-            _hook.KeyPressed += _hook_KeyPressed;
+            _hooks.MessageReceived += hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _stateBar.Refresh += _stateBar_Refresh;
+        }
+
+        private Keys _firstStepHotKey;
+        private bool _isAwaitingTwoStepKey;
+
+        private async void hooks_MessageReceived(object sender, HookEventArgs e)
+        {
+            if (sender is LowLevelKeyboardHook)
+            {
+                if (_isAwaitingTwoStepKey)
+                {
+                    // todo: use _firstStepHotKey and e.Key to run 2-step hotkey action
+                    return;
+                }
+
+                var component = _vbe.ActiveCodePane.CodeModule.Parent;
+                await ParseComponentAsync(component);
+
+                AwaitNextKey(false);
+                return;
+            }
+
+            var hotKey = sender as IHotKeyHook;
+            if (hotKey == null)
+            {
+                return;
+            }
+
+            if (hotKey.IsTwoStepHotKey)
+            {
+                _firstStepHotKey = hotKey.HookInfo.Key;
+                AwaitNextKey();
+            }
+            else
+            {
+                // todo: use e.Key to run 1-step hotkey action
+                _firstStepHotKey = Keys.None;
+                AwaitNextKey(false);
+            }
+        }
+
+        private void AwaitNextKey(bool eatNextKey = true)
+        {
+            _isAwaitingTwoStepKey = eatNextKey;
+            foreach (var hook in _hooks.Hooks.OfType<ILowLevelKeyboardHook>())
+            {
+                hook.EatNextKey = eatNextKey;
+            }
+
+            // todo: update status commandbar, e.g. "Ctrl+Shift+R was pressed. Awaiting command..."
         }
 
         private void _stateBar_Refresh(object sender, EventArgs e)
@@ -78,11 +128,6 @@ namespace Rubberduck
         private void Parser_StateChanged(object sender, EventArgs e)
         {
             _appMenus.EvaluateCanExecute(_parser.State);
-        }
-
-        private async void _hook_KeyPressed(object sender, KeyHookEventArgs e)
-        {
-            await ParseComponentAsync(e.Component);
         }
 
         private async Task ParseComponentAsync(VBComponent component, bool resolve = true)
@@ -123,10 +168,6 @@ namespace Rubberduck
             _appMenus.Initialize();
             _appMenus.Localize();
 
-            Debug.Print("Hooking up hotkeys");
-            _hook.OnHotKey("+^P", _indenter.IndentCurrentProcedure);
-            _hook.OnHotKey("+^M", _indenter.IndentCurrentModule);
-
             Task.Delay(1000).ContinueWith(t =>
             {
                 Debug.Print("Starting initial parse");
@@ -134,7 +175,8 @@ namespace Rubberduck
                 ParseAll();
             });
 
-            Debug.Print("Survived startup!");
+            _hooks.AddHook(new LowLevelKeyboardHook(_vbe));
+            _hooks.Attach();
         }
 
         private void ParseAll()
@@ -192,10 +234,11 @@ namespace Rubberduck
 
         public void Dispose()
         {
-            _hook.UnHookAll();
-            _hook.KeyPressed -= _hook_KeyPressed;
+            _hooks.MessageReceived -= hooks_MessageReceived;
             _configService.SettingsChanged -= _configService_SettingsChanged;
             _parser.State.StateChanged -= Parser_StateChanged;
+
+            _hooks.Dispose();
 
             if (_tokenSources.Any())
             {

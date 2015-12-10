@@ -50,6 +50,7 @@
     <Compile Include="IIndenter.cs" />
     <Compile Include="IndenterProgressEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Selection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Legacy\CBtnEvents.cls" />

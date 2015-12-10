@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -10,29 +11,6 @@ namespace Rubberduck.SmartIndenter
 {
     public class Indenter : IIndenter
     {
-        private struct Selection
-        {
-            public Selection(int startLine, int startColumn, int endLine, int endColumn)
-            {
-                _startLine = startLine;
-                _startColumn = startColumn;
-                _endLine = endLine;
-                _endColumn = endColumn;
-            }
-
-            private readonly int _startLine;
-            public int StartLine { get {return _startLine; } }
-
-            private readonly int _startColumn;
-            public int StartColumn { get { return _startColumn; } }
-
-            private readonly int _endLine;
-            public int EndLine { get { return _endLine; } }
-
-            private readonly int _endColumn;
-            public int EndColumn { get { return _endColumn; } }
-        }
-
         private readonly VBE _vbe;
         private readonly IIndenterSettings _settings;
 
@@ -61,22 +39,17 @@ namespace Rubberduck.SmartIndenter
         public void IndentCurrentProcedure()
         {
             var pane = _vbe.ActiveCodePane;
+            var selection = GetSelection(pane);
 
-            int startLine;
-            int startColumn;
-            int endLine;
-            int endColumn;
-            pane.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
-            
             vbext_ProcKind procKind;
-            var procName = pane.CodeModule.get_ProcOfLine(startLine, out procKind);
+            var procName = pane.CodeModule.get_ProcOfLine(selection.StartLine, out procKind);
 
             if (string.IsNullOrEmpty(procName))
             {
-                procName = "Declarations";
+                procName = null;
             }
 
-            Indent(pane.CodeModule.Parent, procName);
+            Indent(pane.CodeModule.Parent, procName, selection);
         }
 
         public void IndentCurrentModule()
@@ -108,7 +81,7 @@ namespace Rubberduck.SmartIndenter
             var progress = 0; // to set progressbar value
             foreach (var component in project.VBComponents.Cast<VBComponent>().Where(component => HasCode(component.CodeModule)))
             {
-                //RebuildCodeModule(component.CodeModule,component.Name,1,component.CodeModule.CountOfLines,progress);
+                RebuildModule(component.CodeModule,component.Name,1,component.CodeModule.CountOfLines,progress);
                 progress += component.CodeModule.CountOfLines;
             }
 
@@ -155,17 +128,17 @@ namespace Rubberduck.SmartIndenter
 
         public void Indent(VBComponent module)
         {
-            throw new NotImplementedException();
+            RebuildModule(module.CodeModule, module.Name, 1, module.CodeModule.CountOfLines, 0);
         }
 
-        public void Indent(VBComponent module, string procedureName)
+        public void Indent(VBComponent module, string procedureName, Selection selection)
         {
-            throw new NotImplementedException();
+            RebuildModule(module.CodeModule, procedureName, selection.StartLine, selection.EndLine, 0);
         }
 
         public void Indent(string[] lines, string moduleName, bool reportProgress = true, int linesAlreadyRebuilt = 0)
         {
-            throw new NotImplementedException();
+            
         }
 
         private static readonly string[] ProcedureLevelScopeTokens =
@@ -253,12 +226,12 @@ namespace Rubberduck.SmartIndenter
 
             var indentCase = _settings.IndentCase;
 
-            if (_inCode.Peek() != "Select Case" && indentCase)
+            if (_inCode.Any() && _inCode.Peek() != "Select Case" && indentCase)
             {
                 _inCode.Push("Select Case");
                 _outCode.Push("End Select");
             }
-            else if (_inCode.Peek() == "Select Case" && indentCase)
+            else if (_inCode.Any() && _inCode.Peek() == "Select Case" && indentCase)
             {
                 _inCode.Pop();
                 _outCode.Pop();
@@ -368,24 +341,31 @@ namespace Rubberduck.SmartIndenter
                             switch (item)
                             {
                                 case "":
+                                    //throw new NotImplementedException();
                                     break;
 
                                 case "\"\"":
+                                    //throw new NotImplementedException();
                                     break;
 
                                 case ": ":
+                                    //throw new NotImplementedException();
                                     break;
 
                                 case " As ":
+                                    //throw new NotImplementedException();
                                     break;
 
                                 case "'":
                                 case "Rem ":
+                                    isInsideComment = true;
+                                    //throw new NotImplementedException();
                                     break;
                                     
                                 case "Stop ":
                                 case "Debug.Print ":
                                 case "Debug.Assert ":
+                                    //throw new NotImplementedException();
                                     break;
                                 
                                 case "#If ":
@@ -393,6 +373,7 @@ namespace Rubberduck.SmartIndenter
                                 case "#Else ":
                                 case "#End If":
                                 case "#Const ":
+                                    //throw new NotImplementedException();
                                     break;
                             }
 
