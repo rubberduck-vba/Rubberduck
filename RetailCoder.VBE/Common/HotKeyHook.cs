@@ -33,7 +33,9 @@ namespace Rubberduck.Common
             var handler = MessageReceived;
             if (handler != null)
             {
-                var args = new HookEventArgs(GetKey(Key));
+                var hotKey = Key;
+                var shift = GetModifierValue(ref hotKey);
+                var args = new HookEventArgs(GetKey(hotKey));
                 handler.Invoke(this, args);
             }
         }
@@ -100,7 +102,7 @@ namespace Rubberduck.Common
 
             for (var i = 0; i < 3; i++)
             {
-                var firstChar = key[i];
+                var firstChar = key[0];
                 if (Modifiers.ContainsKey(firstChar))
                 {
                     result |= Modifiers[firstChar];

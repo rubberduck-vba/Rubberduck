@@ -72,14 +72,23 @@ namespace Rubberduck
 
         private Keys _firstStepHotKey;
         private bool _isAwaitingTwoStepKey;
+        private bool _skipKeyUp;
 
         private async void hooks_MessageReceived(object sender, HookEventArgs e)
         {
             if (sender is LowLevelKeyboardHook)
             {
+                if (_skipKeyUp)
+                {
+                    _skipKeyUp = false;
+                    return;
+                }
+
                 if (_isAwaitingTwoStepKey)
                 {
                     // todo: use _firstStepHotKey and e.Key to run 2-step hotkey action
+
+                    AwaitNextKey(false);
                     return;
                 }
 
@@ -93,13 +102,14 @@ namespace Rubberduck
             var hotKey = sender as IHotKeyHook;
             if (hotKey == null)
             {
+                AwaitNextKey(false);
                 return;
             }
 
             if (hotKey.IsTwoStepHotKey)
             {
                 _firstStepHotKey = hotKey.HookInfo.Key;
-                AwaitNextKey();
+                AwaitNextKey(true, _firstStepHotKey);
             }
             else
             {
@@ -109,7 +119,7 @@ namespace Rubberduck
             }
         }
 
-        private void AwaitNextKey(bool eatNextKey = true)
+        private void AwaitNextKey(bool eatNextKey = true, Keys key = default(Keys))
         {
             _isAwaitingTwoStepKey = eatNextKey;
             foreach (var hook in _hooks.Hooks.OfType<ILowLevelKeyboardHook>())
@@ -117,7 +127,8 @@ namespace Rubberduck
                 hook.EatNextKey = eatNextKey;
             }
 
-            // todo: update status commandbar, e.g. "Ctrl+Shift+R was pressed. Awaiting command..."
+            _stateBar.SetStatusText(eatNextKey ? "(Ctrl+" + key + ") was pressed. Waiting for second key..." : "Ready.");
+            _skipKeyUp = eatNextKey;
         }
 
         private void _stateBar_Refresh(object sender, EventArgs e)
@@ -176,6 +187,8 @@ namespace Rubberduck
             });
 
             _hooks.AddHook(new LowLevelKeyboardHook(_vbe));
+            _hooks.AddHook(new HotKeyHook((IntPtr)_vbe.MainWindow.HWnd, "^R", true)); // hijacks Ctrl+R "Project Explorer" shortcut
+            _hooks.AddHook(new HotKeyHook((IntPtr)_vbe.MainWindow.HWnd, "^I", true));
             _hooks.Attach();
         }
 

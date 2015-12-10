@@ -13,7 +13,7 @@ namespace Rubberduck.Common
 
         private readonly IntPtr _oldWndPointer;
         private readonly User32.WndProc _oldWndProc;
-        private readonly User32.WndProc _newWndProc;
+        private User32.WndProc _newWndProc;
 
         private readonly ITimerHook _timerHook;
 
@@ -25,6 +25,7 @@ namespace Rubberduck.Common
         {
             _mainWindowHandle = mainWindowHandle;
             _oldWndProc = WindowProc;
+            _newWndProc = WindowProc;
             _oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _newWndProc);
             _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
 
