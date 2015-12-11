@@ -6,11 +6,11 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
-    public class RefactorPromoteLocalToParameterCommand : RefactorCommandBase
+    public class RefactorIntroduceParameterCommand : RefactorCommandBase
     {
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorPromoteLocalToParameterCommand (VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory)
+        public RefactorIntroduceParameterCommand (VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory)
             : base(vbe, editor)
         {
             _wrapperWrapperFactory = wrapperWrapperFactory;
@@ -25,7 +25,7 @@ namespace Rubberduck.UI.Command.Refactorings
             var codePane = _wrapperWrapperFactory.Create(Vbe.ActiveCodePane);
             var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
 
-            var refactoring = new PromoteLocalToParameterRefactoring();
+            var refactoring = new PromoteLocalToParameterRefactoring(Editor);
             refactoring.Refactor(selection);
         }
     }

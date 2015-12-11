@@ -1816,7 +1816,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Introduce Parameter.
+        ///   Looks up a localized string similar to &amp;Introduce Parameter.
         /// </summary>
         public static string RefactorMenu_PromoteLocalToParameter {
             get {

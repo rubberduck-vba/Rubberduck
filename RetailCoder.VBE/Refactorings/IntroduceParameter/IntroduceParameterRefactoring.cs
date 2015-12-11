@@ -8,6 +8,11 @@ namespace Rubberduck.Refactorings.PromoteLocalToParameter
     {
         private readonly IActiveCodePaneEditor _editor;
 
+        public PromoteLocalToParameterRefactoring(IActiveCodePaneEditor editor)
+        {
+            _editor = editor;
+        }
+
         public void Refactor ()
         {
             GetParameterDefinition(_editor.GetSelection());
@@ -30,12 +35,12 @@ namespace Rubberduck.Refactorings.PromoteLocalToParameter
             Refactor();
         }
 
-        private void AddParameterToDefinition(Declaration target)
+        private void AddParameterToDefinition (Declaration target)
         {
             
         }
 
-        private string GetParameterDefinition(QualifiedSelection? target)
+        private string GetParameterDefinition (QualifiedSelection? target)
         {
             if (target != null)
             {

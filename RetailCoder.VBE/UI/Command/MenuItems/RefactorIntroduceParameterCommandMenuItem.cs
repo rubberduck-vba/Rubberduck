@@ -4,9 +4,9 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-    public class RefactorPromoteLocalToParameterCommandMenuItem : CommandMenuItemBase
+    public class RefactorIntroduceParameterCommandMenuItem : CommandMenuItemBase
     {
-        public RefactorPromoteLocalToParameterCommandMenuItem (ICommand command)
+        public RefactorIntroduceParameterCommandMenuItem (ICommand command)
             : base(command)
         {
         }

@@ -1213,6 +1213,6 @@ Are you sure you want to proceed with this rename?</value>
     <value>Find symbol</value>
   </data>
   <data name="RefactorMenu_PromoteLocalToParameter" xml:space="preserve">
-    <value>Introduce Parameter</value>
+    <value>&amp;Introduce Parameter</value>
   </data>
 </root>
