@@ -61,7 +61,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private ParserState _status;
-        public ParserState Status { get { return _status; } private set { _status = value; OnStateChanged(); } }
+        public ParserState Status { get { return _status; } private set { if(_status != value) {_status = value; OnStateChanged();} } }
 
         private IEnumerable<QualifiedContext> _obsoleteCallContexts = new List<QualifiedContext>();
 

@@ -140,7 +140,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private IdentifierReference CreateReference(ParserRuleContext callSiteContext, Declaration callee, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
         {
-            if (callSiteContext == null)
+            if (callSiteContext == null || _currentScope == null)
             {
                 return null;
             }
@@ -180,7 +180,7 @@ namespace Rubberduck.Parsing.Symbols
                         && _projectScopePublicModifiers.Contains(item.Accessibility)
                         && (_moduleTypes.Contains(item.DeclarationType))
                         || (item.DeclarationType == DeclarationType.UserDefinedType
-                            && item.ComponentName == _currentScope.ComponentName));
+                            && _currentScope != null && item.ComponentName == _currentScope.ComponentName));
                 }
                 catch (InvalidOperationException)
                 {
@@ -244,6 +244,11 @@ namespace Rubberduck.Parsing.Symbols
             if (localScope == null)
             {
                 localScope = _currentScope;
+            }
+
+            if (localScope == null)
+            {
+                return null;
             }
 
             var parentContext = callSiteContext.Parent;
@@ -663,7 +668,7 @@ namespace Rubberduck.Parsing.Symbols
                 reference = CreateReference(asType.complexType(), type);
             }
 
-            if (type != null)
+            if (type != null && reference != null)
             {
                 type.AddReference(reference);
                 _alreadyResolved.Add(reference.Context);

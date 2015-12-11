@@ -16,6 +16,7 @@ using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.ParserErrors;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck
 {
@@ -58,10 +59,15 @@ namespace Rubberduck
             _hook = hook;
             _logger = LogManager.GetCurrentClassLogger();
 
-            _hook.Attach();
             _hook.KeyPressed += _hook_KeyPressed;
             _configService.SettingsChanged += _configService_SettingsChanged;
             _parser.State.StateChanged += Parser_StateChanged;
+            _stateBar.Refresh += _stateBar_Refresh;
+        }
+
+        private void _stateBar_Refresh(object sender, EventArgs e)
+        {
+            Task.Run(() => ParseAll());
         }
 
         private void Parser_StateChanged(object sender, EventArgs e)
@@ -114,24 +120,29 @@ namespace Rubberduck
 
             Task.Delay(1000).ContinueWith(t =>
             {
-                var components = _vbe.VBProjects.Cast<VBProject>()
-                    .SelectMany(project => project.VBComponents.Cast<VBComponent>());
-
-                var result = Parallel.ForEach(components, async component =>
-                {
-                    await ParseComponentAsync(component, false);
-                });
-
-                if (result.IsCompleted)
-                {
-                    using (var tokenSource = new CancellationTokenSource())
-                    {
-                        _parser.Resolve(tokenSource.Token);
-                    }
-                }
+                _parser.State.AddBuiltInDeclarations(_vbe.HostApplication());
+                ParseAll();
             });
+
+            _hook.Attach();
         }
- 
+
+        private void ParseAll()
+        {
+            var components = _vbe.VBProjects.Cast<VBProject>()
+                .SelectMany(project => project.VBComponents.Cast<VBComponent>());
+
+            var result = Parallel.ForEach(components, async component => { await ParseComponentAsync(component, false); });
+
+            if (result.IsCompleted)
+            {
+                using (var tokenSource = new CancellationTokenSource())
+                {
+                    _parser.Resolve(tokenSource.Token);
+                }
+            }
+        }
+
         private void CleanReloadConfig()
         {
             LoadConfig();

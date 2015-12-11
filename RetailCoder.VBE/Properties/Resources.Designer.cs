@@ -223,6 +223,16 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap arrow_circle_double_mask {
+            get {
+                object obj = ResourceManager.GetObject("arrow_circle_double_mask", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap arrow_merge_090 {
             get {
                 object obj = ResourceManager.GetObject("arrow_merge_090", resourceCulture);
@@ -266,6 +276,46 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap arrow1 {
             get {
                 object obj = ResourceManager.GetObject("arrow1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap balloon_ellipsis {
+            get {
+                object obj = ResourceManager.GetObject("balloon_ellipsis", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap balloon_mask {
+            get {
+                object obj = ResourceManager.GetObject("balloon_mask", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap balloon_prohibition {
+            get {
+                object obj = ResourceManager.GetObject("balloon_prohibition", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap balloon_smiley {
+            get {
+                object obj = ResourceManager.GetObject("balloon_smiley", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

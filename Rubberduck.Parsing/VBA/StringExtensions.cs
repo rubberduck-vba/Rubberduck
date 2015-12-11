@@ -7,6 +7,8 @@ namespace Rubberduck.Parsing.VBA
 {
     public static class StringExtensions
     {
+
+
         /// <summary>
         /// Returns a value indicating whether line of code is/contains a comment.
         /// </summary>
