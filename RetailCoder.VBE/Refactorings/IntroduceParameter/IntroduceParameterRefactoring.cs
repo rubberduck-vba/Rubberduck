@@ -24,7 +24,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             _messageBox = messageBox;
         }
 
-        public void Refactor ()
+        public void Refactor()
         {
             if (_targetDeclaration == null)
             {
@@ -55,7 +55,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             Refactor();
         }
 
-        private void AddParameter ()
+        private void AddParameter()
         {
             // insert string from GetParameterDefinition() into sub/function/... declaration
         }
@@ -66,13 +66,12 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             var declarationText = _targetDeclaration.Context.GetText();
             var multipleDeclarations = HasMultipleDeclarationsInStatement();
 
+            var variableStmtContext = GetVariableStmtContext();
+
             if (!multipleDeclarations)
             {
-                var statement = GetVariableStmtContext();
-
-                declarationText = statement.GetText();
-                selection = new Selection(statement.Start.Line, statement.Start.Column,
-                    statement.Stop.Line, statement.Stop.Column);
+                declarationText = variableStmtContext.GetText();
+                selection = GetVariableStmtContextSelection();
             }
             else
             {
@@ -87,17 +86,20 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             if (multipleDeclarations)
             {
-                var statement = GetVariableStmtContext();
-                selection = new Selection(statement.Start.Line, statement.Start.Column,
-                    statement.Stop.Line, statement.Stop.Column);
-
-                var statementLines = _editor.GetLines(selection).Replace(oldLines, newLines);
-
-                newLines = RemoveExtraComma(statementLines);
+                selection = GetVariableStmtContextSelection();
+                newLines = RemoveExtraComma(_editor.GetLines(selection).Replace(oldLines, newLines));
             }
 
             _editor.DeleteLines(selection);
             _editor.InsertLines(selection.StartLine, newLines);
+        }
+
+        private Selection GetVariableStmtContextSelection()
+        {
+            var statement = GetVariableStmtContext();
+
+            return new Selection(statement.Start.Line, statement.Start.Column,
+                    statement.Stop.Line, statement.Stop.Column);
         }
 
         private VBAParser.VariableStmtContext GetVariableStmtContext()
@@ -149,7 +151,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             return statement.children.Count(i => i is VBAParser.VariableSubStmtContext) > 1;
         }
 
-        private string GetParameterDefinition ()
+        private string GetParameterDefinition()
         {
             if (_targetDeclaration == null) { return null; }
 
