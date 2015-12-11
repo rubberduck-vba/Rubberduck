@@ -185,6 +185,7 @@ namespace Rubberduck.Root
                 _kernel.Get<RefactorExtractMethodCommandMenuItem>(),
                 _kernel.Get<RefactorReorderParametersCommandMenuItem>(),
                 _kernel.Get<RefactorRemoveParametersCommandMenuItem>(),
+                _kernel.Get<RefactorPromoteLocalToParameterCommandMenuItem>(),
             };
             return new RefactoringsParentMenu(items);
         }

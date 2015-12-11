@@ -17,6 +17,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         ExtractMethod,
         RenameIdentifier,
         ReorderParameters,
-        RemoveParameters
+        RemoveParameters,
+        PromoteLocalToParameter,
     }
 }
