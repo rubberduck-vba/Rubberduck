@@ -271,11 +271,14 @@
     <Compile Include="Common\ClipboardWriter.cs" />
     <Compile Include="Common\DeclarationExtensions.cs" />
     <Compile Include="Common\HookEventArgs.cs" />
-    <Compile Include="Common\HookInfo.cs" />
-    <Compile Include="Common\HotKeyHook.cs" />
+    <Compile Include="Common\HotKeyInfo.cs" />
+    <Compile Include="Common\HotKey.cs" />
+    <Compile Include="Common\IAttachable.cs" />
     <Compile Include="Common\IHook.cs" />
-    <Compile Include="Common\IHotKeyHook.cs" />
+    <Compile Include="Common\IHotKey.cs" />
+    <Compile Include="Common\ILowLevelKeyboardHook.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
+    <Compile Include="Common\ITimerHook.cs" />
     <Compile Include="Common\RubberduckHooks.cs" />
     <Compile Include="Common\TimerHook.cs" />
     <Compile Include="Common\WinAPI\KBDLLHOOKSTRUCT.cs" />

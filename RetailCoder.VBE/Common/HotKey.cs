@@ -1,57 +1,46 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using Rubberduck.Common.WinAPI;
 
 namespace Rubberduck.Common
 {
-    public class HotKeyHook : IHotKeyHook
+    public class HotKey : IHotKey
     {
-        private readonly Action _action;
+        private readonly string _key;
         private readonly IntPtr _hWndVbe;
 
-        public HookInfo HookInfo { get; private set; }
-
-        public HotKeyHook(IntPtr hWndVbe, string key, bool isTwoStepHotKey)
+        public HotKey(IntPtr hWndVbe, string key, Keys secondKey = Keys.None)
         {
             _hWndVbe = hWndVbe;
-            _action = OnMessageReceived;
 
-            IsTwoStepHotKey = isTwoStepHotKey;
-            Key = key;
+            IsTwoStepHotKey = secondKey != Keys.None;
+            _key = key;
+            Combo = GetCombo(key);
+            SecondKey = secondKey;
         }
 
+        public HotKeyInfo HotKeyInfo { get; private set; }
+        public Keys Combo { get; private set; }
+        public Keys SecondKey { get; private set; }
         public bool IsTwoStepHotKey { get; private set; }
         public bool IsAttached { get; private set; }
-        public string Key { get; private set; }
-
-        public event EventHandler<HookEventArgs> MessageReceived;
-
-        public void OnMessageReceived()
-        {
-            var handler = MessageReceived;
-            if (handler != null)
-            {
-                var hotKey = Key;
-                var shift = GetModifierValue(ref hotKey);
-                var args = new HookEventArgs(GetKey(hotKey));
-                handler.Invoke(this, args);
-            }
-        }
 
         public void Attach()
         {
-            var hotKey = Key;
-            var lShift = GetModifierValue(ref hotKey);
-            var lKey = GetKey(hotKey);
+            var hotKey = _key;
+            var shift = GetModifierValue(ref hotKey);
+            var key = GetKey(hotKey);
 
-            if (lKey == Keys.None)
+            if (key == Keys.None)
             {
                 throw new InvalidOperationException("Invalid key.");
             }
 
-            HookKey(lKey, lShift, _action);
+            HookKey(key, shift);
         }
 
         public void Detach()
@@ -61,13 +50,13 @@ namespace Rubberduck.Common
                 throw new InvalidOperationException("Hook is already detached.");
             }
 
-            User32.UnregisterHotKey(_hWndVbe, HookInfo.HookId);
-            Kernel32.GlobalDeleteAtom(HookInfo.HookId);
+            User32.UnregisterHotKey(_hWndVbe, HotKeyInfo.HookId);
+            Kernel32.GlobalDeleteAtom(HotKeyInfo.HookId);
 
             IsAttached = false;
         }
 
-        private void HookKey(Keys key, uint shift, Action action)
+        private void HookKey(Keys key, uint shift)
         {
             if (IsAttached)
             {
@@ -81,7 +70,7 @@ namespace Rubberduck.Common
                 throw new Win32Exception("HotKey was not registered.");
             }
 
-            HookInfo = new HookInfo(hookId, key, shift, action);
+            HotKeyInfo = new HotKeyInfo(hookId, Combo);
             IsAttached = true;
         }
 
@@ -120,7 +109,17 @@ namespace Rubberduck.Common
             return result;
         }
 
-        private Keys GetKey(string keyCode)
+        private static Keys GetCombo(string key)
+        {
+            var combo = key;
+            var modifiers = GetModifierValue(ref combo);
+            return (Keys)Enum.Parse(typeof(Keys), combo) // will break with special keys, e.g. {f12}
+                   | (key.Contains("%") ? Keys.Alt : Keys.None)
+                   | (key.Contains("^") ? Keys.Control : Keys.None)
+                   | (key.Contains("+") ? Keys.Shift : Keys.None);
+        }
+
+        private static Keys GetKey(string keyCode)
         {
             var result = Keys.None;
             switch (keyCode.Substring(0, 1))

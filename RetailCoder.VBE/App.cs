@@ -88,38 +88,38 @@ namespace Rubberduck
                 {
                     // todo: use _firstStepHotKey and e.Key to run 2-step hotkey action
 
-                    AwaitNextKey(false);
+                    AwaitNextKey();
                     return;
                 }
 
                 var component = _vbe.ActiveCodePane.CodeModule.Parent;
                 await ParseComponentAsync(component);
 
-                AwaitNextKey(false);
+                AwaitNextKey();
                 return;
             }
 
-            var hotKey = sender as IHotKeyHook;
+            var hotKey = sender as IHotKey;
             if (hotKey == null)
             {
-                AwaitNextKey(false);
+                AwaitNextKey();
                 return;
             }
 
             if (hotKey.IsTwoStepHotKey)
             {
-                _firstStepHotKey = hotKey.HookInfo.Key;
-                AwaitNextKey(true, _firstStepHotKey);
+                _firstStepHotKey = hotKey.HotKeyInfo.Keys;
+                AwaitNextKey(true, hotKey.HotKeyInfo);
             }
             else
             {
                 // todo: use e.Key to run 1-step hotkey action
                 _firstStepHotKey = Keys.None;
-                AwaitNextKey(false);
+                AwaitNextKey();
             }
         }
 
-        private void AwaitNextKey(bool eatNextKey = true, Keys key = default(Keys))
+        private void AwaitNextKey(bool eatNextKey = false, HotKeyInfo info = default(HotKeyInfo))
         {
             _isAwaitingTwoStepKey = eatNextKey;
             foreach (var hook in _hooks.Hooks.OfType<ILowLevelKeyboardHook>())
@@ -127,8 +127,11 @@ namespace Rubberduck
                 hook.EatNextKey = eatNextKey;
             }
 
-            _stateBar.SetStatusText(eatNextKey ? "(Ctrl+" + key + ") was pressed. Waiting for second key..." : "Ready.");
             _skipKeyUp = eatNextKey;
+            _stateBar.SetStatusText(
+                eatNextKey
+                    ? "(" + info + ") was pressed. Waiting for second key..."
+                    : "Ready.");
         }
 
         private void _stateBar_Refresh(object sender, EventArgs e)
@@ -187,8 +190,8 @@ namespace Rubberduck
             });
 
             _hooks.AddHook(new LowLevelKeyboardHook(_vbe));
-            _hooks.AddHook(new HotKeyHook((IntPtr)_vbe.MainWindow.HWnd, "^R", true)); // hijacks Ctrl+R "Project Explorer" shortcut
-            _hooks.AddHook(new HotKeyHook((IntPtr)_vbe.MainWindow.HWnd, "^I", true));
+            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%+R", Keys.R)); // hijacks Ctrl+R "Project Explorer" shortcut
+            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%+I", Keys.I));
             _hooks.Attach();
         }
 

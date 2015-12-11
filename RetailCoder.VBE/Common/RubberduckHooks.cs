@@ -16,6 +16,7 @@ namespace Rubberduck.Common
         private User32.WndProc _newWndProc;
 
         private readonly ITimerHook _timerHook;
+        private readonly IList<IAttachable> _hooks = new List<IAttachable>(); 
 
 
         private const int WA_INACTIVE = 0;
@@ -33,20 +34,14 @@ namespace Rubberduck.Common
             _timerHook.Tick += timerHook_Tick;
         }
 
-        private readonly IList<IHook> _hooks = new List<IHook>(); 
-        public IEnumerable<IHook> Hooks { get { return _hooks; } }
+        public IEnumerable<IAttachable> Hooks { get { return _hooks; } }
 
-        public void AddHook<THook>(THook hook) where THook : IHook
+        public void AddHook(IAttachable hook)
         {
             _hooks.Add(hook);
         }
 
         public event EventHandler<HookEventArgs> MessageReceived;
-
-        public void OnMessageReceived()
-        {
-            throw new NotImplementedException();
-        }
 
         private void OnMessageReceived(object sender, HookEventArgs args)
         {
@@ -68,11 +63,20 @@ namespace Rubberduck.Common
 
             foreach (var hook in Hooks)
             {
-                hook.MessageReceived += hook_MessageReceived;
                 hook.Attach();
+                var h = hook as IHook;
+                if (h != null)
+                {
+                    h.MessageReceived += hook_MessageReceived;
+                }
             }
 
             IsAttached = true;
+        }
+
+        private void hook_MessageReceived(object sender, HookEventArgs e)
+        {
+            OnMessageReceived(sender, e);
         }
 
         public void Detach()
@@ -84,21 +88,20 @@ namespace Rubberduck.Common
 
             foreach (var hook in Hooks)
             {
-                hook.MessageReceived -= hook_MessageReceived;
                 hook.Detach();
+                var h = hook as IHook;
+                if (h != null)
+                {
+                    h.MessageReceived -= hook_MessageReceived;
+                }
             }
 
             IsAttached = false;
         }
 
-        private void hook_MessageReceived(object sender, HookEventArgs e)
-        {
-            OnMessageReceived(sender, e);
-        }
-
         private void timerHook_Tick(object sender, EventArgs e)
         {
-            if (User32.GetForegroundWindow() == _mainWindowHandle && !IsAttached)
+            if (!IsAttached && User32.GetForegroundWindow() == _mainWindowHandle)
             {
                 Attach();
             }
@@ -128,10 +131,11 @@ namespace Rubberduck.Common
                         case WM.HOTKEY:
                             if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_mainWindowHandle))
                             {
-                                var hook = Hooks.OfType<IHotKeyHook>().SingleOrDefault(k => k.HookInfo.HookId == (IntPtr)wParam);
+                                var hook = Hooks.OfType<IHotKey>().SingleOrDefault(k => k.HotKeyInfo.HookId == (IntPtr)wParam);
                                 if (hook != null)
                                 {
-                                    hook.OnMessageReceived();
+                                    var args = new HookEventArgs(hook.HotKeyInfo.Keys);
+                                    OnMessageReceived(hook, args);
                                     processed = true;
                                 }
                             }
