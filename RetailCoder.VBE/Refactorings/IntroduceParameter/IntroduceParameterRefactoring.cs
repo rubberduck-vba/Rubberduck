@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -14,7 +15,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         private readonly IList<Declaration> _declarations;
         private readonly IActiveCodePaneEditor _editor;
         private Declaration _targetDeclaration;
-        private IMessageBox _messageBox;
+        private readonly IMessageBox _messageBox;
 
         public PromoteLocalToParameterRefactoring (RubberduckParserState parseResult, IActiveCodePaneEditor editor, IMessageBox messageBox)
         {
@@ -37,7 +38,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         public void Refactor (QualifiedSelection target)
         {
             _targetDeclaration = _declarations.FindSelection(target, new [] {DeclarationType.Variable});
-            var v = _declarations.Where(i => !i.IsBuiltIn);
 
             _editor.SetSelection(target);
             Refactor();
@@ -62,26 +62,98 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private void RemoveVariable()
         {
-            var selection = new Selection(_targetDeclaration.Context.Start.Line,
-                                          _targetDeclaration.Context.Start.Column,
-                                          _targetDeclaration.Context.Stop.Line,
-                                          _targetDeclaration.Context.Stop.Column);
+            Selection selection;
+            var declarationText = _targetDeclaration.Context.GetText();
+            var multipleDeclarations = HasMultipleDeclarationsInStatement();
 
-            var lines =
-                _editor.GetLines(selection)
-                    .Replace(Environment.NewLine, string.Empty)
-                    .Replace(" _", string.Empty)
-                    .Remove(selection.StartColumn, _targetDeclaration.Context.GetText().Length);
+            if (!multipleDeclarations)
+            {
+                var statement = GetVariableStmtContext();
+
+                declarationText = statement.GetText();
+                selection = new Selection(statement.Start.Line, statement.Start.Column,
+                    statement.Stop.Line, statement.Stop.Column);
+            }
+            else
+            {
+                selection = new Selection(_targetDeclaration.Context.Start.Line, _targetDeclaration.Context.Start.Column,
+                    _targetDeclaration.Context.Stop.Line, _targetDeclaration.Context.Stop.Column);
+            }
+
+            var oldLines = _editor.GetLines(selection);
+
+            var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
+                .Remove(selection.StartColumn, declarationText.Length);
+
+            if (multipleDeclarations)
+            {
+                var statement = GetVariableStmtContext();
+                selection = new Selection(statement.Start.Line, statement.Start.Column,
+                    statement.Stop.Line, statement.Stop.Column);
+
+                var statementLines = _editor.GetLines(selection).Replace(oldLines, newLines);
+
+                newLines = RemoveExtraComma(statementLines);
+            }
 
             _editor.DeleteLines(selection);
-            _editor.InsertLines(selection.StartLine, lines);
+            _editor.InsertLines(selection.StartLine, newLines);
+        }
+
+        private VBAParser.VariableStmtContext GetVariableStmtContext()
+        {
+            var statement = _targetDeclaration.Context.Parent.Parent as VBAParser.VariableStmtContext;
+            if (statement == null)
+            {
+                throw new MissingMemberException("Statement not found");
+            }
+
+            return statement;
+        }
+
+        private string RemoveExtraComma(string str)
+        {
+            if (str.Count(c => c == ',') == 1)
+            {
+                return str.Remove(str.IndexOf(','), 1);
+            }
+
+            var significantCharacterAfterComma = false;
+
+            for (var index = 0; index < str.Length; index++)
+            {
+                if (!char.IsWhiteSpace(str[index]) && str[index] != '_' && str[index] != ',')
+                {
+                    significantCharacterAfterComma = true;
+                }
+                if (str[index] == ',')
+                {
+                    significantCharacterAfterComma = false;
+                }
+
+                if (!significantCharacterAfterComma && str[index] == ',')
+                {
+                    return str.Remove(index, 1);
+                }
+            }
+
+            return str;
+        }
+
+        private bool HasMultipleDeclarationsInStatement()
+        {
+            var statement = _targetDeclaration.Context.Parent as VBAParser.VariableListStmtContext;
+
+            if (statement == null) { return false; }
+
+            return statement.children.Count(i => i is VBAParser.VariableSubStmtContext) > 1;
         }
 
         private string GetParameterDefinition ()
         {
             if (_targetDeclaration == null) { return null; }
 
-            return _targetDeclaration.IdentifierName + " As " + _targetDeclaration.AsTypeName;
+            return "ByVal" + _targetDeclaration.IdentifierName + " As " + _targetDeclaration.AsTypeName;
         }
     }
 }
