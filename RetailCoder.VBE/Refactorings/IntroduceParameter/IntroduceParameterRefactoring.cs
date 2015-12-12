@@ -49,9 +49,9 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             RemoveVariable();
         }
 
-        public void Refactor(QualifiedSelection target)
+        public void Refactor(QualifiedSelection selection)
         {
-            _targetDeclaration = _declarations.FindSelection(target, new [] {DeclarationType.Variable});
+            _targetDeclaration = FindSelection(selection);
             Refactor();
         }
 
@@ -282,6 +282,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             var declaration = target;
             var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
 
+            if (interfaceImplementation == null) { return null; }
+
             var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
             return interfaceMember;
         }
@@ -329,6 +331,41 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             if (_targetDeclaration == null) { return null; }
 
             return "ByVal " + _targetDeclaration.IdentifierName + " As " + _targetDeclaration.AsTypeName;
+        }
+
+        private Declaration FindSelection(QualifiedSelection selection)
+        {
+            var target = _declarations
+                .Where(item => !item.IsBuiltIn)
+                .FirstOrDefault(item => item.IsSelected(selection) && item.DeclarationType == DeclarationType.Variable
+                                     || item.References.Any(r => r.IsSelected(selection) &&
+                                        r.Declaration.DeclarationType == DeclarationType.Variable));
+
+            if (target != null) { return target; }
+
+            var targets = _declarations
+                .Where(item => !item.IsBuiltIn
+                               && item.ComponentName == selection.QualifiedName.ComponentName
+                               && item.DeclarationType == DeclarationType.Variable);
+
+            foreach (var declaration in targets)
+            {
+                var activeSelection = new Selection(declaration.Context.Start.Line,
+                                                    declaration.Context.Start.Column,
+                                                    declaration.Context.Stop.Line,
+                                                    declaration.Context.Stop.Column + declaration.Context.Stop.Text.Length);
+
+                if (activeSelection.Contains(selection.Selection))
+                {
+                    return declaration;
+                }
+
+                //foreach (var reference in declaration.References)
+                //{
+                    
+                //}
+            }
+            return null;
         }
     }
 }
