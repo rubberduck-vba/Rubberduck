@@ -163,14 +163,14 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         {
             Selection selection;
             var declarationText = _targetDeclaration.Context.GetText();
-            var multipleDeclarations = HasMultipleDeclarationsInStatement();
+            var multipleDeclarations = HasMultipleDeclarationsInStatement(_targetDeclaration);
 
-            var variableStmtContext = GetVariableStmtContext();
+            var variableStmtContext = GetVariableStmtContext(_targetDeclaration);
 
             if (!multipleDeclarations)
             {
                 declarationText = variableStmtContext.GetText();
-                selection = GetVariableStmtContextSelection();
+                selection = GetVariableStmtContextSelection(_targetDeclaration);
             }
             else
             {
@@ -185,7 +185,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             if (multipleDeclarations)
             {
-                selection = GetVariableStmtContextSelection();
+                selection = GetVariableStmtContextSelection(_targetDeclaration);
                 newLines = RemoveExtraComma(_editor.GetLines(selection).Replace(oldLines, newLines));
             }
 
@@ -258,17 +258,17 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
         }
 
-        private Selection GetVariableStmtContextSelection()
+        private Selection GetVariableStmtContextSelection(Declaration target)
         {
-            var statement = GetVariableStmtContext();
+            var statement = GetVariableStmtContext(target);
 
             return new Selection(statement.Start.Line, statement.Start.Column,
                     statement.Stop.Line, statement.Stop.Column);
         }
 
-        private VBAParser.VariableStmtContext GetVariableStmtContext()
+        private VBAParser.VariableStmtContext GetVariableStmtContext(Declaration target)
         {
-            var statement = _targetDeclaration.Context.Parent.Parent as VBAParser.VariableStmtContext;
+            var statement = target.Context.Parent.Parent as VBAParser.VariableStmtContext;
             if (statement == null)
             {
                 throw new MissingMemberException("Statement not found");
@@ -317,9 +317,9 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             return str;
         }
 
-        private bool HasMultipleDeclarationsInStatement()
+        private bool HasMultipleDeclarationsInStatement(Declaration target)
         {
-            var statement = _targetDeclaration.Context.Parent as VBAParser.VariableListStmtContext;
+            var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
 
             if (statement == null) { return false; }
 
@@ -355,7 +355,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                                                     declaration.Context.Stop.Line,
                                                     declaration.Context.Stop.Column + declaration.Context.Stop.Text.Length);
 
-                if (declarationSelection.Contains(selection.Selection))
+                if (declarationSelection.Contains(selection.Selection) ||
+                    !HasMultipleDeclarationsInStatement(declaration) && GetVariableStmtContextSelection(declaration).Contains(selection.Selection))
                 {
                     return declaration;
                 }
