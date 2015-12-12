@@ -170,8 +170,11 @@ namespace Rubberduck
             {
                 CancellationTokenSource existingTokenSource;
                 _tokenSources.TryRemove(component, out existingTokenSource);
-                existingTokenSource.Cancel();
-                existingTokenSource.Dispose();
+                if (existingTokenSource != null)
+                {
+                    existingTokenSource.Cancel();
+                    existingTokenSource.Dispose();
+                }
             }
 
             var tokenSource = new CancellationTokenSource();
