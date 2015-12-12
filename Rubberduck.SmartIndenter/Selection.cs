@@ -21,5 +21,7 @@ namespace Rubberduck.SmartIndenter
 
         private readonly int _endColumn;
         public int EndColumn { get { return _endColumn; } }
+
+        public int LineCount { get { return _endLine - _startLine + 1; } }
     }
 }
