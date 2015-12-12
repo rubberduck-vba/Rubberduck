@@ -2555,6 +2555,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete branch ähnelt.
+        /// </summary>
+        public static string SourceControl_DeleteBranchButton {
+            get {
+                return ResourceManager.GetString("SourceControl_DeleteBranchButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Delete Branch ähnelt.
         /// </summary>
         public static string SourceControl_DeleteBranchCaption {

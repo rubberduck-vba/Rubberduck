@@ -1212,4 +1212,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
     <value>Find symbol</value>
   </data>
+  <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
+    <value>Delete branch</value>
+  </data>
 </root>
