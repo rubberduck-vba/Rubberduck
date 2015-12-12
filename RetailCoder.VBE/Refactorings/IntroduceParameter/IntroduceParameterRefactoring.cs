@@ -93,10 +93,16 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 // Increase index by one because VBA is dumb enough to use 1-based indexing
                 newContent = newContent.Insert(newContent.IndexOf('(') + 1, GetParameterDefinition());
             }
-            else
+            else if (target.DeclarationType != DeclarationType.PropertyLet &&
+                     target.DeclarationType != DeclarationType.PropertySet)
             {
                 newContent = newContent.Replace(argList.Last().GetText(),
                     argList.Last().GetText() + ", " + GetParameterDefinition());
+            }
+            else
+            {
+                newContent = newContent.Replace(argList.Last().GetText(),
+                    GetParameterDefinition() + ", " + argList.Last().GetText());
             }
 
             module.ReplaceLine(paramList.Start.Line, newContent);
