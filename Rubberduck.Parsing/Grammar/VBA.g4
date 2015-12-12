@@ -612,7 +612,7 @@ iCS_S_DictionaryCall : dictionaryCallStmt;
 
 argsCall : (argCall? WS? (',' | ';') WS?)* argCall (WS? (',' | ';') WS? argCall?)*;
 
-argCall : ((BYVAL | BYREF | PARAMARRAY) WS)? valueStmt;
+argCall : LPAREN? ((BYVAL | BYREF | PARAMARRAY) WS)? RPAREN? valueStmt;
 
 dictionaryCallStmt : '!' ambiguousIdentifier typeHint?;
 
