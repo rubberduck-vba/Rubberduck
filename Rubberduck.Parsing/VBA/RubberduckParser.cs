@@ -20,14 +20,9 @@ namespace Rubberduck.Parsing.VBA
 {
     public class RubberduckParser : IRubberduckParser
     {
-        private readonly VBE _vbe;
-        private readonly Logger _logger;
-
-        public RubberduckParser(VBE vbe, RubberduckParserState state)
+        public RubberduckParser(RubberduckParserState state)
         {
-            _vbe = vbe;
             _state = state;
-            _logger = LogManager.GetCurrentClassLogger();
         }
 
         private readonly RubberduckParserState _state;
