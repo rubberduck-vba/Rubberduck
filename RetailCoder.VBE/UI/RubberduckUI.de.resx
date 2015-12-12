@@ -908,7 +908,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Standard Repositorypfad</value>
   </data>
   <data name="SourceControl_EmailAddressLabel" xml:space="preserve">
-    <value>Email Adresse</value>
+    <value>E-Mail-Adresse</value>
   </data>
   <data name="SourceControl_GlobalSettings" xml:space="preserve">
     <value>Globale Einstellungen</value>
