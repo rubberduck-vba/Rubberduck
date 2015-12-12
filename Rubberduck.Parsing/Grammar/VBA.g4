@@ -634,7 +634,7 @@ subscript : (valueStmt WS TO WS)? valueStmt;
 
 ambiguousIdentifier : 
 	(IDENTIFIER | ambiguousKeyword)+
-	| L_SQUARE_BRACKET (.*)+ R_SQUARE_BRACKET
+	| L_SQUARE_BRACKET (.+)+ R_SQUARE_BRACKET
 ;
 
 asTypeClause : AS WS (NEW WS)? type (WS fieldLength)?;
