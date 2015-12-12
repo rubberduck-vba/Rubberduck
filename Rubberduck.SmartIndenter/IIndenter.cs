@@ -5,7 +5,7 @@ namespace Rubberduck.SmartIndenter
 {
     public interface IIndenter
     {
-        event EventHandler ReportProgress;
+        event EventHandler<IndenterProgressEventArgs> ReportProgress;
         void IndentCurrentProcedure();
         void IndentCurrentModule();
         void Indent(VBProject project);

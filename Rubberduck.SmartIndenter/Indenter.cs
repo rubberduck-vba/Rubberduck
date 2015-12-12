@@ -23,7 +23,7 @@ namespace Rubberduck.SmartIndenter
         private int _originalTopLine;
         private Selection _originalSelection;
 
-        public event EventHandler ReportProgress;
+        public event EventHandler<IndenterProgressEventArgs> ReportProgress;
 
         private void OnReportProgress(string moduleName, int progress, int max)
         {
