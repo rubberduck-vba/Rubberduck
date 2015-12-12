@@ -61,6 +61,7 @@
 *   - amended block rule to support instruction separators.
 *   - amended selectCaseStmt rules to support all valid syntaxes.
 *   - blockStmt is now illegal in declarations section.
+*   - added ON_LOCAL_ERROR token, to support legacy ON LOCAL ERROR statements.
 *
 *======================================================================================
 *
@@ -121,6 +122,7 @@ moduleDeclarationsElement :
 	| enumerationStmt 
 	| eventStmt
 	| constStmt
+	| implementsStmt
 	| variableStmt
 	| macroConstStmt
 	| macroIfThenElseStmt
@@ -370,7 +372,7 @@ mkdirStmt : MKDIR WS valueStmt;
 
 nameStmt : NAME WS valueStmt WS AS WS valueStmt;
 
-onErrorStmt : ON_ERROR WS (GOTO WS valueStmt | RESUME WS NEXT);
+onErrorStmt : ON_ERROR | ON_LOCAL_ERROR WS (GOTO WS valueStmt | RESUME WS NEXT);
 
 onGoToStmt : ON WS valueStmt WS GOTO WS valueStmt (WS? ',' WS? valueStmt)*;
 
@@ -803,6 +805,7 @@ NOTHING : N O T H I N G;
 NULL : N U L L;
 ON : O N;
 ON_ERROR : O N ' ' E R R O R;
+ON_LOCAL_ERROR : O N ' ' L O C A L ' ' E R R O R;
 OPEN : O P E N;
 OPTIONAL : O P T I O N A L;
 OPTION_BASE : O P T I O N ' ' B A S E;
