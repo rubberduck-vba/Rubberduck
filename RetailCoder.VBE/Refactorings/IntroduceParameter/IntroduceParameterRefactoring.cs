@@ -82,6 +82,12 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             {
                 UpdateProperties(functionDeclaration);
             }
+
+            var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
+            if (interfaceImplementation != null)
+            {
+                UpdateSignature(interfaceImplementation);
+            }
         }
 
         private void UpdateSignature(Declaration target)
@@ -269,6 +275,15 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
 
             return statement;
+        }
+
+        private Declaration GetInterfaceImplementation(Declaration target)
+        {
+            var declaration = target;
+            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
+
+            var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
+            return interfaceMember;
         }
 
         private string RemoveExtraComma(string str)
