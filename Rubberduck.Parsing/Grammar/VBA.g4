@@ -634,7 +634,7 @@ subscript : (valueStmt WS TO WS)? valueStmt;
 
 ambiguousIdentifier : 
 	(IDENTIFIER | ambiguousKeyword)+
-	| L_SQUARE_BRACKET (IDENTIFIER | ambiguousKeyword)+ R_SQUARE_BRACKET
+	| L_SQUARE_BRACKET (.*)+ R_SQUARE_BRACKET
 ;
 
 asTypeClause : AS WS (NEW WS)? type (WS fieldLength)?;
@@ -907,7 +907,7 @@ BYTELITERAL : ('0'..'9')+;
 IDENTIFIER : LETTER (LETTERORDIGIT)*;
 // whitespace, line breaks, comments, ...
 LINE_CONTINUATION : ' ' '_' '\r'? '\n' -> skip;
-NEWLINE : WS? ('\r'? '\n' | BYTELITERAL? ':' ' ') WS?; // note: if Hell breaks loose, it's because of this change
+NEWLINE : WS? ('\r'? '\n') WS?; 
 COMMENT : WS? ('\'' | ':'? REM ' ') (LINE_CONTINUATION | ~('\n' | '\r'))* -> skip;
 WS : [ \t]+;
 
