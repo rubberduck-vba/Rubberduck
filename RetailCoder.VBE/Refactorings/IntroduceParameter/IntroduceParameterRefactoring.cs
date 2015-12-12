@@ -350,20 +350,23 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             foreach (var declaration in targets)
             {
-                var activeSelection = new Selection(declaration.Context.Start.Line,
+                var declarationSelection = new Selection(declaration.Context.Start.Line,
                                                     declaration.Context.Start.Column,
                                                     declaration.Context.Stop.Line,
                                                     declaration.Context.Stop.Column + declaration.Context.Stop.Text.Length);
 
-                if (activeSelection.Contains(selection.Selection))
+                if (declarationSelection.Contains(selection.Selection))
                 {
                     return declaration;
                 }
 
-                //foreach (var reference in declaration.References)
-                //{
-                    
-                //}
+                var reference =
+                    declaration.References.FirstOrDefault(r => r.Selection.Contains(selection.Selection));
+
+                if (reference != null)
+                {
+                    return reference.Declaration;
+                }
             }
             return null;
         }
