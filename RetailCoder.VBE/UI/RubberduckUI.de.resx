@@ -899,7 +899,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Versionsverwaltung</value>
   </data>
   <data name="SourceControl_AttributesFile" xml:space="preserve">
-    <value>Attributes File</value>
+    <value>'.gitattributes' Datei</value>
   </data>
   <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
     <value>Abbrechen</value>
@@ -914,7 +914,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Globale Einstellungen</value>
   </data>
   <data name="SourceControl_IgnoreFile" xml:space="preserve">
-    <value>Datei ignorieren</value>
+    <value>'.gitignore' Datei</value>
   </data>
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
     <value>Neues Repo auf Basis dieses Projektes erstellen</value>
