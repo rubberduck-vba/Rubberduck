@@ -1007,7 +1007,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Nicht veröffentlichte Zweige</value>
   </data>
   <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
-    <value>Nicht Synchronisierte Commits</value>
+    <value>Nicht synchronisierte Commits</value>
   </data>
   <data name="SourceControl_UntrackedFiles" xml:space="preserve">
     <value>Nicht verfolgte Dateien</value>
