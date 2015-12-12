@@ -1818,9 +1818,9 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to &amp;Introduce Parameter.
         /// </summary>
-        public static string RefactorMenu_PromoteLocalToParameter {
+        public static string RefactorMenu_IntroduceParameter {
             get {
-                return ResourceManager.GetString("RefactorMenu_PromoteLocalToParameter", resourceCulture);
+                return ResourceManager.GetString("RefactorMenu_IntroduceParameter", resourceCulture);
             }
         }
         
@@ -1843,7 +1843,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reorder &amp;Parameters.
+        ///   Looks up a localized string similar to Re&amp;order Parameters.
         /// </summary>
         public static string RefactorMenu_ReorderParameters {
             get {

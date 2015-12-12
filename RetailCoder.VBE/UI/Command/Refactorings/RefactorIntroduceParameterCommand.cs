@@ -27,7 +27,7 @@ namespace Rubberduck.UI.Command.Refactorings
             var codePane = _wrapperWrapperFactory.Create(Vbe.ActiveCodePane);
             var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
 
-            var refactoring = new PromoteLocalToParameterRefactoring(_state, Editor, new MessageBox());
+            var refactoring = new IntroduceParameter(_state, Editor, new MessageBox());
             refactoring.Refactor(selection);
         }
     }

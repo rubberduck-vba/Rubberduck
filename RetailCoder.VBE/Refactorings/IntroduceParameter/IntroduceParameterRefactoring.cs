@@ -10,14 +10,23 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.IntroduceParameter
 {
-    public class PromoteLocalToParameterRefactoring : IRefactoring
+    public class IntroduceParameter : IRefactoring
     {
         private readonly IList<Declaration> _declarations;
         private readonly IActiveCodePaneEditor _editor;
         private Declaration _targetDeclaration;
         private readonly IMessageBox _messageBox;
 
-        public PromoteLocalToParameterRefactoring (RubberduckParserState parseResult, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public static readonly DeclarationType[] ValidDeclarationTypes =
+        {
+            DeclarationType.Function,
+            DeclarationType.Procedure,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
+
+        public IntroduceParameter (RubberduckParserState parseResult, IActiveCodePaneEditor editor, IMessageBox messageBox)
         {
             _declarations = parseResult.AllDeclarations.ToList();
             _editor = editor;
@@ -58,6 +67,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         private void AddParameter()
         {
             // insert string from GetParameterDefinition() into sub/function/... declaration
+
+
         }
 
         private void RemoveVariable()
@@ -155,7 +166,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         {
             if (_targetDeclaration == null) { return null; }
 
-            return "ByVal" + _targetDeclaration.IdentifierName + " As " + _targetDeclaration.AsTypeName;
+            return "ByVal " + _targetDeclaration.IdentifierName + " As " + _targetDeclaration.AsTypeName;
         }
     }
 }

@@ -11,8 +11,8 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "RefactorMenu_PromoteLocalToParameter"; } }
-        public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.PromoteLocalToParameter; } }
+        public override string Key { get { return "RefactorMenu_IntroduceParameter"; } }
+        public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.IntroduceParameter; } }
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {
