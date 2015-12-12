@@ -14,6 +14,14 @@ namespace Rubberduck.SmartIndenter
         private readonly VBE _vbe;
         private readonly IIndenterSettings _settings;
 
+        private readonly Stack<string> _inProcedure = new Stack<string>();
+        private readonly Stack<string> _inCode = new Stack<string>();
+        private readonly Stack<string> _outProcedure = new Stack<string>();
+        private readonly Stack<string> _outCode = new Stack<string>();
+
+        private string[] _declares;
+        private string[] _functionAlign;
+
         public Indenter(VBE vbe, IIndenterSettings settings)
         {
             _vbe = vbe;
@@ -23,7 +31,7 @@ namespace Rubberduck.SmartIndenter
         private int _originalTopLine;
         private Selection _originalSelection;
 
-        public event EventHandler ReportProgress;
+        public event EventHandler<IndenterProgressEventArgs> ReportProgress;
 
         private void OnReportProgress(string moduleName, int progress, int max)
         {
@@ -34,7 +42,6 @@ namespace Rubberduck.SmartIndenter
                 handler.Invoke(this, args);
             }
         }
-
 
         public void IndentCurrentProcedure()
         {
@@ -81,7 +88,7 @@ namespace Rubberduck.SmartIndenter
             var progress = 0; // to set progressbar value
             foreach (var component in project.VBComponents.Cast<VBComponent>().Where(component => HasCode(component.CodeModule)))
             {
-                RebuildModule(component.CodeModule,component.Name,1,component.CodeModule.CountOfLines,progress);
+                Indent(component, true, progress);
                 progress += component.CodeModule.CountOfLines;
             }
 
@@ -126,93 +133,32 @@ namespace Rubberduck.SmartIndenter
             return new Selection(startLine, startColumn, endLine, endColumn);
         }
 
-        public void Indent(VBComponent module)
+        public void Indent(VBComponent module, bool reportProgress = true, int linesAlreadyRebuilt = 0)
         {
-            RebuildModule(module.CodeModule, module.Name, 1, module.CodeModule.CountOfLines, 0);
-        }
-
-        public void Indent(VBComponent module, string procedureName, Selection selection)
-        {
-            RebuildModule(module.CodeModule, procedureName, selection.StartLine, selection.EndLine, 0);
-        }
-
-        public void Indent(string[] lines, string moduleName, bool reportProgress = true, int linesAlreadyRebuilt = 0)
-        {
-            
-        }
-
-        private static readonly string[] ProcedureLevelScopeTokens =
-        {
-            string.Empty, "Public", "Private", "Friend"
-        };
-
-        private static readonly string[] ProcedureLevelStaticTokens =
-        {
-            string.Empty, "Static"
-        };
-
-        private static readonly string[] ProcedureLevelTypeTokens =
-        {
-            "Sub", "Function", "Property Let", "Property Get", "Property Set", "Type", "Enum"
-        };
-
-        private static readonly string[] ProcedureLevelOutdentingMatch =
-        {
-            "End Sub", "End Function", "End Property", "End Type", "End Enum"
-        };
-
-        private static readonly string[] InsideProcedureIndentingCompilerStuffMatch =
-        {
-            "#If", "#ElseIf", "#Else"
-        };
-
-        private static readonly string[] InsideProcedureIndentingMatch =
-        {
-            "If", "ElseIf", "Else", "Select Case", "Case", "With", "For", "Do", "While"
-        };
-
-        private static readonly string[] InsideProcedureOutdentingCompilerStuffMatch =
-        {
-            "#ElseIf", "#Else", "#End If"
-        };
-
-        private static readonly string[] InsideProcedureOutdentingMatch =
-        {
-            "ElseIf", "Else", "End If", "Case", "End Select", "End With", "Next", "Loop", "Wend"
-        };
-
-        private static readonly string[] DeclarationLevelMatch =
-        {
-            "Dim", "Const", "Static", "Public", "Private", "#Const"
-        };
-
-        private static readonly string[] InsideCodeLineSpecialHandling =
-        {
-            "\"\"", ": ", " As ", "'", "Rem ", "Stop ", "Debug.Print ", "Debug.Assert ", "#If ", "#ElseIf ", "#Else ", "#End If", "#Const "
-        };
-
-        private static readonly string[] SkipWhenFindingFunctionStart =
-        {
-            "Set ", "Let ", "LSet ", "RSet ", "Declare Function", "Declare Sub", "Private Declare Function", "Private Declare Sub", "Public Declare Function", "Public Declare Sub"
-        };
-
-        private readonly Stack<string> _inProcedure = new Stack<string>();
-        private readonly Stack<string> _inCode = new Stack<string>();
-        private readonly Stack<string> _outProcedure = new Stack<string>();
-        private readonly Stack<string> _outCode = new Stack<string>();
-
-        private string[] _declares;
-        private string[] _functionAlign;
-
-        private void RebuildModule(CodeModule module, string name, int startLine, int endLine, int linesAlreadyRebuilt)
-        {
-            if (module.CountOfLines == 0)
+            var lineCount = module.CodeModule.CountOfLines;
+            if (lineCount == 0)
             {
                 return;
             }
 
-            var codeLines = module.get_Lines(1, module.CountOfLines).Split('\n');
+            var codeLines = module.CodeModule.get_Lines(1, lineCount).Split('\n');
+            Indent(codeLines, module.Name, reportProgress, linesAlreadyRebuilt);
+        }
 
+        public void Indent(VBComponent module, string procedureName, Selection selection, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        {
+            var lineCount = module.CodeModule.CountOfLines;
+            if (lineCount == 0)
+            {
+                return;
+            }
+
+            var codeLines = module.CodeModule.get_Lines(selection.StartLine, selection.LineCount).Split('\n');
+            Indent(codeLines, procedureName, reportProgress, linesAlreadyRebuilt);
+        }
+
+        public void Indent(string[] codeLines, string moduleName, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        {
             if (_settings.EnableUndo)
             {
                 // todo: store undo info
@@ -317,7 +263,7 @@ namespace Rubberduck.SmartIndenter
 
                             // todo: test this logic. VB6 logical operator precedence might not match that of C#.
                             if (_settings.AlignIgnoreOps && !currentLine.StartsWith(", ")
-                                && (currentLine.Substring(1, 1) == " " || currentLine.StartsWith(":=")) )
+                                && (currentLine.Substring(1, 1) == " " || currentLine.StartsWith(":=")))
                             {
                                 currentLine = new string(' ', parameterStart - 3) + currentLine;
                                 lineAdjust += parameterStart - 3;
@@ -361,13 +307,13 @@ namespace Rubberduck.SmartIndenter
                                     isInsideComment = true;
                                     //throw new NotImplementedException();
                                     break;
-                                    
+
                                 case "Stop ":
                                 case "Debug.Print ":
                                 case "Debug.Assert ":
                                     //throw new NotImplementedException();
                                     break;
-                                
+
                                 case "#If ":
                                 case "#ElseIf ":
                                 case "#Else ":
@@ -418,7 +364,7 @@ namespace Rubberduck.SmartIndenter
                         {
                             if (!_settings.AlignContinuations)
                             {
-                                currentLine = new string(' ', (indents + 2)*_settings.IndentSpaces) + currentLine;
+                                currentLine = new string(' ', (indents + 2) * _settings.IndentSpaces) + currentLine;
                             }
                         }
                         else
@@ -445,8 +391,8 @@ namespace Rubberduck.SmartIndenter
                             }
 
                             inOnContinuedLine = currentLine.EndsWith(" _");
-                        } 
-                        
+                        }
+
                         // anything there?
                     }
 
@@ -491,7 +437,7 @@ namespace Rubberduck.SmartIndenter
                             //functionStart = FunctionAlign(currentLine, atFirstCont, parameterStart);
                             if (functionStart == 0)
                             {
-                                functionStart = (indents + 2)*_settings.IndentSpaces;
+                                functionStart = (indents + 2) * _settings.IndentSpaces;
                                 parameterStart = functionStart;
                             }
                         }
@@ -501,6 +447,61 @@ namespace Rubberduck.SmartIndenter
                 atFirstCont = !inOnContinuedLine;
             }
         }
+
+        private static readonly string[] ProcedureLevelScopeTokens =
+        {
+            string.Empty, "Public", "Private", "Friend"
+        };
+
+        private static readonly string[] ProcedureLevelStaticTokens =
+        {
+            string.Empty, "Static"
+        };
+
+        private static readonly string[] ProcedureLevelTypeTokens =
+        {
+            "Sub", "Function", "Property Let", "Property Get", "Property Set", "Type", "Enum"
+        };
+
+        private static readonly string[] ProcedureLevelOutdentingMatch =
+        {
+            "End Sub", "End Function", "End Property", "End Type", "End Enum"
+        };
+
+        private static readonly string[] InsideProcedureIndentingCompilerStuffMatch =
+        {
+            "#If", "#ElseIf", "#Else"
+        };
+
+        private static readonly string[] InsideProcedureIndentingMatch =
+        {
+            "If", "ElseIf", "Else", "Select Case", "Case", "With", "For", "Do", "While"
+        };
+
+        private static readonly string[] InsideProcedureOutdentingCompilerStuffMatch =
+        {
+            "#ElseIf", "#Else", "#End If"
+        };
+
+        private static readonly string[] InsideProcedureOutdentingMatch =
+        {
+            "ElseIf", "Else", "End If", "Case", "End Select", "End With", "Next", "Loop", "Wend"
+        };
+
+        private static readonly string[] DeclarationLevelMatch =
+        {
+            "Dim", "Const", "Static", "Public", "Private", "#Const"
+        };
+
+        private static readonly string[] InsideCodeLineSpecialHandling =
+        {
+            "\"\"", ": ", " As ", "'", "Rem ", "Stop ", "Debug.Print ", "Debug.Assert ", "#If ", "#ElseIf ", "#Else ", "#End If", "#Const "
+        };
+
+        private static readonly string[] SkipWhenFindingFunctionStart =
+        {
+            "Set ", "Let ", "LSet ", "RSet ", "Declare Function", "Declare Sub", "Private Declare Function", "Private Declare Sub", "Public Declare Function", "Public Declare Sub"
+        };
 
         private string FindFirstSpecialItemOrDefault(string line, ref int from)
         {

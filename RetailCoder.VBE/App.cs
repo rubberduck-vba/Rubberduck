@@ -128,15 +128,19 @@ namespace Rubberduck
             }
 
             _skipKeyUp = eatNextKey;
-            _stateBar.SetStatusText(
-                eatNextKey
-                    ? "(" + info + ") was pressed. Waiting for second key..."
-                    : "Ready.");
+            if (eatNextKey)
+            {
+                _stateBar.SetStatusText("(" + info + ") was pressed. Waiting for second key...");
+            }
+            else
+            {
+                _stateBar.SetStatusText(_parser.State.Status.ToString());
+            }
         }
 
         private void _stateBar_Refresh(object sender, EventArgs e)
         {
-            Task.Run(() => ParseAll());
+            ParseAll();
         }
 
         private void Parser_StateChanged(object sender, EventArgs e)
@@ -166,8 +170,11 @@ namespace Rubberduck
             {
                 CancellationTokenSource existingTokenSource;
                 _tokenSources.TryRemove(component, out existingTokenSource);
-                existingTokenSource.Cancel();
-                existingTokenSource.Dispose();
+                if (existingTokenSource != null)
+                {
+                    existingTokenSource.Cancel();
+                    existingTokenSource.Dispose();
+                }
             }
 
             var tokenSource = new CancellationTokenSource();
@@ -184,13 +191,12 @@ namespace Rubberduck
 
             Task.Delay(1000).ContinueWith(t =>
             {
-                Debug.Print("Starting initial parse");
                 _parser.State.AddBuiltInDeclarations(_vbe.HostApplication());
                 ParseAll();
             });
 
             _hooks.AddHook(new LowLevelKeyboardHook(_vbe));
-            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%+R", Keys.R)); // hijacks Ctrl+R "Project Explorer" shortcut
+            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%+R", Keys.R));
             _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%+I", Keys.I));
             _hooks.Attach();
         }
@@ -200,7 +206,7 @@ namespace Rubberduck
             var components = _vbe.VBProjects.Cast<VBProject>()
                 .SelectMany(project => project.VBComponents.Cast<VBComponent>());
 
-            var result = Parallel.ForEach(components, async component => { await ParseComponentAsync(component, false); });
+            var result = Parallel.ForEach(components, component => { ParseComponentAsync(component, false); });
 
             if (result.IsCompleted)
             {
