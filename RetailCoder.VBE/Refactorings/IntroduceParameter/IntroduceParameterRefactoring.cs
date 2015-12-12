@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime.Misc;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -12,12 +14,13 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 {
     public class IntroduceParameter : IRefactoring
     {
+        private readonly RubberduckParserState _parseResult;
         private readonly IList<Declaration> _declarations;
         private readonly IActiveCodePaneEditor _editor;
         private Declaration _targetDeclaration;
         private readonly IMessageBox _messageBox;
 
-        public static readonly DeclarationType[] ValidDeclarationTypes =
+        private static readonly DeclarationType[] ValidDeclarationTypes =
         {
             DeclarationType.Function,
             DeclarationType.Procedure,
@@ -28,6 +31,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         public IntroduceParameter (RubberduckParserState parseResult, IActiveCodePaneEditor editor, IMessageBox messageBox)
         {
+            _parseResult = parseResult;
             _declarations = parseResult.AllDeclarations.ToList();
             _editor = editor;
             _messageBox = messageBox;
@@ -41,6 +45,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
+            UpdateSignature();
             RemoveVariable();
         }
 
@@ -64,11 +69,46 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             Refactor();
         }
 
-        private void AddParameter()
+        private void UpdateSignature()
         {
-            // insert string from GetParameterDefinition() into sub/function/... declaration
+            var functionDeclaration = _declarations.FindSelection(_targetDeclaration.QualifiedSelection, ValidDeclarationTypes);
 
+            var proc = (dynamic)functionDeclaration.Context.Parent;
+            var module = functionDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            VBAParser.ArgListContext paramList;
 
+            if (functionDeclaration.DeclarationType == DeclarationType.PropertySet || functionDeclaration.DeclarationType == DeclarationType.PropertyLet)
+            {
+                paramList = (VBAParser.ArgListContext)proc.children[0].argList();
+            }
+            else
+            {
+                paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
+            }
+
+            AddParameter(functionDeclaration, paramList, module);
+        }
+
+        private void AddParameter(Declaration target, VBAParser.ArgListContext paramList, CodeModule module)
+        {
+            var argList = paramList.arg();
+
+            var newContent = GetOldSignature(target);
+
+            var lastParam = argList.LastOrDefault();
+
+            if (lastParam == null)
+            {
+                // Increase index by one because VBA is dumb enough to use 1-based indexing
+                newContent = newContent.Insert(newContent.IndexOf('(') + 1, GetParameterDefinition());
+            }
+            else
+            {
+                newContent = newContent.Replace(argList.Last().GetText(),
+                    argList.Last().GetText() + ", " + GetParameterDefinition());
+            }
+
+            module.ReplaceLine(paramList.Start.Line, newContent);
         }
 
         private void RemoveVariable()
@@ -103,6 +143,71 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             _editor.DeleteLines(selection);
             _editor.InsertLines(selection.StartLine, newLines);
+        }
+
+        private string GetOldSignature (Declaration target)
+        {
+            var rewriter = _parseResult.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
+
+            var context = target.Context;
+            var firstTokenIndex = context.Start.TokenIndex;
+            var lastTokenIndex = -1; // will blow up if this code runs for any context other than below
+
+            var subStmtContext = context as VBAParser.SubStmtContext;
+            if (subStmtContext != null)
+            {
+                lastTokenIndex = subStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var functionStmtContext = context as VBAParser.FunctionStmtContext;
+            if (functionStmtContext != null)
+            {
+                lastTokenIndex = functionStmtContext.asTypeClause() != null
+                    ? functionStmtContext.asTypeClause().Stop.TokenIndex
+                    : functionStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var propertyGetStmtContext = context as VBAParser.PropertyGetStmtContext;
+            if (propertyGetStmtContext != null)
+            {
+                lastTokenIndex = propertyGetStmtContext.asTypeClause() != null
+                    ? propertyGetStmtContext.asTypeClause().Stop.TokenIndex
+                    : propertyGetStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var propertyLetStmtContext = context as VBAParser.PropertyLetStmtContext;
+            if (propertyLetStmtContext != null)
+            {
+                lastTokenIndex = propertyLetStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var propertySetStmtContext = context as VBAParser.PropertySetStmtContext;
+            if (propertySetStmtContext != null)
+            {
+                lastTokenIndex = propertySetStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var declareStmtContext = context as VBAParser.DeclareStmtContext;
+            if (declareStmtContext != null)
+            {
+                lastTokenIndex = declareStmtContext.STRINGLITERAL().Last().Symbol.TokenIndex;
+                if (declareStmtContext.argList() != null)
+                {
+                    lastTokenIndex = declareStmtContext.argList().RPAREN().Symbol.TokenIndex;
+                }
+                if (declareStmtContext.asTypeClause() != null)
+                {
+                    lastTokenIndex = declareStmtContext.asTypeClause().Stop.TokenIndex;
+                }
+            }
+
+            var eventStmtContext = context as VBAParser.EventStmtContext;
+            if (eventStmtContext != null)
+            {
+                lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
         }
 
         private Selection GetVariableStmtContextSelection()
