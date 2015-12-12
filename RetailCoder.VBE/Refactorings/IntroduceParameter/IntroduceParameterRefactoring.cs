@@ -29,7 +29,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             DeclarationType.PropertySet
         };
 
-        public IntroduceParameter (RubberduckParserState parseResult, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public IntroduceParameter(RubberduckParserState parseResult, IActiveCodePaneEditor editor, IMessageBox messageBox)
         {
             _parseResult = parseResult;
             _declarations = parseResult.AllDeclarations.ToList();
@@ -49,15 +49,13 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             RemoveVariable();
         }
 
-        public void Refactor (QualifiedSelection target)
+        public void Refactor(QualifiedSelection target)
         {
             _targetDeclaration = _declarations.FindSelection(target, new [] {DeclarationType.Variable});
-
-            _editor.SetSelection(target);
             Refactor();
         }
 
-        public void Refactor (Declaration target)
+        public void Refactor(Declaration target)
         {
             if (target.DeclarationType != DeclarationType.Variable)
             {
@@ -65,7 +63,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
 
             _targetDeclaration = target;
-            _editor.SetSelection(target.QualifiedSelection);
             Refactor();
         }
 
@@ -78,15 +75,30 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             var module = functionDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
             AddParameter(functionDeclaration, paramList, module);
+
+            if (functionDeclaration.DeclarationType == DeclarationType.PropertyGet ||
+                functionDeclaration.DeclarationType == DeclarationType.PropertyLet ||
+                functionDeclaration.DeclarationType == DeclarationType.PropertySet)
+            {
+                UpdateProperties(functionDeclaration);
+            }
+        }
+
+        private void UpdateSignature(Declaration target)
+        {
+            var proc = (dynamic)target.Context;
+            var paramList = (VBAParser.ArgListContext)proc.argList();
+            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+
+            AddParameter(target, paramList, module);
         }
 
         private void AddParameter(Declaration target, VBAParser.ArgListContext paramList, CodeModule module)
         {
             var argList = paramList.arg();
+            var lastParam = argList.LastOrDefault();
 
             var newContent = GetOldSignature(target);
-
-            var lastParam = argList.LastOrDefault();
 
             if (lastParam == null)
             {
@@ -106,6 +118,39 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
 
             module.ReplaceLine(paramList.Start.Line, newContent);
+        }
+
+        private void UpdateProperties(Declaration target)
+        {
+            var propertyGet = _declarations.FirstOrDefault(d =>
+                    d.DeclarationType == DeclarationType.PropertyGet &&
+                    d.Scope == target.Scope &&
+                    d.IdentifierName == target.IdentifierName);
+
+            var propertyLet = _declarations.FirstOrDefault(d =>
+                    d.DeclarationType == DeclarationType.PropertyLet &&
+                    d.Scope == target.Scope &&
+                    d.IdentifierName == target.IdentifierName);
+
+            var propertySet = _declarations.FirstOrDefault(d =>
+                    d.DeclarationType == DeclarationType.PropertySet &&
+                    d.Scope == target.Scope &&
+                    d.IdentifierName == target.IdentifierName);
+
+            if (target.DeclarationType != DeclarationType.PropertyGet && propertyGet != null)
+            {
+                UpdateSignature(propertyGet);
+            }
+
+            if (target.DeclarationType != DeclarationType.PropertyLet && propertyLet != null)
+            {
+                UpdateSignature(propertyLet);
+            }
+
+            if (target.DeclarationType != DeclarationType.PropertySet && propertySet != null)
+            {
+                UpdateSignature(propertySet);
+            }
         }
 
         private void RemoveVariable()
@@ -142,7 +187,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             _editor.InsertLines(selection.StartLine, newLines);
         }
 
-        private string GetOldSignature (Declaration target)
+        private string GetOldSignature(Declaration target)
         {
             var rewriter = _parseResult.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
 
