@@ -2420,7 +2420,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Attributes File ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die &apos;.gitattributes&apos; File ähnelt.
         /// </summary>
         public static string SourceControl_AttributesFile {
             get {
@@ -2555,6 +2555,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete branch ähnelt.
+        /// </summary>
+        public static string SourceControl_DeleteBranchButton {
+            get {
+                return ResourceManager.GetString("SourceControl_DeleteBranchButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Delete Branch ähnelt.
         /// </summary>
         public static string SourceControl_DeleteBranchCaption {
@@ -2627,7 +2636,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Ignore File ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die &apos;.gitignore&apos; File ähnelt.
         /// </summary>
         public static string SourceControl_IgnoreFile {
             get {
