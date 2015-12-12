@@ -73,18 +73,9 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         {
             var functionDeclaration = _declarations.FindSelection(_targetDeclaration.QualifiedSelection, ValidDeclarationTypes);
 
-            var proc = (dynamic)functionDeclaration.Context.Parent;
+            var proc = (dynamic)functionDeclaration.Context;
+            var paramList = (VBAParser.ArgListContext)proc.argList();
             var module = functionDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            VBAParser.ArgListContext paramList;
-
-            if (functionDeclaration.DeclarationType == DeclarationType.PropertySet || functionDeclaration.DeclarationType == DeclarationType.PropertyLet)
-            {
-                paramList = (VBAParser.ArgListContext)proc.children[0].argList();
-            }
-            else
-            {
-                paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
-            }
 
             AddParameter(functionDeclaration, paramList, module);
         }
