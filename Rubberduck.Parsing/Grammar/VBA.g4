@@ -62,6 +62,7 @@
 *   - amended selectCaseStmt rules to support all valid syntaxes.
 *   - blockStmt is now illegal in declarations section.
 *   - added ON_LOCAL_ERROR token, to support legacy ON LOCAL ERROR statements.
+*   - added additional typeHint? token to declareStmt, to support "Declare Function Foo$".
 *
 *======================================================================================
 *
@@ -238,7 +239,7 @@ constSubStmt : ambiguousIdentifier typeHint? (WS asTypeClause)? WS? EQ WS? value
 
 dateStmt : DATE WS? EQ WS? valueStmt;
 
-declareStmt : (visibility WS)? DECLARE WS (PTRSAFE WS)? ((FUNCTION typeHint?) | SUB) WS ambiguousIdentifier WS LIB WS STRINGLITERAL (WS ALIAS WS STRINGLITERAL)? (WS? argList)? (WS asTypeClause)?;
+declareStmt : (visibility WS)? DECLARE WS (PTRSAFE WS)? ((FUNCTION typeHint?) | SUB) WS ambiguousIdentifier typeHint? WS LIB WS STRINGLITERAL (WS ALIAS WS STRINGLITERAL)? (WS? argList)? (WS asTypeClause)?;
 
 deftypeStmt : 
 	(
