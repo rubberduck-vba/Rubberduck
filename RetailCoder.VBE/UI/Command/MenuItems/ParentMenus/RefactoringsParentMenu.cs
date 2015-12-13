@@ -18,6 +18,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         RenameIdentifier,
         ReorderParameters,
         RemoveParameters,
-        PromoteLocalToParameter,
+        IntroduceParameter,
     }
 }
