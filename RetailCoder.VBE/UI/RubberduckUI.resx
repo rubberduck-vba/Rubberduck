@@ -1224,4 +1224,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SmartIndenterMenu" xml:space="preserve">
     <value>Indent</value>
   </data>
+  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
+    <value>&amp;Introduce Parameter</value>
+  </data>
 </root>

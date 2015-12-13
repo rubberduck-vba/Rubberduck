@@ -1870,7 +1870,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reorder &amp;Parameters.
+        ///   Looks up a localized string similar to Re&amp;order Parameters.
         /// </summary>
         public static string RefactorMenu_ReorderParameters {
             get {
