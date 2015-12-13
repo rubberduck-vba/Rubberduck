@@ -183,7 +183,7 @@ namespace Rubberduck.SmartIndenter
                 _outCode.Pop();
             }
 
-            var firstProcLine = false;
+            var atFirstProcLine = false;
             var atProcedureStart = false;
             var atFirstDim = false;
             var atFirstCont = true;
@@ -209,10 +209,14 @@ namespace Rubberduck.SmartIndenter
             for (var line = 0; line < codeLines.Length; line++)
             {
                 var numberedLine = -1;
+                var lineNumber = numberedLine.ToString();
                 var originalLine = codeLines[line];
                 var currentLine = codeLines[line].Trim();
 
-                // todo: report progress
+                if (reportProgress)
+                {
+                    // todo: report progress
+                }
 
                 // if we're not in a continued line, initialize some variables
                 if (!(inOnContinuedLine || isInsideComment))
@@ -231,13 +235,14 @@ namespace Rubberduck.SmartIndenter
                     {
                         currentLine = currentLine.Substring(i).Trim();
                         originalLine = new string(' ', i) + originalLine.Substring(i);
+                        lineNumber = numberedLine.ToString();
                     }
 
                     // is there anything on the line?
                     if (currentLine.Length > 0)
                     {
-                        // remove leading tabs, add extra space at the end
-                        currentLine = currentLine.TrimStart('\t') + ' ';
+                        // remove leading whitespace, add extra space at the end
+                        currentLine = currentLine.TrimStart() + ' ';
 
                         if (isInsideComment)
                         {
@@ -282,36 +287,245 @@ namespace Rubberduck.SmartIndenter
                         // scan through the line, char by char, checking for strings, multi-statement lines and comments
                         do
                         {
-                            scan++;
                             var item = FindFirstSpecialItemOrDefault(currentLine, ref scan);
                             switch (item)
                             {
                                 case "":
-                                    //throw new NotImplementedException();
+                                    // nothing found => skip the rest of the line
+                                    scan++;
                                     break;
 
-                                case "\"\"":
-                                    //throw new NotImplementedException();
+                                case "\"":
+                                    // start of a string => jump to the end of it
+                                    scan = currentLine.IndexOf("\"", scan + 1, StringComparison.InvariantCulture);
                                     break;
 
                                 case ": ":
-                                    //throw new NotImplementedException();
+                                    // a multi-statement line separator => tidy up and continue
+                                    if (!currentLine.Substring(0, scan + 1).EndsWith("Then:"))
+                                    {
+                                        currentLine = currentLine.Substring(0, scan + 1) + currentLine.Substring(scan + 2);
+
+                                        // check the indenting for the line segment
+                                        CheckLine(currentLine, ref noIndent, ref ins, ref outs, ref atProcedureStart, ref atFirstProcLine, ref isInsideIfBlock);
+                                        if (atProcedureStart)
+                                        {
+                                            atFirstDim = true;
+                                        }
+
+                                        if (start == 1)
+                                        {
+                                            indents -= outs;
+                                            if (indents < 0)
+                                            {
+                                                indents = 0;
+                                            }
+                                            indentNext += ins;
+                                        }
+                                        else
+                                        {
+                                            indents += ins - outs;
+                                        }
+                                    }
+                                    start = scan + 2;
                                     break;
 
                                 case " As ":
-                                    //throw new NotImplementedException();
+
+                                    if (_settings.AlignDim)
+                                    {
+                                        var align = noIndent;
+                                        if (!align)
+                                        {
+                                            align = _declares.Any(declare => currentLine.Substring(0, declare.Length) == declare);
+                                        }
+
+                                        if (align)
+                                        {
+                                            if (!currentLine.Substring(scan + 2).Contains(" As "))
+                                            {
+                                                if (!noIndent && atFirstDim && _settings.IndentProcedure && _settings.IndentDim)
+                                                {
+                                                    gap = _settings.AlignDimColumn - currentLine.Substring(0, scan).TrimEnd().Length;
+
+                                                    // adjust for a line number at the start of the line:
+                                                    if (numberedLine > -1 && lineNumber.Length >= indents * _settings.IndentSpaces)
+                                                    {
+                                                        gap -= lineNumber.Length - indents*_settings.IndentSpaces - 1;
+                                                    }
+                                                }
+
+                                                if (gap < 1)
+                                                {
+                                                    gap = 1;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                // multiple declarations on the line; don't space out
+                                                gap = 1;
+                                            }
+
+                                            // work out the new spacing
+                                            var left = currentLine.Substring(0, scan).TrimEnd();
+                                            currentLine = left + new string(' ', gap) + currentLine.Substring(scan);
+                                            scan = left.Length + gap + 3;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // not aligning Dims; remove all whitespace
+                                        scan =  currentLine.Substring(0, scan).TrimEnd().Length;
+                                        currentLine = currentLine.Substring(0, scan).TrimEnd() + " " + currentLine.Substring(scan).Trim();
+                                        scan += 3;
+                                    }
+
                                     break;
 
                                 case "'":
                                 case "Rem ":
-                                    isInsideComment = true;
-                                    //throw new NotImplementedException();
+                                    // start of a comment: handle end-of-line properly
+                                    if (scan == 1)
+                                    {
+                                        // new comment at start of line
+                                        if (!noIndent && atProcedureStart && !_settings.IndentFirst)
+                                        {
+                                            // no indenting
+                                        }
+                                        else if (noIndent || atProcedureStart || _settings.IndentComment)
+                                        {
+                                            // inside procedure: indent to align with code
+                                            currentLine = new string(' ', indents*_settings.IndentSpaces) + currentLine;
+                                            commentStart = scan + _settings.IndentSpaces*indents;
+                                        }
+                                        else if (!atProcedureStart && indents > 0 && _settings.IndentProcedure)
+                                        {
+                                            // at the top of the procedure, so indent once if required
+                                            currentLine = new string(' ', _settings.IndentSpaces) + currentLine;
+                                            commentStart = scan + _settings.IndentSpaces;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (item == "Rem " && currentLine.Substring(scan - 1, 1) != " " 
+                                                           && currentLine.Substring(scan - 1, 1) != ":")
+                                        {
+                                            break;
+                                        }
+
+                                        CheckLine(currentLine.Substring(start, scan - 1), ref noIndent, ref ins, ref outs, ref atProcedureStart, ref atFirstProcLine, ref isInsideIfBlock);
+                                        if (atProcedureStart)
+                                        {
+                                            atFirstDim = true;
+                                        }
+                                        if (start == 1)
+                                        {
+                                            indents -= outs;
+                                            if (indents < 0)
+                                            {
+                                                indents = 0;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            indentNext += ins - outs;
+                                        }
+
+                                        // get the text before the comment, and the comment text
+                                        var left = currentLine.Substring(0, scan - 1);
+                                        var right = currentLine.Substring(scan);
+
+                                        // indent the code part of the line
+                                        if (alreadyPadded)
+                                        {
+                                            currentLine = currentLine.Substring(0, scan - 1).TrimEnd();
+                                        }
+                                        else
+                                        {
+                                            if (atFirstDim && _settings.IndentProcedure && _settings.IndentDim)
+                                            {
+                                                currentLine = left;
+                                            }
+                                            else
+                                            {
+                                                currentLine = new string(' ', indents*_settings.IndentSpaces) + left;
+                                            }
+                                        }
+
+                                        inOnContinuedLine = currentLine.Trim().EndsWith(" _");
+
+                                        switch (_settings.EndOfLineCommentStyle)
+                                        {
+                                            case EndOfLineCommentStyle.Absolute:
+                                                scan -= lineAdjust + originalLine.Length - originalLine.Trim().Length;
+                                                gap = scan - currentLine.Length - 1;
+                                                break;
+                                            case EndOfLineCommentStyle.SameGap:
+                                                scan -= lineAdjust + originalLine.Length - originalLine.Trim().Length;
+                                                gap = scan - originalLine.Substring(0, scan - 1).TrimEnd().Length - 1;
+                                                break;
+                                            case EndOfLineCommentStyle.StandardGap:
+                                                gap = _settings.IndentSpaces*2;
+                                                break;
+                                            case EndOfLineCommentStyle.AlignInColumn:
+                                                gap = _settings.EndOfLineAlignColumn - currentLine.Length - 1;
+                                                break;
+                                            default:
+                                                throw new ArgumentOutOfRangeException();
+                                        }
+
+                                        // adjust for a numbered line
+                                        if (numberedLine > -1 && (_settings.EndOfLineCommentStyle == EndOfLineCommentStyle.Absolute ||
+                                                                  _settings.EndOfLineCommentStyle == EndOfLineCommentStyle.AlignInColumn)
+                                            && lineNumber.Length >= indents*_settings.IndentSpaces)
+                                        {
+                                            gap -= lineNumber.Length - indents*_settings.IndentSpaces - 1;
+                                        }
+
+                                        if (gap < 2)
+                                        {
+                                            gap = _settings.IndentSpaces;
+                                        }
+
+                                        commentStart = currentLine.Length + gap;
+                                        currentLine += new string(' ', gap) + right;
+                                    }
+
+                                    // work out where the text of the comment starts, to align the next line
+                                    if (currentLine.Substring(commentStart, 4) == "Rem ")
+                                    {
+                                        commentStart += 3;
+                                    }
+                                    if (currentLine.Substring(commentStart, 1) == "'")
+                                    {
+                                        commentStart += 1;
+                                    }
+                                    while (currentLine.Substring(commentStart, 1) != " ")
+                                    {
+                                        commentStart += 1;
+                                    }
+                                    commentStart -= 1;
+
+                                    // adjust for a line number at the start of the line
+                                    if (numberedLine > -1 && lineNumber.Length >= indents*_settings.IndentSpaces)
+                                    {
+                                        commentStart += lineNumber.Length - indents*_settings.IndentSpaces + 1;
+                                    }
+
+                                    isInsideComment = currentLine.Trim().EndsWith(" _");
                                     break;
 
                                 case "Stop ":
                                 case "Debug.Print ":
                                 case "Debug.Assert ":
-                                    //throw new NotImplementedException();
+                                    if (start == 1 && scan == 1 && _settings.ForceDebugStatementsInColumn1)
+                                    {
+                                        // note: original code seems to subtract the length of originalLine implicitly converted to a string, and trimmed
+                                        //  iLineAdjust = iLineAdjust - (Len(sOrigLine) - LTrim$(Len(sOrigLine)))
+                                        lineAdjust -= (originalLine.Length - originalLine.TrimStart().Length);
+                                        debugAdjustment = indents;
+                                        indents = 0;
+                                    }
                                     break;
 
                                 case "#If ":
@@ -319,10 +533,18 @@ namespace Rubberduck.SmartIndenter
                                 case "#Else ":
                                 case "#End If":
                                 case "#Const ":
-                                    //throw new NotImplementedException();
+                                    if (start == 1 && scan == 1 && _settings.ForceCompilerStuffInColumn1)
+                                    {
+                                        // note: original code seems to subtract the length of originalLine implicitly converted to a string, and trimmed
+                                        //  iLineAdjust = iLineAdjust - (Len(sOrigLine) - LTrim$(Len(sOrigLine)))
+                                        lineAdjust -= (originalLine.Length - originalLine.TrimStart().Length);
+                                        debugAdjustment = indents;
+                                        indents = 0;
+                                    }
                                     break;
                             }
 
+                            scan++;
                         } while (scan <= currentLine.Length);
 
                         // do we have some code left to check?
@@ -354,7 +576,7 @@ namespace Rubberduck.SmartIndenter
                         }
 
                         // start from the left at each procedure start
-                        if (firstProcLine)
+                        if (atFirstProcLine)
                         {
                             indents = 0;
                         }
@@ -364,7 +586,7 @@ namespace Rubberduck.SmartIndenter
                         {
                             if (!_settings.AlignContinuations)
                             {
-                                currentLine = new string(' ', (indents + 2) * _settings.IndentSpaces) + currentLine;
+                                currentLine = new string(' ', (indents + 2)*_settings.IndentSpaces) + currentLine;
                             }
                         }
                         else
@@ -386,7 +608,7 @@ namespace Rubberduck.SmartIndenter
                                         atFirstDim = true;
                                     }
 
-                                    currentLine = new string(' ', indents * _settings.IndentSpaces) + currentLine;
+                                    currentLine = new string(' ', indents*_settings.IndentSpaces) + currentLine;
                                 }
                             }
 
@@ -396,11 +618,10 @@ namespace Rubberduck.SmartIndenter
                         // anything there?
                     }
 
-                PTR_REPLACE_LINE:
+                    PTR_REPLACE_LINE:
                     // add the coe line number back in
                     if (numberedLine > -1)
                     {
-                        var lineNumber = numberedLine.ToString();
                         if (currentLine.Substring(0, lineNumber.Length + 1).Trim().Length == 0)
                         {
                             currentLine = lineNumber + currentLine.Substring(lineNumber.Length + 1);
@@ -437,7 +658,7 @@ namespace Rubberduck.SmartIndenter
                             //functionStart = FunctionAlign(currentLine, atFirstCont, parameterStart);
                             if (functionStart == 0)
                             {
-                                functionStart = (indents + 2) * _settings.IndentSpaces;
+                                functionStart = (indents + 2)*_settings.IndentSpaces;
                                 parameterStart = functionStart;
                             }
                         }
@@ -445,6 +666,92 @@ namespace Rubberduck.SmartIndenter
                 }
 
                 atFirstCont = !inOnContinuedLine;
+            }
+        }
+
+        private void CheckLine(string code, ref bool noIndent, ref int indentNext, ref int outdentThis, ref bool atProcedureStart, ref bool atFirstProcLine, ref bool insideIf)
+        {
+            code = code.Trim() + " ";
+            if (!noIndent)
+            {
+                indentNext += _inCode.Count(value => code.StartsWith(value) && (code.Substring(value.Length, 1) == " " || code.Substring(value.Length, 1) == ":"));
+                outdentThis += _outCode.Count(value => code.StartsWith(value) && (code.Substring(value.Length, 1) == " " || (code.Substring(value.Length, 1) == ":" && code.Substring(value.Length + 1, 1) != "=")));
+            }
+
+            foreach (var value in _inProcedure.Where(value => code.StartsWith(value) && (code.Substring(value.Length, 1) == " " || (code.Substring(value.Length, 1) == ":" && code.Substring(value.Length + 1, 1) != "="))))
+            {
+                atProcedureStart = true;
+                atFirstProcLine = true;
+
+                // don't indent within type or enum constructs
+                if (value.EndsWith("Type") || value.EndsWith("Enum"))
+                {
+                    indentNext++;
+                    noIndent = true;
+                }
+                else if (!noIndent && _settings.IndentProcedure)
+                {
+                    indentNext++;
+                }
+            }
+
+            foreach (var value in _outProcedure.Where(value => code.StartsWith(value) && (code.Substring(value.Length, 1) == " " || (code.Substring(value.Length, 1) == ":" && code.Substring(value.Length + 1, 1) != "="))))
+            {
+                if (value.EndsWith("Type") || value.EndsWith("Enum"))
+                {
+                    indentNext++;
+                    noIndent = false;
+                }
+            }
+
+            // special-case handle 'If'; if 'Then' is followed by anything other than a comment, we don't indent.
+            if (noIndent || (!insideIf && !code.StartsWith("If ") && !code.StartsWith("#If ")))
+            {
+                return;
+            }
+
+            if (insideIf)
+            {
+                indentNext = 1;
+            }
+
+            // strip strings
+            var i = code.IndexOf('"');
+            while (i >= 0)
+            {
+                var j = code.IndexOf('"', i + 1);
+                if (j == -1)
+                {
+                    j = code.Length;
+                }
+                code = code.Substring(0, i - 1) + code.Substring(j);
+                i = code.IndexOf('"');
+            }
+
+            // strip comments
+            i = code.IndexOf('\'');
+            if (i >= 1)
+            {
+                code = code.Substring(0, i - 1);
+            }
+
+            // allow lines continuations inside the 'If' 
+            insideIf = code.Trim().EndsWith(" _");
+
+            // if we have a 'Then' in the line, adding space before & after
+            // enables testing for the 'Then' being both within or at the end of the line.
+            code = ' ' + code + ' ';
+            i = code.IndexOf(" Then ", StringComparison.InvariantCulture);
+
+            if (i >= 0)
+            {
+                if (code.Substring(i + 5).Trim() != string.Empty)
+                {
+                    // there's something after the 'Then', we don't indent the 'If'
+                    indentNext = 0;
+                }
+                // no need to check next time around
+                insideIf = false;
             }
         }
 
