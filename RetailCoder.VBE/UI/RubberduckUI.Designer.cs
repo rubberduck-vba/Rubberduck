@@ -1126,6 +1126,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Current module.
+        /// </summary>
+        public static string IndentCurrentModule {
+            get {
+                return ResourceManager.GetString("IndentCurrentModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current procedure.
+        /// </summary>
+        public static string IndentCurrentProcedure {
+            get {
+                return ResourceManager.GetString("IndentCurrentProcedure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Entire project.
+        /// </summary>
+        public static string IndentCurrentProject {
+            get {
+                return ResourceManager.GetString("IndentCurrentProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inspect.
         /// </summary>
         public static string Inspect {
@@ -1843,7 +1870,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Re&amp;order Parameters.
+        ///   Looks up a localized string similar to Reorder &amp;Parameters.
         /// </summary>
         public static string RefactorMenu_ReorderParameters {
             get {
@@ -2425,6 +2452,15 @@ namespace Rubberduck.UI {
         public static string Severity {
             get {
                 return ResourceManager.GetString("Severity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent.
+        /// </summary>
+        public static string SmartIndenterMenu {
+            get {
+                return ResourceManager.GetString("SmartIndenterMenu", resourceCulture);
             }
         }
         

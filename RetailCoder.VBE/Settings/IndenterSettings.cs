@@ -14,15 +14,16 @@ namespace Rubberduck.Settings
         public bool IndentFirst { get; set; }
         public bool AlignEndOfLine { get; set; }
         public bool AlignDim { get; set; }
-        public bool DebugColumn1 { get; set; }
+        public bool ForceDebugStatementsInColumn1 { get; set; }
         public bool EnableUndo { get; set; }
         public int IndentSpaces { get; set; }
         public int EndOfLineAlignColumn { get; set; }
         public int AlignDimColumn { get; set; }
-        public bool CompilerStuffColumn1 { get; set; }
+        public bool ForceCompilerStuffInColumn1 { get; set; }
         public bool IndentCompilerStuff { get; set; }
         public bool AlignIgnoreOps { get; set; }
         public bool EnableIndentProcedureHotKey { get; set; }
         public bool EnableIndentModuleHotKey { get; set; }
+        public EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
     }
 }
