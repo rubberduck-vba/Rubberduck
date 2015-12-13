@@ -199,10 +199,10 @@ namespace Rubberduck
                 ParseAll();
             });
 
-            _hooks.AddHook(new LowLevelKeyboardHook(_vbe));
-            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^R", Keys.R));
-            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^I", Keys.I));
-            _hooks.Attach();
+            //_hooks.AddHook(new LowLevelKeyboardHook(_vbe));
+            //_hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^R", Keys.R));
+            //_hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^I", Keys.I));
+            //_hooks.Attach();
         }
 
         private void ParseAll()
