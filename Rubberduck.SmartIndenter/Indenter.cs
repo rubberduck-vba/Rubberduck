@@ -56,6 +56,10 @@ namespace Rubberduck.SmartIndenter
                 procName = null;
             }
 
+            var startLine = pane.CodeModule.get_ProcStartLine(procName, procKind);
+            var endLine = startLine + pane.CodeModule.get_ProcCountLines(procName, procKind);
+
+            selection = new Selection(startLine, 1, endLine, 1);
             Indent(pane.CodeModule.Parent, procName, selection);
         }
 
@@ -155,6 +159,14 @@ namespace Rubberduck.SmartIndenter
 
             var codeLines = module.CodeModule.get_Lines(selection.StartLine, selection.LineCount).Split('\n');
             Indent(codeLines, procedureName, reportProgress, linesAlreadyRebuilt);
+
+            for (var i = 0; i < selection.EndLine - selection.StartLine; i++)
+            {
+                if (module.CodeModule.get_Lines(selection.StartLine + i + 1, 1) != codeLines[i])
+                {
+                    module.CodeModule.ReplaceLine(selection.StartLine + i + 1, codeLines[i]);
+                }
+            }
         }
 
         public void Indent(string[] codeLines, string moduleName, bool reportProgress = true, int linesAlreadyRebuilt = 0)
