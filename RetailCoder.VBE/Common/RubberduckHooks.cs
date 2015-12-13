@@ -11,8 +11,8 @@ namespace Rubberduck.Common
     {
         private readonly IntPtr _mainWindowHandle;
 
-        private readonly IntPtr _oldWndPointer;
-        private readonly User32.WndProc _oldWndProc;
+        private IntPtr _oldWndPointer;
+        private User32.WndProc _oldWndProc;
         private User32.WndProc _newWndProc;
 
         private readonly ITimerHook _timerHook;
@@ -26,9 +26,6 @@ namespace Rubberduck.Common
         {
             _mainWindowHandle = mainWindowHandle;
             _newWndProc = WindowProc;
-            _oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _newWndProc);
-            _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
-
             _timerHook = timerHook;
             _timerHook.Tick += timerHook_Tick;
         }
@@ -59,6 +56,9 @@ namespace Rubberduck.Common
             {
                 return;
             }
+
+            _oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _newWndProc);
+            _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
 
             foreach (var hook in Hooks)
             {
