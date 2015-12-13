@@ -6,6 +6,7 @@ namespace Rubberduck.Common
     public class HookEventArgs : EventArgs
     {
         private readonly Keys _key;
+        private static readonly Lazy<HookEventArgs> _empty = new Lazy<HookEventArgs>(() => new HookEventArgs(Keys.None));
 
         public HookEventArgs(Keys key)
         {
@@ -14,6 +15,6 @@ namespace Rubberduck.Common
 
         public Keys Key { get { return _key; } }
 
-        public new static HookEventArgs Empty {get { return new HookEventArgs(Keys.None); }}
+        public new static HookEventArgs Empty {get { return _empty.Value; }}
     }
 }

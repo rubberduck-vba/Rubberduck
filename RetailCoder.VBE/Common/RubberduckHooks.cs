@@ -25,7 +25,6 @@ namespace Rubberduck.Common
         public RubberduckHooks(IntPtr mainWindowHandle, ITimerHook timerHook)
         {
             _mainWindowHandle = mainWindowHandle;
-            _oldWndProc = WindowProc;
             _newWndProc = WindowProc;
             _oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _newWndProc);
             _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
@@ -113,6 +112,8 @@ namespace Rubberduck.Common
 
         public void Dispose()
         {
+            User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _oldWndProc); 
+            
             _timerHook.Tick -= timerHook_Tick;
             _timerHook.Detach();
 
@@ -123,7 +124,6 @@ namespace Rubberduck.Common
         {
             try
             {
-                var processed = false;
                 if (hWnd == _mainWindowHandle)
                 {
                     switch ((WM)uMsg)
@@ -136,7 +136,7 @@ namespace Rubberduck.Common
                                 {
                                     var args = new HookEventArgs(hook.HotKeyInfo.Keys);
                                     OnMessageReceived(hook, args);
-                                    processed = true;
+                                    return IntPtr.Zero;
                                 }
                             }
                             break;
@@ -152,14 +152,8 @@ namespace Rubberduck.Common
                                     Detach();
                                     break;
                             }
-
                             break;
                     }
-                }
-
-                if (!processed)
-                {
-                    return User32.CallWindowProc(_oldWndProc, hWnd, uMsg, wParam, lParam);
                 }
             }
             catch (Exception exception)
@@ -175,9 +169,7 @@ namespace Rubberduck.Common
         /// </summary>
         private static int LoWord(int dw)
         {
-            return (dw & 0x8000) != 0
-                ? 0x8000 | (dw & 0x7FFF)
-                : dw & 0xFFFF;
+            return dw & 0xFFFF;
         }
 
         private IntPtr GetWindowThread(IntPtr hWnd)

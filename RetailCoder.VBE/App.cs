@@ -87,6 +87,10 @@ namespace Rubberduck
                 if (_isAwaitingTwoStepKey)
                 {
                     // todo: use _firstStepHotKey and e.Key to run 2-step hotkey action
+                    if (_firstStepHotKey == Keys.I && e.Key == Keys.M)
+                    {
+                        _indenter.IndentCurrentModule();
+                    }
 
                     AwaitNextKey();
                     return;
@@ -196,8 +200,8 @@ namespace Rubberduck
             });
 
             _hooks.AddHook(new LowLevelKeyboardHook(_vbe));
-            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%+R", Keys.R));
-            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%+I", Keys.I));
+            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^R", Keys.R));
+            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^I", Keys.I));
             _hooks.Attach();
         }
 
