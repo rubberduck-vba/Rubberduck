@@ -1227,4 +1227,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
     <value>&amp;Introduce Parameter</value>
   </data>
+  <data name="RefactorMenu_IntroduceField" xml:space="preserve">
+    <value>Introduce &amp;Field</value>
+  </data>
 </root>

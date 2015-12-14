@@ -19,5 +19,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         ReorderParameters,
         RemoveParameters,
         IntroduceParameter,
+        IntroduceField,
     }
 }

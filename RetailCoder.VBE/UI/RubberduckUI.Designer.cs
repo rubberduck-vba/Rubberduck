@@ -1843,6 +1843,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Introduce &amp;Field.
+        /// </summary>
+        public static string RefactorMenu_IntroduceField {
+            get {
+                return ResourceManager.GetString("RefactorMenu_IntroduceField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Introduce Parameter.
         /// </summary>
         public static string RefactorMenu_IntroduceParameter {
