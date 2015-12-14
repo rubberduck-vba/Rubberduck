@@ -1230,4 +1230,8 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RefactorMenu_IntroduceField" xml:space="preserve">
     <value>Introduce &amp;Field</value>
   </data>
+  <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
+    <value>Selection is not a variable.</value>
+    <comment>Used in both Introduce Parameter and Introduce Field</comment>
+  </data>
 </root>

@@ -1783,6 +1783,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selection is not a variable..
+        /// </summary>
+        public static string PromoteVariable_InvalidSelection {
+            get {
+                return ResourceManager.GetString("PromoteVariable_InvalidSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}
         ///{1}
         ///

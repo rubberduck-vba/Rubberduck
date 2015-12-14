@@ -41,7 +41,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         {
             if (_targetDeclaration == null)
             {
-                _messageBox.Show("Invalid selection...");   // todo: write a better message and localize it
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection);
                 return;
             }
 
