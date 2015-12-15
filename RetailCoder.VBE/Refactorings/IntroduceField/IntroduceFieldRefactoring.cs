@@ -13,32 +13,35 @@ namespace Rubberduck.Refactorings.IntroduceField
     {
         private readonly IList<Declaration> _declarations;
         private readonly IActiveCodePaneEditor _editor;
-        private Declaration _targetDeclaration;
         private readonly IMessageBox _messageBox;
 
-        public IntroduceField(RubberduckParserState parseResult, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public IntroduceField(RubberduckParserState parserState, IActiveCodePaneEditor editor, IMessageBox messageBox)
         {
-            _declarations = parseResult.AllDeclarations.ToList();
+            _declarations =
+                parserState.AllDeclarations.Where(i => !i.IsBuiltIn && i.DeclarationType == DeclarationType.Variable)
+                    .ToList();
             _editor = editor;
             _messageBox = messageBox;
         }
 
         public void Refactor()
         {
-            if (_targetDeclaration == null)
+            var selection = _editor.GetSelection();
+            
+            if (!selection.HasValue)
             {
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection);
                 return;
             }
 
-            RemoveVariable();
-            AddField();
+            Refactor(selection.Value);
         }
 
         public void Refactor(QualifiedSelection selection)
         {
-            _targetDeclaration = FindSelection(selection);
-            Refactor();
+            var target = FindSelection(selection);
+
+            PromoteVariable(target);
         }
 
         public void Refactor(Declaration target)
@@ -48,33 +51,38 @@ namespace Rubberduck.Refactorings.IntroduceField
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            _targetDeclaration = target;
-            Refactor();
+            PromoteVariable(target);
         }
 
-        private void AddField()
+        private void PromoteVariable(Declaration target)
         {
-            var module = _targetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            module.InsertLines(module.CountOfDeclarationLines + 1, GetFieldDefinition());
+            RemoveVariable(target);
+            AddField(target);
         }
 
-        private void RemoveVariable()
+        private void AddField(Declaration target)
+        {
+            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            module.InsertLines(module.CountOfDeclarationLines + 1, GetFieldDefinition(target));
+        }
+
+        private void RemoveVariable(Declaration target)
         {
             Selection selection;
-            var declarationText = _targetDeclaration.Context.GetText();
-            var multipleDeclarations = HasMultipleDeclarationsInStatement(_targetDeclaration);
+            var declarationText = target.Context.GetText();
+            var multipleDeclarations = HasMultipleDeclarationsInStatement(target);
 
-            var variableStmtContext = GetVariableStmtContext(_targetDeclaration);
+            var variableStmtContext = GetVariableStmtContext(target);
 
             if (!multipleDeclarations)
             {
                 declarationText = variableStmtContext.GetText();
-                selection = GetVariableStmtContextSelection(_targetDeclaration);
+                selection = GetVariableStmtContextSelection(target);
             }
             else
             {
-                selection = new Selection(_targetDeclaration.Context.Start.Line, _targetDeclaration.Context.Start.Column,
-                    _targetDeclaration.Context.Stop.Line, _targetDeclaration.Context.Stop.Column);
+                selection = new Selection(target.Context.Start.Line, target.Context.Start.Column,
+                    target.Context.Stop.Line, target.Context.Stop.Column);
             }
 
             var oldLines = _editor.GetLines(selection);
@@ -84,7 +92,7 @@ namespace Rubberduck.Refactorings.IntroduceField
 
             if (multipleDeclarations)
             {
-                selection = GetVariableStmtContextSelection(_targetDeclaration);
+                selection = GetVariableStmtContextSelection(target);
                 newLines = RemoveExtraComma(_editor.GetLines(selection).Replace(oldLines, newLines));
             }
 
@@ -105,7 +113,7 @@ namespace Rubberduck.Refactorings.IntroduceField
             var statement = target.Context.Parent.Parent as VBAParser.VariableStmtContext;
             if (statement == null)
             {
-                throw new MissingMemberException("Statement not found");
+                throw new NullReferenceException("Statement not found");
             }
 
             return statement;
@@ -149,27 +157,21 @@ namespace Rubberduck.Refactorings.IntroduceField
             return statement.children.Count(i => i is VBAParser.VariableSubStmtContext) > 1;
         }
 
-        private string GetFieldDefinition()
+        private string GetFieldDefinition(Declaration target)
         {
-            if (_targetDeclaration == null) { return null; }
+            if (target == null) { return null; }
 
-            return "Private " + _targetDeclaration.IdentifierName + " As " + _targetDeclaration.AsTypeName;
+            return "Private " + target.IdentifierName + " As " + target.AsTypeName;
         }
 
         private Declaration FindSelection(QualifiedSelection selection)
         {
             var target = _declarations
-                .Where(item => !item.IsBuiltIn)
-                .FirstOrDefault(item => item.IsSelected(selection) && item.DeclarationType == DeclarationType.Variable
-                                     || item.References.Any(r => r.IsSelected(selection) &&
-                                        r.Declaration.DeclarationType == DeclarationType.Variable));
+                .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));
 
             if (target != null) { return target; }
 
-            var targets = _declarations
-                .Where(item => !item.IsBuiltIn
-                               && item.ComponentName == selection.QualifiedName.ComponentName
-                               && item.DeclarationType == DeclarationType.Variable);
+            var targets = _declarations.Where(item => item.ComponentName == selection.QualifiedName.ComponentName);
 
             foreach (var declaration in targets)
             {
