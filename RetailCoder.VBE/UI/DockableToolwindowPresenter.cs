@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
@@ -43,13 +44,19 @@ namespace Rubberduck.UI
             }
             catch (COMException exception)
             {
-                var logEvent = new LogEventInfo(LogLevel.Error, _logger.Name,  "Error Creating Control");
+                var logEvent = new LogEventInfo(LogLevel.Error, _logger.Name, "Error Creating Control");
                 logEvent.Exception = exception;
                 logEvent.Properties.Add("EventID", 1);
 
                 _logger.Error(logEvent);
                 return null; //throw;
             }
+            catch (NullReferenceException exception)
+            {
+                Debug.Print(exception.ToString());
+                return null; //throw;
+            }
+
             var userControlHost = (_DockableWindowHost)userControlObject;
             toolWindow.Visible = true; //window resizing doesn't work without this
 

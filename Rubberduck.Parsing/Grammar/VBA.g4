@@ -61,6 +61,8 @@
 *   - amended block rule to support instruction separators.
 *   - amended selectCaseStmt rules to support all valid syntaxes.
 *   - blockStmt is now illegal in declarations section.
+*   - added ON_LOCAL_ERROR token, to support legacy ON LOCAL ERROR statements.
+*   - added additional typeHint? token to declareStmt, to support "Declare Function Foo$".
 *
 *======================================================================================
 *
@@ -121,6 +123,7 @@ moduleDeclarationsElement :
 	| enumerationStmt 
 	| eventStmt
 	| constStmt
+	| implementsStmt
 	| variableStmt
 	| macroConstStmt
 	| macroIfThenElseStmt
@@ -236,7 +239,7 @@ constSubStmt : ambiguousIdentifier typeHint? (WS asTypeClause)? WS? EQ WS? value
 
 dateStmt : DATE WS? EQ WS? valueStmt;
 
-declareStmt : (visibility WS)? DECLARE WS (PTRSAFE WS)? ((FUNCTION typeHint?) | SUB) WS ambiguousIdentifier WS LIB WS STRINGLITERAL (WS ALIAS WS STRINGLITERAL)? (WS? argList)? (WS asTypeClause)?;
+declareStmt : (visibility WS)? DECLARE WS (PTRSAFE WS)? ((FUNCTION typeHint?) | SUB) WS ambiguousIdentifier typeHint? WS LIB WS STRINGLITERAL (WS ALIAS WS STRINGLITERAL)? (WS? argList)? (WS asTypeClause)?;
 
 deftypeStmt : 
 	(
@@ -370,7 +373,7 @@ mkdirStmt : MKDIR WS valueStmt;
 
 nameStmt : NAME WS valueStmt WS AS WS valueStmt;
 
-onErrorStmt : ON_ERROR WS (GOTO WS valueStmt | RESUME WS NEXT);
+onErrorStmt : ON_ERROR | ON_LOCAL_ERROR WS (GOTO WS valueStmt | RESUME WS NEXT);
 
 onGoToStmt : ON WS valueStmt WS GOTO WS valueStmt (WS? ',' WS? valueStmt)*;
 
@@ -609,7 +612,7 @@ iCS_S_DictionaryCall : dictionaryCallStmt;
 
 argsCall : (argCall? WS? (',' | ';') WS?)* argCall (WS? (',' | ';') WS? argCall?)*;
 
-argCall : ((BYVAL | BYREF | PARAMARRAY) WS)? valueStmt;
+argCall : LPAREN? ((BYVAL | BYREF | PARAMARRAY) WS)? RPAREN? valueStmt;
 
 dictionaryCallStmt : '!' ambiguousIdentifier typeHint?;
 
@@ -631,7 +634,7 @@ subscript : (valueStmt WS TO WS)? valueStmt;
 
 ambiguousIdentifier : 
 	(IDENTIFIER | ambiguousKeyword)+
-	| L_SQUARE_BRACKET (IDENTIFIER | ambiguousKeyword)+ R_SQUARE_BRACKET
+	| L_SQUARE_BRACKET (.+)+ R_SQUARE_BRACKET
 ;
 
 asTypeClause : AS WS (NEW WS)? type (WS fieldLength)?;
@@ -803,6 +806,7 @@ NOTHING : N O T H I N G;
 NULL : N U L L;
 ON : O N;
 ON_ERROR : O N ' ' E R R O R;
+ON_LOCAL_ERROR : O N ' ' L O C A L ' ' E R R O R;
 OPEN : O P E N;
 OPTIONAL : O P T I O N A L;
 OPTION_BASE : O P T I O N ' ' B A S E;
@@ -903,7 +907,7 @@ BYTELITERAL : ('0'..'9')+;
 IDENTIFIER : LETTER (LETTERORDIGIT)*;
 // whitespace, line breaks, comments, ...
 LINE_CONTINUATION : ' ' '_' '\r'? '\n' -> skip;
-NEWLINE : WS? ('\r'? '\n' | BYTELITERAL? ':' ' ') WS?; // note: if Hell breaks loose, it's because of this change
+NEWLINE : WS? ('\r'? '\n') WS?; 
 COMMENT : WS? ('\'' | ':'? REM ' ') (LINE_CONTINUATION | ~('\n' | '\r'))* -> skip;
 WS : [ \t]+;
 
