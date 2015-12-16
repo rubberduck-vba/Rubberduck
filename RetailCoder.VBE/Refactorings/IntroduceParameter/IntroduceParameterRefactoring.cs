@@ -17,7 +17,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         private readonly RubberduckParserState _parseResult;
         private readonly IList<Declaration> _declarations;
         private readonly IActiveCodePaneEditor _editor;
-        private Declaration _targetDeclaration;
         private readonly IMessageBox _messageBox;
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
@@ -39,20 +38,22 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         public void Refactor()
         {
-            if (_targetDeclaration == null)
+            var selection = _editor.GetSelection();
+
+            if (!selection.HasValue)
             {
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection);
                 return;
             }
 
-            UpdateSignature();
-            RemoveVariable();
+            Refactor(selection.Value);
         }
 
         public void Refactor(QualifiedSelection selection)
         {
-            _targetDeclaration = FindSelection(selection);
-            Refactor();
+            var target = FindSelection(selection);
+
+            PromoteVariable(target);
         }
 
         public void Refactor(Declaration target)
@@ -62,19 +63,24 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            _targetDeclaration = target;
-            Refactor();
+            PromoteVariable(target);
         }
 
-        private void UpdateSignature()
+        private void PromoteVariable(Declaration target)
         {
-            var functionDeclaration = _declarations.FindSelection(_targetDeclaration.QualifiedSelection, ValidDeclarationTypes);
+            RemoveVariable(target);
+            UpdateSignature(target);
+        }
+
+        private void UpdateSignature(Declaration targetVariable)
+        {
+            var functionDeclaration = _declarations.FindSelection(targetVariable.QualifiedSelection, ValidDeclarationTypes);
 
             var proc = (dynamic)functionDeclaration.Context;
             var paramList = (VBAParser.ArgListContext)proc.argList();
             var module = functionDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
-            AddParameter(functionDeclaration, paramList, module);
+            AddParameter(functionDeclaration, targetVariable, paramList, module);
 
             if (functionDeclaration.DeclarationType == DeclarationType.PropertyGet ||
                 functionDeclaration.DeclarationType == DeclarationType.PropertyLet ||
@@ -86,41 +92,41 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
             if (interfaceImplementation != null)
             {
-                UpdateSignature(interfaceImplementation);
+                UpdateSignature(interfaceImplementation, targetVariable);
             }
         }
 
-        private void UpdateSignature(Declaration target)
+        private void UpdateSignature(Declaration targetMethod, Declaration targetVariable)
         {
-            var proc = (dynamic)target.Context;
+            var proc = (dynamic)targetMethod.Context;
             var paramList = (VBAParser.ArgListContext)proc.argList();
-            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            var module = targetMethod.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
-            AddParameter(target, paramList, module);
+            AddParameter(targetMethod, targetVariable, paramList, module);
         }
 
-        private void AddParameter(Declaration target, VBAParser.ArgListContext paramList, CodeModule module)
+        private void AddParameter(Declaration targetMethod, Declaration targetVariable, VBAParser.ArgListContext paramList, CodeModule module)
         {
             var argList = paramList.arg();
             var lastParam = argList.LastOrDefault();
 
-            var newContent = GetOldSignature(target);
+            var newContent = GetOldSignature(targetMethod);
 
             if (lastParam == null)
             {
                 // Increase index by one because VBA is dumb enough to use 1-based indexing
-                newContent = newContent.Insert(newContent.IndexOf('(') + 1, GetParameterDefinition());
+                newContent = newContent.Insert(newContent.IndexOf('(') + 1, GetParameterDefinition(targetVariable));
             }
-            else if (target.DeclarationType != DeclarationType.PropertyLet &&
-                     target.DeclarationType != DeclarationType.PropertySet)
+            else if (targetMethod.DeclarationType != DeclarationType.PropertyLet &&
+                     targetMethod.DeclarationType != DeclarationType.PropertySet)
             {
                 newContent = newContent.Replace(argList.Last().GetText(),
-                    argList.Last().GetText() + ", " + GetParameterDefinition());
+                    argList.Last().GetText() + ", " + GetParameterDefinition(targetVariable));
             }
             else
             {
                 newContent = newContent.Replace(argList.Last().GetText(),
-                    GetParameterDefinition() + ", " + argList.Last().GetText());
+                    GetParameterDefinition(targetVariable) + ", " + argList.Last().GetText());
             }
 
             module.ReplaceLine(paramList.Start.Line, newContent);
@@ -159,23 +165,23 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
         }
 
-        private void RemoveVariable()
+        private void RemoveVariable(Declaration target)
         {
             Selection selection;
-            var declarationText = _targetDeclaration.Context.GetText();
-            var multipleDeclarations = HasMultipleDeclarationsInStatement(_targetDeclaration);
+            var declarationText = target.Context.GetText();
+            var multipleDeclarations = HasMultipleDeclarationsInStatement(target);
 
-            var variableStmtContext = GetVariableStmtContext(_targetDeclaration);
+            var variableStmtContext = GetVariableStmtContext(target);
 
             if (!multipleDeclarations)
             {
                 declarationText = variableStmtContext.GetText();
-                selection = GetVariableStmtContextSelection(_targetDeclaration);
+                selection = GetVariableStmtContextSelection(target);
             }
             else
             {
-                selection = new Selection(_targetDeclaration.Context.Start.Line, _targetDeclaration.Context.Start.Column,
-                    _targetDeclaration.Context.Stop.Line, _targetDeclaration.Context.Stop.Column);
+                selection = new Selection(target.Context.Start.Line, target.Context.Start.Column,
+                    target.Context.Stop.Line, target.Context.Stop.Column);
             }
 
             var oldLines = _editor.GetLines(selection);
@@ -185,7 +191,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             if (multipleDeclarations)
             {
-                selection = GetVariableStmtContextSelection(_targetDeclaration);
+                selection = GetVariableStmtContextSelection(target);
                 newLines = RemoveExtraComma(_editor.GetLines(selection).Replace(oldLines, newLines));
             }
 
@@ -327,11 +333,11 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             return statement.children.Count(i => i is VBAParser.VariableSubStmtContext) > 1;
         }
 
-        private string GetParameterDefinition()
+        private string GetParameterDefinition(Declaration target)
         {
-            if (_targetDeclaration == null) { return null; }
+            if (target == null) { return null; }
 
-            return "ByVal " + _targetDeclaration.IdentifierName + " As " + _targetDeclaration.AsTypeName;
+            return "ByVal " + target.IdentifierName + " As " + target.AsTypeName;
         }
 
         private Declaration FindSelection(QualifiedSelection selection)
