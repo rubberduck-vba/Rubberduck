@@ -297,24 +297,25 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             var significantCharacterAfterComma = false;
 
-            for (var index = 0; index < str.Length; index++)
+            for (var index = str.IndexOf("Dim", StringComparison.Ordinal) + 3; index < str.Length; index++)
             {
-                if (!char.IsWhiteSpace(str[index]) && str[index] != '_' && str[index] != ',')
-                {
-                    significantCharacterAfterComma = true;
-                }
-                if (str[index] == ',')
-                {
-                    significantCharacterAfterComma = false;
-                }
-
                 if (!significantCharacterAfterComma && str[index] == ',')
                 {
                     return str.Remove(index, 1);
                 }
+
+                if (!char.IsWhiteSpace(str[index]) && str[index] != '_' && str[index] != ',')
+                {
+                    significantCharacterAfterComma = true;
+                }
+
+                if (str[index] == ',')
+                {
+                    significantCharacterAfterComma = false;
+                }
             }
 
-            return str;
+            return str.Remove(str.LastIndexOf(','), 1);
         }
 
         private bool HasMultipleDeclarationsInStatement(Declaration target)
