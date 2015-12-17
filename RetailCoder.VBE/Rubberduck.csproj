@@ -344,6 +344,9 @@
     <Compile Include="UI\BusyIndicator.xaml.cs">
       <DependentUpon>BusyIndicator.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\CodeExplorer\CodeExplorerControl.xaml.cs">
+      <DependentUpon>CodeExplorerControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\CodeInspections\InspectionDescriptionConverter.cs" />
     <Compile Include="UI\CodeInspections\InspectionImageSourceConverter.cs" />
     <Compile Include="UI\CodeInspections\InspectionResultsControl.xaml.cs">
@@ -868,6 +871,7 @@
     <Resource Include="Resources\magnifier--arrow.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Common\Namespaces\" />
     <Folder Include="Properties\DataSources\" />
     <Folder Include="UI\ParserProgress\" />
   </ItemGroup>
@@ -1008,6 +1012,8 @@
     <Content Include="Resources\balloon_mask.bmp" />
     <Content Include="Resources\balloon_prohibition.bmp" />
     <Content Include="Resources\balloon_smiley.bmp" />
+    <None Include="Resources\blue-folder-horizontal.png" />
+    <None Include="Resources\blue-folder-horizontal-open.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
@@ -1205,6 +1211,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\BusyIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\CodeExplorer\CodeExplorerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
