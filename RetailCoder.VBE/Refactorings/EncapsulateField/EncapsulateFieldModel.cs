@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -24,8 +23,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string PropertyName { get; set; }
         public string ParameterName { get; set; }
-        public EncapsulateFieldDialog.SetterType PropertySetterType { get; set; }
-        public EncapsulateFieldDialog.Accessibility ParameterModifier { get; set; }
+        public bool SetterTypeIsLet { get; set; }
+        public bool ParameterModifierIsByVal { get; set; }
 
         public EncapsulateFieldModel(RubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {

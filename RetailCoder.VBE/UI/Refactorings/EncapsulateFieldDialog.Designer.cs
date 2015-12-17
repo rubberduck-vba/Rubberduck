@@ -35,22 +35,26 @@
             this.InvalidPropertyNameIcon = new System.Windows.Forms.PictureBox();
             this.PreviewBox = new System.Windows.Forms.TextBox();
             this.PreviewLabel = new System.Windows.Forms.Label();
-            this.ParameterModifierComboBox = new System.Windows.Forms.ComboBox();
-            this.AccessibilityLabel = new System.Windows.Forms.Label();
             this.PropertyNameTextBox = new System.Windows.Forms.TextBox();
             this.PropertyNameLabel = new System.Windows.Forms.Label();
-            this.SetterTypeComboBox = new System.Windows.Forms.ComboBox();
-            this.SetterTypeLabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.CancelDialogButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
             this.InvalidVariableNameIcon = new System.Windows.Forms.PictureBox();
             this.ParameterNameTextBox = new System.Windows.Forms.TextBox();
             this.VariableNameLabel = new System.Windows.Forms.Label();
+            this.SetterTypeGroupBox = new System.Windows.Forms.GroupBox();
+            this.SetSetterTypeRadioButton = new System.Windows.Forms.RadioButton();
+            this.LetSetterTypeRadioButton = new System.Windows.Forms.RadioButton();
+            this.ParameterModifierGroupBox = new System.Windows.Forms.GroupBox();
+            this.ByRefModifierRadioButton = new System.Windows.Forms.RadioButton();
+            this.ByValModifierRadioButton = new System.Windows.Forms.RadioButton();
             this.DescriptionPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.InvalidPropertyNameIcon)).BeginInit();
             this.flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.InvalidVariableNameIcon)).BeginInit();
+            this.SetterTypeGroupBox.SuspendLayout();
+            this.ParameterModifierGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // DescriptionPanel
@@ -89,7 +93,7 @@
             // InvalidPropertyNameIcon
             // 
             this.InvalidPropertyNameIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
-            this.InvalidPropertyNameIcon.Location = new System.Drawing.Point(449, 104);
+            this.InvalidPropertyNameIcon.Location = new System.Drawing.Point(503, 104);
             this.InvalidPropertyNameIcon.Margin = new System.Windows.Forms.Padding(4);
             this.InvalidPropertyNameIcon.Name = "InvalidPropertyNameIcon";
             this.InvalidPropertyNameIcon.Size = new System.Drawing.Size(16, 16);
@@ -124,33 +128,12 @@
             this.PreviewLabel.TabIndex = 22;
             this.PreviewLabel.Text = "Preview:";
             // 
-            // ParameterModifierComboBox
-            // 
-            this.ParameterModifierComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ParameterModifierComboBox.FormattingEnabled = true;
-            this.ParameterModifierComboBox.Location = new System.Drawing.Point(507, 164);
-            this.ParameterModifierComboBox.Margin = new System.Windows.Forms.Padding(4);
-            this.ParameterModifierComboBox.Name = "ParameterModifierComboBox";
-            this.ParameterModifierComboBox.Size = new System.Drawing.Size(205, 24);
-            this.ParameterModifierComboBox.TabIndex = 20;
-            // 
-            // AccessibilityLabel
-            // 
-            this.AccessibilityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.AccessibilityLabel.AutoSize = true;
-            this.AccessibilityLabel.Location = new System.Drawing.Point(504, 143);
-            this.AccessibilityLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.AccessibilityLabel.Name = "AccessibilityLabel";
-            this.AccessibilityLabel.Size = new System.Drawing.Size(43, 17);
-            this.AccessibilityLabel.TabIndex = 19;
-            this.AccessibilityLabel.Text = "Pass:";
-            // 
             // PropertyNameTextBox
             // 
             this.PropertyNameTextBox.Location = new System.Drawing.Point(23, 113);
             this.PropertyNameTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.PropertyNameTextBox.Name = "PropertyNameTextBox";
-            this.PropertyNameTextBox.Size = new System.Drawing.Size(436, 22);
+            this.PropertyNameTextBox.Size = new System.Drawing.Size(489, 22);
             this.PropertyNameTextBox.TabIndex = 16;
             // 
             // PropertyNameLabel
@@ -162,27 +145,6 @@
             this.PropertyNameLabel.Size = new System.Drawing.Size(107, 17);
             this.PropertyNameLabel.TabIndex = 15;
             this.PropertyNameLabel.Text = "Property Name:";
-            // 
-            // SetterTypeComboBox
-            // 
-            this.SetterTypeComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.SetterTypeComboBox.FormattingEnabled = true;
-            this.SetterTypeComboBox.Location = new System.Drawing.Point(507, 111);
-            this.SetterTypeComboBox.Margin = new System.Windows.Forms.Padding(4);
-            this.SetterTypeComboBox.Name = "SetterTypeComboBox";
-            this.SetterTypeComboBox.Size = new System.Drawing.Size(205, 24);
-            this.SetterTypeComboBox.TabIndex = 26;
-            // 
-            // SetterTypeLabel
-            // 
-            this.SetterTypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.SetterTypeLabel.AutoSize = true;
-            this.SetterTypeLabel.Location = new System.Drawing.Point(504, 90);
-            this.SetterTypeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.SetterTypeLabel.Name = "SetterTypeLabel";
-            this.SetterTypeLabel.Size = new System.Drawing.Size(86, 17);
-            this.SetterTypeLabel.TabIndex = 25;
-            this.SetterTypeLabel.Text = "Setter Type:";
             // 
             // flowLayoutPanel2
             // 
@@ -225,7 +187,7 @@
             // InvalidVariableNameIcon
             // 
             this.InvalidVariableNameIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
-            this.InvalidVariableNameIcon.Location = new System.Drawing.Point(449, 157);
+            this.InvalidVariableNameIcon.Location = new System.Drawing.Point(503, 157);
             this.InvalidVariableNameIcon.Margin = new System.Windows.Forms.Padding(4);
             this.InvalidVariableNameIcon.Name = "InvalidVariableNameIcon";
             this.InvalidVariableNameIcon.Size = new System.Drawing.Size(16, 16);
@@ -239,7 +201,7 @@
             this.ParameterNameTextBox.Location = new System.Drawing.Point(23, 166);
             this.ParameterNameTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.ParameterNameTextBox.Name = "ParameterNameTextBox";
-            this.ParameterNameTextBox.Size = new System.Drawing.Size(436, 22);
+            this.ParameterNameTextBox.Size = new System.Drawing.Size(489, 22);
             this.ParameterNameTextBox.TabIndex = 29;
             this.ParameterNameTextBox.Text = "value";
             // 
@@ -253,6 +215,74 @@
             this.VariableNameLabel.TabIndex = 28;
             this.VariableNameLabel.Text = "Parameter Name:";
             // 
+            // SetterTypeGroupBox
+            // 
+            this.SetterTypeGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SetterTypeGroupBox.Controls.Add(this.SetSetterTypeRadioButton);
+            this.SetterTypeGroupBox.Controls.Add(this.LetSetterTypeRadioButton);
+            this.SetterTypeGroupBox.Location = new System.Drawing.Point(532, 92);
+            this.SetterTypeGroupBox.Name = "SetterTypeGroupBox";
+            this.SetterTypeGroupBox.Size = new System.Drawing.Size(180, 47);
+            this.SetterTypeGroupBox.TabIndex = 31;
+            this.SetterTypeGroupBox.TabStop = false;
+            this.SetterTypeGroupBox.Text = "Setter Type:";
+            // 
+            // SetSetterTypeRadioButton
+            // 
+            this.SetSetterTypeRadioButton.AutoSize = true;
+            this.SetSetterTypeRadioButton.Location = new System.Drawing.Point(75, 21);
+            this.SetSetterTypeRadioButton.Name = "SetSetterTypeRadioButton";
+            this.SetSetterTypeRadioButton.Size = new System.Drawing.Size(50, 21);
+            this.SetSetterTypeRadioButton.TabIndex = 1;
+            this.SetSetterTypeRadioButton.Text = "Set";
+            this.SetSetterTypeRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // LetSetterTypeRadioButton
+            // 
+            this.LetSetterTypeRadioButton.AutoSize = true;
+            this.LetSetterTypeRadioButton.Checked = true;
+            this.LetSetterTypeRadioButton.Location = new System.Drawing.Point(8, 21);
+            this.LetSetterTypeRadioButton.Name = "LetSetterTypeRadioButton";
+            this.LetSetterTypeRadioButton.Size = new System.Drawing.Size(49, 21);
+            this.LetSetterTypeRadioButton.TabIndex = 0;
+            this.LetSetterTypeRadioButton.TabStop = true;
+            this.LetSetterTypeRadioButton.Text = "Let";
+            this.LetSetterTypeRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // ParameterModifierGroupBox
+            // 
+            this.ParameterModifierGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ParameterModifierGroupBox.Controls.Add(this.ByRefModifierRadioButton);
+            this.ParameterModifierGroupBox.Controls.Add(this.ByValModifierRadioButton);
+            this.ParameterModifierGroupBox.Location = new System.Drawing.Point(532, 145);
+            this.ParameterModifierGroupBox.Name = "ParameterModifierGroupBox";
+            this.ParameterModifierGroupBox.Size = new System.Drawing.Size(180, 47);
+            this.ParameterModifierGroupBox.TabIndex = 32;
+            this.ParameterModifierGroupBox.TabStop = false;
+            this.ParameterModifierGroupBox.Text = "Pass:";
+            // 
+            // ByRefModifierRadioButton
+            // 
+            this.ByRefModifierRadioButton.AutoSize = true;
+            this.ByRefModifierRadioButton.Location = new System.Drawing.Point(75, 21);
+            this.ByRefModifierRadioButton.Name = "ByRefModifierRadioButton";
+            this.ByRefModifierRadioButton.Size = new System.Drawing.Size(67, 21);
+            this.ByRefModifierRadioButton.TabIndex = 1;
+            this.ByRefModifierRadioButton.Text = "ByRef";
+            this.ByRefModifierRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // ByValModifierRadioButton
+            // 
+            this.ByValModifierRadioButton.AutoSize = true;
+            this.ByValModifierRadioButton.Checked = true;
+            this.ByValModifierRadioButton.Location = new System.Drawing.Point(8, 21);
+            this.ByValModifierRadioButton.Name = "ByValModifierRadioButton";
+            this.ByValModifierRadioButton.Size = new System.Drawing.Size(65, 21);
+            this.ByValModifierRadioButton.TabIndex = 0;
+            this.ByValModifierRadioButton.TabStop = true;
+            this.ByValModifierRadioButton.Text = "ByVal";
+            this.ByValModifierRadioButton.UseVisualStyleBackColor = true;
+            // 
             // EncapsulateFieldDialog
             // 
             this.AcceptButton = this.OkButton;
@@ -260,17 +290,15 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelDialogButton;
             this.ClientSize = new System.Drawing.Size(734, 463);
+            this.Controls.Add(this.ParameterModifierGroupBox);
+            this.Controls.Add(this.SetterTypeGroupBox);
             this.Controls.Add(this.InvalidVariableNameIcon);
             this.Controls.Add(this.ParameterNameTextBox);
             this.Controls.Add(this.VariableNameLabel);
             this.Controls.Add(this.flowLayoutPanel2);
-            this.Controls.Add(this.SetterTypeComboBox);
-            this.Controls.Add(this.SetterTypeLabel);
             this.Controls.Add(this.InvalidPropertyNameIcon);
             this.Controls.Add(this.PreviewBox);
             this.Controls.Add(this.PreviewLabel);
-            this.Controls.Add(this.ParameterModifierComboBox);
-            this.Controls.Add(this.AccessibilityLabel);
             this.Controls.Add(this.PropertyNameTextBox);
             this.Controls.Add(this.PropertyNameLabel);
             this.Controls.Add(this.DescriptionPanel);
@@ -285,6 +313,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.InvalidPropertyNameIcon)).EndInit();
             this.flowLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.InvalidVariableNameIcon)).EndInit();
+            this.SetterTypeGroupBox.ResumeLayout(false);
+            this.SetterTypeGroupBox.PerformLayout();
+            this.ParameterModifierGroupBox.ResumeLayout(false);
+            this.ParameterModifierGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -298,17 +330,19 @@
         private System.Windows.Forms.PictureBox InvalidPropertyNameIcon;
         private System.Windows.Forms.TextBox PreviewBox;
         private System.Windows.Forms.Label PreviewLabel;
-        private System.Windows.Forms.ComboBox ParameterModifierComboBox;
-        private System.Windows.Forms.Label AccessibilityLabel;
         private System.Windows.Forms.TextBox PropertyNameTextBox;
         private System.Windows.Forms.Label PropertyNameLabel;
-        private System.Windows.Forms.ComboBox SetterTypeComboBox;
-        private System.Windows.Forms.Label SetterTypeLabel;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Button CancelDialogButton;
         private System.Windows.Forms.Button OkButton;
         private System.Windows.Forms.PictureBox InvalidVariableNameIcon;
         private System.Windows.Forms.TextBox ParameterNameTextBox;
         private System.Windows.Forms.Label VariableNameLabel;
+        private System.Windows.Forms.GroupBox SetterTypeGroupBox;
+        private System.Windows.Forms.RadioButton SetSetterTypeRadioButton;
+        private System.Windows.Forms.RadioButton LetSetterTypeRadioButton;
+        private System.Windows.Forms.GroupBox ParameterModifierGroupBox;
+        private System.Windows.Forms.RadioButton ByRefModifierRadioButton;
+        private System.Windows.Forms.RadioButton ByValModifierRadioButton;
     }
 }

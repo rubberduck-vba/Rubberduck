@@ -9,25 +9,13 @@ namespace Rubberduck.UI.Refactorings
 {
     public partial class EncapsulateFieldDialog : Form, IEncapsulateFieldView
     {
-        public enum Accessibility
-        {
-            ByVal,
-            ByRef
-        }
-
-        public enum SetterType
-        {
-            Let,
-            Set
-        }
-        
         public string NewPropertyName
         {
             get { return PropertyNameTextBox.Text; }
             set { PropertyNameTextBox.Text = value; }
         }
 
-        public string VariableName
+        public string ParameterName
         {
             get { return ParameterNameTextBox.Text; }
             set { ParameterNameTextBox.Text = value; }
@@ -35,22 +23,42 @@ namespace Rubberduck.UI.Refactorings
 
         public Declaration TargetDeclaration { get; set; }
 
-        public Accessibility PropertyAccessibility
+        public bool ParameterModifierIsByVal
         {
-            get { return (Accessibility)ParameterModifierComboBox.SelectedItem; }
-            set { ParameterModifierComboBox.SelectedItem = value; }
+            get { return ByValModifierRadioButton.Checked; }
+            set
+            {
+                if (value)
+                {
+                    ByValModifierRadioButton.Checked = true;
+                }
+                else
+                {
+                    ByRefModifierRadioButton.Checked = true;
+                }
+            }
         }
 
-        public SetterType PropertySetterType
+        public bool SetterTypeIsLet
         {
-            get { return (SetterType)SetterTypeComboBox.SelectedItem; }
-            set { SetterTypeComboBox.SelectedItem = value; }
+            get { return LetSetterTypeRadioButton.Checked; }
+            set
+            {
+                if (value)
+                {
+                    LetSetterTypeRadioButton.Checked = true;
+                }
+                else
+                {
+                    SetSetterTypeRadioButton.Checked = true;
+                }
+            }
         }
 
-        public bool IsPropertySetterTypeChangeable
+        public bool IsSetterTypeChangeable
         {
-            get { return SetterTypeComboBox.Enabled; }
-            set { SetterTypeComboBox.Enabled = value; }
+            get { return SetterTypeGroupBox.Enabled; }
+            set { SetterTypeGroupBox.Enabled = value; }
         }
 
         public EncapsulateFieldDialog()
@@ -60,22 +68,15 @@ namespace Rubberduck.UI.Refactorings
 
             PropertyNameTextBox.TextChanged += PropertyNameBox_TextChanged;
             ParameterNameTextBox.TextChanged += VariableNameBox_TextChanged;
-            ParameterModifierComboBox.SelectedValueChanged += VariableAccessibilityComboBoxSelectedValueChanged;
-            SetterTypeComboBox.SelectedValueChanged += SetterTypeComboBox_SelectedValueChanged;
+            ((RadioButton)SetterTypeGroupBox.Controls[0]).CheckedChanged += RadioButtonGroup_CheckedChanged;
+            ((RadioButton)ParameterModifierGroupBox.Controls[0]).CheckedChanged += RadioButtonGroup_CheckedChanged;
 
             Shown += EncapsulateFieldDialog_Shown;
+        }
 
-            ParameterModifierComboBox.DataSource = new[]
-            {
-                Accessibility.ByVal,
-                Accessibility.ByRef,
-            }.ToList();
-
-            SetterTypeComboBox.DataSource = new[]
-            {
-                SetterType.Let,
-                SetterType.Set,
-            }.ToList();
+        void RadioButtonGroup_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdatePreview();
         }
 
         private void LocalizeDialog()
@@ -84,24 +85,14 @@ namespace Rubberduck.UI.Refactorings
             TitleLabel.Text = RubberduckUI.EncapsulateField_TitleText;
             InstructionsLabel.Text = RubberduckUI.EncapsulateField_InstructionText;
             PropertyNameLabel.Text = RubberduckUI.EncapsulateField_PropertyName;
-            SetterTypeLabel.Text = RubberduckUI.EncapsulateField_SetterType;
+            SetterTypeGroupBox.Text = RubberduckUI.EncapsulateField_SetterType;
             VariableNameLabel.Text = RubberduckUI.EncapsulateField_ParameterName;
-            AccessibilityLabel.Text = RubberduckUI.EncapsulateField_ParameterModifier;
+            ParameterModifierGroupBox.Text = RubberduckUI.EncapsulateField_ParameterModifier;
             OkButton.Text = RubberduckUI.OK;
             CancelDialogButton.Text = RubberduckUI.CancelButtonText;
         }
 
         void EncapsulateFieldDialog_Shown(object sender, EventArgs e)
-        {
-            UpdatePreview();
-        }
-
-        void SetterTypeComboBox_SelectedValueChanged(object sender, EventArgs e)
-        {
-            UpdatePreview();
-        }
-
-        void VariableAccessibilityComboBoxSelectedValueChanged(object sender, EventArgs e)
         {
             UpdatePreview();
         }
@@ -126,9 +117,15 @@ namespace Rubberduck.UI.Refactorings
                 string.Format("Public Property Get {0}() As {1}", NewPropertyName, TargetDeclaration.AsTypeName),
                 string.Format("    {0} = {1}", NewPropertyName, TargetDeclaration.IdentifierName),
                 "End Property" + Environment.NewLine,
-                string.Format("Public Property {0} {1}({2} {3} As {4})", SetterTypeComboBox.SelectedValue,
-                    NewPropertyName, ParameterModifierComboBox.SelectedValue, VariableName, TargetDeclaration.AsTypeName),
-                string.Format("    {0} = {1}", TargetDeclaration.IdentifierName, VariableName),
+                string.Format("Public Property {0} {1}({2} {3} As {4})",
+                    SetterTypeIsLet
+                        ? LetSetterTypeRadioButton.Text
+                        : SetSetterTypeRadioButton.Text,
+                    NewPropertyName,
+                    ParameterModifierIsByVal
+                        ? ByValModifierRadioButton.Text
+                        : ByRefModifierRadioButton.Text, ParameterName, TargetDeclaration.AsTypeName),
+                string.Format("    {0} = {1}", TargetDeclaration.IdentifierName, ParameterName),
                 "End Property");
         }
 
@@ -152,11 +149,11 @@ namespace Rubberduck.UI.Refactorings
 
             var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
 
-            InvalidVariableNameIcon.Visible = VariableName == TargetDeclaration.IdentifierName
-                               || VariableName == NewPropertyName
-                               || !char.IsLetter(VariableName.FirstOrDefault())
-                               || tokenValues.Contains(VariableName, StringComparer.InvariantCultureIgnoreCase)
-                               || VariableName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+            InvalidVariableNameIcon.Visible = ParameterName == TargetDeclaration.IdentifierName
+                               || ParameterName == NewPropertyName
+                               || !char.IsLetter(ParameterName.FirstOrDefault())
+                               || tokenValues.Contains(ParameterName, StringComparer.InvariantCultureIgnoreCase)
+                               || ParameterName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
 
             SetOkButtonEnabledState();
         }

@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
-using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -44,17 +42,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             _view.NewPropertyName = _model.TargetDeclaration.IdentifierName;
             _view.TargetDeclaration = _model.TargetDeclaration;
-            _view.PropertyAccessibility = EncapsulateFieldDialog.Accessibility.ByVal;
-            _view.PropertySetterType = EncapsulateFieldDialog.SetterType.Let;
 
             if (PrimitiveTypes.Contains(_model.TargetDeclaration.AsTypeName))
             {
-                _view.IsPropertySetterTypeChangeable = false;
+                _view.IsSetterTypeChangeable = false;
             }
             else if (_model.TargetDeclaration.AsTypeName != Tokens.Variant)
             {
-                _view.PropertySetterType = EncapsulateFieldDialog.SetterType.Set;
-                _view.IsPropertySetterTypeChangeable = false;
+                _view.SetterTypeIsLet = false;
+                _view.IsSetterTypeChangeable = false;
             }
 
             if (_view.ShowDialog() != DialogResult.OK)
@@ -63,10 +59,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
 
             _model.PropertyName = _view.NewPropertyName;
-            _model.PropertySetterType = _view.PropertySetterType;
+            _model.SetterTypeIsLet = _view.SetterTypeIsLet;
 
-            _model.ParameterName = _view.VariableName;
-            _model.ParameterModifier = _view.PropertyAccessibility;
+            _model.ParameterName = _view.ParameterName;
+            _model.ParameterModifierIsByVal = _view.ParameterModifierIsByVal;
             return _model;
         }
     }
