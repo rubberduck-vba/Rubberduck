@@ -23,8 +23,14 @@ namespace Rubberduck.UI.Refactorings
         
         public string NewPropertyName
         {
-            get { return PropertyNameBox.Text; }
-            set { PropertyNameBox.Text = value; }
+            get { return PropertyNameTextBox.Text; }
+            set { PropertyNameTextBox.Text = value; }
+        }
+
+        public string VariableName
+        {
+            get { return VariableNameTextBox.Text; }
+            set { VariableNameTextBox.Text = value; }
         }
 
         public Declaration TargetDeclaration { get; set; }
@@ -51,7 +57,8 @@ namespace Rubberduck.UI.Refactorings
         {
             InitializeComponent();
 
-            PropertyNameBox.TextChanged += PropertyNameBox_TextChanged;
+            PropertyNameTextBox.TextChanged += PropertyNameBox_TextChanged;
+            VariableNameTextBox.TextChanged += VariableNameBox_TextChanged;
             VariableAccessibilityComboBox.SelectedValueChanged += VariableAccessibilityComboBoxSelectedValueChanged;
             SetterTypeComboBox.SelectedValueChanged += SetterTypeComboBox_SelectedValueChanged;
 
@@ -87,7 +94,13 @@ namespace Rubberduck.UI.Refactorings
 
         private void PropertyNameBox_TextChanged(object sender, EventArgs e)
         {
-            ValidateName();
+            ValidatePropertyName();
+            UpdatePreview();
+        }
+
+        private void VariableNameBox_TextChanged(object sender, EventArgs e)
+        {
+            ValidateVariableName();
             UpdatePreview();
         }
 
@@ -99,24 +112,44 @@ namespace Rubberduck.UI.Refactorings
                 string.Format("Public Property Get {0}() As {1}", NewPropertyName, TargetDeclaration.AsTypeName),
                 string.Format("    {0} = {1}", NewPropertyName, TargetDeclaration.IdentifierName),
                 "End Property" + Environment.NewLine,
-                string.Format("Public Property {0} {1}({2} value As {3})", SetterTypeComboBox.SelectedValue,
-                    NewPropertyName, VariableAccessibilityComboBox.SelectedValue, TargetDeclaration.AsTypeName),
-                string.Format("    {0} = value", NewPropertyName),
+                string.Format("Public Property {0} {1}({2} {3} As {4})", SetterTypeComboBox.SelectedValue,
+                    NewPropertyName, VariableAccessibilityComboBox.SelectedValue, VariableName, TargetDeclaration.AsTypeName),
+                string.Format("    {0} = value", TargetDeclaration.IdentifierName),
                 "End Property");
         }
 
-        private void ValidateName()
+        private void ValidatePropertyName()
         {
             if (TargetDeclaration == null) { return; }
 
             var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
 
-            OkButton.Enabled = NewPropertyName != TargetDeclaration.IdentifierName
-                               && char.IsLetter(NewPropertyName.FirstOrDefault())
-                               && !tokenValues.Contains(NewPropertyName, StringComparer.InvariantCultureIgnoreCase)
-                               && !NewPropertyName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+            InvalidPropertyNameIcon.Visible = NewPropertyName == TargetDeclaration.IdentifierName
+                               || !char.IsLetter(NewPropertyName.FirstOrDefault())
+                               || tokenValues.Contains(NewPropertyName, StringComparer.InvariantCultureIgnoreCase)
+                               || NewPropertyName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
 
-            InvalidNameIcon.Visible = !OkButton.Enabled;
+            SetOkButtonEnabledState();
+        }
+
+        private void ValidateVariableName()
+        {
+            if (TargetDeclaration == null) { return; }
+
+            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
+
+            InvalidVariableNameIcon.Visible = VariableName == TargetDeclaration.IdentifierName
+                               || VariableName == NewPropertyName
+                               || !char.IsLetter(VariableName.FirstOrDefault())
+                               || tokenValues.Contains(VariableName, StringComparer.InvariantCultureIgnoreCase)
+                               || VariableName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+
+            SetOkButtonEnabledState();
+        }
+
+        private void SetOkButtonEnabledState()
+        {
+            OkButton.Enabled = !InvalidPropertyNameIcon.Visible && !InvalidVariableNameIcon.Visible;
         }
     }
 }

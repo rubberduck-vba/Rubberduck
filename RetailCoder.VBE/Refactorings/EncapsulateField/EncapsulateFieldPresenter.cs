@@ -64,9 +64,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 return null;
             }
 
-            _model.Name = _view.NewPropertyName;
-            _model.Accessibility = _view.PropertyAccessibility;
-            _model.SetterType = _view.PropertySetterType;
+            _model.PropertyName = _view.NewPropertyName;
+            _model.PropertySetterType = _view.PropertySetterType;
+
+            _model.VariableName = _view.VariableName;
+            _model.VariableAccessibility = _view.PropertyAccessibility;
             return _model;
         }
     }

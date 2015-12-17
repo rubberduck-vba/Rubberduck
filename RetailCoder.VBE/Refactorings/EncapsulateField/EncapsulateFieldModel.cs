@@ -22,9 +22,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private readonly IMessageBox _messageBox;
 
-        public string Name { get; set; }
-        public EncapsulateFieldDialog.Accessibility Accessibility { get; set; }
-        public EncapsulateFieldDialog.SetterType SetterType { get; set; }
+        public string PropertyName { get; set; }
+        public string VariableName { get; set; }
+        public EncapsulateFieldDialog.SetterType PropertySetterType { get; set; }
+        public EncapsulateFieldDialog.Accessibility VariableAccessibility { get; set; }
 
         public EncapsulateFieldModel(RubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {
