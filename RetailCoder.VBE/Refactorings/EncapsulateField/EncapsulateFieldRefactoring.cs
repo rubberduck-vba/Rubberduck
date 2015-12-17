@@ -1,5 +1,4 @@
-﻿using System;
-using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -33,12 +32,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public void Refactor(QualifiedSelection target)
         {
-            throw new NotImplementedException();
         }
 
         public void Refactor(Declaration target)
         {
-            throw new NotImplementedException();
         }
     }
 }

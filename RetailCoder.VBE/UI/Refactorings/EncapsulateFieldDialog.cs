@@ -42,6 +42,12 @@ namespace Rubberduck.UI.Refactorings
             set { SetterTypeComboBox.SelectedItem = value; }
         }
 
+        public bool IsPropertySetterTypeChangeable
+        {
+            get { return SetterTypeComboBox.Enabled; }
+            set { SetterTypeComboBox.Enabled = value; }
+        }
+
         public EncapsulateFieldDialog()
         {
             InitializeComponent();

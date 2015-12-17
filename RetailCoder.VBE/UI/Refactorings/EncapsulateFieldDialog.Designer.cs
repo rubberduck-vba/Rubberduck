@@ -213,8 +213,10 @@
             // 
             // EncapsulateFieldDialog
             // 
+            this.AcceptButton = this.OkButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.CancelDialogButton;
             this.ClientSize = new System.Drawing.Size(753, 443);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.SetterTypeComboBox);

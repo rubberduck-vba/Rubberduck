@@ -8,5 +8,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string PropertyName { get; set; }
         EncapsulateFieldDialog.Accessibility PropertyAccessibility { get; set; }
         EncapsulateFieldDialog.SetterType PropertySetterType { get; set; }
+        bool IsPropertySetterTypeChangeable { get; set; }
     }
 }
