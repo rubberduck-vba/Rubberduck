@@ -30,15 +30,24 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public Accessibility PropertyAccessibility;
-        public SetterType PropertySetterType;
+        public Accessibility PropertyAccessibility
+        {
+            get { return (Accessibility)AccessibilityComboBox.SelectedItem; }
+            set { AccessibilityComboBox.SelectedItem = value; }
+        }
+
+        public SetterType PropertySetterType
+        {
+            get { return (SetterType)SetterTypeComboBox.SelectedItem; }
+            set { SetterTypeComboBox.SelectedItem = value; }
+        }
 
         public EncapsulateFieldDialog()
         {
             InitializeComponent();
             PropertyNameBox.TextChanged += PropertyNameBox_TextChanged;
 
-            PropertyAccessibilityComboBox.DataSource = new[]
+            AccessibilityComboBox.DataSource = new[]
             {
                 Accessibility.ByVal,
                 Accessibility.ByRef,

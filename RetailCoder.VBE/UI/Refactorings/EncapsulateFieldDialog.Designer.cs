@@ -35,7 +35,7 @@
             this.InvalidNameIcon = new System.Windows.Forms.PictureBox();
             this.PreviewBox = new System.Windows.Forms.TextBox();
             this.PreviewLabel = new System.Windows.Forms.Label();
-            this.PropertyAccessibilityComboBox = new System.Windows.Forms.ComboBox();
+            this.AccessibilityComboBox = new System.Windows.Forms.ComboBox();
             this.AccessibilityLabel = new System.Windows.Forms.Label();
             this.PropertyNameBox = new System.Windows.Forms.TextBox();
             this.NameLabel = new System.Windows.Forms.Label();
@@ -117,14 +117,14 @@
             this.PreviewLabel.TabIndex = 22;
             this.PreviewLabel.Text = "Preview:";
             // 
-            // PropertyAccessibilityComboBox
+            // AccessibilityComboBox
             // 
-            this.PropertyAccessibilityComboBox.FormattingEnabled = true;
-            this.PropertyAccessibilityComboBox.Location = new System.Drawing.Point(525, 100);
-            this.PropertyAccessibilityComboBox.Margin = new System.Windows.Forms.Padding(4);
-            this.PropertyAccessibilityComboBox.Name = "PropertyAccessibilityComboBox";
-            this.PropertyAccessibilityComboBox.Size = new System.Drawing.Size(205, 24);
-            this.PropertyAccessibilityComboBox.TabIndex = 20;
+            this.AccessibilityComboBox.FormattingEnabled = true;
+            this.AccessibilityComboBox.Location = new System.Drawing.Point(525, 100);
+            this.AccessibilityComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.AccessibilityComboBox.Name = "AccessibilityComboBox";
+            this.AccessibilityComboBox.Size = new System.Drawing.Size(205, 24);
+            this.AccessibilityComboBox.TabIndex = 20;
             // 
             // AccessibilityLabel
             // 
@@ -222,7 +222,7 @@
             this.Controls.Add(this.InvalidNameIcon);
             this.Controls.Add(this.PreviewBox);
             this.Controls.Add(this.PreviewLabel);
-            this.Controls.Add(this.PropertyAccessibilityComboBox);
+            this.Controls.Add(this.AccessibilityComboBox);
             this.Controls.Add(this.AccessibilityLabel);
             this.Controls.Add(this.PropertyNameBox);
             this.Controls.Add(this.NameLabel);
@@ -250,7 +250,7 @@
         private System.Windows.Forms.PictureBox InvalidNameIcon;
         private System.Windows.Forms.TextBox PreviewBox;
         private System.Windows.Forms.Label PreviewLabel;
-        private System.Windows.Forms.ComboBox PropertyAccessibilityComboBox;
+        private System.Windows.Forms.ComboBox AccessibilityComboBox;
         private System.Windows.Forms.Label AccessibilityLabel;
         private System.Windows.Forms.TextBox PropertyNameBox;
         private System.Windows.Forms.Label NameLabel;
