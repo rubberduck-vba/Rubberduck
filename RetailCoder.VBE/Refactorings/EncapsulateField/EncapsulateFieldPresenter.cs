@@ -1,4 +1,5 @@
-﻿using Rubberduck.UI;
+﻿using System.Windows.Forms;
+using Rubberduck.UI;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -22,9 +23,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public EncapsulateFieldModel Show()
         {
-            var dialogResult = _view.ShowDialog();
+            if (_model.TargetDeclaration == null) { return null; }
 
-            return null;
+            if (_view.ShowDialog() != DialogResult.OK)
+            {
+                return null;
+            }
+
+            _model.Name = _view.PropertyName;
+            _model.Accessibility = _view.PropertyAccessibility;
+            _model.SetterType = _view.PropertySetterType;
+            return _model;
         }
     }
 }

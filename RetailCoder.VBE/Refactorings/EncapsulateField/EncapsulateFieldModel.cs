@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
+using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -20,6 +21,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public Declaration TargetDeclaration { get; private set; }
 
         private readonly IMessageBox _messageBox;
+
+        public string Name { get; set; }
+        public EncapsulateFieldDialog.Accessibility Accessibility { get; set; }
+        public EncapsulateFieldDialog.SetterType SetterType { get; set; }
 
         public EncapsulateFieldModel(RubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {
