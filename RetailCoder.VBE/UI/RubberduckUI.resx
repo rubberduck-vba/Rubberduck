@@ -1234,4 +1234,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Selection is not a variable.</value>
     <comment>Used in both Introduce Parameter and Introduce Field</comment>
   </data>
+  <data name="RefactorMenu_EncapsulateField" xml:space="preserve">
+    <value>&amp;Encapsulate Field</value>
+  </data>
 </root>
