@@ -44,7 +44,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             if (_model.TargetDeclaration == null) { return null; }
 
-            _view.PropertyName = _model.TargetDeclaration.IdentifierName;
+            _view.NewPropertyName = _model.TargetDeclaration.IdentifierName;
+            _view.TargetDeclaration = _model.TargetDeclaration;
             _view.PropertyAccessibility = EncapsulateFieldDialog.Accessibility.ByVal;
             _view.PropertySetterType = EncapsulateFieldDialog.SetterType.Let;
 
@@ -63,7 +64,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 return null;
             }
 
-            _model.Name = _view.PropertyName;
+            _model.Name = _view.NewPropertyName;
             _model.Accessibility = _view.PropertyAccessibility;
             _model.SetterType = _view.PropertySetterType;
             return _model;
