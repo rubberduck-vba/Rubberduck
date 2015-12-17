@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using System;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -27,15 +28,35 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (_model == null) { return; }
 
-            Refactor(_model.TargetDeclaration);
+            AddProperty();
         }
 
         public void Refactor(QualifiedSelection target)
         {
+            Refactor();
         }
 
         public void Refactor(Declaration target)
         {
+            Refactor();
+        }
+
+        private void AddProperty()
+        {
+            var module = _model.TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            module.InsertLines(module.CountOfDeclarationLines + 1, GetPropertyText());
+        }
+
+        private string GetPropertyText()
+        {
+            return string.Join(Environment.NewLine,
+                string.Format(Environment.NewLine + "Public Property Get {0}() As {1}", _model.PropertyName, _model.TargetDeclaration.AsTypeName),
+                string.Format("    {0} = {1}", _model.PropertyName, _model.TargetDeclaration.IdentifierName),
+                "End Property" + Environment.NewLine,
+                string.Format("Public Property {0} {1}({2} {3} As {4})", _model.PropertySetterType,
+                    _model.PropertyName, _model.ParameterModifier, _model.ParameterName, _model.TargetDeclaration.AsTypeName),
+                string.Format("    {0} = {1}", _model.TargetDeclaration.IdentifierName, _model.ParameterName),
+                "End Property");
         }
     }
 }

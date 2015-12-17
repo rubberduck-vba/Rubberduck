@@ -35,7 +35,7 @@
             this.InvalidPropertyNameIcon = new System.Windows.Forms.PictureBox();
             this.PreviewBox = new System.Windows.Forms.TextBox();
             this.PreviewLabel = new System.Windows.Forms.Label();
-            this.VariableAccessibilityComboBox = new System.Windows.Forms.ComboBox();
+            this.ParameterModifierComboBox = new System.Windows.Forms.ComboBox();
             this.AccessibilityLabel = new System.Windows.Forms.Label();
             this.PropertyNameTextBox = new System.Windows.Forms.TextBox();
             this.PropertyNameLabel = new System.Windows.Forms.Label();
@@ -45,7 +45,7 @@
             this.CancelDialogButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
             this.InvalidVariableNameIcon = new System.Windows.Forms.PictureBox();
-            this.VariableNameTextBox = new System.Windows.Forms.TextBox();
+            this.ParameterNameTextBox = new System.Windows.Forms.TextBox();
             this.VariableNameLabel = new System.Windows.Forms.Label();
             this.DescriptionPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.InvalidPropertyNameIcon)).BeginInit();
@@ -124,15 +124,15 @@
             this.PreviewLabel.TabIndex = 22;
             this.PreviewLabel.Text = "Preview:";
             // 
-            // VariableAccessibilityComboBox
+            // ParameterModifierComboBox
             // 
-            this.VariableAccessibilityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.VariableAccessibilityComboBox.FormattingEnabled = true;
-            this.VariableAccessibilityComboBox.Location = new System.Drawing.Point(507, 164);
-            this.VariableAccessibilityComboBox.Margin = new System.Windows.Forms.Padding(4);
-            this.VariableAccessibilityComboBox.Name = "VariableAccessibilityComboBox";
-            this.VariableAccessibilityComboBox.Size = new System.Drawing.Size(205, 24);
-            this.VariableAccessibilityComboBox.TabIndex = 20;
+            this.ParameterModifierComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ParameterModifierComboBox.FormattingEnabled = true;
+            this.ParameterModifierComboBox.Location = new System.Drawing.Point(507, 164);
+            this.ParameterModifierComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.ParameterModifierComboBox.Name = "ParameterModifierComboBox";
+            this.ParameterModifierComboBox.Size = new System.Drawing.Size(205, 24);
+            this.ParameterModifierComboBox.TabIndex = 20;
             // 
             // AccessibilityLabel
             // 
@@ -141,9 +141,9 @@
             this.AccessibilityLabel.Location = new System.Drawing.Point(504, 143);
             this.AccessibilityLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.AccessibilityLabel.Name = "AccessibilityLabel";
-            this.AccessibilityLabel.Size = new System.Drawing.Size(88, 17);
+            this.AccessibilityLabel.Size = new System.Drawing.Size(43, 17);
             this.AccessibilityLabel.TabIndex = 19;
-            this.AccessibilityLabel.Text = "Accessibility:";
+            this.AccessibilityLabel.Text = "Pass:";
             // 
             // PropertyNameTextBox
             // 
@@ -234,14 +234,14 @@
             this.InvalidVariableNameIcon.TabStop = false;
             this.InvalidVariableNameIcon.Visible = false;
             // 
-            // VariableNameTextBox
+            // ParameterNameTextBox
             // 
-            this.VariableNameTextBox.Location = new System.Drawing.Point(23, 166);
-            this.VariableNameTextBox.Margin = new System.Windows.Forms.Padding(4);
-            this.VariableNameTextBox.Name = "VariableNameTextBox";
-            this.VariableNameTextBox.Size = new System.Drawing.Size(436, 22);
-            this.VariableNameTextBox.TabIndex = 29;
-            this.VariableNameTextBox.Text = "value";
+            this.ParameterNameTextBox.Location = new System.Drawing.Point(23, 166);
+            this.ParameterNameTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.ParameterNameTextBox.Name = "ParameterNameTextBox";
+            this.ParameterNameTextBox.Size = new System.Drawing.Size(436, 22);
+            this.ParameterNameTextBox.TabIndex = 29;
+            this.ParameterNameTextBox.Text = "value";
             // 
             // VariableNameLabel
             // 
@@ -249,9 +249,9 @@
             this.VariableNameLabel.Location = new System.Drawing.Point(18, 143);
             this.VariableNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.VariableNameLabel.Name = "VariableNameLabel";
-            this.VariableNameLabel.Size = new System.Drawing.Size(105, 17);
+            this.VariableNameLabel.Size = new System.Drawing.Size(119, 17);
             this.VariableNameLabel.TabIndex = 28;
-            this.VariableNameLabel.Text = "Variable Name:";
+            this.VariableNameLabel.Text = "Parameter Name:";
             // 
             // EncapsulateFieldDialog
             // 
@@ -261,7 +261,7 @@
             this.CancelButton = this.CancelDialogButton;
             this.ClientSize = new System.Drawing.Size(734, 463);
             this.Controls.Add(this.InvalidVariableNameIcon);
-            this.Controls.Add(this.VariableNameTextBox);
+            this.Controls.Add(this.ParameterNameTextBox);
             this.Controls.Add(this.VariableNameLabel);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.SetterTypeComboBox);
@@ -269,7 +269,7 @@
             this.Controls.Add(this.InvalidPropertyNameIcon);
             this.Controls.Add(this.PreviewBox);
             this.Controls.Add(this.PreviewLabel);
-            this.Controls.Add(this.VariableAccessibilityComboBox);
+            this.Controls.Add(this.ParameterModifierComboBox);
             this.Controls.Add(this.AccessibilityLabel);
             this.Controls.Add(this.PropertyNameTextBox);
             this.Controls.Add(this.PropertyNameLabel);
@@ -298,7 +298,7 @@
         private System.Windows.Forms.PictureBox InvalidPropertyNameIcon;
         private System.Windows.Forms.TextBox PreviewBox;
         private System.Windows.Forms.Label PreviewLabel;
-        private System.Windows.Forms.ComboBox VariableAccessibilityComboBox;
+        private System.Windows.Forms.ComboBox ParameterModifierComboBox;
         private System.Windows.Forms.Label AccessibilityLabel;
         private System.Windows.Forms.TextBox PropertyNameTextBox;
         private System.Windows.Forms.Label PropertyNameLabel;
@@ -308,7 +308,7 @@
         private System.Windows.Forms.Button CancelDialogButton;
         private System.Windows.Forms.Button OkButton;
         private System.Windows.Forms.PictureBox InvalidVariableNameIcon;
-        private System.Windows.Forms.TextBox VariableNameTextBox;
+        private System.Windows.Forms.TextBox ParameterNameTextBox;
         private System.Windows.Forms.Label VariableNameLabel;
     }
 }

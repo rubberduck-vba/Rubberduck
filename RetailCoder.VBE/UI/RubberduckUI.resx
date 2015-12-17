@@ -1255,10 +1255,10 @@ Are you sure you want to proceed with this rename?</value>
   <data name="EncapsulateField_TitleText" xml:space="preserve">
     <value>Encapsulate Field</value>
   </data>
-  <data name="EncapsulateField_VariableAccessibility" xml:space="preserve">
-    <value>Accessibility:</value>
+  <data name="EncapsulateField_ParameterModifier" xml:space="preserve">
+    <value>Pass:</value>
   </data>
-  <data name="EncapsulateField_VariableName" xml:space="preserve">
-    <value>Variable Name:</value>
+  <data name="EncapsulateField_ParameterName" xml:space="preserve">
+    <value>Parameter Name:</value>
   </data>
 </root>

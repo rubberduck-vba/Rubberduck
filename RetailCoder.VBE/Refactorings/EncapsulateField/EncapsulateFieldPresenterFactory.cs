@@ -29,7 +29,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
 
             var model = new EncapsulateFieldModel(_parseResult, selection.Value, _messageBox);
-            return new EncapsulateFieldPresenter(_view, model, _messageBox);
+            return new EncapsulateFieldPresenter(_view, model);
         }
     }
 }

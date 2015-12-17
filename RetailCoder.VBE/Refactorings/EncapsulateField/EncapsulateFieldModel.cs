@@ -20,18 +20,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public Declaration TargetDeclaration { get; private set; }
 
-        private readonly IMessageBox _messageBox;
+        public readonly IMessageBox MessageBox;
 
         public string PropertyName { get; set; }
-        public string VariableName { get; set; }
+        public string ParameterName { get; set; }
         public EncapsulateFieldDialog.SetterType PropertySetterType { get; set; }
-        public EncapsulateFieldDialog.Accessibility VariableAccessibility { get; set; }
+        public EncapsulateFieldDialog.Accessibility ParameterModifier { get; set; }
 
         public EncapsulateFieldModel(RubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {
             _parseResult = parseResult;
             _declarations = parseResult.AllDeclarations.Where(d => !d.IsBuiltIn && d.DeclarationType == DeclarationType.Variable).ToList();
-            _messageBox = messageBox;
+            MessageBox = messageBox;
 
             TargetDeclaration = FindSelection(selection);
         }

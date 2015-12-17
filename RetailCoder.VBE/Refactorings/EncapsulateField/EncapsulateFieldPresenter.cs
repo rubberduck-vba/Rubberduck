@@ -15,13 +15,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private readonly IEncapsulateFieldView _view;
         private readonly EncapsulateFieldModel _model;
-        private readonly IMessageBox _messageBox;
 
-        public EncapsulateFieldPresenter(IEncapsulateFieldView view, EncapsulateFieldModel model, IMessageBox messageBox)
+        public EncapsulateFieldPresenter(IEncapsulateFieldView view, EncapsulateFieldModel model)
         {
             _view = view;
             _model = model;
-            _messageBox = messageBox;
         }
 
         private static readonly string[] PrimitiveTypes =
@@ -67,8 +65,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _model.PropertyName = _view.NewPropertyName;
             _model.PropertySetterType = _view.PropertySetterType;
 
-            _model.VariableName = _view.VariableName;
-            _model.VariableAccessibility = _view.PropertyAccessibility;
+            _model.ParameterName = _view.VariableName;
+            _model.ParameterModifier = _view.PropertyAccessibility;
             return _model;
         }
     }
