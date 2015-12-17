@@ -56,6 +56,7 @@ namespace Rubberduck.UI.Refactorings
         public EncapsulateFieldDialog()
         {
             InitializeComponent();
+            LocalizeDialog();
 
             PropertyNameTextBox.TextChanged += PropertyNameBox_TextChanged;
             VariableNameTextBox.TextChanged += VariableNameBox_TextChanged;
@@ -75,6 +76,19 @@ namespace Rubberduck.UI.Refactorings
                 SetterType.Let,
                 SetterType.Set,
             }.ToList();
+        }
+
+        private void LocalizeDialog()
+        {
+            Text = RubberduckUI.EncapsulateField_Caption;
+            TitleLabel.Text = RubberduckUI.EncapsulateField_TitleText;
+            InstructionsLabel.Text = RubberduckUI.EncapsulateField_InstructionText;
+            PropertyNameLabel.Text = RubberduckUI.EncapsulateField_PropertyName;
+            SetterTypeLabel.Text = RubberduckUI.EncapsulateField_SetterType;
+            VariableNameLabel.Text = RubberduckUI.EncapsulateField_VariableName;
+            AccessibilityLabel.Text = RubberduckUI.EncapsulateField_VariableAccessibility;
+            OkButton.Text = RubberduckUI.OK;
+            CancelDialogButton.Text = RubberduckUI.CancelButtonText;
         }
 
         void EncapsulateFieldDialog_Shown(object sender, EventArgs e)

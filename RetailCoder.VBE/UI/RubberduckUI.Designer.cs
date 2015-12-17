@@ -928,6 +928,78 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Encapsulate Field.
+        /// </summary>
+        public static string EncapsulateField_Caption {
+            get {
+                return ResourceManager.GetString("EncapsulateField_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify property name, parameter accessibility, and setter type..
+        /// </summary>
+        public static string EncapsulateField_InstructionText {
+            get {
+                return ResourceManager.GetString("EncapsulateField_InstructionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview:.
+        /// </summary>
+        public static string EncapsulateField_Preview {
+            get {
+                return ResourceManager.GetString("EncapsulateField_Preview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property Name:.
+        /// </summary>
+        public static string EncapsulateField_PropertyName {
+            get {
+                return ResourceManager.GetString("EncapsulateField_PropertyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setter Type:.
+        /// </summary>
+        public static string EncapsulateField_SetterType {
+            get {
+                return ResourceManager.GetString("EncapsulateField_SetterType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Encapsulate Field.
+        /// </summary>
+        public static string EncapsulateField_TitleText {
+            get {
+                return ResourceManager.GetString("EncapsulateField_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accessibility:.
+        /// </summary>
+        public static string EncapsulateField_VariableAccessibility {
+            get {
+                return ResourceManager.GetString("EncapsulateField_VariableAccessibility", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable Name:.
+        /// </summary>
+        public static string EncapsulateField_VariableName {
+            get {
+                return ResourceManager.GetString("EncapsulateField_VariableName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accessibility:.
         /// </summary>
         public static string ExtractMethod_AccessibilityLabel {
