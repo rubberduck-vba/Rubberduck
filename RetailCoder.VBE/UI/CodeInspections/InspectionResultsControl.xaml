@@ -103,7 +103,7 @@
 
         <DataTemplate x:Key="InspectionResultTemplate" 
                       DataType="{x:Type inspections:ICodeInspectionResult}">
-            <StackPanel Orientation="Horizontal" Margin="2" HorizontalAlignment="Stretch">
+            <StackPanel Orientation="Horizontal" Margin="2" Height="22" HorizontalAlignment="Stretch">
                 <TextBlock VerticalAlignment="Center" 
                            Margin="4"
                            Text="{Binding Name}" 
@@ -116,7 +116,7 @@
                                   ItemsSource="{Binding Items}"
                                   ItemTemplate="{StaticResource InspectionResultTemplate}">
 
-            <StackPanel Orientation="Horizontal" Margin="2" HorizontalAlignment="Stretch">
+            <StackPanel Orientation="Horizontal" Margin="2" HorizontalAlignment="Stretch" Height="22" >
                 <Image Style="{StaticResource IconStyle}" 
                        Source="{Binding Name, Converter={StaticResource InspectionIconConverter}}"
                        VerticalAlignment="Center" />
@@ -135,7 +135,7 @@
                                     DataType="{x:Type CollectionViewGroup}"
                                     ItemsSource="{Binding Items}"
                                     ItemTemplate="{StaticResource InspectionGroupsTemplate}">
-            <StackPanel Orientation="Horizontal" Margin="2" HorizontalAlignment="Stretch">
+            <StackPanel Orientation="Horizontal" Margin="2" HorizontalAlignment="Stretch" Height="22" >
                 <TextBlock VerticalAlignment="Center" 
                            Text="{Binding Name}"
                            FontWeight="Bold"
@@ -152,7 +152,7 @@
                                   ItemsSource="{Binding Items}"
                                   ItemTemplate="{StaticResource InspectionGroupsTemplate}">
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Height="22" >
                 <Image Style="{StaticResource IconStyle}" Source="../../Resources/Microsoft/PNG/VSObject_Module.png" />
                 <TextBlock VerticalAlignment="Center" 
                            Text="{Binding Name}"
