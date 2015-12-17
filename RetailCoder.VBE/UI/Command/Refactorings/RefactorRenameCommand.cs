@@ -12,10 +12,10 @@ namespace Rubberduck.UI.Command.Refactorings
     [ComVisible(false)]
     public class RefactorRenameCommand : RefactorCommandBase
     {
-        private readonly RubberduckParserState _state;
+        private readonly IRubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorRenameCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
+        public RefactorRenameCommand(VBE vbe, IRubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
             : base (vbe, editor)
         {
             _state = state;

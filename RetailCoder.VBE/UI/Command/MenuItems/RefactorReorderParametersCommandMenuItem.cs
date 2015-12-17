@@ -17,7 +17,7 @@ namespace Rubberduck.UI.Command.MenuItems
         public override Image Image { get { return Resources.ReorderParameters_6780_32; } }
         public override Image Mask { get { return Resources.ReorderParameters_6780_32_Mask; } }
 
-        public override bool EvaluateCanExecute(RubberduckParserState state)
+        public override bool EvaluateCanExecute(IRubberduckParserState state)
         {
             return state.Status == ParserState.Ready;
         }

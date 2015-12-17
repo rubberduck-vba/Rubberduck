@@ -22,7 +22,7 @@ namespace Rubberduck
             }
         }
 
-        public void EvaluateCanExecute(RubberduckParserState state)
+        public void EvaluateCanExecute(IRubberduckParserState state)
         {
             foreach (var menu in _menus)
             {

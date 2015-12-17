@@ -69,7 +69,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             Debug.Print("'{0}' ({1}) parent menu initialized, hash code {2}.", _key, GetHashCode(), Item.GetHashCode());
         }
 
-        public void EvaluateCanExecute(RubberduckParserState state)
+        public void EvaluateCanExecute(IRubberduckParserState state)
         {
             foreach (var kvp in _items)
             {

@@ -34,7 +34,7 @@ namespace Rubberduck.UI.Command.MenuItems
         /// <param name="state">The current parser state.</param>
         /// <returns>Returns <c>true</c> if command can be executed.</returns>
         /// <remarks>Returns <c>true</c> if not overridden.</remarks>
-        public virtual bool EvaluateCanExecute(RubberduckParserState state)
+        public virtual bool EvaluateCanExecute(IRubberduckParserState state)
         {
             return true;
         }

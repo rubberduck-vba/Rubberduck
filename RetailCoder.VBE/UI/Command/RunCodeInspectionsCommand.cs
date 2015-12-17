@@ -39,7 +39,7 @@ namespace Rubberduck.UI.Command
         public override string Key { get { return "RubberduckMenu_CodeInspections"; } }
         public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.CodeInspections; } }
 
-        public override bool EvaluateCanExecute(RubberduckParserState state)
+        public override bool EvaluateCanExecute(IRubberduckParserState state)
         {
             return state.Status == ParserState.Ready;
         }

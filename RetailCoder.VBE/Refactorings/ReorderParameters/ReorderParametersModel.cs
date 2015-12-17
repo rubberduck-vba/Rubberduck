@@ -14,8 +14,8 @@ namespace Rubberduck.Refactorings.ReorderParameters
 {
     public class ReorderParametersModel
     {
-        private readonly RubberduckParserState _parseResult;
-        public RubberduckParserState ParseResult { get { return _parseResult; } }
+        private readonly IRubberduckParserState _parseResult;
+        public IRubberduckParserState ParseResult { get { return _parseResult; } }
 
         private readonly IList<Declaration> _declarations;
         public IEnumerable<Declaration> Declarations { get { return _declarations; } }
@@ -25,7 +25,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         private readonly IMessageBox _messageBox;
             
-        public ReorderParametersModel(RubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
+        public ReorderParametersModel(IRubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {
             _parseResult = parseResult;
             _declarations = parseResult.AllDeclarations.ToList();

@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections
             DeclarationType.PropertyGet
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IRubberduckParserState parseResult)
         {
             var declarations = parseResult.AllDeclarations.ToList();
 

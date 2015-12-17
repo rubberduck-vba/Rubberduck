@@ -20,13 +20,13 @@ namespace Rubberduck.Parsing.VBA
 {
     public class RubberduckParser : IRubberduckParser
     {
-        public RubberduckParser(RubberduckParserState state)
+        public RubberduckParser(IRubberduckParserState state)
         {
             _state = state;
         }
 
-        private readonly RubberduckParserState _state;
-        public RubberduckParserState State { get { return _state; } }
+        private readonly IRubberduckParserState _state;
+        public IRubberduckParserState State { get { return _state; } }
 
         public async Task ParseAsync(VBComponent vbComponent, CancellationToken token)
         {

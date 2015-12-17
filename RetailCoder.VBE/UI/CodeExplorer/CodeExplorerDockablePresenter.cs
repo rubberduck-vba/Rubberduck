@@ -212,7 +212,7 @@ namespace Rubberduck.UI.CodeExplorer
             //_parser.Parse(VBE, this);
         }
 
-        private void AddProjectNodes(RubberduckParserState parseResult, TreeNode root)
+        private void AddProjectNodes(IRubberduckParserState parseResult, TreeNode root)
         {
             var projects = parseResult.AllDeclarations.OfType(DeclarationType.Project);
             foreach (var project in projects)
@@ -300,7 +300,7 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
-        private IEnumerable<TreeNode> CreateModuleNodes(RubberduckParserState parseResult)
+        private IEnumerable<TreeNode> CreateModuleNodes(IRubberduckParserState parseResult)
         {
             var declarations = parseResult.AllDeclarations.ToList();
             var result = new List<TreeNode>();

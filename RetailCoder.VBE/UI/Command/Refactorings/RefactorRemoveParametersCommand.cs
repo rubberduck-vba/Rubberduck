@@ -11,10 +11,10 @@ namespace Rubberduck.UI.Command.Refactorings
     [ComVisible(false)]
     public class RefactorRemoveParametersCommand : RefactorCommandBase
     {
-        private readonly RubberduckParserState _state;
+        private readonly IRubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorRemoveParametersCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
+        public RefactorRemoveParametersCommand(VBE vbe, IRubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
             : base (vbe, editor)
         {
             _state = state;

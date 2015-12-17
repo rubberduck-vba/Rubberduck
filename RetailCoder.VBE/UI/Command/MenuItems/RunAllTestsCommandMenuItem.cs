@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Command.MenuItems
         public override Image Image { get { return Resources.AllLoadedTests_8644_24; } }
         public override Image Mask { get { return Resources.AllLoadedTests_8644_24_Mask; } }
 
-        public override bool EvaluateCanExecute(RubberduckParserState state)
+        public override bool EvaluateCanExecute(IRubberduckParserState state)
         {
             return state.Status == ParserState.Ready ||
                    state.Status == ParserState.Resolving;

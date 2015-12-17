@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections
 
         public ParameterNotUsedInspectionResult(IInspection inspection, string result,
             ParserRuleContext context, QualifiedMemberName qualifiedName, bool isInterfaceImplementation, 
-            RemoveParametersRefactoring refactoring, RubberduckParserState parseResult)
+            RemoveParametersRefactoring refactoring, IRubberduckParserState parseResult)
             : base(inspection, result, qualifiedName.QualifiedModuleName, context)
         {
             _quickFixes = isInterfaceImplementation ? new CodeInspectionQuickFix[] {} : new[]
@@ -28,10 +28,10 @@ namespace Rubberduck.Inspections
     public class RemoveUnusedParameterQuickFix : CodeInspectionQuickFix
     {
         private readonly RemoveParametersRefactoring _quickFixRefactoring;
-        private readonly RubberduckParserState _parseResult;
+        private readonly IRubberduckParserState _parseResult;
 
         public RemoveUnusedParameterQuickFix(ParserRuleContext context, QualifiedSelection selection, 
-            RemoveParametersRefactoring quickFixRefactoring, RubberduckParserState parseResult)
+            RemoveParametersRefactoring quickFixRefactoring, IRubberduckParserState parseResult)
             : base(context, selection, RubberduckUI.Inspections_RemoveUnusedParameter)
         {
             _quickFixRefactoring = quickFixRefactoring;

@@ -49,7 +49,7 @@ namespace Rubberduck.Inspections
             }
         }
 
-        public async Task<IList<ICodeInspectionResult>> FindIssuesAsync(RubberduckParserState state, CancellationToken token)
+        public async Task<IList<ICodeInspectionResult>> FindIssuesAsync(IRubberduckParserState state, CancellationToken token)
         {
             if (state == null || !state.AllDeclarations.Any())
             {

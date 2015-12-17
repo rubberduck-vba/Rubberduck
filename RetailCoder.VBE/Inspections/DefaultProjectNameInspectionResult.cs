@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
 
-        public DefaultProjectNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
+        public DefaultProjectNameInspectionResult(IInspection inspection, Declaration target, IRubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
             : base(inspection, string.Format(inspection.Description, target.IdentifierName), target)
         {
             _quickFixes = new[]
@@ -32,10 +32,10 @@ namespace Rubberduck.Inspections
     public class RenameProjectQuickFix : CodeInspectionQuickFix
     {
         private readonly Declaration _target;
-        private readonly RubberduckParserState _parseResult;
+        private readonly IRubberduckParserState _parseResult;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public RenameProjectQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
+        public RenameProjectQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, IRubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
             : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + DeclarationType.Project, RubberduckUI.Culture)))
         {
             _target = target;
