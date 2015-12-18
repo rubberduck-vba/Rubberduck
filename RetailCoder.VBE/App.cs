@@ -219,6 +219,8 @@ namespace Rubberduck
                     _parser.Resolve(tokenSource.Token);
                 }
             }
+
+            var v = _parser.State.AllDeclarations.Where(d => !d.IsBuiltIn);
         }
 
         private void CleanReloadConfig()
