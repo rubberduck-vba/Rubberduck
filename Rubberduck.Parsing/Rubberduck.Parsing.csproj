@@ -90,6 +90,7 @@
     <Compile Include="Symbols\MsFormsLib.cs" />
     <Compile Include="Symbols\ValuedDeclaration.cs" />
     <Compile Include="Symbols\VbaStandardLib.cs" />
+    <Compile Include="VBA\ConcurrentHashSet.cs" />
     <Compile Include="VBA\IRubberduckParserState.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
