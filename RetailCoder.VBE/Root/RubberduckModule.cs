@@ -42,6 +42,7 @@ namespace Rubberduck.Root
             // bind VBE and AddIn dependencies to host-provided instances.
             _kernel.Bind<VBE>().ToConstant(_vbe);
             _kernel.Bind<AddIn>().ToConstant(_addin);
+            _kernel.Bind<RubberduckParserState>().ToSelf().InSingletonScope();
             
             BindCodeInspectionTypes();
 
@@ -59,7 +60,6 @@ namespace Rubberduck.Root
 
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();
-            Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>().InSingletonScope();
 
             Bind<IPresenter>().To<TestExplorerDockablePresenter>()
                 .WhenInjectedInto<TestExplorerCommand>()
