@@ -46,15 +46,11 @@
             this.SetterTypeGroupBox = new System.Windows.Forms.GroupBox();
             this.SetSetterTypeRadioButton = new System.Windows.Forms.RadioButton();
             this.LetSetterTypeRadioButton = new System.Windows.Forms.RadioButton();
-            this.ParameterModifierGroupBox = new System.Windows.Forms.GroupBox();
-            this.ByRefModifierRadioButton = new System.Windows.Forms.RadioButton();
-            this.ByValModifierRadioButton = new System.Windows.Forms.RadioButton();
             this.DescriptionPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.InvalidPropertyNameIcon)).BeginInit();
             this.flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.InvalidVariableNameIcon)).BeginInit();
             this.SetterTypeGroupBox.SuspendLayout();
-            this.ParameterModifierGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // DescriptionPanel
@@ -66,7 +62,7 @@
             this.DescriptionPanel.Location = new System.Drawing.Point(0, 0);
             this.DescriptionPanel.Margin = new System.Windows.Forms.Padding(4);
             this.DescriptionPanel.Name = "DescriptionPanel";
-            this.DescriptionPanel.Size = new System.Drawing.Size(734, 84);
+            this.DescriptionPanel.Size = new System.Drawing.Size(667, 84);
             this.DescriptionPanel.TabIndex = 14;
             // 
             // TitleLabel
@@ -103,8 +99,7 @@
             // 
             // PreviewBox
             // 
-            this.PreviewBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.PreviewBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.PreviewBox.BackColor = System.Drawing.Color.White;
             this.PreviewBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PreviewBox.Location = new System.Drawing.Point(21, 221);
@@ -113,7 +108,7 @@
             this.PreviewBox.Name = "PreviewBox";
             this.PreviewBox.ReadOnly = true;
             this.PreviewBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.PreviewBox.Size = new System.Drawing.Size(691, 181);
+            this.PreviewBox.Size = new System.Drawing.Size(621, 181);
             this.PreviewBox.TabIndex = 23;
             this.PreviewBox.WordWrap = false;
             // 
@@ -157,14 +152,14 @@
             this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(11, 10, 0, 10);
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(734, 53);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(667, 53);
             this.flowLayoutPanel2.TabIndex = 27;
             // 
             // CancelDialogButton
             // 
             this.CancelDialogButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.CancelDialogButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelDialogButton.Location = new System.Drawing.Point(619, 14);
+            this.CancelDialogButton.Location = new System.Drawing.Point(552, 14);
             this.CancelDialogButton.Margin = new System.Windows.Forms.Padding(4);
             this.CancelDialogButton.Name = "CancelDialogButton";
             this.CancelDialogButton.Size = new System.Drawing.Size(100, 28);
@@ -176,7 +171,7 @@
             // 
             this.OkButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.OkButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OkButton.Location = new System.Drawing.Point(511, 14);
+            this.OkButton.Location = new System.Drawing.Point(444, 14);
             this.OkButton.Margin = new System.Windows.Forms.Padding(4);
             this.OkButton.Name = "OkButton";
             this.OkButton.Size = new System.Drawing.Size(100, 28);
@@ -217,12 +212,11 @@
             // 
             // SetterTypeGroupBox
             // 
-            this.SetterTypeGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SetterTypeGroupBox.Controls.Add(this.SetSetterTypeRadioButton);
             this.SetterTypeGroupBox.Controls.Add(this.LetSetterTypeRadioButton);
-            this.SetterTypeGroupBox.Location = new System.Drawing.Point(532, 92);
+            this.SetterTypeGroupBox.Location = new System.Drawing.Point(537, 104);
             this.SetterTypeGroupBox.Name = "SetterTypeGroupBox";
-            this.SetterTypeGroupBox.Size = new System.Drawing.Size(180, 47);
+            this.SetterTypeGroupBox.Size = new System.Drawing.Size(105, 86);
             this.SetterTypeGroupBox.TabIndex = 31;
             this.SetterTypeGroupBox.TabStop = false;
             this.SetterTypeGroupBox.Text = "Setter Type:";
@@ -230,7 +224,7 @@
             // SetSetterTypeRadioButton
             // 
             this.SetSetterTypeRadioButton.AutoSize = true;
-            this.SetSetterTypeRadioButton.Location = new System.Drawing.Point(75, 21);
+            this.SetSetterTypeRadioButton.Location = new System.Drawing.Point(8, 52);
             this.SetSetterTypeRadioButton.Name = "SetSetterTypeRadioButton";
             this.SetSetterTypeRadioButton.Size = new System.Drawing.Size(50, 21);
             this.SetSetterTypeRadioButton.TabIndex = 1;
@@ -241,7 +235,7 @@
             // 
             this.LetSetterTypeRadioButton.AutoSize = true;
             this.LetSetterTypeRadioButton.Checked = true;
-            this.LetSetterTypeRadioButton.Location = new System.Drawing.Point(8, 21);
+            this.LetSetterTypeRadioButton.Location = new System.Drawing.Point(8, 25);
             this.LetSetterTypeRadioButton.Name = "LetSetterTypeRadioButton";
             this.LetSetterTypeRadioButton.Size = new System.Drawing.Size(49, 21);
             this.LetSetterTypeRadioButton.TabIndex = 0;
@@ -249,48 +243,13 @@
             this.LetSetterTypeRadioButton.Text = "Let";
             this.LetSetterTypeRadioButton.UseVisualStyleBackColor = true;
             // 
-            // ParameterModifierGroupBox
-            // 
-            this.ParameterModifierGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ParameterModifierGroupBox.Controls.Add(this.ByRefModifierRadioButton);
-            this.ParameterModifierGroupBox.Controls.Add(this.ByValModifierRadioButton);
-            this.ParameterModifierGroupBox.Location = new System.Drawing.Point(532, 145);
-            this.ParameterModifierGroupBox.Name = "ParameterModifierGroupBox";
-            this.ParameterModifierGroupBox.Size = new System.Drawing.Size(180, 47);
-            this.ParameterModifierGroupBox.TabIndex = 32;
-            this.ParameterModifierGroupBox.TabStop = false;
-            this.ParameterModifierGroupBox.Text = "Pass:";
-            // 
-            // ByRefModifierRadioButton
-            // 
-            this.ByRefModifierRadioButton.AutoSize = true;
-            this.ByRefModifierRadioButton.Location = new System.Drawing.Point(75, 21);
-            this.ByRefModifierRadioButton.Name = "ByRefModifierRadioButton";
-            this.ByRefModifierRadioButton.Size = new System.Drawing.Size(67, 21);
-            this.ByRefModifierRadioButton.TabIndex = 1;
-            this.ByRefModifierRadioButton.Text = "ByRef";
-            this.ByRefModifierRadioButton.UseVisualStyleBackColor = true;
-            // 
-            // ByValModifierRadioButton
-            // 
-            this.ByValModifierRadioButton.AutoSize = true;
-            this.ByValModifierRadioButton.Checked = true;
-            this.ByValModifierRadioButton.Location = new System.Drawing.Point(8, 21);
-            this.ByValModifierRadioButton.Name = "ByValModifierRadioButton";
-            this.ByValModifierRadioButton.Size = new System.Drawing.Size(65, 21);
-            this.ByValModifierRadioButton.TabIndex = 0;
-            this.ByValModifierRadioButton.TabStop = true;
-            this.ByValModifierRadioButton.Text = "ByVal";
-            this.ByValModifierRadioButton.UseVisualStyleBackColor = true;
-            // 
             // EncapsulateFieldDialog
             // 
             this.AcceptButton = this.OkButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelDialogButton;
-            this.ClientSize = new System.Drawing.Size(734, 463);
-            this.Controls.Add(this.ParameterModifierGroupBox);
+            this.ClientSize = new System.Drawing.Size(667, 463);
             this.Controls.Add(this.SetterTypeGroupBox);
             this.Controls.Add(this.InvalidVariableNameIcon);
             this.Controls.Add(this.ParameterNameTextBox);
@@ -315,8 +274,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.InvalidVariableNameIcon)).EndInit();
             this.SetterTypeGroupBox.ResumeLayout(false);
             this.SetterTypeGroupBox.PerformLayout();
-            this.ParameterModifierGroupBox.ResumeLayout(false);
-            this.ParameterModifierGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -341,8 +298,5 @@
         private System.Windows.Forms.GroupBox SetterTypeGroupBox;
         private System.Windows.Forms.RadioButton SetSetterTypeRadioButton;
         private System.Windows.Forms.RadioButton LetSetterTypeRadioButton;
-        private System.Windows.Forms.GroupBox ParameterModifierGroupBox;
-        private System.Windows.Forms.RadioButton ByRefModifierRadioButton;
-        private System.Windows.Forms.RadioButton ByValModifierRadioButton;
     }
 }

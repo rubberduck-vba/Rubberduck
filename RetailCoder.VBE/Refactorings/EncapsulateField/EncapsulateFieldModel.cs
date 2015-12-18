@@ -24,7 +24,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string PropertyName { get; set; }
         public string ParameterName { get; set; }
         public bool SetterTypeIsLet { get; set; }
-        public bool ParameterModifierIsByVal { get; set; }
 
         public EncapsulateFieldModel(RubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {

@@ -62,7 +62,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _model.SetterTypeIsLet = _view.SetterTypeIsLet;
 
             _model.ParameterName = _view.ParameterName;
-            _model.ParameterModifierIsByVal = _view.ParameterModifierIsByVal;
             return _model;
         }
     }

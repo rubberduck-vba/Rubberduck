@@ -1255,9 +1255,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="EncapsulateField_TitleText" xml:space="preserve">
     <value>Encapsulate Field</value>
   </data>
-  <data name="EncapsulateField_ParameterModifier" xml:space="preserve">
-    <value>Pass:</value>
-  </data>
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value>Parameter Name:</value>
   </data>

@@ -22,23 +22,7 @@ namespace Rubberduck.UI.Refactorings
         }
 
         public Declaration TargetDeclaration { get; set; }
-
-        public bool ParameterModifierIsByVal
-        {
-            get { return ByValModifierRadioButton.Checked; }
-            set
-            {
-                if (value)
-                {
-                    ByValModifierRadioButton.Checked = true;
-                }
-                else
-                {
-                    ByRefModifierRadioButton.Checked = true;
-                }
-            }
-        }
-
+        
         public bool SetterTypeIsLet
         {
             get { return LetSetterTypeRadioButton.Checked; }
@@ -68,13 +52,12 @@ namespace Rubberduck.UI.Refactorings
 
             PropertyNameTextBox.TextChanged += PropertyNameBox_TextChanged;
             ParameterNameTextBox.TextChanged += VariableNameBox_TextChanged;
-            ((RadioButton)SetterTypeGroupBox.Controls[0]).CheckedChanged += RadioButtonGroup_CheckedChanged;
-            ((RadioButton)ParameterModifierGroupBox.Controls[0]).CheckedChanged += RadioButtonGroup_CheckedChanged;
+            ((RadioButton)SetterTypeGroupBox.Controls[0]).CheckedChanged += EncapsulateFieldDialog_CheckedChanged;
 
             Shown += EncapsulateFieldDialog_Shown;
         }
 
-        void RadioButtonGroup_CheckedChanged(object sender, EventArgs e)
+        void EncapsulateFieldDialog_CheckedChanged(object sender, EventArgs e)
         {
             UpdatePreview();
         }
@@ -87,7 +70,6 @@ namespace Rubberduck.UI.Refactorings
             PropertyNameLabel.Text = RubberduckUI.EncapsulateField_PropertyName;
             SetterTypeGroupBox.Text = RubberduckUI.EncapsulateField_SetterType;
             VariableNameLabel.Text = RubberduckUI.EncapsulateField_ParameterName;
-            ParameterModifierGroupBox.Text = RubberduckUI.EncapsulateField_ParameterModifier;
             OkButton.Text = RubberduckUI.OK;
             CancelDialogButton.Text = RubberduckUI.CancelButtonText;
         }
@@ -117,14 +99,11 @@ namespace Rubberduck.UI.Refactorings
                 string.Format("Public Property Get {0}() As {1}", NewPropertyName, TargetDeclaration.AsTypeName),
                 string.Format("    {0} = {1}", NewPropertyName, TargetDeclaration.IdentifierName),
                 "End Property" + Environment.NewLine,
-                string.Format("Public Property {0} {1}({2} {3} As {4})",
+                string.Format("Public Property {0} {1}(ByVal {2} As {3})",
                     SetterTypeIsLet
                         ? LetSetterTypeRadioButton.Text
                         : SetSetterTypeRadioButton.Text,
-                    NewPropertyName,
-                    ParameterModifierIsByVal
-                        ? ByValModifierRadioButton.Text
-                        : ByRefModifierRadioButton.Text, ParameterName, TargetDeclaration.AsTypeName),
+                    NewPropertyName, ParameterName, TargetDeclaration.AsTypeName),
                 string.Format("    {0} = {1}", TargetDeclaration.IdentifierName, ParameterName),
                 "End Property");
         }

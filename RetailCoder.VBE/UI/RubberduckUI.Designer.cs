@@ -946,15 +946,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pass:.
-        /// </summary>
-        public static string EncapsulateField_ParameterModifier {
-            get {
-                return ResourceManager.GetString("EncapsulateField_ParameterModifier", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Parameter Name:.
         /// </summary>
         public static string EncapsulateField_ParameterName {

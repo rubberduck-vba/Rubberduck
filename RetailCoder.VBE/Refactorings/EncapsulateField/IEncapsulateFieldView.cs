@@ -12,6 +12,5 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool IsSetterTypeChangeable { get; set; }
 
         string ParameterName { get; set; }
-        bool ParameterModifierIsByVal { get; set; }
     }
 }

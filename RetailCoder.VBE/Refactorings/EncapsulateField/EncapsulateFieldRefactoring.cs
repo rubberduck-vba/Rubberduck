@@ -55,9 +55,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     _model.TargetDeclaration.AsTypeName),
                 string.Format("    {0} = {1}", _model.PropertyName, _model.TargetDeclaration.IdentifierName),
                 "End Property" + Environment.NewLine,
-                string.Format("Public Property {0} {1}({2} {3} As {4})",
+                string.Format("Public Property {0} {1}(ByVal {2} As {3})",
                     _model.SetterTypeIsLet ? Tokens.Let : Tokens.Set, _model.PropertyName,
-                    _model.ParameterModifierIsByVal ? Tokens.ByVal : Tokens.ByRef, _model.ParameterName,
+                    _model.ParameterName,
                     _model.TargetDeclaration.AsTypeName),
                 string.Format("    {0} = {1}", _model.TargetDeclaration.IdentifierName, _model.ParameterName),
                 "End Property");
