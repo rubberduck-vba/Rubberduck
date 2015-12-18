@@ -59,7 +59,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             Refactor();
         }
 
-        public void QuickFix(IRubberduckParserState parseResult, QualifiedSelection selection)
+        public void QuickFix(RubberduckParserState parseResult, QualifiedSelection selection)
         {
             _model = new RemoveParametersModel(parseResult, selection, new MessageBox());
             var target = _model.Declarations.FindSelection(selection, new[] { DeclarationType.Parameter });

@@ -6,6 +6,6 @@ namespace Rubberduck.UI.Command.MenuItems
     {
         void Localize();
         void Initialize();
-        void EvaluateCanExecute(IRubberduckParserState state);
+        void EvaluateCanExecute(RubberduckParserState state);
     }
 }

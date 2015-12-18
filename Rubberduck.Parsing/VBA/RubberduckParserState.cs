@@ -11,7 +11,7 @@ using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class RubberduckParserState : IRubberduckParserState
+    public class RubberduckParserState
     {
         // keys are the declarations; values indicate whether a declaration is resolved.
         private readonly ConcurrentHashSet<Declaration> _declarations =
@@ -71,7 +71,7 @@ namespace Rubberduck.Parsing.VBA
         public IEnumerable<QualifiedContext> ObsoleteCallContexts
         {
             get { return _obsoleteCallContexts; }
-            set { _obsoleteCallContexts = value; }
+            internal set { _obsoleteCallContexts = value; }
         }
 
         private IEnumerable<QualifiedContext> _obsoleteLetContexts = new List<QualifiedContext>();
@@ -82,7 +82,7 @@ namespace Rubberduck.Parsing.VBA
         public IEnumerable<QualifiedContext> ObsoleteLetContexts
         {
             get { return _obsoleteLetContexts; }
-            set { _obsoleteLetContexts = value; }
+            internal set { _obsoleteLetContexts = value; }
         }
 
         private readonly ConcurrentDictionary<VBComponent, IEnumerable<CommentNode>> _comments =

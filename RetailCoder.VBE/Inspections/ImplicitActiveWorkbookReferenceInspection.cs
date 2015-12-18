@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections
             "Worksheets", "Sheets", "Names", 
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IRubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
             if (!_hostApp.IsValueCreated || _hostApp.Value == null || _hostApp.Value.ApplicationName != "Excel")
             {

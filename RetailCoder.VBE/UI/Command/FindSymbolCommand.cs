@@ -14,11 +14,11 @@ namespace Rubberduck.UI.Command
     public class FindSymbolCommand : CommandBase
     {
         private readonly VBE _vbe;
-        private readonly IRubberduckParserState _state;
+        private readonly RubberduckParserState _state;
         private readonly DeclarationIconCache _iconCache;
         private readonly NavigateCommand _navigateCommand = new NavigateCommand();
 
-        public FindSymbolCommand(VBE vbe, IRubberduckParserState state, DeclarationIconCache iconCache)
+        public FindSymbolCommand(VBE vbe, RubberduckParserState state, DeclarationIconCache iconCache)
         {
             _vbe = vbe;
             _state = state;

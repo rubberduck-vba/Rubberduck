@@ -68,7 +68,7 @@ namespace Rubberduck.Navigation
             //Find(target, parseResult);
         }
 
-        private void Find(Declaration target, IRubberduckParserState parseResult)
+        private void Find(Declaration target, RubberduckParserState parseResult)
         {
             var items = parseResult.AllDeclarations;
             string name;

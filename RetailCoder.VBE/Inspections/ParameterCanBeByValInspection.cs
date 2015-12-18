@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections
             Tokens.StrPtr
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IRubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
             var declarations = parseResult.AllDeclarations.ToList();
 

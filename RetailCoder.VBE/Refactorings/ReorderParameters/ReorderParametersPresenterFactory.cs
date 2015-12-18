@@ -8,11 +8,11 @@ namespace Rubberduck.Refactorings.ReorderParameters
     {
         private readonly IActiveCodePaneEditor _editor;
         private readonly IReorderParametersView _view;
-        private readonly IRubberduckParserState _parseResult;
+        private readonly RubberduckParserState _parseResult;
         private readonly IMessageBox _messageBox;
 
         public ReorderParametersPresenterFactory(IActiveCodePaneEditor editor, IReorderParametersView view,
-            IRubberduckParserState parseResult, IMessageBox messageBox)
+            RubberduckParserState parseResult, IMessageBox messageBox)
         {
             _editor = editor;
             _view = view;

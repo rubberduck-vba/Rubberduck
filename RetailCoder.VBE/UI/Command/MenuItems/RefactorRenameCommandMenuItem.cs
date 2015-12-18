@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Command.MenuItems
         public override string Key { get { return "RefactorMenu_Rename"; } }
         public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.RenameIdentifier; } }
 
-        public override bool EvaluateCanExecute(IRubberduckParserState state)
+        public override bool EvaluateCanExecute(RubberduckParserState state)
         {
             return state.Status == ParserState.Ready;
         }

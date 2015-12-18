@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections
             Tokens.UCase
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IRubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
             var declarations = parseResult.AllDeclarations
                 .Where(item => item.IsBuiltIn && item.Accessibility == Accessibility.Global && _tokens.Contains(item.IdentifierName));

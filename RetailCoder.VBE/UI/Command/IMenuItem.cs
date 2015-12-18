@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Command
 
     public interface ICommandMenuItem : IMenuItem
     {
-        bool EvaluateCanExecute(IRubberduckParserState state);
+        bool EvaluateCanExecute(RubberduckParserState state);
         ICommand Command { get; }
         Image Image { get; }
         Image Mask { get; }

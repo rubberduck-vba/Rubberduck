@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections
             "Cells", "Range", "Columns", "Rows"
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IRubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
             if (_hostApp().ApplicationName != "Excel")
             {

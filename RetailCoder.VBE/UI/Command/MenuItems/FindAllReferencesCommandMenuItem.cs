@@ -14,7 +14,7 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
             public override string Key { get { return "ContextMenu_FindAllReferences"; } }
             public override int DisplayOrder { get { return (int)NavigationMenuItemDisplayOrder.FindAllReferences; } }
 
-            public override bool EvaluateCanExecute(IRubberduckParserState state)
+            public override bool EvaluateCanExecute(RubberduckParserState state)
             {
                 return state.Status == ParserState.Ready;
             }

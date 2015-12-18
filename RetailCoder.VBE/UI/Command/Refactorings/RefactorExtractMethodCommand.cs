@@ -9,9 +9,9 @@ namespace Rubberduck.UI.Command.Refactorings
     [ComVisible(false)]
     public class RefactorExtractMethodCommand : RefactorCommandBase
     {
-        private readonly IRubberduckParserState _state;
+        private readonly RubberduckParserState _state;
 
-        public RefactorExtractMethodCommand(VBE vbe, IRubberduckParserState state, IActiveCodePaneEditor editor)
+        public RefactorExtractMethodCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor)
             : base (vbe, editor)
         {
             _state = state;
