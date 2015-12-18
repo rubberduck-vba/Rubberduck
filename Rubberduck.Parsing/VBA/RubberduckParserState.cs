@@ -128,9 +128,21 @@ namespace Rubberduck.Parsing.VBA
                 k.QualifiedName.QualifiedModuleName.Project == component.Collection.Parent
                 && k.ComponentName == component.Name);
 
-            foreach (var declaration in declarations)
+            while (true)
             {
-                _declarations.Remove(declaration);
+                try
+                {
+                    foreach (var declaration in declarations)
+                    {
+                        _declarations.Remove(declaration);
+                    }
+
+                    return;
+                }
+                catch (InvalidOperationException)
+                {
+                    
+                }
             }
         }
 
