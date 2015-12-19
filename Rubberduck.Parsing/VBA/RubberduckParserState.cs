@@ -11,11 +11,16 @@ using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Parsing.VBA
 {
+    public enum ResolutionState
+    {
+        Unresolved
+    }
+
     public class RubberduckParserState
     {
         // keys are the declarations; values indicate whether a declaration is resolved.
-        private readonly ConcurrentHashSet<Declaration> _declarations =
-            new ConcurrentHashSet<Declaration>();
+        private readonly ConcurrentDictionary<Declaration, ResolutionState> _declarations =
+            new ConcurrentDictionary<Declaration, ResolutionState>();
 
         private readonly ConcurrentDictionary<VBComponent, ITokenStream> _tokenStreams =
             new ConcurrentDictionary<VBComponent, ITokenStream>();
@@ -61,7 +66,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private ParserState _status;
-        public ParserState Status { get { return _status; } private set { if(_status != value) {_status = value; OnStateChanged();} } }
+        public ParserState Status { get { return _status; } private set { if (_status != value) { _status = value; OnStateChanged(); } } }
 
         private IEnumerable<QualifiedContext> _obsoleteCallContexts = new List<QualifiedContext>();
 
@@ -90,7 +95,7 @@ namespace Rubberduck.Parsing.VBA
 
         public IEnumerable<CommentNode> Comments
         {
-            get 
+            get
             {
                 return _comments.Values.SelectMany(comments => comments);
             }
@@ -104,45 +109,34 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// Gets a copy of the collected declarations.
         /// </summary>
-        public IEnumerable<Declaration> AllDeclarations { get { return _declarations; } }
+        public IEnumerable<Declaration> AllDeclarations { get { return _declarations.Keys.ToList(); } }
 
         /// <summary>
         /// Adds the specified <see cref="Declaration"/> to the collection (replaces existing).
         /// </summary>
         public void AddDeclaration(Declaration declaration)
         {
-            if (_declarations.Add(declaration))
+            if (_declarations.TryAdd(declaration, ResolutionState.Unresolved))
             {
                 return;
             }
 
             if (RemoveDeclaration(declaration))
             {
-                _declarations.Add(declaration);
+                _declarations.TryAdd(declaration, ResolutionState.Unresolved);
             }
         }
 
         public void ClearDeclarations(VBComponent component)
         {
-            var declarations = _declarations.Where(k =>
+            var declarations = _declarations.Keys.Where(k =>
                 k.QualifiedName.QualifiedModuleName.Project == component.Collection.Parent
                 && k.ComponentName == component.Name);
 
-            while (true)
+            foreach (var declaration in declarations)
             {
-                try
-                {
-                    foreach (var declaration in declarations)
-                    {
-                        _declarations.Remove(declaration);
-                    }
-
-                    return;
-                }
-                catch (InvalidOperationException)
-                {
-                    
-                }
+                ResolutionState state;
+                _declarations.TryRemove(declaration, out state);
             }
         }
 
@@ -170,7 +164,8 @@ namespace Rubberduck.Parsing.VBA
         /// <returns>Returns true when successful.</returns>
         private bool RemoveDeclaration(Declaration declaration)
         {
-            return _declarations.Remove(declaration);
+            ResolutionState state;
+            return _declarations.TryRemove(declaration, out state);
         }
 
         /// <summary>
@@ -179,7 +174,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         public void AddBuiltInDeclarations(IHostApplication hostApplication)
         {
-            if (_declarations.Any(declaration => declaration.IsBuiltIn))
+            if (_declarations.Any(declaration => declaration.Key.IsBuiltIn))
             {
                 return;
             }
@@ -187,7 +182,7 @@ namespace Rubberduck.Parsing.VBA
             var builtInDeclarations = VbaStandardLib.Declarations;
 
             // cannot be strongly-typed here because of constraints on COM interop and generics in the inheritance hierarchy. </rant>
-            if (hostApplication /*is ExcelApp*/ .ApplicationName == "Excel") 
+            if (hostApplication /*is ExcelApp*/ .ApplicationName == "Excel")
             {
                 builtInDeclarations = builtInDeclarations.Concat(ExcelObjectModel.Declarations);
             }
