@@ -154,7 +154,7 @@ namespace Rubberduck
             var tokenSource = RenewTokenSource(component);
 
             var token = tokenSource.Token;
-            _parser.ParseAsync(component, token).Wait(token);
+            _parser.ParseAsync(component, token);
 
             if (resolve && !token.IsCancellationRequested)
             {
