@@ -59,7 +59,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         public void Refactor(Declaration target)
         {
-  PromoteVariable(target);
+            PromoteVariable(target);
         }
 
         private void PromoteVariable(Declaration target)
