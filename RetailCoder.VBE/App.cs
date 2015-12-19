@@ -154,7 +154,7 @@ namespace Rubberduck
             var tokenSource = RenewTokenSource(component);
 
             var token = tokenSource.Token;
-            _parser.ParseAsync(component, token).Wait(token);
+            _parser.ParseAsync(component, token);
 
             if (resolve && !token.IsCancellationRequested)
             {
@@ -216,8 +216,6 @@ namespace Rubberduck
                     _parser.Resolve(tokenSource.Token);
                 }
             }
-
-            var v = _parser.State.AllDeclarations.Where(d => !d.IsBuiltIn);
         }
 
         private void CleanReloadConfig()
