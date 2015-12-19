@@ -94,7 +94,7 @@ namespace Rubberduck
                 }
 
                 var component = _vbe.ActiveCodePane.CodeModule.Parent;
-                await ParseComponentAsync(component);
+                ParseComponentAsync(component);
 
                 AwaitNextKey();
                 return;
@@ -149,12 +149,12 @@ namespace Rubberduck
             _appMenus.EvaluateCanExecute(_parser.State);
         }
 
-        private async Task ParseComponentAsync(VBComponent component, bool resolve = true)
+        private void ParseComponentAsync(VBComponent component, bool resolve = true)
         {
             var tokenSource = RenewTokenSource(component);
 
             var token = tokenSource.Token;
-            await _parser.ParseAsync(component, token);
+            _parser.ParseAsync(component, token).Wait(token);
 
             if (resolve && !token.IsCancellationRequested)
             {
