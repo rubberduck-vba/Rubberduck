@@ -1369,6 +1369,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Introduce Field.
+        /// </summary>
+        public static string IntroduceField_TitleText {
+            get {
+                return ResourceManager.GetString("IntroduceField_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Add parameter {3} to the interface member?.
         /// </summary>
         public static string IntroduceParameter_TargetMethodIsInterfaceMemberImplementation {

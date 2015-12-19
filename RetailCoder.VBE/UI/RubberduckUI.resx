@@ -1244,4 +1244,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
     <value>Delete branch</value>
   </data>
+  <data name="IntroduceField_TitleText" xml:space="preserve">
+    <value>Introduce Field</value>
+  </data>
 </root>
