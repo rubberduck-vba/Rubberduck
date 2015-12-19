@@ -104,7 +104,7 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// Gets a copy of the collected declarations.
         /// </summary>
-        public IEnumerable<Declaration> AllDeclarations { get { return _declarations.ToList(); } }
+        public IEnumerable<Declaration> AllDeclarations { get { return _declarations; } }
 
         /// <summary>
         /// Adds the specified <see cref="Declaration"/> to the collection (replaces existing).
