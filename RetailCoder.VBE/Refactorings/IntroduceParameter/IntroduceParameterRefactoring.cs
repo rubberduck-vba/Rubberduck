@@ -43,7 +43,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             if (!selection.HasValue)
             {
-
                 return;
             }
 
