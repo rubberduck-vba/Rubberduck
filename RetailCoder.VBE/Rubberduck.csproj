@@ -309,7 +309,6 @@
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplacePresenter.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplaceScope.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchResult.cs" />
-    <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldRefactoring.cs" />
     <Compile Include="Refactorings\IntroduceField\IntroduceFieldRefactoring.cs" />
     <Compile Include="Refactorings\IntroduceParameter\IntroduceParameterRefactoring.cs" />
     <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />

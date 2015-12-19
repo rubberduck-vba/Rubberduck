@@ -89,10 +89,19 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 UpdateProperties(functionDeclaration);
             }
 
-            var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
-            if (interfaceImplementation != null)
+            var interfaceDeclaration = GetInterfaceImplementation(functionDeclaration);
+            if (interfaceDeclaration != null)
             {
-                UpdateSignature(interfaceImplementation, targetVariable);
+                UpdateSignature(interfaceDeclaration, targetVariable);
+
+                var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
+                                            .Where(item => item.Project.Equals(interfaceDeclaration.Project) &&
+                                                   item.IdentifierName == interfaceDeclaration.ComponentName + "_" + interfaceDeclaration.IdentifierName);
+
+                foreach (var interfaceImplementation in interfaceImplementations)
+                {
+                    UpdateSignature(interfaceImplementation, targetVariable);
+                }
             }
         }
 
