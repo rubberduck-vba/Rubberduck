@@ -1234,4 +1234,11 @@ Are you sure you want to proceed with this rename?</value>
     <value>Selection is not a variable.</value>
     <comment>Used in both Introduce Parameter and Introduce Field</comment>
   </data>
+  <data name="IntroduceParameter_TargetMethodIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Method '{0}' implements '{1}.{2}'. Add parameter {3} to the interface member?</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name; 3: Parameter name</comment>
+  </data>
+  <data name="IntroduceParameter_TitleText" xml:space="preserve">
+    <value>Introduce Parameter</value>
+  </data>
 </root>

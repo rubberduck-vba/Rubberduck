@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Antlr4.Runtime.Misc;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
@@ -42,7 +43,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             if (!selection.HasValue)
             {
-                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection);
+
                 return;
             }
 
@@ -58,16 +59,24 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         public void Refactor(Declaration target)
         {
-            if (target.DeclarationType != DeclarationType.Variable)
-            {
-                throw new ArgumentException("Invalid declaration type");
-            }
-
-            PromoteVariable(target);
+  PromoteVariable(target);
         }
 
         private void PromoteVariable(Declaration target)
         {
+            if (target == null || target.DeclarationType != DeclarationType.Variable)
+            {
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection,
+                    RubberduckUI.IntroduceParameter_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            if (!PromptIfImplementsInterface(_declarations.FindSelection(target.QualifiedSelection,
+                    ValidDeclarationTypes), target))
+            {
+                return;
+            }
+
             RemoveVariable(target);
             UpdateSignature(target);
         }
@@ -301,6 +310,24 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
             return interfaceMember;
+        }
+
+        private bool PromptIfImplementsInterface(Declaration targetFunction, Declaration targetVariable)
+        {
+            var declaration = targetFunction;
+            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
+
+            if (interfaceImplementation == null)
+            {
+                return true;
+            }
+
+            var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
+
+            var message = string.Format(RubberduckUI.IntroduceParameter_TargetMethodIsInterfaceMemberImplementation,
+                targetFunction.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName,
+                targetVariable.IdentifierName);
+            return _messageBox.Show(message, RubberduckUI.IntroduceParameter_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes;
         }
 
         private string RemoveExtraComma(string str)
