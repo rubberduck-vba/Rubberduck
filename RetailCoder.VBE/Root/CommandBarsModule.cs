@@ -159,6 +159,7 @@ namespace Rubberduck.Root
                 _kernel.Get<RunCodeInspectionsCommandMenuItem>(),
                 _kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
                 GetUnitTestingParentMenu(),
+                GetSmartIndenterParentMenu(),
                 GetRefactoringsParentMenu(),
                 GetNavigateParentMenu(),
             };
@@ -203,11 +204,23 @@ namespace Rubberduck.Root
             return new NavigateParentMenu(items);
         }
 
+        private IMenuItem GetSmartIndenterParentMenu()
+        {
+            var items = new IMenuItem[]
+            {
+                _kernel.Get<IndentCurrentProcedureCommandMenuItem>(),
+                _kernel.Get<IndentCurrentModuleCommandMenuItem>()
+            };
+
+            return new SmartIndenterParentMenu(items);
+        }
+
         private IEnumerable<IMenuItem> GetCodePaneContextMenuItems()
         {
             return new IMenuItem[]
             {
                 GetRefactoringsParentMenu(),
+                GetSmartIndenterParentMenu(),
                 _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
                 _kernel.Get<FindSymbolCommandMenuItem>(),
                 _kernel.Get<FindAllReferencesCommandMenuItem>(),
@@ -233,5 +246,6 @@ namespace Rubberduck.Root
                 _kernel.Get<FindAllImplementationsCommandMenuItem>(),
             };
         }
+
     }
 }

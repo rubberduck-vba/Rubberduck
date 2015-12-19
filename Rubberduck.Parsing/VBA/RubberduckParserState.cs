@@ -14,8 +14,8 @@ namespace Rubberduck.Parsing.VBA
     public class RubberduckParserState
     {
         // keys are the declarations; values indicate whether a declaration is resolved.
-        private readonly ConcurrentDictionary<Declaration, ResolutionState> _declarations =
-            new ConcurrentDictionary<Declaration, ResolutionState>();
+        private readonly ConcurrentHashSet<Declaration> _declarations =
+            new ConcurrentHashSet<Declaration>();
 
         private readonly ConcurrentDictionary<VBComponent, ITokenStream> _tokenStreams =
             new ConcurrentDictionary<VBComponent, ITokenStream>();
@@ -104,34 +104,45 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// Gets a copy of the collected declarations.
         /// </summary>
-        public IEnumerable<Declaration> AllDeclarations { get { return _declarations.Keys.ToList(); } }
+        public IEnumerable<Declaration> AllDeclarations { get { return _declarations; } }
 
         /// <summary>
         /// Adds the specified <see cref="Declaration"/> to the collection (replaces existing).
         /// </summary>
         public void AddDeclaration(Declaration declaration)
         {
-            if (_declarations.TryAdd(declaration, ResolutionState.Unresolved))
+            if (_declarations.Add(declaration))
             {
                 return;
             }
 
             if (RemoveDeclaration(declaration))
             {
-                _declarations.TryAdd(declaration, ResolutionState.Unresolved);
+                _declarations.Add(declaration);
             }
         }
 
         public void ClearDeclarations(VBComponent component)
         {
-            var declarations = _declarations.Keys.Where(k =>
+            var declarations = _declarations.Where(k =>
                 k.QualifiedName.QualifiedModuleName.Project == component.Collection.Parent
                 && k.ComponentName == component.Name);
 
-            foreach (var declaration in declarations)
+            while (true)
             {
-                ResolutionState state;
-                _declarations.TryRemove(declaration, out state);
+                try
+                {
+                    foreach (var declaration in declarations)
+                    {
+                        _declarations.Remove(declaration);
+                    }
+
+                    return;
+                }
+                catch (InvalidOperationException)
+                {
+                    
+                }
             }
         }
 
@@ -159,8 +170,7 @@ namespace Rubberduck.Parsing.VBA
         /// <returns>Returns true when successful.</returns>
         private bool RemoveDeclaration(Declaration declaration)
         {
-            ResolutionState state;
-            return _declarations.TryRemove(declaration, out state);
+            return _declarations.Remove(declaration);
         }
 
         /// <summary>
@@ -169,7 +179,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         public void AddBuiltInDeclarations(IHostApplication hostApplication)
         {
-            if (_declarations.Any(declaration => declaration.Key.IsBuiltIn))
+            if (_declarations.Any(declaration => declaration.IsBuiltIn))
             {
                 return;
             }
