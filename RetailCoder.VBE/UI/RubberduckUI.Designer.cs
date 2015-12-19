@@ -2501,7 +2501,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attributes File.
+        ///   Looks up a localized string similar to &apos;.gitattributes&apos; File.
         /// </summary>
         public static string SourceControl_AttributesFile {
             get {
@@ -2636,6 +2636,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete branch.
+        /// </summary>
+        public static string SourceControl_DeleteBranchButton {
+            get {
+                return ResourceManager.GetString("SourceControl_DeleteBranchButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Delete Branch.
         /// </summary>
         public static string SourceControl_DeleteBranchCaption {
@@ -2708,7 +2717,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ignore File.
+        ///   Looks up a localized string similar to &apos;.gitignore&apos; File.
         /// </summary>
         public static string SourceControl_IgnoreFile {
             get {

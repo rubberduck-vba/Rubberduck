@@ -1241,4 +1241,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="IntroduceParameter_TitleText" xml:space="preserve">
     <value>Introduce Parameter</value>
   </data>
+  <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
+    <value>Delete branch</value>
+  </data>
 </root>
