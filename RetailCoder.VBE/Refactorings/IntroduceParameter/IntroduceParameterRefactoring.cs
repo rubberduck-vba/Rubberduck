@@ -58,6 +58,11 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         public void Refactor(Declaration target)
         {
+            if (target.DeclarationType != DeclarationType.Variable)
+            {
+                throw new ArgumentException("Invalid declaration type");
+            }
+
             PromoteVariable(target);
         }
 
