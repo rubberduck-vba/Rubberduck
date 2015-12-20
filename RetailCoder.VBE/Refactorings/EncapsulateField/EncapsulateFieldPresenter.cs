@@ -45,12 +45,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (PrimitiveTypes.Contains(_model.TargetDeclaration.AsTypeName))
             {
+                _view.ImplementLetSetterType = true;
                 _view.IsSetterTypeChangeable = false;
             }
             else if (_model.TargetDeclaration.AsTypeName != Tokens.Variant)
             {
-                _view.SetterTypeIsLet = false;
+                _view.ImplementSetSetterType = true;
                 _view.IsSetterTypeChangeable = false;
+            }
+            else
+            {
+                _view.ImplementLetSetterType = true;
             }
 
             if (_view.ShowDialog() != DialogResult.OK)
@@ -59,7 +64,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
 
             _model.PropertyName = _view.NewPropertyName;
-            _model.SetterTypeIsLet = _view.SetterTypeIsLet;
+            _model.ImplementLetSetterType = _view.ImplementLetSetterType;
+            _model.ImplementSetSetterType = _view.ImplementSetSetterType;
 
             _model.ParameterName = _view.ParameterName;
             return _model;

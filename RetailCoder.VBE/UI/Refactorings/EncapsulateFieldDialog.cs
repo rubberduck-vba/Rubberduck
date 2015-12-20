@@ -23,20 +23,16 @@ namespace Rubberduck.UI.Refactorings
 
         public Declaration TargetDeclaration { get; set; }
         
-        public bool SetterTypeIsLet
+        public bool ImplementLetSetterType
         {
-            get { return LetSetterTypeRadioButton.Checked; }
-            set
-            {
-                if (value)
-                {
-                    LetSetterTypeRadioButton.Checked = true;
-                }
-                else
-                {
-                    SetSetterTypeRadioButton.Checked = true;
-                }
-            }
+            get { return LetSetterTypeCheckBox.Checked; }
+            set { LetSetterTypeCheckBox.Checked = value; }
+        }
+
+        public bool ImplementSetSetterType
+        {
+            get { return SetSetterTypeCheckBox.Checked; }
+            set { SetSetterTypeCheckBox.Checked = value; }
         }
 
         public bool IsSetterTypeChangeable
@@ -52,12 +48,14 @@ namespace Rubberduck.UI.Refactorings
 
             PropertyNameTextBox.TextChanged += PropertyNameBox_TextChanged;
             ParameterNameTextBox.TextChanged += VariableNameBox_TextChanged;
-            ((RadioButton)SetterTypeGroupBox.Controls[0]).CheckedChanged += EncapsulateFieldDialog_CheckedChanged;
+
+            LetSetterTypeCheckBox.CheckedChanged += EncapsulateFieldDialog_SetterTypeChanged;
+            SetSetterTypeCheckBox.CheckedChanged += EncapsulateFieldDialog_SetterTypeChanged;
 
             Shown += EncapsulateFieldDialog_Shown;
         }
 
-        void EncapsulateFieldDialog_CheckedChanged(object sender, EventArgs e)
+        void EncapsulateFieldDialog_SetterTypeChanged(object sender, EventArgs e)
         {
             UpdatePreview();
         }
@@ -76,6 +74,8 @@ namespace Rubberduck.UI.Refactorings
 
         void EncapsulateFieldDialog_Shown(object sender, EventArgs e)
         {
+            ValidatePropertyName();
+            ValidateVariableName();
             UpdatePreview();
         }
 
@@ -95,17 +95,26 @@ namespace Rubberduck.UI.Refactorings
         {
             if (TargetDeclaration == null) { return; }
 
-            PreviewBox.Text = string.Join(Environment.NewLine,
+            var getterText = string.Join(Environment.NewLine,
                 string.Format("Public Property Get {0}() As {1}", NewPropertyName, TargetDeclaration.AsTypeName),
                 string.Format("    {0} = {1}", NewPropertyName, TargetDeclaration.IdentifierName),
-                "End Property" + Environment.NewLine,
-                string.Format("Public Property {0} {1}(ByVal {2} As {3})",
-                    SetterTypeIsLet
-                        ? LetSetterTypeRadioButton.Text
-                        : SetSetterTypeRadioButton.Text,
+                "End Property");
+
+            var letterText = string.Join(Environment.NewLine,
+                string.Format(Environment.NewLine + Environment.NewLine + "Public Property Let {0}(ByVal {1} As {2})",
                     NewPropertyName, ParameterName, TargetDeclaration.AsTypeName),
                 string.Format("    {0} = {1}", TargetDeclaration.IdentifierName, ParameterName),
                 "End Property");
+
+            var setterText = string.Join(Environment.NewLine,
+                string.Format(Environment.NewLine + Environment.NewLine + "Public Property Set {0}(ByVal {1} As {2})",
+                    NewPropertyName, ParameterName, TargetDeclaration.AsTypeName),
+                string.Format("    {0} = {1}", TargetDeclaration.IdentifierName, ParameterName),
+                "End Property");
+
+            PreviewBox.Text = getterText +
+                              (ImplementLetSetterType ? letterText : string.Empty) +
+                              (ImplementSetSetterType ? setterText : string.Empty);
         }
 
         private void ValidatePropertyName()

@@ -28,7 +28,7 @@ namespace Rubberduck.UI.Command.Refactorings
             using (var view = new EncapsulateFieldDialog())
             {
                 var factory = new EncapsulateFieldPresenterFactory(_state, Editor, view, new MessageBox());
-                var refactoring = new EncapsulateFieldRefactoring(factory, Editor);
+                var refactoring = new EncapsulateFieldRefactoring(factory);
                 refactoring.Refactor();
             }
         }
