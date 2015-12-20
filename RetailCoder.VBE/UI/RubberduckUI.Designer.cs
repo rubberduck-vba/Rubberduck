@@ -1432,6 +1432,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Introduce Field.
+        /// </summary>
+        public static string IntroduceField_TitleText {
+            get {
+                return ResourceManager.GetString("IntroduceField_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Add parameter {3} to the interface member?.
+        /// </summary>
+        public static string IntroduceParameter_TargetMethodIsInterfaceMemberImplementation {
+            get {
+                return ResourceManager.GetString("IntroduceParameter_TargetMethodIsInterfaceMemberImplementation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Introduce Parameter.
+        /// </summary>
+        public static string IntroduceParameter_TitleText {
+            get {
+                return ResourceManager.GetString("IntroduceParameter_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Issue.
         /// </summary>
         public static string Issue {
@@ -2687,6 +2714,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_DefaultRepoLocationLabel {
             get {
                 return ResourceManager.GetString("SourceControl_DefaultRepoLocationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete branch.
+        /// </summary>
+        public static string SourceControl_DeleteBranchButton {
+            get {
+                return ResourceManager.GetString("SourceControl_DeleteBranchButton", resourceCulture);
             }
         }
         

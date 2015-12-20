@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -30,7 +31,7 @@ namespace Rubberduck.Refactorings.IntroduceField
             
             if (!selection.HasValue)
             {
-                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection);
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceField_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
