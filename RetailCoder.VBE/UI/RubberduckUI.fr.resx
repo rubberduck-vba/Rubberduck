@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1125,5 +1125,8 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="Inspections_MultilineParameter">
     <value />
+  </data>
+  <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
+    <value>Supprimer branche</value>
   </data>
 </root>

@@ -915,7 +915,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Source Control</value>
   </data>
   <data name="SourceControl_AttributesFile" xml:space="preserve">
-    <value>Attributes File</value>
+    <value>'.gitattributes' File</value>
   </data>
   <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
     <value>Cancel</value>
@@ -930,7 +930,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Global Settings</value>
   </data>
   <data name="SourceControl_IgnoreFile" xml:space="preserve">
-    <value>Ignore File</value>
+    <value>'.gitignore' File</value>
   </data>
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
     <value>Init New Repo from this Project</value>
@@ -1257,5 +1257,8 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value>Parameter Name:</value>
+  </data>
+  <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
+    <value>Delete branch</value>
   </data>
 </root>
