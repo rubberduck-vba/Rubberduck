@@ -119,31 +119,28 @@ namespace Rubberduck.UI.Refactorings
 
         private void ValidatePropertyName()
         {
-            if (TargetDeclaration == null) { return; }
-
-            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
-
-            InvalidPropertyNameIcon.Visible = NewPropertyName == TargetDeclaration.IdentifierName
-                               || !char.IsLetter(NewPropertyName.FirstOrDefault())
-                               || tokenValues.Contains(NewPropertyName, StringComparer.InvariantCultureIgnoreCase)
-                               || NewPropertyName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+            InvalidPropertyNameIcon.Visible = ValidateName(NewPropertyName, ParameterName);
 
             SetOkButtonEnabledState();
         }
 
         private void ValidateVariableName()
         {
-            if (TargetDeclaration == null) { return; }
-
-            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
-
-            InvalidVariableNameIcon.Visible = ParameterName == TargetDeclaration.IdentifierName
-                               || ParameterName == NewPropertyName
-                               || !char.IsLetter(ParameterName.FirstOrDefault())
-                               || tokenValues.Contains(ParameterName, StringComparer.InvariantCultureIgnoreCase)
-                               || ParameterName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+            InvalidVariableNameIcon.Visible = ValidateName(ParameterName, NewPropertyName);
 
             SetOkButtonEnabledState();
+        }
+
+        private bool ValidateName(string changedName, string otherName)
+        {
+            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
+
+            return TargetDeclaration == null
+                               || changedName == TargetDeclaration.IdentifierName
+                               || changedName == otherName
+                               || !char.IsLetter(changedName.FirstOrDefault())
+                               || tokenValues.Contains(ParameterName, StringComparer.InvariantCultureIgnoreCase)
+                               || changedName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
         }
 
         private void SetOkButtonEnabledState()
