@@ -41,11 +41,6 @@ namespace RubberduckTests
             return new QualifiedSelection(new QualifiedModuleName(_ide.Object.ActiveCodePane.CodeModule.Parent), selection);
         }
 
-        protected QualifiedSelection GetQualifiedSelection(Selection selection, VBComponent component)
-        {
-            return new QualifiedSelection(new QualifiedModuleName(component), selection);
-        }
-
         protected Mock<VBProject> SetupMockProject(string inputCode, string projectName = null, string moduleName = null, vbext_ComponentType? componentType = null)
         {
             if (componentType == null)
@@ -113,6 +108,7 @@ namespace RubberduckTests
         {
             var codePane = MockFactory.CreateCodePaneMock(_ide, name);
             var module = MockFactory.CreateCodeModuleMock(content, codePane, _ide);
+            module.SetupProperty(m => m.Name, name);
 
             codePane.SetupGet(m => m.CodeModule).Returns(module.Object);
             return module;

@@ -8,17 +8,12 @@ using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
 {
-    [ComVisible(true)]
-    [Guid(ClassId)]
-    [ProgId(ProgId)]
+    [ComVisible(false)]
     // ReSharper disable once InconsistentNaming
-    public partial class _SettingsDialog : Form
+    public partial class SettingsDialog : Form
     {
-        private const string ClassId = "FB62BEA3-E11A-3C24-9101-AF2E1652AFFC";
-        private const string ProgId = "Rubberduck.UI.Settings.SettingsDialog";
-
         private Configuration _config;
-        private IGeneralConfigService _configService;
+        private readonly IGeneralConfigService _configService;
         private ConfigurationTreeViewControl _treeview;
         private Control _activeControl;
 
@@ -30,7 +25,7 @@ namespace Rubberduck.UI.Settings
         /// <summary>
         ///  Default constructor for GUI Designer. DO NOT USE.
         /// </summary>
-        public _SettingsDialog()
+        public SettingsDialog()
         {
             InitializeComponent();
 
@@ -41,9 +36,21 @@ namespace Rubberduck.UI.Settings
             InitWindow();
         }
 
+        public SettingsDialog(IGeneralConfigService configService)
+            : this()
+        {
+            _configService = configService;
+            _config = _configService.LoadConfiguration();
+            _codeInspectionSettings = _config.UserSettings.CodeInspectionSettings.CodeInspections;
+
+            LoadWindow();
+
+            RegisterEvents();
+        }
+
         private void ResetButton_Click(object sender, EventArgs e)
         {
-            var confirmReset = MessageBox.Show(RubberduckUI.Settings_ResetSettingsConfirmation, RubberduckUI.Settings_Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            var confirmReset = System.Windows.Forms.MessageBox.Show(RubberduckUI.Settings_ResetSettingsConfirmation, RubberduckUI.Settings_Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (confirmReset == DialogResult.No)
             {
                 return;
@@ -83,18 +90,6 @@ namespace Rubberduck.UI.Settings
         {
             SaveConfig();
             Close();
-        }
-
-        public _SettingsDialog(IGeneralConfigService configService)
-            : this()
-        {
-            _configService = configService;
-            _config = _configService.LoadConfiguration();
-            _codeInspectionSettings = _config.UserSettings.CodeInspectionSettings.CodeInspections;
-
-            LoadWindow();
-
-            RegisterEvents();
         }
 
         private void LoadWindow()
@@ -174,13 +169,14 @@ namespace Rubberduck.UI.Settings
         private void ActivateControl(Control control)
         {
             splitContainer1.Panel2.Controls.Clear();
+            if (control == null)
+            {
+                return;
+            }
+
             splitContainer1.Panel2.Controls.Add(control);
             _activeControl = control;
-            try
-            {
-                _activeControl.Dock = DockStyle.Fill;
-            }
-            catch { }
+            _activeControl.Dock = DockStyle.Fill;
         }
 
         private void SaveConfig()

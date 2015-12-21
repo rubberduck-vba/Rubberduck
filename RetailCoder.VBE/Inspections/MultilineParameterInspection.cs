@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -21,32 +19,17 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var multilineParameters = from p in parseResult.Declarations.Items
+            var multilineParameters = from p in parseResult.AllDeclarations
                 .Where(item => item.DeclarationType == DeclarationType.Parameter)
                 where p.Context.GetSelection().LineCount > 1
                 select p;
 
             var issues = multilineParameters
-                .Select(param => new MultilineParameterInspectionResult(string.Format(param.Context.GetSelection().LineCount > 3 ? RubberduckUI.EasterEgg_Continuator : Description, param.IdentifierName), Severity, param.Context, param.QualifiedName));
+                .Select(param => new MultilineParameterInspectionResult(this, string.Format(param.Context.GetSelection().LineCount > 3 ? RubberduckUI.EasterEgg_Continuator : Description, param.IdentifierName), param.Context, param.QualifiedName));
 
             return issues;
-        }
-
-        public class MultilineParameterInspectionResult : CodeInspectionResultBase
-        {
-            public MultilineParameterInspectionResult(string inspection, CodeInspectionSeverity severity, ParserRuleContext context, QualifiedMemberName qualifiedName)
-                : base(inspection, severity, qualifiedName.QualifiedModuleName, context)
-            {
-                
-            }
-
-            public override IDictionary<string, Action> GetQuickFixes()
-            {
-                // todo: implement a quickfix to rewrite the signature on 1 line
-                return new Dictionary<string, Action>();
-            }
         }
     }
 }

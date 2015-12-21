@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
@@ -17,15 +18,17 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var declarations = from item in parseResult.Declarations.Items
-                where !item.IsBuiltIn && item.HasTypeHint()
-                select new ObsoleteTypeHintInspectionResult(string.Format(Description, RubberduckUI.Inspections_DeclarationOf + item.DeclarationType.ToString().ToLower(), item.IdentifierName), Severity, new QualifiedContext(item.QualifiedName, item.Context), item);
+            var results = parseResult.AllDeclarations.ToList();
 
-            var references = from item in parseResult.Declarations.Items.Where(item => !item.IsBuiltIn).SelectMany(d => d.References)
+            var declarations = from item in results
+                where !item.IsBuiltIn && item.HasTypeHint()
+                select new ObsoleteTypeHintInspectionResult(this, string.Format(Description, RubberduckUI.Inspections_DeclarationOf + item.DeclarationType.ToString().ToLower(), item.IdentifierName), new QualifiedContext(item.QualifiedName, item.Context), item);
+
+            var references = from item in results.Where(item => !item.IsBuiltIn).SelectMany(d => d.References)
                 where item.HasTypeHint()
-                select new ObsoleteTypeHintInspectionResult(string.Format(Description, RubberduckUI.Inspections_UsageOf + item.Declaration.DeclarationType.ToString().ToLower(), item.IdentifierName), Severity, new QualifiedContext(item.QualifiedModuleName, item.Context), item.Declaration);
+                select new ObsoleteTypeHintInspectionResult(this, string.Format(Description, RubberduckUI.Inspections_UsageOf + item.Declaration.DeclarationType.ToString().ToLower(), item.IdentifierName), new QualifiedContext(item.QualifiedModuleName, item.Context), item.Declaration);
 
             return declarations.Union(references);
         }

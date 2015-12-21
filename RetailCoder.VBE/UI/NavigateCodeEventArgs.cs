@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
@@ -6,6 +7,21 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI
 {
+    public static class SelectionExtensions
+    {
+        public static NavigateCodeEventArgs GetNavitationArgs(this QualifiedSelection selection)
+        {
+            try
+            {
+                return new NavigateCodeEventArgs(new QualifiedSelection(selection.QualifiedName, selection.Selection));
+            }
+            catch (COMException)
+            {
+                return null;
+            }
+        }
+    }
+
     public class NavigateCodeEventArgs : EventArgs
     {
         public NavigateCodeEventArgs(QualifiedModuleName qualifiedName, ParserRuleContext context)

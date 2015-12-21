@@ -2,19 +2,21 @@
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing.VBA
 {
     public class ParseErrorEventArgs : EventArgs
     {
-        public ParseErrorEventArgs(SyntaxErrorException exception, VBComponent component)
+        public ParseErrorEventArgs(SyntaxErrorException exception, VBComponent component, ICodePaneWrapperFactory wrapperFactory)
         {
             _exception = exception;
             _component = component;
+            _wrapperFactory = wrapperFactory;
         }
 
         private readonly SyntaxErrorException _exception;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
         public SyntaxErrorException Exception { get { return _exception; } }
 
         private readonly VBComponent _component;
@@ -24,7 +26,8 @@ namespace Rubberduck.Parsing.VBA
         public void Navigate()
         {
             var selection = new Selection(_exception.LineNumber, _exception.Position, _exception.LineNumber, _exception.Position + _exception.OffendingSymbol.Text.Length - 1);
-            _component.CodeModule.CodePane.SetSelection(selection);
+            var codePane = _wrapperFactory.Create(_component.CodeModule.CodePane);
+            codePane.Selection = selection;
         }
     }
 }

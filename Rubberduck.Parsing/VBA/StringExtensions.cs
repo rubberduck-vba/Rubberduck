@@ -3,10 +3,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.VBA
+namespace Rubberduck.Parsing.VBA
 {
     public static class StringExtensions
     {
+
+
         /// <summary>
         /// Returns a value indicating whether line of code is/contains a comment.
         /// </summary>

@@ -1,0 +1,239 @@
+﻿<UserControl x:Class="Rubberduck.UI.UnitTesting.TestExplorerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Rubberduck.UI.UnitTesting"
+             xmlns:unitTesting="clr-namespace:Rubberduck.UnitTesting"
+             xmlns:resx="clr-namespace:Rubberduck.UI"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             mc:Ignorable="d" 
+             d:DesignHeight="255" d:DesignWidth="255"
+             MinWidth="255" MinHeight="255" d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
+    
+    <UserControl.Resources>
+
+        <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFD9F4FF" Offset="0"/>
+            <GradientStop Color="#FF9BDDFB" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="{x:Static SystemColors.ControlBrushKey}" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFEEEDED" Offset="0"/>
+            <GradientStop Color="#FFDDDDDD" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+
+        <Style x:Key="ShinyTreeView" 
+               TargetType="{x:Type TreeViewItem}">
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderBrush" Value="#adc6e5"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True"/>
+                        <Condition Property="IsSelectionActive" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="LightGray"/>
+                </MultiTrigger>
+            </Style.Triggers>
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="2"/>
+                </Style>
+            </Style.Resources>
+        </Style>
+
+        <Style x:Key="IconStyle" TargetType="Image">
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Margin" Value="4" />
+        </Style>
+        
+        <unitTesting:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
+        
+        <CollectionViewSource x:Key="OutcomeGroupViewSource" Source="{Binding Model.Tests}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Result.Outcome" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+
+        <DataTemplate x:Key="TestMethodTemplate" DataType="{x:Type unitTesting:TestMethod}">
+            <StackPanel Orientation="Horizontal">
+                <Image Style="{StaticResource IconStyle}" 
+                       Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}"
+                       VerticalAlignment="Center" />
+                <TextBlock Margin="4" 
+                           VerticalAlignment="Center" 
+                           Text="{Binding QualifiedMemberName}" 
+                           TextWrapping="NoWrap"/>
+                <TextBlock Margin="4" 
+                           VerticalAlignment="Center" 
+                           Text="{Binding Result.Duration, StringFormat=({0}ms)}" 
+                           Foreground="DimGray"
+                           TextWrapping="NoWrap"/>
+            </StackPanel>
+        </DataTemplate>
+        
+        <HierarchicalDataTemplate x:Key="OutcomeTemplate" 
+                                    DataType="{x:Type CollectionViewGroup}"
+                                    ItemsSource="{Binding Items}" 
+                                    ItemTemplate="{StaticResource TestMethodTemplate}">
+            
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="4" 
+                           VerticalAlignment="Center" 
+                           Text="{Binding Name}"
+                           FontWeight="Bold"
+                           TextWrapping="NoWrap"/>
+                <TextBlock Margin="4" 
+                           VerticalAlignment="Center" 
+                           Text="{Binding ItemCount, StringFormat=({0})}" 
+                           TextWrapping="NoWrap"/>
+            </StackPanel>
+        </HierarchicalDataTemplate>
+
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*" MinHeight="64" />
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="Auto" MinHeight="48"/>
+        </Grid.RowDefinitions>
+         
+        <Border Grid.Row="0" Grid.RowSpan="5" Background="#FFEEF5FD" />
+
+        <ToolBar Grid.Row="0" IsEnabled="{Binding Model.IsReady}">
+
+            <Button Command="{Binding RefreshCommand}">
+                <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
+            </Button>
+
+            <Separator />
+
+            <Menu>
+                <MenuItem VerticalAlignment="Center" Header="{x:Static resx:RubberduckUI.Run}">
+                    <MenuItem.Icon>
+                        <Image Height="16" Source="../../Resources/control.png" />
+                    </MenuItem.Icon>
+                    <MenuItem Command="{Binding RunAllTestsCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunAllTests}">
+                        <MenuItem.Icon>
+                            <Image Height="16" Source="../../Resources/flask--arrow.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Command="{Binding RunNotExecutedTestsCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunNotRunTests}" >
+                        <MenuItem.Icon>
+                            <Image Height="16" Source="../../Resources/question-white.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Command="{Binding RunPassedTestsCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunPassedTests}" >
+                        <MenuItem.Icon>
+                            <Image Height="16" Source="../../Resources/tick-circle.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Command="{Binding RunFailedTestsCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunFailedTests}">
+                        <MenuItem.Icon>
+                            <Image Height="16" Source="../../Resources/cross-circle.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Command="{Binding RepeatLastRunCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunLastRunTests}">
+                        <MenuItem.Icon>
+                            <Image Height="16" Source="../../Resources/arrow-repeat.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                </MenuItem>
+                <MenuItem VerticalAlignment="Center" Header="{x:Static resx:RubberduckUI.Add}">
+                    <MenuItem.Icon>
+                        <Image Height="16" Source="../../Resources/flask--plus.png" />
+                    </MenuItem.Icon>
+                    <MenuItem Command="{Binding AddTestModuleCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_AddTestModule}">
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Command="{Binding AddTestMethodCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_AddTestMethod}">
+                        <MenuItem.Icon>
+                            <Image Height="16" Source="../../Resources/flask.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Command="{Binding AddErrorTestMethodCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_AddExpectedErrorTestMethod}">
+                        <MenuItem.Icon>
+                            <Image Height="16" Source="../../Resources/flask--exclamation.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
+            <Separator />
+
+            <Button Command="{Binding CopyResultsCommand}">
+                <Image Height="16" Source="../../Resources/document-copy.png" />
+            </Button>
+            
+        </ToolBar>
+
+        <Border Grid.Row="1" Margin="2">
+            <StackPanel>
+
+                <Border BorderBrush="DimGray" BorderThickness="1,1,0,0">
+                    <ProgressBar Height="12" 
+                                 Background="DimGray" 
+                                 Maximum="{Binding Model.Tests.Count, Mode=OneWay}" 
+                                 Value="{Binding Model.ExecutedCount, Mode=OneWay}">
+                        <ProgressBar.Foreground>
+                            <SolidColorBrush Color="{Binding Model.ProgressBarColor}" />
+                        </ProgressBar.Foreground>
+                    </ProgressBar>
+                </Border>
+
+            </StackPanel>
+        </Border>
+
+        <TreeView Grid.Row="2"
+                  MouseDoubleClick="TreeView_MouseDoubleClick"
+                  ItemsSource="{Binding Source={StaticResource OutcomeGroupViewSource}, Path=Groups}"
+                  ItemContainerStyle="{StaticResource ShinyTreeView}"
+                  ItemTemplate="{StaticResource OutcomeTemplate}"
+                  IsEnabled="{Binding Model.IsReady}">
+            
+            <i:Interaction.Behaviors>
+                <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
+            </i:Interaction.Behaviors>
+            <TreeView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem VerticalAlignment="Center" 
+                              Header="{x:Static resx:RubberduckUI.Run}" 
+                              Command="{Binding RunSelectedTestCommand}"
+                              IsEnabled="{Binding Model.IsReady, Mode=OneWay}">
+                        <MenuItem.Icon>
+                            <Image Height="16" Source="../../Resources/control.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </TreeView.ContextMenu>
+        </TreeView>
+
+        <resx:BusyIndicator Grid.Row="2" Width="36" Height="36" Visibility="{Binding Model.IsBusy, Converter={StaticResource BoolToVisibility}}" />
+
+        <GridSplitter Grid.Row="3" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
+
+        <Border Grid.Row="4" BorderThickness="0,1,0,0" BorderBrush="DimGray">
+            
+            <StackPanel Orientation="Vertical" MinHeight="48" Background="Gainsboro">
+                <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center" 
+                           Source="{Binding SelectedItem.Result.Outcome, Converter={StaticResource OutcomeIconConverter}}"/>
+                    <TextBlock Margin="4" Text="{Binding SelectedItem.QualifiedMemberName}" FontWeight="Black" TextWrapping="Wrap"/>
+                </StackPanel>
+                <TextBlock Margin="36,0,0,0" Text="{Binding SelectedItem.Result.Output}" TextWrapping="Wrap" Foreground="DarkSlateGray"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

@@ -2,135 +2,122 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing;
+using Rubberduck.Reflection;
+using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.UnitTesting
 {
     public class TestEngine : ITestEngine
     {
-        public event EventHandler<TestCompletedEventArgs> TestComplete;
+        private readonly TestExplorerModelBase _model;
+        private readonly VBE _vbe;
 
-        public TestEngine()
+        // can't be assigned from constructor because ActiveVBProject is null at startup:
+        private IHostApplication _hostApplication; 
+
+        public TestEngine(TestExplorerModelBase model, VBE vbe)
         {
-            AllTests = new Dictionary<TestMethod, TestResult>();
+            _model = model;
+            _vbe = vbe;
         }
 
-        public IDictionary<TestMethod, TestResult> AllTests { get; set; }
+        public TestExplorerModelBase Model { get { return _model; } }
 
-        public IEnumerable<TestMethod> FailedTests()
-        {
-            return AllTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Failed)
-                                .Select(test => test.Key);
-        }
+        public event EventHandler TestCompleted;
 
-        public IEnumerable<TestMethod> LastRunTests(TestOutcome? outcome = null)
+        private void OnTestCompleted()
         {
-            return AllTests.Where(test => test.Value != null
-                 && test.Value.Outcome == (outcome ?? test.Value.Outcome))
-                 .Select(test => test.Key);
-        }
-
-        public IEnumerable<TestMethod> NotRunTests()
-        {
-            return AllTests.Where(test => test.Value == null)
-                                .Select(test => test.Key);
-        }
-
-        public IEnumerable<TestMethod> PassedTests()
-        {
-            return AllTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Succeeded)
-                                .Select(test => test.Key);
-        }
-
-        public event EventHandler<TestModuleEventArgs> ModuleInitialize;
-        private void RunModuleInitialize(QualifiedModuleName qualifiedModuleName)
-        {
-            var handler = ModuleInitialize;
+            var handler = TestCompleted;
             if (handler != null)
             {
-                handler(this, new TestModuleEventArgs(qualifiedModuleName));
+                handler.Invoke(this, EventArgs.Empty);
             }
         }
 
-        public event EventHandler<TestModuleEventArgs> ModuleCleanup;
-        private void RunModuleCleanup(QualifiedModuleName qualifiedModuleName)
+        public void Refresh()
         {
-            var handler = ModuleCleanup;
-            if (handler != null)
-            {
-                handler(this, new TestModuleEventArgs(qualifiedModuleName));
-            }
+            _model.Refresh();
         }
 
-        public event EventHandler<TestModuleEventArgs> MethodInitialize;
-        private void RunMethodInitialize(QualifiedModuleName qualifiedModuleName)
+        public void Run()
         {
-            var handler = MethodInitialize;
-            if (handler != null)
-            {
-                handler(this, new TestModuleEventArgs(qualifiedModuleName));
-            }
-        }
-
-        public event EventHandler<TestModuleEventArgs> MethodCleanup;
-        private void RunMethodCleanup(QualifiedModuleName qualifiedModuleName)
-        {
-            var handler = MethodCleanup;
-            if (handler != null)
-            {
-                handler(this, new TestModuleEventArgs(qualifiedModuleName));
-            }
+            Refresh();
+            Run(_model.Tests);
         }
 
         public void Run(IEnumerable<TestMethod> tests)
         {
             var testMethods = tests as IList<TestMethod> ?? tests.ToList();
-            if (!testMethods.Any()) return;
+            if (!testMethods.Any())
+            {
+                return;
+            }
 
-            var methods = testMethods.ToDictionary(test => test, test => null as TestResult);
-            AssignResults(methods.Keys);
-        }
-
-        private void AssignResults(IEnumerable<TestMethod> testMethods)
-        {
-            var tests = testMethods.ToList();
-
-            var modules = tests.GroupBy(t => t.QualifiedMemberName.QualifiedModuleName);
-
+            var modules = testMethods.GroupBy(test => test.QualifiedMemberName.QualifiedModuleName);
             foreach (var module in modules)
             {
-                RunModuleInitialize(module.Key);
+                var testInitialize = FindTestInitializeMethods(module.Key).ToList();
+                var testCleanup = FindTestCleanupMethods(module.Key).ToList();
 
+                Run(FindModuleInitializeMethods(module.Key));
                 foreach (var test in module)
                 {
-                    if (tests.Contains(test))
-                    {
-                        RunMethodInitialize(test.QualifiedMemberName.QualifiedModuleName);
-                    
-                        var result = test.Run();
-                        AllTests[test] = result;
+                    Run(testInitialize);
+                    test.Run();
 
-                        RunMethodCleanup(test.QualifiedMemberName.QualifiedModuleName);
+                    OnTestCompleted();
+                    _model.AddExecutedTest(test);
 
+                    Run(testCleanup);
 
-                        OnTestCompleted(new TestCompletedEventArgs(test, result));
-                    }
-                    else
-                    {
-                        AllTests[test] = null;
-                    }
                 }
-
-                RunModuleCleanup(module.Key);
+                Run(FindModuleCleanupMethods(module.Key));
             }
         }
 
-        protected virtual void OnTestCompleted(TestCompletedEventArgs arg)
+        private void Run(IEnumerable<QualifiedMemberName> members)
         {
-            if (TestComplete != null)
+            if (_hostApplication == null)
             {
-                TestComplete(this, arg);
+                _hostApplication = _vbe.HostApplication();
             }
+
+            foreach (var member in members)
+            {
+                _hostApplication.Run(member);
+            }
+        }
+
+        private static IEnumerable<QualifiedMemberName> FindModuleInitializeMethods(QualifiedModuleName module)
+        {
+            return module.Component.GetMembers(vbext_ProcKind.vbext_pk_Proc)
+                .Where(m => m.HasAttribute<ModuleInitializeAttribute>())
+                .Select(m => m.QualifiedMemberName);
+        }
+
+        private static IEnumerable<QualifiedMemberName> FindModuleCleanupMethods(QualifiedModuleName module)
+        {
+            return module.Component.GetMembers(vbext_ProcKind.vbext_pk_Proc)
+                .Where(m => m.HasAttribute<ModuleCleanupAttribute>())
+                .Select(m => m.QualifiedMemberName);
+        }
+
+        private static IEnumerable<QualifiedMemberName> FindTestInitializeMethods(QualifiedModuleName module)
+        {
+            return module.Component.GetMembers(vbext_ProcKind.vbext_pk_Proc)
+                .Where(m => m.HasAttribute<TestInitializeAttribute>())
+                .Select(m => m.QualifiedMemberName);
+        }
+
+        private static IEnumerable<QualifiedMemberName> FindTestCleanupMethods(QualifiedModuleName module)
+        {
+            return module.Component.GetMembers(vbext_ProcKind.vbext_pk_Proc)
+                .Where(m => m.HasAttribute<TestCleanupAttribute>())
+                .Select(m => m.QualifiedMemberName);
         }
     }
 }

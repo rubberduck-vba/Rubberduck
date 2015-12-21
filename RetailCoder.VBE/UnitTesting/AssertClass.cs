@@ -107,7 +107,7 @@ namespace Rubberduck.UnitTesting
         /// <remarks>
         /// <paramref name="expected"/> and <paramref name="actual"/> must be the same type.
         /// </remarks>
-        public void AreEqual(object expected, object actual, string message = null)
+        public virtual void AreEqual(object expected, object actual, string message = null)
         {
             // vbNullString is marshaled as a null. assume value semantics:
             expected = expected ?? string.Empty;
@@ -138,7 +138,7 @@ namespace Rubberduck.UnitTesting
         /// <remarks>
         /// <paramref name="expected"/> and <paramref name="actual"/> must be the same type.
         /// </remarks>
-        public void AreNotEqual(object expected, object actual, string message = null)
+        public virtual void AreNotEqual(object expected, object actual, string message = null)
         {
             // vbNullString is marshaled as a null. assume value semantics:
             expected = expected ?? string.Empty;

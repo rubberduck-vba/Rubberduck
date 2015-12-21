@@ -1,38 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBA;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
     public class ObsoleteCommentSyntaxInspectionResult : CodeInspectionResultBase
     {
-        public ObsoleteCommentSyntaxInspectionResult(string inspection, CodeInspectionSeverity type, CommentNode comment) 
-            : base(inspection, type, comment)
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
+
+        public ObsoleteCommentSyntaxInspectionResult(IInspection inspection, CommentNode comment) 
+            : base(inspection, inspection.Description, comment)
         {
+            _quickFixes = new CodeInspectionQuickFix[]
+            {
+                new ReplaceCommentMarkerQuickFix(Context, QualifiedSelection, comment),
+                new RemoveCommentQuickFix(Context, QualifiedSelection, comment), 
+            };
         }
 
-        public override IDictionary<string, Action> GetQuickFixes()
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+    }
+
+    public class RemoveCommentQuickFix : CodeInspectionQuickFix
+    {
+        private readonly CommentNode _comment;
+
+        public RemoveCommentQuickFix(ParserRuleContext context, QualifiedSelection selection, CommentNode comment)
+            : base(context, selection, RubberduckUI.Inspections_RemoveComment)
         {
-            return
-                new Dictionary<string, Action>
-                {
-                    {RubberduckUI.Inspections_ReplaceRemWithSingleQuoteMarker, ReplaceWithSingleQuote},
-                    {RubberduckUI.Inspections_RemoveComment, RemoveComment}
-                };
+            _comment = comment;
         }
 
-        private void ReplaceWithSingleQuote()
+        public override void Fix()
         {
-            var module = QualifiedName.Component.CodeModule;
+            var module = Selection.QualifiedName.Component.CodeModule;
             if (module == null)
             {
                 return;
             }
 
-            var content = module.get_Lines(QualifiedSelection.Selection.StartLine, QualifiedSelection.Selection.LineCount);
+            var content = module.get_Lines(Selection.Selection.StartLine, Selection.Selection.LineCount);
 
             int markerPosition;
             if (!content.HasComment(out markerPosition))
@@ -46,25 +59,34 @@ namespace Rubberduck.Inspections
                 code = content.Substring(0, markerPosition - 1);
             }
 
-            var newContent = code + Tokens.CommentMarker + " " + Comment.CommentText;
-
-            if (Comment.QualifiedSelection.Selection.LineCount > 1)
+            if (_comment.QualifiedSelection.Selection.LineCount > 1)
             {
-                module.DeleteLines(Comment.QualifiedSelection.Selection.StartLine + 1, Comment.QualifiedSelection.Selection.LineCount);
+                module.DeleteLines(_comment.QualifiedSelection.Selection.StartLine, _comment.QualifiedSelection.Selection.LineCount);
             }
 
-            module.ReplaceLine(QualifiedSelection.Selection.StartLine, newContent);
+            module.ReplaceLine(_comment.QualifiedSelection.Selection.StartLine, code);
+        }
+    }
+
+    public class ReplaceCommentMarkerQuickFix : CodeInspectionQuickFix
+    {
+        private readonly CommentNode _comment;
+
+        public ReplaceCommentMarkerQuickFix(ParserRuleContext context, QualifiedSelection selection, CommentNode comment)
+            : base(context, selection, RubberduckUI.Inspections_ReplaceRemWithSingleQuoteMarker)
+        {
+            _comment = comment;
         }
 
-        private void RemoveComment()
+        public override void Fix()
         {
-            var module = QualifiedName.Component.CodeModule;
+            var module = Selection.QualifiedName.Component.CodeModule;
             if (module == null)
             {
                 return;
             }
 
-            var content = module.get_Lines(QualifiedSelection.Selection.StartLine, QualifiedSelection.Selection.LineCount);
+            var content = module.get_Lines(Selection.Selection.StartLine, Selection.Selection.LineCount);
 
             int markerPosition;
             if (!content.HasComment(out markerPosition))
@@ -78,15 +100,14 @@ namespace Rubberduck.Inspections
                 code = content.Substring(0, markerPosition - 1);
             }
 
-            if (Comment.QualifiedSelection.Selection.LineCount > 1)
+            var newContent = code + Tokens.CommentMarker + " " + _comment.CommentText;
+
+            if (_comment.QualifiedSelection.Selection.LineCount > 1)
             {
-                module.DeleteLines(Comment.QualifiedSelection.Selection.StartLine, Comment.QualifiedSelection.Selection.LineCount);
+                module.DeleteLines(_comment.QualifiedSelection.Selection.StartLine + 1, _comment.QualifiedSelection.Selection.LineCount);
             }
 
-            if (!string.IsNullOrEmpty(code))
-            {
-                module.ReplaceLine(Comment.QualifiedSelection.Selection.StartLine, code);
-            }
+            module.ReplaceLine(Selection.Selection.StartLine, newContent);
         }
     }
 }

@@ -11,10 +11,10 @@ namespace Rubberduck.VBEditor.VBEHost
             object[] paramArray = { }; //PowerPoint requires a paramarray, so we pass it an empty array.
 
             var call = GenerateMethodCall(qualifiedMemberName);
-            Application.Run(call, paramArray);
+            Application.Run(call, ref paramArray);
         }
 
-        protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
+        private string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
         {
             /* Note: Powerpoint supports a `FileName.ppt!Module.method` syntax
              * http://msdn.microsoft.com/en-us/library/office/ff744221(v=office.15).aspx

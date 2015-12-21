@@ -4,18 +4,37 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
+    [ComVisible(false)]
     public abstract class HostApplicationBase<TApplication> : IHostApplication
         where TApplication : class
     {
+        private readonly string _applicationName;
         protected readonly TApplication Application;
         protected HostApplicationBase(string applicationName)
         {
-            Application = (TApplication)Marshal.GetActiveObject(applicationName + ".Application");
+            _applicationName = applicationName;
+
+            try
+            {
+                Application = (TApplication)Marshal.GetActiveObject(applicationName + ".Application");
+            }
+            catch (COMException)
+            {
+                Application = null; // unit tests don't need it anyway.
+            }
         }
 
         ~HostApplicationBase()
         {
-            Marshal.ReleaseComObject(Application);
+            if (Application != null)
+            {
+                Marshal.ReleaseComObject(Application);
+            }
+        }
+
+        public string ApplicationName
+        {
+            get { return _applicationName; }
         }
 
         public abstract void Run(QualifiedMemberName qualifiedMemberName);

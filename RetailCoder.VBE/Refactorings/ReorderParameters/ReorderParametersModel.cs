@@ -1,41 +1,41 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.Parsing;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
     public class ReorderParametersModel
     {
-        private readonly VBProjectParseResult _parseResult;
-        public VBProjectParseResult ParseResult { get { return _parseResult; } }
+        private readonly RubberduckParserState _parseResult;
+        public RubberduckParserState ParseResult { get { return _parseResult; } }
 
-        private readonly Declarations _declarations;
-        public Declarations Declarations { get { return _declarations; } }
+        private readonly IList<Declaration> _declarations;
+        public IEnumerable<Declaration> Declarations { get { return _declarations; } }
 
         public Declaration TargetDeclaration { get; private set; }
         public List<Parameter> Parameters { get; set; }
 
         private readonly IMessageBox _messageBox;
             
-        public ReorderParametersModel(VBProjectParseResult parseResult, QualifiedSelection selection, IMessageBox messageBox)
+        public ReorderParametersModel(RubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {
             _parseResult = parseResult;
-            _declarations = parseResult.Declarations;
+            _declarations = parseResult.AllDeclarations.ToList();
             _messageBox = messageBox;
 
-            AcquireTaget(selection);
+            AcquireTarget(selection);
 
             Parameters = new List<Parameter>();
             LoadParameters();
         }
 
-        private void AcquireTaget(QualifiedSelection selection)
+        private void AcquireTarget(QualifiedSelection selection)
         {
             TargetDeclaration = Declarations.FindSelection(selection, ValidDeclarationTypes);
             TargetDeclaration = PromptIfTargetImplementsInterface();
@@ -101,7 +101,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 return TargetDeclaration;
             }
 
-            var getter = _declarations.Items.FirstOrDefault(item => item.Scope == TargetDeclaration.Scope &&
+            var getter = _declarations.FirstOrDefault(item => item.Scope == TargetDeclaration.Scope &&
                                           item.IdentifierName == TargetDeclaration.IdentifierName &&
                                           item.DeclarationType == DeclarationType.PropertyGet);
 

@@ -1,30 +1,34 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    class GenericProjectNameInspection : IInspection
+    public class DefaultProjectNameInspection : IInspection
     {
-        public GenericProjectNameInspection()
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
+
+        public DefaultProjectNameInspection()
         {
+            _wrapperFactory = new CodePaneWrapperFactory();
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return "GenericProjectNameInspection"; } }
+        public string Name { get { return "DefaultProjectNameInspection"; } }
         public string Description { get { return RubberduckUI.GenericProjectName_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var issues = parseResult.Declarations.Items
+            var issues = parseResult.AllDeclarations
                             .Where(declaration => !declaration.IsBuiltIn 
                                                 && declaration.DeclarationType == DeclarationType.Project
                                                 && declaration.IdentifierName.StartsWith("VBAProject"))
-                            .Select(issue => new GenericProjectNameInspectionResult(string.Format(Description, issue.IdentifierName), Severity, issue, parseResult))
+                            .Select(issue => new DefaultProjectNameInspectionResult(this, issue, parseResult, _wrapperFactory))
                             .ToList();
 
             return issues;

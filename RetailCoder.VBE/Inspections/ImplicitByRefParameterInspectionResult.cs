@@ -1,55 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.UI;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
     public class ImplicitByRefParameterInspectionResult : CodeInspectionResultBase
     {
-        public ImplicitByRefParameterInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<VBAParser.ArgContext> qualifiedContext)
-            : base(inspection,type, qualifiedContext.ModuleName, qualifiedContext.Context)
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
+
+        public ImplicitByRefParameterInspectionResult(IInspection inspection, string result, QualifiedContext<VBAParser.ArgContext> qualifiedContext)
+            : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-        }
-
-        private new VBAParser.ArgContext Context { get { return base.Context as VBAParser.ArgContext; } }
-
-        public override IDictionary<string, Action> GetQuickFixes()
-        {
-            if ((Context.LPAREN() != null && Context.RPAREN() != null) || Context.PARAMARRAY() != null)
-            {
-                // array parameters & paramarrays must be passed by reference
-                return new Dictionary<string, Action>
+            _quickFixes = new[]
                 {
-                    {RubberduckUI.Inspections_PassParamByRefExplicitly, PassParameterByRef}
-                };
-            }
-
-            return new Dictionary<string, Action>
-                {
-                    {RubberduckUI.Inspections_PassParamByRefExplicitly, PassParameterByRef},
-                    {RubberduckUI.Inspections_PassParamByValue, PassParameterByVal}
+                    new ImplicitByRefParameterQuickFix(Context, QualifiedSelection, RubberduckUI.Inspections_PassParamByRefExplicitly, Tokens.ByRef), 
                 };
         }
 
-        private void PassParameterByRef()
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+    }
+
+    public class ImplicitByRefParameterQuickFix : CodeInspectionQuickFix
+    {
+        private readonly string _newToken;
+
+        public ImplicitByRefParameterQuickFix(ParserRuleContext context, QualifiedSelection selection, string description, string newToken) 
+            : base(context, selection, description)
         {
-            ChangeParameterPassing(Tokens.ByRef);
+            _newToken = newToken;
         }
 
-        private void PassParameterByVal()
-        {
-            ChangeParameterPassing(Tokens.ByVal);
-        }
-
-        private void ChangeParameterPassing(string newValue)
+        public override void Fix()
         {
             var parameter = Context.GetText();
-            var newContent = string.Concat(newValue, " ", parameter);
-            var selection = QualifiedSelection.Selection;
+            var newContent = string.Concat(_newToken, " ", parameter);
+            var selection = Selection.Selection;
 
-            var module = QualifiedName.Component.CodeModule;
+            var module = Selection.QualifiedName.Component.CodeModule;
             var lines = module.get_Lines(selection.StartLine, selection.LineCount);
 
             var result = lines.Replace(parameter, newContent);

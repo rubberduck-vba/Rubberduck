@@ -49,14 +49,16 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.3.2.1\lib\net45\NLog.dll</HintPath>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBABaseListener.cs" />
     <Compile Include="Grammar\VBABaseVisitor.cs" />
@@ -66,10 +68,13 @@
     <Compile Include="Grammar\VBAVisitor.cs" />
     <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IRubberduckParser.cs" />
+    <Compile Include="Symbols\AdodbObjectModel.cs" />
+    <Compile Include="Symbols\DeclarationEventArgs.cs" />
+    <Compile Include="Symbols\ExcelObjectModel.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
+    <Compile Include="Symbols\MemberProcessedEventArgs.cs" />
     <Compile Include="Symbols\SyntaxErrorException.cs" />
-    <Compile Include="Logging\LoggingConfigurator.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -80,7 +85,6 @@
     <Compile Include="Symbols\Accessibility.cs" />
     <Compile Include="Symbols\DeclarationSymbolsListener.cs" />
     <Compile Include="Symbols\DeclarationType.cs" />
-    <Compile Include="Symbols\Declarations.cs" />
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
     <Compile Include="Symbols\MsFormsLib.cs" />
@@ -90,11 +94,12 @@
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
     <Compile Include="VBA\ParseErrorEventArgs.cs" />
+    <Compile Include="VBA\ParserState.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
+    <Compile Include="VBA\RubberduckParserState.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
     <Compile Include="VBA\WalkerCancelledException.cs" />
     <Compile Include="VBComponentExtensions.cs" />
-    <Compile Include="VBComponentParseResult.cs" />
     <Compile Include="VBProjectParseResult.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +114,9 @@
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\Debug\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

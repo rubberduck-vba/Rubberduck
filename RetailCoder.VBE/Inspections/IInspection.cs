@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
@@ -12,6 +12,6 @@ namespace Rubberduck.Inspections
         /// Runs code inspection on specified parse trees.
         /// </summary>
         /// <returns>Returns inspection results, if any.</returns>
-        IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult);
+        IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult);
     }
 }

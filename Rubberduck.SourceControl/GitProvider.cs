@@ -6,6 +6,7 @@ using System.Security;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.SourceControl
 {
@@ -24,8 +25,8 @@ namespace Rubberduck.SourceControl
             _unsyncedRemoteCommits = new List<ICommit>();
         }
 
-        public GitProvider(VBProject project, IRepository repository)
-            : base(project, repository) 
+        public GitProvider(VBProject project, IRepository repository, ICodePaneWrapperFactory wrapperFactory)
+            : base(project, repository, wrapperFactory) 
         {
             _unsyncedLocalCommits = new List<ICommit>();
             _unsyncedRemoteCommits = new List<ICommit>();
@@ -39,9 +40,9 @@ namespace Rubberduck.SourceControl
                 throw new SourceControlException("Repository not found.", ex);
             }
         }
-        
-        public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
-            : this(project, repository)
+
+        public GitProvider(VBProject project, IRepository repository, string userName, string passWord, ICodePaneWrapperFactory wrapperFactory)
+            : this(project, repository, wrapperFactory)
         {
             _credentials = new UsernamePasswordCredentials()
             {
@@ -52,12 +53,12 @@ namespace Rubberduck.SourceControl
             _credentialsHandler = (url, user, cred) => _credentials;
         }
 
-        public GitProvider(VBProject project, IRepository repository, ICredentials<string> credentials)
-            :this(project, repository, credentials.Username, credentials.Password)
+        public GitProvider(VBProject project, IRepository repository, ICredentials<string> credentials, ICodePaneWrapperFactory wrapperFactory)
+            :this(project, repository, credentials.Username, credentials.Password, wrapperFactory)
         { }
 
-        public GitProvider(VBProject project, IRepository repository, ICredentials<SecureString> credentials)
-            : this(project, repository)
+        public GitProvider(VBProject project, IRepository repository, ICredentials<SecureString> credentials, ICodePaneWrapperFactory wrapperFactory)
+            : this(project, repository, wrapperFactory)
         {
             _credentials = new SecureUsernamePasswordCredentials()
             {
@@ -152,7 +153,17 @@ namespace Rubberduck.SourceControl
                     repo.Stage(stat.FilePath);
                 }
 
-                repo.Commit("Intial Commit");
+                try
+                {
+                    //The default behavior of LibGit2Sharp.Repo.Commit is to throw an exception if no signature is found,
+                    // but BuildSignature() does not throw if a signature is not found, it returns "unknown" instead.
+                    // so we pass a signature that won't throw along to the commit.
+                    repo.Commit("Intial Commit", GetSignature());
+                }
+                catch(LibGit2SharpException ex)
+                {
+                    throw new SourceControlException("Unable to perform intial commit.", ex);
+                }
             }
 
             return repository;
@@ -240,7 +251,10 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                _repo.Commit(message);
+                //The default behavior of LibGit2Sharp.Repo.Commit is to throw an exception if no signature is found,
+                // but BuildSignature() does not throw if a signature is not found, it returns "unknown" instead.
+                // so we pass a signature that won't throw along to the commit.
+                _repo.Commit(message, GetSignature());
             }
             catch (LibGit2SharpException ex)
             {

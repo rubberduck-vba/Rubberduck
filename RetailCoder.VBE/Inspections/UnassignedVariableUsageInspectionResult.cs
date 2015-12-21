@@ -8,25 +8,32 @@ namespace Rubberduck.Inspections
 {
     public class UnassignedVariableUsageInspectionResult : CodeInspectionResultBase
     {
-        public UnassignedVariableUsageInspectionResult(string inspection, CodeInspectionSeverity type,
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
+
+        public UnassignedVariableUsageInspectionResult(IInspection inspection, string result, 
             ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, type, qualifiedName, context)
+            : base(inspection, result, qualifiedName, context)
+        {
+            _quickFixes = new[]
+            {
+                new RemoveUnassignedVariableUsageQuickFix(Context, QualifiedSelection)
+            };
+        }
+
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+    }
+
+    public class RemoveUnassignedVariableUsageQuickFix : CodeInspectionQuickFix
+    {
+        public RemoveUnassignedVariableUsageQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, RubberduckUI.Inspections_RemoveUsageBreaksCode)
         {
         }
 
-        public override IDictionary<string, Action> GetQuickFixes()
+        public override void Fix()
         {
-            return
-                new Dictionary<string, Action>
-                {
-                    {RubberduckUI.Inspections_RemoveUsageBreaksCode, RemoveUsage}
-                };
-        }
-
-        private void RemoveUsage()
-        {
-            var module = QualifiedName.Component.CodeModule;
-            var selection = QualifiedSelection.Selection;
+            var module = Selection.QualifiedName.Component.CodeModule;
+            var selection = Selection.Selection;
 
             var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount)
                 .Replace(Environment.NewLine, " ")

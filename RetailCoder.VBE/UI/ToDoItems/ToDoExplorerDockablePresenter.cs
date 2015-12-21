@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -10,26 +9,28 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.ToDoItems
 {
     /// <summary>
     /// Presenter for the to-do items explorer.
     /// </summary>
-    public class ToDoExplorerDockablePresenter : DockablePresenterBase
+    public class ToDoExplorerDockablePresenter : DockableToolwindowPresenter
     {
         private readonly IRubberduckParser _parser;
         private readonly IEnumerable<ToDoMarker> _markers;
         private readonly GridViewSort<ToDoItem> _gridViewSort;
         private readonly IToDoExplorerWindow _view;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window, GridViewSort<ToDoItem> gridViewSort)
+        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window, ICodePaneWrapperFactory wrapperFactory)
             : base(vbe, addin, window)
         {
             _parser = parser;
             _markers = markers;
-            _gridViewSort = gridViewSort;
+            _gridViewSort = new GridViewSort<ToDoItem>(RubberduckUI.Priority, false);
+            _wrapperFactory = wrapperFactory;
 
             _view = window;
             _view.NavigateToDoItem += NavigateToDoItem;
@@ -46,16 +47,11 @@ namespace Rubberduck.UI.ToDoItems
 
         public async void Refresh()
         {
-            try
-            {
-                Cursor.Current = Cursors.WaitCursor;
-                var results = await GetItems();
-                _view.TodoItems = _gridViewSort.Sort(results, _gridViewSort.ColumnName, _gridViewSort.SortedAscending);
-            }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
-            }
+            Cursor.Current = Cursors.WaitCursor;
+            var results = await GetItems();
+            _view.TodoItems = _gridViewSort.Sort(results, _gridViewSort.ColumnName, _gridViewSort.SortedAscending);
+            
+            Cursor.Current = Cursors.Default;
         }
 
         private void RefreshToDoList(object sender, EventArgs e)
@@ -89,24 +85,8 @@ namespace Rubberduck.UI.ToDoItems
 
         private async Task<IOrderedEnumerable<ToDoItem>> GetItems()
         {
-            //await Task.Yield();
-
-            var items = new ConcurrentBag<ToDoItem>();
-            var projects = VBE.VBProjects.Cast<VBProject>().Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked);
-            foreach(var project in projects)
-            {
-                var modules = _parser.Parse(project, this).ComponentParseResults;
-                foreach (var module in modules)
-                {
-                    var markers = module.Comments.SelectMany(GetToDoMarkers);
-                    foreach (var marker in markers)
-                    {
-                        items.Add(marker);
-                    }
-                }
-            }
-
-            var sortedItems = items.OrderByDescending(item => item.Priority)
+            var markers = _parser.State.Comments.SelectMany(GetToDoMarkers).ToList();
+            var sortedItems = markers.OrderByDescending(item => item.Priority)
                                    .ThenBy(item => item.ProjectName)
                                    .ThenBy(item => item.ModuleName)
                                    .ThenBy(item => item.LineNumber);
@@ -130,11 +110,6 @@ namespace Rubberduck.UI.ToDoItems
                                 .Any(c => c.Name == e.SelectedItem.ModuleName)
                                 );
 
-            if (projects == null)
-            {
-                return;
-            }
-
             var firstOrDefault = projects.FirstOrDefault();
             if (firstOrDefault == null) { return; }
 
@@ -146,8 +121,8 @@ namespace Rubberduck.UI.ToDoItems
                 return;
             }
 
-            var codePane = component.CodeModule.CodePane;
-            codePane.SetSelection(e.SelectedItem.GetSelection().Selection);
+            var codePane = _wrapperFactory.Create(component.CodeModule.CodePane);
+            codePane.Selection = e.SelectedItem.GetSelection().Selection;
         }
     }
 }

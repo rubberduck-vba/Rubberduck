@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
@@ -25,19 +25,21 @@ namespace Rubberduck.Inspections
             DeclarationType.Class
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var options = parseResult.Declarations.Items
+            var results = parseResult.AllDeclarations.ToList();
+
+            var options = results
                 .Where(declaration => !declaration.IsBuiltIn 
                                       && declaration.DeclarationType == DeclarationType.ModuleOption
                                       && declaration.Context is VBAParser.OptionExplicitStmtContext)
                 .ToList();
 
-            var modules = parseResult.Declarations.Items
+            var modules = results
                 .Where(declaration => !declaration.IsBuiltIn && ModuleTypes.Contains(declaration.DeclarationType));
 
             var issues = modules.Where(module => !options.Select(option => option.Scope).Contains(module.Scope))
-                .Select(issue => new OptionExplicitInspectionResult(Description, Severity, issue.QualifiedName.QualifiedModuleName));
+                .Select(issue => new OptionExplicitInspectionResult(this, issue.QualifiedName.QualifiedModuleName));
 
             return issues;
         }

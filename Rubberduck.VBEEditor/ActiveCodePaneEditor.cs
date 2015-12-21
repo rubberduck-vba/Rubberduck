@@ -1,15 +1,17 @@
 ﻿using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.VBEditor
 {
     public class ActiveCodePaneEditor : IActiveCodePaneEditor
     {
         private readonly VBE _vbe;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public ActiveCodePaneEditor(VBE vbe)
+        public ActiveCodePaneEditor(VBE vbe, ICodePaneWrapperFactory wrapperFactory)
         {
             _vbe = vbe;
+            _wrapperFactory = wrapperFactory;
         }
 
         private CodeModule Editor { get { return _vbe.ActiveCodePane == null ? null : _vbe.ActiveCodePane.CodeModule; } }
@@ -21,11 +23,30 @@ namespace Rubberduck.VBEditor
                 return null;
             }
 
-            return Editor.CodePane.GetSelection();
+            var codePane = _wrapperFactory.Create(Editor.CodePane);
+            return new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
+        }
+
+        public void SetSelection(Selection selection)
+        {
+            if (Editor == null)
+            {
+                return;
+            }
+
+            var codePane = _wrapperFactory.Create(Editor.CodePane);
+            codePane.Selection = selection;
+        }
+
+        public void SetSelection(QualifiedSelection selection)
+        {
+            _vbe.ActiveCodePane = selection.QualifiedName.Component.CodeModule.CodePane;
+            SetSelection(selection.Selection);
         }
 
         public string GetLines(Selection selection)
         {
+            // ReSharper disable once UseIndexedProperty
             return Editor.get_Lines(selection.StartLine, selection.LineCount);
         }
 

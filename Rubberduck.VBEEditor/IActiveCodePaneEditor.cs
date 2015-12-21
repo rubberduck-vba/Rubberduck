@@ -15,6 +15,18 @@
         QualifiedSelection? GetSelection();
 
         /// <summary>
+        /// Sets the current selection in the active code pane, and forces focus.
+        /// </summary>
+        /// <param name="selection"></param>
+        void SetSelection(Selection selection);
+
+        /// <summary>
+        /// Sets the current selection, and forces focus.
+        /// </summary>
+        /// <param name="selection"></param>
+        void SetSelection(QualifiedSelection selection);
+
+        /// <summary>
         /// Gets the scope of the selected procedure.
         /// Returns <c>null</c> if selection spans more than a single procedure.
         /// </summary>

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
@@ -10,8 +10,8 @@ namespace Rubberduck.Inspections
 {
     public abstract class CodeInspectionResultBase : ICodeInspectionResult
     {
-        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, Declaration target)
-            : this(inspection, type, target.QualifiedName.QualifiedModuleName, null)
+        protected CodeInspectionResultBase(IInspection inspection, string result, Declaration target)
+            : this(inspection, result, target.QualifiedName.QualifiedModuleName, null)
         {
             _target = target;
         }
@@ -19,33 +19,30 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Creates a comment inspection result.
         /// </summary>
-        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, CommentNode comment)
-            : this(inspection, type, comment.QualifiedSelection.QualifiedName, null, comment)
+        protected CodeInspectionResultBase(IInspection inspection, string result, CommentNode comment)
+            : this(inspection, result, comment.QualifiedSelection.QualifiedName, null, comment)
         { }
 
         /// <summary>
         /// Creates an inspection result.
         /// </summary>
-        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
+        protected CodeInspectionResultBase(IInspection inspection, string result, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
         {
-            _name = inspection;
-            _type = type;
+            _inspection = inspection;
+            _name = result;
             _qualifiedName = qualifiedName;
             _context = context;
             _comment = comment;
         }
+
+        private readonly IInspection _inspection;
+        public IInspection Inspection { get { return _inspection; } }
 
         private readonly string _name;
         /// <summary>
         /// Gets a string containing the name of the code inspection.
         /// </summary>
         public string Name { get { return _name; } }
-
-        private readonly CodeInspectionSeverity _type;
-        /// <summary>
-        /// Gets the severity of the code issue.
-        /// </summary>
-        public CodeInspectionSeverity Severity { get { return _type; } }
 
         private readonly QualifiedModuleName _qualifiedName;
         protected QualifiedModuleName QualifiedName { get { return _qualifiedName; } }
@@ -62,7 +59,7 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
         /// </summary>
-        public virtual QualifiedSelection QualifiedSelection
+        public QualifiedSelection QualifiedSelection
         {
             get
             {
@@ -79,9 +76,22 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Gets all available "quick fixes" for a code inspection result.
         /// </summary>
-        /// <returns>Returns a <c>Dictionary&lt;string&gt;, Action&lt;VBE&gt;</c>
-        /// where the keys are descriptions for each quick fix, and
-        /// each value is a parameterless method returning <c>void</c>.</returns>
-        public abstract IDictionary<string, Action> GetQuickFixes();
+        public virtual IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return new CodeInspectionQuickFix[] {}; } }
+
+        public bool HasQuickFixes { get { return QuickFixes.Any(); } }
+
+        public virtual CodeInspectionQuickFix DefaultQuickFix { get { return QuickFixes.FirstOrDefault(); } }
+
+        public override string ToString()
+        {
+            var module = QualifiedSelection.QualifiedName;
+            return string.Format(
+                "{0}: {1} - {2}.{3}, line {4}",
+                Inspection.Severity,
+                Name,
+                module.ProjectName,
+                module.ComponentName,
+                QualifiedSelection.Selection.StartLine);
+        }
     }
 }

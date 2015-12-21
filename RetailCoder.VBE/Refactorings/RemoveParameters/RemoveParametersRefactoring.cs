@@ -1,13 +1,14 @@
-﻿using Microsoft.Vbe.Interop;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime.Misc;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.RemoveParameters
@@ -15,11 +16,13 @@ namespace Rubberduck.Refactorings.RemoveParameters
     public class RemoveParametersRefactoring : IRefactoring
     {
         private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
+        private readonly IActiveCodePaneEditor _editor;
         private RemoveParametersModel _model;
 
-        public RemoveParametersRefactoring(IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
+        public RemoveParametersRefactoring(IRefactoringPresenterFactory<IRemoveParametersPresenter> factory, IActiveCodePaneEditor editor)
         {
             _factory = factory;
+            _editor = editor;
         }
 
         public void Refactor()
@@ -41,7 +44,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public void Refactor(QualifiedSelection target)
         {
-            target.Select();
+            _editor.SetSelection(target);
             Refactor();
         }
 
@@ -52,13 +55,13 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            target.QualifiedSelection.Select();
+            _editor.SetSelection(target.QualifiedSelection);
             Refactor();
         }
 
-        public void QuickFix(VBProjectParseResult parseResult, QualifiedSelection selection)
+        public void QuickFix(RubberduckParserState parseResult, QualifiedSelection selection)
         {
-            _model = new RemoveParametersModel(parseResult, selection, new RubberduckMessageBox());
+            _model = new RemoveParametersModel(parseResult, selection, new MessageBox());
             var target = _model.Declarations.FindSelection(selection, new[] { DeclarationType.Parameter });
 
             // ReSharper disable once PossibleUnintendedReferenceComparison
@@ -148,13 +151,12 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private string GetOldSignature(Declaration target)
         {
-            var targetModule = _model.ParseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == target.QualifiedName.QualifiedModuleName);
-            if (targetModule == null)
+            var module = target.QualifiedName.QualifiedModuleName.Component;
+            if (module == null)
             {
-                return null;
+                throw new InvalidOperationException("Component is null for specified target.");
             }
-
-            var rewriter = targetModule.GetRewriter();
+            var rewriter = _model.ParseResult.GetRewriter(module);
 
             var context = target.Context;
             var firstTokenIndex = context.Start.TokenIndex;
@@ -263,13 +265,14 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             RemoveSignatureParameters(_model.TargetDeclaration, paramList, module);
 
-            foreach (var withEvents in _model.Declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName))
+            var eventImplementations =
+                _model.Declarations.Where(
+                    item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName)
+                    .SelectMany(withEvents => _model.Declarations.FindEventProcedures(withEvents));
+            foreach (var eventImplementation in eventImplementations)
             {
-                foreach (var reference in _model.Declarations.FindEventProcedures(withEvents))
-                {
-                    AdjustReferences(reference.References, reference);
-                    AdjustSignatures(reference);
-                }
+                AdjustReferences(eventImplementation.References, eventImplementation);
+                AdjustSignatures(eventImplementation);
             }
 
             var interfaceImplementations = _model.Declarations.FindInterfaceImplementationMembers()
@@ -284,7 +287,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
         {
-            return _model.Declarations.Items.FirstOrDefault(item => item.Scope == declaration.Scope &&
+            return _model.Declarations.FirstOrDefault(item => item.Scope == declaration.Scope &&
                               item.IdentifierName == declaration.IdentifierName &&
                               item.DeclarationType == declarationType);
         }

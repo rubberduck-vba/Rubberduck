@@ -9,27 +9,34 @@ namespace Rubberduck.Inspections
 {
     public class ParameterCanBeByValInspectionResult : CodeInspectionResultBase
     {
-        public ParameterCanBeByValInspectionResult(string inspection, CodeInspectionSeverity type,
-            ParserRuleContext context, QualifiedMemberName qualifiedName)
-            : base(inspection, type, qualifiedName.QualifiedModuleName, context)
-        {
-        }
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public override IDictionary<string, Action> GetQuickFixes()
+        public ParameterCanBeByValInspectionResult(IInspection inspection, string result, ParserRuleContext context, QualifiedMemberName qualifiedName)
+            : base(inspection, result, qualifiedName.QualifiedModuleName, context)
         {
-            return new Dictionary<string, Action>
+            _quickFixes = new[]
             {
-                {RubberduckUI.Inspections_PassParamByValue, PassParameterByValue}
+                new PassParameterByValueQuickFix(Context, QualifiedSelection), 
             };
         }
 
-        private void PassParameterByValue()
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+    }
+
+    public class PassParameterByValueQuickFix : CodeInspectionQuickFix
+    {
+        public PassParameterByValueQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, RubberduckUI.Inspections_PassParamByValue)
+        {
+        }
+
+        public override void Fix()
         {
             var parameter = Context.Parent.GetText();
             var newContent = string.Concat(Tokens.ByVal, " ", parameter.Replace(Tokens.ByRef, string.Empty).Trim());
-            var selection = QualifiedSelection.Selection;
+            var selection = Selection.Selection;
 
-            var module = QualifiedName.Component.CodeModule;
+            var module = Selection.QualifiedName.Component.CodeModule;
             var lines = module.get_Lines(selection.StartLine, selection.LineCount);
 
             var result = lines.Replace(parameter, newContent);

@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace Rubberduck.UI.SourceControl
 {
-    partial class UnSyncedCommitsControl
+    partial class UnsyncedCommitsControl
     {
         /// <summary> 
         /// Required designer variable.

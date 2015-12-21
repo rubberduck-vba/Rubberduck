@@ -12,11 +12,11 @@
 
 Rubberduck is a COM Add-In for the VBA IDE that makes VBA development even more enjoyable, by extending the Visual Basic Editor (VBE) with menus, toolbars and toolwindows that enable things we didn't even think were possible when we first started this project.
 
-If you're learning VBA, Rubberduck can help you avoid a few common beginner mistakes, and can probably show you a trick or two - even if you're only ever writing *macros*. If you're a more advanced programmer, you will appreciate the richness of [Rubberduck's feature set](https://github.com/retailcoder/Rubberduck/wiki/Features).
+If you're learning VBA, Rubberduck can help you avoid a few common beginner mistakes, and can probably show you a trick or two - even if you're only ever writing *macros*. If you're a more advanced programmer, you will appreciate the richness of [Rubberduck's feature set](https://github.com/rubberduck-vba/Rubberduck/wiki/Features).
 
 [**Follow us on Twitter!**](https://twitter.com/rubberduckvba)
 
-[**Rubberduck Wiki**](https://github.com/retailcoder/Rubberduck/wiki)
+[**Rubberduck Wiki**](https://github.com/rubberduck-vba/Rubberduck/wiki)
 
 ---
 
@@ -32,9 +32,9 @@ We follow a [development branch workflow][branch], so please submit any Pull Req
 There is additonal information about [building the project in our wiki][install].
 
   [chat]:http://chat.stackexchange.com/rooms/14929/vba
-  [helpwanted]:https://github.com/retailcoder/Rubberduck/labels/help-wanted
-  [install]:https://github.com/retailcoder/Rubberduck/wiki/Building-&-Installation
-  [branch]:https://github.com/retailcoder/Rubberduck/issues/288
+  [helpwanted]:https://github.com/rubberduck-vba/Rubberduck/labels/help-wanted
+  [install]:https://github.com/rubberduck-vba/Rubberduck/wiki/Building-&-Installation
+  [branch]:https://github.com/rubberduck-vba/Rubberduck/issues/288
 
 ---
 
@@ -61,7 +61,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 #Installation
 
-Visit our releases page, [download the installer](https://github.com/retailcoder/Rubberduck/releases/latest), and run the Setup.exe.
+Visit our releases page, [download the installer](https://github.com/rubberduck-vba/Rubberduck/releases/latest), and run the Setup.exe.
 
 If you're **upgrading** from version 1.0, you will need to completely uninstall it before installing the newest release. This isn't necessary when upgrading from newer versions. Also, be sure to back up the `rubberduck.config` file in the `\AppData\Roaming\Rubberduck\` directory prior to installation.
 
@@ -71,7 +71,7 @@ If you're **upgrading** from version 1.0, you will need to completely uninstall 
 - .Net Framework 4.5
 - Microsoft Office 97-2003 or higher
 
-Please feel free to test it on other versions and [submit any bugs on our issue tracker](https://github.com/retailcoder/Rubberduck/issues).
+Please feel free to test it on other versions and [submit any bugs on our issue tracker](https://github.com/rubberduck-vba/Rubberduck/issues).
 
 **Note:** The 1.2 installer doesn't work for 64 bit versions of office. You can find the [work around here](https://rubberduckvba.wordpress.com/2015/03/11/64-bit-rubberduck-a-work-around-until-release-1-21-soon/).
 
@@ -105,6 +105,16 @@ LibGit2Sharp is the library that has allowed us to integrate Git right into the 
 
 Which basically means it's a reimplementation of Git in C. It also [happens to be the technology Microsoft uses for their own Git integration with Visual Studio](http://www.hanselman.com/blog/GitSupportForVisualStudioGitTFSAndVSPutIntoContext.aspx).
 
+###[Smart Indenter](http://www.oaltd.co.uk/Indenter/)
+
+**What is Smart Indenter?**
+
+> *The Smart Indenter is a utility to tidy up VBA code by rebuilding the indentation of each line. Most developers naturally indent code within control structures, such as For...Next, If...End If, etc. Many developers also indent all the code within a procedure, to ease identification of line labels, error handling blocks etc. From that point on, there is much more variety in indenting styles, ranging from how to treat declaration lines to handling end-of-line comments.*
+
+The Rubberduck project was graciously offered the source code for this formidable tool by Stephen Bullen and Rob Bovey. We've translated the VB6 source code to C# and embedded a managed indenting API that Rubberduck calls into, while decoupling the indenter logic from the Windows Registry so we could store indenter options together with the Rubberduck settings, and configure the indenter from Rubberduck's options dialog.
+
+If you're already using Smart Indenter, Rubberduck's options dialog allow importing the settings from the registry. If we did our part well, you can uninstall Smart Indenter after installing Rubberduck 2.0, and still benefit from the smartest indenting tool available for VBA.
+
 ##Icons
 
 We didn't come up with these icons ourselves! Here's who did what:
@@ -123,7 +133,7 @@ Icons in the `./Resources/Microsoft/` directory are licensed under Microsoft's S
 
 > You have a right to Use and Distribute these files. This means that you are free to copy and use these images in documents and projects that you create, but you may not modify them in anyway.
 
-For more information, please see the EULAs in the [./Resources/Microsoft/ directory](https://github.com/retailcoder/Rubberduck/tree/master/RetailCoder.VBE/Resources/Microsoft).
+For more information, please see the EULAs in the [./Resources/Microsoft/ directory](https://github.com/rubberduck-vba/Rubberduck/tree/master/RetailCoder.VBE/Resources/Microsoft).
 
- * [Visual Studio 2013 Image Library EULA](https://github.com/retailcoder/Rubberduck/blob/master/RetailCoder.VBE/Resources/Microsoft/Visual%20Studio%202013%20Image%20Library%20EULA.rtf)
- * [Visual Studio 2012 Image Library EULA](https://github.com/retailcoder/Rubberduck/blob/master/RetailCoder.VBE/Resources/Microsoft/Visual%20Studio%202012%20Image%20Library%20EULA.rtf)
+ * [Visual Studio 2013 Image Library EULA](https://github.com/rubberduck-vba/Rubberduck/blob/master/RetailCoder.VBE/Resources/Microsoft/Visual%20Studio%202013%20Image%20Library%20EULA.rtf)
+ * [Visual Studio 2012 Image Library EULA](https://github.com/rubberduck-vba/Rubberduck/blob/master/RetailCoder.VBE/Resources/Microsoft/Visual%20Studio%202012%20Image%20Library%20EULA.rtf)

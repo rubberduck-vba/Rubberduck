@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
@@ -18,15 +19,10 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var issues = parseResult.Declarations.Items
-                .Where(item => !item.IsBuiltIn)
-                .SelectMany(item =>
-                item.References.Where(reference => reference.HasExplicitLetStatement))
-                .Select(issue => new ObsoleteLetStatementUsageInspectionResult(Description, Severity, new QualifiedContext<ParserRuleContext>(issue.QualifiedModuleName, issue.Context)));
-
-            return issues;
+            return parseResult.ObsoleteLetContexts.Select(context =>
+                new ObsoleteLetStatementUsageInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }
     }
 }

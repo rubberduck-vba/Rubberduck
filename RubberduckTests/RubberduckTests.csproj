@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\LibGit2Sharp.0.22.0-pre20150516171636\build\net40\LibGit2Sharp.props" Condition="Exists('..\packages\LibGit2Sharp.0.22.0-pre20150516171636\build\net40\LibGit2Sharp.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -37,6 +37,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -146,23 +147,22 @@
     <Reference Include="Microsoft.Vbe.Interop.Forms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.2.1409.1722\lib\net40\Moq.dll</HintPath>
+    <Reference Include="Moq, Version=4.2.1507.118, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Ninject">
       <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Office, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\libs\Office.dll</HintPath>
-    </Reference>
-    <Reference Include="Rubberduck">
-      <HintPath>..\RetailCoder.VBE\obj\Debug\Rubberduck.dll</HintPath>
-    </Reference>
-    <Reference Include="Rubberduck.Parsing">
-      <HintPath>..\Rubberduck.Parsing\obj\Debug\Rubberduck.Parsing.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
@@ -180,11 +180,32 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Inspections\AssignedByValParameterInspectionTests.cs" />
+    <Compile Include="Inspections\ConstantNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\DefaultProjectNameInspectionTests.cs" />
+    <Compile Include="Inspections\ImplicitByRefParameterInspectionTests.cs" />
+    <Compile Include="Inspections\ImplicitPublicMemberInspectionTests.cs" />
+    <Compile Include="Inspections\ImplicitVariantReturnTypeInspectionTests.cs" />
+    <Compile Include="Inspections\MultilineParameterInspectionTests.cs" />
+    <Compile Include="Inspections\MultipleDeclarationsInspectionTests.cs" />
+    <Compile Include="Inspections\NonReturningFunctionInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteCallStatementInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteCommentSyntaxInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteGlobalInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteLetStatementInspectionTests.cs" />
+    <Compile Include="Inspections\OptionExplicitInspectionTests.cs" />
+    <Compile Include="Inspections\ParameterCanBeByValInspectionTests.cs" />
+    <Compile Include="Inspections\ParameterNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\ProcedureNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\VariableIsNeverAssignedInspectionTests.cs" />
+    <Compile Include="Inspections\VariableNeverUsedInspectionTests.cs" />
+    <Compile Include="Inspections\VariableTypeNotDeclaredInspectionTests.cs" />
     <Compile Include="Mocks\MockProjectBuilder.cs" />
     <Compile Include="Mocks\MockFactory.cs" />
     <Compile Include="Mocks\MockUserFormBuilder.cs" />
     <Compile Include="Mocks\MockWindowsCollection.cs" />
     <Compile Include="Mocks\MockVbeBuilder.cs" />
+    <Compile Include="Refactoring\PromoteLocalToParameter.cs" />
     <Compile Include="VbeTestBase.cs" />
     <Compile Include="Refactoring\RemoveParametersTests.cs" />
     <Compile Include="Refactoring\RenameTests.cs" />
@@ -199,10 +220,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConfigurationTests.cs" />
     <Compile Include="UnitTesting\AssertTests.cs" />
-    <Compile Include="CodeInspectionTests.cs" />
+    <Compile Include="RubberduckParserTests.cs" />
     <Compile Include="TodoControllerTests.cs" />
     <Compile Include="ComponentTypeExtensionTests.cs" />
-    <Compile Include="UI\Refactorings\Rename\RenamePresenterTests.cs" />
     <Compile Include="SourceControl\SourceControlTests.cs" />
     <Compile Include="SourceControlConfig.cs" />
     <Compile Include="UnitTesting\EngineTests.cs" />
@@ -212,19 +232,21 @@
       <Project>{20589de8-432e-4359-9232-69eb070b7185}</Project>
       <Name>Rubberduck</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
+      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
+      <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
+      <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
+      <Name>Rubberduck.SourceControl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
-      <Project>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</Project>
+      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
-      <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
-      <Name>Rubberduck.SourceControl</Name>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

@@ -1,177 +1,65 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using NLog;
-using Rubberduck.Logging;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBA;
 
 namespace Rubberduck.Parsing.VBA
 {
     public class RubberduckParser : IRubberduckParser
     {
-        private static readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> ParseResultCache = 
-            new ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult>();
-
-        private static bool _isParsing;
-
-        private readonly Logger _logger;
-
-        public RubberduckParser()
+        public RubberduckParser(RubberduckParserState state)
         {
-#if DEBUG
-            LoggingConfigurator.ConfigureParserLogger();
-#endif
-            _logger = LogManager.GetCurrentClassLogger();
-            
+            _state = state;
         }
 
-        public void RemoveProject(VBProject project)
+        private readonly RubberduckParserState _state;
+        public RubberduckParserState State { get { return _state; } }
+
+        public Task ParseAsync(VBComponent vbComponent, CancellationToken token)
         {
-            foreach (var key in ParseResultCache.Keys.Where(k => k.Project.Equals(project)))
-            {
-                VBComponentParseResult result;
-                ParseResultCache.TryRemove(key, out result);
-            }
-        }
+            var component = vbComponent;
 
-        public VBProjectParseResult Parse(VBProject project, object owner = null)
-        {
-            if (owner != null)
-            {
-                OnParseStarted(new[]{project.Name}, owner);
-            }
+            token.ThrowIfCancellationRequested();
+            var parseTask = Task.Run(() => ParseInternal(component, token), token);
 
-            var results = new List<VBComponentParseResult>();
-            if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
-            {
-                return new VBProjectParseResult(project, results);
-            }
-
-            var modules = project.VBComponents.Cast<VBComponent>();
-            var mustResolve = false;
-            foreach (var vbComponent in modules)
-            {
-                OnParseProgress(vbComponent);
-
-                bool fromCache;
-                var componentResult = Parse(vbComponent, out fromCache);
-
-                if (componentResult != null)
-                {
-                    mustResolve = mustResolve || !fromCache;
-                    results.Add(componentResult);
-                }
-            }
-
-            var parseResult = new VBProjectParseResult(project, results);
-            if (mustResolve)
-            {
-                parseResult.Progress += parseResult_Progress;
-                parseResult.Resolve();
-                parseResult.Progress -= parseResult_Progress;
-            }
-            if (owner != null)
-            {
-                OnParseCompleted(new[] {parseResult}, owner);
-            }
-
-            return parseResult;
-        }
-
-        private void parseResult_Progress(object sender, ResolutionProgressEventArgs e)
-        {
-            OnResolveProgress(e.Component);
-        }
-
-        public IParseTree Parse(string code, out ITokenStream outStream)
-        {
-            var input = new AntlrInputStream(code);
-            var lexer = new VBALexer(input);
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new VBAParser(tokens);
-            parser.AddErrorListener(new ExceptionErrorListener());
-            outStream = tokens;
-
-            var result = parser.startRule();
-            return result;
-        }
-
-        private VBComponentParseResult Parse(VBComponent component, out bool cached)
-        {
             try
             {
-                VBComponentParseResult cachedValue;
-                var name = new QualifiedModuleName(component); // already a performance hit
-                if (ParseResultCache.TryGetValue(name, out cachedValue))
-                {
-                    cached = true;
-                    return cachedValue;
-                }
-
-                var codeModule = component.CodeModule;
-                var lines = codeModule.Lines();
-
-                ITokenStream stream;
-                var parseTree = Parse(lines, out stream);
-                var comments = ParseComments(name);
-                var result = new VBComponentParseResult(component, parseTree, comments, stream);
-
-                var existing = ParseResultCache.Keys.SingleOrDefault(k => k.Project == name.Project && k.ComponentName == name.ComponentName);
-                VBComponentParseResult removed;
-                ParseResultCache.TryRemove(existing, out removed);
-                ParseResultCache.AddOrUpdate(name, module => result, (qName, module) => result);
-
-                cached = false;
-                return result;
+                token.ThrowIfCancellationRequested();
+                parseTask.Wait(token);
             }
             catch (SyntaxErrorException exception)
             {
-                OnParserError(exception, component);
-                cached = false;
-                return null;
+                State.SetModuleState(component, ParserState.Error, exception);
             }
-            catch (COMException)
+            catch (OperationCanceledException)
             {
-                cached = false;
-                return null;
+                // no need to blow up
             }
+
+            return null;
         }
 
-        public event EventHandler<ParseErrorEventArgs> ParserError;
-
-        private void OnParserError(SyntaxErrorException exception, VBComponent component)
+        public void Resolve(CancellationToken token)
         {
-            if (LogManager.IsLoggingEnabled())
+            var options = new ParallelOptions { CancellationToken = token };
+            Parallel.ForEach(_state.ParseTrees, options, kvp =>
             {
-                LogParseException(exception, component);
-            }
-
-            var handler = ParserError;
-            if (handler != null)
-            {
-                handler(this, new ParseErrorEventArgs(exception, component));
-            }
-        }
-
-        private void LogParseException(SyntaxErrorException exception, VBComponent component)
-        {
-            var offendingProject = component.Collection.Parent.Name;
-            var offendingComponent = component.Name;
-            var offendingLine = component.CodeModule.get_Lines(exception.LineNumber, 1);
-
-            var message = string.Format("Parser encountered a syntax error in {0}.{1}, line {2}. Content: '{3}'", offendingProject, offendingComponent, exception.LineNumber, offendingLine);
-            _logger.ErrorException(message, exception);
+                token.ThrowIfCancellationRequested();
+                ResolveReferences(kvp.Key, kvp.Value, token);
+            });
         }
 
         private IEnumerable<CommentNode> ParseComments(QualifiedModuleName qualifiedName)
@@ -185,7 +73,7 @@ namespace Rubberduck.Parsing.VBA
 
             for (var i = 0; i < code.Length; i++)
             {
-                var line = code[i];                
+                var line = code[i];
                 var index = 0;
 
                 if (continuing || line.HasComment(out index))
@@ -203,71 +91,146 @@ namespace Rubberduck.Parsing.VBA
 
                         var result = new CommentNode(commentBuilder.ToString(), new QualifiedSelection(qualifiedName, selection));
                         commentBuilder.Clear();
-                        
+
                         yield return result;
                     }
                     else
                     {
                         // ignore line continuations in comment text:
-                        commentBuilder.Append(line.Substring(index, commentLength).TrimStart()); 
+                        commentBuilder.Append(line.Substring(index, commentLength).TrimStart());
                     }
                 }
             }
         }
 
-        public event EventHandler<ParseStartedEventArgs> ParseStarted;
-        private void OnParseStarted(IEnumerable<string> projectNames, object owner)
+        private void ParseInternal(VBComponent vbComponent, CancellationToken token)
         {
-            var handler = ParseStarted;
-            if (handler != null)
+            _state.ClearDeclarations(vbComponent);
+            State.SetModuleState(vbComponent, ParserState.Parsing);
+
+            var qualifiedName = new QualifiedModuleName(vbComponent);
+            _state.SetModuleComments(vbComponent, ParseComments(qualifiedName));
+
+            var obsoleteCallsListener = new ObsoleteCallStatementListener();
+            var obsoleteLetListener = new ObsoleteLetStatementListener();
+
+            var listeners = new IParseTreeListener[]
             {
-                handler(owner, new ParseStartedEventArgs(projectNames));
+                obsoleteCallsListener,
+                obsoleteLetListener
+            };
+
+            token.ThrowIfCancellationRequested();
+
+            ITokenStream stream;
+            var code = string.Join("\r\n", vbComponent.CodeModule.Code());
+            var tree = ParseInternal(code, listeners, out stream);
+
+            token.ThrowIfCancellationRequested();
+            _state.AddTokenStream(vbComponent, stream);
+            _state.AddParseTree(vbComponent, tree);
+
+            // cannot locate declarations in one pass *the way it's currently implemented*,
+            // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
+            // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
+            var declarationsListener = new DeclarationSymbolsListener(qualifiedName, Accessibility.Implicit, vbComponent.Type, _state.Comments, token);
+
+            token.ThrowIfCancellationRequested();
+            declarationsListener.NewDeclaration += declarationsListener_NewDeclaration;
+            declarationsListener.CreateModuleDeclarations();
+
+            token.ThrowIfCancellationRequested();
+            var walker = new ParseTreeWalker();
+            walker.Walk(declarationsListener, tree);
+            declarationsListener.NewDeclaration -= declarationsListener_NewDeclaration;
+
+            _state.ObsoleteCallContexts = obsoleteCallsListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
+            _state.ObsoleteLetContexts = obsoleteLetListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
+
+            State.SetModuleState(vbComponent, ParserState.Parsed);
+        }
+
+        private IParseTree ParseInternal(string code, IEnumerable<IParseTreeListener> listeners, out ITokenStream outStream)
+        {
+            var input = new AntlrInputStream(code);
+            var lexer = new VBALexer(input);
+            var tokens = new CommonTokenStream(lexer);
+            var parser = new VBAParser(tokens);
+
+            parser.AddErrorListener(new ExceptionErrorListener());
+            foreach (var listener in listeners)
+            {
+                parser.AddParseListener(listener);
+            }
+
+            outStream = tokens;
+            return parser.startRule();
+        }
+
+        private void declarationsListener_NewDeclaration(object sender, DeclarationEventArgs e)
+        {
+             _state.AddDeclaration(e.Declaration);
+        }
+
+        private void ResolveReferences(VBComponent component, IParseTree tree, CancellationToken token)
+        {
+            if (_state.GetModuleState(component) != ParserState.Parsed)
+            {
+                return;
+            }
+
+            _state.SetModuleState(component, ParserState.Resolving);
+
+            var resolver = new IdentifierReferenceResolver(new QualifiedModuleName(component), _state.AllDeclarations);
+            var listener = new IdentifierReferenceListener(resolver, token);
+            var walker = new ParseTreeWalker();
+            try
+            {
+                walker.Walk(listener, tree);
+            }
+            catch(WalkerCancelledException)
+            {
+                // move on
+            }
+
+            _state.SetModuleState(component, ParserState.Ready);
+        }
+
+        private class ObsoleteCallStatementListener : VBABaseListener
+        {
+            private readonly IList<VBAParser.ExplicitCallStmtContext> _contexts = new List<VBAParser.ExplicitCallStmtContext>();
+            public IEnumerable<VBAParser.ExplicitCallStmtContext> Contexts { get { return _contexts; } }
+
+            public override void EnterExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
+            {
+                var procedureCall = context.eCS_ProcedureCall();
+                if (procedureCall != null)
+                {
+                    if (procedureCall.CALL() != null)
+                    {
+                        _contexts.Add(context);
+                        return;
+                    }
+                }
+
+                var memberCall = context.eCS_MemberProcedureCall();
+                if (memberCall == null) return;
+                if (memberCall.CALL() == null) return;
+                _contexts.Add(context);
             }
         }
 
-        public event EventHandler<ResolutionProgressEventArgs> ResolutionProgress;
-        private void OnResolveProgress(VBComponent component)
+        private class ObsoleteLetStatementListener : VBABaseListener
         {
-            var handler = ResolutionProgress;
-            if (handler != null)
+            private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
+            public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
+
+            public override void EnterLetStmt(VBAParser.LetStmtContext context)
             {
-                handler(this, new ResolutionProgressEventArgs(component));
-            }
-        }
-
-        public event EventHandler<ParseProgressEventArgs> ParseProgress;
-        private void OnParseProgress(VBComponent component)
-        {
-            var handler = ParseProgress;
-            if (handler != null)
-            {
-                handler(this, new ParseProgressEventArgs(component));
-            }
-        }
-
-        public event EventHandler<ParseCompletedEventArgs> ParseCompleted;
-        private void OnParseCompleted(IEnumerable<VBProjectParseResult> results, object owner)
-        {
-            var handler = ParseCompleted;
-            if (handler != null)
-            {
-                handler(owner, new ParseCompletedEventArgs(results));
-            }
-
-            _isParsing = false;
-        }
-
-        public void Parse(VBE vbe, object owner)
-        {
-            if (!_isParsing)
-            {
-                _isParsing = true;
-
-                var projects = vbe.VBProjects.Cast<VBProject>().ToList();
-                OnParseStarted(projects.Select(project => project.Name), owner);
-
-                var results = projects.AsParallel().Select(project => Parse(project)).ToList();
-                OnParseCompleted(results, owner);
+                if (context.LET() != null)
+                {
+                    _contexts.Add(context);
+                }
             }
         }
     }

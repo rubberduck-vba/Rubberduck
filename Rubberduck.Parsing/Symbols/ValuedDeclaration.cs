@@ -8,16 +8,16 @@ namespace Rubberduck.Parsing.Symbols
         /// <summary>
         /// Creates a new valued built-in declaration.
         /// </summary>
-        public ValuedDeclaration(QualifiedMemberName qualifiedName, string parentScope,
+        public ValuedDeclaration(QualifiedMemberName qualifiedName, Declaration parentDeclaration, string parentScope,
             string asTypeName, Accessibility accessibility, DeclarationType declarationType, string value)
-            : this(qualifiedName, parentScope, asTypeName, accessibility, declarationType, value, null, Selection.Home, true)
+            : this(qualifiedName, parentDeclaration, parentScope, asTypeName, accessibility, declarationType, value, null, Selection.Home, true)
         {
         }
 
-        public ValuedDeclaration(QualifiedMemberName qualifiedName, string parentScope,
-            string asTypeName, Accessibility accessibility, DeclarationType declarationType, string value, 
+        public ValuedDeclaration(QualifiedMemberName qualifiedName, Declaration parentDeclaration, string parentScope,
+            string asTypeName, Accessibility accessibility, DeclarationType declarationType, string value,
             ParserRuleContext context, Selection selection, bool isBuiltIn = false)
-            :base(qualifiedName, parentScope, asTypeName, true, false, accessibility, declarationType, context, selection, isBuiltIn)
+            :base(qualifiedName, parentDeclaration, parentScope, asTypeName, true, false, accessibility, declarationType, context, selection, isBuiltIn)
         {
             _value = value;
         }

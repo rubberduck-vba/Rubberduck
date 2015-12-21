@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Moq;
+using Rubberduck.Parsing.Grammar;
 
 namespace RubberduckTests.Mocks
 {
@@ -13,17 +14,21 @@ namespace RubberduckTests.Mocks
     public class MockProjectBuilder
     {
         private readonly Func<VBE> _getVbe;
+        private readonly MockVbeBuilder _mockVbeBuilder;
         private readonly Mock<VBProject> _project;
         private readonly Mock<VBComponents> _vbComponents;
         private readonly Mock<References> _vbReferences;
 
-        private readonly ICollection<Mock<VBComponent>> _components = new List<Mock<VBComponent>>();
-        private readonly ICollection<Mock<Reference>> _references = new List<Mock<Reference>>(); 
+        private readonly List<VBComponent> _components = new List<VBComponent>();
+        private readonly List<Reference> _references = new List<Reference>(); 
 
-        public MockProjectBuilder(string name, vbext_ProjectProtection protection, Func<VBE> getVbe)
+        public MockProjectBuilder(string name, vbext_ProjectProtection protection, Func<VBE> getVbe, MockVbeBuilder mockVbeBuilder)
         {
             _getVbe = getVbe;
-            
+            _mockVbeBuilder = mockVbeBuilder;
+
+
+
             _project = CreateProjectMock(name, protection);
 
             _vbComponents = CreateComponentsMock();
@@ -49,13 +54,14 @@ namespace RubberduckTests.Mocks
         /// <summary>
         /// Adds a new mock component to the project.
         /// Use the <see cref="AddComponent(string,vbext_ComponentType,string)"/> overload to add module components.
-        /// Use this overload to add user forms created with a <see cref="MockUserFormBuilder"/> instance.
+        /// Use this overload to add user forms created with a <see cref="RubberduckTests.Mocks.MockUserFormBuilder"/> instance.
         /// </summary>
         /// <param name="component">The component to add.</param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
         public MockProjectBuilder AddComponent(Mock<VBComponent> component)
         {
-            _components.Add(component);
+            _components.Add(component.Object);
+            _getVbe().ActiveCodePane = component.Object.CodeModule.CodePane;
             return this;            
         }
 
@@ -64,22 +70,36 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="name">The name of the referenced library.</param>
         /// <param name="filePath">The path to the referenced library.</param>
+        /// <param name="isBuiltIn">Indicates whether the reference is a built-in reference.</param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
-        public MockProjectBuilder AddReference(string name, string filePath)
+        public MockProjectBuilder AddReference(string name, string filePath, bool isBuiltIn = false)
         {
-            _references.Add(CreateReferenceMock(name, filePath));
+            var reference = CreateReferenceMock(name, filePath, isBuiltIn);
+            _references.Add(reference.Object);
             return this;
         }
 
         /// <summary>
-        /// Creates a <see cref="MockUserFormBuilder"/> to build a new form component.
+        /// Builds the project, adds it to the VBE,
+        /// and returns a <see cref="MockVbeBuilder"/>
+        /// to continue adding projects to the VBE.
+        /// </summary>
+        /// <returns></returns>
+        public MockVbeBuilder MockVbeBuilder()
+        {
+            _mockVbeBuilder.AddProject(Build());
+            return _mockVbeBuilder;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="RubberduckTests.Mocks.MockUserFormBuilder"/> to build a new form component.
         /// </summary>
         /// <param name="name">The name of the component.</param>
         /// <param name="content">The VBA code associated to the component.</param>
-        public MockUserFormBuilder UserFormBuilder(string name, string content)
+        public MockUserFormBuilder MockUserFormBuilder(string name, string content)
         {
             var component = CreateComponentMock(name, vbext_ComponentType.vbext_ct_MSForm, content);
-            return new MockUserFormBuilder(component);
+            return new MockUserFormBuilder(component, this);
         }
 
         /// <summary>
@@ -111,8 +131,8 @@ namespace RubberduckTests.Mocks
             result.Setup(c => c.GetEnumerator()).Returns(() => _components.GetEnumerator());
             result.As<IEnumerable>().Setup(c => c.GetEnumerator()).Returns(() => _components.GetEnumerator());
 
-            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _components.ElementAt(index).Object);
-            result.Setup(m => m.Item(It.IsAny<string>())).Returns<string>(name => _components.Single(item => item.Object.Name == name).Object);
+            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _components.ElementAt(index));
+            result.Setup(m => m.Item(It.IsAny<string>())).Returns<string>(name => _components.Single(item => item.Name == name));
             result.SetupGet(m => m.Count).Returns(_components.Count);
 
             return result;
@@ -128,13 +148,13 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m.GetEnumerator()).Returns(() => _references.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _references.GetEnumerator());
 
-            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _references.ElementAt(index).Object);
+            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _references.ElementAt(index));
             result.SetupGet(m => m.Count).Returns(_references.Count);
 
             return result;
         }
 
-        private Mock<Reference> CreateReferenceMock(string name, string filePath)
+        private Mock<Reference> CreateReferenceMock(string name, string filePath, bool isBuiltIn = true)
         {
             var result = new Mock<Reference>();
 
@@ -143,6 +163,8 @@ namespace RubberduckTests.Mocks
 
             result.SetupGet(m => m.Name).Returns(() => name);
             result.SetupGet(m => m.FullPath).Returns(() => filePath);
+
+            result.SetupGet(m => m.BuiltIn).Returns(isBuiltIn);
 
             return result;
         }
@@ -157,6 +179,7 @@ namespace RubberduckTests.Mocks
             result.SetupProperty(m => m.Name, name);
 
             var module = CreateCodeModuleMock(name, content);
+            module.SetupGet(m => m.Parent).Returns(() => result.Object);
             result.SetupGet(m => m.CodeModule).Returns(() => module.Object);
 
             result.Setup(m => m.Activate());
@@ -172,10 +195,16 @@ namespace RubberduckTests.Mocks
             var result = CreateCodeModuleMock(content);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
             result.SetupGet(m => m.CodePane).Returns(() => codePane.Object);
+            result.SetupProperty(m => m.Name, name);
 
             codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
             return result;
         }
+
+        private static readonly string[] ModuleBodyTokens =
+        {
+            Tokens.Sub, Tokens.Function, Tokens.Property
+        };
 
         private Mock<CodeModule> CreateCodeModuleMock(string content)
         {
@@ -183,6 +212,8 @@ namespace RubberduckTests.Mocks
 
             var codeModule = new Mock<CodeModule>();
             codeModule.SetupGet(c => c.CountOfLines).Returns(() => lines.Count);
+            codeModule.SetupGet(c => c.CountOfDeclarationLines).Returns(() =>
+                lines.TakeWhile(line => !ModuleBodyTokens.Any(line.Contains)).Count());
 
             // ReSharper disable once UseIndexedProperty
             codeModule.Setup(m => m.get_Lines(It.IsAny<int>(), It.IsAny<int>()))

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
@@ -18,14 +18,14 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
         {
-            var issues = from item in parseResult.Declarations.Items.Where(item => !item.IsBuiltIn)
+            var issues = from item in parseResult.AllDeclarations.Where(item => !item.IsBuiltIn)
                          where (item.DeclarationType == DeclarationType.Variable
                             || item.DeclarationType == DeclarationType.Constant
                             || item.DeclarationType == DeclarationType.Parameter)
                          && !item.IsTypeSpecified()
-                         select new VariableTypeNotDeclaredInspectionResult(string.Format(Description, item.DeclarationType, item.IdentifierName), Severity, ((dynamic)item.Context).ambiguousIdentifier(), item.QualifiedName.QualifiedModuleName);
+                         select new VariableTypeNotDeclaredInspectionResult(this, string.Format(Description, item.DeclarationType, item.IdentifierName), item.Context, item.QualifiedName.QualifiedModuleName);
 
             return issues;
         }

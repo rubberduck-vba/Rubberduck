@@ -37,7 +37,9 @@ namespace Rubberduck.UI.Settings
             {
                 new DisplayLanguageSetting("en-US"),
                 new DisplayLanguageSetting("fr-CA"),
-                new DisplayLanguageSetting("sv-SV")
+                new DisplayLanguageSetting("sv-SV"),
+                new DisplayLanguageSetting("de-DE"),
+                new DisplayLanguageSetting("jp-JP"),
             };
 
             LanguageList.Items.AddRange(settings.Where(item => item.Exists).ToArray());

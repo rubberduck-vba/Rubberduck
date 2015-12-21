@@ -5,10 +5,11 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Settings;
 using Rubberduck.SourceControl;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class SourceControlPresenter : DockablePresenterBase
+    public class SourceControlPresenter : DockableToolwindowPresenter
     {
         private readonly IChangesPresenter _changesPresenter;
         private readonly IBranchesPresenter _branchesPresenter;
@@ -25,6 +26,8 @@ namespace Rubberduck.UI.SourceControl
         private readonly IFailedMessageView _failedMessageView;
         private readonly ILoginView _loginView;
 
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
+
         public SourceControlPresenter(
             VBE vbe, AddIn addin, 
             IConfigurationService<SourceControlConfiguration> configService, 
@@ -36,7 +39,8 @@ namespace Rubberduck.UI.SourceControl
             IFolderBrowserFactory folderBrowserFactory, 
             ISourceControlProviderFactory providerFactory, 
             IFailedMessageView failedMessageView, 
-            ILoginView loginView
+            ILoginView loginView,
+            ICodePaneWrapperFactory wrapperFactory
             )
             : base(vbe, addin, view)
         {
@@ -71,6 +75,8 @@ namespace Rubberduck.UI.SourceControl
             _view.RefreshData += OnRefreshChildren;
             _view.OpenWorkingDirectory += OnOpenWorkingDirectory;
             _view.InitializeNewRepository += OnInitNewRepository;
+
+            _wrapperFactory = wrapperFactory;
         }
 
         public override void Show()
@@ -93,7 +99,7 @@ namespace Rubberduck.UI.SourceControl
 
            _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject,
                     _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name),
-                    creds);
+                    creds, _wrapperFactory);
 
             SetChildPresenterSourceControlProviders(_provider);
         }
@@ -133,7 +139,7 @@ namespace Rubberduck.UI.SourceControl
                 _provider = _providerFactory.CreateProvider(project);
                 var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
 
-                _provider = _providerFactory.CreateProvider(project, repo);
+                _provider = _providerFactory.CreateProvider(project, repo, _wrapperFactory);
 
                 AddRepoToConfig((Repository)repo);
 
@@ -156,7 +162,7 @@ namespace Rubberduck.UI.SourceControl
 
                 try
                 {
-                    _provider = _providerFactory.CreateProvider(project, repo);
+                    _provider = _providerFactory.CreateProvider(project, repo, _wrapperFactory);
                 }
                 catch (SourceControlException ex)
                 {
@@ -193,7 +199,7 @@ namespace Rubberduck.UI.SourceControl
             try
             {
                 _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject,
-                    _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name));
+                    _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name), _wrapperFactory);
             }
             catch (SourceControlException ex)
             {

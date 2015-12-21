@@ -1,12 +1,8 @@
 ﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Ninject;
 using Ninject.Modules;
 using Rubberduck.Settings;
+using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -17,16 +13,17 @@ namespace Rubberduck.UI.SourceControl
         /// </summary>
         public override void Load()
         {
-            Bind<IConfigurationService<SourceControlConfiguration>>().To<SourceControlConfigurationService>();
+            //ConfigurationService and Presenters are bound by convention
 
             //user controls (views)
+
             Bind<ISourceControlView>().To<SourceControlPanel>();
 
             Bind<IFailedMessageView>().To<FailedActionControl>();
             Bind<ILoginView>().To<LoginControl>();
 
             Bind<IChangesView>().To<ChangesControl>();
-            Bind<IUnsyncedCommitsView>().To<UnSyncedCommitsControl>();
+            Bind<IUnsyncedCommitsView>().To<UnsyncedCommitsControl>();
             Bind<ISettingsView>().To<SettingsControl>();
             Bind<IBranchesView>().To<BranchesControl>();
 
@@ -34,15 +31,12 @@ namespace Rubberduck.UI.SourceControl
             Bind<IDeleteBranchView>().To<DeleteBranchForm>();
             Bind<IMergeView>().To<MergeForm>();
 
-            //presenters
-            Bind<IChangesPresenter>().To<ChangesPresenter>();
-            Bind<IBranchesPresenter>().To<BranchesPresenter>();
-            Bind<ISettingsPresenter>().To<SettingsPresenter>();
-            Bind<IUnsyncedCommitsPresenter>().To<UnsyncedCommitsPresenter>();
+            //factories 
 
-            //factories
-            Bind<ISourceControlProviderFactory>().To<SourceControlProviderFactory>();
-            Bind<IFolderBrowserFactory>().To<DialogFactory>();
+            // note: RubberduckModule sets up factory proxies by convention. 
+            // Replace these factory proxies with our existing concrete implementations.
+            Rebind<ISourceControlProviderFactory>().To<SourceControlProviderFactory>();
+            Rebind<IFolderBrowserFactory>().To<DialogFactory>();
         }
     }
 }

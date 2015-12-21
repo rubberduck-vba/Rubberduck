@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1098,5 +1098,32 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
   </data>
   <data name="TodoSettings_Text" xml:space="preserve">
     <value>Text</value>
+  </data>
+  <data name="Language_DE" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="RubberduckMenu_Navigate" xml:space="preserve">
+    <value>Na&amp;vigera</value>
+  </data>
+  <data name="Language_JP">
+    <value />
+  </data>
+  <data name="Run">
+    <value />
+  </data>
+  <data name="Rename_DeclarationType">
+    <value />
+  </data>
+  <data name="Ducky">
+    <value />
+  </data>
+  <data name="Inspections_MultilineParameter">
+    <value />
+  </data>
+  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation">
+    <value />
+  </data>
+  <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
+    <value>Ta bort gren</value>
   </data>
 </root>

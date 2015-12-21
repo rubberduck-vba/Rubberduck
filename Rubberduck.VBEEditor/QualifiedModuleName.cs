@@ -27,9 +27,15 @@ namespace Rubberduck.VBEditor
             _projectName = component == null ? string.Empty : component.Collection.Parent.Name;
             _projectHashCode = component == null ? 0 : component.Collection.Parent.GetHashCode();
 
-            var module = _component.CodeModule;
+            _contentHashCode = 0;
+            if (component == null)
+            {
+                return;
+            }
 
-            _contentHashCode = module.CountOfLines > 0 
+            var module = component.CodeModule;
+            _contentHashCode = module.CountOfLines > 0
+                // ReSharper disable once UseIndexedProperty
                 ? module.get_Lines(1, module.CountOfLines).GetHashCode() 
                 : 0;
         }
