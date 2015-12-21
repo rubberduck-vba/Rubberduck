@@ -26,7 +26,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             TargetDeclaration = FindSelection(selection);
         }
 
-        private Selection GetVariableStmtContextSelection(Declaration target)
+        public Selection GetVariableStmtContextSelection(Declaration target)
         {
             var statement = GetVariableStmtContext(target);
 
@@ -34,7 +34,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     statement.Stop.Line, statement.Stop.Column);
         }
 
-        private VBAParser.VariableStmtContext GetVariableStmtContext(Declaration target)
+        public VBAParser.VariableStmtContext GetVariableStmtContext(Declaration target)
         {
             var statement = target.Context.Parent.Parent as VBAParser.VariableStmtContext;
             if (statement == null)
@@ -45,7 +45,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return statement;
         }
 
-        private bool HasMultipleDeclarationsInStatement(Declaration target)
+        public bool HasMultipleDeclarationsInStatement(Declaration target)
         {
             var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
 

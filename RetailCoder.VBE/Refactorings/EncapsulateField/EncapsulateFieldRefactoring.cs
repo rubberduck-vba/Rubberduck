@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
@@ -7,11 +9,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
     class EncapsulateFieldRefactoring : IRefactoring
     {
         private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
+        private readonly IActiveCodePaneEditor _editor;
         private EncapsulateFieldModel _model;
 
-        public EncapsulateFieldRefactoring(IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
+        public EncapsulateFieldRefactoring(IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory, IActiveCodePaneEditor editor)
         {
             _factory = factory;
+            _editor = editor;
         }
 
         public void Refactor()
@@ -44,6 +48,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             UpdateReferences();
 
             var module = _model.TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            SetFieldToPrivate(module);
+
             module.InsertLines(module.CountOfDeclarationLines + 1, GetPropertyText());
         }
 
@@ -59,6 +65,98 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 module.ReplaceLine(reference.Selection.StartLine, newLine);
             }
+        }
+
+        private void SetFieldToPrivate(CodeModule module)
+        {
+            if (_model.TargetDeclaration.Accessibility == Accessibility.Private)
+            {
+                return;
+            }
+
+            RemoveField(_model.TargetDeclaration);
+
+            var newField = "Private " + _model.TargetDeclaration.IdentifierName + " As " +
+                           _model.TargetDeclaration.AsTypeName;
+
+            module.InsertLines(module.CountOfDeclarationLines + 1, newField);
+
+            _editor.SetSelection(_model.TargetDeclaration.QualifiedSelection);
+            for (var index = 1; index <= module.CountOfDeclarationLines; index++)
+            {
+                if (module.Lines[index, 1].Trim() == string.Empty)
+                {
+                    _editor.DeleteLines(new Selection(index, 0, index, 0));
+                }
+            }
+        }
+
+        private void RemoveField(Declaration target)
+        {
+            Selection selection;
+            var declarationText = target.Context.GetText();
+            var multipleDeclarations = _model.HasMultipleDeclarationsInStatement(target);
+
+            var variableStmtContext = _model.GetVariableStmtContext(target);
+
+            if (!multipleDeclarations)
+            {
+                declarationText = variableStmtContext.GetText();
+                selection = _model.GetVariableStmtContextSelection(target);
+            }
+            else
+            {
+                selection = new Selection(target.Context.Start.Line, target.Context.Start.Column,
+                    target.Context.Stop.Line, target.Context.Stop.Column);
+            }
+
+            var oldLines = _editor.GetLines(selection);
+
+            var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
+                .Remove(selection.StartColumn, declarationText.Length);
+
+            if (multipleDeclarations)
+            {
+                selection = _model.GetVariableStmtContextSelection(target);
+                newLines = RemoveExtraComma(_editor.GetLines(selection).Replace(oldLines, newLines));
+            }
+
+            _editor.DeleteLines(selection);
+
+            if (newLines.Trim() != string.Empty)
+            {
+                _editor.InsertLines(selection.StartLine, newLines);
+            }
+        }
+
+        private string RemoveExtraComma(string str)
+        {
+            if (str.Count(c => c == ',') == 1)
+            {
+                return str.Remove(str.IndexOf(','), 1);
+            }
+
+            var significantCharacterAfterComma = false;
+
+            for (var index = str.IndexOf("Dim", StringComparison.Ordinal) + 3; index < str.Length; index++)
+            {
+                if (!significantCharacterAfterComma && str[index] == ',')
+                {
+                    return str.Remove(index, 1);
+                }
+
+                if (!char.IsWhiteSpace(str[index]) && str[index] != '_' && str[index] != ',')
+                {
+                    significantCharacterAfterComma = true;
+                }
+
+                if (str[index] == ',')
+                {
+                    significantCharacterAfterComma = false;
+                }
+            }
+
+            return str.Remove(str.LastIndexOf(','), 1);
         }
 
         private string GetPropertyText()
@@ -84,7 +182,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return string.Join(Environment.NewLine,
                         getterText,
                         (_model.ImplementLetSetterType ? letterText : string.Empty),
-                        (_model.ImplementSetSetterType ? setterText : string.Empty));
+                        (_model.ImplementSetSetterType ? setterText : string.Empty)).TrimEnd();
         }
     }
 }
