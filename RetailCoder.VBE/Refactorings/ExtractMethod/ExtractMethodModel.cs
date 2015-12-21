@@ -33,12 +33,15 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 .ToList();
 
             var usedInSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
+                selection.Selection.Contains(item.Selection) &&
                 item.References.Any(reference => inSelection.Contains(reference))));
 
             var usedBeforeSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
+                item.Selection.StartLine < selection.Selection.StartLine ||
                 item.References.Any(reference => reference.Selection.StartLine < selection.Selection.StartLine)));
 
             var usedAfterSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
+                item.Selection.StartLine > selection.Selection.StartLine ||
                 item.References.Any(reference => reference.Selection.StartLine > selection.Selection.EndLine)));
 
             // identifiers used inside selection and before selection (or if it's a parameter) are candidates for parameters:
