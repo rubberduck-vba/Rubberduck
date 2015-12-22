@@ -40,6 +40,18 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, SyntaxErrorException> _moduleExceptions =
             new ConcurrentDictionary<VBComponent, SyntaxErrorException>();
 
+        public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
+
+        private void OnModuleStateChanged(VBComponent component)
+        {
+            var handler = ModuleStateChanged;
+            if (handler != null)
+            {
+                var args = new ParseProgressEventArgs(component);
+                handler.Invoke(this, args);
+            }
+        }
+
         public void SetModuleState(VBComponent component, ParserState state, SyntaxErrorException parserError = null)
         {
             _moduleStates[component] = state;
@@ -53,6 +65,7 @@ namespace Rubberduck.Parsing.VBA
                         ? ParserState.Resolving
                         : ParserState.Ready;
 
+            OnModuleStateChanged(component);
         }
 
         public ParserState GetModuleState(VBComponent component)
