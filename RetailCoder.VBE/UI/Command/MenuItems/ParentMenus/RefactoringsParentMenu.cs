@@ -21,5 +21,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         IntroduceParameter,
         IntroduceField,
         EncapsulateField,
+        MoveCloserToUsage,
     }
 }

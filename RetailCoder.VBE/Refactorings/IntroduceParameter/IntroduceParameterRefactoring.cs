@@ -42,7 +42,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             if (!selection.HasValue)
             {
-                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection);
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
                 return;
             }
 

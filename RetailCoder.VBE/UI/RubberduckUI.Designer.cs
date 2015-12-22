@@ -1432,6 +1432,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Introduce Field.
+        /// </summary>
+        public static string IntroduceField_Caption {
+            get {
+                return ResourceManager.GetString("IntroduceField_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Introduce Parameter.
+        /// </summary>
+        public static string IntroduceParameter_Caption {
+            get {
+                return ResourceManager.GetString("IntroduceParameter_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Issue.
         /// </summary>
         public static string Issue {
@@ -1536,6 +1554,33 @@ namespace Rubberduck.UI {
         public static string ModuleOptionsNotSpecifiedFirst {
             get {
                 return ResourceManager.GetString("ModuleOptionsNotSpecifiedFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Move Closer To Usage.
+        /// </summary>
+        public static string MoveCloserToUsage_Caption {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; has no references..
+        /// </summary>
+        public static string MoveCloserToUsage_TargetHasNoReferences {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_TargetHasNoReferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; has references in multiple methods..
+        /// </summary>
+        public static string MoveCloserToUsage_TargetIsUsedInMultipleMethods {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_TargetIsUsedInMultipleMethods", resourceCulture);
             }
         }
         
@@ -1938,6 +1983,15 @@ namespace Rubberduck.UI {
         public static string RefactorMenu_IntroduceParameter {
             get {
                 return ResourceManager.GetString("RefactorMenu_IntroduceParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move Closer To Usage.
+        /// </summary>
+        public static string RefactorMenu_MoveCloserToUsage {
+            get {
+                return ResourceManager.GetString("RefactorMenu_MoveCloserToUsage", resourceCulture);
             }
         }
         
@@ -2555,8 +2609,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attributes File.
-        ///   Sucht eine lokalisierte Zeichenfolge, die &apos;.gitattributes&apos; File ähnelt.
+        ///   Looks up a localized string similar to &apos;.gitattributes&apos; File.
         /// </summary>
         public static string SourceControl_AttributesFile {
             get {
@@ -2691,8 +2744,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck - Delete Branch.
-        ///   Sucht eine lokalisierte Zeichenfolge, die Delete branch ähnelt.
+        ///   Looks up a localized string similar to Delete branch.
         /// </summary>
         public static string SourceControl_DeleteBranchButton {
             get {
@@ -2701,7 +2753,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Delete Branch ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Delete Branch.
         /// </summary>
         public static string SourceControl_DeleteBranchCaption {
             get {
@@ -2773,8 +2825,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ignore File.
-        ///   Sucht eine lokalisierte Zeichenfolge, die &apos;.gitignore&apos; File ähnelt.
+        ///   Looks up a localized string similar to &apos;.gitignore&apos; File.
         /// </summary>
         public static string SourceControl_IgnoreFile {
             get {
