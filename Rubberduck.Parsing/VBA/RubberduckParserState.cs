@@ -11,6 +11,11 @@ using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Parsing.VBA
 {
+    public enum ResolutionState
+    {
+        Unresolved
+    }
+
     public class RubberduckParserState
     {
         // keys are the declarations; values indicate whether a declaration is resolved.
@@ -74,7 +79,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private ParserState _status;
-        public ParserState Status { get { return _status; } private set { if(_status != value) {_status = value; OnStateChanged();} } }
+        public ParserState Status { get { return _status; } private set { if (_status != value) { _status = value; OnStateChanged(); } } }
 
         private IEnumerable<QualifiedContext> _obsoleteCallContexts = new List<QualifiedContext>();
 
@@ -103,7 +108,7 @@ namespace Rubberduck.Parsing.VBA
 
         public IEnumerable<CommentNode> Comments
         {
-            get 
+            get
             {
                 return _comments.Values.SelectMany(comments => comments);
             }
@@ -190,7 +195,7 @@ namespace Rubberduck.Parsing.VBA
             var builtInDeclarations = VbaStandardLib.Declarations;
 
             // cannot be strongly-typed here because of constraints on COM interop and generics in the inheritance hierarchy. </rant>
-            if (hostApplication /*is ExcelApp*/ .ApplicationName == "Excel") 
+            if (hostApplication /*is ExcelApp*/ .ApplicationName == "Excel")
             {
                 builtInDeclarations = builtInDeclarations.Concat(ExcelObjectModel.Declarations);
             }

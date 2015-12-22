@@ -20,28 +20,25 @@ namespace Rubberduck.Parsing.VBA
 {
     public class RubberduckParser : IRubberduckParser
     {
-        private readonly VBE _vbe;
-        private readonly Logger _logger;
-
-        public RubberduckParser(VBE vbe, RubberduckParserState state)
+        public RubberduckParser(RubberduckParserState state)
         {
-            _vbe = vbe;
             _state = state;
-            _logger = LogManager.GetCurrentClassLogger();
         }
 
         private readonly RubberduckParserState _state;
         public RubberduckParserState State { get { return _state; } }
 
-        public async Task ParseAsync(VBComponent vbComponent, CancellationToken token)
+        public Task ParseAsync(VBComponent vbComponent, CancellationToken token)
         {
             var component = vbComponent;
 
+            token.ThrowIfCancellationRequested();
             var parseTask = Task.Run(() => ParseInternal(component, token), token);
 
             try
             {
-                await parseTask;
+                token.ThrowIfCancellationRequested();
+                parseTask.Wait(token);
             }
             catch (SyntaxErrorException exception)
             {
@@ -50,7 +47,9 @@ namespace Rubberduck.Parsing.VBA
             catch (OperationCanceledException)
             {
                 // no need to blow up
-            } 
+            }
+
+            return null;
         }
 
         public void Resolve(CancellationToken token)
@@ -181,9 +180,8 @@ namespace Rubberduck.Parsing.VBA
             }
 
             _state.SetModuleState(component, ParserState.Resolving);
-            var declarations = _state.AllDeclarations;
 
-            var resolver = new IdentifierReferenceResolver(new QualifiedModuleName(component), declarations);
+            var resolver = new IdentifierReferenceResolver(new QualifiedModuleName(component), _state.AllDeclarations);
             var listener = new IdentifierReferenceListener(resolver, token);
             var walker = new ParseTreeWalker();
             try

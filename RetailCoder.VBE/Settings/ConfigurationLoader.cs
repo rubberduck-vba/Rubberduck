@@ -116,8 +116,8 @@ namespace Rubberduck.Settings
             var userSettings = new UserSettings(
                                     new DisplayLanguageSetting("en-US"), 
                                     new ToDoListSettings(GetDefaultTodoMarkers()),
-                                    new CodeInspectionSettings(GetDefaultCodeInspections())
-                               );
+                                    new CodeInspectionSettings(GetDefaultCodeInspections()), 
+                                    GetDefaultIndenterSettings());
 
             return new Configuration(userSettings);
         }
@@ -136,6 +136,31 @@ namespace Rubberduck.Settings
         public CodeInspectionSetting[] GetDefaultCodeInspections()
         {
             return _inspections.Select(x => new CodeInspectionSetting(x)).ToArray();
+        }
+
+        public IndenterSettings GetDefaultIndenterSettings()
+        {
+            return new IndenterSettings
+            {
+                IndentProcedure = true,
+                IndentFirst = false,
+                IndentDim = true,
+                IndentComment = true,
+                IndentCase = false,
+                AlignContinuations = true,
+                AlignIgnoreOps = true,
+                ForceDebugStatementsInColumn1 = false,
+                ForceCompilerStuffInColumn1 = false,
+                IndentCompilerStuff = true,
+                AlignDim = false,
+                AlignDimColumn = 15,
+                EnableUndo = true,
+                EnableIndentProcedureHotKey = true,
+                EnableIndentModuleHotKey = true,
+                EndOfLineAlignColumn = 55,
+                IndentSpaces = 4, // should read/write this value from VBE registry settings
+                AlignEndOfLine = false
+            };
         }
     }
 }

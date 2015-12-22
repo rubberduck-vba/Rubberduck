@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractMethod;
 
@@ -51,24 +52,30 @@ namespace Rubberduck.UI.Refactorings
             MethodParametersGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.Lavender;
             MethodParametersGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
-            var paramNameColumn = new DataGridViewTextBoxColumn();
-            paramNameColumn.Name = "Name";
-            paramNameColumn.DataPropertyName = "Name";
-            paramNameColumn.HeaderText = RubberduckUI.Name;
-            paramNameColumn.ReadOnly = true;
+            var paramNameColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "Name",
+                DataPropertyName = "Name",
+                HeaderText = RubberduckUI.Name,
+                ReadOnly = true
+            };
 
-            var paramTypeColumn = new DataGridViewTextBoxColumn();
-            paramTypeColumn.Name = "TypeName";
-            paramTypeColumn.DataPropertyName = "TypeName";
-            paramTypeColumn.HeaderText = RubberduckUI.Type;
-            paramTypeColumn.ReadOnly = true;
+            var paramTypeColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "TypeName",
+                DataPropertyName = "TypeName",
+                HeaderText = RubberduckUI.Type,
+                ReadOnly = true
+            };
 
-            var paramPassedByColumn = new DataGridViewTextBoxColumn();
-            paramPassedByColumn.Name = "Passed";
-            paramPassedByColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            paramPassedByColumn.HeaderText = RubberduckUI.Passed;
-            paramPassedByColumn.DataPropertyName = "Passed";
-            paramPassedByColumn.ReadOnly = true;
+            var paramPassedByColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "Passed",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                HeaderText = RubberduckUI.Passed,
+                DataPropertyName = "Passed",
+                ReadOnly = true
+            };
 
             MethodParametersGrid.Columns.AddRange(paramNameColumn, paramTypeColumn, paramPassedByColumn);
         }
@@ -137,7 +144,7 @@ namespace Rubberduck.UI.Refactorings
 
         private void MethodNameBox_TextChanged(object sender, EventArgs e)
         {
-            MethodName = MethodNameBox.Text;
+            ValidateName();
             OnRefreshPreview();
         }
 
@@ -206,6 +213,8 @@ namespace Rubberduck.UI.Refactorings
         public IEnumerable<ExtractedParameter> Outputs { get; set; }
         public IEnumerable<ExtractedParameter> Locals { get; set; }
 
+        public string OldMethodName { get; set; }
+
         public string MethodName
         {
             get { return MethodNameBox.Text; }
@@ -215,6 +224,18 @@ namespace Rubberduck.UI.Refactorings
                 InvalidNameValidationIcon.Visible = string.IsNullOrWhiteSpace(value);
                 OnRefreshPreview();
             }
+        }
+
+        private void ValidateName()
+        {
+            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
+
+            OkButton.Enabled = MethodName != OldMethodName
+                               && char.IsLetter(MethodName.FirstOrDefault())
+                               && !tokenValues.Contains(MethodName, StringComparer.InvariantCultureIgnoreCase)
+                               && !MethodName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+
+            InvalidNameValidationIcon.Visible = !OkButton.Enabled;
         }
     }
 }
