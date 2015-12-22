@@ -44,7 +44,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             if (!selection.HasValue)
             {
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
-                    System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -53,7 +53,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         public void Refactor(QualifiedSelection selection)
         {
-            var target = FindSelection(selection);
+            var target = _declarations.FindVariable(selection);
 
             PromoteVariable(target);
         }
@@ -206,14 +206,14 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         {
             Selection selection;
             var declarationText = target.Context.GetText();
-            var multipleDeclarations = HasMultipleDeclarationsInStatement(target);
+            var multipleDeclarations = target.HasMultipleDeclarationsInStatement();
 
-            var variableStmtContext = GetVariableStmtContext(target);
+            var variableStmtContext = target.GetVariableStmtContext();
 
             if (!multipleDeclarations)
             {
                 declarationText = variableStmtContext.GetText();
-                selection = GetVariableStmtContextSelection(target);
+                selection = target.GetVariableStmtContextSelection();
             }
             else
             {
@@ -228,7 +228,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             if (multipleDeclarations)
             {
-                selection = GetVariableStmtContextSelection(target);
+                selection = target.GetVariableStmtContextSelection();
                 newLines = RemoveExtraComma(_editor.GetLines(selection).Replace(oldLines, newLines));
             }
 
@@ -301,25 +301,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
         }
 
-        private Selection GetVariableStmtContextSelection(Declaration target)
-        {
-            var statement = GetVariableStmtContext(target);
-
-            return new Selection(statement.Start.Line, statement.Start.Column,
-                    statement.Stop.Line, statement.Stop.Column);
-        }
-
-        private VBAParser.VariableStmtContext GetVariableStmtContext(Declaration target)
-        {
-            var statement = target.Context.Parent.Parent as VBAParser.VariableStmtContext;
-            if (statement == null)
-            {
-                throw new MissingMemberException("Statement not found");
-            }
-
-            return statement;
-        }
-
         private Declaration GetInterfaceImplementation(Declaration target)
         {
             var declaration = target;
@@ -361,59 +342,11 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             return str.Remove(str.LastIndexOf(','), 1);
         }
 
-        private bool HasMultipleDeclarationsInStatement(Declaration target)
-        {
-            var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
-
-            if (statement == null) { return false; }
-
-            return statement.children.Count(i => i is VBAParser.VariableSubStmtContext) > 1;
-        }
-
         private string GetParameterDefinition(Declaration target)
         {
             if (target == null) { return null; }
 
             return "ByVal " + target.IdentifierName + " As " + target.AsTypeName;
-        }
-
-        private Declaration FindSelection(QualifiedSelection selection)
-        {
-            var target = _declarations
-                .Where(item => !item.IsBuiltIn)
-                .FirstOrDefault(item => item.IsSelected(selection) && item.DeclarationType == DeclarationType.Variable
-                                     || item.References.Any(r => r.IsSelected(selection) &&
-                                        r.Declaration.DeclarationType == DeclarationType.Variable));
-
-            if (target != null) { return target; }
-
-            var targets = _declarations
-                .Where(item => !item.IsBuiltIn
-                               && item.ComponentName == selection.QualifiedName.ComponentName
-                               && item.DeclarationType == DeclarationType.Variable);
-
-            foreach (var declaration in targets)
-            {
-                var declarationSelection = new Selection(declaration.Context.Start.Line,
-                                                    declaration.Context.Start.Column,
-                                                    declaration.Context.Stop.Line,
-                                                    declaration.Context.Stop.Column + declaration.Context.Stop.Text.Length);
-
-                if (declarationSelection.Contains(selection.Selection) ||
-                    !HasMultipleDeclarationsInStatement(declaration) && GetVariableStmtContextSelection(declaration).Contains(selection.Selection))
-                {
-                    return declaration;
-                }
-
-                var reference =
-                    declaration.References.FirstOrDefault(r => r.Selection.Contains(selection.Selection));
-
-                if (reference != null)
-                {
-                    return reference.Declaration;
-                }
-            }
-            return null;
         }
     }
 }

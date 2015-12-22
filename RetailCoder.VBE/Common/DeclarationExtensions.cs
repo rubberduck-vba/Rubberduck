@@ -8,6 +8,7 @@ using Rubberduck.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+// ReSharper disable LocalizableElement
 
 namespace Rubberduck.Common
 {
@@ -18,6 +19,47 @@ namespace Rubberduck.Common
         public static BitmapImage BitmapImage(this Declaration declaration)
         {
             return Cache[declaration];
+        }
+
+        public static Selection GetVariableStmtContextSelection(this Declaration target)
+        {
+            if (target.DeclarationType != DeclarationType.Variable)
+            {
+                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+            }
+
+            var statement = GetVariableStmtContext(target);
+
+            return new Selection(statement.Start.Line, statement.Start.Column,
+                    statement.Stop.Line, statement.Stop.Column);
+        }
+
+        public static VBAParser.VariableStmtContext GetVariableStmtContext(this Declaration target)
+        {
+            if (target.DeclarationType != DeclarationType.Variable)
+            {
+                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+            }
+
+            var statement = target.Context.Parent.Parent as VBAParser.VariableStmtContext;
+            if (statement == null)
+            {
+                throw new MissingMemberException("Statement not found");
+            }
+
+            return statement;
+        }
+
+        public static bool HasMultipleDeclarationsInStatement(this Declaration target)
+        {
+            if (target.DeclarationType != DeclarationType.Variable)
+            {
+                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+            }
+
+            var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
+
+            return statement != null && statement.children.Count(i => i is VBAParser.VariableSubStmtContext) > 1;
         }
 
         public static readonly DeclarationType[] ProcedureTypes =
@@ -331,6 +373,41 @@ namespace Rubberduck.Common
                 }
             }
             return target;
+        }
+
+        public static Declaration FindVariable(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
+        {
+            var items = declarations.Where(d => !d.IsBuiltIn && d.DeclarationType == DeclarationType.Variable).ToList();
+
+            var target = items
+                .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));
+
+            if (target != null) { return target; }
+
+            var targets = items.Where(item => item.ComponentName == selection.QualifiedName.ComponentName);
+
+            foreach (var declaration in targets)
+            {
+                var declarationSelection = new Selection(declaration.Context.Start.Line,
+                                                    declaration.Context.Start.Column,
+                                                    declaration.Context.Stop.Line,
+                                                    declaration.Context.Stop.Column + declaration.Context.Stop.Text.Length);
+
+                if (declarationSelection.Contains(selection.Selection) ||
+                    !HasMultipleDeclarationsInStatement(declaration) && GetVariableStmtContextSelection(declaration).Contains(selection.Selection))
+                {
+                    return declaration;
+                }
+
+                var reference =
+                    declaration.References.FirstOrDefault(r => r.Selection.Contains(selection.Selection));
+
+                if (reference != null)
+                {
+                    return reference.Declaration;
+                }
+            }
+            return null;
         }
     }
 }

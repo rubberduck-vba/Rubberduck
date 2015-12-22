@@ -1262,7 +1262,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Delete branch</value>
   </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
-    <value>Move Closer To Usage</value>
+    <value>Move Closer To &amp;Usage</value>
   </data>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Move Closer To Usage</value>
