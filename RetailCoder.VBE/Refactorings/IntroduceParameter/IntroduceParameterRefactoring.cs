@@ -81,7 +81,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private bool PromptIfMethodImplementsInterface(Declaration targetVariable)
         {
-            var functionDeclaration = _declarations.FindSelection(targetVariable.QualifiedSelection, ValidDeclarationTypes);
+            var functionDeclaration = _declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
             var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
 
             if (interfaceImplementation == null)
@@ -100,7 +100,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private void UpdateSignature(Declaration targetVariable)
         {
-            var functionDeclaration = _declarations.FindSelection(targetVariable.QualifiedSelection, ValidDeclarationTypes);
+            var functionDeclaration = _declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
 
             var proc = (dynamic)functionDeclaration.Context;
             var paramList = (VBAParser.ArgListContext)proc.argList();

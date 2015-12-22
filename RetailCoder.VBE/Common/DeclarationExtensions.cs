@@ -21,6 +21,12 @@ namespace Rubberduck.Common
             return Cache[declaration];
         }
 
+        /// <summary>
+        /// Returns the Selection of a VariableStmtContext.
+        /// </summary>
+        /// <exception cref="ArgumentException">Throws when target's DeclarationType is not Variable.</exception>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public static Selection GetVariableStmtContextSelection(this Declaration target)
         {
             if (target.DeclarationType != DeclarationType.Variable)
@@ -34,6 +40,12 @@ namespace Rubberduck.Common
                     statement.Stop.Line, statement.Stop.Column);
         }
 
+        /// <summary>
+        /// Returns a VariableStmtContext.
+        /// </summary>
+        /// <exception cref="ArgumentException">Throws when target's DeclarationType is not Variable.</exception>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public static VBAParser.VariableStmtContext GetVariableStmtContext(this Declaration target)
         {
             if (target.DeclarationType != DeclarationType.Variable)
@@ -50,6 +62,12 @@ namespace Rubberduck.Common
             return statement;
         }
 
+        /// <summary>
+        /// Returns whether a variable declaration statement contains multiple declarations in a single statement.
+        /// </summary>
+        /// <exception cref="ArgumentException">Throws when target's DeclarationType is not Variable.</exception>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public static bool HasMultipleDeclarationsInStatement(this Declaration target)
         {
             if (target.DeclarationType != DeclarationType.Variable)
@@ -312,7 +330,15 @@ namespace Rubberduck.Common
                 : matches.First();
         }
 
-        public static Declaration FindSelection(this IEnumerable<Declaration> declarations, QualifiedSelection selection, DeclarationType[] validDeclarationTypes)
+        /// <summary>
+        /// Returns the declaration contained in a qualified selection.
+        /// To get the selection of a variable or field, use FindVariable(QualifiedSelection)
+        /// </summary>
+        /// <param name="declarations"></param>
+        /// <param name="selection"></param>
+        /// <param name="validDeclarationTypes"></param>
+        /// <returns></returns>
+        public static Declaration FindTarget(this IEnumerable<Declaration> declarations, QualifiedSelection selection, DeclarationType[] validDeclarationTypes)
         {
             var items = declarations.ToList();
 
@@ -375,6 +401,12 @@ namespace Rubberduck.Common
             return target;
         }
 
+        /// <summary>
+        /// Returns the variable which contains the passed-in QualifiedSelection.  Returns null if the selection is not on a variable.
+        /// </summary>
+        /// <param name="declarations"></param>
+        /// <param name="selection"></param>
+        /// <returns></returns>
         public static Declaration FindVariable(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
         {
             var items = declarations.Where(d => !d.IsBuiltIn && d.DeclarationType == DeclarationType.Variable).ToList();
