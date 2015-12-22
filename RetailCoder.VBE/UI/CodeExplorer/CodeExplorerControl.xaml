@@ -184,7 +184,7 @@
             <Button Command="{Binding ToggleNamespaces}" 
                     IsEnabled="{Binding CanRefresh}"
                     ToolTip="Toggle namespace folders">
-                <Image Height="16" Source="../../Resources/blue-folder-horizontal-open.png" />
+                <Image Height="16" Source="../../Resources/blue-folder-horizontal.png" />
             </Button>
 
             <Button Command="{Binding ToggleFolders}" 

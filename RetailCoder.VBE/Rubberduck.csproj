@@ -347,6 +347,8 @@
     <Compile Include="UI\CodeExplorer\CodeExplorerControl.xaml.cs">
       <DependentUpon>CodeExplorerControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\CodeExplorer\CodeExplorerViewModel.cs" />
+    <Compile Include="UI\CodeExplorer\CodeExplorerViewModelBuilder.cs" />
     <Compile Include="UI\CodeInspections\InspectionDescriptionConverter.cs" />
     <Compile Include="UI\CodeInspections\InspectionImageSourceConverter.cs" />
     <Compile Include="UI\CodeInspections\InspectionResultsControl.xaml.cs">
