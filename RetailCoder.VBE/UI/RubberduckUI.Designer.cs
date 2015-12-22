@@ -1450,6 +1450,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (Will propagate to all implementations.).
+        /// </summary>
+        public static string IntroduceParameter_PromptIfTargetIsInterface {
+            get {
+                return ResourceManager.GetString("IntroduceParameter_PromptIfTargetIsInterface", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Issue.
         /// </summary>
         public static string Issue {
@@ -1942,7 +1951,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (will propagate to all implementations).
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (Will propagate to all implementations.).
         /// </summary>
         public static string Refactoring_TargetIsInterfaceMemberImplementation {
             get {

@@ -262,7 +262,7 @@
     <value>Remove parameters</value>
   </data>
   <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (will propagate to all implementations)</value>
+    <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (Will propagate to all implementations.)</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
   <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
@@ -1280,5 +1280,9 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="IntroduceParameter_Caption" xml:space="preserve">
     <value>Rubberduck - Introduce Parameter</value>
+  </data>
+  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
+    <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (Will propagate to all implementations.)</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
 </root>

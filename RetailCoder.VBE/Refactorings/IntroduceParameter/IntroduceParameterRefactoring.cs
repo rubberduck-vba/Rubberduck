@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Antlr4.Runtime.Misc;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
@@ -69,8 +70,32 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private void PromoteVariable(Declaration target)
         {
+            if (!PromptIfMethodImplementsInterface(target))
+            {
+                return;
+            }
+
             RemoveVariable(target);
             UpdateSignature(target);
+        }
+
+        private bool PromptIfMethodImplementsInterface(Declaration targetVariable)
+        {
+            var functionDeclaration = _declarations.FindSelection(targetVariable.QualifiedSelection, ValidDeclarationTypes);
+            var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
+
+            if (interfaceImplementation == null)
+            {
+                return true;
+            }
+
+            var message = string.Format(RubberduckUI.IntroduceParameter_PromptIfTargetIsInterface,
+                functionDeclaration.IdentifierName, interfaceImplementation.ComponentName,
+                interfaceImplementation.IdentifierName);
+            var introduceParamToInterface = _messageBox.Show(message, RubberduckUI.IntroduceParameter_Caption,
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            return introduceParamToInterface != DialogResult.No;
         }
 
         private void UpdateSignature(Declaration targetVariable)
@@ -91,9 +116,20 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
 
             var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
-            if (interfaceImplementation != null)
+            if (interfaceImplementation == null)
             {
-                UpdateSignature(interfaceImplementation, targetVariable);
+                return;
+            }
+            UpdateSignature(interfaceImplementation, targetVariable);
+
+            var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
+                                                    .Where(item => item.Project.Equals(interfaceImplementation.Project)
+                                                           && item.IdentifierName == interfaceImplementation.ComponentName + "_" + interfaceImplementation.IdentifierName
+                                                           && !item.Equals(functionDeclaration));
+
+            foreach (var implementation in interfaceImplementations)
+            {
+                UpdateSignature(implementation, targetVariable);
             }
         }
 
