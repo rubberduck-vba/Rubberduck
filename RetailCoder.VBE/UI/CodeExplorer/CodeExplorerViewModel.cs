@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace Rubberduck.UI.CodeExplorer
     public class ExplorerItemViewModel : ViewModelBase
     {
         private readonly Declaration _declaration;
-        private readonly ObservableCollection<ExplorerItemViewModel> _children = new ObservableCollection<ExplorerItemViewModel>(); 
+        private readonly ConcurrentStack<ExplorerItemViewModel> _children = new ConcurrentStack<ExplorerItemViewModel>(); 
 
         public ExplorerItemViewModel(Declaration declaration)
         {
@@ -36,7 +37,7 @@ namespace Rubberduck.UI.CodeExplorer
 
         public void AddChild(ExplorerItemViewModel declaration)
         {
-            _children.Add(declaration);
+            _children.Push(declaration);
         }
 
         public void Clear()

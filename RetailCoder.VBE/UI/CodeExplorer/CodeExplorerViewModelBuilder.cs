@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -21,24 +22,42 @@ namespace Rubberduck.UI.CodeExplorer
             {
                 var project = projectDeclaration;
                 var projectItem = new ExplorerItemViewModel(project);
-                foreach (var componentDeclaration in userDeclarations.Where(d => ReferenceEquals(d.ParentDeclaration, project)))
+                Parallel.ForEach(userDeclarations.Where(d => ReferenceEquals(d.ParentDeclaration, project)), (componentDeclaration) =>
                 {
                     var component = componentDeclaration;
-                    yield return new ExplorerItemViewModel(component);
-                    foreach (var member in userDeclarations.Where(d => ReferenceEquals(d.ParentDeclaration, component)))
+                    var componentItem = new ExplorerItemViewModel(component);
+                    foreach (var memberDeclaration in userDeclarations.Where(d => ReferenceEquals(d.ParentDeclaration, component)))
                     {
-                        yield return new ExplorerItemViewModel(member);
+                        var member = memberDeclaration;
+                        var memberItem = new ExplorerItemViewModel(member);
                         if (member.DeclarationType == DeclarationType.UserDefinedType)
                         {
-                            
+                            foreach (var item in userDeclarations.Where(d => ReferenceEquals(d.ParentDeclaration, component) 
+                                && d.DeclarationType == DeclarationType.UserDefinedTypeMember
+                                && d.ParentScope == member.Scope))
+                            {
+                                memberItem.AddChild(new ExplorerItemViewModel(item));
+                            }
                         }
 
                         if (member.DeclarationType == DeclarationType.Enumeration)
                         {
-                            
+                            foreach (var item in userDeclarations.Where(d => ReferenceEquals(d.ParentDeclaration, component)
+                                && d.DeclarationType == DeclarationType.EnumerationMember
+                                && d.ParentScope == member.Scope))
+                            {
+                                memberItem.AddChild(new ExplorerItemViewModel(item));
+                            }
                         }
+
+                        componentItem.AddChild(memberItem);
                     }
-                }
+
+                    projectItem.AddChild(componentItem);
+                });
+
+                // todo: figure out a way to yield return before that
+                yield return projectItem;
             }
         }
     }
