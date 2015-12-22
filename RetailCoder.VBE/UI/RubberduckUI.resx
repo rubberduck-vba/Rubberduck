@@ -1261,4 +1261,18 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
     <value>Delete branch</value>
   </data>
+  <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
+    <value>Move Closer To Usage</value>
+  </data>
+  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
+    <value>Rubberduck - Move Closer To Usage</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
+    <value>'{0}' has no references.</value>
+    <comment>{0}: Variable Name</comment>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
+    <value>'{0}' has references in multiple methods.</value>
+    <comment>{0}: Variable Name</comment>
+  </data>
 </root>
