@@ -36,6 +36,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         private void PrepareView()
         {
+            _view.OldMethodName = _model.SourceMember.IdentifierName;
             _view.MethodName = _model.SourceMember.IdentifierName + "_1";
             _view.Inputs = _model.Inputs;
             _view.Outputs = _model.Outputs;

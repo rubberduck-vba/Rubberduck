@@ -15,6 +15,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         string Preview { get; set; }
 
         string MethodName { get; set; }
+        string OldMethodName { get; set; }
         Accessibility Accessibility { get; set; }
         bool SetReturnValue { get; set; }
         ExtractedParameter ReturnValue { get; set; }

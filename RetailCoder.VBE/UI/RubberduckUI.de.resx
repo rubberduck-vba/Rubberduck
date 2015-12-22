@@ -899,7 +899,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Versionsverwaltung</value>
   </data>
   <data name="SourceControl_AttributesFile" xml:space="preserve">
-    <value>Attributes File</value>
+    <value>'.gitattributes' Datei</value>
   </data>
   <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
     <value>Abbrechen</value>
@@ -908,13 +908,13 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Standard Repositorypfad</value>
   </data>
   <data name="SourceControl_EmailAddressLabel" xml:space="preserve">
-    <value>Email Adresse</value>
+    <value>E-Mail-Adresse</value>
   </data>
   <data name="SourceControl_GlobalSettings" xml:space="preserve">
     <value>Globale Einstellungen</value>
   </data>
   <data name="SourceControl_IgnoreFile" xml:space="preserve">
-    <value>Datei ignorieren</value>
+    <value>'.gitignore' Datei</value>
   </data>
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
     <value>Neues Repo auf Basis dieses Projektes erstellen</value>
@@ -1007,7 +1007,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Nicht veröffentlichte Zweige</value>
   </data>
   <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
-    <value>Nicht Synchronisierte Commits</value>
+    <value>Nicht synchronisierte Commits</value>
   </data>
   <data name="SourceControl_UntrackedFiles" xml:space="preserve">
     <value>Nicht verfolgte Dateien</value>
@@ -1206,5 +1206,8 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
     <value>Finde Symbol</value>
+  </data>
+  <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
+    <value>Zweig löschen</value>
   </data>
 </root>
