@@ -1275,4 +1275,10 @@ Are you sure you want to proceed with this rename?</value>
     <value>'{0}' has references in multiple methods.</value>
     <comment>{0}: Variable Name</comment>
   </data>
+  <data name="IntroduceField_Caption" xml:space="preserve">
+    <value>Rubberduck - Introduce Field</value>
+  </data>
+  <data name="IntroduceParameter_Caption" xml:space="preserve">
+    <value>Rubberduck - Introduce Parameter</value>
+  </data>
 </root>

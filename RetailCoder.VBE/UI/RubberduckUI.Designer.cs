@@ -1432,6 +1432,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Introduce Field.
+        /// </summary>
+        public static string IntroduceField_Caption {
+            get {
+                return ResourceManager.GetString("IntroduceField_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Introduce Parameter.
+        /// </summary>
+        public static string IntroduceParameter_Caption {
+            get {
+                return ResourceManager.GetString("IntroduceParameter_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Issue.
         /// </summary>
         public static string Issue {

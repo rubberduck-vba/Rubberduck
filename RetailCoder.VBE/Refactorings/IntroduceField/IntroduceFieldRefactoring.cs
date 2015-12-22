@@ -30,7 +30,8 @@ namespace Rubberduck.Refactorings.IntroduceField
             
             if (!selection.HasValue)
             {
-                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection);
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceField_Caption,
+                    System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
                 return;
             }
 
