@@ -58,7 +58,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 return;
             }
 
-            if (TargetHasReferencesOnlyInOneMethod(target))
+            if (TargetIsReferencedFromMultipleMethods(target))
             {
                 var message = string.Format(RubberduckUI.MoveCloserToUsage_TargetIsUsedInMultipleMethods, target.IdentifierName);
                 _messageBox.Show(message, RubberduckUI.MoveCloserToUsage_Caption, System.Windows.Forms.MessageBoxButtons.OK,
@@ -70,7 +70,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             MoveDeclaration(target);
         }
 
-        private bool TargetHasReferencesOnlyInOneMethod(Declaration target)
+        private bool TargetIsReferencedFromMultipleMethods(Declaration target)
         {
             var firstReference = target.References.FirstOrDefault();
 
