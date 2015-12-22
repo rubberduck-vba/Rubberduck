@@ -39,6 +39,11 @@ namespace Rubberduck.UI.Command.MenuItems
         //        { ParserState.Ready, Resources.balloon_smiley },
         //    };
 
+        public void SetStatusText(string value)
+        {
+            _statusButton.Caption = value;
+        }
+
         private void State_StateChanged(object sender, EventArgs e)
         {
             _statusButton.Caption = _parser.State.Status.ToString();

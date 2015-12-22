@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -7,15 +8,16 @@ using Ninject;
 using Ninject.Extensions.Conventions;
 using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
+using Rubberduck.Common;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
+using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.UnitTesting;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Root
@@ -37,27 +39,27 @@ namespace Rubberduck.Root
         {
             Debug.Print("in RubberduckModule.Load()");
 
-            _kernel.Bind<App>().ToSelf().InSingletonScope();
-
             // bind VBE and AddIn dependencies to host-provided instances.
             _kernel.Bind<VBE>().ToConstant(_vbe);
             _kernel.Bind<AddIn>().ToConstant(_addin);
-
             _kernel.Bind<RubberduckParserState>().ToSelf().InSingletonScope();
-
+            
             BindCodeInspectionTypes();
 
             var assemblies = new[]
             {
                 Assembly.GetExecutingAssembly(),
                 Assembly.GetAssembly(typeof(IHostApplication)),
-                Assembly.GetAssembly(typeof(IRubberduckParser))
+                Assembly.GetAssembly(typeof(IRubberduckParser)),
+                Assembly.GetAssembly(typeof(IIndenter))
             };
 
             ApplyConfigurationConvention(assemblies);
             ApplyDefaultInterfacesConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
 
+            Rebind<IIndenter>().To<Indenter>().InSingletonScope();
+            Rebind<IIndenterSettings>().To<IndenterSettings>();
             Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>().InSingletonScope();
 
             Bind<IPresenter>().To<TestExplorerDockablePresenter>()
@@ -70,7 +72,19 @@ namespace Rubberduck.Root
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>() });
 
+            BindWindowsHooks();
             Debug.Print("completed RubberduckModule.Load()");
+        }
+
+        private void BindWindowsHooks()
+        {
+            _kernel.Rebind<ITimerHook>().To<TimerHook>()
+                .InSingletonScope()
+                .WithConstructorArgument("mainWindowHandle", (IntPtr)_vbe.MainWindow.HWnd);
+
+            _kernel.Rebind<IRubberduckHooks>().To<RubberduckHooks>()
+                .InSingletonScope()
+                .WithConstructorArgument("mainWindowHandle", (IntPtr)_vbe.MainWindow.HWnd);
         }
 
         private void ApplyDefaultInterfacesConvention(IEnumerable<Assembly> assemblies)
