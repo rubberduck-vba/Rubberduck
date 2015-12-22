@@ -36,7 +36,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private void AcquireTarget(QualifiedSelection selection)
         {
-            TargetDeclaration = Declarations.FindSelection(selection, ValidDeclarationTypes);
+            TargetDeclaration = Declarations.FindTarget(selection, ValidDeclarationTypes);
             TargetDeclaration = PromptIfTargetImplementsInterface();
             TargetDeclaration = GetGetter();
         }
