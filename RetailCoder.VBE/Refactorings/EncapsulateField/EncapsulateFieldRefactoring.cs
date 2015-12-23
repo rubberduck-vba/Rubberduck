@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
@@ -95,14 +96,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             Selection selection;
             var declarationText = target.Context.GetText();
-            var multipleDeclarations = _model.HasMultipleDeclarationsInStatement(target);
+            var multipleDeclarations = target.HasMultipleDeclarationsInStatement();
 
-            var variableStmtContext = _model.GetVariableStmtContext(target);
+            var variableStmtContext = target.GetVariableStmtContext();
 
             if (!multipleDeclarations)
             {
                 declarationText = variableStmtContext.GetText();
-                selection = _model.GetVariableStmtContextSelection(target);
+                selection = target.GetVariableStmtContextSelection();
             }
             else
             {
@@ -117,7 +118,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (multipleDeclarations)
             {
-                selection = _model.GetVariableStmtContextSelection(target);
+                selection = target.GetVariableStmtContextSelection();
                 newLines = RemoveExtraComma(_editor.GetLines(selection).Replace(oldLines, newLines));
             }
 

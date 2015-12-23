@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Grammar;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -40,7 +40,7 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         public void Refactor(QualifiedSelection selection)
         {
-            var target = FindSelection(selection);
+            var target = _declarations.FindVariable(selection);
 
             PromoteVariable(target);
         }
@@ -71,14 +71,14 @@ namespace Rubberduck.Refactorings.IntroduceField
         {
             Selection selection;
             var declarationText = target.Context.GetText();
-            var multipleDeclarations = HasMultipleDeclarationsInStatement(target);
+            var multipleDeclarations = target.HasMultipleDeclarationsInStatement();
 
-            var variableStmtContext = GetVariableStmtContext(target);
+            var variableStmtContext = target.GetVariableStmtContext();
 
             if (!multipleDeclarations)
             {
                 declarationText = variableStmtContext.GetText();
-                selection = GetVariableStmtContextSelection(target);
+                selection = target.GetVariableStmtContextSelection();
             }
             else
             {
@@ -93,31 +93,12 @@ namespace Rubberduck.Refactorings.IntroduceField
 
             if (multipleDeclarations)
             {
-                selection = GetVariableStmtContextSelection(target);
+                selection = target.GetVariableStmtContextSelection();
                 newLines = RemoveExtraComma(_editor.GetLines(selection).Replace(oldLines, newLines));
             }
 
             _editor.DeleteLines(selection);
             _editor.InsertLines(selection.StartLine, newLines);
-        }
-
-        private Selection GetVariableStmtContextSelection(Declaration target)
-        {
-            var statement = GetVariableStmtContext(target);
-
-            return new Selection(statement.Start.Line, statement.Start.Column,
-                    statement.Stop.Line, statement.Stop.Column);
-        }
-
-        private VBAParser.VariableStmtContext GetVariableStmtContext(Declaration target)
-        {
-            var statement = target.Context.Parent.Parent as VBAParser.VariableStmtContext;
-            if (statement == null)
-            {
-                throw new NullReferenceException("Statement not found");
-            }
-
-            return statement;
         }
 
         private string RemoveExtraComma(string str)
@@ -150,51 +131,11 @@ namespace Rubberduck.Refactorings.IntroduceField
             return str.Remove(str.LastIndexOf(','), 1);
         }
 
-        private bool HasMultipleDeclarationsInStatement(Declaration target)
-        {
-            var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
-
-            return statement != null && statement.children.Count(i => i is VBAParser.VariableSubStmtContext) > 1;
-        }
-
         private string GetFieldDefinition(Declaration target)
         {
             if (target == null) { return null; }
 
             return "Private " + target.IdentifierName + " As " + target.AsTypeName;
-        }
-
-        private Declaration FindSelection(QualifiedSelection selection)
-        {
-            var target = _declarations
-                .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));
-
-            if (target != null) { return target; }
-
-            var targets = _declarations.Where(item => item.ComponentName == selection.QualifiedName.ComponentName);
-
-            foreach (var declaration in targets)
-            {
-                var declarationSelection = new Selection(declaration.Context.Start.Line,
-                                                    declaration.Context.Start.Column,
-                                                    declaration.Context.Stop.Line,
-                                                    declaration.Context.Stop.Column + declaration.Context.Stop.Text.Length);
-
-                if (declarationSelection.Contains(selection.Selection) ||
-                    !HasMultipleDeclarationsInStatement(declaration) && GetVariableStmtContextSelection(declaration).Contains(selection.Selection))
-                {
-                    return declaration;
-                }
-
-                var reference =
-                    declaration.References.FirstOrDefault(r => r.Selection.Contains(selection.Selection));
-
-                if (reference != null)
-                {
-                    return reference.Declaration;
-                }
-            }
-            return null;
         }
     }
 }
