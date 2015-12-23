@@ -147,8 +147,12 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var memberSignature = "Public Property Let " + _model.InterfaceName + "_" + member.Member.IdentifierName +
                                   "(" + string.Join(", ", member.MemberParams) + ")";
 
-            var memberBody = "    " + _model.InterfaceName + "_" + member.Member.IdentifierName + " = " +
-                             member.Member.IdentifierName;
+            var memberBody = _model.PrimitiveTypes.Contains(member.MemberParams.Last().ParamType) ||
+                    member.Member.DeclarationType == DeclarationType.UserDefinedType
+                ? "    "
+                : "    Set ";
+
+            memberBody += member.Member.IdentifierName + " = " + member.MemberParams.Last().ParamName;
 
             var memberCloseStatement = "End Property" + Environment.NewLine;
 
@@ -160,8 +164,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var memberSignature = "Public Property Set " + _model.InterfaceName + "_" + member.Member.IdentifierName +
                                   "(" + string.Join(", ", member.MemberParams) + ")";
 
-            var memberBody = "    Set " + _model.InterfaceName + "_" + member.Member.IdentifierName + " = " +
-                             member.Member.IdentifierName;
+            var memberBody = "    Set " + member.Member.IdentifierName + " = " + member.MemberParams.Last().ParamName;
 
             var memberCloseStatement = "End Property" + Environment.NewLine;
 
