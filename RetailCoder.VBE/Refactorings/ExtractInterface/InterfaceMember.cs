@@ -20,12 +20,12 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
     public class InterfaceMember
     {
-        private Declaration Member { get; set; }
-        private IEnumerable<Parameter> MemberParams { get; set; }
-        private string Type { get; set; }
+        public Declaration Member { get; set; }
+        public IEnumerable<Parameter> MemberParams { get; set; }
+        public string Type { get; set; }
 
-        private string MemberType { get; set; }
-        private string PropertyType { get; set; }
+        public string MemberType { get; set; }
+        public string PropertyType { get; set; }
 
         public bool IsSelected { get; set; }
         public string MemberSignature
@@ -54,6 +54,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
         {
             Member = member;
             Type = member.AsTypeName;
+            
+            GetMethodType();
 
             MemberParams = declarations.Where(item => item.DeclarationType == DeclarationType.Parameter &&
                                           item.ParentScope == Member.Scope)
@@ -67,7 +69,11 @@ namespace Rubberduck.Refactorings.ExtractInterface
                                        })
                                        .ToList();
 
-            GetMethodType();
+            if (PropertyType == "Get")
+            {
+                MemberParams = MemberParams.Take(MemberParams.Count() - 1);
+            }
+
 
             IsSelected = false;
         }

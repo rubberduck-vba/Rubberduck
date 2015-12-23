@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -28,6 +29,22 @@ namespace Rubberduck.Refactorings.ExtractInterface
             DeclarationType.Class,
             DeclarationType.Document,
             DeclarationType.UserForm
+        };
+
+        public readonly string[] PrimitiveTypes =
+        {
+            Tokens.Boolean,
+            Tokens.Byte,
+            Tokens.Date,
+            Tokens.Decimal,
+            Tokens.Double,
+            Tokens.Long,
+            Tokens.LongLong,
+            Tokens.LongPtr,
+            Tokens.Integer,
+            Tokens.Single,
+            Tokens.String,
+            Tokens.StrPtr
         };
 
         public ExtractInterfaceModel(RubberduckParserState parseResult, QualifiedSelection selection)
