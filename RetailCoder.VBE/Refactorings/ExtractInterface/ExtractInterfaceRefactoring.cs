@@ -50,11 +50,14 @@ namespace Rubberduck.Refactorings.ExtractInterface
             interfaceComponent.Name = _model.InterfaceName;
 
             _editor.InsertLines(1, GetInterface());
+
+            var module = _model.TargetDeclaration.QualifiedSelection.QualifiedName.Component.CodeModule;
+            module.InsertLines(module.CountOfDeclarationLines + 1, "Implements " + _model.InterfaceName);
         }
 
         private string GetInterface()
         {
-            return string.Join(Environment.NewLine, _model.Members.Where(m => m.IsSelected));
+            return "Option Explicit" + Environment.NewLine + string.Join(Environment.NewLine, _model.Members.Where(m => m.IsSelected));
         }
     }
 }
