@@ -20,8 +20,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private readonly Declaration _targetDeclaration;
         public Declaration TargetDeclaration { get { return _targetDeclaration; } }
 
-        private readonly List<InterfaceMember> _members;
-        public List<InterfaceMember> Members { get { return _members; } }
+        public string InterfaceName { get; set; }
+        public List<InterfaceMember> Members { get; set; }
 
         private readonly static DeclarationType[] DeclarationTypes =
         {
@@ -43,7 +43,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
                         && item.Project == selection.QualifiedName.Project
                         && item.QualifiedSelection.QualifiedName == selection.QualifiedName);
 
-             _members = _declarations.Where(item => !item.IsBuiltIn &&
+            InterfaceName = "I" + TargetDeclaration.IdentifierName;
+
+             Members = _declarations.Where(item => !item.IsBuiltIn &&
                                                 item.Project == _targetDeclaration.Project &&
                                                 item.ComponentName == _targetDeclaration.ComponentName &&
                                                 item.Accessibility == Accessibility.Public)

@@ -32,6 +32,7 @@ namespace Rubberduck.UI.Refactorings
             InitializeComponent();
 
             InterfaceNameBox.TextChanged += InterfaceNameBox_TextChanged;
+            InterfaceMembersGridView.CellValueChanged += InterfaceMembersGridView_CellValueChanged;
             SelectAllButton.Click += SelectAllButton_Click;
             DeselectAllButton.Click += DeselectAllButton_Click;
         }
@@ -39,6 +40,12 @@ namespace Rubberduck.UI.Refactorings
         void InterfaceNameBox_TextChanged(object sender, EventArgs e)
         {
             ValidateNewName();
+        }
+
+        void InterfaceMembersGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            _members.ElementAt(e.RowIndex).IsSelected =
+                (bool) InterfaceMembersGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
         }
 
         void SelectAllButton_Click(object sender, EventArgs e)

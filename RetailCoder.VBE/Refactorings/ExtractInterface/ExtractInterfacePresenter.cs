@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Refactorings.ExtractInterface
+﻿using System.Windows.Forms;
+
+namespace Rubberduck.Refactorings.ExtractInterface
 {
     public interface IExtractInterfacePresenter
     {
@@ -20,11 +22,17 @@
         {
             if (_model.TargetDeclaration == null) { return null; }
 
-            _view.InterfaceName = "I" + _model.TargetDeclaration.IdentifierName;
+            _view.InterfaceName = _model.InterfaceName;
             _view.Members = _model.Members;
 
-            _view.ShowDialog();
-            return null;
+            if (_view.ShowDialog() != DialogResult.OK)
+            {
+                return null;
+            }
+
+            _model.InterfaceName = _view.InterfaceName;
+            _model.Members = _view.Members;
+            return _model;
         }
     }
 }
