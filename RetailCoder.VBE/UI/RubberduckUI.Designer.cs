@@ -1996,7 +1996,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Move Closer To Usage.
+        ///   Looks up a localized string similar to Move Closer To &amp;Usage.
         /// </summary>
         public static string RefactorMenu_MoveCloserToUsage {
             get {

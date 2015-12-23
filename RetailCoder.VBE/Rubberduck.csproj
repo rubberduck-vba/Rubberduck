@@ -316,6 +316,7 @@
     <Compile Include="Refactorings\EncapsulateField\IEncapsulateFieldView.cs" />
     <Compile Include="Refactorings\IntroduceField\IntroduceFieldRefactoring.cs" />
     <Compile Include="Refactorings\IntroduceParameter\IntroduceParameterRefactoring.cs" />
+    <Compile Include="Refactorings\MoveCloserToUsage\MoveCloserToUsageRefactoring.cs" />
     <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
@@ -413,6 +414,7 @@
     <Compile Include="UI\Command\MenuItems\RefactorEncapsulateFieldCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorIntroduceFieldCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorIntroduceParameterCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorMoveCloserToUsageCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RegexSearchReplaceCommandMenuItem.cs" />
     <Compile Include="UI\Command\NavigateCommand.cs" />
     <Compile Include="UI\Command\OptionsCommand.cs" />
@@ -425,6 +427,7 @@
     <Compile Include="UI\Command\Refactorings\RefactorEncapsulateFieldCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorIntroduceFieldCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorIntroduceParameterCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorMoveCloserToUsageCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorRenameCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorRenameCommandMenuItem.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorReorderParametersCommand.cs" />
