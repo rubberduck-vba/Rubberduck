@@ -1,4 +1,7 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using System;
+using System.Linq;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ExtractInterface
@@ -27,6 +30,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
             _model = presenter.Show();
 
             if (_model == null) { return; }
+
+            AddInterface();
         }
 
         public void Refactor(QualifiedSelection target)
@@ -37,6 +42,19 @@ namespace Rubberduck.Refactorings.ExtractInterface
         public void Refactor(Declaration target)
         {
             Refactor();
+        }
+
+        private void AddInterface()
+        {
+            var interfaceComponent = _model.TargetDeclaration.Project.VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
+            interfaceComponent.Name = _model.InterfaceName;
+
+            _editor.InsertLines(1, GetInterface());
+        }
+
+        private string GetInterface()
+        {
+            return string.Join(Environment.NewLine, _model.Members.Where(m => m.IsSelected));
         }
     }
 }

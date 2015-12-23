@@ -48,7 +48,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
              Members = _declarations.Where(item => !item.IsBuiltIn &&
                                                 item.Project == _targetDeclaration.Project &&
                                                 item.ComponentName == _targetDeclaration.ComponentName &&
-                                                item.Accessibility == Accessibility.Public)
+                                                item.Accessibility == Accessibility.Public &&
+                                                item.DeclarationType != DeclarationType.Variable &&
+                                                item.DeclarationType != DeclarationType.Event)
                                      .OrderBy(o => o.Selection.StartLine)
                                      .ThenBy(t => t.Selection.StartColumn)
                                      .Select(d => new InterfaceMember(d, _declarations))

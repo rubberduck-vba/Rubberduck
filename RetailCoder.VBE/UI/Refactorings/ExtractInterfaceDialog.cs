@@ -27,6 +27,8 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
+        public List<string> ComponentNames { get; set; }
+
         public ExtractInterfaceDialog()
         {
             InitializeComponent();
@@ -78,9 +80,8 @@ namespace Rubberduck.UI.Refactorings
             var signature = new DataGridViewTextBoxColumn
             {
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
-                Name = "Signature",
-                DataPropertyName = "Signature",
-                HeaderText = "Signature",
+                Name = "Members",
+                DataPropertyName = "MemberSignature",
                 ReadOnly = true
             };
 
@@ -99,7 +100,8 @@ namespace Rubberduck.UI.Refactorings
         {
             var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
 
-            OkButton.Enabled = char.IsLetter(InterfaceName.FirstOrDefault())
+            OkButton.Enabled = !ComponentNames.Contains(InterfaceName)
+                               && char.IsLetter(InterfaceName.FirstOrDefault())
                                && !tokenValues.Contains(InterfaceName, StringComparer.InvariantCultureIgnoreCase)
                                && !InterfaceName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
 

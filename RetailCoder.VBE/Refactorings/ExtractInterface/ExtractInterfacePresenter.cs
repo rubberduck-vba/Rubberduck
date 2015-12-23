@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System.Linq;
+using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
@@ -22,6 +24,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
         {
             if (_model.TargetDeclaration == null) { return null; }
 
+            _view.ComponentNames =
+                _model.TargetDeclaration.Project.VBComponents.Cast<VBComponent>().Select(c => c.Name).ToList();
             _view.InterfaceName = _model.InterfaceName;
             _view.Members = _model.Members;
 
