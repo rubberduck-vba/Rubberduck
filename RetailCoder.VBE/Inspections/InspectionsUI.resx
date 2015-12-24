@@ -123,4 +123,10 @@
   <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
     <value>Replace '""' with 'vbNullString'.</value>
   </data>
+  <data name="UseMeaningfulNameInspection" xml:space="preserve">
+    <value>Suboptimal Name Detected.</value>
+  </data>
+  <data name="UseMeaningfulNameInspectionQuickFix" xml:space="preserve">
+    <value>Rename</value>
+  </data>
 </root>
