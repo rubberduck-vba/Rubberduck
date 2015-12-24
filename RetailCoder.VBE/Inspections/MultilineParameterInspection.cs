@@ -19,9 +19,9 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var multilineParameters = from p in parseResult.AllDeclarations
+            var multilineParameters = from p in state.AllDeclarations
                 .Where(item => item.DeclarationType == DeclarationType.Parameter)
                 where p.Context.GetSelection().LineCount > 1
                 select p;
