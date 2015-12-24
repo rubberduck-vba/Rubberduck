@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -119,7 +119,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             if (multipleDeclarations)
             {
                 selection = target.GetVariableStmtContextSelection();
-                newLines = RemoveExtraComma(_editor.GetLines(selection).Replace(oldLines, newLines));
+                newLines = RemoveExtraComma(_editor.GetLines(selection).Replace(oldLines, newLines),
+                    target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
             }
 
             _editor.DeleteLines(selection);
@@ -130,34 +131,40 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        private string RemoveExtraComma(string str)
+        private string RemoveExtraComma(string str, int numParams, int indexRemoved)
         {
-            if (str.Count(c => c == ',') == 1)
-            {
-                return str.Remove(str.IndexOf(','), 1);
-            }
+            // Example use cases for this method (fields and variables):
+            // Dim fizz as Boolean, dizz as Double
+            // Private fizz as Boolean, dizz as Double
+            // Public fizz as Boolean, _
+            //        dizz as Double
+            // Private fizz as Boolean _
+            //         , dizz as Double _
+            //         , iizz as Integer
 
-            var significantCharacterAfterComma = false;
+            // Before this method is called, the parameter to be removed has 
+            // already been removed.  This means 'str' will look like:
+            // Dim fizz as Boolean, 
+            // Private , dizz as Double
+            // Public fizz as Boolean, _
+            //        
+            // Private  _
+            //         , dizz as Double _
+            //         , iizz as Integer
 
-            for (var index = str.IndexOf("Dim", StringComparison.Ordinal) + 3; index < str.Length; index++)
-            {
-                if (!significantCharacterAfterComma && str[index] == ',')
-                {
-                    return str.Remove(index, 1);
-                }
+            // This method is responsible for removing the redundant comma
+            // and returning a string similar to:
+            // Dim fizz as Boolean
+            // Private dizz as Double
+            // Public fizz as Boolean _
+            //        
+            // Private  _
+            //          dizz as Double _
+            //         , iizz as Integer
 
-                if (!char.IsWhiteSpace(str[index]) && str[index] != '_' && str[index] != ',')
-                {
-                    significantCharacterAfterComma = true;
-                }
+            var commaToRemove = numParams == indexRemoved ? indexRemoved - 1 : indexRemoved;
 
-                if (str[index] == ',')
-                {
-                    significantCharacterAfterComma = false;
-                }
-            }
-
-            return str.Remove(str.LastIndexOf(','), 1);
+            return str.Remove(str.NthIndexOf(',', commaToRemove), 1);
         }
 
         private string GetPropertyText()
