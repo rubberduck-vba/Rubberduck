@@ -239,12 +239,12 @@ namespace Rubberduck.Parsing.VBA
 
         private class EmptyStringLiteralListener : VBABaseListener
         {
-            private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
-            public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
+            private readonly IList<VBAParser.LiteralContext> _contexts = new List<VBAParser.LiteralContext>();
+            public IEnumerable<VBAParser.LiteralContext> Contexts { get { return _contexts; } }
 
-            public override void ExitLetStmt(VBAParser.LetStmtContext context)
+            public override void ExitLiteral(VBAParser.LiteralContext context)
             {
-                if (context.Stop.Text == "\"\"")
+                if (context.STRINGLITERAL().GetText() == "\"\"")
                 {
                     _contexts.Add(context);
                 }

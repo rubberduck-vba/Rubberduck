@@ -37,12 +37,10 @@ namespace Rubberduck.Inspections
                 return;
             }
 
-            var letStmt = (VBAParser.LetStmtContext)Context;
+            var literal = (VBAParser.LiteralContext)Context;
+            var newCodeLines = module.Lines[literal.Start.Line, 1].Replace("\"\"", "vbNullString");
 
-            // remove line continuations to compare against context:
-            var newCodeLines = module.Lines[letStmt.Stop.Line, 1].Replace("\"\"", "vbNullString");
-
-            module.ReplaceLine(letStmt.Stop.Line, newCodeLines);
+            module.ReplaceLine(literal.Start.Line, newCodeLines);
         }
     }
 }
