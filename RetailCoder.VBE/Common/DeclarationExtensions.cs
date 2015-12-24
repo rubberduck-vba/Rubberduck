@@ -79,7 +79,56 @@ namespace Rubberduck.Common
 
             var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
 
-            return statement != null && statement.children.Count(i => i is VBAParser.VariableSubStmtContext) > 1;
+            return statement != null && statement.children.OfType<VBAParser.VariableSubStmtContext>().Any();
+        }
+
+        /// <summary>
+        /// Returns the number of variable declarations in a single statement.
+        /// </summary>
+        /// <exception cref="ArgumentException">Throws when target's DeclarationType is not Variable.</exception>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static int CountOfDeclarationsInStatement(this Declaration target)
+        {
+            if (target.DeclarationType != DeclarationType.Variable)
+            {
+                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+            }
+
+            var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
+
+            if (statement != null)
+            {
+                return statement.children.OfType<VBAParser.VariableSubStmtContext>().Count();
+            }
+
+            throw new ArgumentException("'target.Context.Parent' is not type VBAParser.VariabelListStmtContext", "target");
+        }
+
+        /// <summary>
+        /// Returns the number of variable declarations in a single statement.  Adjusted to be 1-indexed rather than 0-indexed.
+        /// </summary>
+        /// <exception cref="ArgumentException">Throws when target's DeclarationType is not Variable.</exception>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static int IndexOfVariableDeclarationInStatement(this Declaration target)
+        {
+            if (target.DeclarationType != DeclarationType.Variable)
+            {
+                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+            }
+
+            var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
+
+            if (statement != null)
+            {
+                return statement.children.OfType<VBAParser.VariableSubStmtContext>()
+                        .ToList()
+                        .IndexOf((VBAParser.VariableSubStmtContext)target.Context) + 1;
+            }
+
+            // ReSharper disable once LocalizableElement
+            throw new ArgumentException("'target.Context.Parent' is not type VBAParser.VariabelListStmtContext", "target");
         }
 
         public static readonly DeclarationType[] ProcedureTypes =
