@@ -1987,6 +1987,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Implement Interface.
+        /// </summary>
+        public static string RefactorMenu_ImplementInterface {
+            get {
+                return ResourceManager.GetString("RefactorMenu_ImplementInterface", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Introduce &amp;Field.
         /// </summary>
         public static string RefactorMenu_IntroduceField {

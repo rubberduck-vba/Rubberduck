@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Annotations;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -439,6 +441,35 @@ namespace Rubberduck.Common
                     return reference.Declaration;
                 }
             }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the interface for a QualifiedSelection contained by a statement similar to "Implements IClass1"
+        /// </summary>
+        /// <param name="declarations"></param>
+        /// <param name="selection"></param>
+        /// <returns></returns>
+        [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
+        public static Declaration FindInterface(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
+        {
+            foreach (var declaration in declarations.FindInterfaces())
+            {
+                foreach (var reference in declaration.References)
+                {
+                    var implementsStmt = reference.Context.Parent as VBAParser.ImplementsStmtContext;
+
+                    if (implementsStmt == null) { continue; }
+
+                    if (reference.QualifiedModuleName == selection.QualifiedName &&
+                        (implementsStmt.GetSelection().Contains(selection.Selection)
+                          || reference.Selection.Contains(selection.Selection)))
+                    {
+                        return declaration;
+                    }
+                }
+            }
+
             return null;
         }
     }

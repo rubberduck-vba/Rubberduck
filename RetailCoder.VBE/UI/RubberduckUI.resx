@@ -1288,4 +1288,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
     <value>E&amp;xtract Interface</value>
   </data>
+  <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
+    <value>Implement Interface</value>
+  </data>
 </root>

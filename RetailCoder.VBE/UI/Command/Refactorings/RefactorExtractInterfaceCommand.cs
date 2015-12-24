@@ -1,18 +1,17 @@
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.ExtractInterface;
-using Rubberduck.UI.Refactorings;
+using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class RefactorExtractInterfaceCommand : RefactorCommandBase
+    public class RefactorImplementInterfaceCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
 
-        public RefactorExtractInterfaceCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor)
+        public RefactorImplementInterfaceCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor)
             : base (vbe, editor)
         {
             _state = state;
@@ -25,12 +24,8 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            using (var view = new ExtractInterfaceDialog())
-            {
-                var factory = new ExtractInterfacePresenterFactory(_state, Editor, view);
-                var refactoring = new ExtractInterfaceRefactoring(factory, Editor);
-                refactoring.Refactor();
-            }
+            var refactoring = new ImplementInterfaceRefactoring(_state, Editor, new MessageBox());
+            refactoring.Refactor();
         }
     }
 }

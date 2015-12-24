@@ -320,6 +320,8 @@
     <Compile Include="Refactorings\ExtractInterface\ExtractInterfacePresenterFactory.cs" />
     <Compile Include="Refactorings\ExtractInterface\IExtractInterfaceView.cs" />
     <Compile Include="Refactorings\ExtractInterface\InterfaceMember.cs" />
+    <Compile Include="Refactorings\ImplementInterface\ImplementInterfaceRefactoring.cs" />
+    <Compile Include="Refactorings\ImplementInterface\Parameter.cs" />
     <Compile Include="Refactorings\IntroduceField\IntroduceFieldRefactoring.cs" />
     <Compile Include="Refactorings\IntroduceParameter\IntroduceParameterRefactoring.cs" />
     <Compile Include="Refactorings\MoveCloserToUsage\MoveCloserToUsageRefactoring.cs" />
@@ -418,6 +420,7 @@
     <Compile Include="UI\Command\MenuItems\ParentMenus\SmartIndenterParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\ParserStateCommandBar.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorEncapsulateFieldCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorImplementInterfaceCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorExtractInterfaceCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorIntroduceFieldCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorIntroduceParameterCommandMenuItem.cs" />
@@ -432,6 +435,7 @@
     <Compile Include="UI\Command\MenuItems\ParentMenus\RefactoringsParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorRemoveParametersCommandMenuItem.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorEncapsulateFieldCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorImplementInterfaceCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorExtractInterfaceCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorIntroduceFieldCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorIntroduceParameterCommand.cs" />
