@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Annotations;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+// ReSharper disable LocalizableElement
 
 namespace Rubberduck.Common
 {
@@ -18,6 +21,114 @@ namespace Rubberduck.Common
         public static BitmapImage BitmapImage(this Declaration declaration)
         {
             return Cache[declaration];
+        }
+
+        /// <summary>
+        /// Returns the Selection of a VariableStmtContext.
+        /// </summary>
+        /// <exception cref="ArgumentException">Throws when target's DeclarationType is not Variable.</exception>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static Selection GetVariableStmtContextSelection(this Declaration target)
+        {
+            if (target.DeclarationType != DeclarationType.Variable)
+            {
+                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+            }
+
+            var statement = GetVariableStmtContext(target);
+
+            return new Selection(statement.Start.Line, statement.Start.Column,
+                    statement.Stop.Line, statement.Stop.Column);
+        }
+
+        /// <summary>
+        /// Returns a VariableStmtContext.
+        /// </summary>
+        /// <exception cref="ArgumentException">Throws when target's DeclarationType is not Variable.</exception>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static VBAParser.VariableStmtContext GetVariableStmtContext(this Declaration target)
+        {
+            if (target.DeclarationType != DeclarationType.Variable)
+            {
+                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+            }
+
+            var statement = target.Context.Parent.Parent as VBAParser.VariableStmtContext;
+            if (statement == null)
+            {
+                throw new MissingMemberException("Statement not found");
+            }
+
+            return statement;
+        }
+
+        /// <summary>
+        /// Returns whether a variable declaration statement contains multiple declarations in a single statement.
+        /// </summary>
+        /// <exception cref="ArgumentException">Throws when target's DeclarationType is not Variable.</exception>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static bool HasMultipleDeclarationsInStatement(this Declaration target)
+        {
+            if (target.DeclarationType != DeclarationType.Variable)
+            {
+                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+            }
+
+            var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
+
+            return statement != null && statement.children.OfType<VBAParser.VariableSubStmtContext>().Any();
+        }
+
+        /// <summary>
+        /// Returns the number of variable declarations in a single statement.
+        /// </summary>
+        /// <exception cref="ArgumentException">Throws when target's DeclarationType is not Variable.</exception>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static int CountOfDeclarationsInStatement(this Declaration target)
+        {
+            if (target.DeclarationType != DeclarationType.Variable)
+            {
+                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+            }
+
+            var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
+
+            if (statement != null)
+            {
+                return statement.children.OfType<VBAParser.VariableSubStmtContext>().Count();
+            }
+
+            throw new ArgumentException("'target.Context.Parent' is not type VBAParser.VariabelListStmtContext", "target");
+        }
+
+        /// <summary>
+        /// Returns the number of variable declarations in a single statement.  Adjusted to be 1-indexed rather than 0-indexed.
+        /// </summary>
+        /// <exception cref="ArgumentException">Throws when target's DeclarationType is not Variable.</exception>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static int IndexOfVariableDeclarationInStatement(this Declaration target)
+        {
+            if (target.DeclarationType != DeclarationType.Variable)
+            {
+                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+            }
+
+            var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
+
+            if (statement != null)
+            {
+                return statement.children.OfType<VBAParser.VariableSubStmtContext>()
+                        .ToList()
+                        .IndexOf((VBAParser.VariableSubStmtContext)target.Context) + 1;
+            }
+
+            // ReSharper disable once LocalizableElement
+            throw new ArgumentException("'target.Context.Parent' is not type VBAParser.VariabelListStmtContext", "target");
         }
 
         public static readonly DeclarationType[] ProcedureTypes =
@@ -270,7 +381,15 @@ namespace Rubberduck.Common
                 : matches.First();
         }
 
-        public static Declaration FindSelection(this IEnumerable<Declaration> declarations, QualifiedSelection selection, DeclarationType[] validDeclarationTypes)
+        /// <summary>
+        /// Returns the declaration contained in a qualified selection.
+        /// To get the selection of a variable or field, use FindVariable(QualifiedSelection)
+        /// </summary>
+        /// <param name="declarations"></param>
+        /// <param name="selection"></param>
+        /// <param name="validDeclarationTypes"></param>
+        /// <returns></returns>
+        public static Declaration FindTarget(this IEnumerable<Declaration> declarations, QualifiedSelection selection, DeclarationType[] validDeclarationTypes)
         {
             var items = declarations.ToList();
 
@@ -331,6 +450,76 @@ namespace Rubberduck.Common
                 }
             }
             return target;
+        }
+
+        /// <summary>
+        /// Returns the variable which contains the passed-in QualifiedSelection.  Returns null if the selection is not on a variable.
+        /// </summary>
+        /// <param name="declarations"></param>
+        /// <param name="selection"></param>
+        /// <returns></returns>
+        public static Declaration FindVariable(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
+        {
+            var items = declarations.Where(d => !d.IsBuiltIn && d.DeclarationType == DeclarationType.Variable).ToList();
+
+            var target = items
+                .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));
+
+            if (target != null) { return target; }
+
+            var targets = items.Where(item => item.ComponentName == selection.QualifiedName.ComponentName);
+
+            foreach (var declaration in targets)
+            {
+                var declarationSelection = new Selection(declaration.Context.Start.Line,
+                                                    declaration.Context.Start.Column,
+                                                    declaration.Context.Stop.Line,
+                                                    declaration.Context.Stop.Column + declaration.Context.Stop.Text.Length);
+
+                if (declarationSelection.Contains(selection.Selection) ||
+                    !HasMultipleDeclarationsInStatement(declaration) && GetVariableStmtContextSelection(declaration).Contains(selection.Selection))
+                {
+                    return declaration;
+                }
+
+                var reference =
+                    declaration.References.FirstOrDefault(r => r.Selection.Contains(selection.Selection));
+
+                if (reference != null)
+                {
+                    return reference.Declaration;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the interface for a QualifiedSelection contained by a statement similar to "Implements IClass1"
+        /// </summary>
+        /// <param name="declarations"></param>
+        /// <param name="selection"></param>
+        /// <returns></returns>
+        [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
+        public static Declaration FindInterface(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
+        {
+            foreach (var declaration in declarations.FindInterfaces())
+            {
+                foreach (var reference in declaration.References)
+                {
+                    var implementsStmt = reference.Context.Parent as VBAParser.ImplementsStmtContext;
+
+                    if (implementsStmt == null) { continue; }
+
+                    if (reference.QualifiedModuleName == selection.QualifiedName &&
+                        (implementsStmt.GetSelection().Contains(selection.Selection)
+                          || reference.Selection.Contains(selection.Selection)))
+                    {
+                        return declaration;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

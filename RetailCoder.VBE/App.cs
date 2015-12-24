@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -87,13 +84,17 @@ namespace Rubberduck
                 if (_isAwaitingTwoStepKey)
                 {
                     // todo: use _firstStepHotKey and e.Key to run 2-step hotkey action
+                    if (_firstStepHotKey == Keys.I && e.Key == Keys.M)
+                    {
+                        _indenter.IndentCurrentModule();
+                    }
 
                     AwaitNextKey();
                     return;
                 }
 
                 var component = _vbe.ActiveCodePane.CodeModule.Parent;
-                await ParseComponentAsync(component);
+                ParseComponentAsync(component);
 
                 AwaitNextKey();
                 return;
@@ -148,12 +149,12 @@ namespace Rubberduck
             _appMenus.EvaluateCanExecute(_parser.State);
         }
 
-        private async Task ParseComponentAsync(VBComponent component, bool resolve = true)
+        private void ParseComponentAsync(VBComponent component, bool resolve = true)
         {
             var tokenSource = RenewTokenSource(component);
 
             var token = tokenSource.Token;
-            await _parser.ParseAsync(component, token);
+            _parser.ParseAsync(component, token);
 
             if (resolve && !token.IsCancellationRequested)
             {
@@ -195,10 +196,10 @@ namespace Rubberduck
                 ParseAll();
             });
 
-            _hooks.AddHook(new LowLevelKeyboardHook(_vbe));
-            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%+R", Keys.R));
-            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%+I", Keys.I));
-            _hooks.Attach();
+            //_hooks.AddHook(new LowLevelKeyboardHook(_vbe));
+            //_hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^R", Keys.R));
+            //_hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^I", Keys.I));
+            //_hooks.Attach();
         }
 
         private void ParseAll()

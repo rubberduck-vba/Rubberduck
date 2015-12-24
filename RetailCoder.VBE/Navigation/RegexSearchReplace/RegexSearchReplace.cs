@@ -132,7 +132,7 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
             var wrapper = _codePaneFactory.Create(_vbe.ActiveCodePane);
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(wrapper.CodeModule.Parent), wrapper.Selection);
-            dynamic block = parseResult.AllDeclarations.FindSelection(qualifiedSelection, declarationTypes).Context.Parent;
+            dynamic block = parseResult.AllDeclarations.FindTarget(qualifiedSelection, declarationTypes).Context.Parent;
             var selection = new Selection(block.Start.Line, block.Start.Column, block.Stop.Line, block.Stop.Column);
             return results.Where(r => selection.Contains(r.Selection)).ToList();
         }

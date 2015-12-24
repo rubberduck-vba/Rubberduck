@@ -21,6 +21,7 @@ namespace Rubberduck.UI.SourceControl
             CurrentBranch.Text = RubberduckUI.SourceControl_CurrentBranchLabel;
             NewBranchButton.Text = RubberduckUI.SourceControl_NewBranch;
             MergeBranchButton.Text = RubberduckUI.SourceControl_MergeBranch;
+            DeleteBranchButton.Text = RubberduckUI.SourceControl_DeleteBranchButton;
             PublishedBranchesBox.Text = RubberduckUI.SourceControl_PublishedBranchesLabel;
             UnpublishedBranchesBox.Text = RubberduckUI.SourceControl_UnpublishedBranchesLabel;
         }

@@ -16,15 +16,24 @@ namespace Rubberduck.SmartIndenter
         bool IndentFirst { get; set; }
         bool AlignEndOfLine { get; set; }
         bool AlignDim { get; set; }
-        bool DebugColumn1 { get; set; }
+        bool ForceDebugStatementsInColumn1 { get; set; }
         bool EnableUndo { get; set; }
         int IndentSpaces { get; set; }
         int EndOfLineAlignColumn { get; set; }
         int AlignDimColumn { get; set; }
-        bool CompilerStuffColumn1 { get; set; }
+        bool ForceCompilerStuffInColumn1 { get; set; }
         bool IndentCompilerStuff { get; set; }
         bool AlignIgnoreOps { get; set; }
         bool EnableIndentProcedureHotKey { get; set; }
         bool EnableIndentModuleHotKey { get; set; }
+        EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
+    }
+
+    public enum EndOfLineCommentStyle
+    {
+        Absolute,
+        SameGap,
+        StandardGap,
+        AlignInColumn
     }
 }

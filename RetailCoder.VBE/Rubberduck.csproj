@@ -309,6 +309,22 @@
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplacePresenter.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplaceScope.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchResult.cs" />
+    <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldModel.cs" />
+    <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldPresenter.cs" />
+    <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldPresenterFactory.cs" />
+    <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldRefactoring.cs" />
+    <Compile Include="Refactorings\EncapsulateField\IEncapsulateFieldView.cs" />
+    <Compile Include="Refactorings\ExtractInterface\ExtractInterfaceRefactoring.cs" />
+    <Compile Include="Refactorings\ExtractInterface\ExtractInterfaceModel.cs" />
+    <Compile Include="Refactorings\ExtractInterface\ExtractInterfacePresenter.cs" />
+    <Compile Include="Refactorings\ExtractInterface\ExtractInterfacePresenterFactory.cs" />
+    <Compile Include="Refactorings\ExtractInterface\IExtractInterfaceView.cs" />
+    <Compile Include="Refactorings\ExtractInterface\InterfaceMember.cs" />
+    <Compile Include="Refactorings\ImplementInterface\ImplementInterfaceRefactoring.cs" />
+    <Compile Include="Refactorings\ImplementInterface\Parameter.cs" />
+    <Compile Include="Refactorings\IntroduceField\IntroduceFieldRefactoring.cs" />
+    <Compile Include="Refactorings\IntroduceParameter\IntroduceParameterRefactoring.cs" />
+    <Compile Include="Refactorings\MoveCloserToUsage\MoveCloserToUsageRefactoring.cs" />
     <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
@@ -379,6 +395,7 @@
     <Compile Include="UI\Command\AddTestModuleCommand.cs" />
     <Compile Include="UI\Command\CommandBase.cs" />
     <Compile Include="UI\Command\DelegateCommand.cs" />
+    <Compile Include="UI\Command\IndentCurrentProcedureCommand.cs" />
     <Compile Include="UI\Command\MenuItems\AddTestMethodCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\AddTestMethodExpectedErrorCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\AddTestModuleCommandMenuItem.cs" />
@@ -389,6 +406,7 @@
     <Compile Include="UI\Command\MenuItems\AboutCommandMenuItem.cs" />
     <Compile Include="UI\Command\CodeExplorerCommand.cs" />
     <Compile Include="UI\Command\MenuItems\IAppMenu.cs" />
+    <Compile Include="UI\Command\MenuItems\IndentCurrentProcedureCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\IParentMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\CodePaneContextParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\CommandMenuItemBase.cs" />
@@ -399,7 +417,14 @@
     <Compile Include="UI\Command\FindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\NavigateParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\NavigationMenuItemDisplayOrder.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\SmartIndenterParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\ParserStateCommandBar.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorEncapsulateFieldCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorImplementInterfaceCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorExtractInterfaceCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorIntroduceFieldCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorIntroduceParameterCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorMoveCloserToUsageCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RegexSearchReplaceCommandMenuItem.cs" />
     <Compile Include="UI\Command\NavigateCommand.cs" />
     <Compile Include="UI\Command\OptionsCommand.cs" />
@@ -409,6 +434,12 @@
     <Compile Include="UI\Command\MenuItems\RefactorExtractMethodCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\RefactoringsParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorRemoveParametersCommandMenuItem.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorEncapsulateFieldCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorImplementInterfaceCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorExtractInterfaceCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorIntroduceFieldCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorIntroduceParameterCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorMoveCloserToUsageCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorRenameCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorRenameCommandMenuItem.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorReorderParametersCommand.cs" />
@@ -428,6 +459,18 @@
     <Compile Include="UI\FolderBrowser.cs" />
     <Compile Include="UI\IMessageBox.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
+    <Compile Include="UI\Refactorings\EncapsulateFieldDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\EncapsulateFieldDialog.Designer.cs">
+      <DependentUpon>EncapsulateFieldDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\ExtractInterfaceDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\ExtractInterfaceDialog.Designer.cs">
+      <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\RubberduckUI.de.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -763,6 +806,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Refactorings\EncapsulateFieldDialog.resx">
+      <DependentUpon>EncapsulateFieldDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Refactorings\ExtractInterfaceDialog.resx">
+      <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
