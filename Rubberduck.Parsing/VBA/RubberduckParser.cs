@@ -244,7 +244,7 @@ namespace Rubberduck.Parsing.VBA
 
             public override void ExitLiteral(VBAParser.LiteralContext context)
             {
-                if (context.STRINGLITERAL().GetText() == "\"\"")
+                if (context.STRINGLITERAL() != null && context.STRINGLITERAL().GetText() == "\"\"")
                 {
                     _contexts.Add(context);
                 }
