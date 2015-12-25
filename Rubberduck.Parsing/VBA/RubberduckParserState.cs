@@ -18,7 +18,7 @@ namespace Rubberduck.Parsing.VBA
 
     public class RubberduckParserState
     {
-        public delegate void ParseRequestEventHandler();
+        public delegate void ParseRequestEventHandler(ParserState state);
         public event ParseRequestEventHandler ParseRequest;
 
         // keys are the declarations; values indicate whether a declaration is resolved.
@@ -196,17 +196,17 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void RequestParse()
+        public void RequestParse(ParserState state = ParserState.Error)
         {
-            OnParseRequest();
+            OnParseRequest(state);
         }
 
-        protected virtual void OnParseRequest()
+        protected virtual void OnParseRequest(ParserState state)
         {
             var handler = ParseRequest;
             if (handler != null)
             {
-                handler();
+                handler(state);
             }
         }
     }

@@ -510,9 +510,10 @@ namespace Rubberduck.Common
 
                     if (implementsStmt == null) { continue; }
 
-                    if (reference.QualifiedModuleName == selection.QualifiedName &&
-                        (implementsStmt.GetSelection().Contains(selection.Selection)
-                          || reference.Selection.Contains(selection.Selection)))
+                    if (reference.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName &&
+                        reference.QualifiedModuleName.Project == selection.QualifiedName.Project &&
+                        (implementsStmt.GetSelection().Contains(selection.Selection) ||
+                         reference.Selection.Contains(selection.Selection)))
                     {
                         return declaration;
                     }

@@ -25,15 +25,28 @@ namespace Rubberduck.Parsing.VBA
             _state = state;
 
             state.ParseRequest += state_ParseRequest;
+            state.StateChanged += state_StateChanged;
         }
 
-        void state_ParseRequest()
+        private void state_StateChanged(object sender, EventArgs e)
+        {
+            _semaphore.Release(1);
+        }
+
+        void state_ParseRequest(ParserState state)
         {
             ParseAll();
+
+            while (true)
+            {
+                _semaphore.Wait();
+                if (_state.Status <= state) { break; }
+            }
         }
 
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
         public RubberduckParserState State { get { return _state; } }
 
         private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
