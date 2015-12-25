@@ -510,10 +510,13 @@ namespace Rubberduck.Common
 
                     if (implementsStmt == null) { continue; }
 
+                    var completeSelection = new Selection(implementsStmt.GetSelection().StartLine,
+                        implementsStmt.GetSelection().StartColumn, reference.Selection.EndLine,
+                        reference.Selection.EndColumn);
+
                     if (reference.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName &&
                         reference.QualifiedModuleName.Project == selection.QualifiedName.Project &&
-                        (implementsStmt.GetSelection().Contains(selection.Selection) ||
-                         reference.Selection.Contains(selection.Selection)))
+                        completeSelection.Contains(selection.Selection))
                     {
                         return declaration;
                     }

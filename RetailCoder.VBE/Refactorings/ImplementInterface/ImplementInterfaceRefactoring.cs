@@ -33,7 +33,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
             if (!selection.HasValue)
             {
-                _messageBox.Show("Invalid selection.", "Rubberduck - Implement Interface",
+                _messageBox.Show(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption,
                     System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
                 return;
             }
@@ -52,6 +52,8 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
             if (_targetClass == null || _targetInterface == null)
             {
+                _messageBox.Show(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption,
+                    System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
                 return;
             }
 
