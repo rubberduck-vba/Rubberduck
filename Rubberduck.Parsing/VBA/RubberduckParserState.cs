@@ -18,6 +18,9 @@ namespace Rubberduck.Parsing.VBA
 
     public class RubberduckParserState
     {
+        public delegate void ParseRequestEventHandler();
+        public event ParseRequestEventHandler ParseRequest;
+
         // keys are the declarations; values indicate whether a declaration is resolved.
         private readonly ConcurrentDictionary<Declaration, ResolutionState> _declarations =
             new ConcurrentDictionary<Declaration, ResolutionState>();
@@ -190,6 +193,20 @@ namespace Rubberduck.Parsing.VBA
             foreach (var declaration in builtInDeclarations)
             {
                 AddDeclaration(declaration);
+            }
+        }
+
+        public void RequestParse()
+        {
+            OnParseRequest();
+        }
+
+        protected virtual void OnParseRequest()
+        {
+            var handler = ParseRequest;
+            if (handler != null)
+            {
+                handler();
             }
         }
     }

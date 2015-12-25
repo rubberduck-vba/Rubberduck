@@ -1,14 +1,13 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
-using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
@@ -20,13 +19,75 @@ namespace Rubberduck.Parsing.VBA
 {
     public class RubberduckParser : IRubberduckParser
     {
-        public RubberduckParser(RubberduckParserState state)
+        public RubberduckParser(VBE vbe, RubberduckParserState state)
         {
+            _vbe = vbe;
             _state = state;
+
+            state.ParseRequest += state_ParseRequest;
         }
 
+        void state_ParseRequest()
+        {
+            ParseAll();
+        }
+
+        private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         public RubberduckParserState State { get { return _state; } }
+
+        private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
+           new ConcurrentDictionary<VBComponent, CancellationTokenSource>();
+
+        public void ParseComponentAsync(VBComponent component, bool resolve = true)
+        {
+            var tokenSource = RenewTokenSource(component);
+
+            var token = tokenSource.Token;
+            ParseAsync(component, token);
+
+            if (resolve && !token.IsCancellationRequested)
+            {
+                using (var source = new CancellationTokenSource())
+                {
+                    Resolve(source.Token);
+                }
+            }
+        }
+
+        private CancellationTokenSource RenewTokenSource(VBComponent component)
+        {
+            if (_tokenSources.ContainsKey(component))
+            {
+                CancellationTokenSource existingTokenSource;
+                _tokenSources.TryRemove(component, out existingTokenSource);
+                if (existingTokenSource != null)
+                {
+                    existingTokenSource.Cancel();
+                    existingTokenSource.Dispose();
+                }
+            }
+
+            var tokenSource = new CancellationTokenSource();
+            _tokenSources[component] = tokenSource;
+            return tokenSource;
+        }
+
+        private void ParseAll()
+        {
+            var components = _vbe.VBProjects.Cast<VBProject>()
+                .SelectMany(project => project.VBComponents.Cast<VBComponent>());
+
+            var result = Parallel.ForEach(components, component => { ParseComponentAsync(component, false); });
+
+            if (result.IsCompleted)
+            {
+                using (var tokenSource = new CancellationTokenSource())
+                {
+                    Resolve(tokenSource.Token);
+                }
+            }
+        }
 
         public Task ParseAsync(VBComponent vbComponent, CancellationToken token)
         {
