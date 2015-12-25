@@ -1969,11 +1969,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to E&amp;xtract Interface.
+        /// </summary>
+        public static string RefactorMenu_ExtractInterface {
+            get {
+                return ResourceManager.GetString("RefactorMenu_ExtractInterface", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extract &amp;Method.
         /// </summary>
         public static string RefactorMenu_ExtractMethod {
             get {
                 return ResourceManager.GetString("RefactorMenu_ExtractMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implement Interface.
+        /// </summary>
+        public static string RefactorMenu_ImplementInterface {
+            get {
+                return ResourceManager.GetString("RefactorMenu_ImplementInterface", resourceCulture);
             }
         }
         
