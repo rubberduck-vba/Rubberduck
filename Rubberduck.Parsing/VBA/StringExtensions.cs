@@ -49,5 +49,25 @@ namespace Rubberduck.Parsing.VBA
 
             return newString.ToString().Replace('\r', ' ');
         }
+
+        public static int NthIndexOf(this string line, char chr, int index)
+        {
+            var currentIndexOf = 0;
+
+            for (var i = 0; i < line.Length; i++)
+            {
+                if (line[i] == chr)
+                {
+                    currentIndexOf++;
+                }
+
+                if (currentIndexOf == index)
+                {
+                    return i;
+                }
+            }
+
+            throw new ArgumentException(string.Format("Not {0} instances of '{1}' in '{2}'", index, chr, line), "index");
+        }
     }
 }
