@@ -24,28 +24,40 @@ namespace Rubberduck.Refactorings.ExtractInterface
         public string InterfaceName { get; set; }
         public List<InterfaceMember> Members { get; set; }
 
-        private readonly static DeclarationType[] DeclarationTypes =
+        private static DeclarationType[] DeclarationTypes
         {
-            DeclarationType.Class,
-            DeclarationType.Document,
-            DeclarationType.UserForm
-        };
+            get
+            {
+                return new[]
+                {
+                    DeclarationType.Class,
+                    DeclarationType.Document,
+                    DeclarationType.UserForm
+                };
+            }
+        }
 
-        public readonly string[] PrimitiveTypes =
+        public static string[] PrimitiveTypes
         {
-            Tokens.Boolean,
-            Tokens.Byte,
-            Tokens.Date,
-            Tokens.Decimal,
-            Tokens.Double,
-            Tokens.Long,
-            Tokens.LongLong,
-            Tokens.LongPtr,
-            Tokens.Integer,
-            Tokens.Single,
-            Tokens.String,
-            Tokens.StrPtr
-        };
+            get
+            {
+                return new[]
+                {
+                    Tokens.Boolean,
+                    Tokens.Byte,
+                    Tokens.Date,
+                    Tokens.Decimal,
+                    Tokens.Double,
+                    Tokens.Long,
+                    Tokens.LongLong,
+                    Tokens.LongPtr,
+                    Tokens.Integer,
+                    Tokens.Single,
+                    Tokens.String,
+                    Tokens.StrPtr
+                };
+            }
+        }
 
         public ExtractInterfaceModel(RubberduckParserState parseResult, QualifiedSelection selection)
         {

@@ -1297,4 +1297,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
     <value>The current selection is not valid.</value>
   </data>
+  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+    <value>Invalid Selection.</value>
+  </data>
 </root>

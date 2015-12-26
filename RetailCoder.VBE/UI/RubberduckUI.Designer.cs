@@ -1594,6 +1594,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid Selection..
+        /// </summary>
+        public static string MoveCloserToUsage_InvalidSelection {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_InvalidSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; has no references..
         /// </summary>
         public static string MoveCloserToUsage_TargetHasNoReferences {
