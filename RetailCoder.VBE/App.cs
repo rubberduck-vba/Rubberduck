@@ -196,11 +196,6 @@ namespace Rubberduck
                 ParseAll();
             });
 
-            Task.Delay(1000).ContinueWith(t =>
-            {
-                _hooks.AddHook(new LowLevelKeyboardHook(_vbe));
-                _hooks.Attach();
-            });
             //_hooks.AddHook(new LowLevelKeyboardHook(_vbe));
             //_hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^R", Keys.R));
             //_hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^I", Keys.I));
