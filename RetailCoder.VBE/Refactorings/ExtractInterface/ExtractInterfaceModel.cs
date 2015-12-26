@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -24,40 +25,30 @@ namespace Rubberduck.Refactorings.ExtractInterface
         public string InterfaceName { get; set; }
         public List<InterfaceMember> Members { get; set; }
 
-        private static DeclarationType[] DeclarationTypes
+        private static readonly DeclarationType[] _declarationTypes =
         {
-            get
-            {
-                return new[]
-                {
-                    DeclarationType.Class,
-                    DeclarationType.Document,
-                    DeclarationType.UserForm
-                };
-            }
-        }
+            DeclarationType.Class,
+            DeclarationType.Document,
+            DeclarationType.UserForm
+        };
+        public ReadOnlyCollection<DeclarationType> DeclarationTypes = new ReadOnlyCollection<DeclarationType>(_declarationTypes);
 
-        public static string[] PrimitiveTypes
+        private static readonly string[] _primitiveTypes =
         {
-            get
-            {
-                return new[]
-                {
-                    Tokens.Boolean,
-                    Tokens.Byte,
-                    Tokens.Date,
-                    Tokens.Decimal,
-                    Tokens.Double,
-                    Tokens.Long,
-                    Tokens.LongLong,
-                    Tokens.LongPtr,
-                    Tokens.Integer,
-                    Tokens.Single,
-                    Tokens.String,
-                    Tokens.StrPtr
-                };
-            }
-        }
+            Tokens.Boolean,
+            Tokens.Byte,
+            Tokens.Date,
+            Tokens.Decimal,
+            Tokens.Double,
+            Tokens.Long,
+            Tokens.LongLong,
+            Tokens.LongPtr,
+            Tokens.Integer,
+            Tokens.Single,
+            Tokens.String,
+            Tokens.StrPtr
+        };
+        public ReadOnlyCollection<string> PrimitiveTypes = new ReadOnlyCollection<string>(_primitiveTypes);
 
         public ExtractInterfaceModel(RubberduckParserState parseResult, QualifiedSelection selection)
         {

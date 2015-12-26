@@ -79,7 +79,7 @@ namespace Rubberduck.Common
 
             var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
 
-            return statement != null && statement.children.OfType<VBAParser.VariableSubStmtContext>().Any();
+            return statement != null && statement.children.OfType<VBAParser.VariableSubStmtContext>().Count() > 1;
         }
 
         /// <summary>
