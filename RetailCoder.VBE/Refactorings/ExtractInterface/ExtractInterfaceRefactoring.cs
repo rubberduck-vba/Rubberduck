@@ -79,19 +79,14 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 case "Function":
                     return FunctionStmt(member);
 
-                case "Property":
-                    switch (member.PropertyType)
-                    {
-                        case "Get":
-                            return PropertyGetStmt(member);
+                case "Property Get":
+                    return PropertyGetStmt(member);
 
-                        case "Let":
-                            return PropertyLetStmt(member);
+                case "Property Let":
+                    return PropertyLetStmt(member);
 
-                        case "Set":
-                            return PropertySetStmt(member);
-                    }
-                    break;
+                case "Property Set":
+                    return PropertySetStmt(member);
             }
 
             return string.Empty;
