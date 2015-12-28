@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -35,7 +36,17 @@ namespace Rubberduck.UI.CodeExplorer
 
     public class ExplorerProjectItemViewModel : ViewModelBase
     {
-        
+        private readonly VBProject _project;
+
+        public ExplorerProjectItemViewModel(VBProject project)
+        {
+            _project = project;
+        }
+
+        public string Name { get { return _project.Name; } }
+        public bool IsProtected { get { return _project.Protection == vbext_ProjectProtection.vbext_pp_locked; } }
+
+
     }
 
     public class ExplorerComponentItemViewModel : ViewModelBase
