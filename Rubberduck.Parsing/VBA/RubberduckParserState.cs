@@ -18,6 +18,9 @@ namespace Rubberduck.Parsing.VBA
 
     public class RubberduckParserState
     {
+        public delegate void ParseRequestEventHandler(ParserState state);
+        public event ParseRequestEventHandler ParseRequest;
+
         // keys are the declarations; values indicate whether a declaration is resolved.
         private readonly ConcurrentDictionary<Declaration, ResolutionState> _declarations =
             new ConcurrentDictionary<Declaration, ResolutionState>();
@@ -88,6 +91,17 @@ namespace Rubberduck.Parsing.VBA
         {
             get { return _obsoleteLetContexts; }
             internal set { _obsoleteLetContexts = value; }
+        }
+
+        private IEnumerable<QualifiedContext> _emptyStringLiterals = new List<QualifiedContext>();
+
+        /// <summary>
+        /// Gets <see cref="ParserRuleContext"/> objects representing 'Call' statements in the parse tree.
+        /// </summary>
+        public IEnumerable<QualifiedContext> EmptyStringLiterals
+        {
+            get { return _emptyStringLiterals; }
+            internal set { _emptyStringLiterals = value; }
         }
 
         private readonly ConcurrentDictionary<VBComponent, IEnumerable<CommentNode>> _comments =
@@ -190,6 +204,20 @@ namespace Rubberduck.Parsing.VBA
             foreach (var declaration in builtInDeclarations)
             {
                 AddDeclaration(declaration);
+            }
+        }
+
+        public void RequestParse(ParserState state = ParserState.Error)
+        {
+            OnParseRequest(state);
+        }
+
+        protected virtual void OnParseRequest(ParserState state)
+        {
+            var handler = ParseRequest;
+            if (handler != null)
+            {
+                handler(state);
             }
         }
     }

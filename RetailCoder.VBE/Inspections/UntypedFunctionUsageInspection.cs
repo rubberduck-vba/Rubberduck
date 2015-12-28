@@ -43,9 +43,9 @@ namespace Rubberduck.Inspections
             Tokens.UCase
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var declarations = parseResult.AllDeclarations
+            var declarations = state.AllDeclarations
                 .Where(item => item.IsBuiltIn && item.Accessibility == Accessibility.Global && _tokens.Contains(item.IdentifierName));
 
             return declarations.SelectMany(declaration => declaration.References

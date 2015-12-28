@@ -22,9 +22,9 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var declarations = parseResult.AllDeclarations.ToList();
+            var declarations = state.AllDeclarations.ToList();
 
             var classes = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Class).ToList();
             var modules = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Module).ToList();

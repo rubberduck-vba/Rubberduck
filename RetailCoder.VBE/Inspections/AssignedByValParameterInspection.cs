@@ -22,11 +22,11 @@ namespace Rubberduck.Inspections
 
         private string AnnotationName { get { return Name.Replace("Inspection", string.Empty); } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
             var name = AnnotationName;
             var assignedByValParameters =
-                parseResult.AllDeclarations.Where(declaration => !declaration.IsInspectionDisabled(name)
+                state.AllDeclarations.Where(declaration => !declaration.IsInspectionDisabled(name)
                     && !declaration.IsBuiltIn 
                     && declaration.DeclarationType == DeclarationType.Parameter
                     && ((VBAParser.ArgContext)declaration.Context).BYVAL() != null
