@@ -1291,4 +1291,13 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
     <value>Implement Interface</value>
   </data>
+  <data name="ImplementInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Implement Interface</value>
+  </data>
+  <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
+    <value>The current selection is not valid.</value>
+  </data>
+  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+    <value>Invalid Selection.</value>
+  </data>
 </root>

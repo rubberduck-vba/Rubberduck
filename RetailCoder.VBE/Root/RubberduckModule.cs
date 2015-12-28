@@ -61,6 +61,7 @@ namespace Rubberduck.Root
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();
             Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>().InSingletonScope();
+            Rebind<IRubberduckParser>().To<RubberduckParser>().InSingletonScope();
 
             Bind<IPresenter>().To<TestExplorerDockablePresenter>()
                 .WhenInjectedInto<TestExplorerCommand>()

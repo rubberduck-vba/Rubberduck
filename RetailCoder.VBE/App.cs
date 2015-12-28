@@ -36,9 +36,6 @@ namespace Rubberduck
 
         private Configuration _config;
 
-        private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
-            new ConcurrentDictionary<VBComponent, CancellationTokenSource>(); 
-
         public App(VBE vbe, IMessageBox messageBox,
             IParserErrorsPresenterFactory parserErrorsPresenterFactory,
             IRubberduckParser parser,
@@ -94,7 +91,7 @@ namespace Rubberduck
                 }
 
                 var component = _vbe.ActiveCodePane.CodeModule.Parent;
-                ParseComponentAsync(component);
+                _parser.ParseComponentAsync(component);
 
                 AwaitNextKey();
                 return;
@@ -141,46 +138,12 @@ namespace Rubberduck
 
         private void _stateBar_Refresh(object sender, EventArgs e)
         {
-            ParseAll();
+            _parser.State.RequestParse();
         }
 
         private void Parser_StateChanged(object sender, EventArgs e)
         {
             _appMenus.EvaluateCanExecute(_parser.State);
-        }
-
-        private void ParseComponentAsync(VBComponent component, bool resolve = true)
-        {
-            var tokenSource = RenewTokenSource(component);
-
-            var token = tokenSource.Token;
-            _parser.ParseAsync(component, token);
-
-            if (resolve && !token.IsCancellationRequested)
-            {
-                using (var source = new CancellationTokenSource())
-                {
-                    _parser.Resolve(source.Token);
-                }
-            }
-        }
-
-        private CancellationTokenSource RenewTokenSource(VBComponent component)
-        {
-            if (_tokenSources.ContainsKey(component))
-            {
-                CancellationTokenSource existingTokenSource;
-                _tokenSources.TryRemove(component, out existingTokenSource);
-                if (existingTokenSource != null)
-                {
-                    existingTokenSource.Cancel();
-                    existingTokenSource.Dispose();
-                }
-            }
-
-            var tokenSource = new CancellationTokenSource();
-            _tokenSources[component] = tokenSource;
-            return tokenSource;
         }
 
         public void Startup()
@@ -193,29 +156,13 @@ namespace Rubberduck
             Task.Delay(1000).ContinueWith(t =>
             {
                 _parser.State.AddBuiltInDeclarations(_vbe.HostApplication());
-                ParseAll();
+                _parser.State.RequestParse();
             });
 
             //_hooks.AddHook(new LowLevelKeyboardHook(_vbe));
             //_hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^R", Keys.R));
             //_hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^I", Keys.I));
             //_hooks.Attach();
-        }
-
-        private void ParseAll()
-        {
-            var components = _vbe.VBProjects.Cast<VBProject>()
-                .SelectMany(project => project.VBComponents.Cast<VBComponent>());
-
-            var result = Parallel.ForEach(components, component => { ParseComponentAsync(component, false); });
-
-            if (result.IsCompleted)
-            {
-                using (var tokenSource = new CancellationTokenSource())
-                {
-                    _parser.Resolve(tokenSource.Token);
-                }
-            }
         }
 
         private void CleanReloadConfig()
@@ -262,15 +209,6 @@ namespace Rubberduck
             _parser.State.StateChanged -= Parser_StateChanged;
 
             _hooks.Dispose();
-
-            if (_tokenSources.Any())
-            {
-                foreach (var tokenSource in _tokenSources)
-                {
-                    tokenSource.Value.Cancel();
-                    tokenSource.Value.Dispose();
-                }
-            }
         }
     }
 }

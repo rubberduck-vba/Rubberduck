@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
@@ -28,7 +29,7 @@ namespace Rubberduck.Inspections
                                                    char.IsDigit(declaration.IdentifierName.Last()) ||
                                                    !declaration.IdentifierName.Any(c => new[] {'a', 'e', 'i', 'o', 'u', 'y'}.Contains(c))
                                                   ))
-                            .Select(issue => new UseMeaningfulNameInspectionResult(this, issue, state, _wrapperFactory))
+                            .Select(issue => new UseMeaningfulNameInspectionResult(this, issue, state, _wrapperFactory, new MessageBox()))
                             .ToList();
 
             return issues;

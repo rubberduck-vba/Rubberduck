@@ -25,14 +25,13 @@ namespace Rubberduck.Refactorings.ExtractInterface
         public string Type { get; set; }
 
         public string MemberType { get; set; }
-        public string PropertyType { get; set; }
 
         public bool IsSelected { get; set; }
         public string MemberSignature
         {
             get
             {
-                var signature = Member.IdentifierName + "(" +
+                var signature = MemberType + " " + Member.IdentifierName + "(" +
                     string.Join(", ", MemberParams.Select(m => m.ParamType)) + ")";
 
                 return Type == null ? signature : signature + " As " + Type;
@@ -43,7 +42,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
         {
             get
             {
-                var signature = Member.IdentifierName + "(" +
+                var signature = MemberType + " " + Member.IdentifierName + "(" +
                     string.Join(", ", MemberParams) + ")";
 
                 return Type == null ? signature : signature + " As " + Type;
@@ -69,11 +68,10 @@ namespace Rubberduck.Refactorings.ExtractInterface
                                        })
                                        .ToList();
 
-            if (PropertyType == "Get")
+            if (MemberType == "Property Get")
             {
                 MemberParams = MemberParams.Take(MemberParams.Count() - 1);
             }
-
 
             IsSelected = false;
         }
@@ -97,29 +95,26 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var propertyGetStmtContext = context as VBAParser.PropertyGetStmtContext;
             if (propertyGetStmtContext != null)
             {
-                MemberType = Tokens.Property;
-                PropertyType = Tokens.Get;
+                MemberType = Tokens.Property + " " + Tokens.Get;
             }
 
             var propertyLetStmtContext = context as VBAParser.PropertyLetStmtContext;
             if (propertyLetStmtContext != null)
             {
-                MemberType = Tokens.Property;
-                PropertyType = Tokens.Let;
+                MemberType = Tokens.Property + " " + Tokens.Let;
             }
 
             var propertySetStmtContext = context as VBAParser.PropertySetStmtContext;
             if (propertySetStmtContext != null)
             {
-                MemberType = Tokens.Property;
-                PropertyType = Tokens.Set;
+                MemberType = Tokens.Property + " " + Tokens.Set;
             }
         }
 
         public override string ToString()
         {
-            return "Public " + MemberType + " " + PropertyType + " " + FullMemberSignature + Environment.NewLine + "End " + MemberType +
-                   Environment.NewLine;
+            return "Public " + FullMemberSignature + Environment.NewLine + 
+                "End " + MemberType.Split(' ').First() + Environment.NewLine;
         }
     }
 }

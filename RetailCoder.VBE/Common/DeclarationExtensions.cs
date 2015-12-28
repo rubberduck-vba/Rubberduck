@@ -79,7 +79,7 @@ namespace Rubberduck.Common
 
             var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
 
-            return statement != null && statement.children.OfType<VBAParser.VariableSubStmtContext>().Any();
+            return statement != null && statement.children.OfType<VBAParser.VariableSubStmtContext>().Count() > 1;
         }
 
         /// <summary>
@@ -510,9 +510,13 @@ namespace Rubberduck.Common
 
                     if (implementsStmt == null) { continue; }
 
-                    if (reference.QualifiedModuleName == selection.QualifiedName &&
-                        (implementsStmt.GetSelection().Contains(selection.Selection)
-                          || reference.Selection.Contains(selection.Selection)))
+                    var completeSelection = new Selection(implementsStmt.GetSelection().StartLine,
+                        implementsStmt.GetSelection().StartColumn, reference.Selection.EndLine,
+                        reference.Selection.EndColumn);
+
+                    if (reference.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName &&
+                        reference.QualifiedModuleName.Project == selection.QualifiedName.Project &&
+                        completeSelection.Contains(selection.Selection))
                     {
                         return declaration;
                     }
