@@ -154,7 +154,7 @@ namespace Rubberduck
             _appMenus.Localize();
 
             // delay to allow the VBE to properly load. HostApplication is null until then.
-            Task.Delay(2000).ContinueWith(t =>
+            Task.Delay(1000).ContinueWith(t =>
             {
                 _parser.State.AddBuiltInDeclarations(_vbe.HostApplication());
                 _parser.State.OnParseRequested();
