@@ -16,10 +16,9 @@ namespace Rubberduck.Parsing.VBA
         Unresolved
     }
 
-    public class RubberduckParserState
+    public sealed class RubberduckParserState
     {
-        public delegate void ParseRequestEventHandler(ParserState state);
-        public event ParseRequestEventHandler ParseRequest;
+        public event EventHandler ParseRequest;
 
         // keys are the declarations; values indicate whether a declaration is resolved.
         private readonly ConcurrentDictionary<Declaration, ResolutionState> _declarations =
@@ -48,19 +47,23 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, SyntaxErrorException> _moduleExceptions =
             new ConcurrentDictionary<VBComponent, SyntaxErrorException>();
 
+        private readonly object _lock = new object();
         public void SetModuleState(VBComponent component, ParserState state, SyntaxErrorException parserError = null)
         {
             _moduleStates[component] = state;
             _moduleExceptions[component] = parserError;
 
-            Status = _moduleStates.Values.Any(value => value == ParserState.Error)
-                ? ParserState.Error
-                : _moduleStates.Values.Any(value => value == ParserState.Parsing)
-                    ? ParserState.Parsing
-                    : _moduleStates.Values.Any(value => value == ParserState.Resolving)
-                        ? ParserState.Resolving
-                        : ParserState.Ready;
-
+            // prevent multiple threads from changing state simultaneously:
+            lock(_lock)
+            {
+                Status = _moduleStates.Values.Any(value => value == ParserState.Error)
+                    ? ParserState.Error
+                    : _moduleStates.Values.Any(value => value == ParserState.Parsing)
+                        ? ParserState.Parsing
+                        : _moduleStates.Values.Any(value => value == ParserState.Resolving)
+                            ? ParserState.Resolving
+                            : ParserState.Ready;
+            }
         }
 
         public ParserState GetModuleState(VBComponent component)
@@ -69,7 +72,18 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private ParserState _status;
-        public ParserState Status { get { return _status; } private set { if (_status != value) { _status = value; OnStateChanged(); } } }
+        public ParserState Status 
+        { 
+            get { return _status; }
+            private set
+            {
+                if (_status != value)
+                {
+                    _status = value; 
+                    OnStateChanged();
+                }
+            } 
+        }
 
         private IEnumerable<QualifiedContext> _obsoleteCallContexts = new List<QualifiedContext>();
 
@@ -207,17 +221,12 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void RequestParse(ParserState state = ParserState.Error)
-        {
-            OnParseRequest(state);
-        }
-
-        protected virtual void OnParseRequest(ParserState state)
+        public void OnParseRequested()
         {
             var handler = ParseRequest;
             if (handler != null)
             {
-                handler(state);
+                handler.Invoke(this, EventArgs.Empty);
             }
         }
     }

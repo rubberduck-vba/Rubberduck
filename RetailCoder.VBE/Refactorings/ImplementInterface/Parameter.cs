@@ -2,13 +2,13 @@
 {
     public class Parameter
     {
-        public string ParamAccessibility { get; set; }
-        public string ParamName { get; set; }
-        public string ParamType { get; set; }
+        public string Accessibility { get; set; }
+        public string Name { get; set; }
+        public string AsTypeName { get; set; }
 
         public override string ToString()
         {
-            return ParamAccessibility + " " + ParamName + " As " + ParamType;
+            return Accessibility + " " + Name + " As " + AsTypeName;
         }
     }
 }
