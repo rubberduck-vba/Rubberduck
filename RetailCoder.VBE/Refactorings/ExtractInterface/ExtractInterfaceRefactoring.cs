@@ -2,19 +2,24 @@
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.ImplementInterface;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
     public class ExtractInterfaceRefactoring : IRefactoring
     {
+        private readonly RubberduckParserState _state;
         private readonly IRefactoringPresenterFactory<ExtractInterfacePresenter> _factory;
         private readonly IActiveCodePaneEditor _editor;
         private ExtractInterfaceModel _model;
 
-        public ExtractInterfaceRefactoring(IRefactoringPresenterFactory<ExtractInterfacePresenter> factory,
+        public ExtractInterfaceRefactoring(RubberduckParserState state, IRefactoringPresenterFactory<ExtractInterfacePresenter> factory,
             IActiveCodePaneEditor editor)
         {
+            _state = state;
             _factory = factory;
             _editor = editor;
         }
@@ -55,120 +60,15 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             var module = _model.TargetDeclaration.QualifiedSelection.QualifiedName.Component.CodeModule;
 
-            AddItems(module);
-            module.InsertLines(module.CountOfDeclarationLines + 1, "Implements " + _model.InterfaceName);
-        }
+            var implementsLine = module.CountOfDeclarationLines + 1;
+            module.InsertLines(implementsLine, "Implements " + _model.InterfaceName);
 
-        private void AddItems(CodeModule module)
-        {
-            _model.Members.Reverse();
+            _state.RequestParse(ParserState.Ready);
+            var qualifiedSelection = new QualifiedSelection(_model.TargetDeclaration.QualifiedSelection.QualifiedName,
+                new Selection(implementsLine, 1, implementsLine, 1));
 
-            foreach (var member in _model.Members.Where(m => m.IsSelected))
-            {
-                module.InsertLines(module.CountOfDeclarationLines + 1, GetInterfaceMember(member));
-            }
-        }
-
-        private string GetInterfaceMember(InterfaceMember member)
-        {
-            switch (member.MemberType)
-            {
-                case "Sub":
-                    return SubStmt(member);
-
-                case "Function":
-                    return FunctionStmt(member);
-
-                case "Property":
-                    switch (member.PropertyType)
-                    {
-                        case "Get":
-                            return PropertyGetStmt(member);
-
-                        case "Let":
-                            return PropertyLetStmt(member);
-
-                        case "Set":
-                            return PropertySetStmt(member);
-                    }
-                    break;
-            }
-
-            return string.Empty;
-        }
-
-        private string SubStmt(InterfaceMember member)
-        {
-            var memberSignature = "Public Sub " + _model.InterfaceName + "_" + member.Member.IdentifierName + "(" +
-                                  string.Join(", ", member.MemberParams) + ")";
-
-            var memberBody = "    " + member.Member.IdentifierName + " " +
-                             string.Join(", ", member.MemberParams.Select(p => p.ParamName));
-
-            var memberCloseStatement = "End Sub" + Environment.NewLine;
-
-            return string.Join(Environment.NewLine, memberSignature, memberBody, memberCloseStatement);
-        }
-
-        private string FunctionStmt(InterfaceMember member)
-        {
-            var memberSignature = "Public Function " + _model.InterfaceName + "_" + member.Member.IdentifierName + "(" +
-                                  string.Join(", ", member.MemberParams) + ")" + " As " + member.Type;
-
-            var memberBody = "    " + _model.InterfaceName + "_" + member.Member.IdentifierName + " = " +
-                             member.Member.IdentifierName + "(" +
-                             string.Join(", ", member.MemberParams.Select(p => p.ParamName)) + ")";
-
-            var memberCloseStatement = "End Function" + Environment.NewLine;
-
-            return string.Join(Environment.NewLine, memberSignature, memberBody, memberCloseStatement);
-        }
-
-        private string PropertyGetStmt(InterfaceMember member)
-        {
-            var memberSignature = "Public Property Get " + _model.InterfaceName + "_" + member.Member.IdentifierName +
-                                  " As " + member.Type;
-
-            var memberBody = _model.PrimitiveTypes.Contains(member.Type) ||
-                                member.Member.DeclarationType == DeclarationType.UserDefinedType
-                ? "    "
-                : "    Set ";
-
-            memberBody += _model.InterfaceName + "_" + member.Member.IdentifierName + " = " +
-                          member.Member.IdentifierName;
-
-            var memberCloseStatement = "End Property" + Environment.NewLine;
-
-            return string.Join(Environment.NewLine, memberSignature, memberBody, memberCloseStatement);
-        }
-
-        private string PropertyLetStmt(InterfaceMember member)
-        {
-            var memberSignature = "Public Property Let " + _model.InterfaceName + "_" + member.Member.IdentifierName +
-                                  "(" + string.Join(", ", member.MemberParams) + ")";
-
-            var memberBody = _model.PrimitiveTypes.Contains(member.MemberParams.Last().ParamType) ||
-                    member.Member.DeclarationType == DeclarationType.UserDefinedType
-                ? "    "
-                : "    Set ";
-
-            memberBody += member.Member.IdentifierName + " = " + member.MemberParams.Last().ParamName;
-
-            var memberCloseStatement = "End Property" + Environment.NewLine;
-
-            return string.Join(Environment.NewLine, memberSignature, memberBody, memberCloseStatement);
-        }
-
-        private string PropertySetStmt(InterfaceMember member)
-        {
-            var memberSignature = "Public Property Set " + _model.InterfaceName + "_" + member.Member.IdentifierName +
-                                  "(" + string.Join(", ", member.MemberParams) + ")";
-
-            var memberBody = "    Set " + member.Member.IdentifierName + " = " + member.MemberParams.Last().ParamName;
-
-            var memberCloseStatement = "End Property" + Environment.NewLine;
-
-            return string.Join(Environment.NewLine, memberSignature, memberBody, memberCloseStatement);
+            var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_state, _editor, new MessageBox());
+            implementInterfaceRefactoring.Refactor(qualifiedSelection);
         }
 
         private string GetInterface()
