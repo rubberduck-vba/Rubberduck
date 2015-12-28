@@ -14,12 +14,12 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public UseMeaningfulNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parserState, ICodePaneWrapperFactory wrapperFactory)
+        public UseMeaningfulNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parserState, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
             : base(inspection, string.Format(inspection.Description, target.IdentifierName), target)
         {
             _quickFixes = new[]
             {
-                new RenameDeclarationQuickFix(target.Context, target.QualifiedSelection, target, parserState, wrapperFactory),
+                new RenameDeclarationQuickFix(target.Context, target.QualifiedSelection, target, parserState, wrapperFactory, messageBox),
             };
         }
 
@@ -34,13 +34,15 @@ namespace Rubberduck.Inspections
         private readonly Declaration _target;
         private readonly RubberduckParserState _parserState;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
+        private readonly IMessageBox _messageBox;
 
-        public RenameDeclarationQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState parserState, ICodePaneWrapperFactory wrapperFactory)
+        public RenameDeclarationQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState parserState, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
             : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + target.DeclarationType, RubberduckUI.Culture)))
         {
             _target = target;
             _parserState = parserState;
             _wrapperFactory = wrapperFactory;
+            _messageBox = messageBox;
         }
 
         public override void Fix()
@@ -49,8 +51,8 @@ namespace Rubberduck.Inspections
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(vbe, view, _parserState, new MessageBox(), _wrapperFactory);
-                var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory), new MessageBox());
+                var factory = new RenamePresenterFactory(vbe, view, _parserState, _messageBox, _wrapperFactory);
+                var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory), _messageBox);
                 refactoring.Refactor(_target);
             }
         }
