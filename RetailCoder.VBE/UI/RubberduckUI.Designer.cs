@@ -1144,6 +1144,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Implement Interface.
+        /// </summary>
+        public static string ImplementInterface_Caption {
+            get {
+                return ResourceManager.GetString("ImplementInterface_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The current selection is not valid..
+        /// </summary>
+        public static string ImplementInterface_InvalidSelectionMessage {
+            get {
+                return ResourceManager.GetString("ImplementInterface_InvalidSelectionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is an implicit reference to the active worksheet.
         /// </summary>
         public static string ImplicitActiveSheetReference_ {
@@ -1576,6 +1594,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid Selection..
+        /// </summary>
+        public static string MoveCloserToUsage_InvalidSelection {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_InvalidSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; has no references..
         /// </summary>
         public static string MoveCloserToUsage_TargetHasNoReferences {
@@ -1969,11 +1996,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to E&amp;xtract Interface.
+        /// </summary>
+        public static string RefactorMenu_ExtractInterface {
+            get {
+                return ResourceManager.GetString("RefactorMenu_ExtractInterface", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extract &amp;Method.
         /// </summary>
         public static string RefactorMenu_ExtractMethod {
             get {
                 return ResourceManager.GetString("RefactorMenu_ExtractMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implement Interface.
+        /// </summary>
+        public static string RefactorMenu_ImplementInterface {
+            get {
+                return ResourceManager.GetString("RefactorMenu_ImplementInterface", resourceCulture);
             }
         }
         

@@ -30,9 +30,9 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var declarations = parseResult.AllDeclarations.ToList();
+            var declarations = state.AllDeclarations.ToList();
 
             var interfaceMemberScopes = declarations.FindInterfaceMembers().Select(m => m.Scope).ToList();
             var interfaceImplementationMemberScopes = declarations.FindInterfaceImplementationMembers().Select(m => m.Scope).ToList();
@@ -47,11 +47,11 @@ namespace Rubberduck.Inspections
             var quickFixRefactoring =
                 new RemoveParametersRefactoring(
                     new RemoveParametersPresenterFactory(editor, 
-                        new RemoveParametersDialog(), parseResult, new MessageBox()), editor);
+                        new RemoveParametersDialog(), state, new MessageBox()), editor);
 
             var issues = from issue in unused.Where(parameter => !IsInterfaceMemberParameter(parameter, interfaceMemberScopes))
                          let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)
-                         select new ParameterNotUsedInspectionResult(this, string.Format(Description, issue.IdentifierName), ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName, isInterfaceImplementationMember, quickFixRefactoring, parseResult);
+                         select new ParameterNotUsedInspectionResult(this, string.Format(Description, issue.IdentifierName), ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName, isInterfaceImplementationMember, quickFixRefactoring, state);
 
             return issues.ToList();
         }
