@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections
             "Cells", "Range", "Columns", "Rows"
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
             if (_hostApp().ApplicationName != "Excel")
             {
@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 
-            var issues = parseResult.AllDeclarations.Where(item => item.IsBuiltIn 
+            var issues = state.AllDeclarations.Where(item => item.IsBuiltIn 
                 && item.ParentScope == "Excel.Global"
                 && Targets.Contains(item.IdentifierName)
                 && item.References.Any())

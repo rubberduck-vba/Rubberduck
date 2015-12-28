@@ -33,7 +33,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
             if (!selection.HasValue)
             {
-                _messageBox.Show("Invalid selection.", "Rubberduck - Implement Interface",
+                _messageBox.Show(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption,
                     System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
                 return;
             }
@@ -45,14 +45,15 @@ namespace Rubberduck.Refactorings.ImplementInterface
         {
             _targetInterface = _declarations.FindInterface(selection);
 
-            _targetClass =
-                _declarations.SingleOrDefault(
-                    d =>
+            _targetClass = _declarations.SingleOrDefault(d =>
                         !d.IsBuiltIn && d.DeclarationType == DeclarationType.Class &&
-                        d.QualifiedSelection.QualifiedName == selection.QualifiedName);
+                        d.QualifiedSelection.QualifiedName.ComponentName == selection.QualifiedName.ComponentName &&
+                        d.Project == selection.QualifiedName.Project);
 
             if (_targetClass == null || _targetInterface == null)
             {
+                _messageBox.Show(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption,
+                    System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
                 return;
             }
 

@@ -12,6 +12,6 @@ namespace Rubberduck.Inspections
         /// Runs code inspection on specified parse trees.
         /// </summary>
         /// <returns>Returns inspection results, if any.</returns>
-        IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult);
+        IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state);
     }
 }

@@ -25,9 +25,9 @@ namespace Rubberduck.Inspections
 
         private string AnnotationName { get { return Name.Replace("Inspection", string.Empty); } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var options = parseResult.AllDeclarations
+            var options = state.AllDeclarations
                 .Where(declaration => !declaration.IsInspectionDisabled(AnnotationName)
                                       && !declaration.IsBuiltIn
                                       && declaration.DeclarationType == DeclarationType.ModuleOption

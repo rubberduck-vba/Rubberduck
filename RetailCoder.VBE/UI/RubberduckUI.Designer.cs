@@ -1144,6 +1144,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Implement Interface.
+        /// </summary>
+        public static string ImplementInterface_Caption {
+            get {
+                return ResourceManager.GetString("ImplementInterface_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The current selection is not valid..
+        /// </summary>
+        public static string ImplementInterface_InvalidSelectionMessage {
+            get {
+                return ResourceManager.GetString("ImplementInterface_InvalidSelectionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is an implicit reference to the active worksheet.
         /// </summary>
         public static string ImplicitActiveSheetReference_ {
@@ -1572,6 +1590,15 @@ namespace Rubberduck.UI {
         public static string MoveCloserToUsage_Caption {
             get {
                 return ResourceManager.GetString("MoveCloserToUsage_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Selection..
+        /// </summary>
+        public static string MoveCloserToUsage_InvalidSelection {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_InvalidSelection", resourceCulture);
             }
         }
         

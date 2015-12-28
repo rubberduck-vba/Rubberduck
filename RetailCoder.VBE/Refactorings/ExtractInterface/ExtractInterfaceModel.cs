@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -24,14 +25,15 @@ namespace Rubberduck.Refactorings.ExtractInterface
         public string InterfaceName { get; set; }
         public List<InterfaceMember> Members { get; set; }
 
-        private readonly static DeclarationType[] DeclarationTypes =
+        private static readonly DeclarationType[] _declarationTypes =
         {
             DeclarationType.Class,
             DeclarationType.Document,
             DeclarationType.UserForm
         };
+        public ReadOnlyCollection<DeclarationType> DeclarationTypes = new ReadOnlyCollection<DeclarationType>(_declarationTypes);
 
-        public readonly string[] PrimitiveTypes =
+        private static readonly string[] _primitiveTypes =
         {
             Tokens.Boolean,
             Tokens.Byte,
@@ -46,6 +48,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             Tokens.String,
             Tokens.StrPtr
         };
+        public ReadOnlyCollection<string> PrimitiveTypes = new ReadOnlyCollection<string>(_primitiveTypes);
 
         public ExtractInterfaceModel(RubberduckParserState parseResult, QualifiedSelection selection)
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -31,8 +32,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
             else
             {
-                _messageBox.Show("Invalid Selection.", "Rubberduck - Move Closer To Usage", System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Exclamation);
+                _messageBox.Show(RubberduckUI.MoveCloserToUsage_InvalidSelection, RubberduckUI.MoveCloserToUsage_Caption, MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation);
             }
         }
 
@@ -45,15 +46,16 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         {
             if (target.DeclarationType != DeclarationType.Variable)
             {
-                throw new ArgumentException(@"Invalid Argument", "target");
+                // ReSharper disable once LocalizableElement
+                throw new ArgumentException("Invalid Argument. DeclarationType must be 'Variable'", "target");
             }
 
             if (!target.References.Any())
             {
                 var message = string.Format(RubberduckUI.MoveCloserToUsage_TargetHasNoReferences, target.IdentifierName);
 
-                _messageBox.Show(message, RubberduckUI.MoveCloserToUsage_Caption, System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Exclamation);
+                _messageBox.Show(message, RubberduckUI.MoveCloserToUsage_Caption, MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation);
 
                 return;
             }
@@ -61,8 +63,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             if (TargetIsReferencedFromMultipleMethods(target))
             {
                 var message = string.Format(RubberduckUI.MoveCloserToUsage_TargetIsUsedInMultipleMethods, target.IdentifierName);
-                _messageBox.Show(message, RubberduckUI.MoveCloserToUsage_Caption, System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Exclamation);
+                _messageBox.Show(message, RubberduckUI.MoveCloserToUsage_Caption, MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation);
 
                 return;
             }
@@ -140,35 +142,36 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         private string RemoveExtraComma(string str, int numParams, int indexRemoved)
         {
-            // Example use cases for this method (fields and variables):
-            // Dim fizz as Boolean, dizz as Double
-            // Private fizz as Boolean, dizz as Double
-            // Public fizz as Boolean, _
-            //        dizz as Double
-            // Private fizz as Boolean _
-            //         , dizz as Double _
-            //         , iizz as Integer
+            /* Example use cases for this method (fields and variables):
+             * Dim fizz as Boolean, dizz as Double
+             * Private fizz as Boolean, dizz as Double
+             * Public fizz as Boolean, _
+             *        dizz as Double
+             * Private fizz as Boolean _
+             *         , dizz as Double _
+             *         , iizz as Integer
 
-            // Before this method is called, the parameter to be removed has 
-            // already been removed.  This means 'str' will look like:
-            // Dim fizz as Boolean, 
-            // Private , dizz as Double
-            // Public fizz as Boolean, _
-            //        
-            // Private  _
-            //         , dizz as Double _
-            //         , iizz as Integer
+             * Before this method is called, the parameter to be removed has 
+             * already been removed.  This means 'str' will look like:
+             * Dim fizz as Boolean, 
+             * Private , dizz as Double
+             * Public fizz as Boolean, _
+             *        
+             * Private  _
+             *         , dizz as Double _
+             *         , iizz as Integer
 
-            // This method is responsible for removing the redundant comma
-            // and returning a string similar to:
-            // Dim fizz as Boolean
-            // Private dizz as Double
-            // Public fizz as Boolean _
-            //        
-            // Private  _
-            //          dizz as Double _
-            //         , iizz as Integer
-
+             * This method is responsible for removing the redundant comma
+             * and returning a string similar to:
+             * Dim fizz as Boolean
+             * Private dizz as Double
+             * Public fizz as Boolean _
+             *        
+             * Private  _
+             *          dizz as Double _
+             *         , iizz as Integer
+             */
+            
             var commaToRemove = numParams == indexRemoved ? indexRemoved - 1 : indexRemoved;
 
             return str.Remove(str.NthIndexOf(',', commaToRemove), 1);
