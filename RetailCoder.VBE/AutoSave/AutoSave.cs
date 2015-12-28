@@ -10,7 +10,7 @@ namespace Rubberduck.AutoSave
         private static VBE _vbe;
         private static readonly Timer Timer = new Timer(Save);
 
-        public AutoSave(VBE vbe, uint time)
+        public AutoSave(VBE vbe, uint time = 10000)
         {
             _vbe = vbe;
             Timer.Change(0, time);
