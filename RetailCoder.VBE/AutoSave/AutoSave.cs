@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using Microsoft.Vbe.Interop;
 
@@ -17,7 +18,10 @@ namespace Rubberduck.AutoSave
 
         public static void Save(object foo)
         {
-            _vbe.ActiveVBProject.SaveAs(_vbe.ActiveVBProject.Name + "_" + DateTime.Now);
+            foreach (var project in _vbe.VBProjects.Cast<VBProject>().Where(p => !p.Saved))
+            {
+                project.SaveAs(_vbe.ActiveVBProject.Name + "_" + DateTime.Now);
+            }
         }
 
         public void Dispose()
