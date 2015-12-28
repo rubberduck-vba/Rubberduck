@@ -18,9 +18,9 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var declarations = parseResult.AllDeclarations.Where(declaration =>
+            var declarations = state.AllDeclarations.Where(declaration =>
                 !declaration.IsBuiltIn 
                 && !declaration.IsWithEvents
                 && declaration.DeclarationType == DeclarationType.Variable

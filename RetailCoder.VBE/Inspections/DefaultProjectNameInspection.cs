@@ -22,13 +22,13 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var issues = parseResult.AllDeclarations
+            var issues = state.AllDeclarations
                             .Where(declaration => !declaration.IsBuiltIn 
                                                 && declaration.DeclarationType == DeclarationType.Project
                                                 && declaration.IdentifierName.StartsWith("VBAProject"))
-                            .Select(issue => new DefaultProjectNameInspectionResult(this, issue, parseResult, _wrapperFactory))
+                            .Select(issue => new DefaultProjectNameInspectionResult(this, issue, state, _wrapperFactory))
                             .ToList();
 
             return issues;

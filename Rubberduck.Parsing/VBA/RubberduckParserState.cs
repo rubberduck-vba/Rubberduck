@@ -90,6 +90,17 @@ namespace Rubberduck.Parsing.VBA
             internal set { _obsoleteLetContexts = value; }
         }
 
+        private IEnumerable<QualifiedContext> _emptyStringLiterals = new List<QualifiedContext>();
+
+        /// <summary>
+        /// Gets <see cref="ParserRuleContext"/> objects representing 'Call' statements in the parse tree.
+        /// </summary>
+        public IEnumerable<QualifiedContext> EmptyStringLiterals
+        {
+            get { return _emptyStringLiterals; }
+            internal set { _emptyStringLiterals = value; }
+        }
+
         private readonly ConcurrentDictionary<VBComponent, IEnumerable<CommentNode>> _comments =
             new ConcurrentDictionary<VBComponent, IEnumerable<CommentNode>>();
 

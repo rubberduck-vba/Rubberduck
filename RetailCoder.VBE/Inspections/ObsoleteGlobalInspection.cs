@@ -20,9 +20,9 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var issues = from item in parseResult.AllDeclarations
+            var issues = from item in state.AllDeclarations
                          where !item.IsBuiltIn && item.Accessibility == Accessibility.Global
                          && item.Context != null
                          select new ObsoleteGlobalInspectionResult(this, Description, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context));

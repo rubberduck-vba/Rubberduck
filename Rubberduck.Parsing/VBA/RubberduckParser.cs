@@ -113,11 +113,13 @@ namespace Rubberduck.Parsing.VBA
 
             var obsoleteCallsListener = new ObsoleteCallStatementListener();
             var obsoleteLetListener = new ObsoleteLetStatementListener();
+            var emptyStringLiteralListener = new EmptyStringLiteralListener();
 
             var listeners = new IParseTreeListener[]
             {
                 obsoleteCallsListener,
-                obsoleteLetListener
+                obsoleteLetListener,
+                emptyStringLiteralListener,
             };
 
             token.ThrowIfCancellationRequested();
@@ -146,6 +148,7 @@ namespace Rubberduck.Parsing.VBA
 
             _state.ObsoleteCallContexts = obsoleteCallsListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
             _state.ObsoleteLetContexts = obsoleteLetListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
+            _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
 
             State.SetModuleState(vbComponent, ParserState.Parsed);
         }
@@ -228,6 +231,20 @@ namespace Rubberduck.Parsing.VBA
             public override void EnterLetStmt(VBAParser.LetStmtContext context)
             {
                 if (context.LET() != null)
+                {
+                    _contexts.Add(context);
+                }
+            }
+        }
+
+        private class EmptyStringLiteralListener : VBABaseListener
+        {
+            private readonly IList<VBAParser.LiteralContext> _contexts = new List<VBAParser.LiteralContext>();
+            public IEnumerable<VBAParser.LiteralContext> Contexts { get { return _contexts; } }
+
+            public override void ExitLiteral(VBAParser.LiteralContext context)
+            {
+                if (context.STRINGLITERAL() != null && context.STRINGLITERAL().GetText() == "\"\"")
                 {
                     _contexts.Add(context);
                 }
