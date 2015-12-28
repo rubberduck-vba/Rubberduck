@@ -303,6 +303,8 @@
       <DependentUpon>InspectionsUI.resx</DependentUpon>
     </Compile>
     <Compile Include="Inspections\UntypedFunctionUsageInspectionResult.cs" />
+    <Compile Include="Inspections\UseMeaningfulNameInspection.cs" />
+    <Compile Include="Inspections\UseMeaningfulNameInspectionResult.cs" />
     <Compile Include="Inspections\WriteOnlyPropertyInspection.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspection.cs" />
     <Compile Include="Navigation\NavigateAllReferences.cs" />

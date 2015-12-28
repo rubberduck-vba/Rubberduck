@@ -77,5 +77,23 @@ namespace Rubberduck.Inspections {
                 return ResourceManager.GetString("EmptyStringLiteralInspectionQuickFix", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suboptimal Name Detected..
+        /// </summary>
+        internal static string UseMeaningfulNameInspection {
+            get {
+                return ResourceManager.GetString("UseMeaningfulNameInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename.
+        /// </summary>
+        internal static string UseMeaningfulNameInspectionQuickFix {
+            get {
+                return ResourceManager.GetString("UseMeaningfulNameInspectionQuickFix", resourceCulture);
+            }
+        }
     }
 }
