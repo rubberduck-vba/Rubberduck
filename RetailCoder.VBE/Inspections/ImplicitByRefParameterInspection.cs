@@ -23,9 +23,9 @@ namespace Rubberduck.Inspections
 
         private string AnnotationName { get { return Name.Replace("Inspection", string.Empty); } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var declarations = parseResult.AllDeclarations.ToList();
+            var declarations = state.AllDeclarations.ToList();
 
             var interfaceMembers = declarations.FindInterfaceImplementationMembers();
 
