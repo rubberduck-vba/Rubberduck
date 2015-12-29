@@ -16,6 +16,7 @@ namespace Rubberduck.Inspections
         }
 
         public string Name { get { return "ImplicitPublicMemberInspection"; } }
+        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
         public string Description { get { return RubberduckUI.ImplicitPublicMember_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }

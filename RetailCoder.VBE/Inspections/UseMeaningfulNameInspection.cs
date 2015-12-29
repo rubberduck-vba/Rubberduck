@@ -19,6 +19,7 @@ namespace Rubberduck.Inspections
         }
 
         public string Name { get { return "UseMeaningfulNameInspection"; } }
+        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
         public string Description { get { return InspectionsUI.UseMeaningfulNameInspection; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }

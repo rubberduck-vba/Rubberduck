@@ -18,6 +18,7 @@ namespace Rubberduck.Inspections
         }
 
         public string Name { get { return "ProcedureNotUsedInspection"; } }
+        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
         public string Description { get { return RubberduckUI.ProcedureNotUsed_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
