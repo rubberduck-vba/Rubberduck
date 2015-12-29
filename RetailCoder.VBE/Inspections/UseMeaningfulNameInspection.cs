@@ -8,10 +8,12 @@ namespace Rubberduck.Inspections
 {
     public class UseMeaningfulNameInspection : IInspection
     {
+        private readonly IMessageBox _messageBox;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public UseMeaningfulNameInspection()
+        public UseMeaningfulNameInspection(IMessageBox messageBox)
         {
+            _messageBox = messageBox;
             _wrapperFactory = new CodePaneWrapperFactory();
             Severity = CodeInspectionSeverity.Suggestion;
         }
@@ -29,7 +31,7 @@ namespace Rubberduck.Inspections
                                                    char.IsDigit(declaration.IdentifierName.Last()) ||
                                                    !declaration.IdentifierName.Any(c => new[] {'a', 'e', 'i', 'o', 'u', 'y'}.Contains(c))
                                                   ))
-                            .Select(issue => new UseMeaningfulNameInspectionResult(this, issue, state, _wrapperFactory, new MessageBox()))
+                            .Select(issue => new UseMeaningfulNameInspectionResult(this, issue, state, _wrapperFactory, _messageBox))
                             .ToList();
 
             return issues;

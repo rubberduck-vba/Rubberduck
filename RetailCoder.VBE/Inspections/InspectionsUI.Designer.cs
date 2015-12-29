@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty String Literal Detected..
+        ///   Looks up a localized string similar to Intent of empty string literal could be clarified with &apos;vbNullString&apos;..
         /// </summary>
         internal static string EmptyStringLiteralInspection {
             get {
@@ -79,7 +79,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Suboptimal Name Detected..
+        ///   Looks up a localized string similar to Identifier &apos;{0}&apos; could probably use a better name..
         /// </summary>
         internal static string UseMeaningfulNameInspection {
             get {
@@ -88,7 +88,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rename.
+        ///   Looks up a localized string similar to Rename identifier.
         /// </summary>
         internal static string UseMeaningfulNameInspectionQuickFix {
             get {
