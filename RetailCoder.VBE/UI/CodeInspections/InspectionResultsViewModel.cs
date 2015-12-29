@@ -9,7 +9,7 @@ using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.Extensions;
@@ -18,16 +18,16 @@ namespace Rubberduck.UI.CodeInspections
 {
     public class InspectionResultsViewModel : ViewModelBase
     {
-        private readonly IRubberduckParser _parser;
+        private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
         private readonly VBE _vbe;
         private readonly INavigateCommand _navigateCommand;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
 
-        public InspectionResultsViewModel(IRubberduckParser parser, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, IGeneralConfigService configService)
+        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, IGeneralConfigService configService)
         {
-            _parser = parser;
+            _state = state;
             _inspector = inspector;
             _vbe = vbe;
             _navigateCommand = navigateCommand;
@@ -155,11 +155,25 @@ namespace Rubberduck.UI.CodeInspections
 
             CanRefresh = false; // if commands' CanExecute worked as expected, this junk wouldn't be needed
             IsBusy = true;
-            var results = await _inspector.FindIssuesAsync(_parser.State, CancellationToken.None);
+
+            _state.StateChanged += _state_StateChanged;
+            _state.OnParseRequested();
+        }
+
+        private async void _state_StateChanged(object sender, ParserStateEventArgs e)
+        {
+            if (e.State != ParserState.Ready)
+            {
+                return;
+            }
+
+            var results = await _inspector.FindIssuesAsync(_state, CancellationToken.None);
             Results = new ObservableCollection<ICodeInspectionResult>(results);
             CanRefresh = true;
             IsBusy = false;
             SelectedItem = null;
+
+            _state.StateChanged -= _state_StateChanged;
         }
 
         private void ExecuteQuickFixes(IEnumerable<CodeInspectionQuickFix> quickFixes)
