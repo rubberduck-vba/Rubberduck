@@ -25,10 +25,5 @@ namespace Rubberduck.VBEditor.VBEHost
         /// cannot be used outside assembly boundaries because the type is generic.
         /// </remarks>
         string ApplicationName { get; }
-
-        /// <summary>
-        /// Save all open projects.
-        /// </summary>
-        void Save();
     }
 }

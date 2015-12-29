@@ -11,10 +11,5 @@ namespace Rubberduck.VBEditor.VBEHost
         {
             Application.Run(qualifiedMemberName.ToString());
         }
-
-        public override void Save()
-        {
-            Application.ActiveWorkbook.Save();
-        }
     }
 }

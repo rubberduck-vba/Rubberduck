@@ -39,8 +39,6 @@ namespace Rubberduck.VBEditor.VBEHost
 
         public abstract void Run(QualifiedMemberName qualifiedMemberName);
 
-        public abstract void Save();
-
         public TimeSpan TimedMethodCall(QualifiedMemberName qualifiedMemberName)
         {
             var stopwatch = Stopwatch.StartNew();

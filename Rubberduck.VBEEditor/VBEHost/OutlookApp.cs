@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.VBEHost
@@ -16,10 +17,6 @@ namespace Rubberduck.VBEditor.VBEHost
             //var app = Application.GetType();
             //app.InvokeMember(qualifiedMemberName.MemberName, BindingFlags.InvokeMethod | BindingFlags.Default, null, Application, null);
             throw new NotImplementedException();
-        }
-
-        public override void Save()
-        {
         }
     }
 }

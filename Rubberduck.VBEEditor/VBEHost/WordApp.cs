@@ -17,10 +17,5 @@ namespace Rubberduck.VBEditor.VBEHost
             var moduleName = qualifiedMemberName.QualifiedModuleName.Component.Name;
             return string.Concat(moduleName, ".", qualifiedMemberName.MemberName);
         }
-
-        public override void Save()
-        {
-            Application.ActiveDocument.Save();
-        }
     }
 }
