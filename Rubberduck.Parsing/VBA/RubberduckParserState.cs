@@ -62,12 +62,12 @@ namespace Rubberduck.Parsing.VBA
         private readonly object _lock = new object();
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
-        private void OnModuleStateChanged(VBComponent component)
+        private void OnModuleStateChanged(VBComponent component, ParserState state)
         {
             var handler = ModuleStateChanged;
             if (handler != null)
             {
-                var args = new ParseProgressEventArgs(component);
+                var args = new ParseProgressEventArgs(component, state);
                 handler.Invoke(this, args);
             }
         }
@@ -80,7 +80,7 @@ namespace Rubberduck.Parsing.VBA
             // prevent multiple threads from changing state simultaneously:
             lock(_lock)
             {
-                OnModuleStateChanged(component);
+                OnModuleStateChanged(component, state);
                 Status = EvaluateParserState();
             }
         }
