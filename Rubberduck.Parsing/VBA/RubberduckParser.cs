@@ -78,7 +78,13 @@ namespace Rubberduck.Parsing.VBA
         private void ParseAll()
         {
             var components = _vbe.VBProjects.Cast<VBProject>()
-                .SelectMany(project => project.VBComponents.Cast<VBComponent>());
+                .SelectMany(project => project.VBComponents.Cast<VBComponent>())
+                .ToList();
+
+            foreach (var vbComponent in components)
+            {
+                _state.SetModuleState(vbComponent, ParserState.Pending);
+            }
 
             var result = Parallel.ForEach(components, component => { ParseComponentAsync(component, false); });
 

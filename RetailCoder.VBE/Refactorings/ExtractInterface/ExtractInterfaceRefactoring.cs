@@ -82,6 +82,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 return;
             }
 
+            var declarations = _state.AllDeclarations.Where(d => !d.IsBuiltIn).ToList();
+
             var qualifiedSelection = new QualifiedSelection(_model.TargetDeclaration.QualifiedSelection.QualifiedName, new Selection(_insertionLine, 1, _insertionLine, 1));
             _editor.SetSelection(qualifiedSelection);
 
