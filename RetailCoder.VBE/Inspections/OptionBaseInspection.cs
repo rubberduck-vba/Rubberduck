@@ -28,9 +28,8 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var options = state.AllDeclarations
+            var options = state.AllUserDeclarations
                 .Where(declaration => !declaration.IsInspectionDisabled(AnnotationName)
-                                      && !declaration.IsBuiltIn
                                       && declaration.DeclarationType == DeclarationType.ModuleOption
                                       && declaration.Context is VBAParser.OptionBaseStmtContext)
                 .ToList();

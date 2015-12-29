@@ -10,7 +10,6 @@ namespace Rubberduck.Inspections
 {
     public class MultipleDeclarationsInspection : IInspection
     {
-
         public MultipleDeclarationsInspection()
         {
             Severity = CodeInspectionSeverity.Warning;
@@ -26,8 +25,8 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var issues = state.AllDeclarations
-                .Where(item => !item.IsInspectionDisabled(AnnotationName) && !item.IsBuiltIn)
+            var issues = state.AllUserDeclarations
+                .Where(item => !item.IsInspectionDisabled(AnnotationName))
                 .Where(item => item.DeclarationType == DeclarationType.Variable
                             || item.DeclarationType == DeclarationType.Constant)
                 .GroupBy(variable => variable.Context.Parent as ParserRuleContext)

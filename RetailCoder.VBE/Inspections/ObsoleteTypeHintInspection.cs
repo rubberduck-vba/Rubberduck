@@ -21,13 +21,13 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var results = state.AllDeclarations.ToList();
+            var results = state.AllUserDeclarations.ToList();
 
             var declarations = from item in results
-                where !item.IsBuiltIn && item.HasTypeHint()
+                where item.HasTypeHint()
                 select new ObsoleteTypeHintInspectionResult(this, string.Format(Description, RubberduckUI.Inspections_DeclarationOf + item.DeclarationType.ToString().ToLower(), item.IdentifierName), new QualifiedContext(item.QualifiedName, item.Context), item);
 
-            var references = from item in results.Where(item => !item.IsBuiltIn).SelectMany(d => d.References)
+            var references = from item in results.SelectMany(d => d.References)
                 where item.HasTypeHint()
                 select new ObsoleteTypeHintInspectionResult(this, string.Format(Description, RubberduckUI.Inspections_UsageOf + item.Declaration.DeclarationType.ToString().ToLower(), item.IdentifierName), new QualifiedContext(item.QualifiedModuleName, item.Context), item.Declaration);
 

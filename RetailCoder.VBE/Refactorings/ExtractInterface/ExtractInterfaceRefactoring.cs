@@ -75,14 +75,12 @@ namespace Rubberduck.Refactorings.ExtractInterface
         }
 
         private int _insertionLine;
-        private void _state_StateChanged(object sender, EventArgs e)
+        private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
-            if (_state.Status != ParserState.Ready)
+            if (e.State != ParserState.Ready)
             {
                 return;
             }
-
-            var declarations = _state.AllDeclarations.Where(d => !d.IsBuiltIn).ToList();
 
             var qualifiedSelection = new QualifiedSelection(_model.TargetDeclaration.QualifiedSelection.QualifiedName, new Selection(_insertionLine, 1, _insertionLine, 1));
             _editor.SetSelection(qualifiedSelection);

@@ -25,19 +25,18 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var declarations = state.AllDeclarations.ToList();
+            var declarations = state.AllUserDeclarations.ToList();
 
-            var classes = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Class).ToList();
-            var modules = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Module).ToList();
+            var classes = declarations.Where(item => item.DeclarationType == DeclarationType.Class).ToList();
+            var modules = declarations.Where(item => item.DeclarationType == DeclarationType.Module).ToList();
 
-            var handlers = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Control)
+            var handlers = declarations.Where(item => item.DeclarationType == DeclarationType.Control)
                 .SelectMany(control => declarations.FindEventHandlers(control)).ToList();
 
-            var withEventFields = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Variable && item.IsWithEvents);
+            var withEventFields = declarations.Where(item => item.DeclarationType == DeclarationType.Variable && item.IsWithEvents);
             handlers.AddRange(withEventFields.SelectMany(field => declarations.FindEventProcedures(field)));
 
-            var forms = declarations.Where(
-                item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Class
+            var forms = declarations.Where(item => item.DeclarationType == DeclarationType.Class
                         && item.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_MSForm)
                 .ToList();
 
@@ -47,7 +46,7 @@ namespace Rubberduck.Inspections
             }
 
             var issues = declarations
-                .Where(item => !item.IsBuiltIn && !IsIgnoredDeclaration(declarations, item, handlers, classes, modules))
+                .Where(item => !IsIgnoredDeclaration(declarations, item, handlers, classes, modules))
                 .Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
 
             issues = DocumentNames.DocumentEventHandlerPrefixes.Aggregate(issues, (current, item) => current.Where(issue => !issue.Name.Contains("'" + item)));

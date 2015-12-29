@@ -23,9 +23,9 @@ namespace Rubberduck.UI.CodeExplorer
         private bool _isBusy;
         public bool IsBusy { get { return _isBusy; } set { _isBusy = value; OnPropertyChanged(); } }
 
-        private void ParserState_StateChanged(object sender, EventArgs e)
+        private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
         {
-            IsBusy = _state.Status == ParserState.Parsing;
+            IsBusy = e.State == ParserState.Parsing;
         }
 
         private void ParserState_ModuleStateChanged(object sender, Parsing.ParseProgressEventArgs e)

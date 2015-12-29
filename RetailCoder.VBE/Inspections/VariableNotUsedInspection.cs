@@ -21,9 +21,8 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var declarations = state.AllDeclarations.Where(declaration =>
-                !declaration.IsBuiltIn 
-                && !declaration.IsWithEvents
+            var declarations = state.AllUserDeclarations.Where(declaration =>
+                !declaration.IsWithEvents
                 && declaration.DeclarationType == DeclarationType.Variable
                 && declaration.References.All(reference => reference.IsAssignment));
 

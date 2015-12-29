@@ -80,8 +80,8 @@ namespace Rubberduck.Parsing.VBA
             // prevent multiple threads from changing state simultaneously:
             lock(_lock)
             {
+                OnModuleStateChanged(component);
                 Status = EvaluateParserState();
-
             }
         }
 
@@ -184,9 +184,14 @@ namespace Rubberduck.Parsing.VBA
         }
 
         /// <summary>
-        /// Gets a copy of the collected declarations.
+        /// Gets a copy of the collected declarations, including the built-in ones.
         /// </summary>
         public IEnumerable<Declaration> AllDeclarations { get { return _declarations.Keys.ToList(); } }
+
+        /// <summary>
+        /// Gets a copy of the collected declarations, excluding the built-in ones.
+        /// </summary>
+        public IEnumerable<Declaration> AllUserDeclarations { get { return _declarations.Keys.Where(e => !e.IsBuiltIn).ToList(); } }
 
         /// <summary>
         /// Adds the specified <see cref="Declaration"/> to the collection (replaces existing).

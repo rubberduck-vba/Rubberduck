@@ -34,9 +34,8 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var issues = from item in state.AllDeclarations
+            var issues = from item in state.AllUserDeclarations
                          where !item.IsInspectionDisabled(AnnotationName) 
-                               && !item.IsBuiltIn
                                && ProcedureTypes.Contains(item.DeclarationType)
                                && item.Accessibility == Accessibility.Implicit
                          let context = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)

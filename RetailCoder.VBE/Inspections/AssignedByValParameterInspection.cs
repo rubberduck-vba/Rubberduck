@@ -27,8 +27,7 @@ namespace Rubberduck.Inspections
         {
             var name = AnnotationName;
             var assignedByValParameters =
-                state.AllDeclarations.Where(declaration => !declaration.IsInspectionDisabled(name)
-                    && !declaration.IsBuiltIn 
+                state.AllUserDeclarations.Where(declaration => !declaration.IsInspectionDisabled(name)
                     && declaration.DeclarationType == DeclarationType.Parameter
                     && ((VBAParser.ArgContext)declaration.Context).BYVAL() != null
                     && declaration.References.Any(reference => reference.IsAssignment));

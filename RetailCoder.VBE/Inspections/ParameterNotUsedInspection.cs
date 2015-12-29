@@ -16,11 +16,13 @@ namespace Rubberduck.Inspections
     public class ParameterNotUsedInspection : IInspection
     {
         private readonly VBE _vbe;
+        private readonly IMessageBox _messageBox;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public ParameterNotUsedInspection(VBE vbe)
+        public ParameterNotUsedInspection(VBE vbe, IMessageBox messageBox)
         {
             _vbe = vbe; // todo: remove this dependency
+            _messageBox = messageBox;
             _wrapperFactory = new CodePaneWrapperFactory();
             Severity = CodeInspectionSeverity.Warning;
         }
@@ -48,7 +50,7 @@ namespace Rubberduck.Inspections
             var quickFixRefactoring =
                 new RemoveParametersRefactoring(
                     new RemoveParametersPresenterFactory(editor, 
-                        new RemoveParametersDialog(), state, new MessageBox()), editor);
+                        new RemoveParametersDialog(), state, _messageBox), editor);
 
             var issues = from issue in unused.Where(parameter => !IsInterfaceMemberParameter(parameter, interfaceMemberScopes))
                          let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)

@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var multilineParameters = from p in state.AllDeclarations
+            var multilineParameters = from p in state.AllUserDeclarations
                 .Where(item => item.DeclarationType == DeclarationType.Parameter)
                 where p.Context.GetSelection().LineCount > 1
                 select p;

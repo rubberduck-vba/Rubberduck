@@ -21,10 +21,10 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var declarations = state.AllDeclarations.ToList();
+            var declarations = state.AllUserDeclarations.ToList();
             var setters = declarations
-                .Where(item => !item.IsBuiltIn 
-                    && (item.Accessibility == Accessibility.Implicit || 
+                .Where(item => 
+                       (item.Accessibility == Accessibility.Implicit || 
                         item.Accessibility == Accessibility.Public || 
                         item.Accessibility == Accessibility.Global)
                     && (item.DeclarationType == DeclarationType.PropertyLet ||

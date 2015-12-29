@@ -28,16 +28,15 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var results = state.AllDeclarations.ToList();
+            var results = state.AllUserDeclarations.ToList();
 
             var options = results
-                .Where(declaration => !declaration.IsBuiltIn 
-                                      && declaration.DeclarationType == DeclarationType.ModuleOption
+                .Where(declaration => declaration.DeclarationType == DeclarationType.ModuleOption
                                       && declaration.Context is VBAParser.OptionExplicitStmtContext)
                 .ToList();
 
             var modules = results
-                .Where(declaration => !declaration.IsBuiltIn && ModuleTypes.Contains(declaration.DeclarationType));
+                .Where(declaration => ModuleTypes.Contains(declaration.DeclarationType));
 
             var issues = modules.Where(module => !options.Select(option => option.Scope).Contains(module.Scope))
                 .Select(issue => new OptionExplicitInspectionResult(this, issue.QualifiedName.QualifiedModuleName));

@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var items = state.AllDeclarations.ToList();
+            var items = state.AllUserDeclarations.ToList();
 
             // ignore arrays. todo: ArrayIndicesNotAccessedInspection
             var arrays = items.Where(declaration =>
@@ -30,7 +30,6 @@ namespace Rubberduck.Inspections
 
             var declarations = items.Where(declaration =>
                 declaration.DeclarationType == DeclarationType.Variable
-                && !declaration.IsBuiltIn 
                 && !declaration.IsWithEvents
                 && !arrays.Contains(declaration)
                 && !items.Any(item => 

@@ -26,14 +26,13 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var declarations = state.AllDeclarations.ToList();
+            var declarations = state.AllUserDeclarations.ToList();
 
             var interfaceMembers = declarations.FindInterfaceImplementationMembers();
 
             var issues = (from item in declarations
                 where !item.IsInspectionDisabled(AnnotationName)
                     && item.DeclarationType == DeclarationType.Parameter
-                    && !item.IsBuiltIn
                     && !interfaceMembers.Select(m => m.Scope).Contains(item.ParentScope)
                 let arg = item.Context as VBAParser.ArgContext
                 where arg != null && arg.BYREF() == null && arg.BYVAL() == null

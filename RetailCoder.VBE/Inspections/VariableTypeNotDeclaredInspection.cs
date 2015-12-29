@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var issues = from item in state.AllDeclarations.Where(item => !item.IsBuiltIn)
+            var issues = from item in state.AllUserDeclarations
                          where (item.DeclarationType == DeclarationType.Variable
                             || item.DeclarationType == DeclarationType.Constant
                             || item.DeclarationType == DeclarationType.Parameter)

@@ -26,12 +26,10 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var issues = state.AllDeclarations
-                            .Where(declaration => !declaration.IsBuiltIn &&
-                                                  (declaration.IdentifierName.Length < 3 ||
-                                                   char.IsDigit(declaration.IdentifierName.Last()) ||
-                                                   !declaration.IdentifierName.Any(c => new[] {'a', 'e', 'i', 'o', 'u', 'y'}.Contains(c))
-                                                  ))
+            var issues = state.AllUserDeclarations
+                            .Where(declaration => declaration.IdentifierName.Length < 3 ||
+                                                  char.IsDigit(declaration.IdentifierName.Last()) ||
+                                                  !declaration.IdentifierName.Any(c => new[] {'a', 'e', 'i', 'o', 'u', 'y'}.Contains(c)))
                             .Select(issue => new UseMeaningfulNameInspectionResult(this, issue, state, _wrapperFactory, _messageBox))
                             .ToList();
 

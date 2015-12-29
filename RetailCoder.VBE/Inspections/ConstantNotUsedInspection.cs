@@ -21,10 +21,8 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var results = state.AllDeclarations.Where(declaration =>
-                !declaration.IsBuiltIn 
-                && declaration.DeclarationType == DeclarationType.Constant
-                && !declaration.References.Any());
+            var results = state.AllUserDeclarations.Where(declaration =>
+                    declaration.DeclarationType == DeclarationType.Constant && !declaration.References.Any());
 
             return results.Select(issue => 
                 new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName.QualifiedModuleName)).Cast<CodeInspectionResultBase>();

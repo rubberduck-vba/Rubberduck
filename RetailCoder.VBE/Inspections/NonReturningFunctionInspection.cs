@@ -30,13 +30,13 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            var declarations = state.AllDeclarations.ToList();
+            var declarations = state.AllUserDeclarations.ToList();
 
             var interfaceMembers = declarations.FindInterfaceMembers();
             var interfaceImplementationMembers = declarations.FindInterfaceImplementationMembers();
 
             var functions = declarations
-                .Where(declaration => !declaration.IsBuiltIn && ReturningMemberTypes.Contains(declaration.DeclarationType)
+                .Where(declaration => ReturningMemberTypes.Contains(declaration.DeclarationType)
                     && !interfaceMembers.Contains(declaration)).ToList();
 
             var issues = functions

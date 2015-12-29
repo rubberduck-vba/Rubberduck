@@ -10,6 +10,7 @@ using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
@@ -141,7 +142,7 @@ namespace Rubberduck
             _parser.State.OnParseRequested();
         }
 
-        private void Parser_StateChanged(object sender, EventArgs e)
+        private void Parser_StateChanged(object sender, ParserStateEventArgs e)
         {
             _appMenus.EvaluateCanExecute(_parser.State);
         }
