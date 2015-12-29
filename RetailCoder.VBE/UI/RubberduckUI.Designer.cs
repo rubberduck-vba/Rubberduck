@@ -909,16 +909,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        public static System.Drawing.Icon Ducky {
-            get {
-                object obj = ResourceManager.GetObject("Ducky", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to You&apos;ve earned the &quot;Continuator&quot; badge!.
         /// </summary>
         public static string EasterEgg_Continuator {
@@ -1783,7 +1773,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Option Explicit is not specified.
+        ///   Looks up a localized string similar to Option Explicit is not specified in &apos;{0}&apos;.
         /// </summary>
         public static string OptionExplicit {
             get {

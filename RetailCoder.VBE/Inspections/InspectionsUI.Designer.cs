@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Intent of empty string literal could be clarified with &apos;vbNullString&apos;..
+        ///   Looks up a localized string similar to Prefer &apos;vbNullString&apos; to an empty string literal.
         /// </summary>
         internal static string EmptyStringLiteralInspection {
             get {
@@ -70,7 +70,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replace &apos;&quot;&quot;&apos; with &apos;vbNullString&apos;..
+        ///   Looks up a localized string similar to Replace empty string with the &apos;vbNullString&apos; constant.
         /// </summary>
         internal static string EmptyStringLiteralInspectionQuickFix {
             get {
@@ -79,20 +79,11 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Identifier &apos;{0}&apos; could probably use a better name..
+        ///   Looks up a localized string similar to Consider renaming {0} &apos;{1}&apos;.
         /// </summary>
         internal static string UseMeaningfulNameInspection {
             get {
                 return ResourceManager.GetString("UseMeaningfulNameInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rename identifier.
-        /// </summary>
-        internal static string UseMeaningfulNameInspectionQuickFix {
-            get {
-                return ResourceManager.GetString("UseMeaningfulNameInspectionQuickFix", resourceCulture);
             }
         }
     }

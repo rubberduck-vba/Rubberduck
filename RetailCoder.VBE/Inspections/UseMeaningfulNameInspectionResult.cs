@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public UseMeaningfulNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parserState, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
-            : base(inspection, string.Format(inspection.Description, target.IdentifierName), target)
+            : base(inspection, string.Format(inspection.Description, RubberduckUI.ResourceManager.GetString("DeclarationType_" + target.DeclarationType, RubberduckUI.Culture), target.IdentifierName), target)
         {
             _quickFixes = new[]
             {

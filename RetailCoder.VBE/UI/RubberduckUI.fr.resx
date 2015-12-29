@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1117,13 +1117,13 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="RubberduckMenu_Navigate" xml:space="preserve">
     <value>Na&amp;viguer</value>
   </data>
-  <data name="Language_JP">
+  <data name="Language_JP" xml:space="preserve">
     <value />
   </data>
-  <data name="Ducky">
+  <data name="Ducky" xml:space="preserve">
     <value />
   </data>
-  <data name="Inspections_MultilineParameter">
+  <data name="Inspections_MultilineParameter" xml:space="preserve">
     <value />
   </data>
   <data name="SourceControl_DeleteBranchButton" xml:space="preserve">

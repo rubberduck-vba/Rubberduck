@@ -277,7 +277,7 @@ namespace Rubberduck.Parsing.VBA
             private readonly IList<VBAParser.ExplicitCallStmtContext> _contexts = new List<VBAParser.ExplicitCallStmtContext>();
             public IEnumerable<VBAParser.ExplicitCallStmtContext> Contexts { get { return _contexts; } }
 
-            public override void EnterExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
+            public override void ExitExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
             {
                 var procedureCall = context.eCS_ProcedureCall();
                 if (procedureCall != null)
@@ -301,7 +301,7 @@ namespace Rubberduck.Parsing.VBA
             private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
             public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
 
-            public override void EnterLetStmt(VBAParser.LetStmtContext context)
+            public override void ExitLetStmt(VBAParser.LetStmtContext context)
             {
                 if (context.LET() != null)
                 {
@@ -315,9 +315,10 @@ namespace Rubberduck.Parsing.VBA
             private readonly IList<VBAParser.LiteralContext> _contexts = new List<VBAParser.LiteralContext>();
             public IEnumerable<VBAParser.LiteralContext> Contexts { get { return _contexts; } }
 
-            public override void EnterLiteral(VBAParser.LiteralContext context)
+            public override void ExitLiteral(VBAParser.LiteralContext context)
             {
-                if (context.STRINGLITERAL() != null && context.STRINGLITERAL().GetText() == "\"\"")
+                var literal = context.STRINGLITERAL();
+                if (literal != null && literal.GetText() == "\"\"")
                 {
                     _contexts.Add(context);
                 }
