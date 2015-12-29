@@ -87,7 +87,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
             foreach (var member in members)
             {
-                module.InsertLines(module.CountOfDeclarationLines + 1, GetInterfaceMember(member));
+                module.InsertLines(module.CountOfDeclarationLines + 2, GetInterfaceMember(member));
             }
         }
 

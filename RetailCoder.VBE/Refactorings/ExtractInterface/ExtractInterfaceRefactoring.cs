@@ -62,7 +62,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var interfaceComponent = _model.TargetDeclaration.Project.VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
             interfaceComponent.Name = _model.InterfaceName;
 
-            _editor.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine + Environment.NewLine);
+            _editor.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
             _editor.InsertLines(3, GetInterfaceModuleBody());
 
             var module = _model.TargetDeclaration.QualifiedSelection.QualifiedName.Component.CodeModule;

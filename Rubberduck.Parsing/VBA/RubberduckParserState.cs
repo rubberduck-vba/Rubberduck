@@ -16,6 +16,18 @@ namespace Rubberduck.Parsing.VBA
         Unresolved
     }
 
+    public class ParserStateEventArgs : EventArgs
+    {
+        private readonly ParserState _state;
+
+        public ParserStateEventArgs(ParserState state)
+        {
+            _state = state;
+        }
+
+        public ParserState State { get {return _state; } }
+    }
+
     public sealed class RubberduckParserState
     {
         public event EventHandler ParseRequest;
@@ -30,14 +42,14 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, IParseTree> _parseTrees =
             new ConcurrentDictionary<VBComponent, IParseTree>();
 
-        public event EventHandler StateChanged;
+        public event EventHandler<ParserStateEventArgs> StateChanged;
 
-        private void OnStateChanged()
+        private void OnStateChanged(ParserState state)
         {
             var handler = StateChanged;
             if (handler != null)
             {
-                handler.Invoke(this, EventArgs.Empty);
+                handler.Invoke(this, new ParserStateEventArgs(state));
             }
         }
 
@@ -56,14 +68,39 @@ namespace Rubberduck.Parsing.VBA
             // prevent multiple threads from changing state simultaneously:
             lock(_lock)
             {
-                Status = _moduleStates.Values.Any(value => value == ParserState.Error)
-                    ? ParserState.Error
-                    : _moduleStates.Values.Any(value => value == ParserState.Parsing)
-                        ? ParserState.Parsing
-                        : _moduleStates.Values.Any(value => value == ParserState.Resolving)
-                            ? ParserState.Resolving
-                            : ParserState.Ready;
+                Status = EvaluateParserState();
+
             }
+        }
+
+        private ParserState EvaluateParserState()
+        {
+            var moduleStates = _moduleStates.Values.ToList();
+            var state = Enum.GetValues(typeof (ParserState)).Cast<ParserState>()
+                .SingleOrDefault(value => moduleStates.All(ps => ps == value));
+
+            if (state != default(ParserState))
+            {
+                // if all modules are in the same state, we have our result.
+                return state;
+            }
+
+            // intermediate states are toggled when *any* module has them.
+            if (moduleStates.Any(ms => ms == ParserState.Error))
+            {
+                // error state takes precedence over every other state
+                return ParserState.Error;
+            }
+            if (moduleStates.Any(ms => ms == ParserState.Parsing || ms == ParserState.Parsed))
+            {
+                return ParserState.Parsing;
+            }
+            if (moduleStates.Any(ms => ms == ParserState.Resolving))
+            {
+                return ParserState.Resolving;
+            }
+
+            return ParserState.Pending;
         }
 
         public ParserState GetModuleState(VBComponent component)
@@ -80,7 +117,7 @@ namespace Rubberduck.Parsing.VBA
                 if (_status != value)
                 {
                     _status = value; 
-                    OnStateChanged();
+                    OnStateChanged(value);
                 }
             } 
         }
@@ -125,7 +162,7 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                return _comments.Values.SelectMany(comments => comments);
+                return _comments.Values.SelectMany(comments => comments.ToList());
             }
         }
 
