@@ -21,5 +21,9 @@ namespace Rubberduck.VBEditor.VBEHost
             var projectName = qualifiedMemberName.QualifiedModuleName.Project.Name;
             return string.Concat(projectName, ".", qualifiedMemberName.MemberName);
         }
+
+        public override void Save()
+        {
+        }
     }
 }

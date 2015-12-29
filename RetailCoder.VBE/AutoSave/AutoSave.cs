@@ -1,27 +1,23 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
-using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.AutoSave
 {
     public class AutoSave : IDisposable
     {
-        private static VBE _vbe;
+        private static IHostApplication _app;
         private static readonly Timer Timer = new Timer(Save);
 
-        public AutoSave(VBE vbe, uint time = 10000)
+        public AutoSave(IHostApplication app, uint time = 600000)
         {
-            _vbe = vbe;
+            _app = app;
             Timer.Change(0, time);
         }
 
-        public static void Save(object foo)
+        public static void Save(object obj)
         {
-            foreach (var project in _vbe.VBProjects.Cast<VBProject>().Where(p => !p.Saved))
-            {
-                project.SaveAs(_vbe.ActiveVBProject.Name + "_" + DateTime.Now);
-            }
+            _app.Save();
         }
 
         public void Dispose()

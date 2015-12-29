@@ -12,5 +12,10 @@ namespace Rubberduck.VBEditor.VBEHost
             //Publisher does not support the Run method
             throw new NotImplementedException("Unit Testing not supported for Publisher");
         }
+
+        public override void Save()
+        {
+            Application.ActiveWorkbook.Save();
+        }
     }
 }

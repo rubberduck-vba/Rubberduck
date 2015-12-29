@@ -2,7 +2,7 @@
 
 namespace Rubberduck.VBEditor.VBEHost
 {
-    public interface IHostApplication
+    public interface IHostApplication : IDisposable
     {
         /// <summary>
         /// Runs VBA procedure specified by name.
@@ -25,5 +25,10 @@ namespace Rubberduck.VBEditor.VBEHost
         /// cannot be used outside assembly boundaries because the type is generic.
         /// </remarks>
         string ApplicationName { get; }
+
+        /// <summary>
+        /// Save all open projects.
+        /// </summary>
+        void Save();
     }
 }

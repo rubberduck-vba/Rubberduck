@@ -26,6 +26,7 @@ namespace Rubberduck
         private readonly IParserErrorsPresenterFactory _parserErrorsPresenterFactory;
         private readonly IRubberduckParser _parser;
         private readonly IInspectorFactory _inspectorFactory;
+        private readonly AutoSave.AutoSave _autoSave;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
         private readonly ParserStateCommandBar _stateBar;
@@ -39,7 +40,7 @@ namespace Rubberduck
         public App(VBE vbe, IMessageBox messageBox,
             IParserErrorsPresenterFactory parserErrorsPresenterFactory,
             IRubberduckParser parser,
-            IInspectorFactory inspectorFactory, 
+            IInspectorFactory inspectorFactory,
             IGeneralConfigService configService,
             IAppMenu appMenus,
             ParserStateCommandBar stateBar,
@@ -51,6 +52,7 @@ namespace Rubberduck
             _parserErrorsPresenterFactory = parserErrorsPresenterFactory;
             _parser = parser;
             _inspectorFactory = inspectorFactory;
+            _autoSave = new AutoSave.AutoSave(_vbe.HostApplication());
             _configService = configService;
             _appMenus = appMenus;
             _stateBar = stateBar;
@@ -207,6 +209,7 @@ namespace Rubberduck
             _hooks.MessageReceived -= hooks_MessageReceived;
             _configService.SettingsChanged -= _configService_SettingsChanged;
             _parser.State.StateChanged -= Parser_StateChanged;
+            _autoSave.Dispose();
 
             _hooks.Dispose();
         }

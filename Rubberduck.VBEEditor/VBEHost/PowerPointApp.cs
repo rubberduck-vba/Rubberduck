@@ -33,5 +33,10 @@ namespace Rubberduck.VBEditor.VBEHost
 
             return string.Concat(projectFile, "!", moduleName, ".", qualifiedMemberName.MemberName);
         }
+
+        public override void Save()
+        {
+            Application.ActivePresentation.Save();
+        }
     }
 }
