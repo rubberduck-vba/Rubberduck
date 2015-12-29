@@ -16,8 +16,8 @@ namespace Rubberduck.UI.Refactorings
             set { InterfaceNameBox.Text = value; }
         }
 
-        private List<InterfaceMember> _members;
-        public List<InterfaceMember> Members
+        private IEnumerable<InterfaceMember> _members;
+        public IEnumerable<InterfaceMember> Members
         {
             get { return _members; }
             set
@@ -39,23 +39,23 @@ namespace Rubberduck.UI.Refactorings
             DeselectAllButton.Click += DeselectAllButton_Click;
         }
 
-        void InterfaceNameBox_TextChanged(object sender, EventArgs e)
+        private void InterfaceNameBox_TextChanged(object sender, EventArgs e)
         {
             ValidateNewName();
         }
 
-        void InterfaceMembersGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void InterfaceMembersGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             _members.ElementAt(e.RowIndex).IsSelected =
                 (bool) InterfaceMembersGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
         }
 
-        void SelectAllButton_Click(object sender, EventArgs e)
+        private void SelectAllButton_Click(object sender, EventArgs e)
         {
             ToggleSelection(true);
         }
 
-        void DeselectAllButton_Click(object sender, EventArgs e)
+        private void DeselectAllButton_Click(object sender, EventArgs e)
         {
             ToggleSelection(false);
         }
@@ -81,14 +81,14 @@ namespace Rubberduck.UI.Refactorings
             {
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
                 Name = "Members",
-                DataPropertyName = "MemberSignature",
+                DataPropertyName = "FullMemberSignature",
                 ReadOnly = true
             };
 
             InterfaceMembersGridView.Columns.AddRange(isSelected, signature);
         }
 
-        void ToggleSelection(bool state)
+        private void ToggleSelection(bool state)
         {
             foreach (var row in InterfaceMembersGridView.Rows.Cast<DataGridViewRow>())
             {
@@ -101,6 +101,7 @@ namespace Rubberduck.UI.Refactorings
             var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
 
             OkButton.Enabled = !ComponentNames.Contains(InterfaceName)
+                               && InterfaceName.Length > 1
                                && char.IsLetter(InterfaceName.FirstOrDefault())
                                && !tokenValues.Contains(InterfaceName, StringComparer.InvariantCultureIgnoreCase)
                                && !InterfaceName.Any(c => !char.IsLetterOrDigit(c) && c != '_');

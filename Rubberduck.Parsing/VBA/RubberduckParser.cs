@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,29 +26,16 @@ namespace Rubberduck.Parsing.VBA
             _vbe = vbe;
             _state = state;
 
-            state.ParseRequest += state_ParseRequest;
-            state.StateChanged += state_StateChanged;
+            state.ParseRequest += ReparseRequested;
         }
 
-        private void state_StateChanged(object sender, EventArgs e)
-        {
-            _semaphore.Release(1);
-        }
-
-        void state_ParseRequest(ParserState state)
+        private void ReparseRequested(object sender, EventArgs e)
         {
             ParseAll();
-
-            while (true)
-            {
-                _semaphore.Wait();
-                if (_state.Status <= state) { break; }
-            }
         }
 
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
         public RubberduckParserState State { get { return _state; } }
 
         private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
@@ -89,7 +78,13 @@ namespace Rubberduck.Parsing.VBA
         private void ParseAll()
         {
             var components = _vbe.VBProjects.Cast<VBProject>()
-                .SelectMany(project => project.VBComponents.Cast<VBComponent>());
+                .SelectMany(project => project.VBComponents.Cast<VBComponent>())
+                .ToList();
+
+            foreach (var vbComponent in components)
+            {
+                _state.SetModuleState(vbComponent, ParserState.Pending);
+            }
 
             var result = Parallel.ForEach(components, component => { ParseComponentAsync(component, false); });
 
@@ -105,14 +100,18 @@ namespace Rubberduck.Parsing.VBA
         public Task ParseAsync(VBComponent vbComponent, CancellationToken token)
         {
             var component = vbComponent;
-
             token.ThrowIfCancellationRequested();
-            var parseTask = Task.Run(() => ParseInternal(component, token), token);
 
             try
             {
-                token.ThrowIfCancellationRequested();
+                var parseTask = Task.Run(() => ParseInternal(component, token), token);
                 parseTask.Wait(token);
+            }
+            catch (COMException exception)
+            {
+                State.SetModuleState(component, ParserState.Error);
+                Debug.Print(exception.ToString());
+
             }
             catch (SyntaxErrorException exception)
             {
@@ -199,7 +198,7 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             ITokenStream stream;
-            var code = string.Join("\r\n", vbComponent.CodeModule.Code());
+            var code = string.Join(Environment.NewLine, vbComponent.CodeModule.Code());
             var tree = ParseInternal(code, listeners, out stream);
 
             token.ThrowIfCancellationRequested();
@@ -278,7 +277,7 @@ namespace Rubberduck.Parsing.VBA
             private readonly IList<VBAParser.ExplicitCallStmtContext> _contexts = new List<VBAParser.ExplicitCallStmtContext>();
             public IEnumerable<VBAParser.ExplicitCallStmtContext> Contexts { get { return _contexts; } }
 
-            public override void EnterExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
+            public override void ExitExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
             {
                 var procedureCall = context.eCS_ProcedureCall();
                 if (procedureCall != null)
@@ -302,7 +301,7 @@ namespace Rubberduck.Parsing.VBA
             private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
             public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
 
-            public override void EnterLetStmt(VBAParser.LetStmtContext context)
+            public override void ExitLetStmt(VBAParser.LetStmtContext context)
             {
                 if (context.LET() != null)
                 {
@@ -318,7 +317,8 @@ namespace Rubberduck.Parsing.VBA
 
             public override void ExitLiteral(VBAParser.LiteralContext context)
             {
-                if (context.STRINGLITERAL() != null && context.STRINGLITERAL().GetText() == "\"\"")
+                var literal = context.STRINGLITERAL();
+                if (literal != null && literal.GetText() == "\"\"")
                 {
                     _contexts.Add(context);
                 }

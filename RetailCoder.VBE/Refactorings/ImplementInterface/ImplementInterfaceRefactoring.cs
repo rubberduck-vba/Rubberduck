@@ -18,7 +18,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         private Declaration _targetClass;
         private readonly IMessageBox _messageBox;
 
-        const string MemberBody = "    Err.Raise 5";
+        private const string MemberBody = "    Err.Raise 5 'TODO: implement interface member";
 
         public ImplementInterfaceRefactoring(RubberduckParserState state, IActiveCodePaneEditor editor, IMessageBox messageBox)
         {
@@ -87,7 +87,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
             foreach (var member in members)
             {
-                module.InsertLines(module.CountOfDeclarationLines + 1, GetInterfaceMember(member));
+                module.InsertLines(module.CountOfDeclarationLines + 2, GetInterfaceMember(member));
             }
         }
 
@@ -182,9 +182,9 @@ namespace Rubberduck.Refactorings.ImplementInterface
                            .ThenBy(t => t.Selection.StartColumn)
                            .Select(p => new Parameter
                            {
-                               ParamAccessibility = ((VBAParser.ArgContext)p.Context).BYREF() == null ? Tokens.ByVal : Tokens.ByRef,
-                               ParamName = p.IdentifierName,
-                               ParamType = p.AsTypeName
+                               Accessibility = ((VBAParser.ArgContext)p.Context).BYREF() == null ? Tokens.ByVal : Tokens.ByRef,
+                               Name = p.IdentifierName,
+                               AsTypeName = p.AsTypeName
                            })
                            .ToList();
 

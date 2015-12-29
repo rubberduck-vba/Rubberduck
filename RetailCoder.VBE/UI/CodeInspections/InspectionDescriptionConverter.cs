@@ -15,7 +15,7 @@ namespace Rubberduck.UI.CodeInspections
                 return null;
             }
 
-            return inspection.Name;
+            return InspectionsUI.ResourceManager.GetString(inspection.Name + "Name");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

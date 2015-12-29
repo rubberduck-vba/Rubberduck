@@ -138,7 +138,7 @@ namespace Rubberduck
 
         private void _stateBar_Refresh(object sender, EventArgs e)
         {
-            _parser.State.RequestParse();
+            _parser.State.OnParseRequested();
         }
 
         private void Parser_StateChanged(object sender, EventArgs e)
@@ -153,10 +153,11 @@ namespace Rubberduck
             _appMenus.Initialize();
             _appMenus.Localize();
 
+            // delay to allow the VBE to properly load. HostApplication is null until then.
             Task.Delay(1000).ContinueWith(t =>
             {
                 _parser.State.AddBuiltInDeclarations(_vbe.HostApplication());
-                _parser.State.RequestParse();
+                _parser.State.OnParseRequested();
             });
 
             //_hooks.AddHook(new LowLevelKeyboardHook(_vbe));

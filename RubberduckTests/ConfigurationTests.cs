@@ -25,9 +25,9 @@ namespace RubberduckTests
         public void DefaultCodeInspectionsIsAsSpecified()
         {
             var inspection = new Mock<IInspection>();
-            inspection.SetupGet(m => m.Description).Returns("TestInspection");
-            inspection.SetupGet(m => m.Name).Returns("TestInspection");
-            inspection.SetupGet(m => m.Severity).Returns(CodeInspectionSeverity.DoNotShow);
+            //inspection.SetupGet(m => m.Description).Returns("TestInspection");
+            //inspection.SetupGet(m => m.Name).Returns("TestInspection");
+            //inspection.SetupGet(m => m.Severity).Returns(CodeInspectionSeverity.DoNotShow);
 
             var expected = new[] { inspection.Object };
             var configService = new ConfigurationLoader(expected);

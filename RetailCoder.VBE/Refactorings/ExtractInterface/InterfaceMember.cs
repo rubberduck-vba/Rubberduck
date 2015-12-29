@@ -20,23 +20,13 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
     public class InterfaceMember
     {
-        public Declaration Member { get; set; }
-        public IEnumerable<Parameter> MemberParams { get; set; }
-        public string Type { get; set; }
+        private Declaration Member { get; set; }
+        private IEnumerable<Parameter> MemberParams { get; set; }
+        private string Type { get; set; }
 
-        public string MemberType { get; set; }
+        private string MemberType { get; set; }
 
         public bool IsSelected { get; set; }
-        public string MemberSignature
-        {
-            get
-            {
-                var signature = MemberType + " " + Member.IdentifierName + "(" +
-                    string.Join(", ", MemberParams.Select(m => m.ParamType)) + ")";
-
-                return Type == null ? signature : signature + " As " + Type;
-            }
-        }
 
         public string FullMemberSignature
         {
@@ -111,10 +101,13 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
         }
 
-        public override string ToString()
+        public string Body
         {
-            return "Public " + FullMemberSignature + Environment.NewLine + 
+            get
+            {
+                return "Public " + FullMemberSignature + Environment.NewLine +
                 "End " + MemberType.Split(' ').First() + Environment.NewLine;
+            }
         }
     }
 }

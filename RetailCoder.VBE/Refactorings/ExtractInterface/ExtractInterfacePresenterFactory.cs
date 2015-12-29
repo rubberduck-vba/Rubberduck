@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.VBA;
+﻿using System.Linq;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ExtractInterface
@@ -7,13 +8,13 @@ namespace Rubberduck.Refactorings.ExtractInterface
     {
         private readonly IActiveCodePaneEditor _editor;
         private readonly IExtractInterfaceView _view;
-        private readonly RubberduckParserState _parseResult;
+        private readonly RubberduckParserState _state;
 
-        public ExtractInterfacePresenterFactory(RubberduckParserState parseResult, IActiveCodePaneEditor editor, IExtractInterfaceView view)
+        public ExtractInterfacePresenterFactory(RubberduckParserState state, IActiveCodePaneEditor editor, IExtractInterfaceView view)
         {
             _editor = editor;
             _view = view;
-            _parseResult = parseResult;
+            _state = state;
         }
 
         public ExtractInterfacePresenter Create()
@@ -24,7 +25,13 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 return null;
             }
 
-            var model = new ExtractInterfaceModel(_parseResult, selection.Value);
+            var model = new ExtractInterfaceModel(_state, selection.Value);
+            if (!model.Members.Any())
+            {
+                // don't show the UI if there's no member to extract
+                return null;
+            }
+
             return new ExtractInterfacePresenter(_view, model);
         }
     }

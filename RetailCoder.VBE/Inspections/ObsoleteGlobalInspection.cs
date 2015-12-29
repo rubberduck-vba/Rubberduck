@@ -16,6 +16,7 @@ namespace Rubberduck.Inspections
         }
 
         public string Name { get { return "ObsoleteGlobalInspection"; } }
+        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
         public string Description { get { return RubberduckUI.ObsoleteGlobal; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }

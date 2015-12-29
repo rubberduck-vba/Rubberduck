@@ -19,6 +19,7 @@ namespace Rubberduck.Inspections
         }
 
         public string Name { get { return "OptionBaseInspection"; } }
+        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
         public string Description { get { return RubberduckUI.OptionBase; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }

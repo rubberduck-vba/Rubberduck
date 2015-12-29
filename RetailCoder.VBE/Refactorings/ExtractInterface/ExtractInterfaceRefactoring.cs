@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
@@ -12,14 +13,16 @@ namespace Rubberduck.Refactorings.ExtractInterface
     public class ExtractInterfaceRefactoring : IRefactoring
     {
         private readonly RubberduckParserState _state;
+        private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory<ExtractInterfacePresenter> _factory;
         private readonly IActiveCodePaneEditor _editor;
         private ExtractInterfaceModel _model;
 
-        public ExtractInterfaceRefactoring(RubberduckParserState state, IRefactoringPresenterFactory<ExtractInterfacePresenter> factory,
+        public ExtractInterfaceRefactoring(RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory<ExtractInterfacePresenter> factory,
             IActiveCodePaneEditor editor)
         {
             _state = state;
+            _messageBox = messageBox;
             _factory = factory;
             _editor = editor;
         }
@@ -34,7 +37,10 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             _model = presenter.Show();
 
-            if (_model == null) { return; }
+            if (_model == null)
+            {
+                return;
+            }
 
             AddInterface();
         }
@@ -56,24 +62,40 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var interfaceComponent = _model.TargetDeclaration.Project.VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
             interfaceComponent.Name = _model.InterfaceName;
 
-            _editor.InsertLines(1, GetInterface());
+            _editor.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
+            _editor.InsertLines(3, GetInterfaceModuleBody());
 
             var module = _model.TargetDeclaration.QualifiedSelection.QualifiedName.Component.CodeModule;
 
-            var implementsLine = module.CountOfDeclarationLines + 1;
-            module.InsertLines(implementsLine, "Implements " + _model.InterfaceName);
+            _insertionLine = module.CountOfDeclarationLines + 1;
+            module.InsertLines(_insertionLine, Tokens.Implements + ' ' + _model.InterfaceName + Environment.NewLine);
 
-            _state.RequestParse(ParserState.Ready);
-            var qualifiedSelection = new QualifiedSelection(_model.TargetDeclaration.QualifiedSelection.QualifiedName,
-                new Selection(implementsLine, 1, implementsLine, 1));
-
-            var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_state, _editor, new MessageBox());
-            implementInterfaceRefactoring.Refactor(qualifiedSelection);
+            _state.StateChanged += _state_StateChanged;
+            _state.OnParseRequested();
         }
 
-        private string GetInterface()
+        private int _insertionLine;
+        private void _state_StateChanged(object sender, EventArgs e)
         {
-            return "Option Explicit" + Environment.NewLine + string.Join(Environment.NewLine, _model.Members.Where(m => m.IsSelected));
+            if (_state.Status != ParserState.Ready)
+            {
+                return;
+            }
+
+            var declarations = _state.AllDeclarations.Where(d => !d.IsBuiltIn).ToList();
+
+            var qualifiedSelection = new QualifiedSelection(_model.TargetDeclaration.QualifiedSelection.QualifiedName, new Selection(_insertionLine, 1, _insertionLine, 1));
+            _editor.SetSelection(qualifiedSelection);
+
+            var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_state, _editor, _messageBox);
+            implementInterfaceRefactoring.Refactor(qualifiedSelection);
+
+            _state.StateChanged -= _state_StateChanged;
+        }
+
+        private string GetInterfaceModuleBody()
+        {
+            return string.Join(Environment.NewLine, _model.Members.Where(m => m.IsSelected).Select(m => m.Body));
         }
     }
 }

@@ -123,7 +123,11 @@
                 <TextBlock Margin="4" 
                            VerticalAlignment="Center" 
                            Text="{Binding Name, Converter={StaticResource InspectionDescriptionConverter}}"
-                           TextWrapping="Wrap"/>
+                           TextWrapping="Wrap">
+                    <TextBlock.ToolTip>
+                        <TextBlock TextWrapping="Wrap" Text="{Binding Name.Meta}" MaxWidth="300"/>
+                    </TextBlock.ToolTip>
+                </TextBlock>
                 <TextBlock Margin="0,4,4,4" 
                            VerticalAlignment="Center" 
                            Text="{Binding ItemCount, StringFormat=({0})}" 
@@ -139,11 +143,11 @@
                 <TextBlock VerticalAlignment="Center" 
                            Text="{Binding Name}"
                            FontWeight="Bold"
-                           TextWrapping="Wrap"/>
+                           TextWrapping="Wrap" />
                 <TextBlock Margin="4,0,4,0" 
                            VerticalAlignment="Center" 
                            Text="{Binding ItemCount, StringFormat=({0})}" 
-                           TextWrapping="Wrap"/>
+                           TextWrapping="Wrap" />
             </StackPanel>
         </HierarchicalDataTemplate>
 
