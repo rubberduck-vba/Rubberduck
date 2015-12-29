@@ -3,9 +3,11 @@ using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -18,7 +20,12 @@ namespace Rubberduck.UI.CodeExplorer
             _state = state;
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
+
+            _refreshCommand = new DelegateCommand(ExecuteRefreshCommand);
         }
+
+        private readonly ICommand _refreshCommand;
+        public ICommand RefreshCommand { get { return _refreshCommand; } }
 
         private bool _isBusy;
         public bool IsBusy { get { return _isBusy; } set { _isBusy = value; OnPropertyChanged(); } }
@@ -30,50 +37,12 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void ParserState_ModuleStateChanged(object sender, Parsing.ParseProgressEventArgs e)
         {
-            
+            // todo: handle Error and Parsed states
         }
-    }
 
-    public class ExplorerProjectItemViewModel : ViewModelBase
-    {
-        private readonly VBProject _project;
-
-        public ExplorerProjectItemViewModel(VBProject project)
+        private void ExecuteRefreshCommand(object param)
         {
-            _project = project;
+            // todo: figure out how to expose member tree
         }
-
-        public string Name { get { return _project.Name; } }
-        public bool IsProtected { get { return _project.Protection == vbext_ProjectProtection.vbext_pp_locked; } }
-
-
-    }
-
-    public class ExplorerComponentItemViewModel : ViewModelBase
-    {
-        
-    }
-
-    public class ExplorerMemberViewModel : ViewModelBase
-    {
-        private readonly Declaration _declaration;
-        private readonly ConcurrentStack<ExplorerMemberViewModel> _children = new ConcurrentStack<ExplorerMemberViewModel>(); 
-
-        public ExplorerMemberViewModel(Declaration declaration)
-        {
-            _declaration = declaration;
-        }
-
-        public void AddChild(ExplorerMemberViewModel declaration)
-        {
-            _children.Push(declaration);
-        }
-
-        public void Clear()
-        {
-            _children.Clear();
-        }
-
-        public Declaration Declaration { get { return _declaration; } }
     }
 }
