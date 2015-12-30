@@ -29,8 +29,7 @@ namespace Rubberduck.AutoSave
             _vbe = vbe;
             _settings = settings;
 
-            _settings.IsEnabledChanged += _settings_IsEnabledChanged;
-            _settings.TimerDelayChanged += _settings_TimerDelayChanged;
+            _settings.PropertyChanged += _settings_PropertyChanged;
 
             _timer.Enabled = _settings.IsEnabled;
             _timer.Interval = _settings.TimerDelay;
@@ -38,12 +37,24 @@ namespace Rubberduck.AutoSave
             _timer.Elapsed += _timer_Elapsed;
         }
 
-        void _settings_TimerDelayChanged(object sender, EventArgs e)
+        void _settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsEnabled")
+            {
+                IsEnabledChanged(sender, e);
+            }
+            if (e.PropertyName == "TimerDelay")
+            {
+                TimerDelayChanged(sender, e);
+            }
+        }
+
+        void TimerDelayChanged(object sender, EventArgs e)
         {
             _timer.Interval = _settings.TimerDelay;
         }
 
-        void _settings_IsEnabledChanged(object sender, EventArgs e)
+        void IsEnabledChanged(object sender, EventArgs e)
         {
             _timer.Enabled = _settings.IsEnabled;
         }

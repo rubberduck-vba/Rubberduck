@@ -1,21 +1,17 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Rubberduck.AutoSave
 {
-    public interface IAutoSaveSettings
+    public interface IAutoSaveSettings : INotifyPropertyChanged
     {
         bool IsEnabled { get; set; }
         double TimerDelay { get; set; }
-
-        event EventHandler IsEnabledChanged;
-        event EventHandler TimerDelayChanged;
     }
 
     public class AutoSaveSettings : IAutoSaveSettings
     {
-        public event EventHandler IsEnabledChanged;
-        public event EventHandler TimerDelayChanged;
-
         public AutoSaveSettings(bool isEnabled = true, int timerDelay = 600000)
         {
             IsEnabled = isEnabled;
@@ -31,7 +27,7 @@ namespace Rubberduck.AutoSave
                 if (_isEnabled != value)
                 {
                     _isEnabled = value;
-                    OnIsEnabledChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -45,26 +41,18 @@ namespace Rubberduck.AutoSave
                 if (Math.Abs(_timerDelay - value) > .1)
                 {
                     _timerDelay = value;
-                    OnTimerDelayChanged();
+                    OnPropertyChanged();
                 }
             }
         }
 
-        protected virtual void OnIsEnabledChanged()
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            var handler = IsEnabledChanged;
+            var handler = PropertyChanged;
             if (handler != null)
             {
-                handler(this, EventArgs.Empty);
-            }
-        }
-
-        protected virtual void OnTimerDelayChanged()
-        {
-            var handler = TimerDelayChanged;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
+                handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }

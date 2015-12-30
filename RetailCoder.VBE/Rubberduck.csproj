@@ -320,6 +320,7 @@
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplacePresenter.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplaceScope.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchResult.cs" />
+    <Compile Include="Properties\Annotations1.cs" />
     <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldModel.cs" />
     <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldPresenter.cs" />
     <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldPresenterFactory.cs" />
