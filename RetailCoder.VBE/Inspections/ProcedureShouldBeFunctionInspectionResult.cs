@@ -59,23 +59,23 @@ namespace Rubberduck.Inspections
             var subStmtText = _subStmtQualifiedContext.Context.GetText();
             var argText = _argQualifiedContext.Context.GetText();
 
+            var newArgText = argText.Contains("ByRef ") ? argText.Replace("ByRef ", "ByVal ") : "ByVal " + argText;
+
             var newFunctionWithoutReturn = subStmtText.Insert(subStmtText.IndexOf(argListText, StringComparison.Ordinal) + argListText.Length,
                                                               _argQualifiedContext.Context.asTypeClause().GetText())
                                                       .Replace("Sub", "Function")
-                                                      .Replace(argText,
-                                                               argText.Contains("ByRef ")
-                                                                 ? argText.Replace("ByRef ", "ByVal ")
-                                                                 : "ByVal " + argText);
+                                                      .Replace(argText, newArgText);
 
             var newfunctionWithReturn = newFunctionWithoutReturn
                 .Insert(newFunctionWithoutReturn.LastIndexOf(Environment.NewLine, StringComparison.Ordinal),
-                    "    " + _subStmtQualifiedContext.Context.ambiguousIdentifier().GetText() + " = " +
-                    _argQualifiedContext.Context.ambiguousIdentifier().GetText());
+                        "    " + _subStmtQualifiedContext.Context.ambiguousIdentifier().GetText() +
+                        " = " + _argQualifiedContext.Context.ambiguousIdentifier().GetText());
 
             var rewriter = _state.GetRewriter(_subStmtQualifiedContext.ModuleName.Component);
             rewriter.Replace(_subStmtQualifiedContext.Context.Start, newfunctionWithReturn);
 
             var module = _argListQualifiedContext.ModuleName.Component.CodeModule;
+
             module.DeleteLines(_subStmtQualifiedContext.Context.Start.Line,
                 _subStmtQualifiedContext.Context.Stop.Line - _subStmtQualifiedContext.Context.Start.Line + 1);
             module.InsertLines(_subStmtQualifiedContext.Context.Start.Line, newfunctionWithReturn);
