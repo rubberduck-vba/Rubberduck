@@ -23,6 +23,7 @@ namespace Rubberduck.Inspections
             return state.ArgListsWithOneByRefParam
                 .Where(context => context.Context.Parent is VBAParser.SubStmtContext)
                 .Select(context => new ProcedureShouldBeFunctionInspectionResult(this,
+                    state,
                     new QualifiedContext<VBAParser.ArgListContext>(context.ModuleName,
                         context.Context as VBAParser.ArgListContext),
                     new QualifiedContext<VBAParser.SubStmtContext>(context.ModuleName,
