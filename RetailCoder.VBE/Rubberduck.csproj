@@ -1096,8 +1096,8 @@
     <Content Include="Resources\balloon_mask.bmp" />
     <Content Include="Resources\balloon_prohibition.bmp" />
     <Content Include="Resources\balloon_smiley.bmp" />
-    <None Include="Resources\blue-folder-horizontal.png" />
-    <None Include="Resources\blue-folder-horizontal-open.png" />
+    <Resource Include="Resources\blue-folder-horizontal.png" />
+    <Resource Include="Resources\blue-folder-horizontal-open.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />

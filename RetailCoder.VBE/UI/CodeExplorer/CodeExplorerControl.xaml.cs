@@ -25,11 +25,6 @@ namespace Rubberduck.UI.CodeExplorer
             InitializeComponent();
         }
 
-        private void ToggleButton_Click(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void TreeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             throw new NotImplementedException();

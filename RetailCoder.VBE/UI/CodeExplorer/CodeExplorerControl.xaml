@@ -4,10 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:explorer="clr-namespace:Rubberduck.UI.CodeExplorer"
+             xmlns:symbols="clr-namespace:Rubberduck.Parsing.Symbols;assembly=Rubberduck.Parsing"
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance explorer:CodeExplorerViewModel}">
     <UserControl.Resources>
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
@@ -86,74 +87,6 @@
             <Setter Property="Margin" Value="4" />
         </Style>
 
-        <CollectionViewSource x:Key="InspectionTypeGroupViewSource" Source="{Binding Results}">
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="Inspection.InspectionType" />
-                <PropertyGroupDescription PropertyName="Inspection" />
-            </CollectionViewSource.GroupDescriptions>
-        </CollectionViewSource>
-
-        <CollectionViewSource x:Key="CodeModuleGroupViewSource" Source="{Binding Results}">
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="QualifiedSelection.QualifiedName" />
-                <PropertyGroupDescription PropertyName="Inspection" />
-            </CollectionViewSource.GroupDescriptions>
-        </CollectionViewSource>
-
-        <HierarchicalDataTemplate x:Key="InspectionGroupsTemplate"
-                                  DataType="{x:Type CollectionViewGroup}"
-                                  ItemsSource="{Binding Items}"
-                                  ItemTemplate="{StaticResource InspectionResultTemplate}">
-
-            <StackPanel Orientation="Horizontal" Margin="2" HorizontalAlignment="Stretch">
-                <Image Style="{StaticResource IconStyle}" 
-                       Source="{Binding Name, Converter={StaticResource InspectionIconConverter}}"
-                       VerticalAlignment="Center" />
-                <TextBlock Margin="4" 
-                           VerticalAlignment="Center" 
-                           Text="{Binding Name, Converter={StaticResource InspectionDescriptionConverter}}"
-                           TextWrapping="Wrap"/>
-                <TextBlock Margin="0,4,4,4" 
-                           VerticalAlignment="Center" 
-                           Text="{Binding ItemCount, StringFormat=({0})}" 
-                           TextWrapping="Wrap"/>
-            </StackPanel>
-        </HierarchicalDataTemplate>
-
-        <HierarchicalDataTemplate x:Key="InspectionTypeGroupsTemplate" 
-                                    DataType="{x:Type CollectionViewGroup}"
-                                    ItemsSource="{Binding Items}"
-                                    ItemTemplate="{StaticResource InspectionGroupsTemplate}">
-            <StackPanel Orientation="Horizontal" Margin="2" HorizontalAlignment="Stretch">
-                <TextBlock VerticalAlignment="Center" 
-                           Text="{Binding Name}"
-                           FontWeight="Bold"
-                           TextWrapping="Wrap"/>
-                <TextBlock Margin="4,0,4,0" 
-                           VerticalAlignment="Center" 
-                           Text="{Binding ItemCount, StringFormat=({0})}" 
-                           TextWrapping="Wrap"/>
-            </StackPanel>
-        </HierarchicalDataTemplate>
-
-        <HierarchicalDataTemplate x:Key="CodeModuleGroupsTemplate"
-                                  DataType="{x:Type CollectionViewGroup}"
-                                  ItemsSource="{Binding Items}"
-                                  ItemTemplate="{StaticResource InspectionGroupsTemplate}">
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                <Image Style="{StaticResource IconStyle}" Source="../../Resources/Microsoft/PNG/VSObject_Module.png" />
-                <TextBlock VerticalAlignment="Center" 
-                           Text="{Binding Name}"
-                           FontWeight="Bold"
-                           TextWrapping="Wrap"/>
-                <TextBlock Margin="4,0,4,0" 
-                           VerticalAlignment="Center" 
-                           Text="{Binding ItemCount, StringFormat=({0})}" 
-                           TextWrapping="Wrap"/>
-            </StackPanel>
-        </HierarchicalDataTemplate>
-
     </UserControl.Resources>
 
     <Grid>
@@ -175,19 +108,19 @@
             <Separator />
 
 
-            <Button Command="{Binding ToggleSignatures}" 
+            <Button Command="{Binding ToggleSignaturesCommand}" 
                     IsEnabled="{Binding CanRefresh}"
                     ToolTip="Toggle signatures">
                 <Image Height="16" Source="../../Resources/Microsoft/PNG/DisplayFullSignature_13393_32.png" />
             </Button>
 
-            <Button Command="{Binding ToggleNamespaces}" 
+            <Button Command="{Binding ToggleNamespacesCommand}" 
                     IsEnabled="{Binding CanRefresh}"
                     ToolTip="Toggle namespace folders">
                 <Image Height="16" Source="../../Resources/blue-folder-horizontal.png" />
             </Button>
 
-            <Button Command="{Binding ToggleFolders}" 
+            <Button Command="{Binding ToggleFoldersCommand}" 
                     IsEnabled="{Binding CanRefresh}"
                     ToolTip="Toggle component type folders">
                 <Image Height="16" Source="../../Resources/folder-horizontal.png" />
@@ -195,21 +128,16 @@
             
             <Separator />
 
-            <Label Content="{Binding ToolbarText}" />
-
         </ToolBar>
         
         <!-- todo: implement item template -->
         <TreeView Grid.Row="1" x:Name="ExplorerTreeView"
-                  IsEnabled="{Binding CanRefresh}"
-                  ItemsSource="{Binding Source={StaticResource InspectionTypeGroupViewSource}, Path=Groups}"
-                  ItemTemplate="{StaticResource InspectionTypeGroupsTemplate}"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
                   MouseDoubleClick="TreeView_OnMouseDoubleClick">
-            <i:Interaction.Behaviors>
+            <!--<i:Interaction.Behaviors>
                 <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
-            </i:Interaction.Behaviors>
+            </i:Interaction.Behaviors>-->
         </TreeView>
 
         <resx:BusyIndicator Grid.Row="1" Width="36" Height="36" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
@@ -226,30 +154,12 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Stretch">
-
-                        <!-- todo: implement converter for SelectedItem.DeclarationType -->
-                        <Image Style="{StaticResource IconStyle}"
-                               Source="{Binding SelectedItem.DeclarationType}"
-                               VerticalAlignment="Center" />
-
-                        <TextBlock Margin="4" Text="{Binding SelectedItem.IdentifierName}"
-                                   FontWeight="Bold" TextWrapping="Wrap" />
-
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                     </StackPanel>
-
-                <TextBlock Margin="8,0,8,0" Text="{Binding SelectedItem.SummaryComment}"
-                           TextWrapping="Wrap"
-                           Visibility="{Binding HasSummaryComment, Converter={StaticResource BoolToVisibility}}" />
-
-                <TextBlock Margin="8,0,8,0" Text="{Binding SelectedItem.QualifiedSelection}"
-                            TextWrapping="Wrap" FontSize="8"
-                            Visibility="{Binding HasQualifiedSelection, Converter={StaticResource BoolToVisibility}}" />
                 </StackPanel>
                 
-                <WrapPanel Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="1">
-                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                <WrapPanel Grid.Column="0" Grid.Row="1">
+                    <!--<Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding IndenterCommand}"
                             Content="Indent" />
@@ -260,7 +170,7 @@
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteFindAllReferences, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding FindAllReferencesCommand}"
-                            Content="{x:Static resx:RubberduckUI.ContextMenu_FindAllReferences}" />
+                            Content="{x:Static resx:RubberduckUI.ContextMenu_FindAllReferences}" />-->
                 </WrapPanel>
             </Grid>
         </Border>
