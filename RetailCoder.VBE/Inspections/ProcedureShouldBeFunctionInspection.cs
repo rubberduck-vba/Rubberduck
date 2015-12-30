@@ -28,10 +28,7 @@ namespace Rubberduck.Inspections
                     new QualifiedContext<VBAParser.ArgListContext>(context.ModuleName,
                         context.Context as VBAParser.ArgListContext),
                     new QualifiedContext<VBAParser.SubStmtContext>(context.ModuleName,
-                        context.Context.Parent as VBAParser.SubStmtContext),
-                    new QualifiedContext<VBAParser.ArgContext>(context.ModuleName,
-                        ((VBAParser.ArgListContext) context.Context).arg()
-                            .First(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)))));
+                        context.Context.Parent as VBAParser.SubStmtContext)));
         }
     }
 }

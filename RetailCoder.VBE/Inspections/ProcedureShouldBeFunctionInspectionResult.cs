@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections
     {
        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-       public ProcedureShouldBeFunctionInspectionResult(IInspection inspection, RubberduckParserState state, QualifiedContext<VBAParser.ArgListContext> argListQualifiedContext, QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext, QualifiedContext<VBAParser.ArgContext> argQualifiedContext)
+       public ProcedureShouldBeFunctionInspectionResult(IInspection inspection, RubberduckParserState state, QualifiedContext<VBAParser.ArgListContext> argListQualifiedContext, QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext)
            : base(inspection,
                 string.Format(inspection.Description, subStmtQualifiedContext.Context.ambiguousIdentifier().GetText()),
                 subStmtQualifiedContext.ModuleName,
@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections
         {
             _quickFixes = new[]
             {
-                new ChangeProcedureToFunction(state, argListQualifiedContext, subStmtQualifiedContext, argQualifiedContext, QualifiedSelection), 
+                new ChangeProcedureToFunction(state, argListQualifiedContext, subStmtQualifiedContext, QualifiedSelection), 
             };
         }
 
@@ -37,14 +37,15 @@ namespace Rubberduck.Inspections
         public ChangeProcedureToFunction(RubberduckParserState state,
                                          QualifiedContext<VBAParser.ArgListContext> argListQualifiedContext,
                                          QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext,
-                                         QualifiedContext<VBAParser.ArgContext> argQualifiedContext,
                                          QualifiedSelection selection)
             : base(subStmtQualifiedContext.Context, selection, InspectionsUI.ProcedureShouldBeFunctionInspectionQuickFix)
         {
             _state = state;
             _argListQualifiedContext = argListQualifiedContext;
             _subStmtQualifiedContext = subStmtQualifiedContext;
-            _argQualifiedContext = argQualifiedContext;
+            _argQualifiedContext = new QualifiedContext<VBAParser.ArgContext>(_argListQualifiedContext.ModuleName,
+                _argListQualifiedContext.Context.arg()
+                    .First(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)));
         }
 
         public override void Fix()
