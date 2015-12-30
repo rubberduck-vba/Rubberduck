@@ -51,6 +51,13 @@ namespace Rubberduck.VBEditor.VBEHost
 
         public void Dispose()
         {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing) { return; }
+
             if (Application != null)
             {
                 Marshal.ReleaseComObject(Application);
