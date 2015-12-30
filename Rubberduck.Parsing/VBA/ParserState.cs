@@ -3,6 +3,10 @@ namespace Rubberduck.Parsing.VBA
     public enum ParserState
     {
         /// <summary>
+        /// Parse was requested but hasn't started yet.
+        /// </summary>
+        Pending,
+        /// <summary>
         /// Parser state is in sync with the actual code in the VBE.
         /// </summary>
         Ready,

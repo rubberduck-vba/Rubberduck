@@ -17,6 +17,7 @@ namespace Rubberduck.Inspections
         }
 
         public string Name { get { return "ObsoleteCommentSyntaxInspection"; } }
+        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
         public string Description { get { return RubberduckUI.ObsoleteComment; } }
         public CodeInspectionType InspectionType { get {return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }

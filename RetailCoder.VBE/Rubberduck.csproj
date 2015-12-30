@@ -702,7 +702,6 @@
     <Compile Include="UI\CodeExplorer\CodeExplorerWindow.Designer.cs">
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\CodeInspections\CodeInspectionResultGridViewItem.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsDockablePresenter.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsWindow.cs">
       <SubType>UserControl</SubType>

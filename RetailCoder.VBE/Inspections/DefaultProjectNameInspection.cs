@@ -18,6 +18,7 @@ namespace Rubberduck.Inspections
         }
 
         public string Name { get { return "DefaultProjectNameInspection"; } }
+        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
         public string Description { get { return RubberduckUI.GenericProjectName_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }

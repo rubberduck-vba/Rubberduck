@@ -11,11 +11,13 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorExtractInterfaceCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly IMessageBox _messageBox;
 
-        public RefactorExtractInterfaceCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor)
+        public RefactorExtractInterfaceCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, IMessageBox messageBox)
             : base (vbe, editor)
         {
             _state = state;
+            _messageBox = messageBox;
         }
 
         public override void Execute(object parameter)
@@ -28,7 +30,7 @@ namespace Rubberduck.UI.Command.Refactorings
             using (var view = new ExtractInterfaceDialog())
             {
                 var factory = new ExtractInterfacePresenterFactory(_state, Editor, view);
-                var refactoring = new ExtractInterfaceRefactoring(_state, factory, Editor);
+                var refactoring = new ExtractInterfaceRefactoring(_state, _messageBox, factory, Editor);
                 refactoring.Refactor();
             }
         }

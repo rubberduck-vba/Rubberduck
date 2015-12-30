@@ -13,5 +13,10 @@ namespace Rubberduck.Inspections
         /// </summary>
         /// <returns>Returns inspection results, if any.</returns>
         IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state);
+
+        /// <summary>
+        /// Gets a string that contains additional/meta information about an inspection.
+        /// </summary>
+        string Meta { get; }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -10,71 +8,56 @@ namespace Rubberduck.Refactorings.ExtractInterface
 {
     public class ExtractInterfaceModel
     {
-        private readonly RubberduckParserState _parseResult;
-        public RubberduckParserState ParseResult { get { return _parseResult; } }
-
-        private readonly IEnumerable<Declaration> _declarations;
-        public IEnumerable<Declaration> Declarations { get { return _declarations; } }
-
-        private readonly QualifiedSelection _selection;
-        public QualifiedSelection Selection { get { return _selection; } }
-
         private readonly Declaration _targetDeclaration;
         public Declaration TargetDeclaration { get { return _targetDeclaration; } }
 
         public string InterfaceName { get; set; }
-        public List<InterfaceMember> Members { get; set; }
 
-        private static readonly DeclarationType[] _declarationTypes =
+        private IEnumerable<InterfaceMember> _members = new List<InterfaceMember>();
+        public IEnumerable<InterfaceMember> Members { get { return _members; } set { _members = value; } }
+
+        private static readonly DeclarationType[] ModuleTypes =
         {
             DeclarationType.Class,
             DeclarationType.Document,
             DeclarationType.UserForm
         };
-        public ReadOnlyCollection<DeclarationType> DeclarationTypes = new ReadOnlyCollection<DeclarationType>(_declarationTypes);
 
-        private static readonly string[] _primitiveTypes =
+        private static readonly DeclarationType[] MemberTypes =
         {
-            Tokens.Boolean,
-            Tokens.Byte,
-            Tokens.Date,
-            Tokens.Decimal,
-            Tokens.Double,
-            Tokens.Long,
-            Tokens.LongLong,
-            Tokens.LongPtr,
-            Tokens.Integer,
-            Tokens.Single,
-            Tokens.String,
-            Tokens.StrPtr
+            DeclarationType.Procedure,
+            DeclarationType.Function,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet,
         };
-        public ReadOnlyCollection<string> PrimitiveTypes = new ReadOnlyCollection<string>(_primitiveTypes);
 
-        public ExtractInterfaceModel(RubberduckParserState parseResult, QualifiedSelection selection)
+        public ExtractInterfaceModel(RubberduckParserState state, QualifiedSelection selection)
         {
-            _parseResult = parseResult;
-            _selection = selection;
-            _declarations = parseResult.AllDeclarations.ToList();
+            var declarations = state.AllDeclarations.ToList();
+            var candidates = declarations.Where(item => !item.IsBuiltIn && ModuleTypes.Contains(item.DeclarationType)).ToList();
 
-            _targetDeclaration =
-                _declarations.SingleOrDefault(
-                    item =>
-                        !item.IsBuiltIn && DeclarationTypes.Contains(item.DeclarationType)
-                        && item.Project == selection.QualifiedName.Project
-                        && item.QualifiedSelection.QualifiedName == selection.QualifiedName);
+            _targetDeclaration = candidates.SingleOrDefault(item => 
+                           item.Project == selection.QualifiedName.Project
+                        && item.QualifiedSelection.QualifiedName.ComponentName == selection.QualifiedName.ComponentName);
+
+            if (_targetDeclaration == null)
+            {
+                //throw new InvalidOperationException();
+                return;
+            }
 
             InterfaceName = "I" + TargetDeclaration.IdentifierName;
 
-             Members = _declarations.Where(item => !item.IsBuiltIn &&
-                                                item.Project == _targetDeclaration.Project &&
-                                                item.ComponentName == _targetDeclaration.ComponentName &&
-                                                item.Accessibility == Accessibility.Public &&
-                                                item.DeclarationType != DeclarationType.Variable &&
-                                                item.DeclarationType != DeclarationType.Event)
-                                     .OrderBy(o => o.Selection.StartLine)
-                                     .ThenBy(t => t.Selection.StartColumn)
-                                     .Select(d => new InterfaceMember(d, _declarations))
-                                     .ToList();
+            _members = declarations.Where(item => !item.IsBuiltIn
+                                                  && item.Project == _targetDeclaration.Project
+                                                  && item.ComponentName == _targetDeclaration.ComponentName
+                                                  && (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Implicit)
+                                                  && MemberTypes.Contains(item.DeclarationType))
+                                   .OrderBy(o => o.Selection.StartLine)
+                                   .ThenBy(t => t.Selection.StartColumn)
+                                   .Select(d => new InterfaceMember(d, declarations))
+                                   .ToList();
         }
     }
 }

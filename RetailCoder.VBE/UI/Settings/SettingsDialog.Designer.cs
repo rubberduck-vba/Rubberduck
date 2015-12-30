@@ -31,6 +31,7 @@ namespace Rubberduck.UI.Settings
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsDialog));
             this.panel2 = new System.Windows.Forms.Panel();
             this.TitleLabel = new System.Windows.Forms.Label();
             this.InstructionsLabel = new System.Windows.Forms.Label();
@@ -151,7 +152,7 @@ namespace Rubberduck.UI.Settings
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.panel2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = global::Rubberduck.UI.RubberduckUI.Ducky;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SettingsDialog";

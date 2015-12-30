@@ -14,6 +14,7 @@ namespace Rubberduck.Inspections
         }
 
         public string Name { get { return "EmptyStringLiteralInspection"; } }
+        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
         public string Description { get { return InspectionsUI.EmptyStringLiteralInspection; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
