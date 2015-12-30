@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Timers;
 using Microsoft.Vbe.Interop;
@@ -41,37 +42,36 @@ namespace Rubberduck.AutoSave
         {
             if (e.PropertyName == "IsEnabled")
             {
-                IsEnabledChanged(sender, e);
+                _timer.Enabled = _settings.IsEnabled;
             }
             if (e.PropertyName == "TimerDelay")
             {
-                TimerDelayChanged(sender, e);
+                _timer.Interval = _settings.TimerDelay;
             }
-        }
-
-        void TimerDelayChanged(object sender, EventArgs e)
-        {
-            _timer.Interval = _settings.TimerDelay;
-        }
-
-        void IsEnabledChanged(object sender, EventArgs e)
-        {
-            _timer.Enabled = _settings.IsEnabled;
         }
 
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (_vbe.VBProjects.OfType<VBProject>().Any(p => !p.Saved))
             {
+                try
+                {
+                    // iterate to find if a file exists for each open project
+                    // I do hope the compiler doesn't optimize this out
+                    _vbe.VBProjects.OfType<VBProject>().Select(p => p.FileName).ToList();
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    return;
+                }
+
                 _vbe.CommandBars.FindControl(Id: 3).Execute();
             }
         }
 
         public void Dispose()
         {
-            _settings.IsEnabledChanged -= _settings_IsEnabledChanged;
-            _settings.TimerDelayChanged -= _settings_TimerDelayChanged;
-
+            _settings.PropertyChanged -= _settings_PropertyChanged;
             _timer.Elapsed -= _timer_Elapsed;
 
             _timer.Dispose();
