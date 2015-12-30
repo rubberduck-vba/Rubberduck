@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using NLog;
+using Rubberduck.AutoSave;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
@@ -50,7 +51,7 @@ namespace Rubberduck
             _parserErrorsPresenterFactory = parserErrorsPresenterFactory;
             _parser = parser;
             _inspectorFactory = inspectorFactory;
-            _autoSave = new AutoSave.AutoSave(_vbe);
+            _autoSave = new AutoSave.AutoSave(_vbe, new AutoSaveSettings());
             _configService = configService;
             _appMenus = appMenus;
             _stateBar = stateBar;

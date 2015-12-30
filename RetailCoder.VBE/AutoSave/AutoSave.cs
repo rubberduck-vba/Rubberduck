@@ -5,15 +5,10 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.AutoSave
 {
-    public interface IAutoSave
-    {
-        bool IsEnabled { get; set; }
-        double TimerDelay { get; set; }
-    }
-
-    public class AutoSave : IAutoSave, IDisposable
+    public class AutoSave : IDisposable
     {
         private readonly VBE _vbe;
+        private readonly IAutoSaveSettings _settings;
         // ReSharper disable once InconsistentNaming
         private readonly Timer _timer = new Timer();
 
@@ -29,12 +24,28 @@ namespace Rubberduck.AutoSave
             set { _timer.Interval = value; }
         }
 
-        public AutoSave(VBE vbe, uint time = 600000)
+        public AutoSave(VBE vbe, IAutoSaveSettings settings)
         {
             _vbe = vbe;
-            _timer.Interval = time;
+            _settings = settings;
+
+            _settings.IsEnabledChanged += _settings_IsEnabledChanged;
+            _settings.TimerDelayChanged += _settings_TimerDelayChanged;
+
+            _timer.Enabled = _settings.IsEnabled;
+            _timer.Interval = _settings.TimerDelay;
+
             _timer.Elapsed += _timer_Elapsed;
-            _timer.Start();
+        }
+
+        void _settings_TimerDelayChanged(object sender, EventArgs e)
+        {
+            _timer.Interval = _settings.TimerDelay;
+        }
+
+        void _settings_IsEnabledChanged(object sender, EventArgs e)
+        {
+            _timer.Enabled = _settings.IsEnabled;
         }
 
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -47,6 +58,11 @@ namespace Rubberduck.AutoSave
 
         public void Dispose()
         {
+            _settings.IsEnabledChanged -= _settings_IsEnabledChanged;
+            _settings.TimerDelayChanged -= _settings_TimerDelayChanged;
+
+            _timer.Elapsed -= _timer_Elapsed;
+
             _timer.Dispose();
         }
     }
