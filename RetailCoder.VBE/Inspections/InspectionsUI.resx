@@ -124,7 +124,7 @@
     <value>Replace '""' with 'vbNullString'.</value>
   </data>
   <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
-    <value>Procedure {0} should be function.</value>
+    <value>Procedure '{0}' should be function.</value>
     <comment>{0} Procedure name</comment>
   </data>
   <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">

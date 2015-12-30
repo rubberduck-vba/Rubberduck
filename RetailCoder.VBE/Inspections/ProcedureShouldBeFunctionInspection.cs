@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
@@ -17,7 +20,10 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            return new List<CodeInspectionResultBase>();
+            return state.ArgListsWithOneByRefParam
+                .Where(context => context.Context.Parent is VBAParser.SubStmtContext)
+                .Select(context => new ProcedureShouldBeFunctionInspectionResult(this,
+                    new QualifiedContext<VBAParser.SubStmtContext>(context.ModuleName, context.Context.Parent as VBAParser.SubStmtContext)));
         }
     }
 }

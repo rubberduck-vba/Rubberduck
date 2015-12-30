@@ -79,7 +79,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Procedure {0} should be function..
+        ///   Looks up a localized string similar to Procedure &apos;{0}&apos; should be function..
         /// </summary>
         internal static string ProcedureShouldBeFunctionInspection {
             get {

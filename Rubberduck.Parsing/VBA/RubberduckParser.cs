@@ -188,12 +188,14 @@ namespace Rubberduck.Parsing.VBA
             var obsoleteCallsListener = new ObsoleteCallStatementListener();
             var obsoleteLetListener = new ObsoleteLetStatementListener();
             var emptyStringLiteralListener = new EmptyStringLiteralListener();
+            var argListsWithOneByRefParam = new ArgListWithOneByRefParamListener();
 
             var listeners = new IParseTreeListener[]
             {
                 obsoleteCallsListener,
                 obsoleteLetListener,
                 emptyStringLiteralListener,
+                argListsWithOneByRefParam,
             };
 
             token.ThrowIfCancellationRequested();
@@ -223,6 +225,7 @@ namespace Rubberduck.Parsing.VBA
             _state.ObsoleteCallContexts = obsoleteCallsListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
             _state.ObsoleteLetContexts = obsoleteLetListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
             _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
+            _state.ArgListsWithOneByRefParam = argListsWithOneByRefParam.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
 
             State.SetModuleState(vbComponent, ParserState.Parsed);
         }
@@ -319,6 +322,20 @@ namespace Rubberduck.Parsing.VBA
             public override void ExitLiteral(VBAParser.LiteralContext context)
             {
                 if (context.STRINGLITERAL() != null && context.STRINGLITERAL().GetText() == "\"\"")
+                {
+                    _contexts.Add(context);
+                }
+            }
+        }
+
+        private class ArgListWithOneByRefParamListener : VBABaseListener
+        {
+            private readonly IList<VBAParser.ArgListContext> _contexts = new List<VBAParser.ArgListContext>();
+            public IEnumerable<VBAParser.ArgListContext> Contexts { get { return _contexts; } }
+
+            public override void ExitArgList(VBAParser.ArgListContext context)
+            {
+                if (context.arg() != null && context.arg().Count(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)) == 1)
                 {
                     _contexts.Add(context);
                 }
