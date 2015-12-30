@@ -79,6 +79,24 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Procedure {0} should be function..
+        /// </summary>
+        internal static string ProcedureShouldBeFunctionInspection {
+            get {
+                return ResourceManager.GetString("ProcedureShouldBeFunctionInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace Procedure with Function and update usages..
+        /// </summary>
+        internal static string ProcedureShouldBeFunctionInspectionQuickFix {
+            get {
+                return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Suboptimal Name Detected..
         /// </summary>
         internal static string UseMeaningfulNameInspection {

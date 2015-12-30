@@ -123,6 +123,13 @@
   <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
     <value>Replace '""' with 'vbNullString'.</value>
   </data>
+  <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
+    <value>Procedure {0} should be function.</value>
+    <comment>{0} Procedure name</comment>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
+    <value>Replace Procedure with Function and update usages.</value>
+  </data>
   <data name="UseMeaningfulNameInspection" xml:space="preserve">
     <value>Suboptimal Name Detected.</value>
   </data>
