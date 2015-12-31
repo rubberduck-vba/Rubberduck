@@ -30,7 +30,8 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var lastDeclarationsSectionLine = _qualifiedName.Component.CodeModule.CountOfDeclarationLines;
-            var annotations = _comments.Where(comment => comment.QualifiedSelection.Selection.EndLine <= lastDeclarationsSectionLine
+            var annotations = _comments.Where(comment => comment.QualifiedSelection.QualifiedName.Equals(_qualifiedName) 
+                && comment.QualifiedSelection.Selection.EndLine <= lastDeclarationsSectionLine
                 && comment.CommentText.StartsWith("@")).ToArray();
 
             if (annotations.Any())

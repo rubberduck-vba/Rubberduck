@@ -106,6 +106,10 @@ namespace Rubberduck.Parsing.VBA
             {
                 var parseTask = Task.Run(() => ParseInternal(component, token), token);
                 parseTask.Wait(token);
+                if (parseTask.IsFaulted)
+                {
+                    Debug.Print(parseTask.Exception.ToString());
+                }
             }
             catch (COMException exception)
             {
@@ -197,13 +201,23 @@ namespace Rubberduck.Parsing.VBA
 
             token.ThrowIfCancellationRequested();
 
-            ITokenStream stream;
             var code = string.Join(Environment.NewLine, vbComponent.CodeModule.Code());
-            var tree = ParseInternal(code, listeners, out stream);
+            IParseTree tree;
+
+            try
+            {
+                ITokenStream stream;
+                tree = ParseInternal(code, listeners, out stream);
+                _state.AddTokenStream(vbComponent, stream);
+                _state.AddParseTree(vbComponent, tree);
+            }
+            catch (SyntaxErrorException)
+            {
+                State.SetModuleState(vbComponent, ParserState.Error);
+                throw;
+            }
 
             token.ThrowIfCancellationRequested();
-            _state.AddTokenStream(vbComponent, stream);
-            _state.AddParseTree(vbComponent, tree);
 
             // cannot locate declarations in one pass *the way it's currently implemented*,
             // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.

@@ -74,12 +74,11 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleState(VBComponent component, ParserState state, SyntaxErrorException parserError = null)
         {
-            _moduleStates[component] = state;
-            _moduleExceptions[component] = parserError;
-
             // prevent multiple threads from changing state simultaneously:
             lock(_lock)
             {
+                _moduleStates[component] = state;
+                _moduleExceptions[component] = parserError;
                 OnModuleStateChanged(component, state);
                 Status = EvaluateParserState();
             }
