@@ -104,7 +104,7 @@ namespace Rubberduck.Inspections
                 if (referenceParent == null) { continue; }
                 
                 var referenceText = reference.Context.Parent.GetText();
-                var newCall = _argQualifiedContext.Context.ambiguousIdentifier().GetText() + 
+                var newCall = referenceParent.argsCall().argCall().ToList().ElementAt(_argListQualifiedContext.Context.arg().ToList().IndexOf(_argQualifiedContext.Context)).GetText() +
                               " = " + _subStmtQualifiedContext.Context.ambiguousIdentifier().GetText() +
                               "(" + referenceParent.argsCall().GetText() + ")";
 
