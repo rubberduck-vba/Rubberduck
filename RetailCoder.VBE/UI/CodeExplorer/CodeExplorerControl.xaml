@@ -107,21 +107,17 @@
 
             <Separator />
 
-
-            <Button Command="{Binding ToggleSignaturesCommand}" 
-                    IsEnabled="{Binding CanRefresh}"
+            <Button IsEnabled="{Binding CanRefresh}"
                     ToolTip="Toggle signatures">
                 <Image Height="16" Source="../../Resources/Microsoft/PNG/DisplayFullSignature_13393_32.png" />
             </Button>
 
-            <Button Command="{Binding ToggleNamespacesCommand}" 
-                    IsEnabled="{Binding CanRefresh}"
+            <Button IsEnabled="{Binding CanRefresh}"
                     ToolTip="Toggle namespace folders">
                 <Image Height="16" Source="../../Resources/blue-folder-horizontal.png" />
             </Button>
 
-            <Button Command="{Binding ToggleFoldersCommand}" 
-                    IsEnabled="{Binding CanRefresh}"
+            <Button IsEnabled="{Binding CanRefresh}"
                     ToolTip="Toggle component type folders">
                 <Image Height="16" Source="../../Resources/folder-horizontal.png" />
             </Button>
