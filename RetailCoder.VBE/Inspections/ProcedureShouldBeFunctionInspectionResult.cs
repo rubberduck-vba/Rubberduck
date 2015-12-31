@@ -29,10 +29,14 @@ namespace Rubberduck.Inspections
 
     public class ChangeProcedureToFunction : CodeInspectionQuickFix
     {
+        public override bool CanFixInModule { get { return false; } }
+        public override bool CanFixInProject { get { return false; } }
+
         private readonly RubberduckParserState _state;
         private readonly QualifiedContext<VBAParser.ArgListContext> _argListQualifiedContext;
         private readonly QualifiedContext<VBAParser.SubStmtContext> _subStmtQualifiedContext;
         private readonly QualifiedContext<VBAParser.ArgContext> _argQualifiedContext;
+
         private int _lineOffset;
 
         public ChangeProcedureToFunction(RubberduckParserState state,
