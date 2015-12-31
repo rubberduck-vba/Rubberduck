@@ -107,20 +107,17 @@
 
             <Separator />
 
-            <Button IsEnabled="{Binding CanRefresh}"
-                    ToolTip="Toggle signatures">
+            <ToggleButton IsEnabled="{Binding CanRefresh}" ToolTip="Toggle signatures">
                 <Image Height="16" Source="../../Resources/Microsoft/PNG/DisplayFullSignature_13393_32.png" />
-            </Button>
+            </ToggleButton>
 
-            <Button IsEnabled="{Binding CanRefresh}"
-                    ToolTip="Toggle namespace folders">
+            <ToggleButton IsEnabled="{Binding CanRefresh}" ToolTip="Toggle namespace folders">
                 <Image Height="16" Source="../../Resources/blue-folder-horizontal.png" />
-            </Button>
+            </ToggleButton>
 
-            <Button IsEnabled="{Binding CanRefresh}"
-                    ToolTip="Toggle component type folders">
+            <ToggleButton IsEnabled="{Binding CanRefresh}" ToolTip="Toggle component type folders">
                 <Image Height="16" Source="../../Resources/folder-horizontal.png" />
-            </Button>
+            </ToggleButton>
             
             <Separator />
 
@@ -129,11 +126,12 @@
         <!-- todo: implement item template -->
         <TreeView Grid.Row="1" x:Name="ExplorerTreeView"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
+                  ItemsSource="{Binding Projects}"
                   HorizontalContentAlignment="Stretch"
                   MouseDoubleClick="TreeView_OnMouseDoubleClick">
-            <!--<i:Interaction.Behaviors>
+            <i:Interaction.Behaviors>
                 <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
-            </i:Interaction.Behaviors>-->
+            </i:Interaction.Behaviors>
         </TreeView>
 
         <resx:BusyIndicator Grid.Row="1" Width="36" Height="36" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />

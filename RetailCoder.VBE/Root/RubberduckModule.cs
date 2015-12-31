@@ -15,6 +15,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
+using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.UnitTesting;
@@ -72,6 +73,11 @@ namespace Rubberduck.Root
                 .WhenInjectedInto<RunCodeInspectionsCommand>()
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>() });
+
+            Bind<IPresenter>().To<CodeExplorerDockablePresenter>()
+                .WhenInjectedInto<CodeExplorerCommand>()
+                .InSingletonScope()
+                .WithConstructorArgument<IDockableUserControl>(new CodeExplorerWindow { ViewModel = _kernel.Get<CodeExplorerViewModel>() });
 
             BindWindowsHooks();
             Debug.Print("completed RubberduckModule.Load()");

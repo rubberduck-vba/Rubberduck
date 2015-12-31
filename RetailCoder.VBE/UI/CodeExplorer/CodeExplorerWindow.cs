@@ -1,9 +1,5 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Properties;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -19,5 +15,15 @@ namespace Rubberduck.UI.CodeExplorer
             InitializeComponent();
         }
 
+        private CodeExplorerViewModel _viewModel;
+        public CodeExplorerViewModel ViewModel
+        {
+            get { return _viewModel; }
+            set
+            {
+                _viewModel = value;
+                codeExplorerControl1.DataContext = _viewModel;
+            }
+        }
     }
 }

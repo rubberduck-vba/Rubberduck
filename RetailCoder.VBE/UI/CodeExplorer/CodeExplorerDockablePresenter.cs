@@ -1,17 +1,14 @@
 ﻿using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.UI.CodeExplorer
 {
     public class CodeExplorerDockablePresenter : DockableToolwindowPresenter
     {
-        private readonly RubberduckParserState _state;
         private CodeExplorerWindow Control { get { return UserControl as CodeExplorerWindow; } }
 
-        public CodeExplorerDockablePresenter(RubberduckParserState state, VBE vbe, AddIn addIn, CodeExplorerWindow view)
+        public CodeExplorerDockablePresenter(VBE vbe, AddIn addIn, IDockableUserControl view)
             : base(vbe, addIn, view)
         {
-            _state = state;
         }
 
         //private string GetNodeText(Declaration declaration)

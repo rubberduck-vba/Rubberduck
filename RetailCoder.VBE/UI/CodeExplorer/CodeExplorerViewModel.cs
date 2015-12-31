@@ -24,15 +24,6 @@ namespace Rubberduck.UI.CodeExplorer
         private readonly ICommand _refreshCommand;
         public ICommand RefreshCommand { get { return _refreshCommand; } }
 
-        private readonly ICommand _toggleSignaturesCommand;
-        public ICommand ToggleSignaturesCommand { get { return _toggleSignaturesCommand; } }
-
-        private readonly ICommand _toggleNamespacesCommand;
-        public ICommand ToggleNamespacesCommand { get { return _toggleNamespacesCommand; } }
-
-        private readonly ICommand _toggleFoldersCommand;
-        public ICommand ToggleFoldersCommand { get { return _toggleFoldersCommand; } }
-
         private object _selectedItem;
         public object SelectedItem
         {
@@ -82,7 +73,7 @@ namespace Rubberduck.UI.CodeExplorer
         private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
         {
             IsBusy = e.State == ParserState.Parsing;
-            if (e.State != ParserState.Parsed)
+            if (e.State != ParserState.Resolving) // Parsed state is too volatile
             {
                 return;
             }
