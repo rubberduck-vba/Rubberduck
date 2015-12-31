@@ -267,11 +267,18 @@
   <data name="UntypedFunctionUsageInspectionName" xml:space="preserve">
     <value>Use of variant-returning string function</value>
   </data>
+  <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
+    <value>Procedure '{0}' should be a function.</value>
+    <comment>{0} Procedure name</comment>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
+    <value>Replace procedure with function and update usages.</value>
+  </data>
   <data name="UseMeaningfulNameInspection" xml:space="preserve">
     <value>Consider renaming {0} '{1}'</value>
   </data>
   <data name="UseMeaningfulNameInspectionMeta" xml:space="preserve">
-    <value>Identifier names should indicate what they're used for, and should be readable; avoid disemvoweling, numeric suffixes and 1-2 character names.</value>
+    <value>Identifier names should indicate what they're used for and should be readable; avoid disemvoweling, numeric suffixes, and 1-2 character names.</value>
   </data>
   <data name="UseMeaningfulNameInspectionName" xml:space="preserve">
     <value>Use meaningful names</value>
@@ -299,5 +306,11 @@
   </data>
   <data name="WriteOnlyPropertyInspectionName" xml:space="preserve">
     <value>Write-only property</value>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspectionMeta" xml:space="preserve">
+    <value>A procedure has one ByRef parameter.  Consider creating a function that returns the value instead.</value>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspectionName" xml:space="preserve">
+    <value>Convert procedure to function</value>
   </data>
 </root>

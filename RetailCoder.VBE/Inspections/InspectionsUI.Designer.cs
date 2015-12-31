@@ -475,6 +475,42 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Procedure &apos;{0}&apos; should be a function..
+        /// </summary>
+        internal static string ProcedureShouldBeFunctionInspection {
+            get {
+                return ResourceManager.GetString("ProcedureShouldBeFunctionInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A procedure has one ByRef parameter.  Consider creating a function that returns the value instead..
+        /// </summary>
+        internal static string ProcedureShouldBeFunctionInspectionMeta {
+            get {
+                return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Convert procedure to function.
+        /// </summary>
+        internal static string ProcedureShouldBeFunctionInspectionName {
+            get {
+                return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace procedure with function and update usages..
+        /// </summary>
+        internal static string ProcedureShouldBeFunctionInspectionQuickFix {
+            get {
+                return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This is likely a bug. A variable is being referred to, but is never assigned..
         /// </summary>
         internal static string UnassignedVariableUsageInspectionMeta {
@@ -520,7 +556,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Identifier names should indicate what they&apos;re used for, and should be readable; avoid disemvoweling, numeric suffixes and 1-2 character names..
+        ///   Looks up a localized string similar to Identifier names should indicate what they&apos;re used for and should be readable; avoid disemvoweling, numeric suffixes, and 1-2 character names..
         /// </summary>
         internal static string UseMeaningfulNameInspectionMeta {
             get {
