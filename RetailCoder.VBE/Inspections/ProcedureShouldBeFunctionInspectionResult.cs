@@ -33,6 +33,7 @@ namespace Rubberduck.Inspections
         private readonly QualifiedContext<VBAParser.ArgListContext> _argListQualifiedContext;
         private readonly QualifiedContext<VBAParser.SubStmtContext> _subStmtQualifiedContext;
         private readonly QualifiedContext<VBAParser.ArgContext> _argQualifiedContext;
+        private int _lineOffset;
 
         public ChangeProcedureToFunction(RubberduckParserState state,
                                          QualifiedContext<VBAParser.ArgListContext> argListQualifiedContext,
@@ -69,11 +70,11 @@ namespace Rubberduck.Inspections
 
             var newfunctionWithReturn = newFunctionWithoutReturn
                 .Insert(newFunctionWithoutReturn.LastIndexOf(Environment.NewLine, StringComparison.Ordinal),
-                        "    " + _subStmtQualifiedContext.Context.ambiguousIdentifier().GetText() +
+                        Environment.NewLine + "    " + _subStmtQualifiedContext.Context.ambiguousIdentifier().GetText() +
                         " = " + _argQualifiedContext.Context.ambiguousIdentifier().GetText());
 
-            var rewriter = _state.GetRewriter(_subStmtQualifiedContext.ModuleName.Component);
-            rewriter.Replace(_subStmtQualifiedContext.Context.Start, newfunctionWithReturn);
+            _lineOffset = newfunctionWithReturn.Split(new[] {Environment.NewLine}, StringSplitOptions.None).Length -
+                         subStmtText.Split(new[] {Environment.NewLine}, StringSplitOptions.None).Length;
 
             var module = _argListQualifiedContext.ModuleName.Component.CodeModule;
 
@@ -98,6 +99,13 @@ namespace Rubberduck.Inspections
 
             foreach (var reference in procedure.References.OrderByDescending(o => o.Selection.StartLine).ThenByDescending(d => d.Selection.StartColumn))
             {
+                var startLine = reference.Selection.StartLine;
+
+                if (procedure.ComponentName == reference.QualifiedModuleName.ComponentName && procedure.Selection.EndLine < reference.Selection.StartLine)
+                {
+                    startLine += _lineOffset;
+                }
+
                 var module = reference.QualifiedModuleName.Component.CodeModule;
 
                 var referenceParent = reference.Context.Parent as VBAParser.ICS_B_ProcedureCallContext;
@@ -108,13 +116,13 @@ namespace Rubberduck.Inspections
                               " = " + _subStmtQualifiedContext.Context.ambiguousIdentifier().GetText() +
                               "(" + referenceParent.argsCall().GetText() + ")";
 
-                var oldLines = module.Lines[reference.Selection.StartLine, reference.Selection.LineCount];
+                var oldLines = module.Lines[startLine, reference.Selection.LineCount];
 
                 var newText = oldLines.Remove(reference.Selection.StartColumn - 1, referenceText.Length)
                     .Insert(reference.Selection.StartColumn - 1, newCall);
 
-                module.DeleteLines(reference.Selection.StartLine, reference.Selection.LineCount);
-                module.InsertLines(reference.Selection.StartLine, newText);
+                module.DeleteLines(startLine, reference.Selection.LineCount);
+                module.InsertLines(startLine, newText);
             }
         }
     }
