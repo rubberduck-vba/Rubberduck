@@ -33,7 +33,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 .ToList();
 
             var usedInSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
-                selection.Selection.Contains(item.Selection) &&
+                selection.Selection.Contains(item.Selection) ||
                 item.References.Any(reference => inSelection.Contains(reference))));
 
             var usedBeforeSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
