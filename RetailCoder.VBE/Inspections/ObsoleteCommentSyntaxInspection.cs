@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
         {
-            return (state.Comments.Where(comment => comment.Marker == Tokens.Rem)
+            return (state.AllComments.Where(comment => comment.Marker == Tokens.Rem)
                 .Select(comment => new ObsoleteCommentSyntaxInspectionResult(this, comment)));
         }
     }

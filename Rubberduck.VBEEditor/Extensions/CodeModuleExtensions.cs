@@ -8,9 +8,10 @@ namespace Rubberduck.VBEditor.Extensions
     public static class CodeModuleExtensions
     {
         /// <summary>
-        /// Gets an array of strings where each element is a line of code in the Module.
+        /// Gets an array of strings where each element is a line of code in the Module,
+        /// with line numbers stripped and any other pre-processing that needs to be done.
         /// </summary>
-        public static string[] Code(this CodeModule module)
+        public static string[] GetSanitizedCode(this CodeModule module)
         {
             var lines = module.CountOfLines;
             if (lines == 0)

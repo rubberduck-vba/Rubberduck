@@ -169,12 +169,23 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, IEnumerable<CommentNode>> _comments =
             new ConcurrentDictionary<VBComponent, IEnumerable<CommentNode>>();
 
-        public IEnumerable<CommentNode> Comments
+        public IEnumerable<CommentNode> AllComments
         {
             get
             {
                 return _comments.Values.SelectMany(comments => comments.ToList());
             }
+        }
+
+        public IEnumerable<CommentNode> GetModuleComments(VBComponent component)
+        {
+            IEnumerable<CommentNode> result;
+            if (_comments.TryGetValue(component, out result))
+            {
+                return result;
+            }
+
+            return new List<CommentNode>();
         }
 
         public void SetModuleComments(VBComponent component, IEnumerable<CommentNode> comments)

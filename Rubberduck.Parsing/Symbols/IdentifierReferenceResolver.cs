@@ -202,25 +202,34 @@ namespace Rubberduck.Parsing.Symbols
                 ? parent.AsTypeName.Split('.').Last()
                 : parent.AsTypeName;
 
-            var result = _declarations.Where(d => d.IdentifierName == identifier).SingleOrDefault(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType
-                && item.Project == _currentScope.Project
-                && item.ComponentName == _currentScope.ComponentName);
+            var matches = _declarations.Where(d => d.IdentifierName == identifier).ToList();
 
-            if (result == null)
+            try
             {
-                result = _declarations.Where(d => d.IdentifierName == identifier).SingleOrDefault(item =>
-                    _moduleTypes.Contains(item.DeclarationType)
-                    && item.Project == _currentScope.Project);                
-            }
+                var result = matches.SingleOrDefault(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedType
+                    && item.Project == _currentScope.Project
+                    && item.ComponentName == _currentScope.ComponentName);
 
-            if (result == null)
+                if (result == null)
+                {
+                    result = matches.SingleOrDefault(item =>
+                        _moduleTypes.Contains(item.DeclarationType)
+                        && item.Project == _currentScope.Project);                
+                }
+
+                if (result == null)
+                {
+                    result = matches.SingleOrDefault(item =>
+                        _moduleTypes.Contains(item.DeclarationType));
+                }
+
+                return result;
+            }
+            catch (InvalidOperationException)
             {
-                result = _declarations.Where(d => d.IdentifierName == identifier).SingleOrDefault(item =>
-                    _moduleTypes.Contains(item.DeclarationType));
+                return null;
             }
-
-            return result;
         }
 
         private static readonly Type[] IdentifierContexts =
@@ -368,6 +377,11 @@ namespace Rubberduck.Parsing.Symbols
             var identifierContext = context.ambiguousIdentifier();
             var fieldCall = context.dictionaryCallStmt();
             // todo: understand WTF [baseType] is doing in that grammar rule...
+
+            if (localScope == null)
+            {
+                localScope = _currentScope;
+            }
 
             var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
             if (result != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
