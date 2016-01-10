@@ -20,6 +20,8 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.MultipleNamespaceDeclarationInspection; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
+        public override bool CanIgnoreOnce { get { return false; } }
+
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
             var issues = UserDeclarations.Where(declaration =>
