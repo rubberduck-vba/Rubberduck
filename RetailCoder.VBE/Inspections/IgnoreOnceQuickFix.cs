@@ -24,7 +24,8 @@ namespace Rubberduck.Inspections
         {
             var codeModule = Selection.QualifiedName.Component.CodeModule;
             var insertLine = Selection.Selection.StartLine;
-            var codeLine = codeModule.get_Lines(insertLine - 1, 1);
+
+            var codeLine = insertLine == 1 ? string.Empty : codeModule.get_Lines(insertLine - 1, 1);
             var annotationText = _annotationText;
             var ignoreAnnotation = "'" + Parsing.Grammar.Annotations.AnnotationMarker + Parsing.Grammar.Annotations.IgnoreInspection;
 

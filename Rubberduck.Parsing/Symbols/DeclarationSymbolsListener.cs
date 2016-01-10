@@ -191,6 +191,7 @@ namespace Rubberduck.Parsing.Symbols
         private void SetCurrentScope(Declaration procedureDeclaration, string name)
         {
             _currentScope = _qualifiedName + "." + name;
+            _parentDeclaration = procedureDeclaration;
         }
 
         public override void EnterOptionBaseStmt(VBAParser.OptionBaseStmtContext context)

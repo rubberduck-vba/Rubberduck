@@ -31,8 +31,9 @@ namespace Rubberduck.UI.CodeExplorer
             _declaration = declaration;
             _members = declarations.GroupBy(item => item.Scope)
                 .SelectMany(grouping =>
-                    grouping.Where(item => MemberTypes.Contains(item.DeclarationType))
-                        .Select(item => new CodeExplorerMemberViewModel(item)))
+                    grouping.Where(item => item.ParentDeclaration.Equals(declaration) &&  MemberTypes.Contains(item.DeclarationType))
+                        .Select(item => new CodeExplorerMemberViewModel(item, grouping)))
+                        .OrderBy(item => item.Name)
                         .ToList();
 
             var ns = _declaration.Annotations
@@ -50,6 +51,8 @@ namespace Rubberduck.UI.CodeExplorer
                 _namespace = string.Empty;
             }
         }
+
+        public IEnumerable<CodeExplorerMemberViewModel> Members { get { return _members; } }
 
         private bool _isErrorState;
         public bool IsErrorState { get { return _isErrorState; } set { _isErrorState = value; OnPropertyChanged(); } }

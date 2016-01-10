@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Rubberduck.Parsing.Symbols;
@@ -58,8 +59,8 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
-        private IEnumerable<CodeExplorerProjectViewModel> _projects;
-        public IEnumerable<CodeExplorerProjectViewModel> Projects
+        private ObservableCollection<CodeExplorerProjectViewModel> _projects;
+        public ObservableCollection<CodeExplorerProjectViewModel> Projects
         {
             get { return _projects; }
             set
@@ -81,8 +82,8 @@ namespace Rubberduck.UI.CodeExplorer
                 .GroupBy(declaration => declaration.Project)
                 .ToList();
 
-            Projects = userDeclarations.Select(grouping => 
-                new CodeExplorerProjectViewModel(grouping.Single(declaration => declaration.DeclarationType == DeclarationType.Project), grouping));
+            Projects = new ObservableCollection<CodeExplorerProjectViewModel>(userDeclarations.Select(grouping => 
+                new CodeExplorerProjectViewModel(grouping.Single(declaration => declaration.DeclarationType == DeclarationType.Project), grouping)));
         }
 
         private void ParserState_ModuleStateChanged(object sender, Parsing.ParseProgressEventArgs e)

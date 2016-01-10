@@ -77,16 +77,42 @@
             </Style.Resources>
         </Style>
 
-        <!--<explorer:InspectionSeverityImageSourceConverter x:Key="SeverityIconConverter" />
-        <explorer:InspectionImageSourceConverter x:Key="InspectionIconConverter" />
-        <explorer:InspectionDescriptionConverter x:Key="InspectionDescriptionConverter" />-->
-
         <Style x:Key="IconStyle" TargetType="Image">
             <Setter Property="Height" Value="16" />
             <Setter Property="Width" Value="16" />
             <Setter Property="Margin" Value="4" />
         </Style>
+        
+        <DataTemplate x:Key="MemberItemTemplate"
+                      DataType="explorer:CodeExplorerMemberViewModel">
+            <TextBlock Text="{Binding Name}" />
+        </DataTemplate>
+        
+        <HierarchicalDataTemplate x:Key="ComponentItemTemplate"
+                                  DataType="explorer:CodeExplorerMemberViewModel"
+                                  ItemsSource="{Binding Members}"
+                                  ItemTemplate="{StaticResource MemberItemTemplate}">
+            <TextBlock Text="{Binding Name}" />
+        </HierarchicalDataTemplate>
+        
+        <HierarchicalDataTemplate x:Key="ProjectItemTemplate" 
+                                  DataType="explorer:CodeExplorerComponentViewModel"
+                                  ItemsSource="{Binding Members}"
+                                  ItemTemplate="{StaticResource ComponentItemTemplate}">
+            <TextBlock Text="{Binding Name}" />
+        </HierarchicalDataTemplate>
 
+        <HierarchicalDataTemplate x:Key="CodeExplorerTreeViewTemplate" 
+                                  DataType="explorer:CodeExplorerProjectViewModel"
+                                  ItemsSource="{Binding Components}"
+                                  ItemTemplate="{StaticResource ProjectItemTemplate}">
+            <TextBlock Text="{Binding Name}" />
+        </HierarchicalDataTemplate>
+        
+        <HierarchicalDataTemplate x:Key="CodeExplorerNamespacesTemplate">
+            
+        </HierarchicalDataTemplate>
+        
     </UserControl.Resources>
 
     <Grid>
@@ -123,12 +149,12 @@
 
         </ToolBar>
         
-        <!-- todo: implement item template -->
         <TreeView Grid.Row="1" x:Name="ExplorerTreeView"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
-                  ItemsSource="{Binding Projects}"
                   HorizontalContentAlignment="Stretch"
-                  MouseDoubleClick="TreeView_OnMouseDoubleClick">
+                  MouseDoubleClick="TreeView_OnMouseDoubleClick"
+                  ItemsSource="{Binding Projects}"
+                  ItemTemplate="{StaticResource CodeExplorerTreeViewTemplate}">
             <i:Interaction.Behaviors>
                 <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
