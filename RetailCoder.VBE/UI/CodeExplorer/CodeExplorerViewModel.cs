@@ -67,7 +67,7 @@ namespace Rubberduck.UI.CodeExplorer
                 _projects = value; 
                 OnPropertyChanged();
             }
-        } 
+        }
 
         private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
         {

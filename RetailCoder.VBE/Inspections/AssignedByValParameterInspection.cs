@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.ByValParameterIsAssigned_; } }
+        public override string Description { get { return InspectionsUI.AssignedByValParameterInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()

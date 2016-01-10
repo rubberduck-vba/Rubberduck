@@ -302,6 +302,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>InspectionsUI.resx</DependentUpon>
     </Compile>
+    <Compile Include="Inspections\MultipleNamespaceDeclarationInspection.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspectionResult.cs" />
     <Compile Include="Inspections\UseMeaningfulNameInspection.cs" />
     <Compile Include="Inspections\UseMeaningfulNameInspectionResult.cs" />

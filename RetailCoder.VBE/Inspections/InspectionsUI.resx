@@ -198,6 +198,15 @@
   <data name="MultipleDeclarationsInspectionName" xml:space="preserve">
     <value>Instruction contains multiple declarations</value>
   </data>
+  <data name="MultipleNamespaceDeclarationInspection" xml:space="preserve">
+    <value>'{0}' has more than one namespace declaration.</value>
+  </data>
+  <data name="MultipleNamespaceDeclarationInspectionMeta" xml:space="preserve">
+    <value>Rubberduck only uses the first '@Namespace' annotation in a code module; consider removing extraneous ones.</value>
+  </data>
+  <data name="MultipleNamespaceDeclarationInspectionName" xml:space="preserve">
+    <value>Component has more than one namespace annotation.</value>
+  </data>
   <data name="NonReturningFunctionInspectionMeta" xml:space="preserve">
     <value>This is likely a bug. The return value of a function or property getter must be assigned before exiting, otherwise the program will not be working with expected results. If a function has no meaningful return value, consider declaring it as a 'Sub' procedure instead.</value>
   </data>

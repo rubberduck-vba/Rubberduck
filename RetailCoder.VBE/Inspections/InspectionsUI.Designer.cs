@@ -304,6 +304,33 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; has more than one namespace declaration..
+        /// </summary>
+        internal static string MultipleNamespaceDeclarationInspection {
+            get {
+                return ResourceManager.GetString("MultipleNamespaceDeclarationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck only uses the first &apos;@Namespace&apos; annotation in a code module; consider removing extraneous ones..
+        /// </summary>
+        internal static string MultipleNamespaceDeclarationInspectionMeta {
+            get {
+                return ResourceManager.GetString("MultipleNamespaceDeclarationInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Component has more than one namespace annotation..
+        /// </summary>
+        internal static string MultipleNamespaceDeclarationInspectionName {
+            get {
+                return ResourceManager.GetString("MultipleNamespaceDeclarationInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This is likely a bug. The return value of a function or property getter must be assigned before exiting, otherwise the program will not be working with expected results. If a function has no meaningful return value, consider declaring it as a &apos;Sub&apos; procedure instead..
         /// </summary>
         internal static string NonReturningFunctionInspectionMeta {

@@ -32,11 +32,12 @@ namespace Rubberduck.UI.CodeExplorer
             _members = declarations.GroupBy(item => item.Scope)
                 .SelectMany(grouping =>
                     grouping.Where(item => MemberTypes.Contains(item.DeclarationType))
-                        .Select(item => new CodeExplorerMemberViewModel(item)));
+                        .Select(item => new CodeExplorerMemberViewModel(item)))
+                        .ToList();
 
             var ns = _declaration.Annotations
                 .Split('\n')
-                .FirstOrDefault(annotation => annotation.StartsWith(Parsing.Grammar.Annotations.Namespace));
+                .FirstOrDefault(annotation => annotation.StartsWith(Parsing.Grammar.Annotations.AnnotationMarker + Parsing.Grammar.Annotations.Namespace));
 
             if (ns != null)
             {

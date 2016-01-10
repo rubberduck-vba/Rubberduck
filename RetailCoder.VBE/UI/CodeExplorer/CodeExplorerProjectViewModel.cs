@@ -24,7 +24,8 @@ namespace Rubberduck.UI.CodeExplorer
             _components = declarations.GroupBy(item => item.ComponentName)
                 .SelectMany(grouping =>
                     grouping.Where(item => ComponentTypes.Contains(item.DeclarationType))
-                        .Select(item => new CodeExplorerComponentViewModel(item, grouping)));
+                        .Select(item => new CodeExplorerComponentViewModel(item, grouping)))
+                        .ToList();
         }
 
         public bool IsProtected { get { return _declaration.Project.Protection == vbext_ProjectProtection.vbext_pp_locked; } }
