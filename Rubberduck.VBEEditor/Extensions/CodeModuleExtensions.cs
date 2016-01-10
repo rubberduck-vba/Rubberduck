@@ -27,12 +27,12 @@ namespace Rubberduck.VBEditor.Extensions
 
         private static void StripLineNumbers(string[] lines)
         {
-            var result = new string[lines.Length];
+            var continuing = false;
             for(var line = 0; line < lines.Length; line++)
             {
                 var code = lines[line];
                 int? lineNumber;
-                if (HasNumberedLine(code, out lineNumber))
+                if (!continuing && HasNumberedLine(code, out lineNumber))
                 {
                     var lineNumberLength = lineNumber.ToString().Length;
                     if (lines[line].Length > lineNumberLength)
@@ -41,6 +41,8 @@ namespace Rubberduck.VBEditor.Extensions
                         lines[line] = new string(' ', lineNumberLength) + code.Substring(lineNumber.ToString().Length + 1);
                     }
                 }
+
+                continuing = code.EndsWith("_");
             }
         }
 
