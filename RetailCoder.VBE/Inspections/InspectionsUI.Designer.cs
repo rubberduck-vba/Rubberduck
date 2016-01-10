@@ -79,6 +79,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code quality issues.
+        /// </summary>
+        internal static string CodeQualityIssues {
+            get {
+                return ResourceManager.GetString("CodeQualityIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Constant value is declared but Rubberduck could not find any reference to it. Consider removing the unused declaration..
         /// </summary>
         internal static string ConstantNotUsedInspectionMeta {
@@ -237,6 +246,24 @@ namespace Rubberduck.Inspections {
         internal static string ImplicitVariantReturnTypeInspectionName {
             get {
                 return ResourceManager.GetString("ImplicitVariantReturnTypeInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language opportunities.
+        /// </summary>
+        internal static string LanguageOpportunities {
+            get {
+                return ResourceManager.GetString("LanguageOpportunities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maintainability &amp; readability issues.
+        /// </summary>
+        internal static string MaintainabilityAndReadabilityIssues {
+            get {
+                return ResourceManager.GetString("MaintainabilityAndReadabilityIssues", resourceCulture);
             }
         }
         
@@ -432,9 +459,9 @@ namespace Rubberduck.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Parameter can be passed by value.
         /// </summary>
-        internal static string ParameterCanByByValInspectionName {
+        internal static string ParameterCanBeByValInspectionName {
             get {
-                return ResourceManager.GetString("ParameterCanByByValInspectionName", resourceCulture);
+                return ResourceManager.GetString("ParameterCanBeByValInspectionName", resourceCulture);
             }
         }
         

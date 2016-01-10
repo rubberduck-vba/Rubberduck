@@ -89,7 +89,7 @@
         
         <CollectionViewSource x:Key="InspectionTypeGroupViewSource" Source="{Binding Results}">
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="Inspection.InspectionType" />
+                <PropertyGroupDescription PropertyName="Inspection.InspectionTypeName" />
                 <PropertyGroupDescription PropertyName="Inspection" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
@@ -190,7 +190,7 @@
 
         <ToolBar Grid.Row="0">
 
-            <Button Command="{Binding RefreshCommand}" IsEnabled="{Binding CanRefresh}">
+            <Button Command="{Binding RefreshCommand}">
                 <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
             </Button>
 
@@ -198,8 +198,7 @@
             <Menu>
                 <MenuItem VerticalAlignment="Center" 
                           Header="{x:Static resx:RubberduckUI.Fix}"
-                          ItemsSource="{Binding SelectedItem.QuickFixes}"
-                          IsEnabled="{Binding CanQuickFix}">
+                          ItemsSource="{Binding SelectedItem.QuickFixes}">
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/tick.png" />
                     </MenuItem.Icon>

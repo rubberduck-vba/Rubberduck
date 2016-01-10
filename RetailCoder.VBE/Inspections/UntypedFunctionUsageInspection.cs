@@ -7,18 +7,16 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class UntypedFunctionUsageInspection : IInspection
+    public sealed class UntypedFunctionUsageInspection : InspectionBase
     {
-        public UntypedFunctionUsageInspection()
+        public UntypedFunctionUsageInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Hint;
         }
 
-        public string Name { get { return "UntypedFunctionUsageInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.UntypedFunctionUsage_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.UntypedFunctionUsage_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
         private readonly string[] _tokens = {
             Tokens.Error,
@@ -44,9 +42,9 @@ namespace Rubberduck.Inspections
             Tokens.UCase
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var declarations = state.AllDeclarations
+            var declarations = UserDeclarations
                 .Where(item => item.IsBuiltIn && item.Accessibility == Accessibility.Global && _tokens.Contains(item.IdentifierName));
 
             return declarations.SelectMany(declaration => declaration.References

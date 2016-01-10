@@ -6,31 +6,29 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    public class UseMeaningfulNameInspection : IInspection
+    public sealed class UseMeaningfulNameInspection : InspectionBase
     {
         private readonly IMessageBox _messageBox;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public UseMeaningfulNameInspection(IMessageBox messageBox)
+        public UseMeaningfulNameInspection(IMessageBox messageBox, RubberduckParserState state)
+            : base(state)
         {
             _messageBox = messageBox;
             _wrapperFactory = new CodePaneWrapperFactory();
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return "UseMeaningfulNameInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return InspectionsUI.UseMeaningfulNameInspection; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return InspectionsUI.UseMeaningfulNameInspection; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var issues = state.AllUserDeclarations
+            var issues = UserDeclarations
                             .Where(declaration => declaration.IdentifierName.Length < 3 ||
                                                   char.IsDigit(declaration.IdentifierName.Last()) ||
                                                   !declaration.IdentifierName.Any(c => new[] {'a', 'e', 'i', 'o', 'u', 'y'}.Contains(c)))
-                            .Select(issue => new UseMeaningfulNameInspectionResult(this, issue, state, _wrapperFactory, _messageBox))
+                            .Select(issue => new UseMeaningfulNameInspectionResult(this, issue, State, _wrapperFactory, _messageBox))
                             .ToList();
 
             return issues;

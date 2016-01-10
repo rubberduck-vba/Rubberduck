@@ -33,12 +33,12 @@ namespace Rubberduck.UI.CodeInspections
             _navigateCommand = navigateCommand;
             _clipboard = clipboard;
             _configService = configService;
-            _refreshCommand = new DelegateCommand(async param => await Task.Run(() => ExecuteRefreshCommandAsync(param)));
+            _refreshCommand = new DelegateCommand(async param => await Task.Run(() => ExecuteRefreshCommandAsync(param)), CanExecuteRefreshCommand);
             _disableInspectionCommand = new DelegateCommand(ExecuteDisableInspectionCommand);
-            _quickFixCommand = new DelegateCommand(ExecuteQuickFixCommand);
+            _quickFixCommand = new DelegateCommand(ExecuteQuickFixCommand, CanExecuteQuickFixCommand);
             _quickFixInModuleCommand = new DelegateCommand(ExecuteQuickFixInModuleCommand);
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
-            _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
+            _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
         }
 
         private ObservableCollection<ICodeInspectionResult> _results;
@@ -131,7 +131,7 @@ namespace Rubberduck.UI.CodeInspections
 
         public bool CanRefresh
         {
-            get { return true /*_canRefresh*/; }
+            get { return _canRefresh; }
             private set
             {
                 _canRefresh = value; 
@@ -153,11 +153,15 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            CanRefresh = false; // if commands' CanExecute worked as expected, this junk wouldn't be needed
             IsBusy = true;
 
             _state.StateChanged += _state_StateChanged;
             _state.OnParseRequested();
+        }
+
+        private bool CanExecuteRefreshCommand(object parameter)
+        {
+            return !IsBusy;
         }
 
         private async void _state_StateChanged(object sender, ParserStateEventArgs e)
@@ -195,6 +199,11 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             ExecuteQuickFixes(new[] {quickFix});
+        }
+
+        private bool CanExecuteQuickFixCommand(object parameter)
+        {
+            return !IsBusy && SelectedItem is IInspection;
         }
 
         private bool _canExecuteQuickFixInModule;
@@ -287,5 +296,9 @@ namespace Rubberduck.UI.CodeInspections
             _clipboard.Write(text);
         }
 
+        private bool CanExecuteCopyResultsCommand(object parameter)
+        {
+            return !IsBusy && _results != null && _results.Any();
+        }
     }
 }

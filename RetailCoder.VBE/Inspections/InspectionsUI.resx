@@ -123,6 +123,9 @@
   <data name="AssignedByValParameterInspectionName" xml:space="preserve">
     <value>ByVal parameter is assigned</value>
   </data>
+  <data name="CodeQualityIssues" xml:space="preserve">
+    <value>Code quality issues</value>
+  </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
     <value>Constant value is declared but Rubberduck could not find any reference to it. Consider removing the unused declaration.</value>
   </data>
@@ -176,6 +179,12 @@
   </data>
   <data name="ImplicitVariantReturnTypeInspectionName" xml:space="preserve">
     <value>Return type is implicitly 'Variant'</value>
+  </data>
+  <data name="LanguageOpportunities" xml:space="preserve">
+    <value>Language opportunities</value>
+  </data>
+  <data name="MaintainabilityAndReadabilityIssues" xml:space="preserve">
+    <value>Maintainability &amp; readability issues</value>
   </data>
   <data name="MultilineParameterInspectionMeta" xml:space="preserve">
     <value>Consider continuing long signatures between parameters. Splitting a parameter declaration across multiple lines arguably hurts readability.</value>
@@ -240,7 +249,7 @@
   <data name="ParameterCanBeByValInspectionMeta" xml:space="preserve">
     <value>A parameter that is passed by reference but that isn't assigned a new value/reference, could be passed by value instead.</value>
   </data>
-  <data name="ParameterCanByByValInspectionName" xml:space="preserve">
+  <data name="ParameterCanBeByValInspectionName" xml:space="preserve">
     <value>Parameter can be passed by value</value>
   </data>
   <data name="ParameterNotUsedInspectionMeta" xml:space="preserve">

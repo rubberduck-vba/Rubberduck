@@ -129,7 +129,7 @@ namespace Rubberduck.Root
         {
             var inspections = Assembly.GetExecutingAssembly()
                                       .GetTypes()
-                                      .Where(type => type.GetInterfaces().Contains(typeof (IInspection)));
+                                      .Where(type => type.BaseType == typeof (InspectionBase));
 
             // multibinding for IEnumerable<IInspection> dependency
             foreach (var inspection in inspections)

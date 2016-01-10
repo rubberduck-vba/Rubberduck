@@ -1,37 +1,33 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class UnassignedVariableUsageInspection //: IInspection // disabled
+    public sealed class UnassignedVariableUsageInspection : InspectionBase
     {
-        public UnassignedVariableUsageInspection()
+        public UnassignedVariableUsageInspection(RubberduckParserState state)
+            : base(state)
         {
-            Severity = CodeInspectionSeverity.Warning;
+            Severity = CodeInspectionSeverity.Error;
         }
 
-        public string Name { get { return RubberduckUI.UnassignedVariableUsage_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override string Description { get { return RubberduckUI.UnassignedVariableUsage_; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState parseResult)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var usages = parseResult.AllUserDeclarations.Where(declaration => 
+            var usages = UserDeclarations.Where(declaration => 
                 declaration.DeclarationType == DeclarationType.Variable
                 && !declaration.References.Any(reference => reference.IsAssignment))
                 .SelectMany(declaration => declaration.References);
 
             foreach (var issue in usages)
             {
-                //todo: add context to IdentifierReference
-                //yield return new UnassignedVariableUsageInspectionResult(string.Format(Name, issue.Context.GetText()), Severity, issue.Context, issue.QualifiedName);
+                yield return new UnassignedVariableUsageInspectionResult(this, string.Format(Name, issue.Context.GetText()), issue.Context, issue.QualifiedModuleName);
             }
-
-            return null;
         }
     }
 }

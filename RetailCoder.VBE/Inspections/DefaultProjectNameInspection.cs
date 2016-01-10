@@ -7,28 +7,26 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    public class DefaultProjectNameInspection : IInspection
+    public sealed class DefaultProjectNameInspection : InspectionBase
     {
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public DefaultProjectNameInspection()
+        public DefaultProjectNameInspection(RubberduckParserState state)
+            : base(state)
         {
             _wrapperFactory = new CodePaneWrapperFactory();
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return "DefaultProjectNameInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.GenericProjectName_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.GenericProjectName_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var issues = state.AllUserDeclarations
+            var issues = UserDeclarations
                             .Where(declaration => declaration.DeclarationType == DeclarationType.Project
                                                 && declaration.IdentifierName.StartsWith("VBAProject"))
-                            .Select(issue => new DefaultProjectNameInspectionResult(this, issue, state, _wrapperFactory))
+                            .Select(issue => new DefaultProjectNameInspectionResult(this, issue, State, _wrapperFactory))
                             .ToList();
 
             return issues;

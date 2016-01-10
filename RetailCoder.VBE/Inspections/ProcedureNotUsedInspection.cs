@@ -10,22 +10,20 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ProcedureNotUsedInspection : IInspection 
+    public sealed class ProcedureNotUsedInspection : InspectionBase
     {
-        public ProcedureNotUsedInspection()
+        public ProcedureNotUsedInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "ProcedureNotUsedInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.ProcedureNotUsed_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ProcedureNotUsed_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var declarations = state.AllUserDeclarations.ToList();
+            var declarations = UserDeclarations.ToList();
 
             var classes = declarations.Where(item => item.DeclarationType == DeclarationType.Class).ToList();
             var modules = declarations.Where(item => item.DeclarationType == DeclarationType.Module).ToList();

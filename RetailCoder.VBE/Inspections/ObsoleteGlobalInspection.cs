@@ -8,22 +8,20 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteGlobalInspection : IInspection
+    public sealed class ObsoleteGlobalInspection : InspectionBase
     {
-        public ObsoleteGlobalInspection()
+        public ObsoleteGlobalInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return "ObsoleteGlobalInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.ObsoleteGlobal; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ObsoleteGlobal; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var issues = from item in state.AllUserDeclarations
+            var issues = from item in UserDeclarations
                          where item.Accessibility == Accessibility.Global && item.Context != null
                          select new ObsoleteGlobalInspectionResult(this, Description, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context));
 
