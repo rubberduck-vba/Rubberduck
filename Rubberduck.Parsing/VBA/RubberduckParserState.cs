@@ -227,8 +227,7 @@ namespace Rubberduck.Parsing.VBA
 
             foreach (var declaration in declarations)
             {
-                ResolutionState state;
-                _declarations.TryRemove(declaration, out state);
+                RemoveDeclaration(declaration);
             }
         }
 
@@ -254,7 +253,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns>Returns true when successful.</returns>
-        private bool RemoveDeclaration(Declaration declaration)
+        public bool RemoveDeclaration(Declaration declaration)
         {
             ResolutionState state;
             return _declarations.TryRemove(declaration, out state);

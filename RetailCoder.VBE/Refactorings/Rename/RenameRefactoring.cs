@@ -9,6 +9,7 @@ using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -19,13 +20,15 @@ namespace Rubberduck.Refactorings.Rename
         private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
         private readonly IActiveCodePaneEditor _editor;
         private readonly IMessageBox _messageBox;
+        private readonly RubberduckParserState _state;
         private RenameModel _model;
 
-        public RenameRefactoring(IRefactoringPresenterFactory<IRenamePresenter> factory, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public RenameRefactoring(IRefactoringPresenterFactory<IRenamePresenter> factory, IActiveCodePaneEditor editor, IMessageBox messageBox, RubberduckParserState state)
         {
             _factory = factory;
             _editor = editor;
             _messageBox = messageBox;
+            _state = state;
         }
 
         public void Refactor()
@@ -212,6 +215,7 @@ namespace Rubberduck.Refactorings.Rename
                 if (project != null)
                 {
                     project.Name = _model.NewName;
+                    _state.RemoveDeclaration(_model.Target);
                 }
             }
             catch (COMException)

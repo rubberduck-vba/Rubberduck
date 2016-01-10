@@ -17,9 +17,9 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
             get { return _codePane.TopLine; } 
             set { _codePane.TopLine = value; }
         }
-        public int CountOfVisibleLines { get { return _codePane.CountOfVisibleLines; } }
-        public CodeModule CodeModule { get { return _codePane.CodeModule; } }
-        public vbext_CodePaneview CodePaneView { get { return _codePane.CodePaneView; } }
+        public int CountOfVisibleLines { get { return _codePane == null ? 0 : _codePane.CountOfVisibleLines; } }
+        public CodeModule CodeModule { get { return _codePane == null ? null : _codePane.CodeModule; } }
+        public vbext_CodePaneview CodePaneView { get { return _codePane == null ? vbext_CodePaneview.vbext_cv_FullModuleView : _codePane.CodePaneView; } }
 
         public CodePaneWrapper(CodePane codePane)
         {
