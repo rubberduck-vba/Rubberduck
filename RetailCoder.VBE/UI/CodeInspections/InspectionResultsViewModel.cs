@@ -287,11 +287,11 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            var results = string.Join("\n", _results.Select(result => result.ToString()), "\n");
+            var results = string.Join("\n", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
             var resource = _results.Count == 1
                 ? RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
-            var text = string.Format(resource, DateTime.Now, _results.Count) + results;
+            var text = string.Format(resource, DateTime.Now, _results.Count) + Environment.NewLine + results;
 
             _clipboard.Write(text);
         }

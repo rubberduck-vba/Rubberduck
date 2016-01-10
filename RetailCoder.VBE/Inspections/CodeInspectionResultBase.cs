@@ -93,5 +93,17 @@ namespace Rubberduck.Inspections
                 module.ComponentName,
                 QualifiedSelection.Selection.StartLine);
         }
+
+        public string ToCsvString()
+        {
+            var module = QualifiedSelection.QualifiedName;
+            return string.Format(
+                "{0}, {1}, {2}, {3}, {4}",
+                Inspection.Severity,
+                Name,
+                module.ProjectName,
+                module.ComponentName,
+                QualifiedSelection.Selection.StartLine);
+        }
     }
 }
