@@ -16,9 +16,10 @@ namespace Rubberduck.Inspections
             RemoveParametersRefactoring refactoring, RubberduckParserState parseResult)
             : base(inspection, result, qualifiedName.QualifiedModuleName, context)
         {
-            _quickFixes = isInterfaceImplementation ? new CodeInspectionQuickFix[] {} : new[]
+            _quickFixes = isInterfaceImplementation ? new CodeInspectionQuickFix[] {} : new CodeInspectionQuickFix[]
             {
                 new RemoveUnusedParameterQuickFix(Context, QualifiedSelection, refactoring, parseResult),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

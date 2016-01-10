@@ -4,18 +4,14 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public sealed class OptionBaseInspection : InspectionBase
     {
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
-
         public OptionBaseInspection(RubberduckParserState state)
             : base(state)
         {
-            _wrapperFactory = new CodePaneWrapperFactory();
             Severity = CodeInspectionSeverity.Warning;
         }
 

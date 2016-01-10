@@ -150,6 +150,9 @@
   <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
     <value>Replace empty string with the 'vbNullString' constant</value>
   </data>
+  <data name="IgnoreOnce" xml:space="preserve">
+    <value>Ignore once</value>
+  </data>
   <data name="ImplicitActiveSheetReferenceInspectionMeta" xml:space="preserve">
     <value>Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they're intended, and prefer working off object references.</value>
   </data>

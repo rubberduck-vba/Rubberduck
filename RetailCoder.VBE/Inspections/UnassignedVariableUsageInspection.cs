@@ -22,11 +22,12 @@ namespace Rubberduck.Inspections
             var usages = UserDeclarations.Where(declaration => 
                 declaration.DeclarationType == DeclarationType.Variable
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .SelectMany(declaration => declaration.References);
+                .SelectMany(declaration => declaration.References)
+                .Where(usage => !usage.IsInspectionDisabled(AnnotationName));
 
             foreach (var issue in usages)
             {
-                yield return new UnassignedVariableUsageInspectionResult(this, string.Format(Name, issue.Context.GetText()), issue.Context, issue.QualifiedModuleName);
+                yield return new UnassignedVariableUsageInspectionResult(this, string.Format(Description, issue.Context.GetText()), issue.Context, issue.QualifiedModuleName);
             }
         }
     }

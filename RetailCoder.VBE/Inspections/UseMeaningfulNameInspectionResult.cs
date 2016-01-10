@@ -17,9 +17,10 @@ namespace Rubberduck.Inspections
         public UseMeaningfulNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parserState, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
             : base(inspection, string.Format(inspection.Description, RubberduckUI.ResourceManager.GetString("DeclarationType_" + target.DeclarationType, RubberduckUI.Culture), target.IdentifierName), target)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new RenameDeclarationQuickFix(target.Context, target.QualifiedSelection, target, parserState, wrapperFactory, messageBox),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

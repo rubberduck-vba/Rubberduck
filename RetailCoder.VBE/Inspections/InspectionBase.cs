@@ -21,9 +21,7 @@ namespace Rubberduck.Inspections
         public virtual CodeInspectionSeverity Severity { get; set; }
         public virtual string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
         public virtual string InspectionTypeName { get { return InspectionsUI.ResourceManager.GetString(InspectionType.ToString()); } }
-        protected virtual string AnnotationName { get { return Name.Replace("Inspection", string.Empty); } }
-
-        public virtual bool CanIgnoreOnce { get { return true; } }
+        public virtual string AnnotationName { get { return Name.Replace("Inspection", string.Empty); } }
 
         protected virtual IEnumerable<Declaration> Declarations
         {

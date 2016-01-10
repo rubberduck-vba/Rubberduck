@@ -18,9 +18,10 @@ namespace Rubberduck.Inspections
         public ObsoleteTypeHintInspectionResult(IInspection inspection, string result, QualifiedContext qualifiedContext, Declaration declaration)
             : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new RemoveTypeHintsQuickFix(Context, QualifiedSelection, declaration), 
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

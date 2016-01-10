@@ -51,14 +51,17 @@ namespace Rubberduck.Inspections
 
     public class ImplicitActiveSheetReferenceInspectionResult : CodeInspectionResultBase
     {
-        //private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public ImplicitActiveSheetReferenceInspectionResult(IInspection inspection, string result, ParserRuleContext context, QualifiedModuleName qualifiedName)
             : base(inspection, result, qualifiedName, context)
         {
-            //_quickFixes = new CodeInspectionQuickFix[]{};
+            _quickFixes = new CodeInspectionQuickFix[]
+            {
+                new IgnoreOnceQuickFix(context, QualifiedSelection, Inspection.AnnotationName), 
+            };
         }
 
-        //public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
     }
 }

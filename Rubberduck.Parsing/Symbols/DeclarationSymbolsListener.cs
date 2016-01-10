@@ -87,17 +87,10 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            try
+            var commentAbove = _comments.SingleOrDefault(comment => comment.QualifiedSelection.Selection.EndLine == line - 1);
+            if (commentAbove != null && commentAbove.CommentText.StartsWith("@"))
             {
-                var commentAbove = _comments.SingleOrDefault(comment => comment.QualifiedSelection.Selection.EndLine == line - 1);
-                if (commentAbove != null && commentAbove.CommentText.StartsWith("@"))
-                {
-                    return commentAbove.CommentText;
-                }
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
+                return commentAbove.CommentText;
             }
             return null;
         }

@@ -14,9 +14,10 @@ namespace Rubberduck.Inspections
         public VariableTypeNotDeclaredInspectionResult(IInspection inspection, string result, ParserRuleContext context, QualifiedModuleName qualifiedName)
             : base(inspection, result, qualifiedName, context)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new DeclareAsExplicitVariantQuickFix(Context, QualifiedSelection), 
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

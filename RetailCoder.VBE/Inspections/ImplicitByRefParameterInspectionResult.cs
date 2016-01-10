@@ -15,9 +15,10 @@ namespace Rubberduck.Inspections
         public ImplicitByRefParameterInspectionResult(IInspection inspection, string result, QualifiedContext<VBAParser.ArgContext> qualifiedContext)
             : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
                 {
                     new ImplicitByRefParameterQuickFix(Context, QualifiedSelection, RubberduckUI.Inspections_PassParamByRefExplicitly, Tokens.ByRef), 
+                    new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
                 };
         }
 

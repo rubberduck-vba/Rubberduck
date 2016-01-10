@@ -295,6 +295,7 @@
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspection.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspectionResult.cs" />
+    <Compile Include="Inspections\IgnoreOnceQuickFix.cs" />
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspection.cs" />
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspection.cs" />
     <Compile Include="Inspections\InspectionBase.cs" />

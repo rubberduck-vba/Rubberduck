@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
@@ -17,6 +18,7 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         private readonly IEnumerable<Declaration> _declarations;
+        private readonly IEnumerable<CommentNode> _comments;
 
         private readonly QualifiedModuleName _qualifiedModuleName;
 
@@ -29,10 +31,11 @@ namespace Rubberduck.Parsing.Symbols
         private readonly Stack<Declaration> _withBlockQualifiers;
         private readonly HashSet<RuleContext> _alreadyResolved;
 
-        public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, IEnumerable<Declaration> declarations)
+        public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, IEnumerable<Declaration> declarations, IEnumerable<CommentNode> comments)
         {
             _qualifiedModuleName = qualifiedModuleName;
             _declarations = declarations;
+            _comments = comments;
 
             _withBlockQualifiers = new Stack<Declaration>();
             _alreadyResolved = new HashSet<RuleContext>();
@@ -146,7 +149,23 @@ namespace Rubberduck.Parsing.Symbols
             }
             var name = callSiteContext.GetText();
             var selection = callSiteContext.GetSelection();
-            return new IdentifierReference(_qualifiedModuleName, _currentScope.Scope, name, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement);
+            var annotations = FindAnnotations(selection.StartLine);
+            return new IdentifierReference(_qualifiedModuleName, _currentScope.Scope, name, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement, annotations);
+        }
+
+        private string FindAnnotations(int line)
+        {
+            if (_comments == null)
+            {
+                return null;
+            }
+
+            var commentAbove = _comments.SingleOrDefault(comment => comment.QualifiedSelection.Selection.EndLine == line - 1);
+            if (commentAbove != null && commentAbove.CommentText.StartsWith("@"))
+            {
+                return commentAbove.CommentText;
+            }
+            return null;
         }
 
         private Declaration ResolveType(VBAParser.ComplexTypeContext context)

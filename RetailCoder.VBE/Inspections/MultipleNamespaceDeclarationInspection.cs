@@ -1,11 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -19,8 +15,6 @@ namespace Rubberduck.Inspections
 
         public override string Description { get { return InspectionsUI.MultipleNamespaceDeclarationInspection; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
-
-        public override bool CanIgnoreOnce { get { return false; } }
 
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {

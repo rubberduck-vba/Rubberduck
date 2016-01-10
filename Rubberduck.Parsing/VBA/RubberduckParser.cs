@@ -298,7 +298,7 @@ namespace Rubberduck.Parsing.VBA
 
             _state.SetModuleState(component, ParserState.Resolving);
 
-            var resolver = new IdentifierReferenceResolver(new QualifiedModuleName(component), _state.AllDeclarations);
+            var resolver = new IdentifierReferenceResolver(new QualifiedModuleName(component), _state.AllDeclarations, _state.AllComments);
             var listener = new IdentifierReferenceListener(resolver, token);
             var walker = new ParseTreeWalker();
             try

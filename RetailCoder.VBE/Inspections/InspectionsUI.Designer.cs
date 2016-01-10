@@ -160,6 +160,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore once.
+        /// </summary>
+        internal static string IgnoreOnce {
+            get {
+                return ResourceManager.GetString("IgnoreOnce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they&apos;re intended, and prefer working off object references..
         /// </summary>
         internal static string ImplicitActiveSheetReferenceInspectionMeta {
