@@ -315,27 +315,27 @@ namespace Rubberduck.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; has more than one namespace declaration..
         /// </summary>
-        internal static string MultipleNamespaceDeclarationInspection {
+        internal static string MultipleFolderAnnotationsInspection {
             get {
-                return ResourceManager.GetString("MultipleNamespaceDeclarationInspection", resourceCulture);
+                return ResourceManager.GetString("MultipleFolderAnnotationsInspection", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck only uses the first &apos;@Namespace&apos; annotation in a code module; consider removing extraneous ones..
+        ///   Looks up a localized string similar to Rubberduck only uses the first &apos;@Folder&apos; annotation in a code module; consider removing extraneous ones..
         /// </summary>
-        internal static string MultipleNamespaceDeclarationInspectionMeta {
+        internal static string MultipleFolderAnnotationsInspectionMeta {
             get {
-                return ResourceManager.GetString("MultipleNamespaceDeclarationInspectionMeta", resourceCulture);
+                return ResourceManager.GetString("MultipleFolderAnnotationsInspectionMeta", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Component has more than one namespace annotation..
+        ///   Looks up a localized string similar to Component has more than one folder annotation..
         /// </summary>
-        internal static string MultipleNamespaceDeclarationInspectionName {
+        internal static string MultipleFolderAnnotationsInspectionName {
             get {
-                return ResourceManager.GetString("MultipleNamespaceDeclarationInspectionName", resourceCulture);
+                return ResourceManager.GetString("MultipleFolderAnnotationsInspectionName", resourceCulture);
             }
         }
         

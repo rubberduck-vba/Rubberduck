@@ -6,6 +6,6 @@
         public static readonly string TestModule = "TestModule";
         public static readonly string TestMethod = "TestMethod";
         public static readonly string IgnoreInspection = "Ignore";
-        public static readonly string Namespace = "Namespace";
+        public static readonly string Folder = "Folder";
     }
 }

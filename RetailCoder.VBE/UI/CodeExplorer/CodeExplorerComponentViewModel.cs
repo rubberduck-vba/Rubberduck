@@ -31,25 +31,12 @@ namespace Rubberduck.UI.CodeExplorer
             _declaration = declaration;
             _members = declarations.GroupBy(item => item.Scope)
                 .SelectMany(grouping =>
-                    grouping.Where(item => item.ParentDeclaration.Equals(declaration) &&  MemberTypes.Contains(item.DeclarationType))
+                    grouping.Where(item => item.ParentDeclaration != null && item.ParentDeclaration.Equals(declaration) &&  MemberTypes.Contains(item.DeclarationType))
                         .Select(item => new CodeExplorerMemberViewModel(item, grouping)))
                         .OrderBy(item => item.Name)
                         .ToList();
 
-            var ns = _declaration.Annotations
-                .Split('\n')
-                .FirstOrDefault(annotation => annotation.StartsWith(Parsing.Grammar.Annotations.AnnotationMarker + Parsing.Grammar.Annotations.Namespace));
-
-            if (ns != null)
-            {
-
-                var value = ns.Split(' ');
-                _namespace = value.Length == 1 ? string.Empty : value[1];
-            }
-            else
-            {
-                _namespace = string.Empty;
-            }
+            _customFolder = declaration.CustomFolder;
         }
 
         public IEnumerable<CodeExplorerMemberViewModel> Members { get { return _members; } }
@@ -68,8 +55,10 @@ namespace Rubberduck.UI.CodeExplorer
 
         public string Name { get { return _declaration.IdentifierName; } }
 
-        private readonly string _namespace;
-        public string Namespace  { get { return _namespace; } }
+        private readonly string _customFolder;
+        public string CustomFolder { get { return _customFolder; } }
+
+        public string TypeFolder { get { return DeclarationType.ToString(); } }
 
         private vbext_ComponentType ComponentType { get { return _declaration.QualifiedName.QualifiedModuleName.Component.Type; } }
 

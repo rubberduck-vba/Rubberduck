@@ -7,6 +7,7 @@
              xmlns:symbols="clr-namespace:Rubberduck.Parsing.Symbols;assembly=Rubberduck.Parsing"
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance explorer:CodeExplorerViewModel}">
     <UserControl.Resources>
@@ -94,6 +95,13 @@
                                   ItemTemplate="{StaticResource MemberItemTemplate}">
             <TextBlock Text="{Binding Name}" />
         </HierarchicalDataTemplate>
+
+        <HierarchicalDataTemplate x:Key="CustomFolderItemTemplate" 
+                                  DataType="explorer:CodeExplorerCustomFolderViewModel"
+                                  ItemsSource="{Binding Components}"
+                                  ItemTemplate="{StaticResource ComponentItemTemplate}">
+            <TextBlock Text="{Binding Name}" />
+        </HierarchicalDataTemplate>
         
         <HierarchicalDataTemplate x:Key="ProjectItemTemplate" 
                                   DataType="explorer:CodeExplorerComponentViewModel"
@@ -102,17 +110,20 @@
             <TextBlock Text="{Binding Name}" />
         </HierarchicalDataTemplate>
 
-        <HierarchicalDataTemplate x:Key="CodeExplorerTreeViewTemplate" 
+        <HierarchicalDataTemplate x:Key="CodeExplorerComponentsTemplate" 
                                   DataType="explorer:CodeExplorerProjectViewModel"
                                   ItemsSource="{Binding Components}"
                                   ItemTemplate="{StaticResource ProjectItemTemplate}">
             <TextBlock Text="{Binding Name}" />
         </HierarchicalDataTemplate>
-        
-        <HierarchicalDataTemplate x:Key="CodeExplorerNamespacesTemplate">
-            
+
+        <HierarchicalDataTemplate x:Key="CodeExplorerCustomFoldersTemplate" 
+                                  DataType="explorer:CodeExplorerProjectViewModel"
+                                  ItemsSource="{Binding CustomFolders}"
+                                  ItemTemplate="{StaticResource CustomFolderItemTemplate}">
+            <TextBlock Text="{Binding Name}" />
         </HierarchicalDataTemplate>
-        
+
     </UserControl.Resources>
 
     <Grid>
@@ -137,7 +148,7 @@
                 <Image Height="16" Source="../../Resources/Microsoft/PNG/DisplayFullSignature_13393_32.png" />
             </ToggleButton>
 
-            <ToggleButton IsEnabled="{Binding CanRefresh}" ToolTip="Toggle namespace folders">
+            <ToggleButton IsEnabled="{Binding CanRefresh}" ToolTip="Toggle custom folders">
                 <Image Height="16" Source="../../Resources/blue-folder-horizontal.png" />
             </ToggleButton>
 
@@ -154,7 +165,7 @@
                   HorizontalContentAlignment="Stretch"
                   MouseDoubleClick="TreeView_OnMouseDoubleClick"
                   ItemsSource="{Binding Projects}"
-                  ItemTemplate="{StaticResource CodeExplorerTreeViewTemplate}">
+                  ItemTemplate="{StaticResource CodeExplorerCustomFoldersTemplate}">
             <i:Interaction.Behaviors>
                 <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>

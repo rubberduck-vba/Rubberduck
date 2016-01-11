@@ -5,15 +5,15 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public sealed class MultipleNamespaceDeclarationInspection : InspectionBase
+    public sealed class MultipleFolderAnnotationsInspection : InspectionBase
     {
-        public MultipleNamespaceDeclarationInspection(RubberduckParserState state)
+        public MultipleFolderAnnotationsInspection(RubberduckParserState state)
             : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return InspectionsUI.MultipleNamespaceDeclarationInspection; } }
+        public override string Description { get { return InspectionsUI.MultipleFolderAnnotationsInspection; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
@@ -23,15 +23,15 @@ namespace Rubberduck.Inspections
                 || declaration.DeclarationType == DeclarationType.Module)
                 && declaration.Annotations.Split('\n').Count(annotation =>
                     annotation.StartsWith(Parsing.Grammar.Annotations.AnnotationMarker +
-                                          Parsing.Grammar.Annotations.Namespace)) > 1);
+                                          Parsing.Grammar.Annotations.Folder)) > 1);
             return issues.Select(issue =>
-                new MultipleNamespaceDeclarationInspectionResult(this, string.Format(Description, issue.ComponentName), issue));
+                new MultipleFolderAnnotationsInspectionResult(this, string.Format(Description, issue.ComponentName), issue));
         }
     }
 
-    public class MultipleNamespaceDeclarationInspectionResult : CodeInspectionResultBase
+    public class MultipleFolderAnnotationsInspectionResult : CodeInspectionResultBase
     {
-        public MultipleNamespaceDeclarationInspectionResult(IInspection inspection, string result, Declaration target) 
+        public MultipleFolderAnnotationsInspectionResult(IInspection inspection, string result, Declaration target) 
             : base(inspection, result, target)
         {
         }
