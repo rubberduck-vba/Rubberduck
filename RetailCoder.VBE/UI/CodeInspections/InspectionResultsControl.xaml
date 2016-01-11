@@ -7,6 +7,7 @@
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:codeInspections="clr-namespace:Rubberduck.UI.CodeInspections"
+             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeInspections:InspectionResultsViewModel}">
     <UserControl.Resources>
@@ -92,6 +93,9 @@
                 <PropertyGroupDescription PropertyName="Inspection.InspectionTypeName" />
                 <PropertyGroupDescription PropertyName="Inspection" />
             </CollectionViewSource.GroupDescriptions>
+            <CollectionViewSource.SortDescriptions>
+                <componentModel:SortDescription PropertyName="Inspection" />
+            </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
         
         <CollectionViewSource x:Key="CodeModuleGroupViewSource" Source="{Binding Results}">
@@ -99,6 +103,9 @@
                 <PropertyGroupDescription PropertyName="QualifiedSelection.QualifiedName" />
                 <PropertyGroupDescription PropertyName="Inspection" />
             </CollectionViewSource.GroupDescriptions>
+            <CollectionViewSource.SortDescriptions>
+                <componentModel:SortDescription PropertyName="Inspection" />
+            </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
 
         <DataTemplate x:Key="InspectionResultTemplate" 

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.Inspections
 {
     /// <summary>
     /// An interface that abstracts a runnable code inspection.
     /// </summary>
-    public interface IInspection : IInspectionModel
+    public interface IInspection : IInspectionModel, IComparable<IInspection>, IComparable
     {
         /// <summary>
         /// Runs code inspection on specified parse trees.

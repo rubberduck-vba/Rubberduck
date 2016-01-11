@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
@@ -82,6 +83,11 @@ namespace Rubberduck.Inspections
 
         public virtual CodeInspectionQuickFix DefaultQuickFix { get { return QuickFixes.FirstOrDefault(); } }
 
+        public int CompareTo(ICodeInspectionResult other)
+        {
+            return Inspection.CompareTo(other.Inspection);
+        }
+
         public override string ToString()
         {
             var module = QualifiedSelection.QualifiedName;
@@ -92,6 +98,11 @@ namespace Rubberduck.Inspections
                 module.ProjectName,
                 module.ComponentName,
                 QualifiedSelection.Selection.StartLine);
+        }
+
+        public int CompareTo(object obj)
+        {
+            return CompareTo(obj as ICodeInspectionResult);
         }
 
         public string ToCsvString()

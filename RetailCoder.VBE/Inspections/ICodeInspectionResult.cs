@@ -5,7 +5,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public interface ICodeInspectionResult
+    public interface ICodeInspectionResult : IComparable<ICodeInspectionResult>, IComparable
     {
         IEnumerable<CodeInspectionQuickFix> QuickFixes { get; }
         CodeInspectionQuickFix DefaultQuickFix { get; }
