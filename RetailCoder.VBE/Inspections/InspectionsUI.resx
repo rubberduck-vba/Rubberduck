@@ -147,6 +147,18 @@
   <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
     <value>Replace empty string with the 'vbNullString' constant</value>
   </data>
+  <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
+    <value>Make field '{0}' a property</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionMeta" xml:space="preserve">
+    <value>Use properties rather than public fields.</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionName" xml:space="preserve">
+    <value>Use properties rather than public fields.</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionQuickFix" xml:space="preserve">
+    <value>Encapsulate field '{0}' with property</value>
+  </data>
   <data name="ImplicitActiveSheetReferenceInspectionMeta" xml:space="preserve">
     <value>Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they're intended, and prefer working off object references.</value>
   </data>

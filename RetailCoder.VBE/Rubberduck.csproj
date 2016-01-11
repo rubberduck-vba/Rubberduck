@@ -293,6 +293,8 @@
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
+    <Compile Include="Inspections\EncapsulatePublicFieldInspection.cs" />
+    <Compile Include="Inspections\EncapsulatePublicFieldInspectionResult.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspection.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspectionResult.cs" />
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspection.cs" />
