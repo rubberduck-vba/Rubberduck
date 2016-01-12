@@ -900,7 +900,16 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disable this inspection.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Deselect All ähnelt.
+        /// </summary>
+        public static string DeselectAll_Button {
+            get {
+                return ResourceManager.GetString("DeselectAll_Button", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Disable this inspection ähnelt.
         /// </summary>
         public static string DisableThisInspection {
             get {
@@ -909,7 +918,17 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You&apos;ve earned the &quot;Continuator&quot; badge!.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Icon ähnlich wie (Symbol).
+        /// </summary>
+        public static System.Drawing.Icon Ducky {
+            get {
+                object obj = ResourceManager.GetObject("Ducky", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die You&apos;ve earned the &quot;Continuator&quot; badge! ähnelt.
         /// </summary>
         public static string EasterEgg_Continuator {
             get {
@@ -981,7 +1000,43 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Accessibility:.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Extract Interface ähnelt.
+        /// </summary>
+        public static string ExtractInteface_Caption {
+            get {
+                return ResourceManager.GetString("ExtractInteface_Caption", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Extract Interface ähnelt.
+        /// </summary>
+        public static string ExtractInteface_TitleLabel {
+            get {
+                return ResourceManager.GetString("ExtractInteface_TitleLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Please specify interface name and members. ähnelt.
+        /// </summary>
+        public static string ExtractInterface_InstructionLabel {
+            get {
+                return ResourceManager.GetString("ExtractInterface_InstructionLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Members ähnelt.
+        /// </summary>
+        public static string ExtractInterface_MembersGroupBox {
+            get {
+                return ResourceManager.GetString("ExtractInterface_MembersGroupBox", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Accessibility: ähnelt.
         /// </summary>
         public static string ExtractMethod_AccessibilityLabel {
             get {
@@ -2545,7 +2600,16 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck Settings.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Select All ähnelt.
+        /// </summary>
+        public static string SelectAll_Button {
+            get {
+                return ResourceManager.GetString("SelectAll_Button", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck Settings ähnelt.
         /// </summary>
         public static string Settings_Caption {
             get {
