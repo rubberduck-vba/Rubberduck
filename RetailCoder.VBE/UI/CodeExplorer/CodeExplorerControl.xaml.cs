@@ -25,14 +25,11 @@ namespace Rubberduck.UI.CodeExplorer
             InitializeComponent();
         }
 
-        private void ToggleButton_Click(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+        private CodeExplorerViewModel ViewModel { get { return DataContext as CodeExplorerViewModel; } }
 
         private void TreeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            throw new NotImplementedException();
+            // todo: execute a NavigateCommand
         }
     }
 }

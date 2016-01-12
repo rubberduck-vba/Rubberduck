@@ -68,7 +68,7 @@ namespace Rubberduck.Inspections
                     new Task(() =>
                     {
                         token.ThrowIfCancellationRequested();
-                        var inspectionResults = inspection.GetInspectionResults(state);
+                        var inspectionResults = inspection.GetInspectionResults();
                         var results = inspectionResults as IList<CodeInspectionResultBase> ?? inspectionResults.ToList();
 
                         if (results.Any())

@@ -62,25 +62,24 @@ namespace Rubberduck.Parsing.VBA
         private readonly object _lock = new object();
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
-        private void OnModuleStateChanged(VBComponent component)
+        private void OnModuleStateChanged(VBComponent component, ParserState state)
         {
             var handler = ModuleStateChanged;
             if (handler != null)
             {
-                var args = new ParseProgressEventArgs(component);
+                var args = new ParseProgressEventArgs(component, state);
                 handler.Invoke(this, args);
             }
         }
 
         public void SetModuleState(VBComponent component, ParserState state, SyntaxErrorException parserError = null)
         {
-            _moduleStates[component] = state;
-            _moduleExceptions[component] = parserError;
-
             // prevent multiple threads from changing state simultaneously:
             lock(_lock)
             {
-                OnModuleStateChanged(component);
+                _moduleStates[component] = state;
+                _moduleExceptions[component] = parserError;
+                OnModuleStateChanged(component, state);
                 Status = EvaluateParserState();
             }
         }
@@ -170,12 +169,23 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, IEnumerable<CommentNode>> _comments =
             new ConcurrentDictionary<VBComponent, IEnumerable<CommentNode>>();
 
-        public IEnumerable<CommentNode> Comments
+        public IEnumerable<CommentNode> AllComments
         {
             get
             {
                 return _comments.Values.SelectMany(comments => comments.ToList());
             }
+        }
+
+        public IEnumerable<CommentNode> GetModuleComments(VBComponent component)
+        {
+            IEnumerable<CommentNode> result;
+            if (_comments.TryGetValue(component, out result))
+            {
+                return result;
+            }
+
+            return new List<CommentNode>();
         }
 
         public void SetModuleComments(VBComponent component, IEnumerable<CommentNode> comments)
@@ -217,8 +227,7 @@ namespace Rubberduck.Parsing.VBA
 
             foreach (var declaration in declarations)
             {
-                ResolutionState state;
-                _declarations.TryRemove(declaration, out state);
+                RemoveDeclaration(declaration);
             }
         }
 
@@ -244,7 +253,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns>Returns true when successful.</returns>
-        private bool RemoveDeclaration(Declaration declaration)
+        public bool RemoveDeclaration(Declaration declaration)
         {
             ResolutionState state;
             return _declarations.TryRemove(declaration, out state);

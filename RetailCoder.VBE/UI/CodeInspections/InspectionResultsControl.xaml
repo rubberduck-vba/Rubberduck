@@ -7,6 +7,7 @@
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:codeInspections="clr-namespace:Rubberduck.UI.CodeInspections"
+             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeInspections:InspectionResultsViewModel}">
     <UserControl.Resources>
@@ -89,9 +90,12 @@
         
         <CollectionViewSource x:Key="InspectionTypeGroupViewSource" Source="{Binding Results}">
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="Inspection.InspectionType" />
+                <PropertyGroupDescription PropertyName="Inspection.InspectionTypeName" />
                 <PropertyGroupDescription PropertyName="Inspection" />
             </CollectionViewSource.GroupDescriptions>
+            <CollectionViewSource.SortDescriptions>
+                <componentModel:SortDescription PropertyName="Inspection" />
+            </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
         
         <CollectionViewSource x:Key="CodeModuleGroupViewSource" Source="{Binding Results}">
@@ -99,6 +103,9 @@
                 <PropertyGroupDescription PropertyName="QualifiedSelection.QualifiedName" />
                 <PropertyGroupDescription PropertyName="Inspection" />
             </CollectionViewSource.GroupDescriptions>
+            <CollectionViewSource.SortDescriptions>
+                <componentModel:SortDescription PropertyName="Inspection" />
+            </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
 
         <DataTemplate x:Key="InspectionResultTemplate" 
@@ -190,7 +197,7 @@
 
         <ToolBar Grid.Row="0">
 
-            <Button Command="{Binding RefreshCommand}" IsEnabled="{Binding CanRefresh}">
+            <Button Command="{Binding RefreshCommand}">
                 <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
             </Button>
 
@@ -198,8 +205,7 @@
             <Menu>
                 <MenuItem VerticalAlignment="Center" 
                           Header="{x:Static resx:RubberduckUI.Fix}"
-                          ItemsSource="{Binding SelectedItem.QuickFixes}"
-                          IsEnabled="{Binding CanQuickFix}">
+                          ItemsSource="{Binding SelectedItem.QuickFixes}">
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/tick.png" />
                     </MenuItem.Icon>

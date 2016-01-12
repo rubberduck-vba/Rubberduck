@@ -7,22 +7,20 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteCallStatementInspection : IInspection
+    public sealed class ObsoleteCallStatementInspection : InspectionBase
     {
-        public ObsoleteCallStatementInspection()
+        public ObsoleteCallStatementInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return "ObsoleteCallStatementInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.ObsoleteCall; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ObsoleteCall; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            return state.ObsoleteCallContexts.Select(context => 
+            return State.ObsoleteCallContexts.Select(context => 
                 new ObsoleteCallStatementUsageInspectionResult(this,
                     new QualifiedContext<VBAParser.ExplicitCallStmtContext>(context.ModuleName, context.Context as VBAParser.ExplicitCallStmtContext)));
         }

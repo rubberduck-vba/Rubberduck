@@ -9,28 +9,22 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class ImplicitByRefParameterInspection : IInspection
+    public sealed class ImplicitByRefParameterInspection : InspectionBase
     {
-        public ImplicitByRefParameterInspection()
+        public ImplicitByRefParameterInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "ImplicitByRefParameterInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.ImplicitByRef_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ImplicitByRef_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        private string AnnotationName { get { return Name.Replace("Inspection", string.Empty); } }
-
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var declarations = state.AllUserDeclarations.ToList();
+            var interfaceMembers = UserDeclarations.FindInterfaceImplementationMembers();
 
-            var interfaceMembers = declarations.FindInterfaceImplementationMembers();
-
-            var issues = (from item in declarations
+            var issues = (from item in UserDeclarations
                 where !item.IsInspectionDisabled(AnnotationName)
                     && item.DeclarationType == DeclarationType.Parameter
                     && !interfaceMembers.Select(m => m.Scope).Contains(item.ParentScope)
@@ -39,6 +33,7 @@ namespace Rubberduck.Inspections
                 select new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg))
                 .Select(issue => new ImplicitByRefParameterInspectionResult(this, string.Format(Description, issue.Context.ambiguousIdentifier().GetText()), issue));
 
+ 
             return issues;
         }
     }

@@ -21,6 +21,7 @@ namespace Rubberduck.Inspections
             {
                 new ReplaceCommentMarkerQuickFix(Context, QualifiedSelection, comment),
                 new RemoveCommentQuickFix(Context, QualifiedSelection, comment), 
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

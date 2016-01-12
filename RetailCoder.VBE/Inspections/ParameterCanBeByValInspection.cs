@@ -8,18 +8,16 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class ParameterCanBeByValInspection : IInspection
+    public sealed class ParameterCanBeByValInspection : InspectionBase
     {
-        public ParameterCanBeByValInspection()
+        public ParameterCanBeByValInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { { return "ParameterCanBeByValInspection"; } } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.ParameterCanBeByVal_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ParameterCanBeByVal_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         // if we don't want to suggest passing non-primitive types ByRef (i.e. object types and Variant), then we need this:
         private static readonly string[] PrimitiveTypes =
@@ -38,9 +36,9 @@ namespace Rubberduck.Inspections
             Tokens.StrPtr
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var declarations = state.AllDeclarations.ToList();
+            var declarations = UserDeclarations.ToList();
 
             var interfaceMembers = declarations.FindInterfaceMembers()
                 .Concat(declarations.FindInterfaceImplementationMembers())

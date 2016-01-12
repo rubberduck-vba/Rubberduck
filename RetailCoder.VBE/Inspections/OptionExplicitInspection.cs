@@ -7,18 +7,16 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class OptionExplicitInspection : IInspection
+    public sealed class OptionExplicitInspection : InspectionBase
     {
-        public OptionExplicitInspection()
+        public OptionExplicitInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "OptionExplicitInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.OptionExplicit; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.OptionExplicit; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         private static readonly DeclarationType[] ModuleTypes =
         {
@@ -26,9 +24,9 @@ namespace Rubberduck.Inspections
             DeclarationType.Class
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var results = state.AllUserDeclarations.ToList();
+            var results = UserDeclarations.ToList();
 
             var options = results
                 .Where(declaration => declaration.DeclarationType == DeclarationType.ModuleOption

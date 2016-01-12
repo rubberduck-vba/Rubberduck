@@ -9,28 +9,26 @@ using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Inspections
 {
-    public class ImplicitActiveWorkbookReferenceInspection : IInspection
+    public sealed class ImplicitActiveWorkbookReferenceInspection : InspectionBase
     {
         private readonly Lazy<IHostApplication> _hostApp;
 
-        public ImplicitActiveWorkbookReferenceInspection(VBE vbe)
+        public ImplicitActiveWorkbookReferenceInspection(VBE vbe, RubberduckParserState state)
+            : base(state)
         {
             _hostApp = new Lazy<IHostApplication>(vbe.HostApplication);
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "ImplicitActiveWorkbookReferenceInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.ImplicitActiveWorkbookReference_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ImplicitActiveWorkbookReference_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         private static readonly string[] Targets = 
         {
             "Worksheets", "Sheets", "Names", 
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
             if (!_hostApp.IsValueCreated || _hostApp.Value == null || _hostApp.Value.ApplicationName != "Excel")
             {
@@ -38,10 +36,10 @@ namespace Rubberduck.Inspections
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 
-            var issues = state.AllDeclarations.Where(item => item.IsBuiltIn 
-                                                                      && item.ParentScope == "Excel.Global"
-                                                                      && Targets.Contains(item.IdentifierName)
-                                                                      && item.References.Any())
+            var issues = Declarations.Where(item => item.IsBuiltIn 
+                                            && item.ParentScope == "Excel.Global"
+                                            && Targets.Contains(item.IdentifierName)
+                                            && item.References.Any())
                 .SelectMany(declaration => declaration.References);
 
             return issues.Select(issue => 

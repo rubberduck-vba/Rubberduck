@@ -9,18 +9,16 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class NonReturningFunctionInspection : IInspection
+    public sealed class NonReturningFunctionInspection : InspectionBase
     {
-        public NonReturningFunctionInspection()
+        public NonReturningFunctionInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "NonReturningFunctionInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.NonReturningFunction_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.NonReturningFunction_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         private static readonly DeclarationType[] ReturningMemberTypes =
         {
@@ -28,9 +26,9 @@ namespace Rubberduck.Inspections
             DeclarationType.PropertyGet
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var declarations = state.AllUserDeclarations.ToList();
+            var declarations = UserDeclarations.ToList();
 
             var interfaceMembers = declarations.FindInterfaceMembers();
             var interfaceImplementationMembers = declarations.FindInterfaceImplementationMembers();

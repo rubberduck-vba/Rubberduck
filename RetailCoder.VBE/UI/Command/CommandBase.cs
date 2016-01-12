@@ -14,14 +14,10 @@ namespace Rubberduck.UI.Command
 
         public abstract void Execute(object parameter);
 
-        public event EventHandler CanExecuteChanged;
-        protected void OnCanExecuteChanged()
+        public event EventHandler CanExecuteChanged
         {
-            var handler = CanExecuteChanged;
-            if (handler != null)
-            {
-                handler.Invoke(this, EventArgs.Empty);
-            }
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
         }
     }
 }

@@ -79,6 +79,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code quality issues.
+        /// </summary>
+        internal static string CodeQualityIssues {
+            get {
+                return ResourceManager.GetString("CodeQualityIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Constant value is declared but Rubberduck could not find any reference to it. Consider removing the unused declaration..
         /// </summary>
         internal static string ConstantNotUsedInspectionMeta {
@@ -147,6 +156,15 @@ namespace Rubberduck.Inspections {
         internal static string EmptyStringLiteralInspectionQuickFix {
             get {
                 return ResourceManager.GetString("EmptyStringLiteralInspectionQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore once.
+        /// </summary>
+        internal static string IgnoreOnce {
+            get {
+                return ResourceManager.GetString("IgnoreOnce", resourceCulture);
             }
         }
         
@@ -241,6 +259,24 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Language opportunities.
+        /// </summary>
+        internal static string LanguageOpportunities {
+            get {
+                return ResourceManager.GetString("LanguageOpportunities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maintainability &amp; readability issues.
+        /// </summary>
+        internal static string MaintainabilityAndReadabilityIssues {
+            get {
+                return ResourceManager.GetString("MaintainabilityAndReadabilityIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Consider continuing long signatures between parameters. Splitting a parameter declaration across multiple lines arguably hurts readability..
         /// </summary>
         internal static string MultilineParameterInspectionMeta {
@@ -273,6 +309,33 @@ namespace Rubberduck.Inspections {
         internal static string MultipleDeclarationsInspectionName {
             get {
                 return ResourceManager.GetString("MultipleDeclarationsInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; has more than one namespace declaration..
+        /// </summary>
+        internal static string MultipleFolderAnnotationsInspection {
+            get {
+                return ResourceManager.GetString("MultipleFolderAnnotationsInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck only uses the first &apos;@Folder&apos; annotation in a code module; consider removing extraneous ones..
+        /// </summary>
+        internal static string MultipleFolderAnnotationsInspectionMeta {
+            get {
+                return ResourceManager.GetString("MultipleFolderAnnotationsInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Component has more than one folder annotation..
+        /// </summary>
+        internal static string MultipleFolderAnnotationsInspectionName {
+            get {
+                return ResourceManager.GetString("MultipleFolderAnnotationsInspectionName", resourceCulture);
             }
         }
         
@@ -432,9 +495,9 @@ namespace Rubberduck.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Parameter can be passed by value.
         /// </summary>
-        internal static string ParameterCanByByValInspectionName {
+        internal static string ParameterCanBeByValInspectionName {
             get {
-                return ResourceManager.GetString("ParameterCanByByValInspectionName", resourceCulture);
+                return ResourceManager.GetString("ParameterCanBeByValInspectionName", resourceCulture);
             }
         }
         

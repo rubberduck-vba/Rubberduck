@@ -92,7 +92,7 @@ namespace Rubberduck
                 }
 
                 var component = _vbe.ActiveCodePane.CodeModule.Parent;
-                _parser.ParseComponentAsync(component);
+                _parser.ParseComponent(component);
 
                 AwaitNextKey();
                 return;

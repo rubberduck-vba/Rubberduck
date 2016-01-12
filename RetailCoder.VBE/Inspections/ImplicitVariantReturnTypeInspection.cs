@@ -8,18 +8,16 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class ImplicitVariantReturnTypeInspection : IInspection
+    public sealed class ImplicitVariantReturnTypeInspection : InspectionBase
     {
-        public ImplicitVariantReturnTypeInspection()
+        public ImplicitVariantReturnTypeInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "ImplicitVariantReturnTypeInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.ImplicitVariantReturnType_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ImplicitVariantReturnType_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         private static readonly DeclarationType[] ProcedureTypes = 
         {
@@ -28,11 +26,9 @@ namespace Rubberduck.Inspections
             DeclarationType.LibraryFunction
         };
 
-        private string AnnotationName { get { return Name.Replace("Inspection", string.Empty); } }
-
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var issues = from item in state.AllUserDeclarations
+            var issues = from item in UserDeclarations
                                where !item.IsInspectionDisabled(AnnotationName)
                                 && ProcedureTypes.Contains(item.DeclarationType)
                                 && !item.IsTypeSpecified()

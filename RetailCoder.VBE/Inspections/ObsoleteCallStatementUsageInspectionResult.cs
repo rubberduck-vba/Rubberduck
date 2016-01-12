@@ -16,9 +16,10 @@ namespace Rubberduck.Inspections
         public ObsoleteCallStatementUsageInspectionResult(IInspection inspection, QualifiedContext<VBAParser.ExplicitCallStmtContext> qualifiedContext)
             : base(inspection, inspection.Description, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new RemoveExplicitCallStatemntQuickFix(Context, QualifiedSelection), 
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

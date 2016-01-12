@@ -27,6 +27,10 @@ namespace Rubberduck.UI.CodeInspections
             {
                 _viewModel = value;
                 wpfInspectionResultsControl.DataContext = _viewModel;
+                if (_viewModel != null)
+                {
+                    _viewModel.RefreshCommand.Execute(null);
+                }
             }
         }
     }

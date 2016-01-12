@@ -6,22 +6,20 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteTypeHintInspection : IInspection
+    public sealed class ObsoleteTypeHintInspection : InspectionBase
     {
-        public ObsoleteTypeHintInspection()
+        public ObsoleteTypeHintInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return "ObsoleteTypeHintInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI._ObsoleteTypeHint_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI._ObsoleteTypeHint_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var results = state.AllUserDeclarations.ToList();
+            var results = UserDeclarations.ToList();
 
             var declarations = from item in results
                 where item.HasTypeHint()

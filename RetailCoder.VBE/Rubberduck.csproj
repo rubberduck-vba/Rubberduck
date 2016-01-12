@@ -295,13 +295,16 @@
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspection.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspectionResult.cs" />
+    <Compile Include="Inspections\IgnoreOnceQuickFix.cs" />
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspection.cs" />
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspection.cs" />
+    <Compile Include="Inspections\InspectionBase.cs" />
     <Compile Include="Inspections\InspectionsUI.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>InspectionsUI.resx</DependentUpon>
     </Compile>
+    <Compile Include="Inspections\MultipleFolderAnnotationsInspection.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspectionResult.cs" />
     <Compile Include="Inspections\UseMeaningfulNameInspection.cs" />
     <Compile Include="Inspections\UseMeaningfulNameInspectionResult.cs" />
@@ -391,9 +394,12 @@
     <Compile Include="UI\BusyIndicator.xaml.cs">
       <DependentUpon>BusyIndicator.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\CodeExplorer\CodeExplorerComponentViewModel.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerControl.xaml.cs">
       <DependentUpon>CodeExplorerControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\CodeExplorer\CodeExplorerMemberViewModel.cs" />
+    <Compile Include="UI\CodeExplorer\CodeExplorerProjectViewModel.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerViewModel.cs" />
     <Compile Include="UI\CodeInspections\InspectionDescriptionConverter.cs" />
     <Compile Include="UI\CodeInspections\InspectionImageSourceConverter.cs" />
@@ -1096,8 +1102,8 @@
     <Content Include="Resources\balloon_mask.bmp" />
     <Content Include="Resources\balloon_prohibition.bmp" />
     <Content Include="Resources\balloon_smiley.bmp" />
-    <None Include="Resources\blue-folder-horizontal.png" />
-    <None Include="Resources\blue-folder-horizontal-open.png" />
+    <Resource Include="Resources\blue-folder-horizontal.png" />
+    <Resource Include="Resources\blue-folder-horizontal-open.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
