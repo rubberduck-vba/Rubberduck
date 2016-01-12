@@ -85,7 +85,7 @@ namespace Rubberduck.UI.ToDoItems
 
         private async Task<IOrderedEnumerable<ToDoItem>> GetItems()
         {
-            var markers = _parser.State.Comments.SelectMany(GetToDoMarkers).ToList();
+            var markers = _parser.State.AllComments.SelectMany(GetToDoMarkers).ToList();
             var sortedItems = markers.OrderByDescending(item => item.Priority)
                                    .ThenBy(item => item.ProjectName)
                                    .ThenBy(item => item.ModuleName)

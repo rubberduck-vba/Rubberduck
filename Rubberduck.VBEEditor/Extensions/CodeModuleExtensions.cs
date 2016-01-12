@@ -8,9 +8,10 @@ namespace Rubberduck.VBEditor.Extensions
     public static class CodeModuleExtensions
     {
         /// <summary>
-        /// Gets an array of strings where each element is a line of code in the Module.
+        /// Gets an array of strings where each element is a line of code in the Module,
+        /// with line numbers stripped and any other pre-processing that needs to be done.
         /// </summary>
-        public static string[] Code(this CodeModule module)
+        public static string[] GetSanitizedCode(this CodeModule module)
         {
             var lines = module.CountOfLines;
             if (lines == 0)
@@ -26,12 +27,12 @@ namespace Rubberduck.VBEditor.Extensions
 
         private static void StripLineNumbers(string[] lines)
         {
-            var result = new string[lines.Length];
+            var continuing = false;
             for(var line = 0; line < lines.Length; line++)
             {
                 var code = lines[line];
                 int? lineNumber;
-                if (HasNumberedLine(code, out lineNumber))
+                if (!continuing && HasNumberedLine(code, out lineNumber))
                 {
                     var lineNumberLength = lineNumber.ToString().Length;
                     if (lines[line].Length > lineNumberLength)
@@ -40,6 +41,8 @@ namespace Rubberduck.VBEditor.Extensions
                         lines[line] = new string(' ', lineNumberLength) + code.Substring(lineNumber.ToString().Length + 1);
                     }
                 }
+
+                continuing = code.EndsWith("_");
             }
         }
 

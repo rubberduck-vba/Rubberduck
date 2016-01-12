@@ -15,9 +15,10 @@ namespace Rubberduck.Inspections
             ParserRuleContext context, QualifiedModuleName qualifiedName)
             : base(inspection, target, context, qualifiedName)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new RemoveUnassignedIdentifierQuickFix(Context, QualifiedSelection), 
+                new IgnoreOnceQuickFix(context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

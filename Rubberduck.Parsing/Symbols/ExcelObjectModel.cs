@@ -32,15 +32,7 @@ namespace Rubberduck.Parsing.Symbols
         private class ExcelLib
         {
             public static readonly Declaration Excel = new Declaration(new QualifiedMemberName(ExcelModuleName, "Excel"), null, "Excel", "Excel", true, false, Accessibility.Global, DeclarationType.Project);
-
-            private static readonly QualifiedModuleName RangeModuleName = new QualifiedModuleName("Excel", "Range");
-            public static readonly Declaration Range = new Declaration(new QualifiedMemberName(RangeModuleName, "Range"), ExcelLib.Excel, "Excel", "Range", false, false, Accessibility.Global, DeclarationType.Class);
-
-            public static Declaration Activate = new Declaration(new QualifiedMemberName(RangeModuleName, "Activate"), Range, "Excel.Range", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
-            public static Declaration Address = new Declaration(new QualifiedMemberName(RangeModuleName, "Address"), Range, "Excel.Range", "String", false, false, Accessibility.Global, DeclarationType.PropertyGet);
-            public static Declaration Select = new Declaration(new QualifiedMemberName(RangeModuleName, "Select"), Range, "Excel.Range", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
-            public static Declaration Cells = new Declaration(new QualifiedMemberName(RangeModuleName, "Cells"), Range, "Excel.Range", "Range", false, false, Accessibility.Global, DeclarationType.PropertyGet);
-            public static Declaration Formula = new Declaration(new QualifiedMemberName(RangeModuleName, "Formula"), Range, "Excel.Range", "Variant", false, false, Accessibility.Global, DeclarationType.PropertyGet);
+            public static Declaration Application = new Declaration(new QualifiedMemberName(ExcelModuleName, "Application"), Excel, "Excel.Application", "Application", false, false, Accessibility.Global, DeclarationType.PropertyGet);
 
         }
 
@@ -110,6 +102,32 @@ namespace Rubberduck.Parsing.Symbols
             public static Declaration ActiveCell = new Declaration(new QualifiedMemberName(ExcelModuleName, "ActiveCell"), Global, "Excel.Global", "Range", false, false, Accessibility.Global, DeclarationType.PropertyGet);
             public static Declaration ActiveSheet = new Declaration(new QualifiedMemberName(ExcelModuleName, "ActiveSheet"), Global, "Excel.Global", "Worksheet", false, false, Accessibility.Global, DeclarationType.PropertyGet); // cheating on return type
             public static Declaration ActiveWorkbook = new Declaration(new QualifiedMemberName(ExcelModuleName, "ActiveWorkbook"), Global, "Excel.Global", "Workbook", false, false, Accessibility.Global, DeclarationType.PropertyGet);
+        }
+
+        private class ApplicationClass
+        {
+            public static readonly Declaration Application = new Declaration(new QualifiedMemberName(ExcelModuleName, "Application"), ExcelLib.Excel, "Application", "Application", false, false, Accessibility.Global, DeclarationType.Module); // cheating, it's actually a class.
+
+            public static Declaration Evaluate = new Declaration(new QualifiedMemberName(ExcelModuleName, "Evaluate"), Application, "Excel.Application", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
+            public static Declaration Range = new Declaration(new QualifiedMemberName(ExcelModuleName, "Range"), Application, "Excel.Application", "Range", true, false, Accessibility.Global, DeclarationType.PropertyGet);
+            public static Declaration RangeAssign = new Declaration(new QualifiedMemberName(ExcelModuleName, "Range"), Application, "Excel.Application", "Range", true, false, Accessibility.Global, DeclarationType.PropertyLet); // cheating to simuate default property of return type.
+            public static Declaration Selection = new Declaration(new QualifiedMemberName(ExcelModuleName, "Selection"), Application, "Excel.Application", "Object", true, false, Accessibility.Global, DeclarationType.PropertyGet);
+
+            public static Declaration Activate = new Declaration(new QualifiedMemberName(ExcelModuleName, "Activate"), Application, "Excel.Application", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
+            public static Declaration Select = new Declaration(new QualifiedMemberName(ExcelModuleName, "Select"), Application, "Excel.Application", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
+            public static Declaration Cells = new Declaration(new QualifiedMemberName(ExcelModuleName, "Cells"), Application, "Excel.Application", "Range", false, false, Accessibility.Global, DeclarationType.PropertyGet);
+            public static Declaration CellsAssign = new Declaration(new QualifiedMemberName(ExcelModuleName, "Cells"), Application, "Excel.Application", "Range", false, false, Accessibility.Global, DeclarationType.PropertyLet); // cheating to simulate default property of return type.
+            public static Declaration Names = new Declaration(new QualifiedMemberName(ExcelModuleName, "Names"), Application, "Excel.Application", "Names", false, false, Accessibility.Global, DeclarationType.PropertyGet);
+            public static Declaration Sheets = new Declaration(new QualifiedMemberName(ExcelModuleName, "Sheets"), Application, "Excel.Application", "Sheets", false, false, Accessibility.Global, DeclarationType.PropertyGet);
+            public static Declaration Worksheets = new Declaration(new QualifiedMemberName(ExcelModuleName, "Worksheets"), Application, "Excel.Application", "Worksheets", false, false, Accessibility.Global, DeclarationType.PropertyGet);
+            public static Declaration WorksheetFunction = new Declaration(new QualifiedMemberName(ExcelModuleName, "WorksheetFunction"), Application, "Excel.Application", "WorksheetFunction", false, false, Accessibility.Global, DeclarationType.PropertyGet);
+
+            public static Declaration Columns = new Declaration(new QualifiedMemberName(ExcelModuleName, "Columns"), Application, "Excel.Application", "Range", false, false, Accessibility.Global, DeclarationType.PropertyGet);
+            public static Declaration Rows = new Declaration(new QualifiedMemberName(ExcelModuleName, "Rows"), Application, "Excel.Application", "Range", false, false, Accessibility.Global, DeclarationType.PropertyGet);
+
+            public static Declaration ActiveCell = new Declaration(new QualifiedMemberName(ExcelModuleName, "ActiveCell"), Application, "Excel.Application", "Range", false, false, Accessibility.Global, DeclarationType.PropertyGet);
+            public static Declaration ActiveSheet = new Declaration(new QualifiedMemberName(ExcelModuleName, "ActiveSheet"), Application, "Excel.Application", "Worksheet", false, false, Accessibility.Global, DeclarationType.PropertyGet); // cheating on return type
+            public static Declaration ActiveWorkbook = new Declaration(new QualifiedMemberName(ExcelModuleName, "ActiveWorkbook"), Application, "Excel.Application", "Workbook", false, false, Accessibility.Global, DeclarationType.PropertyGet);
         }
     }
 }

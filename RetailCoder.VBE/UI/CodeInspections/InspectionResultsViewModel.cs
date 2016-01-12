@@ -9,7 +9,7 @@ using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.Extensions;
@@ -18,27 +18,27 @@ namespace Rubberduck.UI.CodeInspections
 {
     public class InspectionResultsViewModel : ViewModelBase
     {
-        private readonly IRubberduckParser _parser;
+        private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
         private readonly VBE _vbe;
         private readonly INavigateCommand _navigateCommand;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
 
-        public InspectionResultsViewModel(IRubberduckParser parser, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, IGeneralConfigService configService)
+        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, IGeneralConfigService configService)
         {
-            _parser = parser;
+            _state = state;
             _inspector = inspector;
             _vbe = vbe;
             _navigateCommand = navigateCommand;
             _clipboard = clipboard;
             _configService = configService;
-            _refreshCommand = new DelegateCommand(async param => await Task.Run(() => ExecuteRefreshCommandAsync(param)));
+            _refreshCommand = new DelegateCommand(async param => await Task.Run(() => ExecuteRefreshCommandAsync(param)), CanExecuteRefreshCommand);
             _disableInspectionCommand = new DelegateCommand(ExecuteDisableInspectionCommand);
-            _quickFixCommand = new DelegateCommand(ExecuteQuickFixCommand);
+            _quickFixCommand = new DelegateCommand(ExecuteQuickFixCommand, CanExecuteQuickFixCommand);
             _quickFixInModuleCommand = new DelegateCommand(ExecuteQuickFixInModuleCommand);
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
-            _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
+            _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
         }
 
         private ObservableCollection<ICodeInspectionResult> _results;
@@ -131,7 +131,7 @@ namespace Rubberduck.UI.CodeInspections
 
         public bool CanRefresh
         {
-            get { return true /*_canRefresh*/; }
+            get { return _canRefresh; }
             private set
             {
                 _canRefresh = value; 
@@ -153,13 +153,31 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            CanRefresh = false; // if commands' CanExecute worked as expected, this junk wouldn't be needed
             IsBusy = true;
-            var results = await _inspector.FindIssuesAsync(_parser.State, CancellationToken.None);
+
+            _state.StateChanged += _state_StateChanged;
+            _state.OnParseRequested();
+        }
+
+        private bool CanExecuteRefreshCommand(object parameter)
+        {
+            return !IsBusy;
+        }
+
+        private async void _state_StateChanged(object sender, ParserStateEventArgs e)
+        {
+            if (e.State != ParserState.Ready)
+            {
+                return;
+            }
+
+            var results = await _inspector.FindIssuesAsync(_state, CancellationToken.None);
             Results = new ObservableCollection<ICodeInspectionResult>(results);
             CanRefresh = true;
             IsBusy = false;
             SelectedItem = null;
+
+            _state.StateChanged -= _state_StateChanged;
         }
 
         private void ExecuteQuickFixes(IEnumerable<CodeInspectionQuickFix> quickFixes)
@@ -181,6 +199,11 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             ExecuteQuickFixes(new[] {quickFix});
+        }
+
+        private bool CanExecuteQuickFixCommand(object parameter)
+        {
+            return true; //!IsBusy && SelectedItem is IInspection;
         }
 
         private bool _canExecuteQuickFixInModule;
@@ -264,14 +287,18 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            var results = string.Join("\n", _results.Select(result => result.ToString()), "\n");
+            var results = string.Join("\n", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
             var resource = _results.Count == 1
                 ? RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
-            var text = string.Format(resource, DateTime.Now, _results.Count) + results;
+            var text = string.Format(resource, DateTime.Now, _results.Count) + Environment.NewLine + results;
 
             _clipboard.Write(text);
         }
 
+        private bool CanExecuteCopyResultsCommand(object parameter)
+        {
+            return !IsBusy && _results != null && _results.Any();
+        }
     }
 }

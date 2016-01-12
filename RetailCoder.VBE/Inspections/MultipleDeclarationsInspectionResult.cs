@@ -16,9 +16,10 @@ namespace Rubberduck.Inspections
         public MultipleDeclarationsInspectionResult(IInspection inspection, string result, QualifiedContext<ParserRuleContext> qualifiedContext)
             : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new SplitMultipleDeclarationsQuickFix(Context, QualifiedSelection), 
+                new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

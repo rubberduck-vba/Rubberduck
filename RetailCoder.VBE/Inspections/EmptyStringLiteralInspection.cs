@@ -6,25 +6,21 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public class EmptyStringLiteralInspection : IInspection
+    public sealed class EmptyStringLiteralInspection : InspectionBase
     {
-        public EmptyStringLiteralInspection()
+        public EmptyStringLiteralInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "EmptyStringLiteralInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return InspectionsUI.EmptyStringLiteralInspection; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return InspectionsUI.EmptyStringLiteralInspection; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
-        {
-            return
-                state.EmptyStringLiterals.Select(
-                    context =>
-                        new EmptyStringLiteralInspectionResult(this,
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        {   
+            return State.EmptyStringLiterals.Select(
+                    context => new EmptyStringLiteralInspectionResult(this,
                             new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }
     }

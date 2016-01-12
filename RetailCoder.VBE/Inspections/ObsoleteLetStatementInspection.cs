@@ -7,22 +7,20 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteLetStatementInspection : IInspection
+    public sealed class ObsoleteLetStatementInspection : InspectionBase
     {
-        public ObsoleteLetStatementInspection()
+        public ObsoleteLetStatementInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return "ObsoleteLetStatementInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.ObsoleteLet; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ObsoleteLet; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            return state.ObsoleteLetContexts.Select(context =>
+            return State.ObsoleteLetContexts.Select(context =>
                 new ObsoleteLetStatementUsageInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }
     }
