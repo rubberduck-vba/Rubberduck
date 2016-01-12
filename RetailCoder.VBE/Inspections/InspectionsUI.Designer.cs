@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter is passed by value, but is assigned a new value/reference. Consider making a local copy, or passing the parameter by reference if the value is meant to be propagated to the calling code..
+        ///   Looks up a localized string similar to Parameter is passed by value, but is assigned a new value/reference. Consider making a local copy instead..
         /// </summary>
         internal static string AssignedByValParameterInspectionMeta {
             get {
@@ -286,7 +286,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter is specified on multiple lines.
+        ///   Looks up a localized string similar to Parameter declaration is split on multiple lines.
         /// </summary>
         internal static string MultilineParameterInspectionName {
             get {
@@ -313,7 +313,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; has more than one namespace declaration..
+        ///   Looks up a localized string similar to &apos;{0}&apos; has more than one &apos;@Folder&apos; annotation..
         /// </summary>
         internal static string MultipleFolderAnnotationsInspection {
             get {
@@ -331,7 +331,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Component has more than one folder annotation..
+        ///   Looks up a localized string similar to &apos;{0}&apos; has more than one folder annotation..
         /// </summary>
         internal static string MultipleFolderAnnotationsInspectionName {
             get {
@@ -349,7 +349,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Non-returning member.
+        ///   Looks up a localized string similar to Non-returning function or property getter.
         /// </summary>
         internal static string NonReturningFunctionInspectionName {
             get {
@@ -484,7 +484,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A parameter that is passed by reference but that isn&apos;t assigned a new value/reference, could be passed by value instead..
+        ///   Looks up a localized string similar to A parameter that is passed by reference and isn&apos;t assigned a new value/reference, could be passed by value instead..
         /// </summary>
         internal static string ParameterCanBeByValInspectionMeta {
             get {
@@ -520,7 +520,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck could not find any caller for a procedure. Unless the procedure is hooked to a macro-button, used as a user-defined function (UDF) or handles an application event that Rubberduck didn&apos;t know of, consider removing it..
+        ///   Looks up a localized string similar to Rubberduck could not find any caller for a procedure. If the procedure is hooked to a macro-button, used as a user-defined function (UDF) or handles an application event that Rubberduck didn&apos;t know of you can safely ignore this inspection result; otherwise, consider removing it..
         /// </summary>
         internal static string ProcedureNotUsedInspectionMeta {
             get {
@@ -529,7 +529,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Procedure is not called.
+        ///   Looks up a localized string similar to Procedure is not referred to.
         /// </summary>
         internal static string ProcedureNotUsedInspectionName {
             get {
@@ -538,7 +538,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Procedure &apos;{0}&apos; should be a function..
+        ///   Looks up a localized string similar to Procedure &apos;{0}&apos; can be written as a function..
         /// </summary>
         internal static string ProcedureShouldBeFunctionInspection {
             get {
@@ -547,7 +547,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A procedure has one ByRef parameter.  Consider creating a function that returns the value instead..
+        ///   Looks up a localized string similar to A procedure that only has one parameter passed by reference that is assigned a new value/reference before the procedure exits, is using a ByRef parameter as a return value: consider making it a function instead..
         /// </summary>
         internal static string ProcedureShouldBeFunctionInspectionMeta {
             get {
@@ -556,7 +556,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Convert procedure to function.
+        ///   Looks up a localized string similar to Procedure can be written as a function.
         /// </summary>
         internal static string ProcedureShouldBeFunctionInspectionName {
             get {
@@ -565,7 +565,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replace procedure with function and update usages..
+        ///   Looks up a localized string similar to Implement as function and update usages..
         /// </summary>
         internal static string ProcedureShouldBeFunctionInspectionQuickFix {
             get {
@@ -664,7 +664,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable not used.
+        ///   Looks up a localized string similar to Variable is not referred to.
         /// </summary>
         internal static string VariableNotUsedInspectionName {
             get {
@@ -687,6 +687,15 @@ namespace Rubberduck.Inspections {
         internal static string VariableTypeNotDeclaredInspectionName {
             get {
                 return ResourceManager.GetString("VariableTypeNotDeclaredInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property &apos;{0}&apos; has no getter.
+        /// </summary>
+        internal static string WriteOnlyPropertyInspection {
+            get {
+                return ResourceManager.GetString("WriteOnlyPropertyInspection", resourceCulture);
             }
         }
         
