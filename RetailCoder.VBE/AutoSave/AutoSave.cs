@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Timers;
@@ -10,20 +11,9 @@ namespace Rubberduck.AutoSave
     {
         private readonly VBE _vbe;
         private readonly IAutoSaveSettings _settings;
-        // ReSharper disable once InconsistentNaming
         private readonly Timer _timer = new Timer();
 
-        public bool IsEnabled
-        {
-            get { return _timer.Enabled; }
-            set { _timer.Enabled = value; }
-        }
-
-        public double TimerDelay
-        {
-            get { return _timer.Interval; }
-            set { _timer.Interval = value; }
-        }
+        private const int VbeSaveCommandId = 3;
 
         public AutoSave(VBE vbe, IAutoSaveSettings settings)
         {
@@ -38,15 +28,16 @@ namespace Rubberduck.AutoSave
             _timer.Elapsed += _timer_Elapsed;
         }
 
-        void _settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void _settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsEnabled")
+            switch (e.PropertyName)
             {
-                _timer.Enabled = _settings.IsEnabled;
-            }
-            if (e.PropertyName == "TimerDelay")
-            {
-                _timer.Interval = _settings.TimerDelay;
+                case "IsEnabled":
+                    _timer.Enabled = _settings.IsEnabled;
+                    break;
+                case "TimerDelay":
+                    _timer.Interval = _settings.TimerDelay;
+                    break;
             }
         }
 
@@ -65,7 +56,7 @@ namespace Rubberduck.AutoSave
                     return;
                 }
 
-                _vbe.CommandBars.FindControl(Id: 3).Execute();
+                _vbe.CommandBars.FindControl(Id: VbeSaveCommandId).Execute();
             }
         }
 
