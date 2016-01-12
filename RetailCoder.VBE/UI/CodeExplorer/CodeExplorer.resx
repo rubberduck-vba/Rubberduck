@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="DisplayFullSignature_13393_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\DisplayFullSignature_13393_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DisplayName_13394_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\DisplayName_13394_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lock__exclamation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\lock--exclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TestMethod" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\TestMethod.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSFolder_closed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSFolder_closed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSFolder_closed_virtual" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSFolder_closed_virtual.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSFolder_open" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSFolder_open.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSFolder_open_virtual" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSFolder_open_virtual.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Class" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Class.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Constant" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Constant.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Constant_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Constant_Friend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Constant_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Constant_Private.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Enum" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Enum.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_EnumItem" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_EnumItem.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_EnumPrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_EnumPrivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Event" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Event.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Event_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Event_Friend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Event_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Event_Private.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Field" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Field.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Field_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Field_Friend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Field_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Field_Private.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Library" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Library.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Method" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Method.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Method_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Method_Friend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Method_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Method_Private.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Module" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Module.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Module_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Module_Private.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Properties" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Properties.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Properties_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Properties_Friend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Properties_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Properties_Private.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Structure" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Structure.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Structure_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Structure_Friend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Structure_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Structure_Private.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_ValueType" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_ValueType.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_ValueTypePrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_ValueTypePrivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_ValueType_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_ValueType_Friend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSProject_form" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSProject_form.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSProject_reference" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSProject_reference.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="document_excel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\document-excel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="document_office" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\document-office.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="document_outlook" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\document-outlook.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="document_powerpoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\document-powerpoint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="document_smiley_sad" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\document-smiley-sad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="document_word" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\document-word.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Method_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Microsoft\PNG\VSObject_Method_Shortcut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+</root>

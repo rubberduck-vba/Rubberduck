@@ -1,19 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
-using resx = Rubberduck.Properties.Resources;
+using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerProjectViewModel : ViewModelBase
     {
         private readonly Declaration _declaration;
-        private readonly bool _isProtected;
-
         private readonly IEnumerable<CodeExplorerComponentViewModel> _components;
         private readonly Lazy<IEnumerable<CodeExplorerCustomFolderViewModel>> _customFolders; 
 
@@ -43,13 +42,17 @@ namespace Rubberduck.Navigation.CodeExplorer
                      .OrderBy(item => item.Name)
                      .ToList());
 
-            _isProtected = _declaration.Project.Protection == vbext_ProjectProtection.vbext_pp_locked;
+            _icon = _declaration.Project.Protection == vbext_ProjectProtection.vbext_pp_locked
+                        ? GetImageSource(resx.lock__exclamation)
+                        : GetImageSource(resx.VSObject_Library);
         }
+
+        private readonly BitmapImage _icon;
+        public BitmapImage Icon { get { return _icon; } }
 
         public IEnumerable<CodeExplorerComponentViewModel> Components { get { return _components; } }
         public IEnumerable<CodeExplorerCustomFolderViewModel> CustomFolders { get { return _customFolders.Value; } }
 
         public string Name { get { return _declaration.CustomFolder; } }
-        public bool IsProtected { get { return _isProtected; } }
     }
 }

@@ -400,6 +400,11 @@
       <DependentUpon>BusyIndicator.xaml</DependentUpon>
     </Compile>
     <Compile Include="Navigation\CodeExplorer\CodeExplorerComponentViewModel.cs" />
+    <Compile Include="UI\CodeExplorer\CodeExplorer.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CodeExplorer.resx</DependentUpon>
+    </Compile>
     <Compile Include="UI\CodeExplorer\CodeExplorerControl.xaml.cs">
       <DependentUpon>CodeExplorerControl.xaml</DependentUpon>
     </Compile>
@@ -818,6 +823,10 @@
     <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\CodeExplorer\CodeExplorer.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CodeExplorer.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\CodeExplorer\CodeExplorerWindow.resx">
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -1106,6 +1115,13 @@
     <Content Include="Resources\balloon_smiley.bmp" />
     <Resource Include="Resources\blue-folder-horizontal-open.png" />
     <Resource Include="Resources\blue-folder-horizontal.png" />
+    <Resource Include="Resources\lock--exclamation.png" />
+    <None Include="Resources\document-smiley-sad.png" />
+    <None Include="Resources\document-word.png" />
+    <None Include="Resources\document-office.png" />
+    <None Include="Resources\document-outlook.png" />
+    <None Include="Resources\document-powerpoint.png" />
+    <None Include="Resources\document-excel.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />

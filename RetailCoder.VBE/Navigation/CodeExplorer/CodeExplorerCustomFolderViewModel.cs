@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
+using resx = Rubberduck.Properties.Resources;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -30,9 +32,20 @@ namespace Rubberduck.Navigation.CodeExplorer
                         .Select(item => new CodeExplorerComponentViewModel(item, grouping)))
                 .OrderBy(item => item.Name)
                 .ToList();
+
+            _blueFolderCollapsed = GetImageSource(resx.blue_folder_horizontal);
+            _blueFolderExpanded = GetImageSource(resx.blue_folder_horizontal_open);
         }
 
+        private readonly BitmapImage _blueFolderCollapsed;
+        public BitmapImage BlueFolderCollapsed { get { return _blueFolderCollapsed; } }
+
+        private readonly BitmapImage _blueFolderExpanded;
+        public BitmapImage BlueFolderExpanded { get { return _blueFolderExpanded; } }
+
+
         public string Name { get { return _name; } }
+
         public IEnumerable<CodeExplorerComponentViewModel> Components { get { return _components; } }
     }
 }
