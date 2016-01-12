@@ -8,8 +8,9 @@
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance explorer:CodeExplorerViewModel}">
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeExplorer:CodeExplorerViewModel}">
     <UserControl.Resources>
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
@@ -85,40 +86,40 @@
         </Style>
         
         <DataTemplate x:Key="MemberItemTemplate"
-                      DataType="explorer:CodeExplorerMemberViewModel">
+                      DataType="codeExplorer:CodeExplorerMemberViewModel">
             <TextBlock Text="{Binding Name}" />
         </DataTemplate>
         
         <HierarchicalDataTemplate x:Key="ComponentItemTemplate"
-                                  DataType="explorer:CodeExplorerMemberViewModel"
+                                  DataType="codeExplorer:CodeExplorerMemberViewModel"
                                   ItemsSource="{Binding Members}"
                                   ItemTemplate="{StaticResource MemberItemTemplate}">
             <TextBlock Text="{Binding Name}" />
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate x:Key="CustomFolderItemTemplate" 
-                                  DataType="explorer:CodeExplorerCustomFolderViewModel"
+                                  DataType="codeExplorer:CodeExplorerCustomFolderViewModel"
                                   ItemsSource="{Binding Components}"
                                   ItemTemplate="{StaticResource ComponentItemTemplate}">
             <TextBlock Text="{Binding Name}" />
         </HierarchicalDataTemplate>
         
         <HierarchicalDataTemplate x:Key="ProjectItemTemplate" 
-                                  DataType="explorer:CodeExplorerComponentViewModel"
+                                  DataType="codeExplorer:CodeExplorerComponentViewModel"
                                   ItemsSource="{Binding Members}"
                                   ItemTemplate="{StaticResource ComponentItemTemplate}">
             <TextBlock Text="{Binding Name}" />
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate x:Key="CodeExplorerComponentsTemplate" 
-                                  DataType="explorer:CodeExplorerProjectViewModel"
+                                  DataType="codeExplorer:CodeExplorerProjectViewModel"
                                   ItemsSource="{Binding Components}"
                                   ItemTemplate="{StaticResource ProjectItemTemplate}">
             <TextBlock Text="{Binding Name}" />
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate x:Key="CodeExplorerCustomFoldersTemplate" 
-                                  DataType="explorer:CodeExplorerProjectViewModel"
+                                  DataType="codeExplorer:CodeExplorerProjectViewModel"
                                   ItemsSource="{Binding CustomFolders}"
                                   ItemTemplate="{StaticResource CustomFolderItemTemplate}">
             <TextBlock Text="{Binding Name}" />

@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
 
-namespace Rubberduck.UI.CodeExplorer
+namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerMemberViewModel : ViewModelBase
     {
@@ -25,7 +26,7 @@ namespace Rubberduck.UI.CodeExplorer
         }
 
         public string Name { get { return _declaration.IdentifierName; } }
-        //public string Signature { get { return _declaration.IdentifierName; } }
+        //public string Signature { get { return _declaration.Signature???; } }
 
         private readonly IEnumerable<CodeExplorerMemberViewModel> _members;
         public IEnumerable<CodeExplorerMemberViewModel> Members { get { return _members; } }

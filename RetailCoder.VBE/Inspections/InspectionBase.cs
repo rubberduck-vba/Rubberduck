@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections
         }
 
         /// <summary>
-        /// Gets a string representing a short name/description for the inspection.
+        /// Gets a localized string representing a short name/description for the inspection.
         /// </summary>
         public abstract string Description { get; }
 
@@ -46,7 +46,7 @@ namespace Rubberduck.Inspections
         public virtual string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
         
         /// <summary>
-        /// Gets a string representing the type of inspection.
+        /// Gets a localized string representing the type of inspection.
         /// <see cref="InspectionType"/>
         /// </summary>
         public virtual string InspectionTypeName { get { return InspectionsUI.ResourceManager.GetString(InspectionType.ToString()); } }

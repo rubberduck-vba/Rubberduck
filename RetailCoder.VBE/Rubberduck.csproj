@@ -314,6 +314,7 @@
     <Compile Include="Inspections\UseMeaningfulNameInspectionResult.cs" />
     <Compile Include="Inspections\WriteOnlyPropertyInspection.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspection.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerCustomFolderViewModel.cs" />
     <Compile Include="Navigation\NavigateAllReferences.cs" />
     <Compile Include="Navigation\NavigateAllImplementations.cs" />
     <Compile Include="Navigation\IDeclarationNavigator.cs" />
@@ -398,13 +399,13 @@
     <Compile Include="UI\BusyIndicator.xaml.cs">
       <DependentUpon>BusyIndicator.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\CodeExplorer\CodeExplorerComponentViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerComponentViewModel.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerControl.xaml.cs">
       <DependentUpon>CodeExplorerControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\CodeExplorer\CodeExplorerMemberViewModel.cs" />
-    <Compile Include="UI\CodeExplorer\CodeExplorerProjectViewModel.cs" />
-    <Compile Include="UI\CodeExplorer\CodeExplorerViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerMemberViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerProjectViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerViewModel.cs" />
     <Compile Include="UI\CodeInspections\InspectionDescriptionConverter.cs" />
     <Compile Include="UI\CodeInspections\InspectionImageSourceConverter.cs" />
     <Compile Include="UI\CodeInspections\InspectionResultsControl.xaml.cs">
@@ -530,8 +531,6 @@
     <Compile Include="Refactorings\Rename\RenamePresenterFactory.cs" />
     <Compile Include="Refactorings\Rename\RenameRefactoring.cs" />
     <Compile Include="Refactorings\ReorderParameters\Parameter.cs" />
-    <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
-    <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
     <Compile Include="UI\FindSymbol\FindSymbolControl.xaml.cs">
       <DependentUpon>FindSymbolControl.xaml</DependentUpon>
     </Compile>
