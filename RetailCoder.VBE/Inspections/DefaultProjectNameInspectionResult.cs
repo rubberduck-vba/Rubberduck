@@ -32,14 +32,14 @@ namespace Rubberduck.Inspections
     public class RenameProjectQuickFix : CodeInspectionQuickFix
     {
         private readonly Declaration _target;
-        private readonly RubberduckParserState _parseResult;
+        private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public RenameProjectQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
+        public RenameProjectQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory)
             : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + DeclarationType.Project, RubberduckUI.Culture)))
         {
             _target = target;
-            _parseResult = parseResult;
+            _state = state;
             _wrapperFactory = wrapperFactory;
         }
 
@@ -49,8 +49,8 @@ namespace Rubberduck.Inspections
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(vbe, view, _parseResult, new MessageBox(), _wrapperFactory);
-                var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory), new MessageBox());
+                var factory = new RenamePresenterFactory(vbe, view, _state, new MessageBox(), _wrapperFactory);
+                var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory), new MessageBox(), _state);
                 refactoring.Refactor(_target);
             }
         }

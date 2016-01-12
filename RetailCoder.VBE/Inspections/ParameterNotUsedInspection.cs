@@ -13,27 +13,27 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    public class ParameterNotUsedInspection : IInspection
+    public sealed class ParameterNotUsedInspection : InspectionBase
     {
         private readonly VBE _vbe;
+        private readonly IMessageBox _messageBox;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public ParameterNotUsedInspection(VBE vbe)
+        public ParameterNotUsedInspection(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
+            : base(state)
         {
             _vbe = vbe; // todo: remove this dependency
+            _messageBox = messageBox;
             _wrapperFactory = new CodePaneWrapperFactory();
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "ParameterNotUsedInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.ParameterNotUsed_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ParameterNotUsed_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var declarations = state.AllDeclarations.ToList();
+            var declarations = UserDeclarations.ToList();
 
             var interfaceMemberScopes = declarations.FindInterfaceMembers().Select(m => m.Scope).ToList();
             var interfaceImplementationMemberScopes = declarations.FindInterfaceImplementationMembers().Select(m => m.Scope).ToList();
@@ -48,11 +48,11 @@ namespace Rubberduck.Inspections
             var quickFixRefactoring =
                 new RemoveParametersRefactoring(
                     new RemoveParametersPresenterFactory(editor, 
-                        new RemoveParametersDialog(), state, new MessageBox()), editor);
+                        new RemoveParametersDialog(), State, _messageBox), editor);
 
             var issues = from issue in unused.Where(parameter => !IsInterfaceMemberParameter(parameter, interfaceMemberScopes))
                          let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)
-                         select new ParameterNotUsedInspectionResult(this, string.Format(Description, issue.IdentifierName), ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName, isInterfaceImplementationMember, quickFixRefactoring, state);
+                         select new ParameterNotUsedInspectionResult(this, string.Format(Description, issue.IdentifierName), ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName, isInterfaceImplementationMember, quickFixRefactoring, State);
 
             return issues.ToList();
         }

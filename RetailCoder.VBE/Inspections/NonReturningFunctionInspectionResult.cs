@@ -18,9 +18,10 @@ namespace Rubberduck.Inspections
         {
             _quickFixes = isInterfaceImplementation 
                 ? new CodeInspectionQuickFix[] { }
-                : new[]
+                : new CodeInspectionQuickFix[]
                 {
                     new ConvertToProcedureQuickFix(Context, QualifiedSelection),
+                    new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
                 };
         }
 

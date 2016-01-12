@@ -9,9 +9,9 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class CodeExplorerCommand : CommandBase
     {
-        private readonly CodeExplorerDockablePresenter _presenter;
+        private readonly IPresenter _presenter;
 
-        public CodeExplorerCommand(CodeExplorerDockablePresenter presenter)
+        public CodeExplorerCommand(IPresenter presenter)
         {
             _presenter = presenter;
         }
@@ -20,6 +20,5 @@ namespace Rubberduck.UI.Command
         {
             _presenter.Show();
         }
-
     }
 }

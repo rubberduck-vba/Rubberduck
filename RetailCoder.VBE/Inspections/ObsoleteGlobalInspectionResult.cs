@@ -15,9 +15,10 @@ namespace Rubberduck.Inspections
         public ObsoleteGlobalInspectionResult(IInspection inspection, string result, QualifiedContext<ParserRuleContext> context)
             : base(inspection, result, context.ModuleName, context.Context)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                new ReplaceGlobalModifierQuickFix(Context, QualifiedSelection)
+                new ReplaceGlobalModifierQuickFix(Context, QualifiedSelection),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 
