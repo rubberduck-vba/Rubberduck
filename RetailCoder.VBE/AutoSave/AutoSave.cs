@@ -47,8 +47,7 @@ namespace Rubberduck.AutoSave
             {
                 try
                 {
-                    // iterate to find if a file exists for each open project
-                    // I do hope the compiler doesn't optimize this out
+                    // note: VBProject.FileName getter throws IOException if unsaved
                     _vbe.VBProjects.OfType<VBProject>().Select(p => p.FileName).ToList();
                 }
                 catch (DirectoryNotFoundException)
