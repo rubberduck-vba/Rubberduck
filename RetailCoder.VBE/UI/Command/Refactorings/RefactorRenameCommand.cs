@@ -32,7 +32,7 @@ namespace Rubberduck.UI.Command.Refactorings
             using (var view = new RenameDialog())
             {
                 var factory = new RenamePresenterFactory(Vbe, view, _state, new MessageBox(), _wrapperWrapperFactory);
-                var refactoring = new RenameRefactoring(factory, Editor, new MessageBox());
+                var refactoring = new RenameRefactoring(factory, Editor, new MessageBox(), _state);
 
                 var target = parameter as Declaration;
                 if (target == null)

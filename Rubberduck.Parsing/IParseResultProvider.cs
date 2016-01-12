@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing
 {
@@ -32,13 +33,16 @@ namespace Rubberduck.Parsing
 
     public class ParseProgressEventArgs : EventArgs
     {
-        private readonly VBComponent _result;
+        private readonly VBComponent _component;
+        private readonly ParserState _state;
 
-        public ParseProgressEventArgs(VBComponent result)
+        public ParseProgressEventArgs(VBComponent component, ParserState state)
         {
-            _result = result;
+            _component = component;
+            _state = state;
         }
 
-        public VBComponent Component { get { return _result; } }
+        public VBComponent Component { get { return _component; } }
+        public ParserState State { get { return _state; } }
     }
 }

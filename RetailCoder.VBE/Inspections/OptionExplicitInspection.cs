@@ -7,18 +7,16 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class OptionExplicitInspection : IInspection
+    public sealed class OptionExplicitInspection : InspectionBase
     {
-        public OptionExplicitInspection()
+        public OptionExplicitInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "OptionExplicitInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.OptionExplicit; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.OptionExplicit; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         private static readonly DeclarationType[] ModuleTypes =
         {
@@ -26,18 +24,17 @@ namespace Rubberduck.Inspections
             DeclarationType.Class
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var results = state.AllDeclarations.ToList();
+            var results = UserDeclarations.ToList();
 
             var options = results
-                .Where(declaration => !declaration.IsBuiltIn 
-                                      && declaration.DeclarationType == DeclarationType.ModuleOption
+                .Where(declaration => declaration.DeclarationType == DeclarationType.ModuleOption
                                       && declaration.Context is VBAParser.OptionExplicitStmtContext)
                 .ToList();
 
             var modules = results
-                .Where(declaration => !declaration.IsBuiltIn && ModuleTypes.Contains(declaration.DeclarationType));
+                .Where(declaration => ModuleTypes.Contains(declaration.DeclarationType));
 
             var issues = modules.Where(module => !options.Select(option => option.Scope).Contains(module.Scope))
                 .Select(issue => new OptionExplicitInspectionResult(this, issue.QualifiedName.QualifiedModuleName));

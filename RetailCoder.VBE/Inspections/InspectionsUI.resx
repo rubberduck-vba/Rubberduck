@@ -123,6 +123,9 @@
   <data name="AssignedByValParameterInspectionName" xml:space="preserve">
     <value>ByVal parameter is assigned</value>
   </data>
+  <data name="CodeQualityIssues" xml:space="preserve">
+    <value>Code quality issues</value>
+  </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
     <value>Constant value is declared but Rubberduck could not find any reference to it. Consider removing the unused declaration.</value>
   </data>
@@ -158,6 +161,9 @@
   </data>
   <data name="EncapsulatePublicFieldInspectionQuickFix" xml:space="preserve">
     <value>Encapsulate field '{0}' with property</value>
+  </data>
+  <data name="IgnoreOnce" xml:space="preserve">
+    <value>Ignore once</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspectionMeta" xml:space="preserve">
     <value>Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they're intended, and prefer working off object references.</value>
@@ -201,6 +207,12 @@
   <data name="MoveFieldCloseToUsageInspectionQuickFix" xml:space="preserve">
     <value>Move field '{0}' closer to usage</value>
   </data>
+  <data name="LanguageOpportunities" xml:space="preserve">
+    <value>Language opportunities</value>
+  </data>
+  <data name="MaintainabilityAndReadabilityIssues" xml:space="preserve">
+    <value>Maintainability &amp; readability issues</value>
+  </data>
   <data name="MultilineParameterInspectionMeta" xml:space="preserve">
     <value>Consider continuing long signatures between parameters. Splitting a parameter declaration across multiple lines arguably hurts readability.</value>
   </data>
@@ -212,6 +224,15 @@
   </data>
   <data name="MultipleDeclarationsInspectionName" xml:space="preserve">
     <value>Instruction contains multiple declarations</value>
+  </data>
+  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
+    <value>'{0}' has more than one namespace declaration.</value>
+  </data>
+  <data name="MultipleFolderAnnotationsInspectionMeta" xml:space="preserve">
+    <value>Rubberduck only uses the first '@Folder' annotation in a code module; consider removing extraneous ones.</value>
+  </data>
+  <data name="MultipleFolderAnnotationsInspectionName" xml:space="preserve">
+    <value>Component has more than one folder annotation.</value>
   </data>
   <data name="NonReturningFunctionInspectionMeta" xml:space="preserve">
     <value>This is likely a bug. The return value of a function or property getter must be assigned before exiting, otherwise the program will not be working with expected results. If a function has no meaningful return value, consider declaring it as a 'Sub' procedure instead.</value>
@@ -264,7 +285,7 @@
   <data name="ParameterCanBeByValInspectionMeta" xml:space="preserve">
     <value>A parameter that is passed by reference but that isn't assigned a new value/reference, could be passed by value instead.</value>
   </data>
-  <data name="ParameterCanByByValInspectionName" xml:space="preserve">
+  <data name="ParameterCanBeByValInspectionName" xml:space="preserve">
     <value>Parameter can be passed by value</value>
   </data>
   <data name="ParameterNotUsedInspectionMeta" xml:space="preserve">
@@ -291,11 +312,18 @@
   <data name="UntypedFunctionUsageInspectionName" xml:space="preserve">
     <value>Use of variant-returning string function</value>
   </data>
+  <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
+    <value>Procedure '{0}' should be a function.</value>
+    <comment>{0} Procedure name</comment>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
+    <value>Replace procedure with function and update usages.</value>
+  </data>
   <data name="UseMeaningfulNameInspection" xml:space="preserve">
     <value>Consider renaming {0} '{1}'</value>
   </data>
   <data name="UseMeaningfulNameInspectionMeta" xml:space="preserve">
-    <value>Identifier names should indicate what they're used for, and should be readable; avoid disemvoweling, numeric suffixes and 1-2 character names.</value>
+    <value>Identifier names should indicate what they're used for and should be readable; avoid disemvoweling, numeric suffixes, and 1-2 character names.</value>
   </data>
   <data name="UseMeaningfulNameInspectionName" xml:space="preserve">
     <value>Use meaningful names</value>
@@ -323,5 +351,11 @@
   </data>
   <data name="WriteOnlyPropertyInspectionName" xml:space="preserve">
     <value>Write-only property</value>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspectionMeta" xml:space="preserve">
+    <value>A procedure has one ByRef parameter.  Consider creating a function that returns the value instead.</value>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspectionName" xml:space="preserve">
+    <value>Convert procedure to function</value>
   </data>
 </root>

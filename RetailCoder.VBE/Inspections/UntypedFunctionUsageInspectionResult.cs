@@ -12,9 +12,10 @@ namespace Rubberduck.Inspections
         public UntypedFunctionUsageInspectionResult(IInspection inspection, string result, QualifiedModuleName qualifiedName, ParserRuleContext context) 
             : base(inspection, result, qualifiedName, context)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new UntypedFunctionUsageQuickFix(Context, QualifiedSelection), 
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

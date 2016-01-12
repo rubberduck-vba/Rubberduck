@@ -6,25 +6,21 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class ConstantNotUsedInspection : IInspection
+    public sealed class ConstantNotUsedInspection : InspectionBase
     {
-        public ConstantNotUsedInspection()
+        public ConstantNotUsedInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "ConstantNotUsedInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.ConstantNotUsed_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ConstantNotUsed_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var results = state.AllDeclarations.Where(declaration =>
-                !declaration.IsBuiltIn 
-                && declaration.DeclarationType == DeclarationType.Constant
-                && !declaration.References.Any());
+            var results = UserDeclarations.Where(declaration =>
+                    declaration.DeclarationType == DeclarationType.Constant && !declaration.References.Any());
 
             return results.Select(issue => 
                 new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName.QualifiedModuleName)).Cast<CodeInspectionResultBase>();

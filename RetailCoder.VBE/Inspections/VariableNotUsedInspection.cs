@@ -6,24 +6,21 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableNotUsedInspection : IInspection
+    public sealed class VariableNotUsedInspection : InspectionBase
     {
-        public VariableNotUsedInspection()
+        public VariableNotUsedInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "VariableNotUsedInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.VariableNotUsed_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.VariableNotUsed_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var declarations = state.AllDeclarations.Where(declaration =>
-                !declaration.IsBuiltIn 
-                && !declaration.IsWithEvents
+            var declarations = UserDeclarations.Where(declaration =>
+                !declaration.IsWithEvents
                 && declaration.DeclarationType == DeclarationType.Variable
                 && declaration.References.All(reference => reference.IsAssignment));
 

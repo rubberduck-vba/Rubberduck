@@ -26,8 +26,7 @@ namespace Rubberduck.Refactorings.Rename
         public RenamePresenter Create()
         {
             var codePane = _wrapperFactory.Create(_vbe.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent),
-                codePane.Selection);
+            var selection = _vbe.ActiveCodePane == null ? new QualifiedSelection() : new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
             return new RenamePresenter(_view, new RenameModel(_vbe, _parseResult, selection, _messageBox));
         }
     }

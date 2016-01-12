@@ -6,22 +6,20 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableNotAssignedInspection : IInspection
+    public sealed class VariableNotAssignedInspection : InspectionBase
     {
-        public VariableNotAssignedInspection()
+        public VariableNotAssignedInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "VariableNotAssignedInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.VariableNotAssigned_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.VariableNotAssigned_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var items = state.AllDeclarations.ToList();
+            var items = UserDeclarations.ToList();
 
             // ignore arrays. todo: ArrayIndicesNotAccessedInspection
             var arrays = items.Where(declaration =>
@@ -30,7 +28,6 @@ namespace Rubberduck.Inspections
 
             var declarations = items.Where(declaration =>
                 declaration.DeclarationType == DeclarationType.Variable
-                && !declaration.IsBuiltIn 
                 && !declaration.IsWithEvents
                 && !arrays.Contains(declaration)
                 && !items.Any(item => 

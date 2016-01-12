@@ -15,18 +15,9 @@ namespace Rubberduck.UI.Command
             _execute = execute;
         }
 
-        private bool _canExecuteState;
         public override bool CanExecute(object parameter)
         {
-            var previousState = _canExecuteState;
-            _canExecuteState = _canExecute == null || _canExecute.Invoke(parameter);
-
-            if (previousState != _canExecuteState)
-            {
-                OnCanExecuteChanged();
-            }
-
-            return _canExecuteState;
+            return _canExecute == null || _canExecute.Invoke(parameter);
         }
 
         public override void Execute(object parameter)

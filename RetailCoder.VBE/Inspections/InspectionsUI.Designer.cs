@@ -79,6 +79,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code quality issues.
+        /// </summary>
+        internal static string CodeQualityIssues {
+            get {
+                return ResourceManager.GetString("CodeQualityIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Constant value is declared but Rubberduck could not find any reference to it. Consider removing the unused declaration..
         /// </summary>
         internal static string ConstantNotUsedInspectionMeta {
@@ -349,6 +358,33 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; has more than one namespace declaration..
+        /// </summary>
+        internal static string MultipleFolderAnnotationsInspection {
+            get {
+                return ResourceManager.GetString("MultipleFolderAnnotationsInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck only uses the first &apos;@Folder&apos; annotation in a code module; consider removing extraneous ones..
+        /// </summary>
+        internal static string MultipleFolderAnnotationsInspectionMeta {
+            get {
+                return ResourceManager.GetString("MultipleFolderAnnotationsInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Component has more than one folder annotation..
+        /// </summary>
+        internal static string MultipleFolderAnnotationsInspectionName {
+            get {
+                return ResourceManager.GetString("MultipleFolderAnnotationsInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This is likely a bug. The return value of a function or property getter must be assigned before exiting, otherwise the program will not be working with expected results. If a function has no meaningful return value, consider declaring it as a &apos;Sub&apos; procedure instead..
         /// </summary>
         internal static string NonReturningFunctionInspectionMeta {
@@ -504,9 +540,9 @@ namespace Rubberduck.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Parameter can be passed by value.
         /// </summary>
-        internal static string ParameterCanByByValInspectionName {
+        internal static string ParameterCanBeByValInspectionName {
             get {
-                return ResourceManager.GetString("ParameterCanByByValInspectionName", resourceCulture);
+                return ResourceManager.GetString("ParameterCanBeByValInspectionName", resourceCulture);
             }
         }
         
@@ -543,6 +579,42 @@ namespace Rubberduck.Inspections {
         internal static string ProcedureNotUsedInspectionName {
             get {
                 return ResourceManager.GetString("ProcedureNotUsedInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Procedure &apos;{0}&apos; should be a function..
+        /// </summary>
+        internal static string ProcedureShouldBeFunctionInspection {
+            get {
+                return ResourceManager.GetString("ProcedureShouldBeFunctionInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A procedure has one ByRef parameter.  Consider creating a function that returns the value instead..
+        /// </summary>
+        internal static string ProcedureShouldBeFunctionInspectionMeta {
+            get {
+                return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Convert procedure to function.
+        /// </summary>
+        internal static string ProcedureShouldBeFunctionInspectionName {
+            get {
+                return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace procedure with function and update usages..
+        /// </summary>
+        internal static string ProcedureShouldBeFunctionInspectionQuickFix {
+            get {
+                return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionQuickFix", resourceCulture);
             }
         }
         
@@ -592,7 +664,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Identifier names should indicate what they&apos;re used for, and should be readable; avoid disemvoweling, numeric suffixes and 1-2 character names..
+        ///   Looks up a localized string similar to Identifier names should indicate what they&apos;re used for and should be readable; avoid disemvoweling, numeric suffixes, and 1-2 character names..
         /// </summary>
         internal static string UseMeaningfulNameInspectionMeta {
             get {
