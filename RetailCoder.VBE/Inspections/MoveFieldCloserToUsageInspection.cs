@@ -27,7 +27,8 @@ namespace Rubberduck.Inspections
                 .Where(declaration =>
                 {
 
-                    if (declaration.DeclarationType != DeclarationType.Variable)
+                    if (declaration.DeclarationType != DeclarationType.Variable ||
+                        !new[] {DeclarationType.Class, DeclarationType.Module}.Contains(declaration.ParentDeclaration.DeclarationType))
                     {
                         return false;
                     }
