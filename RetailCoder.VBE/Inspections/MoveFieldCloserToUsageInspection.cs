@@ -7,30 +7,27 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    public class MoveFieldCloseToUsageInspection : IInspection
+    public sealed class MoveFieldCloseToUsageInspection : InspectionBase
     {
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public MoveFieldCloseToUsageInspection()
+        public MoveFieldCloseToUsageInspection(RubberduckParserState state)
+            : base(state)
         {
             _wrapperFactory = new CodePaneWrapperFactory();
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return "MoveFieldCloseToUsageInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return InspectionsUI.MoveFieldCloseToUsageInspectionName; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return InspectionsUI.MoveFieldCloseToUsageInspectionName; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            return state.AllDeclarations
+            return UserDeclarations
                 .Where(declaration =>
                 {
 
-                    if (declaration.IsBuiltIn ||
-                        declaration.DeclarationType != DeclarationType.Variable)
+                    if (declaration.DeclarationType != DeclarationType.Variable)
                     {
                         return false;
                     }
@@ -41,7 +38,7 @@ namespace Rubberduck.Inspections
                            declaration.References.All(r => r.ParentScope == firstReference.ParentScope);
                 })
                 .Select(issue =>
-                        new MoveFieldCloseToUsageInspectionResult(this, issue, state, _wrapperFactory, new MessageBox()));
+                        new MoveFieldCloseToUsageInspectionResult(this, issue, State, _wrapperFactory, new MessageBox()));
         }
     }
 }

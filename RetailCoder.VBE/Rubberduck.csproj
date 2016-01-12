@@ -295,6 +295,11 @@
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
+    <Compile Include="Inspections\InspectionsUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InspectionsUI.resx</DependentUpon>
+    </Compile>
     <Compile Include="Inspections\MoveFieldCloserToUsageInspection.cs" />
     <Compile Include="Inspections\EncapsulatePublicFieldInspection.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspectionResult.cs" />
@@ -305,11 +310,6 @@
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspection.cs" />
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspection.cs" />
     <Compile Include="Inspections\InspectionBase.cs" />
-    <Compile Include="Inspections\InspectionsUI.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InspectionsUI.resx</DependentUpon>
-    </Compile>
     <Compile Include="Inspections\MultipleFolderAnnotationsInspection.cs" />
     <Compile Include="Inspections\ProcedureShouldBeFunctionInspection.cs" />
     <Compile Include="Inspections\ProcedureShouldBeFunctionInspectionResult.cs" />
@@ -817,7 +817,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Inspections\InspectionsUI.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>

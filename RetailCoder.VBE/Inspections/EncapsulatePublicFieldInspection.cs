@@ -6,29 +6,26 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    public class EncapsulatePublicFieldInspection : IInspection
+    public sealed class EncapsulatePublicFieldInspection : InspectionBase
     {
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public EncapsulatePublicFieldInspection()
+        public EncapsulatePublicFieldInspection(RubberduckParserState state)
+            : base(state)
         {
             _wrapperFactory = new CodePaneWrapperFactory();
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return "EncapsulatePublicFieldInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return InspectionsUI.EncapsulatePublicFieldInspectionName; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return InspectionsUI.EncapsulatePublicFieldInspectionName; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var issues = state.AllDeclarations
-                            .Where(declaration => !declaration.IsBuiltIn 
-                                                && declaration.DeclarationType == DeclarationType.Variable
+            var issues = UserDeclarations
+                            .Where(declaration => declaration.DeclarationType == DeclarationType.Variable
                                                 && declaration.Accessibility == Accessibility.Public)
-                            .Select(issue => new EncapsulatePublicFieldInspectionResult(this, issue, state, _wrapperFactory))
+                            .Select(issue => new EncapsulatePublicFieldInspectionResult(this, issue, State, _wrapperFactory))
                             .ToList();
 
             return issues;
