@@ -268,6 +268,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppMenu.cs" />
+    <Compile Include="AutoSave\AutoSave.cs" />
+    <Compile Include="AutoSave\AutoSaveSettings.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
     <Compile Include="Common\DeclarationExtensions.cs" />
     <Compile Include="Common\HookEventArgs.cs" />
@@ -305,6 +307,8 @@
       <DependentUpon>InspectionsUI.resx</DependentUpon>
     </Compile>
     <Compile Include="Inspections\MultipleFolderAnnotationsInspection.cs" />
+    <Compile Include="Inspections\ProcedureShouldBeFunctionInspection.cs" />
+    <Compile Include="Inspections\ProcedureShouldBeFunctionInspectionResult.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspectionResult.cs" />
     <Compile Include="Inspections\UseMeaningfulNameInspection.cs" />
     <Compile Include="Inspections\UseMeaningfulNameInspectionResult.cs" />
@@ -961,7 +965,6 @@
     <Resource Include="Resources\magnifier--arrow.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Common\Namespaces\" />
     <Folder Include="Properties\DataSources\" />
     <Folder Include="UI\ParserProgress\" />
   </ItemGroup>
@@ -1102,8 +1105,6 @@
     <Content Include="Resources\balloon_mask.bmp" />
     <Content Include="Resources\balloon_prohibition.bmp" />
     <Content Include="Resources\balloon_smiley.bmp" />
-    <Resource Include="Resources\blue-folder-horizontal.png" />
-    <Resource Include="Resources\blue-folder-horizontal-open.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
@@ -1309,8 +1310,8 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\CodeExplorer\CodeExplorerControl.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\CodeInspections\InspectionResultsControl.xaml">
       <SubType>Designer</SubType>

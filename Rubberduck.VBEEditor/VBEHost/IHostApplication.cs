@@ -2,7 +2,7 @@
 
 namespace Rubberduck.VBEditor.VBEHost
 {
-    public interface IHostApplication
+    public interface IHostApplication : IDisposable
     {
         /// <summary>
         /// Runs VBA procedure specified by name.
