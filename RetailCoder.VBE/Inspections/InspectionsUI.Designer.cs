@@ -160,14 +160,52 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ignore once.
+        ///   Looks up a localized string similar to Make field &apos;{0}&apos; a property.
         /// </summary>
-        internal static string IgnoreOnce {
+        internal static string EncapsulatePublicFieldInspection {
             get {
-                return ResourceManager.GetString("IgnoreOnce", resourceCulture);
+                return ResourceManager.GetString("EncapsulatePublicFieldInspection", resourceCulture);
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Use properties rather than public fields..
+        /// </summary>
+        internal static string EncapsulatePublicFieldInspectionMeta {
+            get {
+                return ResourceManager.GetString("EncapsulatePublicFieldInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use properties rather than public fields..
+        /// </summary>
+        internal static string EncapsulatePublicFieldInspectionName {
+            get {
+                return ResourceManager.GetString("EncapsulatePublicFieldInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Encapsulate field &apos;{0}&apos; with property.
+        /// </summary>
+        internal static string EncapsulatePublicFieldInspectionQuickFix {
+            get {
+                return ResourceManager.GetString("EncapsulatePublicFieldInspectionQuickFix", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore Once
+        /// </summary>
+        internal static string IgnoreOnce
+        {
+            get
+            {
+                return ResourceManager.GetString("IgnoreOnce", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they&apos;re intended, and prefer working off object references..
         /// </summary>
@@ -259,20 +297,38 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language opportunities.
+        ///   Looks up a localized string similar to Move &apos;{0}&apos; closer to usage.
         /// </summary>
-        internal static string LanguageOpportunities {
+        internal static string MoveFieldCloseToUsageInspection {
             get {
-                return ResourceManager.GetString("LanguageOpportunities", resourceCulture);
+                return ResourceManager.GetString("MoveFieldCloseToUsageInspection", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Maintainability &amp; readability issues.
+        ///   Looks up a localized string similar to A field that is only used in one method should be a local variable..
         /// </summary>
-        internal static string MaintainabilityAndReadabilityIssues {
+        internal static string MoveFieldCloseToUsageInspectionMeta {
             get {
-                return ResourceManager.GetString("MaintainabilityAndReadabilityIssues", resourceCulture);
+                return ResourceManager.GetString("MoveFieldCloseToUsageInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move field closer to usage.
+        /// </summary>
+        internal static string MoveFieldCloseToUsageInspectionName {
+            get {
+                return ResourceManager.GetString("MoveFieldCloseToUsageInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move field &apos;{0}&apos; closer to usage.
+        /// </summary>
+        internal static string MoveFieldCloseToUsageInspectionQuickFix {
+            get {
+                return ResourceManager.GetString("MoveFieldCloseToUsageInspectionQuickFix", resourceCulture);
             }
         }
         

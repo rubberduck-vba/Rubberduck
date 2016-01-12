@@ -284,7 +284,7 @@ namespace Rubberduck.Parsing.VBA
             var builtInDeclarations = VbaStandardLib.Declarations;
 
             // cannot be strongly-typed here because of constraints on COM interop and generics in the inheritance hierarchy. </rant>
-            if (hostApplication /*is ExcelApp*/ .ApplicationName == "Excel")
+            if (hostApplication != null && hostApplication.ApplicationName == "Excel")
             {
                 builtInDeclarations = builtInDeclarations.Concat(ExcelObjectModel.Declarations);
             }
