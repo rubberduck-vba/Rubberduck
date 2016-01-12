@@ -189,6 +189,18 @@
   <data name="ImplicitVariantReturnTypeInspectionName" xml:space="preserve">
     <value>Return type is implicitly 'Variant'</value>
   </data>
+  <data name="MoveFieldCloseToUsageInspection" xml:space="preserve">
+    <value>Move field closer to usage</value>
+  </data>
+  <data name="MoveFieldCloseToUsageInspectionMeta" xml:space="preserve">
+    <value>A field that is only used in one method should be a local variable.</value>
+  </data>
+  <data name="MoveFieldCloseToUsageInspectionName" xml:space="preserve">
+    <value>Move field closer to usage</value>
+  </data>
+  <data name="MoveFieldCloseToUsageInspectionQuickFix" xml:space="preserve">
+    <value>Move field '{0}' closer to usage</value>
+  </data>
   <data name="MultilineParameterInspectionMeta" xml:space="preserve">
     <value>Consider continuing long signatures between parameters. Splitting a parameter declaration across multiple lines arguably hurts readability.</value>
   </data>

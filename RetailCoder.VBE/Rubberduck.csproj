@@ -293,7 +293,9 @@
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
+    <Compile Include="Inspections\MoveFieldCloserToUsageInspection.cs" />
     <Compile Include="Inspections\EncapsulatePublicFieldInspection.cs" />
+    <Compile Include="Inspections\MoveFieldCloserToUsageInspectionResult.cs" />
     <Compile Include="Inspections\EncapsulatePublicFieldInspectionResult.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspection.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspectionResult.cs" />
@@ -802,7 +804,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Inspections\InspectionsUI.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
