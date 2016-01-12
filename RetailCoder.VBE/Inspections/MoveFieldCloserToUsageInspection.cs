@@ -3,6 +3,7 @@ using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
@@ -36,10 +37,39 @@ namespace Rubberduck.Inspections
                     var firstReference = declaration.References.FirstOrDefault();
 
                     return firstReference != null &&
-                           declaration.References.All(r => r.ParentScope == firstReference.ParentScope);
+                           declaration.References.All(r => r.ParentScope == firstReference.ParentScope) &&
+                           !new[]
+                           {
+                               DeclarationType.PropertyGet,
+                               DeclarationType.PropertyLet,
+                               DeclarationType.PropertySet
+                           }.Contains(ParentDeclaration(firstReference).DeclarationType);
                 })
                 .Select(issue =>
                         new MoveFieldCloseToUsageInspectionResult(this, issue, State, _wrapperFactory, new MessageBox()));
+        }
+
+        private Declaration ParentDeclaration(IdentifierReference reference)
+        {
+            Declaration activeDeclaration = null;
+
+            var activeSelection = new Selection(0, 0, int.MaxValue, int.MaxValue);
+
+            foreach (var declaration in UserDeclarations.Where(d => d.Scope == reference.ParentScope))
+            {
+                if (new Selection(declaration.Context.Start.Line,
+                                  declaration.Context.Start.Column,
+                                  declaration.Context.Stop.Line,
+                                  declaration.Context.Stop.Column)
+                    .Contains(reference.Selection) &&
+                    activeSelection.Contains(declaration.Selection))
+                {
+                    activeDeclaration = declaration;
+                    activeSelection = declaration.Selection;
+                }
+            }
+
+            return activeDeclaration;
         }
     }
 }
