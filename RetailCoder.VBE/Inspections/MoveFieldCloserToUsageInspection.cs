@@ -3,7 +3,6 @@ using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
@@ -36,14 +35,21 @@ namespace Rubberduck.Inspections
 
                     var firstReference = declaration.References.FirstOrDefault();
 
-                    return firstReference != null &&
-                           declaration.References.All(r => r.ParentScope == firstReference.ParentScope) &&
+                    if (firstReference == null ||
+                        declaration.References.Any(r => r.ParentScope != firstReference.ParentScope))
+                    {
+                        return false;
+                    }
+
+                    var parentDeclaration = ParentDeclaration(firstReference);
+
+                    return parentDeclaration != null &&
                            !new[]
                            {
                                DeclarationType.PropertyGet,
                                DeclarationType.PropertyLet,
                                DeclarationType.PropertySet
-                           }.Contains(ParentDeclaration(firstReference).DeclarationType);
+                           }.Contains(parentDeclaration.DeclarationType);
                 })
                 .Select(issue =>
                         new MoveFieldCloseToUsageInspectionResult(this, issue, State, _wrapperFactory, new MessageBox()));
@@ -51,25 +57,7 @@ namespace Rubberduck.Inspections
 
         private Declaration ParentDeclaration(IdentifierReference reference)
         {
-            Declaration activeDeclaration = null;
-
-            var activeSelection = new Selection(0, 0, int.MaxValue, int.MaxValue);
-
-            foreach (var declaration in UserDeclarations.Where(d => d.Scope == reference.ParentScope))
-            {
-                if (new Selection(declaration.Context.Start.Line,
-                                  declaration.Context.Start.Column,
-                                  declaration.Context.Stop.Line,
-                                  declaration.Context.Stop.Column)
-                    .Contains(reference.Selection) &&
-                    activeSelection.Contains(declaration.Selection))
-                {
-                    activeDeclaration = declaration;
-                    activeSelection = declaration.Selection;
-                }
-            }
-
-            return activeDeclaration;
+            return UserDeclarations.Single(d => d.Scope == reference.ParentScope && d.Project == reference.QualifiedModuleName.Project);
         }
     }
 }
