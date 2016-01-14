@@ -1300,4 +1300,13 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="EncapsulateField_InstructionText" xml:space="preserve">
     <value>Spezifizierung des Eigenschaftsnamen, Parameterverfügbarkeit und 'Setter type' notwendig.</value>
   </data>
+  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+    <value>Un</value>
+  </data>
+  <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
+    <value>Die aktuelle Auswahl ist ungültig.</value>
+  </data>
+  <data name="ImplementInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Implement Interface</value>
+  </data>
 </root>
