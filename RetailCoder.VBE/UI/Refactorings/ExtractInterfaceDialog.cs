@@ -42,12 +42,12 @@ namespace Rubberduck.UI.Refactorings
 
         private void Localize()
         {
-            Text = RubberduckUI.ExtractInteface_Caption;
+            Text = RubberduckUI.ExtractInterface_Caption;
             OkButton.Text = RubberduckUI.OK;
             CancelDialogButton.Text = RubberduckUI.CancelButtonText;
 
             NameLabel.Text = RubberduckUI.NameLabelText;
-            TitleLabel.Text = RubberduckUI.ExtractInteface_TitleLabel;
+            TitleLabel.Text = RubberduckUI.ExtractInterface_TitleLabel;
             InstructionsLabel.Text = RubberduckUI.ExtractInterface_InstructionLabel;
             DeselectAllButton.Text = RubberduckUI.DeselectAll_Button;
             SelectAllButton.Text = RubberduckUI.SelectAll_Button;

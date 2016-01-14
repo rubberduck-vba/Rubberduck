@@ -1296,10 +1296,10 @@ Are you sure you want to proceed with this rename?</value>
   <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
     <value>Invalid Selection.</value>
   </data>
-  <data name="ExtractInteface_Caption" xml:space="preserve">
+  <data name="ExtractInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Extract Interface</value>
   </data>
-  <data name="ExtractInteface_TitleLabel" xml:space="preserve">
+  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
     <value>Extract Interface</value>
   </data>
   <data name="ExtractInterface_InstructionLabel" xml:space="preserve">

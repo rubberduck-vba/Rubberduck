@@ -1210,7 +1210,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
     <value>Zweig löschen</value>
   </data>
-  <data name="ExtractInteface_Caption" xml:space="preserve">
+  <data name="ExtractInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Extract Interface</value>
   </data>
   <data name="DeselectAll_Button" xml:space="preserve">
@@ -1219,7 +1219,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="SelectAll_Button" xml:space="preserve">
     <value>Alles auswählen</value>
   </data>
-  <data name="ExtractInteface_TitleLabel" xml:space="preserve">
+  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
     <value>Extrahiere Interface</value>
   </data>
   <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
