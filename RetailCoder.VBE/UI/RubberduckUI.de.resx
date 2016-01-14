@@ -1220,7 +1220,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Alles auswählen</value>
   </data>
   <data name="ExtractInteface_TitleLabel" xml:space="preserve">
-    <value>Extract Interface</value>
+    <value>Extrahiere Interface</value>
   </data>
   <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
     <value>Mitglieder</value>
@@ -1289,15 +1289,15 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Rubberduck - Parameter einfügen</value>
   </data>
   <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
-    <value>Methode '{0}' implementiert '{1}.{2}'. Ändern der Interface Signatur? (Wird über alle Implementierungen verteilt)</value>
+    <value>Methode '{0}' implementiert '{1}.{2}'. Ändern der Interface Signatur? (Wird auf alle Implementierungen angewendet.)</value>
   </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
-    <value>Näher an die N&amp;utzung führen</value>
+    <value>Näher an die N&amp;utzung verschieben</value>
   </data>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Näher an die Nutzung führen</value>
   </data>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">
-    <value>Spezifizierung des Eigenschaftsnamen, Parameterverfügbarkeit und 'Setter type" notwendig.</value>
+    <value>Spezifizierung des Eigenschaftsnamen, Parameterverfügbarkeit und 'Setter type' notwendig.</value>
   </data>
 </root>
