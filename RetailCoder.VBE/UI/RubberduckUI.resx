@@ -1296,4 +1296,22 @@ Are you sure you want to proceed with this rename?</value>
   <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
     <value>Invalid Selection.</value>
   </data>
+  <data name="ExtractInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Extract Interface</value>
+  </data>
+  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
+    <value>Extract Interface</value>
+  </data>
+  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
+    <value>Please specify interface name and members.</value>
+  </data>
+  <data name="SelectAll_Button" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="DeselectAll_Button" xml:space="preserve">
+    <value>Deselect All</value>
+  </data>
+  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
+    <value>Members</value>
+  </data>
 </root>
