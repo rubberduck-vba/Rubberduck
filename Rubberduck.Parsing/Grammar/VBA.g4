@@ -57,12 +57,16 @@
 *     to accept '!' as well as '.', but this complicates resolving the '!' shorthand syntax.
 *   - added a subscripts rule in procedure calls, to avoid breaking the parser with 
 *     a function call that returns an array that is immediately accessed.
-*   - added macroConstStmt (#CONST) rule.
+*   - added missing macroConstStmt (#CONST) rule.
 *   - amended block rule to support instruction separators.
 *   - amended selectCaseStmt rules to support all valid syntaxes.
 *   - blockStmt is now illegal in declarations section.
 *   - added ON_LOCAL_ERROR token, to support legacy ON LOCAL ERROR statements.
 *   - added additional typeHint? token to declareStmt, to support "Declare Function Foo$".
+*   - modified WS lexer rule to correctly account for line continuations;
+*     modified multi-word lexer rules to use WS lexer token instead of ' '; this makes
+*     the grammar support "Option _\n Explicit" and other keywords being specified on multiple lines.
+*	- modified moduleOption rules to account for WS token in corresponding lexer rules.
 *
 *======================================================================================
 *
@@ -112,8 +116,8 @@ moduleAttributes : (attributeStmt NEWLINE+)+;
 moduleDeclarations : moduleDeclarationsElement (NEWLINE+ moduleDeclarationsElement)*;
 
 moduleOption : 
-	OPTION_BASE WS INTEGERLITERAL 			# optionBaseStmt
-	| OPTION_COMPARE WS (BINARY | TEXT | DATABASE) 	# optionCompareStmt
+	OPTION_BASE INTEGERLITERAL 			# optionBaseStmt
+	| OPTION_COMPARE (BINARY | TEXT | DATABASE) 	# optionCompareStmt
 	| OPTION_EXPLICIT 						# optionExplicitStmt
 	| OPTION_PRIVATE_MODULE 				# optionPrivateModuleStmt
 ;
@@ -149,7 +153,7 @@ moduleBodyElement :
 
 attributeStmt : ATTRIBUTE WS implicitCallStmt_InStmt WS? EQ WS? literal (WS? ',' WS? literal)*;
 
-block : blockStmt (WS? ':')* (NEWLINE* WS? blockStmt)* WS? NEWLINE*;
+block : blockStmt WS* (NEWLINE* WS? blockStmt)* WS? NEWLINE*;
 
 blockStmt : lineLabel
     | appactivateStmt
@@ -740,25 +744,25 @@ DOUBLE : D O U B L E;
 EACH : E A C H;
 ELSE : E L S E;
 ELSEIF : E L S E I F;
-END_ENUM : E N D ' ' E N U M;
-END_FUNCTION : E N D ' ' F U N C T I O N;
-END_IF : E N D ' ' I F;
-END_PROPERTY : E N D ' ' P R O P E R T Y;
-END_SELECT : E N D ' ' S E L E C T;
-END_SUB : E N D ' ' S U B;
-END_TYPE : E N D ' ' T Y P E;
-END_WITH : E N D ' ' W I T H;
+END_ENUM : E N D WS E N U M;
+END_FUNCTION : E N D WS F U N C T I O N;
+END_IF : E N D WS I F;
+END_PROPERTY : E N D WS P R O P E R T Y;
+END_SELECT : E N D WS S E L E C T;
+END_SUB : E N D WS S U B;
+END_TYPE : E N D WS T Y P E;
+END_WITH : E N D WS W I T H;
 END : E N D;
 ENUM : E N U M;
 EQV : E Q V;
 ERASE : E R A S E;
 ERROR : E R R O R;
 EVENT : E V E N T;
-EXIT_DO : E X I T ' ' D O;
-EXIT_FOR : E X I T ' ' F O R;
-EXIT_FUNCTION : E X I T ' ' F U N C T I O N;
-EXIT_PROPERTY : E X I T ' ' P R O P E R T Y;
-EXIT_SUB : E X I T ' ' S U B;
+EXIT_DO : E X I T WS D O;
+EXIT_FOR : E X I T WS F O R;
+EXIT_FUNCTION : E X I T WS F U N C T I O N;
+EXIT_PROPERTY : E X I T WS P R O P E R T Y;
+EXIT_SUB : E X I T WS S U B;
 FALSE : F A L S E;
 FILECOPY : F I L E C O P Y;
 FRIEND : F R I E N D;
@@ -784,16 +788,16 @@ LEN : L E N;
 LET : L E T;
 LIB : L I B;
 LIKE : L I K E;
-LINE_INPUT : L I N E ' ' I N P U T;
-LOCK_READ : L O C K ' ' R E A D;
-LOCK_WRITE : L O C K ' ' W R I T E;
-LOCK_READ_WRITE : L O C K ' ' R E A D ' ' W R I T E;
+LINE_INPUT : L I N E WS I N P U T;
+LOCK_READ : L O C K WS R E A D;
+LOCK_WRITE : L O C K WS W R I T E;
+LOCK_READ_WRITE : L O C K WS R E A D WS W R I T E;
 LSET : L S E T;
-MACRO_CONST : '#' C O N S T ' ';
-MACRO_IF : '#' I F ' ';
-MACRO_ELSEIF : '#' E L S E I F ' ';
-MACRO_ELSE : '#' E L S E ' ';
-MACRO_END_IF : '#' E N D ' ' I F;
+MACRO_CONST : '#' C O N S T WS;
+MACRO_IF : '#' I F WS;
+MACRO_ELSEIF : '#' E L S E I F WS;
+MACRO_ELSE : '#' E L S E WS;
+MACRO_END_IF : '#' E N D WS I F;
 ME : M E;
 MID : M I D;
 MKDIR : M K D I R;
@@ -805,23 +809,23 @@ NOT : N O T;
 NOTHING : N O T H I N G;
 NULL : N U L L;
 ON : O N;
-ON_ERROR : O N ' ' E R R O R;
-ON_LOCAL_ERROR : O N ' ' L O C A L ' ' E R R O R;
+ON_ERROR : O N WS E R R O R;
+ON_LOCAL_ERROR : O N WS L O C A L WS E R R O R;
 OPEN : O P E N;
 OPTIONAL : O P T I O N A L;
-OPTION_BASE : O P T I O N ' ' B A S E;
-OPTION_EXPLICIT : O P T I O N ' ' E X P L I C I T;
-OPTION_COMPARE : O P T I O N ' ' C O M P A R E;
-OPTION_PRIVATE_MODULE : O P T I O N ' ' P R I V A T E ' ' M O D U L E;
+OPTION_BASE : O P T I O N WS B A S E WS;
+OPTION_EXPLICIT : O P T I O N WS E X P L I C I T;
+OPTION_COMPARE : O P T I O N WS C O M P A R E WS;
+OPTION_PRIVATE_MODULE : O P T I O N WS P R I V A T E WS M O D U L E;
 OR : O R;
 OUTPUT : O U T P U T;
 PARAMARRAY : P A R A M A R R A Y;
 PRESERVE : P R E S E R V E;
 PRINT : P R I N T;
 PRIVATE : P R I V A T E;
-PROPERTY_GET : P R O P E R T Y ' ' G E T;
-PROPERTY_LET : P R O P E R T Y ' ' L E T;
-PROPERTY_SET : P R O P E R T Y ' ' S E T;
+PROPERTY_GET : P R O P E R T Y WS G E T;
+PROPERTY_LET : P R O P E R T Y WS L E T;
+PROPERTY_SET : P R O P E R T Y WS S E T;
 PTRSAFE : P T R S A F E;
 PUBLIC : P U B L I C;
 PUT : P U T;
@@ -829,7 +833,7 @@ RANDOM : R A N D O M;
 RANDOMIZE : R A N D O M I Z E;
 RAISEEVENT : R A I S E E V E N T;
 READ : R E A D;
-READ_WRITE : R E A D ' ' W R I T E;
+READ_WRITE : R E A D WS W R I T E;
 REDIM : R E D I M;
 REM : R E M;
 RESET : R E S E T;
@@ -906,10 +910,10 @@ BYTELITERAL : ('0'..'9')+;
 // identifier
 IDENTIFIER : LETTER (LETTERORDIGIT)*;
 // whitespace, line breaks, comments, ...
-LINE_CONTINUATION : ' ' '_' '\r'? '\n' -> skip;
-NEWLINE : WS? ('\r'? '\n') WS?; 
-COMMENT : WS? ('\'' | ':'? REM ' ') (LINE_CONTINUATION | ~('\n' | '\r'))* -> skip;
-WS : [ \t]+;
+LINE_CONTINUATION : [ \t] '_' '\r'? '\n' -> skip;
+NEWLINE : (':' WS) | (WS? ('\r'? '\n') WS?); 
+COMMENT : WS? ('\'' | ':'? REM WS) (LINE_CONTINUATION | ~('\n' | '\r'))* -> skip;
+WS : [ \t]+ | LINE_CONTINUATION+;
 
 
 // letters

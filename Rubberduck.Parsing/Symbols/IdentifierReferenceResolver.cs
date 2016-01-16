@@ -197,9 +197,10 @@ namespace Rubberduck.Parsing.Symbols
                     return matches.SingleOrDefault(item =>
                         item.ProjectName == libraryName
                         && _projectScopePublicModifiers.Contains(item.Accessibility)
-                        && (_moduleTypes.Contains(item.DeclarationType))
-                        || (item.DeclarationType == DeclarationType.UserDefinedType
-                            && _currentScope != null && item.ComponentName == _currentScope.ComponentName));
+                        && _moduleTypes.Contains(item.DeclarationType)
+                        || (_currentScope != null && _memberTypes.Contains(_currentScope.DeclarationType) 
+                            && item.DeclarationType == DeclarationType.UserDefinedType
+                            && item.ComponentName == _currentScope.ComponentName));
                 }
                 catch (InvalidOperationException)
                 {
@@ -856,7 +857,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
 
                 // if we're not returning a function/getter value, then there can be only one:
-                return results.SingleOrDefault();
+                return results.SingleOrDefault(item => !item.Equals(localScope));
             }
             catch (InvalidOperationException)
             {
