@@ -58,7 +58,6 @@
 *   - added a subscripts rule in procedure calls, to avoid breaking the parser with 
 *     a function call that returns an array that is immediately accessed.
 *   - added missing macroConstStmt (#CONST) rule.
-*   - amended block rule to support instruction separators.
 *   - amended selectCaseStmt rules to support all valid syntaxes.
 *   - blockStmt is now illegal in declarations section.
 *   - added ON_LOCAL_ERROR token, to support legacy ON LOCAL ERROR statements.
@@ -67,6 +66,9 @@
 *     modified multi-word lexer rules to use WS lexer token instead of ' '; this makes
 *     the grammar support "Option _\n Explicit" and other keywords being specified on multiple lines.
 *	- modified moduleOption rules to account for WS token in corresponding lexer rules.
+*   - modified NEWLINE lexer rule to properly support instructions separator (':').
+*   - tightened DATELITERAL lexer rule to the format enforced by the VBE, because "#fn: Close #" 
+*     in "Dim fn: fn = FreeFile: Open "filename" For Output As #fn: Close #fn" was picked up as a date literal.
 *
 *======================================================================================
 *
@@ -303,7 +305,7 @@ forNextStmt :
 ; 
 
 functionStmt :
-	(visibility WS)? (STATIC WS)? FUNCTION WS ambiguousIdentifier typeHint? (WS? argList)? (WS asTypeClause)? NEWLINE+
+	(visibility WS)? (STATIC WS)? FUNCTION WS? ambiguousIdentifier typeHint? (WS? argList)? (WS? asTypeClause)? NEWLINE+
 	(block NEWLINE+)?
 	END_FUNCTION
 ;
@@ -479,7 +481,7 @@ setStmt : SET WS implicitCallStmt_InStmt WS? EQ WS? valueStmt;
 stopStmt : STOP;
 
 subStmt : 
-	(visibility WS)? (STATIC WS)? SUB WS ambiguousIdentifier (WS? argList)? NEWLINE+ 
+	(visibility WS)? (STATIC WS)? SUB WS? ambiguousIdentifier (WS? argList)? NEWLINE+ 
 	(block NEWLINE+)? 
 	END_SUB
 ;
@@ -561,7 +563,7 @@ withStmt :
 writeStmt : WRITE WS fileNumber WS? ',' (WS? outputList)?;
 
 
-fileNumber : '#'? (ambiguousIdentifier | valueStmt);
+fileNumber : '#'? valueStmt;
 
 
 // complex call statements ----------------------------------
@@ -625,7 +627,7 @@ dictionaryCallStmt : '!' ambiguousIdentifier typeHint?;
 
 argList : LPAREN (WS? arg (WS? ',' WS? arg)*)? WS? RPAREN;
 
-arg : (OPTIONAL WS)? ((BYVAL | BYREF) WS)? (PARAMARRAY WS)? ambiguousIdentifier (WS? LPAREN WS? RPAREN)? (WS asTypeClause)? (WS? argDefaultValue)?;
+arg : (OPTIONAL WS)? ((BYVAL | BYREF) WS)? (PARAMARRAY WS)? ambiguousIdentifier (WS? LPAREN WS? RPAREN)? (WS? asTypeClause)? (WS? argDefaultValue)?;
 
 argDefaultValue : EQ WS? (literal | ambiguousIdentifier);
 
@@ -641,7 +643,7 @@ ambiguousIdentifier :
 	| L_SQUARE_BRACKET (.+)+ R_SQUARE_BRACKET
 ;
 
-asTypeClause : AS WS (NEW WS)? type (WS fieldLength)?;
+asTypeClause : AS WS? (NEW WS)? type (WS? fieldLength)?;
 
 baseType : BOOLEAN | BYTE | COLLECTION | DATE | DOUBLE | INTEGER | LONG | SINGLE | STRING | VARIANT;
 
@@ -902,7 +904,7 @@ R_SQUARE_BRACKET : ']';
 
 // literals
 STRINGLITERAL : '"' (~["\r\n] | '""')* '"';
-DATELITERAL : '#' (~[#\r\n])* '#';
+DATELITERAL : '#' [0-9]+ '/' [0-9]+ '/' [0-9]+ '#';
 COLORLITERAL : '&H' [0-9A-F]+ '&'?;
 INTEGERLITERAL : (PLUS|MINUS)? ('0'..'9')+ ( ('e' | 'E') INTEGERLITERAL)* ('#' | '&')?;
 DOUBLELITERAL : (PLUS|MINUS)? ('0'..'9')* '.' ('0'..'9')+ ( ('e' | 'E') (PLUS|MINUS)? ('0'..'9')+)* ('#' | '&')?;
@@ -910,10 +912,10 @@ BYTELITERAL : ('0'..'9')+;
 // identifier
 IDENTIFIER : LETTER (LETTERORDIGIT)*;
 // whitespace, line breaks, comments, ...
-LINE_CONTINUATION : [ \t] '_' '\r'? '\n' -> skip;
-NEWLINE : (':' WS) | (WS? ('\r'? '\n') WS?); 
+LINE_CONTINUATION : [ \t]+ '_' '\r'? '\n' -> skip;
+NEWLINE : (':' WS?) | (WS? ('\r'? '\n') WS?); 
 COMMENT : WS? ('\'' | ':'? REM WS) (LINE_CONTINUATION | ~('\n' | '\r'))* -> skip;
-WS : [ \t]+ | LINE_CONTINUATION+;
+WS : ([ \t] | LINE_CONTINUATION)+;
 
 
 // letters

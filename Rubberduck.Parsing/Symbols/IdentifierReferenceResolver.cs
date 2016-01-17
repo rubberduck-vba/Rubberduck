@@ -771,11 +771,6 @@ namespace Rubberduck.Parsing.Symbols
             ResolveInternal(context.ambiguousIdentifier(), _currentScope);
         }
 
-        public void Resolve(VBAParser.FileNumberContext context)
-        {
-            ResolveInternal(context.ambiguousIdentifier(), _currentScope);
-        }
-
         public void Resolve(VBAParser.ArgDefaultValueContext context)
         {
             ResolveInternal(context.ambiguousIdentifier(), _currentScope);
