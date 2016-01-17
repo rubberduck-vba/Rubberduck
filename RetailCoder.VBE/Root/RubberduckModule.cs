@@ -10,6 +10,7 @@ using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
+using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;

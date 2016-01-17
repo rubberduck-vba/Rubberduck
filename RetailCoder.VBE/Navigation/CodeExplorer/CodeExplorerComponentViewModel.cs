@@ -1,9 +1,14 @@
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
+using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 
-namespace Rubberduck.UI.CodeExplorer
+namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerComponentViewModel : ViewModelBase
     {
@@ -29,14 +34,14 @@ namespace Rubberduck.UI.CodeExplorer
         public CodeExplorerComponentViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
         {
             _declaration = declaration;
-            _members = declarations.GroupBy(item => item.Scope)
-                .SelectMany(grouping =>
-                    grouping.Where(item => item.ParentDeclaration != null && item.ParentDeclaration.Equals(declaration) &&  MemberTypes.Contains(item.DeclarationType))
-                        .Select(item => new CodeExplorerMemberViewModel(item, grouping)))
-                        .OrderBy(item => item.Name)
-                        .ToList();
-
-            _customFolder = declaration.CustomFolder;
+            _members = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
+                            grouping.Where(item => item.ParentDeclaration != null
+                                                && MemberTypes.Contains(item.DeclarationType)
+                                                && item.ParentDeclaration.Equals(declaration))
+                                .OrderBy(item => item.QualifiedSelection.Selection.StartLine)
+                                .Select(item => new CodeExplorerMemberViewModel(item, grouping)))
+                                .ToList();
+            
         }
 
         public IEnumerable<CodeExplorerMemberViewModel> Members { get { return _members; } }
@@ -55,10 +60,6 @@ namespace Rubberduck.UI.CodeExplorer
 
         public string Name { get { return _declaration.IdentifierName; } }
 
-        private readonly string _customFolder;
-        public string CustomFolder { get { return _customFolder; } }
-
-        public string TypeFolder { get { return DeclarationType.ToString(); } }
 
         private vbext_ComponentType ComponentType { get { return _declaration.QualifiedName.QualifiedModuleName.Component.Type; } }
 
@@ -70,7 +71,7 @@ namespace Rubberduck.UI.CodeExplorer
             { vbext_ComponentType.vbext_ct_MSForm, DeclarationType.UserForm }
         };
 
-        public DeclarationType DeclarationType
+        private DeclarationType DeclarationType
         {
             get
             {
@@ -83,5 +84,15 @@ namespace Rubberduck.UI.CodeExplorer
                 return result;
             }
         }
+
+        private static readonly IDictionary<DeclarationType,BitmapImage> Icons = new Dictionary<DeclarationType, BitmapImage>
+        {
+            { DeclarationType.Class, GetImageSource(resx.VSObject_Class) },
+            { DeclarationType.Module, GetImageSource(resx.VSObject_Module) },
+            { DeclarationType.UserForm, GetImageSource(resx.VSProject_form) },
+            { DeclarationType.Document, GetImageSource(resx.document_office) }
+        };
+
+        public BitmapImage Icon { get { return Icons[DeclarationType]; } }
     }
 }

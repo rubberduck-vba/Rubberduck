@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Properties;
+using Rubberduck.UI;
 using Rubberduck.UI.Command;
 
-namespace Rubberduck.UI.CodeExplorer
+namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerViewModel : ViewModelBase
     {
@@ -73,7 +76,7 @@ namespace Rubberduck.UI.CodeExplorer
         private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
         {
             IsBusy = e.State == ParserState.Parsing;
-            if (e.State != ParserState.Resolving) // Parsed state is too volatile
+            if (e.State != ParserState.Resolving) // ParserState.Parsed state is too volatile
             {
                 return;
             }

@@ -220,12 +220,6 @@ namespace Rubberduck.Parsing.Symbols
             _resolver.Resolve(context);
         }
 
-        public override void EnterFileNumber(VBAParser.FileNumberContext context)
-        {
-            _token.ThrowIfCancellationRequested();
-            _resolver.Resolve(context);
-        }
-
         public override void EnterArgDefaultValue(VBAParser.ArgDefaultValueContext context)
         {
             _token.ThrowIfCancellationRequested();

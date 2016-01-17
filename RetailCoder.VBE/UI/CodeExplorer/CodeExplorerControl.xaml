@@ -3,13 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:explorer="clr-namespace:Rubberduck.UI.CodeExplorer"
+             xmlns:props="clr-namespace:Rubberduck.Properties"
              xmlns:symbols="clr-namespace:Rubberduck.Parsing.Symbols;assembly=Rubberduck.Parsing"
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance explorer:CodeExplorerViewModel}">
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeExplorer:CodeExplorerViewModel}">
     <UserControl.Resources>
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
@@ -84,44 +85,72 @@
             <Setter Property="Margin" Value="4" />
         </Style>
         
+        <Style x:Key="BlueFolderStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">
+            <Setter Property="Source" Value="{Binding BlueFolderCollapsed}" />
+            <Style.Triggers>
+                <!-- thanks to http://stackoverflow.com/a/5797323/1188513 -->
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Path=IsExpanded}" Value="True">
+                    <Setter Property="Source" Value="{Binding BlueFolderExpanded}" />
+                </DataTrigger>            
+            </Style.Triggers>
+        </Style>
+        
         <DataTemplate x:Key="MemberItemTemplate"
-                      DataType="explorer:CodeExplorerMemberViewModel">
-            <TextBlock Text="{Binding Name}" />
+                      DataType="codeExplorer:CodeExplorerMemberViewModel">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="{Binding Icon}" Style="{StaticResource IconStyle}" />
+                <TextBlock Text="{Binding Name}" Margin="4" />
+            </StackPanel>
         </DataTemplate>
         
         <HierarchicalDataTemplate x:Key="ComponentItemTemplate"
-                                  DataType="explorer:CodeExplorerMemberViewModel"
+                                  DataType="codeExplorer:CodeExplorerMemberViewModel"
                                   ItemsSource="{Binding Members}"
                                   ItemTemplate="{StaticResource MemberItemTemplate}">
-            <TextBlock Text="{Binding Name}" />
+            <StackPanel Orientation="Horizontal">
+                <Image Source="{Binding Icon}" Style="{StaticResource IconStyle}" />
+                <TextBlock Text="{Binding Name}" Margin="4" />
+            </StackPanel>
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate x:Key="CustomFolderItemTemplate" 
-                                  DataType="explorer:CodeExplorerCustomFolderViewModel"
+                                  DataType="codeExplorer:CodeExplorerCustomFolderViewModel"
                                   ItemsSource="{Binding Components}"
                                   ItemTemplate="{StaticResource ComponentItemTemplate}">
-            <TextBlock Text="{Binding Name}" />
+            <StackPanel Orientation="Horizontal">
+                <Image Style="{StaticResource BlueFolderStyle}" />
+                <TextBlock Text="{Binding Name}" Margin="4" />
+            </StackPanel>
         </HierarchicalDataTemplate>
         
         <HierarchicalDataTemplate x:Key="ProjectItemTemplate" 
-                                  DataType="explorer:CodeExplorerComponentViewModel"
+                                  DataType="codeExplorer:CodeExplorerComponentViewModel"
                                   ItemsSource="{Binding Members}"
                                   ItemTemplate="{StaticResource ComponentItemTemplate}">
-            <TextBlock Text="{Binding Name}" />
+            <StackPanel Orientation="Horizontal">
+                <Image Source="{Binding Icon}" Style="{StaticResource IconStyle}" />
+                <TextBlock Text="{Binding Name}" Margin="4" />
+            </StackPanel>
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate x:Key="CodeExplorerComponentsTemplate" 
-                                  DataType="explorer:CodeExplorerProjectViewModel"
+                                  DataType="codeExplorer:CodeExplorerProjectViewModel"
                                   ItemsSource="{Binding Components}"
                                   ItemTemplate="{StaticResource ProjectItemTemplate}">
-            <TextBlock Text="{Binding Name}" />
+            <StackPanel Orientation="Horizontal">
+                <Image Source="{Binding Icon}" Style="{StaticResource IconStyle}" />
+                <TextBlock Text="{Binding Name}" Margin="4" />
+            </StackPanel>
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate x:Key="CodeExplorerCustomFoldersTemplate" 
-                                  DataType="explorer:CodeExplorerProjectViewModel"
+                                  DataType="codeExplorer:CodeExplorerProjectViewModel"
                                   ItemsSource="{Binding CustomFolders}"
                                   ItemTemplate="{StaticResource CustomFolderItemTemplate}">
-            <TextBlock Text="{Binding Name}" />
+            <StackPanel Orientation="Horizontal">
+                <Image Source="{Binding Icon}" Style="{StaticResource IconStyle}" />
+                <TextBlock Text="{Binding Name}" Margin="4" />
+            </StackPanel>
         </HierarchicalDataTemplate>
 
     </UserControl.Resources>
@@ -160,7 +189,7 @@
 
         </ToolBar>
         
-        <TreeView Grid.Row="1" x:Name="ExplorerTreeView"
+        <TreeView Grid.Row="1"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
                   MouseDoubleClick="TreeView_OnMouseDoubleClick"

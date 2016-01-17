@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
+using Rubberduck.Navigation.CodeExplorer;
 
 namespace Rubberduck.UI.CodeExplorer
 {
