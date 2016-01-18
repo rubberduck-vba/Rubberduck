@@ -315,6 +315,7 @@
     <Compile Include="Inspections\WriteOnlyPropertyInspection.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspection.cs" />
     <Compile Include="Navigation\CodeExplorer\CodeExplorerCustomFolderViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerItemViewModel.cs" />
     <Compile Include="Navigation\NavigateAllReferences.cs" />
     <Compile Include="Navigation\NavigateAllImplementations.cs" />
     <Compile Include="Navigation\IDeclarationNavigator.cs" />
