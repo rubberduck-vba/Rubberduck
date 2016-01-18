@@ -110,7 +110,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 newLines = newLines
                         .Remove(lastIndexOfColon, numberOfCharsToRemove)
                         .Insert(lastIndexOfColon, Environment.NewLine);
-                
+
                 lastIndexOfColon = newLinesWithoutStringLiterals.LastIndexOf(':');
             }
 
@@ -212,7 +212,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
              *          dizz as Double _
              *         , iizz as Integer
              */
-            
+
             var commaToRemove = numParams == indexRemoved ? indexRemoved - 1 : indexRemoved;
 
             return str.Remove(str.NthIndexOf(',', commaToRemove), 1);
