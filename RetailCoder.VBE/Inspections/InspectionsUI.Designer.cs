@@ -628,6 +628,39 @@ namespace Rubberduck.Inspections {
                 return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionQuickFix", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Declaration '{0}' is self-assigned
+        /// </summary>
+        internal static string SelfAssignedDeclarationInspection
+        {
+            get
+            {
+                return ResourceManager.GetString("SelfAssignedDeclarationInspection", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A declaration should not be self-assigned.
+        /// </summary>
+        internal static string SelfAssignedDeclarationInspectionMeta
+        {
+            get
+            {
+                return ResourceManager.GetString("SelfAssignedDeclarationInspectionMeta", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Self-assigned property
+        /// </summary>
+        internal static string SelfAssignedDeclarationInspectionName
+        {
+            get
+            {
+                return ResourceManager.GetString("SelfAssignedDeclarationInspectionName", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to This is likely a bug. A variable is being referred to, but is never assigned..
