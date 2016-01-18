@@ -371,4 +371,13 @@
   <data name="SelfAssignedDeclarationInspectionName" xml:space="preserve">
     <value>Self-assigned property</value>
   </data>
+  <data name="AssignmentValueNeverUsedInspection" xml:space="preserve">
+    <value>Assigned value is never used</value>
+  </data>
+  <data name="AssignmentValueNeverUsedInspectionMeta" xml:space="preserve">
+    <value>Value is re-assigned before assigned value is used</value>
+  </data>
+  <data name="AssignmentValueNeverUsedInspectionName" xml:space="preserve">
+    <value>Remove unused assignment</value>
+  </data>
 </root>
