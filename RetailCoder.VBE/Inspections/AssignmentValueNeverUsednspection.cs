@@ -24,38 +24,42 @@ namespace Rubberduck.Inspections
                         declaration.DeclarationType == DeclarationType.Variable ||
                         declaration.DeclarationType == DeclarationType.Parameter).ToList();
 
-            var unassignedReferences = new List<IdentifierReference>();
-
-            foreach (var references in issues.Select(issue => issue.References
-                                                                   .OrderBy(o => ParentDeclaration(o).Scope)
-                                                                   .ThenBy(t => t.Selection.StartLine)
-                                                                   .ThenBy(t => t.Selection.StartColumn)
+            var unusedAssignments = new List<IdentifierReference>();
+            
+            foreach (var referencesByScope in issues.Select(issue => issue.References
+                                                                   .GroupBy(ParentDeclaration)
+                                                                   .Select(g => g.OrderBy(o => o.Selection.StartLine).ThenBy(t => t.Selection.StartColumn))
                                                                    .ToList()))
             {
-                var lastNonAssignmentReference = references.FindLastIndex(r => !r.IsAssignment);
-                for (var i = 1; i < references.Count; i++)
+                foreach (var references in referencesByScope.Select(r => r.ToList()))
                 {
-                    if (references[i].IsAssignment && references[i - 1].IsAssignment &&
-                        ParentDeclaration(references[i]).Scope == ParentDeclaration(references[i - 1]).Scope &&
-                        !unassignedReferences.Contains(references[i - 1]))
+                    var lastNonAssignmentReference = references.FindLastIndex(r => !r.IsAssignment);
+                    for (var i = 0; i < references.Count - 1; i++)
                     {
-                        unassignedReferences.Add(references[i - 1]);
-                    }
+                        var currentReference = references[i];
+                        var nextReference = references[i + 1];
 
-                    var isLastReferenceToFieldInScope = new[] {DeclarationType.Class, DeclarationType.Module}.Contains(
-                        references[i].Declaration.ParentDeclaration.DeclarationType) &&
-                              (i == references.Count - 1 || references[i].ParentScope != references[i + 1].ParentScope);
+                        if (currentReference.IsAssignment && nextReference.IsAssignment &&
+                            !unusedAssignments.Contains(currentReference))
+                        {
+                            unusedAssignments.Add(currentReference);
+                        }
 
-                    if (!isLastReferenceToFieldInScope &&
-                        i > lastNonAssignmentReference &&
-                        !unassignedReferences.Contains(references[i]))
-                    {
-                        unassignedReferences.Add(references[i]);
+                        var isLastReferenceToFieldInScope = new[] {DeclarationType.Class, DeclarationType.Module}
+                                                                .Contains(currentReference.Declaration.ParentDeclaration.DeclarationType) &&
+                                                            i + 1 == references.Count - 1;  // here, we are checking the next reference
+
+                        if (!isLastReferenceToFieldInScope &&
+                            i + 1 > lastNonAssignmentReference &&
+                            !unusedAssignments.Contains(nextReference))
+                        {
+                            unusedAssignments.Add(nextReference);
+                        }
                     }
                 }
             }
 
-            return unassignedReferences.Select(r => new AssignmentValueNeverUsedInspectionResult(this, r));
+            return unusedAssignments.Select(r => new AssignmentValueNeverUsedInspectionResult(this, r));
         }
 
         private Declaration ParentDeclaration(IdentifierReference reference)
