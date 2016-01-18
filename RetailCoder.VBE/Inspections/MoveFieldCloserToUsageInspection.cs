@@ -57,7 +57,11 @@ namespace Rubberduck.Inspections
 
         private Declaration ParentDeclaration(IdentifierReference reference)
         {
-            return UserDeclarations.Single(d => d.Scope == reference.ParentScope && d.Project == reference.QualifiedModuleName.Project);
+            var declarationTypes = new[] {DeclarationType.Function, DeclarationType.Procedure, DeclarationType.Property};
+
+            return UserDeclarations.SingleOrDefault(d =>
+                        d.Scope == reference.ParentScope && declarationTypes.Contains(d.DeclarationType) &&
+                        d.Project == reference.QualifiedModuleName.Project);
         }
     }
 }
