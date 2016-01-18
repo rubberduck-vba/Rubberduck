@@ -124,20 +124,17 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             var currentLine = referenceSelection.StartLine;
 
             var codeLine = module.Lines[currentLine, 1].StripStringLiterals();
-            while (codeLine.IndexOf(':') == -1)
+            while (codeLine.Remove(referenceSelection.StartColumn).LastIndexOf(':') == -1)
             {
                 codeLine = module.Lines[--currentLine, 1].StripStringLiterals();
                 if (!codeLine.EndsWith(" _" + Environment.NewLine))
                 {
                     return new Selection(currentLine + 1, 1, currentLine + 1, 1);
                 }
-                if (codeLine.IndexOf(':') != -1)
-                {
-                    return new Selection(currentLine, codeLine.IndexOf(':') + 1, currentLine, codeLine.IndexOf(':') + 1);
-                }
             }
 
-            return new Selection(currentLine, codeLine.IndexOf(':') + 1, currentLine, codeLine.IndexOf(':') + 1);
+            var index = codeLine.Remove(referenceSelection.StartColumn).LastIndexOf(':') + 1;
+            return new Selection(currentLine, index, currentLine, index);
         }
 
         private string GetDeclarationString(Declaration target)
