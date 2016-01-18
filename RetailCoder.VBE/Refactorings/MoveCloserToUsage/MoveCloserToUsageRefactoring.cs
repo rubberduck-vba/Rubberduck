@@ -123,17 +123,24 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
             var currentLine = referenceSelection.StartLine;
 
-            var codeLine = module.Lines[currentLine, 1].StripStringLiterals();
-            while (codeLine.Remove(referenceSelection.StartColumn).LastIndexOf(':') == -1)
+            var codeLine = module.Lines[currentLine, 1].StripStringLiterals().Remove(referenceSelection.StartColumn);
+
+            if (codeLine.LastIndexOf(':') == -1 &&
+                !module.Lines[currentLine - 1, 1].EndsWith(" _"))
+            {
+                return new Selection(currentLine, 1, currentLine, 1);
+            }
+
+            while (codeLine.LastIndexOf(':') == -1 && module.Lines[currentLine - 1, 1].EndsWith(" _"))
             {
                 codeLine = module.Lines[--currentLine, 1].StripStringLiterals();
-                if (!codeLine.EndsWith(" _" + Environment.NewLine))
+                if (!codeLine.EndsWith(" _"))
                 {
                     return new Selection(currentLine + 1, 1, currentLine + 1, 1);
                 }
             }
 
-            var index = codeLine.Remove(referenceSelection.StartColumn).LastIndexOf(':') + 1;
+            var index = codeLine.LastIndexOf(':') == -1 ? 1 : codeLine.LastIndexOf(':') + 1;
             return new Selection(currentLine, index, currentLine, index);
         }
 

@@ -92,7 +92,7 @@ namespace Rubberduck.Inspections
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Assigned value is never used.
+        ///   Looks up a localized string similar to Value assigned to &apos;{0}&apos; is never used.
         /// </summary>
         internal static string AssignmentValueNeverUsedInspection
         {
@@ -121,6 +121,17 @@ namespace Rubberduck.Inspections
             get
             {
                 return ResourceManager.GetString("AssignmentValueNeverUsedInspectionName", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove unused assignment to &apos;{0}&apos;.
+        /// </summary>
+        internal static string AssignmentValueNeverUsedInspectionQuickFix
+        {
+            get
+            {
+                return ResourceManager.GetString("AssignmentValueNeverUsedInspectionQuickFix", resourceCulture);
             }
         }
 

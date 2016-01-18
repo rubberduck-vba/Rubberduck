@@ -372,12 +372,15 @@
     <value>Self-assigned property</value>
   </data>
   <data name="AssignmentValueNeverUsedInspection" xml:space="preserve">
-    <value>Assigned value is never used</value>
+    <value>Value assigned to '{0}' is never used</value>
   </data>
   <data name="AssignmentValueNeverUsedInspectionMeta" xml:space="preserve">
     <value>Value is re-assigned before assigned value is used</value>
   </data>
   <data name="AssignmentValueNeverUsedInspectionName" xml:space="preserve">
     <value>Remove unused assignment</value>
+  </data>
+  <data name="AssignmentValueNeverUsedInspectionQuickFix" xml:space="preserve">
+    <value>Remove unused assignment to '{0}'</value>
   </data>
 </root>

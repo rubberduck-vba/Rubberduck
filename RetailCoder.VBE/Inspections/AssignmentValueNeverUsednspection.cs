@@ -40,10 +40,15 @@ namespace Rubberduck.Inspections
                         !unassignedReferences.Contains(references[i - 1]))
                     {
                         unassignedReferences.Add(references[i - 1]);
-                        continue;
                     }
 
-                    if (lastNonAssignmentReference != -1 && i > lastNonAssignmentReference && !unassignedReferences.Contains(references[i]))
+                    var isLastReferenceToFieldInScope = new[] {DeclarationType.Class, DeclarationType.Module}.Contains(
+                        references[i].Declaration.ParentDeclaration.DeclarationType) &&
+                              (i == references.Count - 1 || references[i].ParentScope != references[i + 1].ParentScope);
+
+                    if (!isLastReferenceToFieldInScope &&
+                        i > lastNonAssignmentReference &&
+                        !unassignedReferences.Contains(references[i]))
                     {
                         unassignedReferences.Add(references[i]);
                     }
