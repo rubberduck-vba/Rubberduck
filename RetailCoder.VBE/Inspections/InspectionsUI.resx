@@ -362,4 +362,13 @@
     <value>Property '{0}' has no getter</value>
     <comment>{0} Property name</comment>
   </data>
+  <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
+    <value>Declaration '{0}' is self-assigned</value>
+  </data>
+  <data name="SelfAssignedDeclarationInspectionMeta" xml:space="preserve">
+    <value>A declaration should not be self-assigned.</value>
+  </data>
+  <data name="SelfAssignedDeclarationInspectionName" xml:space="preserve">
+    <value>Self-assigned property</value>
+  </data>
 </root>
