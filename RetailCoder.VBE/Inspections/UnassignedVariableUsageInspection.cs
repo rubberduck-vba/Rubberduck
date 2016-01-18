@@ -21,6 +21,9 @@ namespace Rubberduck.Inspections
         {
             var usages = UserDeclarations.Where(declaration => 
                 declaration.DeclarationType == DeclarationType.Variable
+                && !UserDeclarations.Any(d => d.DeclarationType == DeclarationType.UserDefinedType
+                    && d.IdentifierName == declaration.AsTypeName)
+                && !declaration.IsSelfAssigned
                 && !declaration.References.Any(reference => reference.IsAssignment))
                 .SelectMany(declaration => declaration.References)
                 .Where(usage => !usage.IsInspectionDisabled(AnnotationName));

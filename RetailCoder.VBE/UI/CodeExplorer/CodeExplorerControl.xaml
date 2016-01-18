@@ -79,79 +79,54 @@
             </Style.Resources>
         </Style>
 
+        
         <Style x:Key="IconStyle" TargetType="Image">
             <Setter Property="Height" Value="16" />
             <Setter Property="Width" Value="16" />
-            <Setter Property="Margin" Value="4" />
+            <Setter Property="Margin" Value="2,0,2,0" />
         </Style>
         
-        <Style x:Key="BlueFolderStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">
-            <Setter Property="Source" Value="{Binding BlueFolderCollapsed}" />
+        <Style x:Key="TreeViewItemStyle" TargetType="TextBlock">
+            <Setter Property="Text" Value="{Binding Name}" />
+            <Setter Property="Margin" Value="2,0,2,0" />
+        </Style>
+        
+        <Style x:Key="TreeViewIconStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">
+            <Setter Property="Source" Value="{Binding CollapsedIcon}" />
             <Style.Triggers>
-                <!-- thanks to http://stackoverflow.com/a/5797323/1188513 -->
+                <!-- thanks to H.B. on http://stackoverflow.com/a/5797323/1188513 -->
                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Path=IsExpanded}" Value="True">
-                    <Setter Property="Source" Value="{Binding BlueFolderExpanded}" />
-                </DataTrigger>            
+                    <Setter Property="Source" Value="{Binding ExpandedIcon}" />
+                </DataTrigger>
             </Style.Triggers>
         </Style>
-        
-        <DataTemplate x:Key="MemberItemTemplate"
-                      DataType="codeExplorer:CodeExplorerMemberViewModel">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="{Binding Icon}" Style="{StaticResource IconStyle}" />
-                <TextBlock Text="{Binding Name}" Margin="4" />
-            </StackPanel>
-        </DataTemplate>
-        
-        <HierarchicalDataTemplate x:Key="ComponentItemTemplate"
-                                  DataType="codeExplorer:CodeExplorerMemberViewModel"
-                                  ItemsSource="{Binding Members}"
-                                  ItemTemplate="{StaticResource MemberItemTemplate}">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="{Binding Icon}" Style="{StaticResource IconStyle}" />
-                <TextBlock Text="{Binding Name}" Margin="4" />
-            </StackPanel>
-        </HierarchicalDataTemplate>
 
-        <HierarchicalDataTemplate x:Key="CustomFolderItemTemplate" 
-                                  DataType="codeExplorer:CodeExplorerCustomFolderViewModel"
-                                  ItemsSource="{Binding Components}"
-                                  ItemTemplate="{StaticResource ComponentItemTemplate}">
+        <HierarchicalDataTemplate DataType="codeExplorer:CodeExplorerItemViewModel"
+                                  ItemsSource="{Binding Items}">
             <StackPanel Orientation="Horizontal">
-                <Image Style="{StaticResource BlueFolderStyle}" />
-                <TextBlock Text="{Binding Name}" Margin="4" />
+                <Image Style="{StaticResource TreeViewIconStyle}" />
+                <TextBlock Style="{StaticResource TreeViewItemStyle}" />
             </StackPanel>
         </HierarchicalDataTemplate>
         
-        <HierarchicalDataTemplate x:Key="ProjectItemTemplate" 
-                                  DataType="codeExplorer:CodeExplorerComponentViewModel"
-                                  ItemsSource="{Binding Members}"
-                                  ItemTemplate="{StaticResource ComponentItemTemplate}">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="{Binding Icon}" Style="{StaticResource IconStyle}" />
-                <TextBlock Text="{Binding Name}" Margin="4" />
-            </StackPanel>
-        </HierarchicalDataTemplate>
-
-        <HierarchicalDataTemplate x:Key="CodeExplorerComponentsTemplate" 
+        <HierarchicalDataTemplate x:Key="CodeExplorerTemplate" 
                                   DataType="codeExplorer:CodeExplorerProjectViewModel"
-                                  ItemsSource="{Binding Components}"
-                                  ItemTemplate="{StaticResource ProjectItemTemplate}">
+                                  ItemsSource="{Binding Items}">
             <StackPanel Orientation="Horizontal">
-                <Image Source="{Binding Icon}" Style="{StaticResource IconStyle}" />
-                <TextBlock Text="{Binding Name}" Margin="4" />
+                <Image Style="{StaticResource TreeViewIconStyle}" />
+                <TextBlock Style="{StaticResource TreeViewItemStyle}" />
             </StackPanel>
         </HierarchicalDataTemplate>
 
-        <HierarchicalDataTemplate x:Key="CodeExplorerCustomFoldersTemplate" 
-                                  DataType="codeExplorer:CodeExplorerProjectViewModel"
-                                  ItemsSource="{Binding CustomFolders}"
-                                  ItemTemplate="{StaticResource CustomFolderItemTemplate}">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="{Binding Icon}" Style="{StaticResource IconStyle}" />
-                <TextBlock Text="{Binding Name}" Margin="4" />
-            </StackPanel>
-        </HierarchicalDataTemplate>
+        <Style x:Key="CodeExplorerTreeViewStyle" TargetType="TreeView">
+            <Setter Property="ItemTemplate" Value="{StaticResource CodeExplorerTemplate}" />
+            <Setter Property="ItemsSource" Value="{Binding Projects}" />
+            <!--<Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=ToggleFoldersButton, Path=IsPressed}" Value="True">
+                    <Setter Property="ItemTemplate" Value="{StaticResource CodeExplorerCustomFoldersTemplate}" />
+                </DataTrigger>
+            </Style.Triggers>-->
+        </Style>
 
     </UserControl.Resources>
 
@@ -177,13 +152,13 @@
                 <Image Height="16" Source="../../Resources/Microsoft/PNG/DisplayFullSignature_13393_32.png" />
             </ToggleButton>
 
-            <ToggleButton IsEnabled="{Binding CanRefresh}" ToolTip="Toggle custom folders">
+            <!--<ToggleButton x:Name="ToggleFoldersButton" IsEnabled="{Binding CanRefresh}" ToolTip="Toggle custom folders">
                 <Image Height="16" Source="../../Resources/blue-folder-horizontal.png" />
             </ToggleButton>
 
             <ToggleButton IsEnabled="{Binding CanRefresh}" ToolTip="Toggle component type folders">
                 <Image Height="16" Source="../../Resources/folder-horizontal.png" />
-            </ToggleButton>
+            </ToggleButton>-->
             
             <Separator />
 
@@ -193,8 +168,7 @@
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
                   MouseDoubleClick="TreeView_OnMouseDoubleClick"
-                  ItemsSource="{Binding Projects}"
-                  ItemTemplate="{StaticResource CodeExplorerCustomFoldersTemplate}">
+                  Style="{StaticResource CodeExplorerTreeViewStyle}">
             <i:Interaction.Behaviors>
                 <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
