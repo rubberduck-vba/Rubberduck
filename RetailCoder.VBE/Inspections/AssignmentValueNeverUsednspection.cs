@@ -18,9 +18,7 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var issues =
-                UserDeclarations.Where(
-                    declaration =>
+            var issues = UserDeclarations.Where(declaration =>
                         declaration.DeclarationType == DeclarationType.Variable ||
                         declaration.DeclarationType == DeclarationType.Parameter).ToList();
 
@@ -45,11 +43,11 @@ namespace Rubberduck.Inspections
                             unusedAssignments.Add(currentReference);
                         }
 
-                        var isLastReferenceToFieldInScope = new[] {DeclarationType.Class, DeclarationType.Module}
+                        var isLastAssignmentToFieldInScope = new[] {DeclarationType.Class, DeclarationType.Module}
                                                                 .Contains(currentReference.Declaration.ParentDeclaration.DeclarationType) &&
                                                             i + 1 == references.Count - 1;  // here, we are checking the next reference
 
-                        if (!isLastReferenceToFieldInScope &&
+                        if (!isLastAssignmentToFieldInScope &&
                             i + 1 > lastNonAssignmentReference &&
                             !unusedAssignments.Contains(nextReference))
                         {
