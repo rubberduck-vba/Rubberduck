@@ -284,7 +284,10 @@ namespace Rubberduck.Parsing.Symbols
             var identifierName = callSiteContext.GetText();
             if (identifierName.StartsWith("[") && identifierName.EndsWith("]"))
             {
-                identifierName = identifierName.Substring(1, identifierName.Length - 2);
+                // square-bracketed identifier may contain a '!' symbol; identifier name is at the left of it.
+                identifierName = identifierName.Substring(1, identifierName.Length - 2)/*.Split('!').First()*/;
+                // problem, is that IdentifierReference should work off IDENTIFIER tokens, not AmbiguousIdentifierContext.
+                // not sure what the better fix is. 
             }
 
             var sibling = parentContext.ChildCount > 1 ? parentContext.GetChild(1) : null;

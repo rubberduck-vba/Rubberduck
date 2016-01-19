@@ -219,7 +219,7 @@ namespace Rubberduck.Parsing.Symbols
 
             try
             {
-                var declaration = ((dynamic)Context); // Context is AmbiguousIdentifier - parent is the declaration sub-statement where the array parens are
+                var declaration = (dynamic)Context;
                 return declaration.LPAREN() != null && declaration.RPAREN() != null;
             }
             catch (RuntimeBinderException)
