@@ -282,6 +282,10 @@ namespace Rubberduck.Parsing.Symbols
 
             var parentContext = callSiteContext.Parent;
             var identifierName = callSiteContext.GetText();
+            if (identifierName.StartsWith("[") && identifierName.EndsWith("]"))
+            {
+                identifierName = identifierName.Substring(1, identifierName.Length - 2);
+            }
 
             var sibling = parentContext.ChildCount > 1 ? parentContext.GetChild(1) : null;
             var hasStringQualifier = sibling is VBAParser.TypeHintContext && sibling.GetText() == "$";
