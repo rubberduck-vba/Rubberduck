@@ -121,11 +121,6 @@
         <Style x:Key="CodeExplorerTreeViewStyle" TargetType="TreeView">
             <Setter Property="ItemTemplate" Value="{StaticResource CodeExplorerTemplate}" />
             <Setter Property="ItemsSource" Value="{Binding Projects}" />
-            <!--<Style.Triggers>
-                <DataTrigger Binding="{Binding ElementName=ToggleFoldersButton, Path=IsPressed}" Value="True">
-                    <Setter Property="ItemTemplate" Value="{StaticResource CodeExplorerCustomFoldersTemplate}" />
-                </DataTrigger>
-            </Style.Triggers>-->
         </Style>
 
     </UserControl.Resources>
@@ -151,16 +146,6 @@
             <ToggleButton IsEnabled="{Binding CanRefresh}" ToolTip="Toggle signatures">
                 <Image Height="16" Source="../../Resources/Microsoft/PNG/DisplayFullSignature_13393_32.png" />
             </ToggleButton>
-
-            <!--<ToggleButton x:Name="ToggleFoldersButton" IsEnabled="{Binding CanRefresh}" ToolTip="Toggle custom folders">
-                <Image Height="16" Source="../../Resources/blue-folder-horizontal.png" />
-            </ToggleButton>
-
-            <ToggleButton IsEnabled="{Binding CanRefresh}" ToolTip="Toggle component type folders">
-                <Image Height="16" Source="../../Resources/folder-horizontal.png" />
-            </ToggleButton>-->
-            
-            <Separator />
 
         </ToolBar>
         

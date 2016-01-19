@@ -33,6 +33,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _icon = Icons[DeclarationType];
             Items = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
                             grouping.Where(item => item.ParentDeclaration != null
+                                                && item.ParentScope == declaration.Scope
                                                 && MemberTypes.Contains(item.DeclarationType))
                                 .OrderBy(item => item.QualifiedSelection.Selection.StartLine)
                                 .Select(item => new CodeExplorerMemberViewModel(item, grouping)));

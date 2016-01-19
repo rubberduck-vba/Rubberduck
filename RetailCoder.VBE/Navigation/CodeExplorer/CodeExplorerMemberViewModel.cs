@@ -21,7 +21,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             new Dictionary<Tuple<DeclarationType, Accessibility>, BitmapImage>
             {
                 { Tuple.Create(DeclarationType.Constant, Accessibility.Private), GetImageSource(resx.VSObject_Constant_Private)},
-                { Tuple.Create(DeclarationType.Constant, Accessibility.Public), GetImageSource(resx.VSObject_Field)},
+                { Tuple.Create(DeclarationType.Constant, Accessibility.Public), GetImageSource(resx.VSObject_Constant)},
                 { Tuple.Create(DeclarationType.Enumeration, Accessibility.Public), GetImageSource(resx.VSObject_Enum)},
                 { Tuple.Create(DeclarationType.Enumeration, Accessibility.Private ), GetImageSource(resx.VSObject_EnumPrivate)},
                 { Tuple.Create(DeclarationType.EnumerationMember, Accessibility.Public), GetImageSource(resx.VSObject_EnumItem)},
@@ -69,10 +69,39 @@ namespace Rubberduck.Navigation.CodeExplorer
                 ? Accessibility.Public
                 : declaration.Accessibility;
             var key = Tuple.Create(declaration.DeclarationType, modifier);
+
+            _name = DetermineMemberName(declaration);
             _icon = Mappings[key];
         }
 
-        public override string Name { get { return _declaration.IdentifierName; } }
+        private readonly string _name;
+        public override string Name { get { return _name; } }
+
+        private static string DetermineMemberName(Declaration declaration)
+        {
+            var type = declaration.DeclarationType;
+            switch (type)
+            {
+                case DeclarationType.PropertyGet:
+                    return declaration.IdentifierName + " (Get)";
+                case DeclarationType.PropertyLet:
+                    return declaration.IdentifierName + " (Let)";
+                case DeclarationType.PropertySet:
+                    return declaration.IdentifierName + " (Set)";
+                case DeclarationType.Variable:
+                    if (declaration.IsArray())
+                    {
+                        return declaration.IdentifierName + "()";
+                    }
+                    return declaration.IdentifierName;
+                case DeclarationType.Constant:
+                    var valuedDeclaration = (ValuedDeclaration)declaration;
+                    return valuedDeclaration.IdentifierName + " = " + valuedDeclaration.Value;
+
+                default:
+                    return declaration.IdentifierName;
+            }
+        }
 
         private readonly BitmapImage _icon;
         public override BitmapImage CollapsedIcon { get { return _icon; } }
