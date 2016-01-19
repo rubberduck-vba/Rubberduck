@@ -1,19 +1,15 @@
-using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerComponentViewModel : ViewModelBase
+    public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel
     {
         private readonly Declaration _declaration;
-        private readonly IEnumerable<CodeExplorerMemberViewModel> _members;
 
         private static readonly DeclarationType[] MemberTypes =
         {
@@ -34,17 +30,15 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CodeExplorerComponentViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
         {
             _declaration = declaration;
-            _members = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
+            _icon = Icons[DeclarationType];
+            Items = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
                             grouping.Where(item => item.ParentDeclaration != null
-                                                && MemberTypes.Contains(item.DeclarationType)
-                                                && item.ParentDeclaration.Equals(declaration))
+                                                && item.ParentScope == declaration.Scope
+                                                && MemberTypes.Contains(item.DeclarationType))
                                 .OrderBy(item => item.QualifiedSelection.Selection.StartLine)
-                                .Select(item => new CodeExplorerMemberViewModel(item, grouping)))
-                                .ToList();
+                                .Select(item => new CodeExplorerMemberViewModel(item, grouping)));
             
         }
-
-        public IEnumerable<CodeExplorerMemberViewModel> Members { get { return _members; } }
 
         private bool _isErrorState;
         public bool IsErrorState { get { return _isErrorState; } set { _isErrorState = value; OnPropertyChanged(); } }
@@ -58,7 +52,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public string Name { get { return _declaration.IdentifierName; } }
+        public override string Name { get { return _declaration.IdentifierName; } }
 
 
         private vbext_ComponentType ComponentType { get { return _declaration.QualifiedName.QualifiedModuleName.Component.Type; } }
@@ -93,6 +87,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             { DeclarationType.Document, GetImageSource(resx.document_office) }
         };
 
-        public BitmapImage Icon { get { return Icons[DeclarationType]; } }
+        private readonly BitmapImage _icon;
+        public override BitmapImage CollapsedIcon { get { return _icon; } }
+        public override BitmapImage ExpandedIcon { get { return _icon; } }
     }
 }

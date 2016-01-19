@@ -1,21 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerProjectViewModel : ViewModelBase
+    public class CodeExplorerProjectViewModel : CodeExplorerItemViewModel
     {
         private readonly Declaration _declaration;
-        private readonly IEnumerable<CodeExplorerComponentViewModel> _components;
-        private readonly Lazy<IEnumerable<CodeExplorerCustomFolderViewModel>> _customFolders; 
-
         private static readonly DeclarationType[] ComponentTypes =
         {
             DeclarationType.Class, 
@@ -27,32 +23,57 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CodeExplorerProjectViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
         {
             _declaration = declaration;
-            var items = declarations.ToList();
-
-            _components = items.GroupBy(item => item.ComponentName)
-                .SelectMany(grouping =>
-                    grouping.Where(item => ComponentTypes.Contains(item.DeclarationType))
-                        .Select(item => new CodeExplorerComponentViewModel(item, grouping)))
-                        .OrderBy(item => item.Name)
-                        .ToList();
-
-            _customFolders = new Lazy<IEnumerable<CodeExplorerCustomFolderViewModel>>(() => 
-                items.GroupBy(item => item.CustomFolder)
-                     .Select(grouping => new CodeExplorerCustomFolderViewModel(grouping.Key, grouping))
-                     .OrderBy(item => item.Name)
-                     .ToList());
+            Items = FindFolders(declarations.ToList(), '.');
 
             _icon = _declaration.Project.Protection == vbext_ProjectProtection.vbext_pp_locked
-                        ? GetImageSource(resx.lock__exclamation)
-                        : GetImageSource(resx.VSObject_Library);
+                ? GetImageSource(resx.lock__exclamation)
+                : GetImageSource(resx.VSObject_Library);
+        }
+
+        private static IEnumerable<CodeExplorerItemViewModel> FindFolders(IEnumerable<Declaration> declarations, char delimiter)
+        {
+            var root = new CodeExplorerCustomFolderViewModel(string.Empty, new List<Declaration>());
+
+            var items = declarations.ToList();
+            var folders = items.Where(item => ComponentTypes.Contains(item.DeclarationType))
+                               .GroupBy(item => item.CustomFolder)
+                               .OrderBy(item => item.Key);
+            foreach (var grouping in folders)
+            {
+                CodeExplorerItemViewModel node = root;
+                var parts = grouping.Key.Split(delimiter);
+                var path = new StringBuilder();
+                foreach (var part in parts)
+                {
+                    if (path.Length != 0)
+                    {
+                        path.Append(delimiter);
+                    }
+
+                    path.Append(part);
+                    var next = node.GetChild(part);
+                    if (next == null)
+                    {
+                        var currentPath = path.ToString();
+                        var parents = grouping.Where(item => ComponentTypes.Contains(item.DeclarationType) && item.CustomFolder == currentPath).ToList();
+
+                        next = new CodeExplorerCustomFolderViewModel(part, items.Where(item => 
+                            parents.Contains(item) || parents.Any(parent => 
+                                (item.ParentDeclaration != null && item.ParentDeclaration.Equals(parent)) || item.ComponentName == parent.ComponentName)));
+                        node.AddChild(next);
+                    }
+
+                    node = next;
+                }
+            }
+
+            return root.Items;
         }
 
         private readonly BitmapImage _icon;
-        public BitmapImage Icon { get { return _icon; } }
+        public override BitmapImage CollapsedIcon { get { return _icon; } }
+        public override BitmapImage ExpandedIcon { get { return _icon; } }
 
-        public IEnumerable<CodeExplorerComponentViewModel> Components { get { return _components; } }
-        public IEnumerable<CodeExplorerCustomFolderViewModel> CustomFolders { get { return _customFolders.Value; } }
-
-        public string Name { get { return _declaration.CustomFolder; } }
+        public override string Name { get { return _declaration.CustomFolder; } }
     }
 }

@@ -216,6 +216,16 @@ namespace Rubberduck.Common
                 && declaration.IdentifierName.StartsWith(control.IdentifierName + "_"));
         }
 
+        public static IEnumerable<Declaration> FindBuiltInEventHandlers(this IEnumerable<Declaration> declarations)
+        {
+            var handlerNames = declarations.Where(declaration => declaration.IsBuiltIn && declaration.DeclarationType == DeclarationType.Event)
+                                           .Select(e => e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName);
+
+            return declarations.Where(declaration => !declaration.IsBuiltIn
+                                                     && declaration.DeclarationType == DeclarationType.Procedure
+                                                     && handlerNames.Contains(declaration.IdentifierName));
+        }
+
         /// <summary>
         /// Gets the <see cref="Declaration"/> of the specified <see cref="type"/>, 
         /// at the specified <see cref="selection"/>.

@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerMemberViewModel : ViewModelBase
+    public class CodeExplorerMemberViewModel : CodeExplorerItemViewModel
     {
         private readonly Declaration _declaration;
 
@@ -22,7 +21,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             new Dictionary<Tuple<DeclarationType, Accessibility>, BitmapImage>
             {
                 { Tuple.Create(DeclarationType.Constant, Accessibility.Private), GetImageSource(resx.VSObject_Constant_Private)},
-                { Tuple.Create(DeclarationType.Constant, Accessibility.Public), GetImageSource(resx.VSObject_Field)},
+                { Tuple.Create(DeclarationType.Constant, Accessibility.Public), GetImageSource(resx.VSObject_Constant)},
                 { Tuple.Create(DeclarationType.Enumeration, Accessibility.Public), GetImageSource(resx.VSObject_Enum)},
                 { Tuple.Create(DeclarationType.Enumeration, Accessibility.Private ), GetImageSource(resx.VSObject_EnumPrivate)},
                 { Tuple.Create(DeclarationType.EnumerationMember, Accessibility.Public), GetImageSource(resx.VSObject_EnumItem)},
@@ -61,24 +60,51 @@ namespace Rubberduck.Navigation.CodeExplorer
             _declaration = declaration;
             if (declarations != null)
             {
-                _members = declarations.Where(item => SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(declaration))
-                                       .Select(item => new CodeExplorerMemberViewModel(item, null))
-                                       .OrderBy(item => item.Name);
+                Items = declarations.Where(item => SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(declaration))
+                                    .OrderBy(item => item.Selection.StartLine)
+                                    .Select(item => new CodeExplorerMemberViewModel(item, null));
             }
 
             var modifier = declaration.Accessibility == Accessibility.Global || declaration.Accessibility == Accessibility.Implicit
                 ? Accessibility.Public
                 : declaration.Accessibility;
             var key = Tuple.Create(declaration.DeclarationType, modifier);
+
+            _name = DetermineMemberName(declaration);
             _icon = Mappings[key];
         }
 
-        public string Name { get { return _declaration.IdentifierName; } }
+        private readonly string _name;
+        public override string Name { get { return _name; } }
+
+        private static string DetermineMemberName(Declaration declaration)
+        {
+            var type = declaration.DeclarationType;
+            switch (type)
+            {
+                case DeclarationType.PropertyGet:
+                    return declaration.IdentifierName + " (Get)";
+                case DeclarationType.PropertyLet:
+                    return declaration.IdentifierName + " (Let)";
+                case DeclarationType.PropertySet:
+                    return declaration.IdentifierName + " (Set)";
+                case DeclarationType.Variable:
+                    if (declaration.IsArray())
+                    {
+                        return declaration.IdentifierName + "()";
+                    }
+                    return declaration.IdentifierName;
+                case DeclarationType.Constant:
+                    var valuedDeclaration = (ValuedDeclaration)declaration;
+                    return valuedDeclaration.IdentifierName + " = " + valuedDeclaration.Value;
+
+                default:
+                    return declaration.IdentifierName;
+            }
+        }
 
         private readonly BitmapImage _icon;
-        public BitmapImage Icon { get { return _icon; } }
-
-        private readonly IEnumerable<CodeExplorerMemberViewModel> _members;
-        public IEnumerable<CodeExplorerMemberViewModel> Members { get { return _members; } }
+        public override BitmapImage CollapsedIcon { get { return _icon; } }
+        public override BitmapImage ExpandedIcon { get { return _icon; } }
     }
 }

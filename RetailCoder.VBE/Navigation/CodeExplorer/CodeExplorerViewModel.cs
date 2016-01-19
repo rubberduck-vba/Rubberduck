@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.Versioning;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
