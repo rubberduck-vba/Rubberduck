@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -576,7 +576,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Möglicherweise verwirrende implizite Untergrenze des Arrays</value>
   </data>
   <data name="OptionExplicit" xml:space="preserve">
-    <value>'Option Explicit' ist nicht angegeben</value>
+    <value>'Option Explicit' ist für '{0}' nicht angegeben</value>
   </data>
   <data name="ParameterCanBeByVal_" xml:space="preserve">
     <value>Parameter '{0}' kann als Wert übergeben werden</value>
@@ -892,9 +892,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Ducky" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="SourceControlPanel_Caption" xml:space="preserve">
     <value>Versionsverwaltung</value>
   </data>
@@ -965,7 +962,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Ausgeschlossene Änderungen</value>
   </data>
   <data name="SourceControl_FetchCommitsLabel" xml:space="preserve">
-    <value>Fetch</value>
+    <value>Holen</value>
   </data>
   <data name="SourceControl_IncludedChanges" xml:space="preserve">
     <value>Verwendete Änderungen</value>
@@ -989,10 +986,10 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Veröffentlichte Zweige</value>
   </data>
   <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
-    <value>Pull</value>
+    <value>Aktualisieren</value>
   </data>
   <data name="SourceControl_PushCommitsLabel" xml:space="preserve">
-    <value>Push</value>
+    <value>Versenden</value>
   </data>
   <data name="SourceControl_Settings" xml:space="preserve">
     <value>Einstellungen</value>
@@ -1153,9 +1150,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="QuickFix_ThisProject" xml:space="preserve">
     <value>Alle Instanzen des Projektes</value>
   </data>
-  <data name="QuickFix_ThisInstance" xml:space="preserve">
-    <value>Diese Instanz</value>
-  </data>
   <data name="QuickFix_ThisModule" xml:space="preserve">
     <value>Alle Instanzen des Modules</value>
   </data>
@@ -1211,7 +1205,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Zweig löschen</value>
   </data>
   <data name="ExtractInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Extract Interface</value>
+    <value>Rubberduck - Extrahiere Interface</value>
   </data>
   <data name="DeselectAll_Button" xml:space="preserve">
     <value>Alles abwählen</value>
@@ -1241,13 +1235,13 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Einrücken</value>
   </data>
   <data name="RefactorMenu_IntroduceField" xml:space="preserve">
-    <value>&amp;Feld einfügen</value>
+    <value>&amp;Feld einführen</value>
   </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>Die Auswahl ist keine Variable</value>
   </data>
   <data name="RefactorMenu_EncapsulateField" xml:space="preserve">
-    <value>G&amp;ekapseltes Feld</value>
+    <value>F&amp;eld kapseln</value>
   </data>
   <data name="EncapsulateField_Caption" xml:space="preserve">
     <value>Rubberduck - Gekapseltes Feld</value>
@@ -1259,10 +1253,10 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Eigenschaftsname:</value>
   </data>
   <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
-    <value>Parameter e&amp;infügen</value>
+    <value>Parameter e&amp;inführen</value>
   </data>
   <data name="EncapsulateField_TitleText" xml:space="preserve">
-    <value>Gekapseltes Feld</value>
+    <value>Feld Kapseln</value>
   </data>
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value>Eigenschaftsname</value>
@@ -1301,12 +1295,12 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Spezifizierung des Eigenschaftsnamen, Parameterverfügbarkeit und 'Setter type' notwendig.</value>
   </data>
   <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
-    <value>Un</value>
+    <value>Ungültige Auswahl.</value>
   </data>
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
     <value>Die aktuelle Auswahl ist ungültig.</value>
   </data>
   <data name="ImplementInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Implement Interface</value>
+    <value>Rubberduck - Interface Implementieren</value>
   </data>
 </root>
