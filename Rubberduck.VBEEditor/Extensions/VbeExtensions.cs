@@ -73,6 +73,8 @@ namespace Rubberduck.VBEditor.Extensions
                         return new OutlookApp();
                     case "Publisher":
                         return new PublisherApp();
+					case "AutoCAD":
+                        return new AutoCADApp();
                 }
             }
 
