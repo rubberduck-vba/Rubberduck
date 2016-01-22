@@ -158,7 +158,7 @@ namespace Rubberduck.SourceControl
                     //The default behavior of LibGit2Sharp.Repo.Commit is to throw an exception if no signature is found,
                     // but BuildSignature() does not throw if a signature is not found, it returns "unknown" instead.
                     // so we pass a signature that won't throw along to the commit.
-                    repo.Commit("Intial Commit", GetSignature());
+                    repo.Commit("Intial Commit", GetSignature(repo));
                 }
                 catch(LibGit2SharpException ex)
                 {
@@ -427,6 +427,11 @@ namespace Rubberduck.SourceControl
             {
                 throw new SourceControlException("Branch deletion failed.", ex);
             }
+        }
+
+        private Signature GetSignature(LibGit2Sharp.IRepository repo)
+        {
+            return repo.Config.BuildSignature(DateTimeOffset.Now);
         }
 
         private Signature GetSignature()
