@@ -31,20 +31,20 @@ namespace Rubberduck.UI.SourceControl
 
         string ISourceControlUserSettings.UserName
         {
-            get { return this.UserNameTextBox.Text; }
-            set { this.UserNameTextBox.Text = value; }
+            get { return UserNameTextBox.Text; }
+            set { UserNameTextBox.Text = value; }
         }
 
         string ISourceControlUserSettings.EmailAddress
         {
-            get { return this.EmailAddressTextBox.Text; }
-            set { this.EmailAddressTextBox.Text = value; }
+            get { return EmailAddressTextBox.Text; }
+            set { EmailAddressTextBox.Text = value; }
         }
 
         string ISourceControlUserSettings.DefaultRepositoryLocation
         {
-            get { return this.DefaultRepositoryLocationTextBox.Text; }
-            set { this.DefaultRepositoryLocationTextBox.Text = value; }
+            get { return DefaultRepositoryLocationTextBox.Text; }
+            set { DefaultRepositoryLocationTextBox.Text = value; }
         }
 
         public event EventHandler<EventArgs> BrowseDefaultRepositoryLocation;

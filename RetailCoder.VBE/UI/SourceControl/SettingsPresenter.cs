@@ -67,7 +67,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void OpenFileInExternalEditor(GitSettingsFile fileType)
         {
-            if (this.Provider == null)
+            if (Provider == null)
             {
                 return;
             }
@@ -86,7 +86,7 @@ namespace Rubberduck.UI.SourceControl
                     break;
             }
 
-            var repo = this.Provider.CurrentRepository;
+            var repo = Provider.CurrentRepository;
             var filePath = Path.Combine(repo.LocalLocation, fileName);
 
             if (!File.Exists(filePath))

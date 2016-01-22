@@ -67,7 +67,7 @@ namespace Rubberduck.UI.Refactorings
                 var indexOfRemoved = Parameters.FindIndex(item => item == _selectedItem);
 
                 Parameters.ElementAt(indexOfRemoved).IsRemoved = true;
-                MethodParametersGrid.Rows[indexOfRemoved].DefaultCellStyle.Font = new Font(this.Font, FontStyle.Strikeout);
+                MethodParametersGrid.Rows[indexOfRemoved].DefaultCellStyle.Font = new Font(Font, FontStyle.Strikeout);
 
                 SelectionChanged();
             }
@@ -80,7 +80,7 @@ namespace Rubberduck.UI.Refactorings
                 var indexOfRemoved = Parameters.FindIndex(item => item == _selectedItem);
 
                 Parameters.ElementAt(indexOfRemoved).IsRemoved = false;
-                MethodParametersGrid.Rows[indexOfRemoved].DefaultCellStyle.Font = new Font(this.Font, FontStyle.Regular);
+                MethodParametersGrid.Rows[indexOfRemoved].DefaultCellStyle.Font = new Font(Font, FontStyle.Regular);
 
                 SelectionChanged();
             }

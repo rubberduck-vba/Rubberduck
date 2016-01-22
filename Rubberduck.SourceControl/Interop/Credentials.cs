@@ -24,8 +24,8 @@ namespace Rubberduck.SourceControl.Interop
         internal Credentials(string username, string password)
             :this()
         {
-            this.Username = username;
-            this.Password = password;
+            Username = username;
+            Password = password;
         }
     }
 }
