@@ -32,11 +32,26 @@ namespace Rubberduck.UI.Refactorings
         public ExtractInterfaceDialog()
         {
             InitializeComponent();
+            Localize();
 
             InterfaceNameBox.TextChanged += InterfaceNameBox_TextChanged;
             InterfaceMembersGridView.CellValueChanged += InterfaceMembersGridView_CellValueChanged;
             SelectAllButton.Click += SelectAllButton_Click;
             DeselectAllButton.Click += DeselectAllButton_Click;
+        }
+
+        private void Localize()
+        {
+            Text = RubberduckUI.ExtractInterface_Caption;
+            OkButton.Text = RubberduckUI.OK;
+            CancelDialogButton.Text = RubberduckUI.CancelButtonText;
+
+            NameLabel.Text = RubberduckUI.NameLabelText;
+            TitleLabel.Text = RubberduckUI.ExtractInterface_TitleLabel;
+            InstructionsLabel.Text = RubberduckUI.ExtractInterface_InstructionLabel;
+            DeselectAllButton.Text = RubberduckUI.DeselectAll_Button;
+            SelectAllButton.Text = RubberduckUI.SelectAll_Button;
+            MembersGroupBox.Text = RubberduckUI.ExtractInterface_MembersGroupBox;
         }
 
         private void InterfaceNameBox_TextChanged(object sender, EventArgs e)

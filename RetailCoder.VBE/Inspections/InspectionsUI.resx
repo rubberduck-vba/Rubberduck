@@ -150,6 +150,18 @@
   <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
     <value>Replace empty string with the 'vbNullString' constant</value>
   </data>
+  <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
+    <value>Make field '{0}' a property</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionMeta" xml:space="preserve">
+    <value>Use properties rather than public fields.</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionName" xml:space="preserve">
+    <value>Use properties rather than public fields.</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionQuickFix" xml:space="preserve">
+    <value>Encapsulate field '{0}' with property</value>
+  </data>
   <data name="IgnoreOnce" xml:space="preserve">
     <value>Ignore once</value>
   </data>
@@ -182,6 +194,18 @@
   </data>
   <data name="ImplicitVariantReturnTypeInspectionName" xml:space="preserve">
     <value>Return type is implicitly 'Variant'</value>
+  </data>
+  <data name="MoveFieldCloseToUsageInspection" xml:space="preserve">
+    <value>Move field closer to usage</value>
+  </data>
+  <data name="MoveFieldCloseToUsageInspectionMeta" xml:space="preserve">
+    <value>A field that is only used in one method should be a local variable.</value>
+  </data>
+  <data name="MoveFieldCloseToUsageInspectionName" xml:space="preserve">
+    <value>Move field closer to usage</value>
+  </data>
+  <data name="MoveFieldCloseToUsageInspectionQuickFix" xml:space="preserve">
+    <value>Move field '{0}' closer to usage</value>
   </data>
   <data name="LanguageOpportunities" xml:space="preserve">
     <value>Language opportunities</value>
@@ -337,5 +361,14 @@
   <data name="WriteOnlyPropertyInspection" xml:space="preserve">
     <value>Property '{0}' has no getter</value>
     <comment>{0} Property name</comment>
+  </data>
+  <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
+    <value>Declaration '{0}' is self-assigned</value>
+  </data>
+  <data name="SelfAssignedDeclarationInspectionMeta" xml:space="preserve">
+    <value>A declaration should not be self-assigned.</value>
+  </data>
+  <data name="SelfAssignedDeclarationInspectionName" xml:space="preserve">
+    <value>Self-assigned property</value>
   </data>
 </root>

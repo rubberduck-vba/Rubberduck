@@ -75,6 +75,13 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
+            if (
+                !new[] {DeclarationType.Class, DeclarationType.Module}.Contains(
+                    target.ParentDeclaration.DeclarationType))
+            {
+                return;
+            }
+
             RemoveVariable(target);
             UpdateSignature(target);
         }
