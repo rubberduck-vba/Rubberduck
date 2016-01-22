@@ -15,9 +15,9 @@
 
         public Commit(string id, string author, string message)
         {
-            this.Id = id;
-            this.Author = author;
-            this.Message = message;
+            Id = id;
+            Author = author;
+            Message = message;
         }
 
         public Commit(LibGit2Sharp.Commit commit)

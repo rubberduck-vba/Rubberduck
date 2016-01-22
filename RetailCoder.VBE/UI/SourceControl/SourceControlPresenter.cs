@@ -97,8 +97,8 @@ namespace Rubberduck.UI.SourceControl
 
            var creds = new SecureCredentials(_loginView.Username, pwd);
 
-           _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject,
-                    _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name),
+           _provider = _providerFactory.CreateProvider(VBE.ActiveVBProject,
+                    _config.Repositories.First(repo => repo.Name == VBE.ActiveVBProject.Name),
                     creds, _wrapperFactory);
 
             SetChildPresenterSourceControlProviders(_provider);
@@ -134,7 +134,7 @@ namespace Rubberduck.UI.SourceControl
                     return;
                 }
 
-                var project = this.VBE.ActiveVBProject;
+                var project = VBE.ActiveVBProject;
 
                 _provider = _providerFactory.CreateProvider(project);
                 var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
@@ -157,7 +157,7 @@ namespace Rubberduck.UI.SourceControl
                     return;
                 }
 
-                var project = this.VBE.ActiveVBProject;
+                var project = VBE.ActiveVBProject;
                 var repo = new Repository(project.Name, folderPicker.SelectedPath, string.Empty);
 
                 try
@@ -198,13 +198,13 @@ namespace Rubberduck.UI.SourceControl
 
             try
             {
-                _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject,
-                    _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name), _wrapperFactory);
+                _provider = _providerFactory.CreateProvider(VBE.ActiveVBProject,
+                    _config.Repositories.First(repo => repo.Name == VBE.ActiveVBProject.Name), _wrapperFactory);
             }
             catch (SourceControlException ex)
             {
                 //todo: report failure to user and prompt to create or browse
-                _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject);
+                _provider = _providerFactory.CreateProvider(VBE.ActiveVBProject);
             }
 
             SetChildPresenterSourceControlProviders(_provider);
@@ -259,7 +259,7 @@ namespace Rubberduck.UI.SourceControl
             }
             else
             {
-                var possibleRepos = _config.Repositories.Where(repo => repo.Name == this.VBE.ActiveVBProject.Name);
+                var possibleRepos = _config.Repositories.Where(repo => repo.Name == VBE.ActiveVBProject.Name);
                 var possibleCount = possibleRepos.Count();
 
                 if (possibleCount == 0 || possibleCount > 1)

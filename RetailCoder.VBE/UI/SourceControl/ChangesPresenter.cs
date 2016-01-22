@@ -26,7 +26,7 @@ namespace Rubberduck.UI.SourceControl
         public ChangesPresenter(IChangesView view, ISourceControlProvider provider)
             :this(view)
         {
-            this.Provider = provider;
+            Provider = provider;
         }
 
         private void OnSelectedActionChanged(object sender, EventArgs e)
@@ -46,14 +46,14 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshView()
         {
-            var fileStats = this.Provider.Status().ToList();
+            var fileStats = Provider.Status().ToList();
 
             _view.IncludedChanges = fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Modified)).ToList();
             _view.UntrackedFiles = fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)).ToList();
 
             _view.ExcludedChanges = new List<IFileStatusEntry>();
 
-            _view.CurrentBranch = this.Provider.CurrentBranch.Name;
+            _view.CurrentBranch = Provider.CurrentBranch.Name;
         }
 
         public void Commit()
@@ -66,18 +66,18 @@ namespace Rubberduck.UI.SourceControl
 
             try
             {
-                this.Provider.Stage(changes);
-                this.Provider.Commit(_view.CommitMessage);
+                Provider.Stage(changes);
+                Provider.Commit(_view.CommitMessage);
 
                 if (_view.CommitAction == CommitAction.CommitAndSync)
                 {
-                    this.Provider.Pull();
-                    this.Provider.Push();
+                    Provider.Pull();
+                    Provider.Push();
                 }
 
                 if (_view.CommitAction == CommitAction.CommitAndPush)
                 {
-                    this.Provider.Push();
+                    Provider.Push();
                 }
             }
             catch(SourceControlException ex)
