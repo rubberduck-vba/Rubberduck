@@ -160,7 +160,7 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var commentAbove = _comments.SingleOrDefault(comment => comment.QualifiedSelection.Selection.EndLine == line - 1);
+            var commentAbove = _comments.SingleOrDefault(comment => comment.QualifiedSelection.QualifiedName == _qualifiedModuleName && comment.QualifiedSelection.Selection.EndLine == line - 1);
             if (commentAbove != null && commentAbove.CommentText.StartsWith("@"))
             {
                 return commentAbove.CommentText;
