@@ -88,15 +88,15 @@ namespace Rubberduck.Parsing.VBA
                     _state.SetModuleState(vbComponent, ParserState.Pending);
                 }
 
-                var result = Parallel.ForEach(components, component => { ParseComponent(component, false); });
-
-                if (result.IsCompleted)
-                {
-                    using (var tokenSource = new CancellationTokenSource())
+                var parseTasks = components.Select(vbComponent => Task.Run(() => ParseComponent(vbComponent, false))).ToArray();
+                Task.WhenAll(parseTasks)
+                    .ContinueWith(t =>
                     {
-                        Resolve(tokenSource.Token);
-                    }
-                }
+                        using (var tokenSource = new CancellationTokenSource())
+                        {
+                            Resolve(tokenSource.Token);
+                        }
+                    });
             }
             catch (Exception exception)
             {
