@@ -57,6 +57,10 @@ namespace Rubberduck.Parsing.Symbols
                 result = value;
             }
             _customFolder = result;
+
+            _isArray = IsArray();
+            _hasTypeHint = HasTypeHint();
+            _isTypeSpecified = IsTypeSpecified();
         }
 
         /// <summary>
@@ -210,12 +214,32 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         public string AsTypeName { get { return _asTypeName; } }
 
+        private bool? _isArray;
+
         public bool IsArray()
         {
-            if (Context == null)
+            if (Context == null || _isArray.HasValue && !_isArray.Value)
             {
                 return false;
             }
+
+            if (_isArray.HasValue)
+            {
+                return _isArray.Value;
+            }
+
+            //var variableContext = Context as VBAParser.VariableSubStmtContext;
+            //if (variableContext != null)
+            //{
+            //    return variableContext.LPAREN() != null && variableContext.RPAREN() != null;
+            //}
+
+            //var typeElementContext = Context as VBAParser.TypeStmt_ElementContext;
+            //if (typeElementContext != null)
+            //{
+            //    return typeElementContext.LPAREN() != null && typeElementContext.RPAREN() != null;
+            //}
+            //return false;
 
             try
             {
@@ -228,16 +252,61 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        private bool? _isTypeSpecified;
+
         public bool IsTypeSpecified()
         {
-            if (Context == null)
+            if (Context == null || _isTypeSpecified.HasValue && !_isTypeSpecified.Value)
             {
                 return false;
             }
 
+            if (_isTypeSpecified.HasValue)
+            {
+                return _isTypeSpecified.Value;
+            }
+
+            //var variableContext = Context as VBAParser.VariableSubStmtContext;
+            //if (variableContext != null)
+            //{
+            //    return variableContext.asTypeClause() != null || HasTypeHint();
+            //}
+
+            //var argContext = Context as VBAParser.ArgContext;
+            //if (argContext != null)
+            //{
+            //    return argContext.asTypeClause() != null || HasTypeHint();
+            //}
+
+            //var constContext = Context as VBAParser.ConstSubStmtContext;
+            //if (constContext != null)
+            //{
+            //    return constContext.asTypeClause() != null || HasTypeHint();
+            //}
+
+            //var functionContext = Context as VBAParser.FunctionStmtContext;
+            //if (functionContext != null)
+            //{
+            //    return functionContext.asTypeClause() != null || HasTypeHint();
+            //}
+
+            //var getterContext = Context as VBAParser.PropertyGetStmtContext;
+            //if (getterContext != null)
+            //{
+            //    return getterContext.asTypeClause() != null || HasTypeHint();
+            //}
+
+            //var typeElementContext = Context as VBAParser.TypeStmt_ElementContext;
+            //if (typeElementContext != null)
+            //{
+            //    return typeElementContext.asTypeClause() != null || HasTypeHint();
+            //}
+
+            //return false;
+
             try
             {
-                var asType = ((dynamic) Context).asTypeClause() as VBAParser.AsTypeClauseContext;
+                var asType = ((dynamic)Context).asTypeClause() as VBAParser.AsTypeClauseContext;
                 return asType != null || HasTypeHint();
             }
             catch (RuntimeBinderException)
@@ -246,8 +315,15 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        private bool? _hasTypeHint;
+
         public bool HasTypeHint()
         {
+            if (_hasTypeHint.HasValue)
+            {
+                return _hasTypeHint.Value;
+            }
+
             string token;
             return HasTypeHint(out token);
         }
@@ -259,6 +335,47 @@ namespace Rubberduck.Parsing.Symbols
                 token = null;
                 return false;
             }
+
+            //VBAParser.TypeHintContext hint = null;
+            //var variableContext = Context as VBAParser.VariableSubStmtContext;
+            //if (variableContext != null)
+            //{
+            //    hint = variableContext.typeHint();
+            //}
+
+            ////var argContext = Context as VBAParser.ArgContext;
+            ////if (argContext != null)
+            ////{
+            ////    hint = argContext.typeHint();
+            ////}
+
+            //var constContext = Context as VBAParser.ConstSubStmtContext;
+            //if (constContext != null)
+            //{
+            //    hint = constContext.typeHint();
+            //}
+
+            //var functionContext = Context as VBAParser.FunctionStmtContext;
+            //if (functionContext != null)
+            //{
+            //    hint = functionContext.typeHint();
+            //}
+
+            //var getterContext = Context as VBAParser.PropertyGetStmtContext;
+            //if (getterContext != null)
+            //{
+            //    hint = getterContext.typeHint();
+            //}
+
+            ////var typeElementContext = Context as VBAParser.TypeStmt_ElementContext;
+            ////if (typeElementContext != null)
+            ////{
+            ////    hint = typeElementContext.typeHint();
+            ////}
+
+            //token = hint == null ? null : hint.GetText();
+            //return hint != null;
+
 
             try
             {

@@ -48,7 +48,8 @@ namespace Rubberduck.Parsing.VBA
             var token = tokenSource.Token;
             Parse(component, token, rewriter);
 
-            if (resolve && !token.IsCancellationRequested)
+            // don't fire up the resolver if any component is still being parsed
+            if (resolve && _state.Status == ParserState.Parsed && !token.IsCancellationRequested)
             {
                 using (var source = new CancellationTokenSource())
                 {
@@ -83,10 +84,7 @@ namespace Rubberduck.Parsing.VBA
                     .SelectMany(project => project.VBComponents.Cast<VBComponent>())
                     .ToList();
 
-                foreach (var vbComponent in components)
-                {
-                    _state.SetModuleState(vbComponent, ParserState.Pending);
-                }
+                SetComponentsState(components, ParserState.Pending);
 
                 var parseTasks = components.Select(vbComponent => Task.Run(() => ParseComponent(vbComponent, false))).ToArray();
                 Task.WhenAll(parseTasks)
@@ -101,6 +99,14 @@ namespace Rubberduck.Parsing.VBA
             catch (Exception exception)
             {
                 Debug.Print(exception.ToString());
+            }
+        }
+
+        private void SetComponentsState(IEnumerable<VBComponent> components, ParserState state)
+        {
+            foreach (var vbComponent in components)
+            {
+                _state.SetModuleState(vbComponent, state);
             }
         }
 
@@ -126,31 +132,23 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (SyntaxErrorException exception)
             {
+                Debug.Print(exception.ToString());
                 State.SetModuleState(component, ParserState.Error, exception);
             }
-            catch (OperationCanceledException)
-            {
-                State.SetModuleState(component, ParserState.Error);
-            }
-            catch (Exception exception)
-            {
-                // break here, inspect and debug.
-                throw;
-            }
-
-            return;
         }
 
         public void Resolve(CancellationToken token)
         {
             try
             {
-                var options = new ParallelOptions { CancellationToken = token };
-                Parallel.ForEach(_state.ParseTrees, options, kvp =>
+                var resolverTasks = _state.ParseTrees.Select(kvp => Task.Run(() =>
                 {
                     token.ThrowIfCancellationRequested();
                     ResolveReferences(kvp.Key, kvp.Value, token);
-                });
+                }, token)).ToArray();
+
+                SetComponentsState(_state.ParseTrees.Select(kvp => kvp.Key), ParserState.Resolving);
+                Task.WaitAll(resolverTasks);
             }
             catch (OperationCanceledException)
             {
@@ -226,20 +224,10 @@ namespace Rubberduck.Parsing.VBA
 
             token.ThrowIfCancellationRequested();
 
-            IParseTree tree;
-
-            try
-            {
-                ITokenStream stream;
-                tree = ParseInternal(code, listeners, out stream);
-                _state.AddTokenStream(vbComponent, stream);
-                _state.AddParseTree(vbComponent, tree);
-            }
-            catch (SyntaxErrorException exception)
-            {
-                State.SetModuleState(vbComponent, ParserState.Error, exception);
-                throw;
-            }
+            ITokenStream stream;
+            var tree = ParseInternal(code, listeners, out stream);
+            _state.AddTokenStream(vbComponent, stream);
+            _state.AddParseTree(vbComponent, tree);
 
             token.ThrowIfCancellationRequested();
 
@@ -299,21 +287,24 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            _state.SetModuleState(component, ParserState.Resolving);
+            Debug.Print("Resolving '{0}'...", component.Name);
 
-            var resolver = new IdentifierReferenceResolver(new QualifiedModuleName(component), _state.AllDeclarations, _state.AllComments);
-            var listener = new IdentifierReferenceListener(resolver, token);
-            var walker = new ParseTreeWalker();
-            try
+            if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))
             {
-                walker.Walk(listener, tree);
+                var resolver = new IdentifierReferenceResolver(new QualifiedModuleName(component), _state.AllDeclarations, _state.AllComments);
+                var listener = new IdentifierReferenceListener(resolver, token);
+                var walker = new ParseTreeWalker();
+                try
+                {
+                    walker.Walk(listener, tree);
+                }
+                catch (Exception exception)
+                {
+                    Debug.Print("Exception thrown resolving '{0}': {1}", component.Name, exception);
+                }
             }
-            catch (WalkerCancelledException)
-            {
-                // move on
-            }
-
             _state.SetModuleState(component, ParserState.Ready);
+            Debug.Print("'{0}' is ready.", component.Name);
         }
 
         private class ObsoleteCallStatementListener : VBABaseListener

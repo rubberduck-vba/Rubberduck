@@ -156,7 +156,7 @@ namespace Rubberduck.UI.CodeInspections
             IsBusy = true;
 
             _state.StateChanged += _state_StateChanged;
-            _state.OnParseRequested();
+            //_state.OnParseRequested();
         }
 
         private bool CanExecuteRefreshCommand(object parameter)
@@ -203,7 +203,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private bool CanExecuteQuickFixCommand(object parameter)
         {
-            return true; //!IsBusy && SelectedItem is IInspection;
+            return !IsBusy && SelectedItem is IInspection;
         }
 
         private bool _canExecuteQuickFixInModule;

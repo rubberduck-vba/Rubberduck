@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -192,20 +193,16 @@ namespace Rubberduck.Parsing.Symbols
             if (libraryName == _qualifiedModuleName.ProjectName || libraryName == "VBA")
             {
                 var matches = _declarations.Where(d => d.IdentifierName == identifier.GetText());
-                try
-                {
-                    return matches.SingleOrDefault(item =>
-                        item.ProjectName == libraryName
-                        && _projectScopePublicModifiers.Contains(item.Accessibility)
-                        && _moduleTypes.Contains(item.DeclarationType)
-                        || (_currentScope != null && _memberTypes.Contains(_currentScope.DeclarationType) 
-                            && item.DeclarationType == DeclarationType.UserDefinedType
-                            && item.ComponentName == _currentScope.ComponentName));
-                }
-                catch (InvalidOperationException)
-                {
-                    return null;
-                }
+                var results = matches.Where(item =>
+                    item.ProjectName == libraryName
+                    && _projectScopePublicModifiers.Contains(item.Accessibility)
+                    && _moduleTypes.Contains(item.DeclarationType)
+                    || (_currentScope != null && _memberTypes.Contains(_currentScope.DeclarationType) 
+                        && item.DeclarationType == DeclarationType.UserDefinedType
+                        && item.ComponentName == _currentScope.ComponentName))
+                .ToList();
+
+                return results.Count != 1 ? null : results.SingleOrDefault();
             }
 
             return null;
@@ -224,32 +221,28 @@ namespace Rubberduck.Parsing.Symbols
 
             var matches = _declarations.Where(d => d.IdentifierName == identifier).ToList();
 
-            try
+            var result = matches.Where(item =>
+                item.DeclarationType == DeclarationType.UserDefinedType
+                && item.Project == _currentScope.Project
+                && item.ComponentName == _currentScope.ComponentName)
+            .ToList();
+
+            if (!result.Any())
             {
-                var result = matches.SingleOrDefault(item =>
-                    item.DeclarationType == DeclarationType.UserDefinedType
-                    && item.Project == _currentScope.Project
-                    && item.ComponentName == _currentScope.ComponentName);
-
-                if (result == null)
-                {
-                    result = matches.SingleOrDefault(item =>
-                        _moduleTypes.Contains(item.DeclarationType)
-                        && item.Project == _currentScope.Project);                
-                }
-
-                if (result == null)
-                {
-                    result = matches.SingleOrDefault(item =>
-                        _moduleTypes.Contains(item.DeclarationType));
-                }
-
-                return result;
+                result = matches.Where(item =>
+                    _moduleTypes.Contains(item.DeclarationType)
+                    && item.Project == _currentScope.Project)
+                .ToList();                
             }
-            catch (InvalidOperationException)
+
+            if (!result.Any())
             {
-                return null;
+                result = matches.Where(item =>
+                    _moduleTypes.Contains(item.DeclarationType))
+                .ToList();
             }
+
+            return result.Count == 1 ? result.SingleOrDefault() : null;
         }
 
         private static readonly Type[] IdentifierContexts =
@@ -833,38 +826,32 @@ namespace Rubberduck.Parsing.Symbols
 
             var matches = _declarations.Where(d => d.IdentifierName == identifierName);
 
-            try
-            {
-                var results = matches.Where(item =>
-                    (item.ParentScope == localScope.Scope || (isAssignmentTarget && item.Scope == localScope.Scope))
-                    && localScope.Context.GetSelection().Contains(item.Selection)
-                    && !_moduleTypes.Contains(item.DeclarationType))
-                    .ToList();
+            var results = matches.Where(item =>
+                (item.ParentScope == localScope.Scope || (isAssignmentTarget && item.Scope == localScope.Scope))
+                && localScope.Context.GetSelection().Contains(item.Selection)
+                && !_moduleTypes.Contains(item.DeclarationType))
+                .ToList();
 
-                if (results.Count > 1 && isAssignmentTarget
-                    && _returningMemberTypes.Contains(localScope.DeclarationType)
-                    && localScope.IdentifierName == identifierName
-                    && parentContextIsVariableOrProcedureCall)
-                {
-                    // if we have multiple matches and we're in a returning member,
-                    // in an in-statement variable or procedure call context that's
-                    // the target of an assignment, then we have to assume we're looking
-                    // at the assignment of the member's return value, i.e.:
-                    /*
-                     *    Property Get Foo() As Integer
-                     *        Foo = 42 '<~ this Foo here
-                     *    End Sub
-                     */
-                    return FindFunctionOrPropertyGetter(identifierName, localScope);
-                }
-
-                // if we're not returning a function/getter value, then there can be only one:
-                return results.SingleOrDefault(item => !item.Equals(localScope));
-            }
-            catch (InvalidOperationException)
+            if (results.Count > 1 && isAssignmentTarget
+                && _returningMemberTypes.Contains(localScope.DeclarationType)
+                && localScope.IdentifierName == identifierName
+                && parentContextIsVariableOrProcedureCall)
             {
-                return null;
+                // if we have multiple matches and we're in a returning member,
+                // in an in-statement variable or procedure call context that's
+                // the target of an assignment, then we have to assume we're looking
+                // at the assignment of the member's return value, i.e.:
+                /*
+                    *    Property Get Foo() As Integer
+                    *        Foo = 42 '<~ this Foo here
+                    *    End Sub
+                    */
+                return FindFunctionOrPropertyGetter(identifierName, localScope);
             }
+
+            // if we're not returning a function/getter value, then there can be only one:
+            var result = results.Where(item => !item.Equals(localScope)).ToList();
+            return result.Count == 1 ? result.SingleOrDefault() : null;
         }
 
         private Declaration FindModuleScopeDeclaration(string identifierName, Declaration localScope = null)
@@ -875,18 +862,14 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var matches = _declarations.Where(d => d.IdentifierName == identifierName);
-            try
-            {
-                return matches.SingleOrDefault(item =>
-                    item.ParentScope == localScope.ParentScope
-                    && !item.DeclarationType.HasFlag(DeclarationType.Member)
-                    && !_moduleTypes.Contains(item.DeclarationType)
-                    && (item.DeclarationType != DeclarationType.Event || IsLocalEvent(item, localScope)));
-            }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
+            var result = matches.Where(item =>
+                item.ParentScope == localScope.ParentScope
+                && !item.DeclarationType.HasFlag(DeclarationType.Member)
+                && !_moduleTypes.Contains(item.DeclarationType)
+                && (item.DeclarationType != DeclarationType.Event || IsLocalEvent(item, localScope)))
+            .ToList();
+
+            return result.Count == 1 ? result.SingleOrDefault() : null;
         }
 
         private bool IsLocalEvent(Declaration item, Declaration localScope)
@@ -904,17 +887,13 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var matches = _declarations.Where(d => d.IdentifierName == identifierName);
-            try
-            {
-                return matches.SingleOrDefault(item =>
-                    item.Project == localScope.Project 
-                    && item.ComponentName == localScope.ComponentName 
-                    && (IsProcedure(item, localScope) || IsPropertyAccessor(item, accessorType, localScope, isAssignmentTarget)));
-            }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
+            var result = matches.Where(item =>
+                item.Project == localScope.Project 
+                && item.ComponentName == localScope.ComponentName 
+                && (IsProcedure(item, localScope) || IsPropertyAccessor(item, accessorType, localScope, isAssignmentTarget)))
+            .ToList();
+
+            return result.Count == 1 ? result.SingleOrDefault() : null;
         }
 
         private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, bool hasStringQualifier = false)
@@ -933,33 +912,19 @@ namespace Rubberduck.Parsing.Symbols
                 localScope = _withBlockQualifiers.Peek();
             }
 
-            try
+            var result = matches.Where(IsUserDeclarationInProjectScope).ToList();
+            if (result.Count == 1)
             {
-                return SingleOrDefault(matches, IsUserDeclarationInProjectScope)
-                    ?? SingleOrDefault(matches, item => IsBuiltInDeclarationInScope(item, localScope));
+                return result.SingleOrDefault();
             }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
-        }
 
-        /// <summary>
-        /// Returns a <see cref="Declaration"/> if exactly one match is found, <c>null</c> otherwise.
-        /// </summary>
-        private static TSource SingleOrDefault<TSource>(IEnumerable<TSource> source, Func<TSource, bool> predicate) where TSource : Declaration
-        {
-            try
+            result = matches.Where(item => IsBuiltInDeclarationInScope(item, localScope)).ToList();
+            if (result.Count == 1)
             {
-                var matches = source.Where(predicate).ToArray();
-                return !matches.Any()
-                    ? null
-                    : matches.Single();
+                return result.SingleOrDefault();
             }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
+
+            return null;
         }
 
         private static bool IsPublicOrGlobal(Declaration item)
