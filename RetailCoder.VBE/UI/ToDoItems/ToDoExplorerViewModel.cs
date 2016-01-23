@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
@@ -21,16 +22,14 @@ namespace Rubberduck.UI.ToDoItems
     {
         private readonly RubberduckParserState _state;
         private readonly IEnumerable<ToDoMarker> _markers;
-        private ObservableCollection<ToDoItem> _toDos; 
+        private ListCollectionView _toDos; 
         public ToDoExplorerViewModel(RubberduckParserState state, IGeneralConfigService configService)
         {
             _state = state;
             _markers = configService.GetDefaultConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
-            
-            ToDos = new ObservableCollection<ToDoItem>();
         }
 
-        public ObservableCollection<ToDoItem> ToDos {
+        public ListCollectionView ToDos {
             get { return _toDos; }
             set
             {
@@ -58,12 +57,13 @@ namespace Rubberduck.UI.ToDoItems
 
         private async void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
-            if (e.State != ParserState.Ready)
+            if (e.State != ParserState.Parsed)
             {
                 return;
             }
             var results = await GetItems();
-            ToDos = new ObservableCollection<ToDoItem>(results);
+            ToDos = new ListCollectionView(results.ToList());
+            ToDos.GroupDescriptions.Add(new PropertyGroupDescription("Type"));
         }
 
         public ToDoItem SelectedToDo { get; set; }

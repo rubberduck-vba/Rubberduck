@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:toDoItems="clr-namespace:Rubberduck.UI.ToDoItems"
+             xmlns:controls="clr-namespace:Rubberduck.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance toDoItems:ToDoExplorerViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
@@ -24,7 +25,7 @@
                 </StackPanel>
             </ToolBar>
         </ToolBarTray>
-        <DataGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedToDo}">
+        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedToDo}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.Priority}" Binding="{Binding Priority}">
                 </DataGridTextColumn>
@@ -33,6 +34,6 @@
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.ModuleName}" Binding="{Binding ModuleName}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoExplorer_LineNumber}" Binding="{Binding LineNumber}"></DataGridTextColumn>
             </DataGrid.Columns>
-        </DataGrid>
+        </controls:GroupingGrid>
     </DockPanel>
 </UserControl>
