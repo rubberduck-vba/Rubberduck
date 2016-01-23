@@ -105,11 +105,11 @@ namespace Rubberduck.UI.SourceControl
             // CloneRepoButton
             // 
             this.CloneRepoButton.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.CloneRepoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.CloneRepoButton.Image = ((System.Drawing.Image)(resources.GetObject("CloneRepoButton.Image")));
+            this.CloneRepoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.CloneRepoButton.Image = global::Rubberduck.Properties.Resources.drive_download;
             this.CloneRepoButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.CloneRepoButton.Name = "CloneRepoButton";
-            this.CloneRepoButton.Size = new System.Drawing.Size(86, 24);
+            this.CloneRepoButton.Size = new System.Drawing.Size(24, 24);
             this.CloneRepoButton.Text = "Clone repo";
             this.CloneRepoButton.Click += new System.EventHandler(this.CloneRepoButton_Click);
             // 
