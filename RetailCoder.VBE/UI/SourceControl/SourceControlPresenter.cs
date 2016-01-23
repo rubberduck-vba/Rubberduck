@@ -177,17 +177,16 @@ namespace Rubberduck.UI.SourceControl
             IRepository repo;
             try
             {
+                _provider = _providerFactory.CreateProvider(VBE.ActiveVBProject);
                 repo = _provider.Clone(e.RemotePath, e.LocalDirectory);
             }
-            catch (Exception ex)
+            catch (SourceControlException ex)
             {
                 ShowSecondaryPanel(ex.Message, ex.InnerException.Message);
                 return;
             }
 
             AddRepoToConfig((Repository)repo);
-
-            SetChildPresenterSourceControlProviders(_provider);
         }
 
         private void OnCloneRepoViewCancel(object sender, EventArgs e)

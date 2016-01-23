@@ -110,9 +110,7 @@ namespace Rubberduck.SourceControl
             try
             {
                 var name = GetProjectNameFromDirectory(remotePathOrUrl);
-                Debug.Print(name);
                 LibGit2Sharp.Repository.Clone(remotePathOrUrl, workingDirectory);
-                Debug.Print("Success");
                 return new Repository(name, workingDirectory, remotePathOrUrl);
             }
             catch (LibGit2SharpException ex)
