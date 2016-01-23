@@ -89,11 +89,52 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         {
             var firstReference = target.References.OrderBy(r => r.Selection.StartLine).First();
 
-            var oldLines = _editor.GetLines(firstReference.Selection);
-            var newLines = oldLines.Insert(firstReference.Selection.StartColumn - 1, GetDeclarationString(target));
+            var beginningOfInstructionSelection = GetBeginningOfInstructionSelection(target, firstReference.Selection);
 
-            _editor.DeleteLines(firstReference.Selection);
-            _editor.InsertLines(firstReference.Selection.StartLine, newLines);
+            var oldLines = _editor.GetLines(beginningOfInstructionSelection);
+            var newLines = oldLines.Insert(beginningOfInstructionSelection.StartColumn - 1, GetDeclarationString(target));
+
+            var newLinesWithoutStringLiterals = newLines.StripStringLiterals();
+
+            var lastIndexOfColon = newLinesWithoutStringLiterals.LastIndexOf(':');
+            while (lastIndexOfColon != -1)
+            {
+                var numberOfCharsToRemove = lastIndexOfColon == newLines.Length - 1 || newLines[lastIndexOfColon + 1] != ' '
+                    ? 1
+                    : 2;
+
+                newLinesWithoutStringLiterals = newLinesWithoutStringLiterals
+                        .Remove(lastIndexOfColon, numberOfCharsToRemove)
+                        .Insert(lastIndexOfColon, Environment.NewLine);
+
+                newLines = newLines
+                        .Remove(lastIndexOfColon, numberOfCharsToRemove)
+                        .Insert(lastIndexOfColon, Environment.NewLine);
+
+                lastIndexOfColon = newLinesWithoutStringLiterals.LastIndexOf(':');
+            }
+
+            _editor.DeleteLines(beginningOfInstructionSelection);
+            _editor.InsertLines(beginningOfInstructionSelection.StartLine, newLines);
+        }
+
+        private Selection GetBeginningOfInstructionSelection(Declaration target, Selection referenceSelection)
+        {
+            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            var currentLine = referenceSelection.StartLine;
+
+            var codeLine = module.Lines[currentLine, 1].StripStringLiterals();
+            while (codeLine.Remove(referenceSelection.StartColumn).LastIndexOf(':') == -1)
+            {
+                codeLine = module.Lines[--currentLine, 1].StripStringLiterals();
+                if (!codeLine.EndsWith(" _" + Environment.NewLine))
+                {
+                    return new Selection(currentLine + 1, 1, currentLine + 1, 1);
+                }
+            }
+
+            var index = codeLine.Remove(referenceSelection.StartColumn).LastIndexOf(':') + 1;
+            return new Selection(currentLine, index, currentLine, index);
         }
 
         private string GetDeclarationString(Declaration target)
@@ -171,7 +212,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
              *          dizz as Double _
              *         , iizz as Integer
              */
-            
+
             var commaToRemove = numParams == indexRemoved ? indexRemoved - 1 : indexRemoved;
 
             return str.Remove(str.NthIndexOf(',', commaToRemove), 1);

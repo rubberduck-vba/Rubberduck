@@ -10,11 +10,13 @@ using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
+using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
+using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.UnitTesting;
@@ -73,6 +75,11 @@ namespace Rubberduck.Root
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>() });
 
+            Bind<IPresenter>().To<CodeExplorerDockablePresenter>()
+                .WhenInjectedInto<CodeExplorerCommand>()
+                .InSingletonScope()
+                .WithConstructorArgument<IDockableUserControl>(new CodeExplorerWindow { ViewModel = _kernel.Get<CodeExplorerViewModel>() });
+
             BindWindowsHooks();
             Debug.Print("completed RubberduckModule.Load()");
         }
@@ -123,7 +130,7 @@ namespace Rubberduck.Root
         {
             var inspections = Assembly.GetExecutingAssembly()
                                       .GetTypes()
-                                      .Where(type => type.GetInterfaces().Contains(typeof (IInspection)));
+                                      .Where(type => type.BaseType == typeof (InspectionBase));
 
             // multibinding for IEnumerable<IInspection> dependency
             foreach (var inspection in inspections)

@@ -1,0 +1,198 @@
+﻿<UserControl x:Class="Rubberduck.UI.CodeExplorer.CodeExplorerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:props="clr-namespace:Rubberduck.Properties"
+             xmlns:symbols="clr-namespace:Rubberduck.Parsing.Symbols;assembly=Rubberduck.Parsing"
+             xmlns:resx="clr-namespace:Rubberduck.UI"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeExplorer:CodeExplorerViewModel}">
+    <UserControl.Resources>
+
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+
+        <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
+
+            <Setter Property="Width" Value="Auto"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter Content="{TemplateBinding Content}" 
+                                  ContentTemplate="{TemplateBinding  ContentTemplate}"
+                                  VerticalAlignment="Center">
+                            <ContentPresenter.Resources>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="TextDecorations" Value="Underline" />
+                                </Style>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="Blue" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Foreground" Value="Gray" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFD9F4FF" Offset="0"/>
+            <GradientStop Color="#FF9BDDFB" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="{x:Static SystemColors.ControlBrushKey}" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFEEEDED" Offset="0"/>
+            <GradientStop Color="#FFDDDDDD" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+
+        <Style x:Key="ShinyTreeView" 
+               TargetType="{x:Type TreeViewItem}">
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderBrush" Value="#adc6e5"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True"/>
+                        <Condition Property="IsSelectionActive" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="LightGray"/>
+                </MultiTrigger>
+            </Style.Triggers>
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="2"/>
+                </Style>
+            </Style.Resources>
+        </Style>
+
+        
+        <Style x:Key="IconStyle" TargetType="Image">
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Margin" Value="2,0,2,0" />
+        </Style>
+        
+        <Style x:Key="TreeViewItemStyle" TargetType="TextBlock">
+            <Setter Property="Text" Value="{Binding Name}" />
+            <Setter Property="Margin" Value="2,0,2,0" />
+        </Style>
+        
+        <Style x:Key="TreeViewIconStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">
+            <Setter Property="Source" Value="{Binding CollapsedIcon}" />
+            <Style.Triggers>
+                <!-- thanks to H.B. on http://stackoverflow.com/a/5797323/1188513 -->
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Path=IsExpanded}" Value="True">
+                    <Setter Property="Source" Value="{Binding ExpandedIcon}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <HierarchicalDataTemplate DataType="codeExplorer:CodeExplorerItemViewModel"
+                                  ItemsSource="{Binding Items}">
+            <StackPanel Orientation="Horizontal">
+                <Image Style="{StaticResource TreeViewIconStyle}" />
+                <TextBlock Style="{StaticResource TreeViewItemStyle}" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        
+        <HierarchicalDataTemplate x:Key="CodeExplorerTemplate" 
+                                  DataType="codeExplorer:CodeExplorerProjectViewModel"
+                                  ItemsSource="{Binding Items}">
+            <StackPanel Orientation="Horizontal">
+                <Image Style="{StaticResource TreeViewIconStyle}" />
+                <TextBlock Style="{StaticResource TreeViewItemStyle}" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+
+        <Style x:Key="CodeExplorerTreeViewStyle" TargetType="TreeView">
+            <Setter Property="ItemTemplate" Value="{StaticResource CodeExplorerTemplate}" />
+            <Setter Property="ItemsSource" Value="{Binding Projects}" />
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*" MinHeight="64" />
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="Auto" MinHeight="48"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Grid.RowSpan="3" Background="#FFEEF5FD" />
+
+        <ToolBar Grid.Row="0">
+
+            <Button Command="{Binding RefreshCommand}" IsEnabled="{Binding CanRefresh}">
+                <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
+            </Button>
+
+            <Separator />
+
+            <ToggleButton IsEnabled="{Binding CanRefresh}" ToolTip="Toggle signatures">
+                <Image Height="16" Source="../../Resources/Microsoft/PNG/DisplayFullSignature_13393_32.png" />
+            </ToggleButton>
+
+        </ToolBar>
+        
+        <TreeView Grid.Row="1"
+                  ItemContainerStyle="{StaticResource ShinyTreeView}"
+                  HorizontalContentAlignment="Stretch"
+                  MouseDoubleClick="TreeView_OnMouseDoubleClick"
+                  Style="{StaticResource CodeExplorerTreeViewStyle}">
+            <i:Interaction.Behaviors>
+                <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
+            </i:Interaction.Behaviors>
+        </TreeView>
+
+        <resx:BusyIndicator Grid.Row="1" Width="36" Height="36" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+
+        <GridSplitter Grid.Row="2" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
+
+        <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
+            
+            <Grid Background="Gainsboro">
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    </StackPanel>
+                </StackPanel>
+                
+                <WrapPanel Grid.Column="0" Grid.Row="1">
+                    <!--<Button Style="{StaticResource LinkButton}" Margin="4"
+                            Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding IndenterCommand}"
+                            Content="Indent" />
+                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                            Visibility="{Binding CanExecuteRefactorRename, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding RefactorRenameCommand}"
+                            Content="{x:Static resx:RubberduckUI.RefactorMenu_Rename}" />
+                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                            Visibility="{Binding CanExecuteFindAllReferences, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding FindAllReferencesCommand}"
+                            Content="{x:Static resx:RubberduckUI.ContextMenu_FindAllReferences}" />-->
+                </WrapPanel>
+            </Grid>
+        </Border>
+
+    </Grid>
+</UserControl>

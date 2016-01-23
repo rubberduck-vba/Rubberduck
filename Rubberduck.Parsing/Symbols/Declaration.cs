@@ -40,6 +40,23 @@ namespace Rubberduck.Parsing.Symbols
             _context = context;
             _isBuiltIn = isBuiltIn;
             _annotations = annotations;
+
+            _projectName = _qualifiedName.QualifiedModuleName.ProjectName;
+
+            var ns = Annotations.Split('\n')
+                .FirstOrDefault(annotation => annotation.StartsWith(Grammar.Annotations.AnnotationMarker + Grammar.Annotations.Folder));
+
+            string result;
+            if (string.IsNullOrEmpty(ns))
+            {
+                result = _projectName;
+            }
+            else
+            {
+                var value = ns.Split(' ')[1];
+                result = value;
+            }
+            _customFolder = result;
         }
 
         /// <summary>
@@ -160,10 +177,11 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         public VBProject Project { get { return _qualifiedName.QualifiedModuleName.Project; } }
 
+        private readonly string _projectName;
         /// <summary>
         /// Gets the name of the VBProject the declaration is made in.
         /// </summary>
-        public string ProjectName { get { return _qualifiedName.QualifiedModuleName.ProjectName; } }
+        public string ProjectName { get { return _projectName; } }
 
         /// <summary>
         /// Gets the name of the VBComponent the declaration is made in.
@@ -201,7 +219,7 @@ namespace Rubberduck.Parsing.Symbols
 
             try
             {
-                var declaration = ((dynamic)Context); // Context is AmbiguousIdentifier - parent is the declaration sub-statement where the array parens are
+                var declaration = (dynamic)Context;
                 return declaration.LPAREN() != null && declaration.RPAREN() != null;
             }
             catch (RuntimeBinderException)
@@ -314,6 +332,15 @@ namespace Rubberduck.Parsing.Symbols
                     default:
                         return _parentScope;
                 }
+            }
+        }
+
+        private readonly string _customFolder;
+        public string CustomFolder
+        {
+            get
+            {
+                return _customFolder;
             }
         }
 

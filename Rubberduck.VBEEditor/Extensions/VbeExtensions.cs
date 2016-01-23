@@ -57,7 +57,7 @@ namespace Rubberduck.VBEditor.Extensions
             }
 
             foreach (var reference in vbe.ActiveVBProject.References.Cast<Reference>()
-                .Where(reference => reference.BuiltIn && reference.Name != "VBA"))
+                .Where(reference => (reference.BuiltIn && reference.Name != "VBA") || (reference.Name == "AutoCAD")))
             {
                 switch (reference.Name)
                 {
@@ -73,6 +73,8 @@ namespace Rubberduck.VBEditor.Extensions
                         return new OutlookApp();
                     case "Publisher":
                         return new PublisherApp();
+					case "AutoCAD":
+                        return new AutoCADApp();
                 }
             }
 

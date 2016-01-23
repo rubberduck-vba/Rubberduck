@@ -15,9 +15,10 @@ namespace Rubberduck.Inspections
         public ImplicitPublicMemberInspectionResult(IInspection inspection, string result, QualifiedContext<ParserRuleContext> qualifiedContext)
             : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new SpecifyExplicitPublicModifierQuickFix(Context, QualifiedSelection), 
+                new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

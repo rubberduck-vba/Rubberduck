@@ -57,6 +57,12 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         private void PromoteVariable(Declaration target)
         {
+            if (!new[] { DeclarationType.Class, DeclarationType.Module }.Contains(
+                    target.ParentDeclaration.DeclarationType))
+            {
+                return;
+            }
+
             RemoveVariable(target);
             AddField(target);
         }

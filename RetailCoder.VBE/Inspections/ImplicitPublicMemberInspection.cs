@@ -8,18 +8,16 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class ImplicitPublicMemberInspection : IInspection
+    public sealed class ImplicitPublicMemberInspection : InspectionBase
     {
-        public ImplicitPublicMemberInspection()
+        public ImplicitPublicMemberInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "ImplicitPublicMemberInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.ImplicitPublicMember_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ImplicitPublicMember_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         private static readonly DeclarationType[] ProcedureTypes = 
         {
@@ -30,13 +28,10 @@ namespace Rubberduck.Inspections
             DeclarationType.PropertySet
         };
 
-        private string AnnotationName { get { return Name.Replace("Inspection", string.Empty); } }
-
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var issues = from item in state.AllDeclarations
+            var issues = from item in UserDeclarations
                          where !item.IsInspectionDisabled(AnnotationName) 
-                               && !item.IsBuiltIn
                                && ProcedureTypes.Contains(item.DeclarationType)
                                && item.Accessibility == Accessibility.Implicit
                          let context = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)

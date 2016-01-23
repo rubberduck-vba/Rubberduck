@@ -70,7 +70,7 @@ namespace Rubberduck.UI.Settings
 
         private void InitWindow()
         {
-            this.Text = RubberduckUI.Settings_Caption;
+            Text = RubberduckUI.Settings_Caption;
             OkButton.Text = RubberduckUI.OK;
             CancelButton.Text = RubberduckUI.CancelButtonText;
             ResetButton.Text = RubberduckUI.Settings_ResetSettings;

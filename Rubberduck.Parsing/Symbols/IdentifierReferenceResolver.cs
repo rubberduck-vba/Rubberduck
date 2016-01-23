@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
@@ -17,6 +18,7 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         private readonly IEnumerable<Declaration> _declarations;
+        private readonly IEnumerable<CommentNode> _comments;
 
         private readonly QualifiedModuleName _qualifiedModuleName;
 
@@ -29,10 +31,11 @@ namespace Rubberduck.Parsing.Symbols
         private readonly Stack<Declaration> _withBlockQualifiers;
         private readonly HashSet<RuleContext> _alreadyResolved;
 
-        public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, IEnumerable<Declaration> declarations)
+        public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, IEnumerable<Declaration> declarations, IEnumerable<CommentNode> comments)
         {
             _qualifiedModuleName = qualifiedModuleName;
             _declarations = declarations;
+            _comments = comments;
 
             _withBlockQualifiers = new Stack<Declaration>();
             _alreadyResolved = new HashSet<RuleContext>();
@@ -83,7 +86,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void SetCurrentScope(string memberName, DeclarationType? accessor = null)
         {
-            _currentScope = _declarations.Single(item =>
+            _currentScope = _declarations.SingleOrDefault(item =>
                 _memberTypes.Contains(item.DeclarationType)
                 && (!accessor.HasValue || item.DeclarationType == accessor.Value)
                 && item.Project == _qualifiedModuleName.Project
@@ -146,7 +149,23 @@ namespace Rubberduck.Parsing.Symbols
             }
             var name = callSiteContext.GetText();
             var selection = callSiteContext.GetSelection();
-            return new IdentifierReference(_qualifiedModuleName, _currentScope.Scope, name, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement);
+            var annotations = FindAnnotations(selection.StartLine);
+            return new IdentifierReference(_qualifiedModuleName, _currentScope.Scope, name, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement, annotations);
+        }
+
+        private string FindAnnotations(int line)
+        {
+            if (_comments == null)
+            {
+                return null;
+            }
+
+            var commentAbove = _comments.SingleOrDefault(comment => comment.QualifiedSelection.Selection.EndLine == line - 1);
+            if (commentAbove != null && commentAbove.CommentText.StartsWith("@"))
+            {
+                return commentAbove.CommentText;
+            }
+            return null;
         }
 
         private Declaration ResolveType(VBAParser.ComplexTypeContext context)
@@ -178,9 +197,10 @@ namespace Rubberduck.Parsing.Symbols
                     return matches.SingleOrDefault(item =>
                         item.ProjectName == libraryName
                         && _projectScopePublicModifiers.Contains(item.Accessibility)
-                        && (_moduleTypes.Contains(item.DeclarationType))
-                        || (item.DeclarationType == DeclarationType.UserDefinedType
-                            && _currentScope != null && item.ComponentName == _currentScope.ComponentName));
+                        && _moduleTypes.Contains(item.DeclarationType)
+                        || (_currentScope != null && _memberTypes.Contains(_currentScope.DeclarationType) 
+                            && item.DeclarationType == DeclarationType.UserDefinedType
+                            && item.ComponentName == _currentScope.ComponentName));
                 }
                 catch (InvalidOperationException)
                 {
@@ -202,25 +222,34 @@ namespace Rubberduck.Parsing.Symbols
                 ? parent.AsTypeName.Split('.').Last()
                 : parent.AsTypeName;
 
-            var result = _declarations.Where(d => d.IdentifierName == identifier).SingleOrDefault(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType
-                && item.Project == _currentScope.Project
-                && item.ComponentName == _currentScope.ComponentName);
+            var matches = _declarations.Where(d => d.IdentifierName == identifier).ToList();
 
-            if (result == null)
+            try
             {
-                result = _declarations.Where(d => d.IdentifierName == identifier).SingleOrDefault(item =>
-                    _moduleTypes.Contains(item.DeclarationType)
-                    && item.Project == _currentScope.Project);                
-            }
+                var result = matches.SingleOrDefault(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedType
+                    && item.Project == _currentScope.Project
+                    && item.ComponentName == _currentScope.ComponentName);
 
-            if (result == null)
+                if (result == null)
+                {
+                    result = matches.SingleOrDefault(item =>
+                        _moduleTypes.Contains(item.DeclarationType)
+                        && item.Project == _currentScope.Project);                
+                }
+
+                if (result == null)
+                {
+                    result = matches.SingleOrDefault(item =>
+                        _moduleTypes.Contains(item.DeclarationType));
+                }
+
+                return result;
+            }
+            catch (InvalidOperationException)
             {
-                result = _declarations.Where(d => d.IdentifierName == identifier).SingleOrDefault(item =>
-                    _moduleTypes.Contains(item.DeclarationType));
+                return null;
             }
-
-            return result;
         }
 
         private static readonly Type[] IdentifierContexts =
@@ -253,6 +282,13 @@ namespace Rubberduck.Parsing.Symbols
 
             var parentContext = callSiteContext.Parent;
             var identifierName = callSiteContext.GetText();
+            if (identifierName.StartsWith("[") && identifierName.EndsWith("]"))
+            {
+                // square-bracketed identifier may contain a '!' symbol; identifier name is at the left of it.
+                identifierName = identifierName.Substring(1, identifierName.Length - 2)/*.Split('!').First()*/;
+                // problem, is that IdentifierReference should work off IDENTIFIER tokens, not AmbiguousIdentifierContext.
+                // not sure what the better fix is. 
+            }
 
             var sibling = parentContext.ChildCount > 1 ? parentContext.GetChild(1) : null;
             var hasStringQualifier = sibling is VBAParser.TypeHintContext && sibling.GetText() == "$";
@@ -368,6 +404,11 @@ namespace Rubberduck.Parsing.Symbols
             var identifierContext = context.ambiguousIdentifier();
             var fieldCall = context.dictionaryCallStmt();
             // todo: understand WTF [baseType] is doing in that grammar rule...
+
+            if (localScope == null)
+            {
+                localScope = _currentScope;
+            }
 
             var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
             if (result != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
@@ -737,11 +778,6 @@ namespace Rubberduck.Parsing.Symbols
             ResolveInternal(context.ambiguousIdentifier(), _currentScope);
         }
 
-        public void Resolve(VBAParser.FileNumberContext context)
-        {
-            ResolveInternal(context.ambiguousIdentifier(), _currentScope);
-        }
-
         public void Resolve(VBAParser.ArgDefaultValueContext context)
         {
             ResolveInternal(context.ambiguousIdentifier(), _currentScope);
@@ -823,7 +859,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
 
                 // if we're not returning a function/getter value, then there can be only one:
-                return results.SingleOrDefault();
+                return results.SingleOrDefault(item => !item.Equals(localScope));
             }
             catch (InvalidOperationException)
             {

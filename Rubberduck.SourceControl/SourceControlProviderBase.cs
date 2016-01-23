@@ -16,13 +16,13 @@ namespace Rubberduck.SourceControl
 
         protected SourceControlProviderBase(VBProject project)
         {
-            this.Project = project;
+            Project = project;
         }
 
         protected SourceControlProviderBase(VBProject project, IRepository repository, ICodePaneWrapperFactory wrapperFactory)
             :this(project)
         {
-            this.CurrentRepository = repository;
+            CurrentRepository = repository;
             _wrapperFactory = wrapperFactory;
         }
 
@@ -44,7 +44,7 @@ namespace Rubberduck.SourceControl
         public virtual IRepository InitVBAProject(string directory)
         {
             var projectName = GetProjectNameFromDirectory(directory);
-            if (projectName != string.Empty && projectName != this.Project.Name)
+            if (projectName != string.Empty && projectName != Project.Name)
             {
                 directory = Path.Combine(directory, Project.Name);
             }
@@ -54,9 +54,9 @@ namespace Rubberduck.SourceControl
                 Directory.CreateDirectory(directory);
             }
 
-            this.Project.ExportSourceFiles(directory);
-            this.CurrentRepository = new Repository(Project.Name, directory, directory);
-            return this.CurrentRepository;
+            Project.ExportSourceFiles(directory);
+            CurrentRepository = new Repository(Project.Name, directory, directory);
+            return CurrentRepository;
         }
 
         public virtual void Pull()
@@ -66,12 +66,12 @@ namespace Rubberduck.SourceControl
 
         public virtual void Stage(string filePath)
         {
-            this.Project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
+            Project.ExportSourceFiles(CurrentRepository.LocalLocation);
         }
 
         public virtual void Stage(IEnumerable<string> filePaths)
         {
-            this.Project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
+            Project.ExportSourceFiles(CurrentRepository.LocalLocation);
         }
 
         public virtual void Merge(string sourceBranch, string destinationBranch)
@@ -94,9 +94,9 @@ namespace Rubberduck.SourceControl
            //https://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx
             if (componentName != String.Empty)
             {
-                var component = this.Project.VBComponents.Item(componentName);
-                this.Project.VBComponents.RemoveSafely(component);
-                this.Project.VBComponents.ImportSourceFile(filePath);
+                var component = Project.VBComponents.Item(componentName);
+                Project.VBComponents.RemoveSafely(component);
+                Project.VBComponents.ImportSourceFile(filePath);
             }
         }
 
@@ -107,7 +107,7 @@ namespace Rubberduck.SourceControl
 
         public virtual IEnumerable<IFileStatusEntry> Status()
         {
-            this.Project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
+            Project.ExportSourceFiles(CurrentRepository.LocalLocation);
             return null;
         }
 

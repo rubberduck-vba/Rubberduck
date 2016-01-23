@@ -29,28 +29,14 @@ namespace Rubberduck.UI.Command.MenuItems
             Initialize();
         }
 
-        //private static readonly IDictionary<ParserState, Image> ParserIcons =
-        //    new Dictionary<ParserState, Image>
-        //    {
-        //        { ParserState.Error, Resources.balloon_prohibition },
-        //        { ParserState.Resolving, Resources.balloon_ellipsis },
-        //        { ParserState.Parsing, Resources.balloon_ellipsis },
-        //        { ParserState.Parsed, Resources.balloon_smiley },
-        //        { ParserState.Ready, Resources.balloon_smiley },
-        //    };
-
         public void SetStatusText(string value)
         {
             _statusButton.Caption = value;
         }
 
-        private void State_StateChanged(object sender, EventArgs e)
+        private void State_StateChanged(object sender, ParserStateEventArgs e)
         {
-            _statusButton.Caption = _parser.State.Status.ToString();
-
-            // bug: apparently setting a button's icon *after* initialization blows Excel up
-            //var icon = ParserIcons[_parser.State.Status];
-            //ParentMenuItemBase.SetButtonImage(_statusButton, icon, Resources.balloon_mask);
+            _statusButton.Caption = e.State.ToString();
         }
 
         public event EventHandler Refresh;

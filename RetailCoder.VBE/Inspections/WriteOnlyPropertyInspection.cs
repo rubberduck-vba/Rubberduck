@@ -6,25 +6,23 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class WriteOnlyPropertyInspection : IInspection
+    public sealed class WriteOnlyPropertyInspection : InspectionBase
     {
-        public WriteOnlyPropertyInspection()
+        public WriteOnlyPropertyInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "WriteOnlyPropertyInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI.WriteOnlyProperty_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.WriteOnlyProperty_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var declarations = state.AllDeclarations.ToList();
+            var declarations = UserDeclarations.ToList();
             var setters = declarations
-                .Where(item => !item.IsBuiltIn 
-                    && (item.Accessibility == Accessibility.Implicit || 
+                .Where(item => 
+                       (item.Accessibility == Accessibility.Implicit || 
                         item.Accessibility == Accessibility.Public || 
                         item.Accessibility == Accessibility.Global)
                     && (item.DeclarationType == DeclarationType.PropertyLet ||

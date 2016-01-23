@@ -16,8 +16,8 @@ namespace Rubberduck.UI.SourceControl
 
         public string Message
         {
-            get { return this.ActionFailedMessage.Text; }
-            set { this.ActionFailedMessage.Text = value; }
+            get { return ActionFailedMessage.Text; }
+            set { ActionFailedMessage.Text = value; }
         }
 
         public event EventHandler<EventArgs> DismissSecondaryPanel;

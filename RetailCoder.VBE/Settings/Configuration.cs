@@ -15,7 +15,7 @@ namespace Rubberduck.Settings
 
         public Configuration(UserSettings userSettings)
         {
-            this.UserSettings = userSettings;
+            UserSettings = userSettings;
         }
     }
 }

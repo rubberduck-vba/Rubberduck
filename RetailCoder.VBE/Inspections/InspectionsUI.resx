@@ -118,10 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AssignedByValParameterInspectionMeta" xml:space="preserve">
-    <value>Parameter is passed by value, but is assigned a new value/reference. Consider making a local copy, or passing the parameter by reference if the value is meant to be propagated to the calling code.</value>
+    <value>Parameter is passed by value, but is assigned a new value/reference. Consider making a local copy instead.</value>
   </data>
   <data name="AssignedByValParameterInspectionName" xml:space="preserve">
     <value>ByVal parameter is assigned</value>
+  </data>
+  <data name="CodeQualityIssues" xml:space="preserve">
+    <value>Code quality issues</value>
   </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
     <value>Constant value is declared but Rubberduck could not find any reference to it. Consider removing the unused declaration.</value>
@@ -146,6 +149,21 @@
   </data>
   <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
     <value>Replace empty string with the 'vbNullString' constant</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
+    <value>Make field '{0}' a property</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionMeta" xml:space="preserve">
+    <value>Use properties rather than public fields.</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionName" xml:space="preserve">
+    <value>Use properties rather than public fields.</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionQuickFix" xml:space="preserve">
+    <value>Encapsulate field '{0}' with property</value>
+  </data>
+  <data name="IgnoreOnce" xml:space="preserve">
+    <value>Ignore once</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspectionMeta" xml:space="preserve">
     <value>Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they're intended, and prefer working off object references.</value>
@@ -177,11 +195,29 @@
   <data name="ImplicitVariantReturnTypeInspectionName" xml:space="preserve">
     <value>Return type is implicitly 'Variant'</value>
   </data>
+  <data name="MoveFieldCloseToUsageInspection" xml:space="preserve">
+    <value>Move field closer to usage</value>
+  </data>
+  <data name="MoveFieldCloseToUsageInspectionMeta" xml:space="preserve">
+    <value>A field that is only used in one method should be a local variable.</value>
+  </data>
+  <data name="MoveFieldCloseToUsageInspectionName" xml:space="preserve">
+    <value>Move field closer to usage</value>
+  </data>
+  <data name="MoveFieldCloseToUsageInspectionQuickFix" xml:space="preserve">
+    <value>Move field '{0}' closer to usage</value>
+  </data>
+  <data name="LanguageOpportunities" xml:space="preserve">
+    <value>Language opportunities</value>
+  </data>
+  <data name="MaintainabilityAndReadabilityIssues" xml:space="preserve">
+    <value>Maintainability &amp; readability issues</value>
+  </data>
   <data name="MultilineParameterInspectionMeta" xml:space="preserve">
     <value>Consider continuing long signatures between parameters. Splitting a parameter declaration across multiple lines arguably hurts readability.</value>
   </data>
   <data name="MultilineParameterInspectionName" xml:space="preserve">
-    <value>Parameter is specified on multiple lines</value>
+    <value>Parameter declaration is split on multiple lines</value>
   </data>
   <data name="MultipleDeclarationsInspectionMeta" xml:space="preserve">
     <value>Declaring multiple variables in the same instruction is legal, but should be used sparingly. Consider declaring variables closer to their usage, in a single instruction per declaration.</value>
@@ -189,11 +225,20 @@
   <data name="MultipleDeclarationsInspectionName" xml:space="preserve">
     <value>Instruction contains multiple declarations</value>
   </data>
+  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
+    <value>'{0}' has more than one '@Folder' annotation.</value>
+  </data>
+  <data name="MultipleFolderAnnotationsInspectionMeta" xml:space="preserve">
+    <value>Rubberduck only uses the first '@Folder' annotation in a code module; consider removing extraneous ones.</value>
+  </data>
+  <data name="MultipleFolderAnnotationsInspectionName" xml:space="preserve">
+    <value>'{0}' has more than one folder annotation.</value>
+  </data>
   <data name="NonReturningFunctionInspectionMeta" xml:space="preserve">
     <value>This is likely a bug. The return value of a function or property getter must be assigned before exiting, otherwise the program will not be working with expected results. If a function has no meaningful return value, consider declaring it as a 'Sub' procedure instead.</value>
   </data>
   <data name="NonReturningFunctionInspectionName" xml:space="preserve">
-    <value>Non-returning member</value>
+    <value>Non-returning function or property getter</value>
   </data>
   <data name="ObsoleteCallStatementInspectionMeta" xml:space="preserve">
     <value>The 'Call' statement is no longer required to call procedures, and only exists in the language to support legacy code that required it; it can be safely rewritten to an implicit call.</value>
@@ -238,9 +283,9 @@
     <value>'Option Explicit' is not specified</value>
   </data>
   <data name="ParameterCanBeByValInspectionMeta" xml:space="preserve">
-    <value>A parameter that is passed by reference but that isn't assigned a new value/reference, could be passed by value instead.</value>
+    <value>A parameter that is passed by reference and isn't assigned a new value/reference, could be passed by value instead.</value>
   </data>
-  <data name="ParameterCanByByValInspectionName" xml:space="preserve">
+  <data name="ParameterCanBeByValInspectionName" xml:space="preserve">
     <value>Parameter can be passed by value</value>
   </data>
   <data name="ParameterNotUsedInspectionMeta" xml:space="preserve">
@@ -250,10 +295,10 @@
     <value>Parameter is not referred to</value>
   </data>
   <data name="ProcedureNotUsedInspectionMeta" xml:space="preserve">
-    <value>Rubberduck could not find any caller for a procedure. Unless the procedure is hooked to a macro-button, used as a user-defined function (UDF) or handles an application event that Rubberduck didn't know of, consider removing it.</value>
+    <value>Rubberduck could not find any caller for a procedure. If the procedure is hooked to a macro-button, used as a user-defined function (UDF) or handles an application event that Rubberduck didn't know of you can safely ignore this inspection result; otherwise, consider removing it.</value>
   </data>
   <data name="ProcedureNotUsedInspectionName" xml:space="preserve">
-    <value>Procedure is not called</value>
+    <value>Procedure is not referred to</value>
   </data>
   <data name="UnassignedVariableUsageInspectionMeta" xml:space="preserve">
     <value>This is likely a bug. A variable is being referred to, but is never assigned.</value>
@@ -268,11 +313,11 @@
     <value>Use of variant-returning string function</value>
   </data>
   <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
-    <value>Procedure '{0}' should be a function.</value>
+    <value>Procedure '{0}' can be written as a function.</value>
     <comment>{0} Procedure name</comment>
   </data>
   <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
-    <value>Replace procedure with function and update usages.</value>
+    <value>Implement as function and update usages.</value>
   </data>
   <data name="UseMeaningfulNameInspection" xml:space="preserve">
     <value>Consider renaming {0} '{1}'</value>
@@ -293,7 +338,7 @@
     <value>A variable is declared and assigned a value/reference, but it's never referred to.</value>
   </data>
   <data name="VariableNotUsedInspectionName" xml:space="preserve">
-    <value>Variable not used</value>
+    <value>Variable is not referred to</value>
   </data>
   <data name="VariableTypeNotDeclaredInspectionMeta" xml:space="preserve">
     <value>A variable whose type isn't explicitly declared, is implicitly 'Variant'. Consider making it an explicit 'Variant' if that's intended, or declare a more specific type.</value>
@@ -308,9 +353,22 @@
     <value>Write-only property</value>
   </data>
   <data name="ProcedureShouldBeFunctionInspectionMeta" xml:space="preserve">
-    <value>A procedure has one ByRef parameter.  Consider creating a function that returns the value instead.</value>
+    <value>A procedure that only has one parameter passed by reference that is assigned a new value/reference before the procedure exits, is using a ByRef parameter as a return value: consider making it a function instead.</value>
   </data>
   <data name="ProcedureShouldBeFunctionInspectionName" xml:space="preserve">
-    <value>Convert procedure to function</value>
+    <value>Procedure can be written as a function</value>
+  </data>
+  <data name="WriteOnlyPropertyInspection" xml:space="preserve">
+    <value>Property '{0}' has no getter</value>
+    <comment>{0} Property name</comment>
+  </data>
+  <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
+    <value>Declaration '{0}' is self-assigned</value>
+  </data>
+  <data name="SelfAssignedDeclarationInspectionMeta" xml:space="preserve">
+    <value>A declaration should not be self-assigned.</value>
+  </data>
+  <data name="SelfAssignedDeclarationInspectionName" xml:space="preserve">
+    <value>Self-assigned property</value>
   </data>
 </root>

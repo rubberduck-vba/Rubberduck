@@ -6,22 +6,20 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableTypeNotDeclaredInspection : IInspection
+    public sealed class VariableTypeNotDeclaredInspection : InspectionBase
     {
-        public VariableTypeNotDeclaredInspection()
+        public VariableTypeNotDeclaredInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "VariableTypeNotDeclaredInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return RubberduckUI._TypeNotDeclared_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI._TypeNotDeclared_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var issues = from item in state.AllDeclarations.Where(item => !item.IsBuiltIn)
+            var issues = from item in UserDeclarations
                          where (item.DeclarationType == DeclarationType.Variable
                             || item.DeclarationType == DeclarationType.Constant
                             || item.DeclarationType == DeclarationType.Parameter)

@@ -295,15 +295,24 @@
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
-    <Compile Include="Inspections\EmptyStringLiteralInspection.cs" />
-    <Compile Include="Inspections\EmptyStringLiteralInspectionResult.cs" />
-    <Compile Include="Inspections\ImplicitActiveSheetReferenceInspection.cs" />
-    <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspection.cs" />
+    <Compile Include="Inspections\SelfAssignedDeclarationInspection.cs" />
+    <Compile Include="Inspections\SelfAssignedDeclarationInspectionResult.cs" />
     <Compile Include="Inspections\InspectionsUI.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>InspectionsUI.resx</DependentUpon>
     </Compile>
+    <Compile Include="Inspections\MoveFieldCloserToUsageInspection.cs" />
+    <Compile Include="Inspections\EncapsulatePublicFieldInspection.cs" />
+    <Compile Include="Inspections\MoveFieldCloserToUsageInspectionResult.cs" />
+    <Compile Include="Inspections\EncapsulatePublicFieldInspectionResult.cs" />
+    <Compile Include="Inspections\EmptyStringLiteralInspection.cs" />
+    <Compile Include="Inspections\EmptyStringLiteralInspectionResult.cs" />
+    <Compile Include="Inspections\IgnoreOnceQuickFix.cs" />
+    <Compile Include="Inspections\ImplicitActiveSheetReferenceInspection.cs" />
+    <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspection.cs" />
+    <Compile Include="Inspections\InspectionBase.cs" />
+    <Compile Include="Inspections\MultipleFolderAnnotationsInspection.cs" />
     <Compile Include="Inspections\ProcedureShouldBeFunctionInspection.cs" />
     <Compile Include="Inspections\ProcedureShouldBeFunctionInspectionResult.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspectionResult.cs" />
@@ -311,6 +320,8 @@
     <Compile Include="Inspections\UseMeaningfulNameInspectionResult.cs" />
     <Compile Include="Inspections\WriteOnlyPropertyInspection.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspection.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerCustomFolderViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerItemViewModel.cs" />
     <Compile Include="Navigation\NavigateAllReferences.cs" />
     <Compile Include="Navigation\NavigateAllImplementations.cs" />
     <Compile Include="Navigation\IDeclarationNavigator.cs" />
@@ -395,6 +406,18 @@
     <Compile Include="UI\BusyIndicator.xaml.cs">
       <DependentUpon>BusyIndicator.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerComponentViewModel.cs" />
+    <Compile Include="UI\CodeExplorer\CodeExplorer.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CodeExplorer.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\CodeExplorer\CodeExplorerControl.xaml.cs">
+      <DependentUpon>CodeExplorerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerMemberViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerProjectViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerViewModel.cs" />
     <Compile Include="UI\CodeInspections\InspectionDescriptionConverter.cs" />
     <Compile Include="UI\CodeInspections\InspectionImageSourceConverter.cs" />
     <Compile Include="UI\CodeInspections\InspectionResultsControl.xaml.cs">
@@ -520,8 +543,6 @@
     <Compile Include="Refactorings\Rename\RenamePresenterFactory.cs" />
     <Compile Include="Refactorings\Rename\RenameRefactoring.cs" />
     <Compile Include="Refactorings\ReorderParameters\Parameter.cs" />
-    <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
-    <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
     <Compile Include="UI\FindSymbol\FindSymbolControl.xaml.cs">
       <DependentUpon>FindSymbolControl.xaml</DependentUpon>
     </Compile>
@@ -804,10 +825,14 @@
   <ItemGroup>
     <EmbeddedResource Include="Inspections\InspectionsUI.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
+      <LastGenOutput>InspectionsUI1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\CodeExplorer\CodeExplorer.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CodeExplorer.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\CodeExplorer\CodeExplorerWindow.resx">
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
@@ -1095,6 +1120,15 @@
     <Content Include="Resources\balloon_mask.bmp" />
     <Content Include="Resources\balloon_prohibition.bmp" />
     <Content Include="Resources\balloon_smiley.bmp" />
+    <Resource Include="Resources\blue-folder-horizontal-open.png" />
+    <Resource Include="Resources\blue-folder-horizontal.png" />
+    <Resource Include="Resources\lock--exclamation.png" />
+    <None Include="Resources\document-smiley-sad.png" />
+    <None Include="Resources\document-word.png" />
+    <None Include="Resources\document-office.png" />
+    <None Include="Resources\document-outlook.png" />
+    <None Include="Resources\document-powerpoint.png" />
+    <None Include="Resources\document-excel.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
@@ -1298,6 +1332,10 @@
     <Page Include="UI\BusyIndicator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\CodeExplorer\CodeExplorerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\CodeInspections\InspectionResultsControl.xaml">
       <SubType>Designer</SubType>

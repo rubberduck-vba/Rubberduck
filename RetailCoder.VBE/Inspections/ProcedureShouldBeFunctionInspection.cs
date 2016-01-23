@@ -6,25 +6,23 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public class ProcedureShouldBeFunctionInspection : IInspection
+    public sealed class ProcedureShouldBeFunctionInspection : InspectionBase
     {
-        public ProcedureShouldBeFunctionInspection()
+        public ProcedureShouldBeFunctionInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "ProcedureShouldBeFunctionInspection"; } }
-        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
-        public string Description { get { return InspectionsUI.ProcedureShouldBeFunctionInspection; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return InspectionsUI.ProcedureShouldBeFunctionInspection; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(RubberduckParserState state)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            return state.ArgListsWithOneByRefParam
+            return State.ArgListsWithOneByRefParam
                 .Where(context => context.Context.Parent is VBAParser.SubStmtContext)
                 .Select(context => new ProcedureShouldBeFunctionInspectionResult(this,
-                    state,
+                    State,
                     new QualifiedContext<VBAParser.ArgListContext>(context.ModuleName,
                         context.Context as VBAParser.ArgListContext),
                     new QualifiedContext<VBAParser.SubStmtContext>(context.ModuleName,
