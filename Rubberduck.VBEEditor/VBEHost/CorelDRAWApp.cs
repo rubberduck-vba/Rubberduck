@@ -11,7 +11,6 @@ namespace Rubberduck.VBEditor.VBEHost
 		
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {
-            //object oMissing = System.Reflection.Missing.Value;
             Application.GMSManager.RunMacro(qualifiedMemberName.QualifiedModuleName.ProjectName.ToString(), qualifiedMemberName.ToString(), null);
         }
     }
