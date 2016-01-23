@@ -75,6 +75,8 @@ namespace Rubberduck.VBEditor.Extensions
                         return new PublisherApp();
 					case "AutoCAD":
                         return new AutoCADApp();
+                    case "CorelDRAW":
+                        return new CorelDRAWApp();
                 }
             }
 

@@ -25,6 +25,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{07952BD8-646C-4494-965C-E80F3CDE3485}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
+		libs\Autodesk.AutoCAD.Interop.Common.dll = libs\Autodesk.AutoCAD.Interop.Common.dll
+		libs\Autodesk.AutoCAD.Interop.dll = libs\Autodesk.AutoCAD.Interop.dll
+		libs\Corel.GraphicsSuite.Interop.CorelDRAW.dll = libs\Corel.GraphicsSuite.Interop.CorelDRAW.dll
 		libs\Interop.VisioViewer.dll = libs\Interop.VisioViewer.dll
 		libs\Microsoft.Office.Interop.Access.dll = libs\Microsoft.Office.Interop.Access.dll
 		libs\Microsoft.Office.Interop.Excel.dll = libs\Microsoft.Office.Interop.Excel.dll
@@ -34,8 +37,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		libs\Microsoft.Office.Interop.Word.dll = libs\Microsoft.Office.Interop.Word.dll
 		libs\Microsoft.Vbe.Interop.dll = libs\Microsoft.Vbe.Interop.dll
 		libs\Office.dll = libs\Office.dll
-		libs\Autodesk.AutoCAD.Interop.dll = libs\Autodesk.AutoCAD.Interop.dll
-		libs\Autodesk.AutoCAD.Interop.Common.dll = libs\Autodesk.AutoCAD.Interop.Common.dll
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.VBEditor", "Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj", "{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}"

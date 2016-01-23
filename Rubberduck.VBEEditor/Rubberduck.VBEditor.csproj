@@ -55,12 +55,16 @@
       <HintPath>..\libs\Microsoft.Office.Interop.Publisher.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-	<Reference Include="Autodesk.AutoCAD.Interop">
+    <Reference Include="Autodesk.AutoCAD.Interop">
       <HintPath>..\libs\Autodesk.AutoCAD.Interop.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-	<Reference Include="Autodesk.AutoCAD.Interop.Common">
+    <Reference Include="Autodesk.AutoCAD.Interop.Common">
       <HintPath>..\libs\Autodesk.AutoCAD.Interop.Common.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Corel.GraphicsSuite.Interop.CorelDRAW">
+      <HintPath>..\libs\Corel.GraphicsSuite.Interop.CorelDRAW.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.Office.Interop.Word, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
@@ -95,6 +99,7 @@
     <Compile Include="Extensions\VBComponentsExtensions.cs" />
     <Compile Include="Extensions\VbeExtensions.cs" />
     <Compile Include="VBEHost\AccessApp.cs" />
+    <Compile Include="VBEHost\CorelDRAWApp.cs" />
     <Compile Include="VBEHost\ExcelApp.cs" />
     <Compile Include="VBEHost\HostApplicationBase.cs" />
     <Compile Include="VBEHost\IHostApplication.cs" />
@@ -102,7 +107,7 @@
     <Compile Include="VBEHost\PowerPointApp.cs" />
     <Compile Include="VBEHost\PublisherApp.cs" />
     <Compile Include="VBEHost\WordApp.cs" />
-	<Compile Include="VBEHost\AutoCADApp.cs" />
+    <Compile Include="VBEHost\AutoCADApp.cs" />
     <Compile Include="Extensions\VbProjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\WindowExtensions.cs" />
