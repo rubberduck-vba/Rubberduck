@@ -64,6 +64,8 @@ namespace Rubberduck
             _configService.SettingsChanged += _configService_SettingsChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _stateBar.Refresh += _stateBar_Refresh;
+
+            UiDispatcher.Initialize();
         }
 
         private Keys _firstStepHotKey;

@@ -147,7 +147,6 @@ namespace Rubberduck.Parsing.VBA
                     ResolveReferences(kvp.Key, kvp.Value, token);
                 }, token)).ToArray();
 
-                SetComponentsState(_state.ParseTrees.Select(kvp => kvp.Key), ParserState.Resolving);
                 Task.WaitAll(resolverTasks);
             }
             catch (OperationCanceledException)
@@ -304,7 +303,7 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
             _state.SetModuleState(component, ParserState.Ready);
-            Debug.Print("'{0}' is ready.", component.Name);
+            Debug.Print("'{0}' is {1}.", component.Name, _state.GetModuleState(component));
         }
 
         private class ObsoleteCallStatementListener : VBABaseListener
