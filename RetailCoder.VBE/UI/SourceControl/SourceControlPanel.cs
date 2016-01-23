@@ -103,6 +103,12 @@ namespace Rubberduck.UI.SourceControl
             RaiseGenericEvent(InitializeNewRepository, e);
         }
 
+        public event EventHandler<EventArgs> CloneRepository;
+        private void CloneRepoButton_Click(object sender, EventArgs e)
+        {
+            RaiseGenericEvent(CloneRepository, e);
+        }
+
         private void RaiseGenericEvent(EventHandler<EventArgs> handler, EventArgs e)
         {
             if (handler != null)

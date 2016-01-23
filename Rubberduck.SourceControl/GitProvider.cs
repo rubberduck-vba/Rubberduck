@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -109,11 +110,14 @@ namespace Rubberduck.SourceControl
             try
             {
                 var name = GetProjectNameFromDirectory(remotePathOrUrl);
+                Debug.Print(name);
                 LibGit2Sharp.Repository.Clone(remotePathOrUrl, workingDirectory);
+                Debug.Print("Success");
                 return new Repository(name, workingDirectory, remotePathOrUrl);
             }
             catch (LibGit2SharpException ex)
             {
+                Debug.Print("Failure");
                 throw new SourceControlException("Failed to clone remote repository.", ex);
             }
         }
