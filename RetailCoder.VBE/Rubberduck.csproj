@@ -762,7 +762,11 @@
       <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\TodoSettingPresenter.cs" />
+    <Compile Include="UI\ToDoItems\ToDoExplorerControl.xaml.cs">
+      <DependentUpon>ToDoExplorerControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
+    <Compile Include="UI\ToDoItems\ToDoExplorerViewModel.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
     <Compile Include="UI\BindableSelectedItemBehavior.cs" />
     <Compile Include="UI\UnitTesting\StandardModuleTestExplorerModel.cs" />
@@ -857,14 +861,17 @@
     <EmbeddedResource Include="UI\RubberduckUI.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.ja.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.ja.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.sv.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.sv.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\AddMarkerForm.resx">
       <DependentUpon>AddMarkerForm.cs</DependentUpon>
@@ -938,6 +945,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ToDoItems\ToDoExplorerWindow.resx">
       <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\UnitTesting\TestExplorerWindow.resx">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>
@@ -1342,6 +1350,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToDoItems\ToDoExplorerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

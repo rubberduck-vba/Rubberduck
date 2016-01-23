@@ -50,17 +50,20 @@ namespace Rubberduck.UI.ToDoItems
                 }
                 return _refreshCommand = new DelegateCommand(_ =>
                 {
-                    _state.StateChanged += State_StateChanged;
+                    _state.StateChanged += _state_StateChanged;
                     _state.OnParseRequested();
                 });
             }
         }
 
-        private async void State_StateChanged(object sender, Parsing.VBA.ParserStateEventArgs e)
+        private async void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
+            if (e.State != ParserState.Ready)
+            {
+                return;
+            }
             var results = await GetItems();
-            ToDos = new ObservableCollection<ToDoItem>();
-            ToDos.AddRange(results);
+            ToDos = new ObservableCollection<ToDoItem>(results);
         }
 
         public ToDoItem SelectedToDo { get; set; }
@@ -76,6 +79,10 @@ namespace Rubberduck.UI.ToDoItems
                 }
                 return _clear = new DelegateCommand(_ =>
                 {
+                    if (SelectedToDo == null)
+                    {
+                        return;
+                    }
                     var module = SelectedToDo.GetSelection().QualifiedName.Component.CodeModule;
 
                     var oldContent = module.Lines[SelectedToDo.LineNumber, 1];

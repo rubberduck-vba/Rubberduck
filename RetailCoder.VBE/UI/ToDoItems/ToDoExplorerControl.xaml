@@ -12,16 +12,18 @@
         <BitmapImage x:Key="ClearImage" UriSource="../../Resources/cross-script.png" />
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
-        <ToolBarPanel DockPanel.Dock="Top">
-            <StackPanel Orientation="Horizontal">
-                <Button ToolTip="Refresh" Command="{Binding RefreshCommand, Mode=OneWay}">
-                    <Image Source="{StaticResource RefreshImage}"></Image>
-                </Button>
-                <Button ToolTip="Clear" Command="{Binding Clear}">
-                    <Image Source="{StaticResource ClearImage}"></Image>
-                </Button>
-            </StackPanel>
-        </ToolBarPanel>
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                <StackPanel Orientation="Horizontal">
+                    <Button ToolTip="Refresh" Command="{Binding RefreshCommand, Mode=OneWay}">
+                        <Image Source="{StaticResource RefreshImage}"></Image>
+                    </Button>
+                    <Button ToolTip="Clear" Command="{Binding Clear}">
+                        <Image Source="{StaticResource ClearImage}"></Image>
+                    </Button>
+                </StackPanel>
+            </ToolBar>
+        </ToolBarTray>
         <DataGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedToDo}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.Priority}" Binding="{Binding Priority}">
