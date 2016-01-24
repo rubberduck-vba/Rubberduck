@@ -115,7 +115,6 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                Debug.Print("Failure");
                 throw new SourceControlException("Failed to clone remote repository.", ex);
             }
         }
