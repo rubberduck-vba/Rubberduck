@@ -96,6 +96,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void _loginView_Confirm(object sender, EventArgs e)
         {
+            //TODO: Replace this with a WPF Password control so we get the SecureString natively.
             var pwd = new SecureString();
             foreach (var c in _loginView.Password.ToCharArray())
             {
