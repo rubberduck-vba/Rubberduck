@@ -25,7 +25,7 @@
                 </StackPanel>
             </ToolBar>
         </ToolBarTray>
-        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedToDo}">
+        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedToDo}" IsExpanded="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.Priority}" Binding="{Binding Priority}">
                 </DataGridTextColumn>

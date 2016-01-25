@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
@@ -62,8 +63,11 @@ namespace Rubberduck.UI.ToDoItems
                 return;
             }
             var results = await GetItems();
-            ToDos = new ListCollectionView(results.ToList());
-            ToDos.GroupDescriptions.Add(new PropertyGroupDescription("Type"));
+            Dispatcher.CurrentDispatcher.Invoke(() =>
+            {
+                ToDos = new ListCollectionView(results.ToList());
+                ToDos.GroupDescriptions.Add(new PropertyGroupDescription("Type"));
+            });
         }
 
         public ToDoItem SelectedToDo { get; set; }
