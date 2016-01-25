@@ -143,6 +143,7 @@ namespace Rubberduck.UI.SourceControl
             this.MinimizeBox = false;
             this.Name = "CloneRepositoryForm";
             this.ShowInTaskbar = false;
+            this.TopMost = true;
             this.flowLayoutPanel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
