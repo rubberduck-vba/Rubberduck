@@ -23,6 +23,7 @@ namespace Rubberduck.UI.SourceControl
             Bind<ISettingsView>().To<SettingsControl>().InSingletonScope();
             Bind<IBranchesView>().To<BranchesControl>().InSingletonScope();
 
+            Bind<ICloneRepositoryView>().To<CloneRepositoryForm>();
             Bind<ICreateBranchView>().To<CreateBranchForm>();
             Bind<IDeleteBranchView>().To<DeleteBranchForm>();
             Bind<IMergeView>().To<MergeForm>();
