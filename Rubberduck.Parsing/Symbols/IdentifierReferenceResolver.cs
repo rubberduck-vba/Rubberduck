@@ -210,6 +210,11 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration ResolveType(Declaration parent)
         {
+            if (parent != null && parent.DeclarationType == DeclarationType.UserDefinedType)
+            {
+                return parent;
+            }
+
             if (parent == null || parent.AsTypeName == null)
             {
                 return null;

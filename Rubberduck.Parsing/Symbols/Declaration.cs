@@ -29,7 +29,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             _qualifiedName = qualifiedName;
             _parentDeclaration = parentDeclaration;
-            _parentScope = parentScope;
+            _parentScope = parentScope ?? string.Empty;
             _identifierName = qualifiedName.MemberName;
             _asTypeName = asTypeName;
             _isSelfAssigned = isSelfAssigned;
@@ -467,7 +467,8 @@ namespace Rubberduck.Parsing.Symbols
                 && other.IdentifierName == IdentifierName
                 && other.DeclarationType == DeclarationType
                 && other.Scope == Scope
-                && other.ParentScope == ParentScope;
+                && other.ParentScope == ParentScope
+                && other.Selection.Equals(Selection);
         }
 
         public override bool Equals(object obj)
@@ -477,7 +478,17 @@ namespace Rubberduck.Parsing.Symbols
 
         public override int GetHashCode()
         {
-            return string.Concat(QualifiedName.QualifiedModuleName.ProjectHashCode, _identifierName, _declarationType, Scope, _parentScope).GetHashCode();
+            unchecked
+            {
+                var hash = 17;
+                hash = hash*23 + QualifiedName.QualifiedModuleName.ProjectHashCode;
+                hash = hash*23 + _identifierName.GetHashCode();
+                hash = hash*23 + _declarationType.GetHashCode();
+                hash = hash*23 + Scope.GetHashCode();
+                hash = hash*23 + _parentScope == null ? 0 : _parentScope.GetHashCode();
+                hash = hash*23 + _selection.GetHashCode();
+                return hash;
+            }
         }
     }
 }
