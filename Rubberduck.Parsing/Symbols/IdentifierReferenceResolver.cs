@@ -423,6 +423,11 @@ namespace Rubberduck.Parsing.Symbols
             if (_withBlockQualifiers.Any())
             {
                 parent = _withBlockQualifiers.Peek();
+                if (parent == null)
+                {
+                    // if parent is an unknown type, continuing any further will only cause issues.
+                    return null;
+                }
             }
             else
             {
@@ -574,6 +579,10 @@ namespace Rubberduck.Parsing.Symbols
             if (_withBlockQualifiers.Any())
             {
                 parent = ResolveType(_withBlockQualifiers.Peek());
+                if (parent == null)
+                {
+                    return;
+                }
             }
             else
             {
