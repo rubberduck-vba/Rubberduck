@@ -1,0 +1,31 @@
+﻿<DataGrid x:Class="Rubberduck.Controls.GroupingGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Rubberduck.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <DataGrid.Resources>
+        <Style x:Key="GrouHeaderStyle" TargetType="{x:Type GroupItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Expander Background="White" Foreground="Black" Header="{Binding Name}" IsExpanded="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType=DataGrid}}">
+                            <ItemsPresenter></ItemsPresenter>
+                        </Expander>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </DataGrid.Resources>
+    <DataGrid.GroupStyle>
+        <GroupStyle ContainerStyle="{StaticResource GrouHeaderStyle}">
+            <GroupStyle.Panel>
+                <ItemsPanelTemplate>
+                    <DataGridRowsPresenter></DataGridRowsPresenter>
+                </ItemsPanelTemplate>
+            </GroupStyle.Panel>
+        </GroupStyle>
+    </DataGrid.GroupStyle>
+</DataGrid>
