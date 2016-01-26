@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 
 namespace Rubberduck.UI.ToDoItems
@@ -14,16 +13,6 @@ namespace Rubberduck.UI.ToDoItems
         public ToDoExplorerWindow()
         {
             InitializeComponent();
-
-            TodoExplorerControl.TodoDoubleClick += toDoExplorerControl1_TodoDoubleClick;
-        }
-
-        void toDoExplorerControl1_TodoDoubleClick(object sender, EventArgs e)
-        {
-            if (_viewModel != null)
-            {
-                _viewModel.NavigateToToDo.Execute(new NavigateCodeEventArgs(_viewModel.SelectedToDo.GetSelection()));
-            }
         }
 
         private ToDoExplorerViewModel _viewModel;

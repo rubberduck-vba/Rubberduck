@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -13,13 +12,13 @@ namespace Rubberduck.UI.ToDoItems
             InitializeComponent();
         }
 
-        public event EventHandler TodoDoubleClick;
         private void GroupingGridItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var handler = TodoDoubleClick;
-            if (handler != null)
+            var viewModel = DataContext as ToDoExplorerViewModel;
+
+            if (viewModel != null)
             {
-                handler(this, e);
+                viewModel.NavigateToToDo.Execute(new NavigateCodeEventArgs(viewModel.SelectedToDo.GetSelection()));
             }
         }
     }
