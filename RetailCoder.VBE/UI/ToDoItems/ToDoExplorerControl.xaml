@@ -11,6 +11,17 @@
     <UserControl.Resources>
         <BitmapImage x:Key="RefreshImage" UriSource="../../Resources/arrow-circle-double.png" />
         <BitmapImage x:Key="DeleteImage" UriSource="../../Resources/cross-script.png" />
+
+        <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFD9F4FF" Offset="0"/>
+            <GradientStop Color="#FF9BDDFB" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="{x:Static SystemColors.ControlBrushKey}" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFEEEDED" Offset="0"/>
+            <GradientStop Color="#FFDDDDDD" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
         <ToolBarTray DockPanel.Dock="Top" IsLocked="True">
@@ -24,10 +35,34 @@
                 </Button>
             </ToolBar>
         </ToolBarTray>
-        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedToDo}" IsExpanded="True" CanUserReorderColumns="False" IsReadOnly="True" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray">
+        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False"
+                               SelectedItem="{Binding SelectedToDo}" IsExpanded="True"
+                               CanUserReorderColumns="False" IsReadOnly="True"
+                               HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray"
+                               HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <DataGrid.ItemContainerStyle>
                 <Style TargetType="DataGridRow">
                     <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
+                    <Setter Property="BorderThickness" Value="1.5" />
+                    <Setter Property="Height" Value="22" />
+                    <Setter Property="Margin" Value="4,0" />
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="#adc6e5"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True"/>
+                                <Condition Property="IsFocused" Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="BorderBrush" Value="LightGray"/>
+                        </MultiTrigger>
+                    </Style.Triggers>
+                    <Style.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="2"/>
+                        </Style>
+                    </Style.Resources>
                 </Style>
             </DataGrid.ItemContainerStyle>
             <DataGrid.Columns>
