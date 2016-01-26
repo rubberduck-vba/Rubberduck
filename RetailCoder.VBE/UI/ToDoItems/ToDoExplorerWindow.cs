@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.Integration;
-using Rubberduck.ToDoItems;
-using Rubberduck.UI.CodeInspections;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -20,6 +14,16 @@ namespace Rubberduck.UI.ToDoItems
         public ToDoExplorerWindow()
         {
             InitializeComponent();
+
+            toDoExplorerControl1.TodoDoubleClick += toDoExplorerControl1_TodoDoubleClick;
+        }
+
+        void toDoExplorerControl1_TodoDoubleClick(object sender, EventArgs e)
+        {
+            if (_viewModel != null)
+            {
+                _viewModel.NavigateToToDo.Execute(new NavigateCodeEventArgs(_viewModel.SelectedToDo.GetSelection()));
+            }
         }
 
         private ToDoExplorerViewModel _viewModel;
@@ -29,7 +33,7 @@ namespace Rubberduck.UI.ToDoItems
             set
             {
                 _viewModel = value;
-                this.toDoExplorerControl1.DataContext = _viewModel;
+                toDoExplorerControl1.DataContext = _viewModel;
                 if (_viewModel != null)
                 {
                     _viewModel.RefreshCommand.Execute(null);

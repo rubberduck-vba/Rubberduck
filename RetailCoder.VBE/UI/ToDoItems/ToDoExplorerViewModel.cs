@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Common;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -66,7 +59,10 @@ namespace Rubberduck.UI.ToDoItems
             Dispatcher.CurrentDispatcher.Invoke(() =>
             {
                 ToDos = new ListCollectionView(results.ToList());
-                ToDos.GroupDescriptions.Add(new PropertyGroupDescription("Type"));
+                if (ToDos.GroupDescriptions != null)
+                {
+                    ToDos.GroupDescriptions.Add(new PropertyGroupDescription("Type"));
+                }
             });
         }
 
