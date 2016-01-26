@@ -10,22 +10,30 @@
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance toDoItems:ToDoExplorerViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <BitmapImage x:Key="RefreshImage" UriSource="../../Resources/arrow-circle-double.png" />
-        <BitmapImage x:Key="ClearImage" UriSource="../../Resources/cross-script.png" />
+        <BitmapImage x:Key="DeleteImage" UriSource="../../Resources/cross-script.png" />
     </UserControl.Resources>
-    <DockPanel LastChildFill="True">
-        <ToolBarTray DockPanel.Dock="Top">
-            <ToolBar>
-                <StackPanel Orientation="Horizontal">
-                    <Button ToolTip="Refresh" Command="{Binding RefreshCommand, Mode=OneWay}">
-                        <Image Source="{StaticResource RefreshImage}"></Image>
-                    </Button>
-                    <Button ToolTip="Clear" Command="{Binding Clear}">
-                        <Image Source="{StaticResource ClearImage}"></Image>
-                    </Button>
-                </StackPanel>
-            </ToolBar>
-        </ToolBarTray>
-        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedToDo}" IsExpanded="True" CanUserReorderColumns="False" IsReadOnly="True" MouseDoubleClick="GroupingGrid_MouseDoubleClick">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Button ToolTip="Refresh" Command="{Binding RefreshCommand, Mode=OneWay}">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="{StaticResource RefreshImage}" Margin="5,0" Height="16" />
+                <TextBlock Text="{x:Static resx:RubberduckUI.Refresh}" VerticalAlignment="Center" />
+            </StackPanel>
+        </Button>
+        <Button ToolTip="Delete" Command="{Binding Clear}" Grid.Column="1" Grid.Row="0">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="{StaticResource DeleteImage}" Margin="5,0" Height="16" />
+                <TextBlock Text="{x:Static resx:RubberduckUI.Remove}" VerticalAlignment="Center" />
+            </StackPanel>
+        </Button>
+        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedToDo}" IsExpanded="True" CanUserReorderColumns="False" IsReadOnly="True" MouseDoubleClick="GroupingGrid_MouseDoubleClick" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.Priority}" Binding="{Binding Priority}" />
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoExplorer_Description}" Binding="{Binding Description}" />
@@ -34,5 +42,5 @@
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoExplorer_LineNumber}" Binding="{Binding LineNumber}" />
             </DataGrid.Columns>
         </controls:GroupingGrid>
-    </DockPanel>
+    </Grid>
 </UserControl>

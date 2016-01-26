@@ -21,6 +21,8 @@ namespace Rubberduck.UI.ToDoItems
         {
             _state = state;
             _markers = configService.GetDefaultConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
+
+            _uiDispatcher = Dispatcher.CurrentDispatcher;
         }
 
         public ListCollectionView ToDos {
@@ -56,7 +58,8 @@ namespace Rubberduck.UI.ToDoItems
                 return;
             }
             var results = await GetItems();
-            Dispatcher.CurrentDispatcher.Invoke(() =>
+            
+            _uiDispatcher.Invoke(() =>
             {
                 ToDos = new ListCollectionView(results.ToList());
                 if (ToDos.GroupDescriptions != null)
@@ -97,6 +100,8 @@ namespace Rubberduck.UI.ToDoItems
         }
 
         private ICommand _navigateToToDo;
+        private Dispatcher _uiDispatcher;
+
         public ICommand NavigateToToDo
         {
             get
