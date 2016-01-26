@@ -11,7 +11,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
-                        <Expander Background="White" Foreground="Black" Header="{Binding Name}" IsExpanded="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType=DataGrid}}">
+                        <Expander Background="White" Foreground="Black" Header="{Binding Name}" IsExpanded="True">
                             <ItemsPresenter></ItemsPresenter>
                         </Expander>
                     </ControlTemplate>
