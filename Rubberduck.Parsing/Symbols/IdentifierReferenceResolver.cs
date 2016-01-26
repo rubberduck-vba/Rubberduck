@@ -1,6 +1,7 @@
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
@@ -176,37 +177,152 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var identifiers = context.ambiguousIdentifier();
-
-            // VBA doesn't support namespaces.
-            // A "ComplexType" is therefore only ever as "complex" as [Library].[Type].
-            var identifier = identifiers.Last();
-            var library = identifiers.Count > 1
-                ? identifiers[0]
-                : null;
-
-            var libraryName = library == null
-                ? _qualifiedModuleName.ProjectName
-                : library.GetText();
-
-            // note: inter-project references won't work, but we can qualify VbaStandardLib types:
-            if (libraryName == _qualifiedModuleName.ProjectName || libraryName == "VBA")
-            {
-                var matches = _declarations.Where(d => d.IdentifierName == identifier.GetText());
-                var results = matches.Where(item =>
-                    item.ProjectName == libraryName
-                    && _projectScopePublicModifiers.Contains(item.Accessibility)
-                    && _moduleTypes.Contains(item.DeclarationType)
-                    || (_currentScope != null && _memberTypes.Contains(_currentScope.DeclarationType) 
-                        && item.DeclarationType == DeclarationType.UserDefinedType
-                        && item.ComponentName == _currentScope.ComponentName))
+            var identifiers = context.ambiguousIdentifier()
+                .Select(identifier => identifier)
                 .ToList();
 
-                return results.Count != 1 ? null : results.SingleOrDefault();
+            // if there's only 1 identifier, resolve to the tightest-scope match:
+            if (identifiers.Count == 1)
+            {
+                return ResolveInScopeType(identifiers.Single().GetText(), _currentScope);
             }
 
+            // if there's 2 or more identifiers, resolve to the deepest path:
+            var first = identifiers[0].GetText();
+            var projectMatch = _currentScope.ProjectName == first
+                ? _declarations.SingleOrDefault(declaration =>
+                    declaration.DeclarationType == DeclarationType.Project
+                    && declaration.Project == _currentScope.Project // todo: account for project references!
+                    && declaration.IdentifierName == first)
+                : null;
+
+            if (projectMatch != null)
+            {
+                var projectReference = CreateReference(identifiers[0], projectMatch);
+
+                // matches current project. 2nd identifier could be:
+                // - standard module (only if there's a 3rd identifier)
+                // - class module
+                // - UDT
+                if (identifiers.Count == 3)
+                {
+                    var moduleMatch = _declarations.SingleOrDefault(declaration =>
+                        !declaration.IsBuiltIn && declaration.ParentDeclaration != null
+                        && declaration.ParentDeclaration.Equals(projectMatch)
+                        && declaration.DeclarationType == DeclarationType.Module
+                        && declaration.IdentifierName == identifiers[1].GetText());
+
+                    if (moduleMatch != null)
+                    {
+                        var moduleReference = CreateReference(identifiers[1], moduleMatch);
+
+                        // 3rd identifier can only be a UDT
+                        var udtMatch = _declarations.SingleOrDefault(declaration =>
+                            !declaration.IsBuiltIn && declaration.ParentDeclaration != null
+                            && declaration.ParentDeclaration.Equals(moduleMatch)
+                            && declaration.DeclarationType == DeclarationType.UserDefinedType
+                            && declaration.IdentifierName == identifiers[2].GetText());
+                        if (udtMatch != null)
+                        {
+                            var udtReference = CreateReference(identifiers[2], udtMatch);
+                            projectMatch.AddReference(projectReference);
+                            moduleMatch.AddReference(moduleReference);
+                            udtMatch.AddReference(udtReference);
+                            return udtMatch;
+                        }
+                    }
+                }
+                else
+                {
+                    var match = _declarations.SingleOrDefault(declaration =>
+                        !declaration.IsBuiltIn && declaration.ParentDeclaration != null
+                        && declaration.ParentDeclaration.Equals(projectMatch)
+                        && declaration.IdentifierName == identifiers[1].GetText()
+                        && (declaration.DeclarationType == DeclarationType.Class ||
+                            declaration.DeclarationType == DeclarationType.UserDefinedType));
+                    if (match != null)
+                    {
+                        var reference = CreateReference(identifiers[1], match);
+                        match.AddReference(reference);
+                        return match;
+                    }
+                }
+            }
+
+            // first identifier didn't match current project.
+            // if there are 3 identifiers, type isn't in current project.
+            if (identifiers.Count == 3)
+            {
+                return null;
+            }
+            else
+            {
+                var moduleMatch = _declarations.SingleOrDefault(declaration =>
+                    !declaration.IsBuiltIn && declaration.ParentDeclaration != null
+                    && declaration.ParentDeclaration.Equals(projectMatch)
+                    && declaration.DeclarationType == DeclarationType.Module
+                    && declaration.IdentifierName == identifiers[0].GetText());
+
+                if (moduleMatch != null)
+                {
+                    var moduleReference = CreateReference(identifiers[0], moduleMatch);
+
+                    // 2nd identifier can only be a UDT
+                    var udtMatch = _declarations.SingleOrDefault(declaration =>
+                        !declaration.IsBuiltIn && declaration.ParentDeclaration != null
+                        && declaration.ParentDeclaration.Equals(moduleMatch)
+                        && declaration.DeclarationType == DeclarationType.UserDefinedType
+                        && declaration.IdentifierName == identifiers[1].GetText());
+                    if (udtMatch != null)
+                    {
+                        var udtReference = CreateReference(identifiers[1], udtMatch);
+                        moduleMatch.AddReference(moduleReference);
+                        udtMatch.AddReference(udtReference);
+                        return udtMatch;
+                    }
+                }
+            }
+            
             return null;
         }
+
+        private IEnumerable<Declaration> FindMatchingTypes(string identifier)
+        {
+            return _declarations.Where(declaration =>
+                declaration.IdentifierName == identifier
+                && (declaration.DeclarationType == DeclarationType.Class
+                || declaration.DeclarationType == DeclarationType.UserDefinedType))
+                .ToList();
+        }
+
+        private Declaration ResolveInScopeType(string identifier, Declaration scope)
+        {
+            var matches = FindMatchingTypes(identifier).ToList();
+            if (matches.Count == 1)
+            {
+                return matches.Single();
+            }
+
+            // more than one matching identifiers found.
+            // if it matches a UDT in the current scope, resolve to that type.
+            var sameScopeUdt = matches.Where(declaration =>
+                declaration.Project == scope.Project
+                && declaration.DeclarationType == DeclarationType.UserDefinedType
+                && declaration.ParentDeclaration.Equals(scope))
+                .ToList();
+
+            if (sameScopeUdt.Count == 1)
+            {
+                return sameScopeUdt.Single();
+            }
+            
+            // todo: try to resolve identifier using referenced projects
+
+            return null; // match is ambiguous or unknown, return null
+        }
+
+
+
 
         private Declaration ResolveType(Declaration parent)
         {
@@ -221,7 +337,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var identifier = parent.AsTypeName.Contains(".")
-                ? parent.AsTypeName.Split('.').Last()
+                ? parent.AsTypeName.Split('.').Last() // bug: this can't be right
                 : parent.AsTypeName;
 
             var matches = _declarations.Where(d => d.IdentifierName == identifier).ToList();
