@@ -72,7 +72,7 @@ namespace Rubberduck.UI.ToDoItems
         public ToDoItem SelectedToDo { get; set; }
 
         private ICommand _clear;
-        public ICommand Clear
+        public ICommand Remove
         {
             get
             {
@@ -100,7 +100,7 @@ namespace Rubberduck.UI.ToDoItems
         }
 
         private ICommand _navigateToToDo;
-        private Dispatcher _uiDispatcher;
+        private readonly Dispatcher _uiDispatcher;
 
         public ICommand NavigateToToDo
         {
