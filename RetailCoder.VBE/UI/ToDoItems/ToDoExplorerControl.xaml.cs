@@ -14,7 +14,7 @@ namespace Rubberduck.UI.ToDoItems
         }
 
         public event EventHandler TodoDoubleClick;
-        private void GroupingGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void GroupingGridItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var handler = TodoDoubleClick;
             if (handler != null)

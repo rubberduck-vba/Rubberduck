@@ -24,7 +24,12 @@
                 </Button>
             </ToolBar>
         </ToolBarTray>
-        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedToDo}" IsExpanded="True" CanUserReorderColumns="False" IsReadOnly="True" MouseDoubleClick="GroupingGrid_MouseDoubleClick" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray">
+        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedToDo}" IsExpanded="True" CanUserReorderColumns="False" IsReadOnly="True" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray">
+            <DataGrid.ItemContainerStyle>
+                <Style TargetType="DataGridRow">
+                    <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
+                </Style>
+            </DataGrid.ItemContainerStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.Priority}" Binding="{Binding Priority}" />
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoExplorer_Description}" Binding="{Binding Description}" Width="*" />
