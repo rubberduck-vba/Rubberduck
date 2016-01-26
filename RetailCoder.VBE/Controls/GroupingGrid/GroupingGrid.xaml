@@ -28,4 +28,7 @@
             </GroupStyle.Panel>
         </GroupStyle>
     </DataGrid.GroupStyle>
+    <DataGrid.RowBackground>
+        <SolidColorBrush Color="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+    </DataGrid.RowBackground>
 </DataGrid>
