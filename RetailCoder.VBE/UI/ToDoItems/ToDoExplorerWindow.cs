@@ -15,7 +15,7 @@ namespace Rubberduck.UI.ToDoItems
         {
             InitializeComponent();
 
-            toDoExplorerControl1.TodoDoubleClick += toDoExplorerControl1_TodoDoubleClick;
+            TodoExplorerControl.TodoDoubleClick += toDoExplorerControl1_TodoDoubleClick;
         }
 
         void toDoExplorerControl1_TodoDoubleClick(object sender, EventArgs e)
@@ -33,7 +33,7 @@ namespace Rubberduck.UI.ToDoItems
             set
             {
                 _viewModel = value;
-                toDoExplorerControl1.DataContext = _viewModel;
+                TodoExplorerControl.DataContext = _viewModel;
                 if (_viewModel != null)
                 {
                     _viewModel.RefreshCommand.Execute(null);

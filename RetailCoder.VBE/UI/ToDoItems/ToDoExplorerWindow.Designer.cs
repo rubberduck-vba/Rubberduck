@@ -33,7 +33,7 @@ namespace Rubberduck.UI.ToDoItems
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.toDoExplorerControl1 = new Rubberduck.UI.ToDoItems.ToDoExplorerControl();
+            this.TodoExplorerControl = new Rubberduck.UI.ToDoItems.ToDoExplorerControl();
             this.SuspendLayout();
             // 
             // elementHost1
@@ -44,7 +44,7 @@ namespace Rubberduck.UI.ToDoItems
             this.elementHost1.Size = new System.Drawing.Size(150, 150);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.toDoExplorerControl1;
+            this.elementHost1.Child = this.TodoExplorerControl;
             // 
             // ToDoExplorerWindow
             // 
@@ -58,6 +58,6 @@ namespace Rubberduck.UI.ToDoItems
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private ToDoExplorerControl toDoExplorerControl1;
+        private ToDoExplorerControl TodoExplorerControl;
     }
 }
