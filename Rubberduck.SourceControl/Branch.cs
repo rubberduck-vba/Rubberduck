@@ -38,10 +38,10 @@ namespace Rubberduck.SourceControl
 
         public Branch(string name, string canonicalName, bool isRemote, bool isCurrentHead)
         {
-            this.Name = name;
-            this.CanonicalName = canonicalName;
-            this.IsRemote = isRemote;
-            this.IsCurrentHead = isCurrentHead;
+            Name = name;
+            CanonicalName = canonicalName;
+            IsRemote = isRemote;
+            IsCurrentHead = isCurrentHead;
         }
     }
 }

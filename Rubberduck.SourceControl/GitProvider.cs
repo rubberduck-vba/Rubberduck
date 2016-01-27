@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -81,7 +82,7 @@ namespace Rubberduck.SourceControl
         {
             get
             {
-                return this.Branches.First(b => !b.IsRemote && b.IsCurrentHead);
+                return Branches.First(b => !b.IsRemote && b.IsCurrentHead);
             }
         }
 
@@ -126,7 +127,7 @@ namespace Rubberduck.SourceControl
 
                 LibGit2Sharp.Repository.Init(directory, bare);
 
-                return new Repository(this.Project.Name, workingDir, directory);
+                return new Repository(Project.Name, workingDir, directory);
             }
             catch (LibGit2SharpException ex)
             {
@@ -158,7 +159,7 @@ namespace Rubberduck.SourceControl
                     //The default behavior of LibGit2Sharp.Repo.Commit is to throw an exception if no signature is found,
                     // but BuildSignature() does not throw if a signature is not found, it returns "unknown" instead.
                     // so we pass a signature that won't throw along to the commit.
-                    repo.Commit("Intial Commit", GetSignature());
+                    repo.Commit("Intial Commit", GetSignature(repo));
                 }
                 catch(LibGit2SharpException ex)
                 {
@@ -183,7 +184,7 @@ namespace Rubberduck.SourceControl
                     };
                 }
 
-                var branch = _repo.Branches[this.CurrentBranch.Name];
+                var branch = _repo.Branches[CurrentBranch.Name];
                 _repo.Network.Push(branch, options);
 
                 RequeryUnsyncedCommits();
@@ -404,7 +405,7 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                _repo.CheckoutPaths(this.CurrentBranch.Name, new List<string> {filePath});
+                _repo.CheckoutPaths(CurrentBranch.Name, new List<string> {filePath});
                 base.Undo(filePath);
             }
             catch (LibGit2SharpException ex)
@@ -429,6 +430,11 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        private Signature GetSignature(LibGit2Sharp.IRepository repo)
+        {
+            return repo.Config.BuildSignature(DateTimeOffset.Now);
+        }
+
         private Signature GetSignature()
         {
             return _repo.Config.BuildSignature(DateTimeOffset.Now);
@@ -436,7 +442,7 @@ namespace Rubberduck.SourceControl
 
         private void RequeryUnsyncedCommits()
         {
-            var currentBranch = _repo.Branches[this.CurrentBranch.Name];
+            var currentBranch = _repo.Branches[CurrentBranch.Name];
             var local = currentBranch.Commits;
 
             if (currentBranch.TrackedBranch == null)

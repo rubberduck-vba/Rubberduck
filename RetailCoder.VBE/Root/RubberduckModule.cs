@@ -19,6 +19,8 @@ using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.MenuItems;
+using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
 
@@ -74,11 +76,16 @@ namespace Rubberduck.Root
                 .WhenInjectedInto<RunCodeInspectionsCommand>()
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>() });
-
+            
             Bind<IPresenter>().To<CodeExplorerDockablePresenter>()
                 .WhenInjectedInto<CodeExplorerCommand>()
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new CodeExplorerWindow { ViewModel = _kernel.Get<CodeExplorerViewModel>() });
+
+            Bind<IPresenter>().To<ToDoExplorerDockablePresenter>()
+                .WhenInjectedInto<ToDoExplorerCommand>()
+                .InSingletonScope()
+                .WithConstructorArgument<IDockableUserControl>(new ToDoExplorerWindow { ViewModel = _kernel.Get<ToDoExplorerViewModel>() });
 
             BindWindowsHooks();
             Debug.Print("completed RubberduckModule.Load()");

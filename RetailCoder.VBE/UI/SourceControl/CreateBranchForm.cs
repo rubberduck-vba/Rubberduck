@@ -22,17 +22,17 @@ namespace Rubberduck.UI.SourceControl
 
         public string UserInputText
         {
-            get { return this.UserInputBox.Text; }
-            set { this.UserInputBox.Text = value; }
+            get { return UserInputBox.Text; }
+            set { UserInputBox.Text = value; }
         }
 
         public bool IsValidBranchName
         {
-            get { return this.OkButton.Enabled; }
+            get { return OkButton.Enabled; }
             set
             {
-                this.OkButton.Enabled = value;
-                this.InvalidNameValidationIcon.Visible = !value;
+                OkButton.Enabled = value;
+                InvalidNameValidationIcon.Visible = !value;
             }
         }
 
@@ -42,7 +42,7 @@ namespace Rubberduck.UI.SourceControl
             var handler = Confirm;
             if (handler != null)
             {
-                handler(this, new BranchCreateArgs(this.UserInputText));
+                handler(this, new BranchCreateArgs(UserInputText));
             }
         }
 

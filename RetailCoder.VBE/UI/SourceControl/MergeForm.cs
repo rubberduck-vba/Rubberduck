@@ -26,8 +26,8 @@ namespace Rubberduck.UI.SourceControl
 
         public bool OkButtonEnabled
         {
-            get { return this.OkButton.Enabled; }
-            set { this.OkButton.Enabled = value; }
+            get { return OkButton.Enabled; }
+            set { OkButton.Enabled = value; }
         }
 
         private BindingList<string> _source;
@@ -37,7 +37,7 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _source = new BindingList<string>(value);
-                this.SourceSelector.DataSource = _source;
+                SourceSelector.DataSource = _source;
             }
         }
 
@@ -48,32 +48,32 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _destination = new BindingList<string>(value);
-                this.DestinationSelector.DataSource = _destination;
+                DestinationSelector.DataSource = _destination;
             }
         }
 
         public string SelectedSourceBranch
         {
-            get { return this.SourceSelector.SelectedItem.ToString(); }
-            set { this.SourceSelector.SelectedItem = value; }
+            get { return SourceSelector.SelectedItem.ToString(); }
+            set { SourceSelector.SelectedItem = value; }
         }
 
         public string SelectedDestinationBranch
         {
-            get { return this.DestinationSelector.SelectedItem.ToString(); }
-            set { this.DestinationSelector.SelectedItem = value; }
+            get { return DestinationSelector.SelectedItem.ToString(); }
+            set { DestinationSelector.SelectedItem = value; }
         }
 
         public string StatusText
         {
-            get { return this.StatusTextBox.Text; }
-            set { this.StatusTextBox.Text = value; }
+            get { return StatusTextBox.Text; }
+            set { StatusTextBox.Text = value; }
         }
 
         public bool StatusTextVisible
         {
-            get { return this.StatusTextBox.Visible; }
-            set { this.StatusTextBox.Visible = value; }
+            get { return StatusTextBox.Visible; }
+            set { StatusTextBox.Visible = value; }
         }
 
         public event EventHandler<EventArgs> MergeStatusChanged;
