@@ -145,7 +145,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private IdentifierReference CreateReference(ParserRuleContext callSiteContext, Declaration callee, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
         {
-            if (callSiteContext == null || _currentScope == null)
+            if (callSiteContext == null || _currentScope == null || _alreadyResolved.Contains(callSiteContext))
             {
                 return null;
             }
@@ -225,9 +225,16 @@ namespace Rubberduck.Parsing.Symbols
                         if (udtMatch != null)
                         {
                             var udtReference = CreateReference(identifiers[2], udtMatch);
+                            
                             projectMatch.AddReference(projectReference);
+                            _alreadyResolved.Add(projectReference.Context);
+
                             moduleMatch.AddReference(moduleReference);
+                            _alreadyResolved.Add(moduleReference.Context);
+                            
                             udtMatch.AddReference(udtReference);
+                            _alreadyResolved.Add(udtReference.Context);
+                            
                             return udtMatch;
                         }
                     }
@@ -244,6 +251,7 @@ namespace Rubberduck.Parsing.Symbols
                     {
                         var reference = CreateReference(identifiers[1], match);
                         match.AddReference(reference);
+                        _alreadyResolved.Add(reference.Context);
                         return match;
                     }
                 }
@@ -276,8 +284,13 @@ namespace Rubberduck.Parsing.Symbols
                     if (udtMatch != null)
                     {
                         var udtReference = CreateReference(identifiers[1], udtMatch);
+
                         moduleMatch.AddReference(moduleReference);
+                        _alreadyResolved.Add(moduleReference.Context);
+
                         udtMatch.AddReference(udtReference);
+                        _alreadyResolved.Add(udtReference.Context);
+
                         return udtMatch;
                     }
                 }
@@ -828,8 +841,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                type = ResolveType(asType.complexType());
-                reference = CreateReference(asType.complexType(), type);
+                ResolveType(asType.complexType());
             }
 
             if (type != null && reference != null)
