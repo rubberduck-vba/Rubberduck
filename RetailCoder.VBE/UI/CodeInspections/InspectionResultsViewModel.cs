@@ -21,7 +21,6 @@ namespace Rubberduck.UI.CodeInspections
         private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
         private readonly VBE _vbe;
-        private readonly INavigateCommand _navigateCommand;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
 
@@ -107,6 +106,7 @@ namespace Rubberduck.UI.CodeInspections
             }
         }
 
+        private readonly INavigateCommand _navigateCommand;
         public ICommand NavigateCommand { get { return _navigateCommand; } }
 
         private readonly ICommand _refreshCommand;

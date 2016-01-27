@@ -1,7 +1,5 @@
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
@@ -637,9 +635,11 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var reference = CreateReference(identifierContext, callee);
-            callee.AddReference(reference);
-            _alreadyResolved.Add(reference.Context);
-
+            if (reference != null)
+            {
+                callee.AddReference(reference);
+                _alreadyResolved.Add(reference.Context);
+            }
             return callee;
         }
 
@@ -730,8 +730,11 @@ namespace Rubberduck.Parsing.Symbols
                 var identifierContext = ((dynamic)parent.Context).ambiguousIdentifier() as VBAParser.AmbiguousIdentifierContext;
 
                 var parentReference = CreateReference(identifierContext, parent);
-                parent.AddReference(parentReference);
-                _alreadyResolved.Add(parentReference.Context);
+                if (parentReference != null)
+                {
+                    parent.AddReference(parentReference);
+                    _alreadyResolved.Add(parentReference.Context);
+                }
             }
 
             var chainedCalls = context.iCS_S_MemberCall();
