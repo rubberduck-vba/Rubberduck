@@ -88,7 +88,7 @@ namespace RubberduckTests.SourceControl
                 _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
                 _settingsPresenter.Object, _unsyncedPresenter.Object,
                 _folderBrowserFactory.Object, _providerFactory.Object,
-                _failedActionView.Object, _loginView.Object, new CodePaneWrapperFactory());
+                _failedActionView.Object, _loginView.Object, null, new CodePaneWrapperFactory());
             return presenter;
         }
 
@@ -144,7 +144,7 @@ namespace RubberduckTests.SourceControl
                                                         _view.Object, changesPresenter, branchesPresenter,
                                                         _settingsPresenter.Object, _unsyncedPresenter.Object,
                                                         _folderBrowserFactory.Object, _providerFactory.Object,
-                                                        _failedActionView.Object, _loginView.Object, new CodePaneWrapperFactory());
+                                                        _failedActionView.Object, _loginView.Object, null, new CodePaneWrapperFactory());
 
             //act
             branchesView.Object.Current = "dev";
