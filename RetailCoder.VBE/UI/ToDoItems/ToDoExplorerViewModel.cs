@@ -26,7 +26,10 @@ namespace Rubberduck.UI.ToDoItems
         }
 
         public ListCollectionView ToDos {
-            get { return _toDos; }
+            get
+            {
+                return _toDos;
+            }
             set
             {
                 _toDos = value;

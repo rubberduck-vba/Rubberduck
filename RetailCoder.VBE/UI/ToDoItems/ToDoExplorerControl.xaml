@@ -25,20 +25,16 @@
 
         <Style x:Key="PrettifyRow" TargetType="DataGridRow">
             <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
-            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="BorderThickness" Value="0,.5,0,0" />
+            <Setter Property="BorderBrush" Value="DarkGray" />
             <Setter Property="Height" Value="22" />
             <Setter Property="TextBlock.FontWeight" Value="Normal" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderThickness" Value="1.5" />
                     <Setter Property="BorderBrush" Value="#adc6e5"/>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
                 </Trigger>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsSelected" Value="True"/>
-                        <Condition Property="IsFocused" Value="False"/>
-                    </MultiTrigger.Conditions>
-                    <Setter Property="BorderBrush" Value="LightGray"/>
-                </MultiTrigger>
             </Style.Triggers>
             <Style.Resources>
                 <Style TargetType="Border">
@@ -62,12 +58,14 @@
         <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False"
                                SelectedItem="{Binding SelectedToDo}" IsExpanded="True"
                                CanUserReorderColumns="False" IsReadOnly="True"
-                               HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray"
+                               HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
                                HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                ItemContainerStyle="{StaticResource PrettifyRow}">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="Background" Value="Transparent" />
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>

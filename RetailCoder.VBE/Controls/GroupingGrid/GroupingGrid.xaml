@@ -11,7 +11,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
-                        <Expander Background="White" Foreground="Black" Header="{Binding Name}" IsExpanded="True">
+                        <Expander Background="WhiteSmoke" Foreground="Black" Header="{Binding Name}" IsExpanded="True">
                             <ItemsPresenter></ItemsPresenter>
                         </Expander>
                     </ControlTemplate>
@@ -23,7 +23,7 @@
         <GroupStyle ContainerStyle="{StaticResource GroupHeaderStyle}">
             <GroupStyle.Panel>
                 <ItemsPanelTemplate>
-                    <DataGridRowsPresenter TextBlock.FontWeight="Bold"></DataGridRowsPresenter>
+                    <DataGridRowsPresenter></DataGridRowsPresenter>
                 </ItemsPanelTemplate>
             </GroupStyle.Panel>
         </GroupStyle>
