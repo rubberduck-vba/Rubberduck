@@ -60,7 +60,7 @@
                                CanUserReorderColumns="False" IsReadOnly="True"
                                HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
                                HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                               ItemContainerStyle="{StaticResource PrettifyRow}">
+                               ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="BorderThickness" Value="0" />
