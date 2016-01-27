@@ -22,14 +22,38 @@
         </LinearGradientBrush>
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+
+        <Style x:Key="PrettifyRow" TargetType="DataGridRow">
+            <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="Height" Value="22" />
+            <Setter Property="TextBlock.FontWeight" Value="Normal" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderBrush" Value="#adc6e5"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True"/>
+                        <Condition Property="IsFocused" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="LightGray"/>
+                </MultiTrigger>
+            </Style.Triggers>
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="2"/>
+                </Style>
+            </Style.Resources>
+        </Style>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
         <ToolBarTray DockPanel.Dock="Top" IsLocked="True">
-            <ToolBar OverflowMode="Never">
+            <ToolBar>
                 <Button ToolTip="{x:Static resx:RubberduckUI.Refresh}" Command="{Binding RefreshCommand, Mode=OneWay}" BorderThickness="0" Background="Transparent">
                     <Image Source="{StaticResource RefreshImage}" />
                 </Button>
-                <Separator BorderThickness="1,0,0,0" BorderBrush="DarkGray" />
+                <Separator />
                 <Button ToolTip="{x:Static resx:RubberduckUI.Remove}" Command="{Binding Remove}" BorderThickness="0" Background="Transparent">
                     <Image Source="{StaticResource DeleteImage}" />
                 </Button>
@@ -39,35 +63,16 @@
                                SelectedItem="{Binding SelectedToDo}" IsExpanded="True"
                                CanUserReorderColumns="False" IsReadOnly="True"
                                HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray"
-                               HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <DataGrid.ItemContainerStyle>
-                <Style TargetType="DataGridRow">
-                    <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
-                    <Setter Property="BorderThickness" Value="1.5" />
-                    <Setter Property="Height" Value="22" />
-                    <Setter Property="Margin" Value="4,0" />
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="BorderBrush" Value="#adc6e5"/>
-                        </Trigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="True"/>
-                                <Condition Property="IsFocused" Value="False"/>
-                            </MultiTrigger.Conditions>
-                            <Setter Property="BorderBrush" Value="LightGray"/>
-                        </MultiTrigger>
-                    </Style.Triggers>
-                    <Style.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="2"/>
-                        </Style>
-                    </Style.Resources>
+                               HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                               ItemContainerStyle="{StaticResource PrettifyRow}">
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0" />
                 </Style>
-            </DataGrid.ItemContainerStyle>
+            </DataGrid.CellStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.Priority}" Binding="{Binding Priority}" />
-                <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoExplorer_Description}" Binding="{Binding Description}" Width="*" />
+                <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.ProjectName}" Binding="{Binding ProjectName}" />
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.ModuleName}" Binding="{Binding ModuleName}" />
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoExplorer_LineNumber}" Binding="{Binding LineNumber}" />

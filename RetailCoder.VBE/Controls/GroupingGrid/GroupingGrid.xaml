@@ -23,7 +23,7 @@
         <GroupStyle ContainerStyle="{StaticResource GroupHeaderStyle}">
             <GroupStyle.Panel>
                 <ItemsPanelTemplate>
-                    <DataGridRowsPresenter></DataGridRowsPresenter>
+                    <DataGridRowsPresenter TextBlock.FontWeight="Bold"></DataGridRowsPresenter>
                 </ItemsPanelTemplate>
             </GroupStyle.Panel>
         </GroupStyle>
