@@ -465,6 +465,7 @@
     <Compile Include="UI\Command\MenuItems\RefactorIntroduceParameterCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorMoveCloserToUsageCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RegexSearchReplaceCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\UiDispatcher.cs" />
     <Compile Include="UI\Command\NavigateCommand.cs" />
     <Compile Include="UI\Command\OptionsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\OptionsCommandMenuItem.cs" />

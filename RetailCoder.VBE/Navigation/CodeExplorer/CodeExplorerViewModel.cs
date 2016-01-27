@@ -75,7 +75,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
         {
             IsBusy = e.State == ParserState.Parsing;
-            if (e.State != ParserState.Resolving) // ParserState.Parsed state is too volatile
+            if (e.State != ParserState.Parsed) 
             {
                 return;
             }

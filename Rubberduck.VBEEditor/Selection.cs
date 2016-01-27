@@ -1,6 +1,8 @@
-﻿namespace Rubberduck.VBEditor
+﻿using System;
+
+namespace Rubberduck.VBEditor
 {
-    public struct Selection
+    public struct Selection : IEquatable<Selection>
     {
         public Selection(int startLine, int startColumn, int endLine, int endColumn)
         {
@@ -65,9 +67,35 @@
 
         public int LineCount { get { return _endLine - _startLine + 1; } }
 
+        public bool Equals(Selection other)
+        {
+            return other.StartLine == StartLine
+                   && other.EndLine == EndLine
+                   && other.StartColumn == StartColumn
+                   && other.EndColumn == EndColumn;
+        }
+
         public override string ToString()
         {
             return string.Format("Start: L{0}C{1} End: L{2}C{3}", _startLine, _startColumn, _endLine, _endColumn);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals((Selection) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hash = 17;
+                hash = hash*23 + StartLine;
+                hash = hash*23 + EndLine;
+                hash = hash*23 + StartColumn;
+                hash = hash*23 + EndColumn;
+                return hash;
+            }
         }
     }
 }
