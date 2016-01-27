@@ -26,6 +26,8 @@ namespace Rubberduck.UI.SourceControl
         private readonly IFailedMessageView _failedMessageView;
         private readonly ILoginView _loginView;
 
+        private readonly ICloneRepositoryView _cloneRepoView;
+
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public SourceControlPresenter(
@@ -40,6 +42,7 @@ namespace Rubberduck.UI.SourceControl
             ISourceControlProviderFactory providerFactory, 
             IFailedMessageView failedMessageView, 
             ILoginView loginView,
+            ICloneRepositoryView cloneRepoView,
             ICodePaneWrapperFactory wrapperFactory
             )
             : base(vbe, addin, view)
@@ -66,6 +69,11 @@ namespace Rubberduck.UI.SourceControl
             _loginView = loginView;
             _loginView.Confirm += _loginView_Confirm;
 
+            _cloneRepoView = cloneRepoView;
+            _cloneRepoView.Confirm += OnCloneRepoViewConfirm;
+            _cloneRepoView.Cancel += OnCloneRepoViewCancel;
+            _cloneRepoView.RemotePathChanged += OnCloneRepoRemotePathChanged;
+
             _failedMessageView = failedMessageView;
             _failedMessageView.DismissSecondaryPanel += DismissSecondaryPanel;
 
@@ -75,6 +83,7 @@ namespace Rubberduck.UI.SourceControl
             _view.RefreshData += OnRefreshChildren;
             _view.OpenWorkingDirectory += OnOpenWorkingDirectory;
             _view.InitializeNewRepository += OnInitNewRepository;
+            _view.CloneRepository += OnCloneRepository;
 
             _wrapperFactory = wrapperFactory;
         }
@@ -87,6 +96,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void _loginView_Confirm(object sender, EventArgs e)
         {
+            //TODO: Replace this with a WPF Password control so we get the SecureString natively.
             var pwd = new SecureString();
             foreach (var c in _loginView.Password.ToCharArray())
             {
@@ -97,8 +107,8 @@ namespace Rubberduck.UI.SourceControl
 
            var creds = new SecureCredentials(_loginView.Username, pwd);
 
-           _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject,
-                    _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name),
+           _provider = _providerFactory.CreateProvider(VBE.ActiveVBProject,
+                    _config.Repositories.First(repo => repo.Name == VBE.ActiveVBProject.Name),
                     creds, _wrapperFactory);
 
             SetChildPresenterSourceControlProviders(_provider);
@@ -134,7 +144,7 @@ namespace Rubberduck.UI.SourceControl
                     return;
                 }
 
-                var project = this.VBE.ActiveVBProject;
+                var project = VBE.ActiveVBProject;
 
                 _provider = _providerFactory.CreateProvider(project);
                 var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
@@ -148,6 +158,49 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        private void OnCloneRepository(object sender, EventArgs e)
+        {
+            OnCloneRepoRemotePathChanged(sender, EventArgs.Empty);
+            _cloneRepoView.Show();
+        }
+
+        private void HideCloneRepoView()
+        {
+            _cloneRepoView.Hide();
+            _cloneRepoView.RemotePath = string.Empty;
+            _cloneRepoView.LocalDirectory = string.Empty;
+        }
+
+        private void OnCloneRepoViewConfirm(object sender, CloneRepositoryEventArgs e)
+        {
+            HideCloneRepoView();
+
+            IRepository repo;
+            try
+            {
+                _provider = _providerFactory.CreateProvider(VBE.ActiveVBProject);
+                repo = _provider.Clone(e.RemotePath, e.LocalDirectory);
+            }
+            catch (SourceControlException ex)
+            {
+                ShowSecondaryPanel(ex.Message, ex.InnerException.Message);
+                return;
+            }
+
+            AddRepoToConfig((Repository)repo);
+        }
+
+        private void OnCloneRepoViewCancel(object sender, EventArgs e)
+        {
+            HideCloneRepoView();
+        }
+
+        private void OnCloneRepoRemotePathChanged(object sender, EventArgs e)
+        {
+            Uri uri;
+            _cloneRepoView.IsValidRemotePath = Uri.TryCreate(_cloneRepoView.RemotePath, UriKind.Absolute, out uri);
+        }
+
         private void OnOpenWorkingDirectory(object sender, EventArgs e)
         {
             using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser(RubberduckUI.SourceControl_OpenWorkingDirectory, false))
@@ -157,7 +210,7 @@ namespace Rubberduck.UI.SourceControl
                     return;
                 }
 
-                var project = this.VBE.ActiveVBProject;
+                var project = VBE.ActiveVBProject;
                 var repo = new Repository(project.Name, folderPicker.SelectedPath, string.Empty);
 
                 try
@@ -198,13 +251,13 @@ namespace Rubberduck.UI.SourceControl
 
             try
             {
-                _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject,
-                    _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name), _wrapperFactory);
+                _provider = _providerFactory.CreateProvider(VBE.ActiveVBProject,
+                    _config.Repositories.First(repo => repo.Name == VBE.ActiveVBProject.Name), _wrapperFactory);
             }
             catch (SourceControlException ex)
             {
                 //todo: report failure to user and prompt to create or browse
-                _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject);
+                _provider = _providerFactory.CreateProvider(VBE.ActiveVBProject);
             }
 
             SetChildPresenterSourceControlProviders(_provider);
@@ -259,7 +312,7 @@ namespace Rubberduck.UI.SourceControl
             }
             else
             {
-                var possibleRepos = _config.Repositories.Where(repo => repo.Name == this.VBE.ActiveVBProject.Name);
+                var possibleRepos = _config.Repositories.Where(repo => repo.Name == VBE.ActiveVBProject.Name);
                 var possibleCount = possibleRepos.Count();
 
                 if (possibleCount == 0 || possibleCount > 1)

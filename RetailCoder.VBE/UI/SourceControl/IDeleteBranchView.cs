@@ -23,7 +23,7 @@ namespace Rubberduck.UI.SourceControl
 
         public BranchDeleteArgs(string branchName)
         {
-            this.BranchName = branchName;
+            BranchName = branchName;
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Rubberduck.Settings
         /// <returns>   The Text property. </returns>
         public override string ToString()
         {
-            return this.Text;
+            return Text;
         }
 
         public override bool Equals(object obj)

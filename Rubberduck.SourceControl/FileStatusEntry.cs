@@ -26,19 +26,19 @@ namespace Rubberduck.SourceControl
 
         private FileStatusEntry(string filePath)
         {
-            this.FilePath = filePath;
+            FilePath = filePath;
         }
 
         public FileStatusEntry(string filePath, LibGit2Sharp.FileStatus fileStatus)
             :this(filePath)
         {
-            this.FileStatus = (FileStatus)fileStatus;
+            FileStatus = (FileStatus)fileStatus;
         }
 
         public FileStatusEntry(string filePath, FileStatus fileStatus)
             :this(filePath)
         {
-            this.FileStatus = fileStatus;
+            FileStatus = fileStatus;
         }
 
         public FileStatusEntry(StatusEntry status)

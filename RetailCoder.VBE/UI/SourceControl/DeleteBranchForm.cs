@@ -31,14 +31,14 @@ namespace Rubberduck.UI.SourceControl
             var handler = SelectionChanged;
             if (handler != null)
             {
-                handler(this, new BranchDeleteArgs(this.BranchList.SelectedItem.ToString()));
+                handler(this, new BranchDeleteArgs(BranchList.SelectedItem.ToString()));
             }
         }
 
         public bool OkButtonEnabled
         {
-            get { return this.OkButton.Enabled; }
-            set { this.OkButton.Enabled = value; }
+            get { return OkButton.Enabled; }
+            set { OkButton.Enabled = value; }
         }
 
         private IList<string> _branches;
@@ -59,7 +59,7 @@ namespace Rubberduck.UI.SourceControl
             var handler = Confirm;
             if (handler != null)
             {
-                handler(this, new BranchDeleteArgs(this.BranchList.SelectedItem.ToString()));
+                handler(this, new BranchDeleteArgs(BranchList.SelectedItem.ToString()));
             }
         }
 
