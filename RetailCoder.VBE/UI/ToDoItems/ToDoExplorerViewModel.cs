@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Common;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -28,10 +21,15 @@ namespace Rubberduck.UI.ToDoItems
         {
             _state = state;
             _markers = configService.GetDefaultConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
+
+            _uiDispatcher = Dispatcher.CurrentDispatcher;
         }
 
         public ListCollectionView ToDos {
-            get { return _toDos; }
+            get
+            {
+                return _toDos;
+            }
             set
             {
                 _toDos = value;
@@ -63,17 +61,21 @@ namespace Rubberduck.UI.ToDoItems
                 return;
             }
             var results = await GetItems();
-            Dispatcher.CurrentDispatcher.Invoke(() =>
+            
+            _uiDispatcher.Invoke(() =>
             {
                 ToDos = new ListCollectionView(results.ToList());
-                ToDos.GroupDescriptions.Add(new PropertyGroupDescription("Type"));
+                if (ToDos.GroupDescriptions != null)
+                {
+                    ToDos.GroupDescriptions.Add(new PropertyGroupDescription("Type"));
+                }
             });
         }
 
         public ToDoItem SelectedToDo { get; set; }
 
         private ICommand _clear;
-        public ICommand Clear
+        public ICommand Remove
         {
             get
             {
@@ -101,6 +103,8 @@ namespace Rubberduck.UI.ToDoItems
         }
 
         private ICommand _navigateToToDo;
+        private readonly Dispatcher _uiDispatcher;
+
         public ICommand NavigateToToDo
         {
             get

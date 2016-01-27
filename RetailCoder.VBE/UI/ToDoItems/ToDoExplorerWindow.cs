@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
-using System.Windows.Forms.Integration;
-using Rubberduck.ToDoItems;
-using Rubberduck.UI.CodeInspections;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -29,7 +22,7 @@ namespace Rubberduck.UI.ToDoItems
             set
             {
                 _viewModel = value;
-                this.toDoExplorerControl1.DataContext = _viewModel;
+                TodoExplorerControl.DataContext = _viewModel;
                 if (_viewModel != null)
                 {
                     _viewModel.RefreshCommand.Execute(null);

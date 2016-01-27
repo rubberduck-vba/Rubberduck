@@ -35,7 +35,7 @@ namespace Rubberduck.ToDoItems
         public QualifiedSelection GetSelection() { return _selection; }
 
         public ToDoItem(TodoPriority priority, CommentNode comment)
-            : this(priority, comment.CommentText, comment.QualifiedSelection)
+            : this(priority, comment.Comment.Remove(0, 1).Trim(), comment.QualifiedSelection)
         {
         }
 

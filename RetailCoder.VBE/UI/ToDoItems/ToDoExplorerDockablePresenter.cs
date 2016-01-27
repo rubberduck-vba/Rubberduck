@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Nodes;
-using Rubberduck.Settings;
-using Rubberduck.ToDoItems;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+﻿using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UI.ToDoItems
 {

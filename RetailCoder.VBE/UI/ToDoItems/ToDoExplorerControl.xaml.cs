@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Input;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -23,6 +10,16 @@ namespace Rubberduck.UI.ToDoItems
         public ToDoExplorerControl()
         {
             InitializeComponent();
+        }
+
+        private void GroupingGridItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var viewModel = DataContext as ToDoExplorerViewModel;
+
+            if (viewModel != null)
+            {
+                viewModel.NavigateToToDo.Execute(new NavigateCodeEventArgs(viewModel.SelectedToDo.GetSelection()));
+            }
         }
     }
 }

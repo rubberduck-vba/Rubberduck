@@ -7,11 +7,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <DataGrid.Resources>
-        <Style x:Key="GrouHeaderStyle" TargetType="{x:Type GroupItem}">
+        <Style x:Key="GroupHeaderStyle" TargetType="{x:Type GroupItem}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
-                        <Expander Background="White" Foreground="Black" Header="{Binding Name}" IsExpanded="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType=DataGrid}}">
+                        <Expander Background="WhiteSmoke" Foreground="Black" Header="{Binding Name}" IsExpanded="True">
                             <ItemsPresenter></ItemsPresenter>
                         </Expander>
                     </ControlTemplate>
@@ -20,7 +20,7 @@
         </Style>
     </DataGrid.Resources>
     <DataGrid.GroupStyle>
-        <GroupStyle ContainerStyle="{StaticResource GrouHeaderStyle}">
+        <GroupStyle ContainerStyle="{StaticResource GroupHeaderStyle}">
             <GroupStyle.Panel>
                 <ItemsPanelTemplate>
                     <DataGridRowsPresenter></DataGridRowsPresenter>
