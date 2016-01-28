@@ -45,6 +45,12 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             foreach (var kvp in _items)
             {
                 kvp.Value.Caption = kvp.Key.Caption.Invoke();
+
+                var childMenu = kvp.Key as ParentMenuItemBase;
+                if (childMenu != null)
+                {
+                    childMenu.Localize();
+                }
             }
         }
 
