@@ -44,6 +44,7 @@ namespace RubberduckTests.SourceControl
 
         private Mock<IFailedMessageView> _failedActionView;
         private Mock<ILoginView> _loginView;
+        private Mock<ICloneRepositoryView> _cloneRepo;
 
         [TestInitialize]
         public void InitializeMocks()
@@ -62,6 +63,7 @@ namespace RubberduckTests.SourceControl
 
             _failedActionView = new Mock<IFailedMessageView>();
             _loginView = new Mock<ILoginView>();
+            _cloneRepo = new Mock<ICloneRepositoryView>();
 
             _configService = new Mock<IConfigurationService<SourceControlConfiguration>>();
 
@@ -88,7 +90,7 @@ namespace RubberduckTests.SourceControl
                 _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
                 _settingsPresenter.Object, _unsyncedPresenter.Object,
                 _folderBrowserFactory.Object, _providerFactory.Object,
-                _failedActionView.Object, _loginView.Object, new CodePaneWrapperFactory());
+                _failedActionView.Object, _loginView.Object, _cloneRepo.Object, new CodePaneWrapperFactory());
             return presenter;
         }
 
@@ -144,7 +146,7 @@ namespace RubberduckTests.SourceControl
                                                         _view.Object, changesPresenter, branchesPresenter,
                                                         _settingsPresenter.Object, _unsyncedPresenter.Object,
                                                         _folderBrowserFactory.Object, _providerFactory.Object,
-                                                        _failedActionView.Object, _loginView.Object, new CodePaneWrapperFactory());
+                                                        _failedActionView.Object, _loginView.Object, _cloneRepo.Object, new CodePaneWrapperFactory());
 
             //act
             branchesView.Object.Current = "dev";
