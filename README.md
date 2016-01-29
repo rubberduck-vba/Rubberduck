@@ -20,16 +20,12 @@ If you're learning VBA, Rubberduck can help you avoid a few common beginner mist
 
 ---
 
-#Contributing
+#[Contributing](https://github.com/rubberduck-vba/Rubberduck/wiki/Contibuting)
 
 If you're a C# developer looking for a fun project to contribute to, feel free to fork the project and 
-[come meet the devs in Code Review's "VBA Rubberducking" chatroom][chat] - we'll be happy to answer your questions and help you help us take the VBE into the 21st century!
-
-Some issues are tagged with [help-wanted][helpwanted], but that doesn't mean we can't use some help with anything else in the project - if this project interests you, we want to hear from you!
+[come meet the devs in Code Review's "VBA Rubberducking" chatroom][chat] - we'll be happy to answer your questions and help you help us!
 
 We follow a [development branch workflow][branch], so please submit any Pull Requests to the `next` branch.
-
-There is additonal information about [building the project and contributing, in our wiki](https://github.com/rubberduck-vba/Rubberduck/wiki/Contibuting).
 
   [chat]:http://chat.stackexchange.com/rooms/14929
   [helpwanted]:https://github.com/rubberduck-vba/Rubberduck/labels/help-wanted
