@@ -1,4 +1,4 @@
-![Rubberduck](http://i.stack.imgur.com/taIMg.png)
+![Rubberduck](http://i.stack.imgur.com/vmqXM.png)
 
 | Branch     | Build Status |
 |------------|--------------|
