@@ -20,7 +20,7 @@ namespace Rubberduck.UI.ToDoItems
         public ToDoExplorerViewModel(RubberduckParserState state, IGeneralConfigService configService)
         {
             _state = state;
-            _markers = configService.GetDefaultConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
+            _markers = configService.LoadConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
 
             _uiDispatcher = Dispatcher.CurrentDispatcher;
         }
