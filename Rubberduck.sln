@@ -36,7 +36,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.SourceControl", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.SmartIndenter", "Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj", "{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RubberduckTests", "UnitTestProject1\RubberduckTests.csproj", "{ADADE971-75E3-40C4-8C19-AB7409372F2E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RubberduckTests", "RubberduckTests\RubberduckTests.csproj", "{ADADE971-75E3-40C4-8C19-AB7409372F2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
