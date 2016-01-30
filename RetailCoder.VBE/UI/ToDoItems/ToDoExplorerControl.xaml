@@ -6,6 +6,7 @@
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:toDoItems="clr-namespace:Rubberduck.UI.ToDoItems"
              xmlns:controls="clr-namespace:Rubberduck.Controls"
+             xmlns:groupingGrid="clr-namespace:Rubberduck.UI.Controls.GroupingGrid"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance toDoItems:ToDoExplorerViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
@@ -55,7 +56,7 @@
                 </Button>
             </ToolBar>
         </ToolBarTray>
-        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False"
+        <groupingGrid:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False"
                                SelectedItem="{Binding SelectedToDo}" IsExpanded="True"
                                CanUserReorderColumns="False" IsReadOnly="True"
                                HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
@@ -75,6 +76,6 @@
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.ModuleName}" Binding="{Binding ModuleName}" />
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoExplorer_LineNumber}" Binding="{Binding LineNumber}" />
             </DataGrid.Columns>
-        </controls:GroupingGrid>
+        </groupingGrid:GroupingGrid>
     </DockPanel>
 </UserControl>

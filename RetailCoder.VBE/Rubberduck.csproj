@@ -294,7 +294,7 @@
     <Compile Include="Common\WinAPI\User32.cs" />
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
-    <Compile Include="Controls\GroupingGrid\GroupingGrid.xaml.cs">
+    <Compile Include="UI\Controls\GroupingGrid\GroupingGrid.xaml.cs">
       <DependentUpon>GroupingGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
@@ -1351,7 +1351,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\GroupingGrid\GroupingGrid.xaml">
+    <Page Include="UI\Controls\GroupingGrid\GroupingGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
