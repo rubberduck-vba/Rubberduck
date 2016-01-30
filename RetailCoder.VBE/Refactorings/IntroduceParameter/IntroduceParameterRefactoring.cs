@@ -252,7 +252,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             if (newLinesWithoutEmptyLines.Any())
             {
-                _editor.InsertLines(selection.StartLine, string.Join(" _" + Environment.NewLine, newLinesWithoutEmptyLines));
+                _editor.InsertLines(selection.StartLine, string.Join(string.Empty, newLinesWithoutEmptyLines).RemoveExtraSpacesLeavingIndentation());
             }
         }
 

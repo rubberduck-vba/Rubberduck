@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Rubberduck.Parsing.Grammar;
@@ -45,6 +46,35 @@ namespace Rubberduck.Parsing.VBA
 
                 newString.Append(c);
                 lastWasWhiteSpace = char.IsWhiteSpace(c);
+            }
+
+            return newString.ToString().Replace('\r', ' ');
+        }
+
+        public static string RemoveExtraSpacesLeavingIndentation(this string line)
+        {
+            var newString = new StringBuilder();
+            var lastWasWhiteSpace = false;
+
+            if (line.All(char.IsWhiteSpace))
+            {
+                return line;
+            }
+
+            var firstNonwhitespaceIndex = line.IndexOf(line.FirstOrDefault(c => !char.IsWhiteSpace(c)));
+
+            for (var i = 0; i < line.Length; i++)
+            {
+                if (i < firstNonwhitespaceIndex)
+                {
+                    newString.Append(line[i]);
+                    continue;
+                }
+
+                if (char.IsWhiteSpace(line[i]) && lastWasWhiteSpace) { continue; }
+
+                newString.Append(line[i]);
+                lastWasWhiteSpace = char.IsWhiteSpace(line[i]);
             }
 
             return newString.ToString().Replace('\r', ' ');
