@@ -431,8 +431,8 @@ End Sub";
             Assert.AreEqual(inputCode, module.Lines());
         }
 
-        [TestMethod]
-        public void PromoteLocalToParameterRefactoring_Properties()
+        [TestMethod, Timeout(1000)]
+        public void PromoteLocalToParameterRefactoring_Properties_GetAndLet()
         {
             //Input
             const string inputCode =
@@ -453,6 +453,56 @@ End Property";
 End Property
 
 Property Let Foo(ByVal fizz As Boolean, ByVal bar As Integer, ByVal buzz As Boolean)
+End Property";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Act
+            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void PromoteLocalToParameterRefactoring_Properties_GetAndSet()
+        {
+            //Input
+            const string inputCode =
+@"Property Get Foo(ByVal fizz As Boolean) As Variant
+    Dim bar As Integer
+    Foo = fizz
+End Property
+
+Property Set Foo(ByVal fizz As Boolean, ByVal buzz As Variant)
+End Property";
+            var selection = new Selection(2, 10, 2, 13); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Property Get Foo(ByVal fizz As Boolean, ByVal bar As Integer) As Variant
+    
+    Foo = fizz
+End Property
+
+Property Set Foo(ByVal fizz As Boolean, ByVal bar As Integer, ByVal buzz As Variant)
 End Property";
 
             //Arrange
