@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:toDoItems="clr-namespace:Rubberduck.UI.ToDoItems"
-             xmlns:controls="clr-namespace:Rubberduck.Controls"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:groupingGrid="clr-namespace:Rubberduck.UI.Controls.GroupingGrid"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance toDoItems:ToDoExplorerViewModel, IsDesignTimeCreatable=False}">
