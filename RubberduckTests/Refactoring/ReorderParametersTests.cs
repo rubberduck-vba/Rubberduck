@@ -55,17 +55,17 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             var factory = SetupFactory(model);
@@ -101,17 +101,17 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             var factory = SetupFactory(model);
@@ -140,17 +140,17 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             var factory = SetupFactory(model);
@@ -197,17 +197,17 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             var reorderedParams = new List<Parameter>()
             {
                 model.Parameters[1],
@@ -247,7 +247,7 @@ End Sub
 End Sub
 
 Private Sub Bar()
- Foo ""Hello"", 10
+    Foo ""Hello"", 10
 End Sub
 ";
 
@@ -260,17 +260,17 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             var factory = SetupFactory(model);
@@ -303,7 +303,7 @@ End Sub
 End Sub
 
 Public Sub Goo()
- Foo arg2:=""test44"", arg1:=3, arg3:=6.1
+    Foo arg2:=""test44"", arg1:=3, arg3:=6.1
 End Sub
 ";
 
@@ -316,17 +316,17 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             var reorderedParams = new List<Parameter>()
             {
                 model.Parameters[0],
@@ -372,17 +372,17 @@ End Function";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -416,7 +416,7 @@ End Sub
 End Sub
 
 Public Sub Goo()
- Foo arg1:=3, arg2:=""test44""
+    Foo arg1:=3, arg2:=""test44""
 End Sub
 ";
 
@@ -429,17 +429,17 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             var reorderedParams = new List<Parameter>()
             {
                 model.Parameters[1],
@@ -483,17 +483,17 @@ End Property";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             var reorderedParams = new List<Parameter>()
             {
                 model.Parameters[1],
@@ -537,17 +537,17 @@ End Property";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -584,17 +584,17 @@ End Property";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -623,16 +623,16 @@ End Property";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
 
             // Assert
             Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from setter
@@ -653,16 +653,16 @@ End Property";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
 
             // Assert
             Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from letter
@@ -693,17 +693,17 @@ End Sub";   // note: IDE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -742,7 +742,7 @@ End Sub
 
 Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 
- Foo arg3, arg2, arg1
+    Foo arg3, arg2, arg1
 
 End Sub
 ";
@@ -756,17 +756,17 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -809,17 +809,17 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -870,7 +870,7 @@ Public Sub Goo(ByVal arg As Date, _
                ByVal arg5 As Integer, _
                ByVal arg6 As Integer)
               
- Foo arg, ""test"", test1x, test2x, test3x, test4x, test5x, test6x
+    Foo arg, ""test"", test1x, test2x, test3x, test4x, test5x, test6x
 End Sub
 ";
 
@@ -883,17 +883,17 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             var reorderedParams = new List<Parameter>()
             {
                 model.Parameters[1],
@@ -958,7 +958,7 @@ Public Sub Goo(ByVal arg As Date, _
                ByVal arg5 As Integer, _
                ByVal arg6 As Integer)
               
- Foo arg, ""test"", test1x, test2x, test3x, test4x, test5x, test6x
+    Foo arg, ""test"", test1x, test2x, test3x, test4x, test5x, test6x
 End Sub
 ";
 
@@ -971,17 +971,17 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             var reorderedParams = new List<Parameter>()
             {
                 model.Parameters[1],
@@ -1023,17 +1023,17 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             var reorderedParams = new List<Parameter>()
             {
                 model.Parameters[1],
@@ -1076,7 +1076,7 @@ End Sub
 End Sub
 
 Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String)
- Foo arg2, arg1
+    Foo arg2, arg1
 End Sub
 ";
 
@@ -1089,17 +1089,17 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             var reorderedParams = new List<Parameter>()
             {
                 model.Parameters[1],
@@ -1148,17 +1148,17 @@ End Property";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to reorder
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -1201,17 +1201,17 @@ End Property";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -1242,18 +1242,18 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
 
             var factory = new ReorderParametersPresenterFactory(editor.Object, null,
-                parseResult.State, null);
+                parser.State, null);
 
             //act
             var refactoring = new ReorderParametersRefactoring(factory, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
@@ -1299,19 +1299,19 @@ End Sub";   // note: IDE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
 
             //Specify Params to remove
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -1363,19 +1363,19 @@ End Sub";   // note: IDE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
 
             //Specify Params to remove
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -1438,12 +1438,12 @@ End Sub";   // note: IDE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
@@ -1451,7 +1451,7 @@ End Sub";   // note: IDE removes excess spaces
             var module3 = project.Object.VBComponents.Item(2).CodeModule;
 
             //Specify Params to remove
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -1505,12 +1505,12 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
@@ -1522,7 +1522,7 @@ End Sub";
                 .Returns(DialogResult.Yes);
 
             //Specify Params to remove
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, messageBox.Object);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, messageBox.Object);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -1563,12 +1563,12 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1577,7 +1577,7 @@ End Sub";
                       .Returns(DialogResult.No);
 
             //Specify Params to remove
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, messageBox.Object);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, messageBox.Object);
             Assert.IsNull(model.TargetDeclaration);
         }
 
@@ -1618,19 +1618,19 @@ End Sub";   // note: IDE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
 
             //Specify Params to remove
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -1682,19 +1682,19 @@ End Sub";   // note: IDE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
 
             //Specify Params to remove
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -1758,12 +1758,12 @@ End Sub";   // note: IDE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
@@ -1771,7 +1771,7 @@ End Sub";   // note: IDE removes excess spaces
             var module3 = project.Object.VBComponents.Item(2).CodeModule;
 
             //Specify Params to remove
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.Reverse();
 
             //SetupFactory
@@ -1802,26 +1802,26 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, new MessageBox());
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters.Reverse();
 
             var view = new Mock<IReorderParametersView>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, view.Object, parseResult.State, null);
+            var factory = new ReorderParametersPresenterFactory(editor.Object, view.Object, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -1843,25 +1843,25 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var model = new ReorderParametersModel(parseResult.State, qualifiedSelection, new MessageBox());
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, new MessageBox());
 
             var view = new Mock<IReorderParametersView>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, view.Object, parseResult.State, null);
+            var factory = new ReorderParametersPresenterFactory(editor.Object, view.Object, parser.State, null);
             var presenter = factory.Create();
 
             //Act
@@ -1886,12 +1886,12 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1902,7 +1902,7 @@ End Sub";
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                       .Returns(DialogResult.OK);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parseResult.State, messageBox.Object);
+            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parser.State, messageBox.Object);
             var presenter = factory.Create();
 
             //Act
@@ -1927,12 +1927,12 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1943,7 +1943,7 @@ End Sub";
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                       .Returns(DialogResult.OK);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parseResult.State, messageBox.Object);
+            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parser.State, messageBox.Object);
             var presenter = factory.Create();
 
             //Act
@@ -1969,19 +1969,19 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parseResult.State, null);
+            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -2006,17 +2006,17 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parseResult.State, null);
+            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parser.State, null);
 
             //Act
             var result = factory.Create();

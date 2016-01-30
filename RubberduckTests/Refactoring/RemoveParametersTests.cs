@@ -54,17 +54,17 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.ForEach(arg => arg.IsRemoved = true);
 
             //SetupFactory
@@ -100,17 +100,17 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.ForEach(arg => arg.IsRemoved = true);
 
             //SetupFactory
@@ -146,17 +146,17 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -192,17 +192,17 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -236,7 +236,7 @@ End Sub
 End Sub
 
 Public Sub Goo()
- Foo arg2:=""test44"",  arg1:=3
+    Foo arg2:=""test44"",  arg1:=3
 End Sub
 "; //note: The IDE strips out the extra whitespace
 
@@ -248,17 +248,17 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[2].IsRemoved = true;
 
             //SetupFactory
@@ -294,17 +294,17 @@ End Function"; //note: The IDE strips out the extra whitespace
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -340,17 +340,17 @@ End Function"; //note: The IDE strips out the extra whitespace
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.ForEach(p => p.IsRemoved = true);
 
             //SetupFactory
@@ -384,7 +384,7 @@ End Sub
 End Function
 
 Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String)
- Foo  
+    Foo  
 End Sub
 "; //note: The IDE strips out the extra whitespace
 
@@ -396,17 +396,17 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.ForEach(p => p.IsRemoved = true);
 
             //SetupFactory
@@ -442,17 +442,17 @@ End Property"; //note: The IDE strips out the extra whitespace
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters.ForEach(p => p.IsRemoved = true);
 
             //SetupFactory
@@ -488,24 +488,24 @@ End Property"; //note: The IDE strips out the extra whitespace
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
             var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
-            refactoring.QuickFix(parseResult.State, qualifiedSelection);
+            refactoring.QuickFix(parser.State, qualifiedSelection);
 
             //Assert
             Assert.AreEqual(expectedCode, module.Lines());
@@ -533,17 +533,17 @@ End Property"; //note: The IDE strips out the extra whitespace
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -577,7 +577,7 @@ End Sub
 End Sub
 
 Private Sub Bar()
- Foo  ""Hello""
+    Foo  ""Hello""
 End Sub
 "; //note: The IDE strips out the extra whitespace
 
@@ -589,17 +589,17 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -633,7 +633,7 @@ End Sub
 End Sub
 
 Private Sub Bar()
- Foo 10 
+    Foo 10 
 End Sub
 "; //note: The IDE strips out the extra whitespace, you can't see it but there's a space after "Foo 10 "
 
@@ -645,17 +645,17 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -701,7 +701,7 @@ Public Sub Goo(ByVal arg1 As Integer, _
                ByVal arg5 As Integer, _
                ByVal arg6 As Integer)
               
- Foo ""test""      
+    Foo ""test""      
 End Sub
 "; //note: The IDE strips out the extra whitespace, you can't see it but there are several spaces after " ParamArrayTest ""test""      "
 
@@ -713,17 +713,17 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -752,16 +752,16 @@ End Property";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
 
             // Assert
             Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from setter
@@ -782,16 +782,16 @@ End Property";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
 
             // Assert
             Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from letter
@@ -826,17 +826,17 @@ End Property"; //note: The IDE strips out the extra whitespace
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -879,17 +879,17 @@ End Property"; //note: The IDE strips out the extra whitespace
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -922,7 +922,7 @@ End Sub";
 End Sub
 
 Private Sub Goo(ByVal arg1 As Integer)
- Foo 
+    Foo 
 End Sub";
 
             //Arrange
@@ -933,17 +933,17 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -981,17 +981,17 @@ End Sub";   // note: VBE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -1029,17 +1029,17 @@ End Sub";   // note: VBE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1077,17 +1077,17 @@ End Sub";   // note: VBE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[2].IsRemoved = true;
 
             //SetupFactory
@@ -1125,17 +1125,17 @@ End Sub";   // note: VBE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -1174,7 +1174,7 @@ End Sub
 
 Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 
- Foo  arg2, arg3
+    Foo  arg2, arg3
 
 End Sub
 ";   // note: IDE removes excess spaces
@@ -1187,17 +1187,17 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -1248,12 +1248,12 @@ End Sub";   // note: IDE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1261,7 +1261,7 @@ End Sub";   // note: IDE removes excess spaces
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1313,12 +1313,12 @@ End Sub";   // note: IDE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1326,7 +1326,7 @@ End Sub";   // note: IDE removes excess spaces
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1389,12 +1389,12 @@ End Sub";   // note: IDE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1403,7 +1403,7 @@ End Sub";   // note: IDE removes excess spaces
             var module3 = project.Object.VBComponents.Item(2).CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1456,12 +1456,12 @@ End Sub";   // note: IDE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1469,7 +1469,7 @@ End Sub";   // note: IDE removes excess spaces
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1521,12 +1521,12 @@ End Sub";   // note: IDE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1534,7 +1534,7 @@ End Sub";   // note: IDE removes excess spaces
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1597,12 +1597,12 @@ End Sub";   // note: IDE removes excess spaces
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1611,7 +1611,7 @@ End Sub";   // note: IDE removes excess spaces
             var module3 = project.Object.VBComponents.Item(2).CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1665,12 +1665,12 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1682,7 +1682,7 @@ End Sub";
                       .Returns(DialogResult.Yes);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, messageBox.Object);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, messageBox.Object);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1723,12 +1723,12 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1737,7 +1737,7 @@ End Sub";
                       .Returns(DialogResult.No);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, messageBox.Object);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, messageBox.Object);
             Assert.IsNull(model.TargetDeclaration);
         }
 
@@ -1757,17 +1757,17 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
 
             var factory = SetupFactory(model);
 
@@ -1806,18 +1806,18 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
 
             var factory = new RemoveParametersPresenterFactory(editor.Object, null,
-                parseResult.State, null);
+                parser.State, null);
 
             //act
             var refactoring = new RemoveParametersRefactoring(factory, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
@@ -1843,17 +1843,17 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -1881,26 +1881,26 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, new MessageBox());
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters[1].IsRemoved = true;
 
             var view = new Mock<IRemoveParametersView>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new RemoveParametersPresenterFactory(editor.Object, view.Object, parseResult.State, null);
+            var factory = new RemoveParametersPresenterFactory(editor.Object, view.Object, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -1922,26 +1922,26 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, new MessageBox());
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters[1].IsRemoved = true;
 
             var view = new Mock<IRemoveParametersView>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new RemoveParametersPresenterFactory(editor.Object, view.Object, parseResult.State, null);
+            var factory = new RemoveParametersPresenterFactory(editor.Object, view.Object, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -1963,22 +1963,22 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, new MessageBox());
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters[0].IsRemoved = true;
 
-            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parseResult.State, null);
+            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -2004,12 +2004,12 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var codePane = project.Object.VBComponents.Item(0).CodeModule.CodePane;
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), selection);
@@ -2020,7 +2020,7 @@ End Sub";
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
-            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parseResult.State, messageBox.Object);
+            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parser.State, messageBox.Object);
             var presenter = factory.Create();
 
             Assert.AreEqual(null, presenter.Show());
@@ -2047,12 +2047,12 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var codePane = project.Object.VBComponents.Item(0).CodeModule.CodePane;
             var ext = codePaneFactory.Create(codePane);
@@ -2063,7 +2063,7 @@ End Sub";
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parseResult.State, null);
+            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -2088,17 +2088,17 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
 
-            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parseResult.State, null);
+            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parser.State, null);
 
             Assert.AreEqual(null, factory.Create());
         }

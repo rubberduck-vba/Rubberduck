@@ -60,15 +60,15 @@ End Function
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var editor = new ActiveCodePaneEditor(module.VBE, codePaneFactory);
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(module.Parent), new Selection(4, 1, 4, 20));
-            var model = new ExtractMethodModel(editor, parseResult.State.AllDeclarations, qualifiedSelection);
+            var model = new ExtractMethodModel(editor, parser.State.AllDeclarations, qualifiedSelection);
             model.Method.Accessibility = Accessibility.Private;
             model.Method.MethodName = "Bar";
             model.Method.ReturnValue = new ExtractedParameter("Integer", ExtractedParameter.PassedBy.ByVal, "x");

@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Antlr4.Runtime.Misc;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -55,13 +56,22 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         {
             var target = _declarations.FindVariable(selection);
 
+            if (target == null)
+            {
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
             PromoteVariable(target);
         }
 
         public void Refactor(Declaration target)
         {
-            if (target.DeclarationType != DeclarationType.Variable)
+            if (target == null || target.DeclarationType != DeclarationType.Variable)
             {
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 throw new ArgumentException("Invalid declaration type");
             }
 
@@ -75,10 +85,10 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
-            if (
-                !new[] {DeclarationType.Class, DeclarationType.Module}.Contains(
-                    target.ParentDeclaration.DeclarationType))
+            if (new[] { DeclarationType.Class, DeclarationType.Module }.Contains(target.ParentDeclaration.DeclarationType))
             {
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -173,7 +183,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                     GetParameterDefinition(targetVariable) + ", " + argList.Last().GetText());
             }
 
-            module.ReplaceLine(paramList.Start.Line, newContent);
+            module.ReplaceLine(paramList.Start.Line, newContent.Replace(" _" + Environment.NewLine, string.Empty));
+            module.DeleteLines(paramList.Start.Line + 1, paramList.GetSelection().LineCount - 1);
         }
 
         private void UpdateProperties(Declaration target)
@@ -241,7 +252,14 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
 
             _editor.DeleteLines(selection);
-            _editor.InsertLines(selection.StartLine, newLines);
+            var newLinesWithoutEmptyLines = newLines
+                    .Split(new[] {" _" + Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
+                    .Where(l => l.Trim() != string.Empty).ToList();
+
+            if (newLinesWithoutEmptyLines.Any())
+            {
+                _editor.InsertLines(selection.StartLine, string.Join(string.Empty, newLinesWithoutEmptyLines).RemoveExtraSpacesLeavingIndentation());
+            }
         }
 
         private string GetOldSignature(Declaration target)
