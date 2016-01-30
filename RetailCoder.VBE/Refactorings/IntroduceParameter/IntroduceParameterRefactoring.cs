@@ -127,11 +127,11 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             if (functionDeclaration.DeclarationType != DeclarationType.PropertyGet &&
                 functionDeclaration.DeclarationType != DeclarationType.PropertyLet &&
-                functionDeclaration.DeclarationType != DeclarationType.PropertySet &&
-                interfaceImplementation == null)
+                functionDeclaration.DeclarationType != DeclarationType.PropertySet)
             {
                 AddParameter(functionDeclaration, targetVariable, paramList, module);
-                return;
+
+                if (interfaceImplementation == null) { return; }
             }
 
             if (functionDeclaration.DeclarationType == DeclarationType.PropertyGet ||
@@ -333,20 +333,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 lastTokenIndex = propertySetStmtContext.argList().RPAREN().Symbol.TokenIndex;
             }
 
-            var declareStmtContext = context as VBAParser.DeclareStmtContext;
-            if (declareStmtContext != null)
-            {
-                lastTokenIndex = declareStmtContext.STRINGLITERAL().Last().Symbol.TokenIndex;
-                if (declareStmtContext.argList() != null)
-                {
-                    lastTokenIndex = declareStmtContext.argList().RPAREN().Symbol.TokenIndex;
-                }
-                if (declareStmtContext.asTypeClause() != null)
-                {
-                    lastTokenIndex = declareStmtContext.asTypeClause().Stop.TokenIndex;
-                }
-            }
-
             var eventStmtContext = context as VBAParser.EventStmtContext;
             if (eventStmtContext != null)
             {
@@ -405,8 +391,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private string GetParameterDefinition(Declaration target)
         {
-            if (target == null) { return null; }
-
             return "ByVal " + target.IdentifierName + " As " + target.AsTypeName;
         }
     }

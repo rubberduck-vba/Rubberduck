@@ -28,7 +28,7 @@ namespace RubberduckTests.Refactoring
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_NoParamsInList()
+        public void PromoteLocalToParameterRefactoring_NoParamsInList_Sub()
         {
             //Input
             const string inputCode =
@@ -42,6 +42,50 @@ End Sub";
 @"Private Sub Foo(ByVal bar As Boolean)
     
 End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Act
+            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod, Timeout(1000)]
+        public void PromoteLocalToParameterRefactoring_NoParamsInList_Function()
+        {
+            //Input
+            const string inputCode =
+@"Private Function Foo() As Boolean
+    Dim bar As Boolean
+    Foo = True
+End Function";
+            var selection = new Selection(2, 10, 2, 13); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Function Foo(ByVal bar As Boolean) As Boolean
+    
+    Foo = True
+End Function";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -529,6 +573,207 @@ End Property";
 
             //Assert
             Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void PromoteLocalToParameterRefactoring_ImplementsInterface()
+        {
+            //Input
+            const string inputCode1 =
+            @"Sub fizz(ByVal boo As Boolean)
+End Sub";
+
+            const string inputCode2 =
+@"Implements IClass1
+
+Sub IClass1_fizz(ByVal boo As Boolean)
+    Dim fizz As Date
+End Sub";
+            var selection = new Selection(4, 10, 4, 14); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode1 =
+@"Sub fizz(ByVal boo As Boolean, ByVal fizz As Date)
+End Sub";
+
+            const string expectedCode2 =
+@"Implements IClass1
+
+Sub IClass1_fizz(ByVal boo As Boolean, ByVal fizz As Date)
+    
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = project.Object.VBComponents.Item(1);
+            vbe.Setup(v => v.ActiveCodePane).Returns(component.CodeModule.CodePane);
+
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var module1 = project.Object.VBComponents.Item(0).CodeModule;
+            var module2 = project.Object.VBComponents.Item(1).CodeModule;
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                      .Returns(DialogResult.OK);
+
+            //Act
+            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode1, module1.Lines());
+            Assert.AreEqual(expectedCode2, module2.Lines());
+        }
+
+        [TestMethod]
+        public void PromoteLocalToParameterRefactoring_ImplementsInterface_MultipleInterfaceImplementations()
+        {
+            //Input
+            const string inputCode1 =
+            @"Sub fizz(ByVal boo As Boolean)
+End Sub";
+
+            const string inputCode2 =
+@"Implements IClass1
+
+Sub IClass1_fizz(ByVal boo As Boolean)
+    Dim fizz As Date
+End Sub";
+
+            const string inputCode3 =
+@"Implements IClass1
+
+Sub IClass1_fizz(ByVal boo As Boolean)
+End Sub";
+            var selection = new Selection(4, 10, 4, 14); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode1 =
+@"Sub fizz(ByVal boo As Boolean, ByVal fizz As Date)
+End Sub";
+
+            const string expectedCode2 =
+@"Implements IClass1
+
+Sub IClass1_fizz(ByVal boo As Boolean, ByVal fizz As Date)
+    
+End Sub";
+
+            const string expectedCode3 =
+@"Implements IClass1
+
+Sub IClass1_fizz(ByVal boo As Boolean, ByVal fizz As Date)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode3)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = project.Object.VBComponents.Item(1);
+            vbe.Setup(v => v.ActiveCodePane).Returns(component.CodeModule.CodePane);
+
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var module1 = project.Object.VBComponents.Item(0).CodeModule;
+            var module2 = project.Object.VBComponents.Item(1).CodeModule;
+            var module3 = project.Object.VBComponents.Item(2).CodeModule;
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                      .Returns(DialogResult.OK);
+
+            //Act
+            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode1, module1.Lines());
+            Assert.AreEqual(expectedCode2, module2.Lines());
+            Assert.AreEqual(expectedCode3, module3.Lines());
+        }
+
+        [TestMethod]
+        public void PromoteLocalToParameterRefactoring_ImplementsInterface_Reject()
+        {
+            //Input
+            const string inputCode1 =
+            @"Sub fizz(ByVal boo As Boolean)
+End Sub";
+
+            const string inputCode2 =
+@"Implements IClass1
+
+Sub IClass1_fizz(ByVal boo As Boolean)
+    Dim fizz As Date
+End Sub";
+            var selection = new Selection(4, 10, 4, 14); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = project.Object.VBComponents.Item(1);
+            vbe.Setup(v => v.ActiveCodePane).Returns(component.CodeModule.CodePane);
+
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var module1 = project.Object.VBComponents.Item(0).CodeModule;
+            var module2 = project.Object.VBComponents.Item(1).CodeModule;
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                      .Returns(DialogResult.No);
+
+            //Act
+            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(inputCode1, module1.Lines());
+            Assert.AreEqual(inputCode2, module2.Lines());
         }
     }
 }
