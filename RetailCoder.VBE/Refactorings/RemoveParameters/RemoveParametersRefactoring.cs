@@ -330,7 +330,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
             var lineNum = paramList.GetSelection().LineCount;
 
-            module.ReplaceLine(paramList.Start.Line, signature);
+            module.ReplaceLine(paramList.Start.Line, signature.Replace(" _" + Environment.NewLine, ""));
             module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
         }
     }

@@ -970,10 +970,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo( _
-                  ByVal arg2 As String, _
-                  ByVal arg3 As Date)
-End Sub";
+@"Private Sub Foo(                  ByVal arg2 As String,                  ByVal arg3 As Date)
+End Sub";   // note: VBE removes excess spaces
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -1020,10 +1018,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg1 As Integer, _
-                   _
-                  ByVal arg3 As Date)
-End Sub";
+@"Private Sub Foo(ByVal arg1 As Integer,                                    ByVal arg3 As Date)
+End Sub";   // note: VBE removes excess spaces
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -1070,10 +1066,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg1 As Integer, _
-                  ByVal arg2 As String _
-                  )
-End Sub";
+@"Private Sub Foo(ByVal arg1 As Integer,                  ByVal arg2 As String                  )
+End Sub";   // note: VBE removes excess spaces
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -1120,10 +1114,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo( _
-                  ByVal arg2 As String, _
-                  ByVal arg3 As Date)
-End Sub";
+@"Private Sub Foo(                  ByVal arg2 As String,                  ByVal arg3 As Date)
+End Sub";   // note: VBE removes excess spaces
 
             //Arrange
             var builder = new MockVbeBuilder();
