@@ -30,8 +30,8 @@ namespace RubberduckTests.Inspections
 //            mockHost.SetupAllProperties();
 //            var parseResult = new RubberduckParser().Parse(project);
 
-//            var inspection = new OptionExplicitInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            var inspection = new OptionExplicitInspection(parseResult.State);
+//            var inspectionResults = inspection.GetInspectionResults();
 
 //            Assert.AreEqual(1, inspectionResults.Count());
 //        }
@@ -52,8 +52,8 @@ namespace RubberduckTests.Inspections
 //            mockHost.SetupAllProperties();
 //            var parseResult = new RubberduckParser().Parse(project);
 
-//            var inspection = new OptionExplicitInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            var inspection = new OptionExplicitInspection(parseResult.State);
+//            var inspectionResults = inspection.GetInspectionResults();
 
 //            Assert.AreEqual(0, inspectionResults.Count());
 //        }
@@ -75,8 +75,8 @@ namespace RubberduckTests.Inspections
 //            mockHost.SetupAllProperties();
 //            var parseResult = new RubberduckParser().Parse(project);
 
-//            var inspection = new OptionExplicitInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            var inspection = new OptionExplicitInspection(parseResult.State);
+//            var inspectionResults = inspection.GetInspectionResults();
 
 //            Assert.AreEqual(2, inspectionResults.Count());
 //        }
@@ -99,8 +99,8 @@ namespace RubberduckTests.Inspections
 //            mockHost.SetupAllProperties();
 //            var parseResult = new RubberduckParser().Parse(project);
 
-//            var inspection = new OptionExplicitInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            var inspection = new OptionExplicitInspection(parseResult.State);
+//            var inspectionResults = inspection.GetInspectionResults();
 
 //            Assert.AreEqual(1, inspectionResults.Count());
 //        }
@@ -126,8 +126,8 @@ namespace RubberduckTests.Inspections
 //            mockHost.SetupAllProperties();
 //            var parseResult = new RubberduckParser().Parse(project);
 
-//            var inspection = new OptionExplicitInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+//            var inspection = new OptionExplicitInspection(parseResult.State);
+//            var inspectionResults = inspection.GetInspectionResults();
 
 //            inspectionResults.First().QuickFixes.First().Fix();
             
@@ -137,7 +137,7 @@ namespace RubberduckTests.Inspections
 //        [TestMethod]
 //        public void InspectionType()
 //        {
-//            var inspection = new OptionExplicitInspection();
+//            var inspection = new OptionExplicitInspection(parseResult.State);
 //            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
 //        }
 
@@ -145,7 +145,7 @@ namespace RubberduckTests.Inspections
 //        public void InspectionName()
 //        {
 //            const string inspectionName = "OptionExplicitInspection";
-//            var inspection = new OptionExplicitInspection();
+//            var inspection = new OptionExplicitInspection(parseResult.State);
 
 //            Assert.AreEqual(inspectionName, inspection.Name);
 //        }
