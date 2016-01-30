@@ -14,7 +14,6 @@ namespace RubberduckTests
         [TestMethod]
         public void ParseResultDeclarations_IncludeVbaStandardLibDeclarations()
         {
-            Assert.Fail();
             //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
