@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitPublicMember_ReturnsResult_Sub()
         {
             const string inputCode =
@@ -50,7 +50,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitPublicMember_ReturnsResult_Function()
         {
             const string inputCode =
@@ -77,7 +77,7 @@ End Function";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitPublicMember_ReturnsResult_MultipleSubs()
         {
             const string inputCode =
@@ -106,7 +106,7 @@ End Sub";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitPublicMember_DoesNotReturnResult()
         {
             const string inputCode =
@@ -132,7 +132,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitPublicMember_ReturnsResult_SomeImplicitlyPublicSubs()
         {
             const string inputCode =
@@ -161,7 +161,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitPublicMember_QuickFixWorks()
         {
             const string inputCode =
@@ -195,14 +195,14 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionType()
         {
             var inspection = new ImplicitPublicMemberInspection(null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionName()
         {
             const string inspectionName = "ImplicitPublicMemberInspection";

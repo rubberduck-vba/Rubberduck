@@ -16,7 +16,7 @@
 //    public class SourceControlTests
 //    {
         
-//        [TestMethod]
+//        [TestMethod, Timeout(1000)]
 //        public void InitVBAProjectIntitializesRepo()
 //        {
 //            //arrange
@@ -47,7 +47,7 @@
 //            Assert.IsTrue(System.IO.Directory.Exists(repoDir), "Repo directory does not exist.");
 //        }
 
-//        [TestMethod]
+//        [TestMethod, Timeout(1000)]
 //        public void CloneCreatesLocalRepo()
 //        {
 //            //arrange
@@ -68,7 +68,7 @@
 //            Assert.IsTrue(Directory.Exists(Path.Combine(expected.LocalLocation, ".git")));
 //        }
 
-//        [TestMethod]
+//        [TestMethod, Timeout(1000)]
 //        public void CreateBranchTest()
 //        {
 //            var project = new Mock<VBProject>();

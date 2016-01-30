@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void NotAlreadySpecified_ReturnsResult()
         {
             const string inputCode = @"";
@@ -48,7 +48,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void AlreadySpecified_DoesNotReturnResult()
         {
             const string inputCode = @"Option Explicit";
@@ -72,7 +72,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void NotAlreadySpecified_ReturnsMultipleResults()
         {
             const string inputCode = @"";
@@ -100,7 +100,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void PartiallySpecified_ReturnsResults()
         {
             const string inputCode1 = @"";
@@ -129,7 +129,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void NotAlreadySpecified_QuickFixWorks()
         {
             const string inputCode = @"";
@@ -161,14 +161,14 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionType()
         {
             var inspection = new OptionExplicitInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionName()
         {
             const string inspectionName = "OptionExplicitInspection";

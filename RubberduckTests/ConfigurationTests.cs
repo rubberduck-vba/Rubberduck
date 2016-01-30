@@ -10,7 +10,7 @@ namespace RubberduckTests
     [TestClass]
     public class ConfigurationTests
     {
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void GetDefaultTodoMarkersTest()
         {
             var configService = new ConfigurationLoader(null);
@@ -21,7 +21,7 @@ namespace RubberduckTests
             Assert.AreEqual("BUG:", markers[2].Text,"Bug failed to load.");
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void DefaultCodeInspectionsIsAsSpecified()
         {
             var inspection = new Mock<IInspection>();
@@ -39,7 +39,7 @@ namespace RubberduckTests
             Assert.AreEqual(inspection.Object.Severity, actual[0].Severity);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ToStringIsAsExpected()
         {
             var expected = "FixMe:";

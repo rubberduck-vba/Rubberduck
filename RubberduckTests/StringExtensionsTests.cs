@@ -9,7 +9,7 @@ namespace RubberduckTests
     [TestClass]
     public class StringExtensionsTests
     {
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void StripsStringLiteral()
         {
             var value = "\"Hello, World!\"";
@@ -21,7 +21,7 @@ namespace RubberduckTests
             Assert.AreEqual("Debug.Print " + replacement, result);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void StripsAllStringLiterals()
         {
             var value = "\"Hello, World!\"";
@@ -33,7 +33,7 @@ namespace RubberduckTests
             Assert.AreEqual("Debug.Print " + replacement + " & " + replacement, result);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void IsComment()
         {
             var instruction = "'Debug.Print mwahaha this is just a comment.";
@@ -45,7 +45,7 @@ namespace RubberduckTests
             Assert.AreEqual(index, 0);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void HasComment()
         {
             var comment = "'but this is one.";
@@ -58,7 +58,7 @@ namespace RubberduckTests
             Assert.AreEqual(comment, instruction.Substring(index));
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void CaseInsensitiveContainsShouldReturnTrue()
         {
             var searchFor = "tExt";
@@ -66,7 +66,7 @@ namespace RubberduckTests
             Assert.IsTrue(textToSearch.Contains(searchFor, StringComparison.OrdinalIgnoreCase));
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void CaseInsensitiveContainsShouldReturnFalse()
         {
             var searchFor = "tExt";

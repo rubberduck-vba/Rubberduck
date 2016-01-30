@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ProcedureNotUsed_ReturnsResult()
         {
             const string inputCode =
@@ -50,7 +50,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ProcedureNotUsed_ReturnsResult_MultipleSubs()
         {
             const string inputCode =
@@ -79,7 +79,7 @@ End Sub";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ProcedureUsed_DoesNotReturnResult()
         {
             const string inputCode =
@@ -110,7 +110,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ProcedureNotUsed_ReturnsResult_SomeProceduresUsed()
         {
             const string inputCode =
@@ -140,7 +140,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ProcedureNotUsed_DoesNotReturnResult_InterfaceImplementation()
         {
             //Input
@@ -176,7 +176,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ProcedureNotUsed_DoesNotReturnResult_EventImplementation()
         {
             //Input
@@ -211,7 +211,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ProcedureNotUsed_ReturnsResult_PublicModuleMember()
         {
             //Input
@@ -238,7 +238,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ProcedureNotUsed_QuickFixWorks()
         {
             const string inputCode =
@@ -270,14 +270,14 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionType()
         {
             var inspection = new ProcedureNotUsedInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionName()
         {
             const string inspectionName = "ProcedureNotUsedInspection";

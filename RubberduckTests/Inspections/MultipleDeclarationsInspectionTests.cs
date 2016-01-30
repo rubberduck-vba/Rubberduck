@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void MultipleDeclarations_ReturnsResult_Variables()
         {
             const string inputCode =
@@ -51,7 +51,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void MultipleDeclarations_ReturnsResult_Constants()
         {
             const string inputCode =
@@ -78,7 +78,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void MultipleDeclarations_ReturnsResult_StaticVariables()
         {
             const string inputCode =
@@ -105,7 +105,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void MultipleDeclarations_ReturnsResult_MultipleDeclarations()
         {
             const string inputCode =
@@ -133,7 +133,7 @@ End Sub";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void MultipleDeclarations_ReturnsResult_SomeDeclarationsSeparate()
         {
             const string inputCode =
@@ -161,7 +161,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void MultipleDeclarations_QuickFixWorks_Variables()
         {
             const string inputCode =
@@ -199,7 +199,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void MultipleDeclarations_QuickFixWorks_Constants()
         {
             const string inputCode =
@@ -237,7 +237,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void MultipleDeclarations_QuickFixWorks_StaticVariables()
         {
             const string inputCode =
@@ -275,14 +275,14 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionType()
         {
             var inspection = new MultipleDeclarationsInspection(null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionName()
         {
             const string inspectionName = "MultipleDeclarationsInspection";

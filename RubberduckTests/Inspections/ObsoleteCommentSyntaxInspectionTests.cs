@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ObsoleteCommentSyntax_ReturnsResult()
         {
             const string inputCode = @"Rem test";
@@ -48,7 +48,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ObsoleteCommentSyntax_DoesNotReturnResult()
         {
             const string inputCode = @"' test";
@@ -72,7 +72,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ObsoleteCommentSyntax_ReturnsMultipleResults()
         {
             const string inputCode =
@@ -98,7 +98,7 @@ Rem test2";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ObsoleteCommentSyntax_ReturnsResults_SomeObsoleteCommentSyntax()
         {
             const string inputCode =
@@ -124,7 +124,7 @@ Rem test2";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ObsoleteCommentSyntax_QuickFixWorks_UpdateComment()
         {
             const string inputCode =
@@ -156,7 +156,7 @@ Rem test2";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ObsoleteCommentSyntax_QuickFixWorks_RemoveComment()
         {
             const string inputCode =
@@ -188,14 +188,14 @@ Rem test2";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionType()
         {
             var inspection = new ObsoleteCommentSyntaxInspection(null);
             Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteCommentSyntaxInspection";

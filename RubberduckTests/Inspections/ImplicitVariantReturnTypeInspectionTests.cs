@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitVariantReturnType_ReturnsResult_Function()
         {
             const string inputCode =
@@ -50,7 +50,7 @@ End Function";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitVariantReturnType_ReturnsResult_PropertyGet()
         {
             const string inputCode =
@@ -76,7 +76,7 @@ End Property";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitVariantReturnType_ReturnsResult_MultipleFunctions()
         {
             const string inputCode =
@@ -105,7 +105,7 @@ End Function";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitVariantReturnType_DoesNotReturnResult()
         {
             const string inputCode =
@@ -131,7 +131,7 @@ End Function";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitVariantReturnType_ReturnsResult_MultipleSubs_SomeReturning()
         {
             const string inputCode =
@@ -160,7 +160,7 @@ End Function";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitVariantReturnType_QuickFixWorks_Function()
         {
             const string inputCode =
@@ -194,7 +194,7 @@ End Function";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitVariantReturnType_QuickFixWorks_PropertyGet()
         {
             const string inputCode =
@@ -228,14 +228,14 @@ End Property";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionType()
         {
             var inspection = new ImplicitVariantReturnTypeInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionName()
         {
             const string inspectionName = "ImplicitVariantReturnTypeInspection";
