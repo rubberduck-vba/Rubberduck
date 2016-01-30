@@ -20,7 +20,7 @@ If you're learning VBA, Rubberduck can help you avoid a few common beginner mist
 
 ---
 
-#[Contributing](https://github.com/rubberduck-vba/Rubberduck/wiki/Contibuting)
+#[Contributing](https://github.com/rubberduck-vba/Rubberduck/wiki/Contributing)
 
 If you're a C# developer looking for a fun project to contribute to, feel free to fork the project and 
 [come meet the devs in Code Review's "VBA Rubberducking" chatroom][chat] - we'll be happy to answer your questions and help you help us!
