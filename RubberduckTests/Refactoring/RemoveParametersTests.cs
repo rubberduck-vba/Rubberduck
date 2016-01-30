@@ -23,6 +23,14 @@ namespace RubberduckTests.Refactoring
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(0, 1);
 
+        void State_StateChanged(object sender, ParserStateEventArgs e)
+        {
+            if (e.State == ParserState.Ready)
+            {
+                _semaphore.Release();
+            }
+        }
+
         [TestMethod]
         public void RemoveParametersRefactoring_RemoveBothParams()
         {
@@ -68,14 +76,6 @@ End Sub";
 
             //Assert
             Assert.AreEqual(expectedCode, module.Lines());
-        }
-
-        void State_StateChanged(object sender, ParserStateEventArgs e)
-        {
-            if (e.State == ParserState.Ready)
-            {
-                _semaphore.Release();
-            }
         }
 
         [TestMethod]
@@ -1175,8 +1175,6 @@ End Sub
 Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 
  Foo  arg2, arg3
-
-
 
 End Sub
 ";   // note: IDE removes excess spaces
