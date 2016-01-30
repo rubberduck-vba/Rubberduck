@@ -957,7 +957,6 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [Ignore]    //todo fix refactoring
         [TestMethod]
         public void RemoveParametersRefactoring_SignatureOnMultipleLines()
         {
@@ -971,10 +970,12 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(                  ByVal arg2 As String,                  ByVal arg3 As Date)
+@"Private Sub Foo( _
+                  ByVal arg2 As String, _
+                  ByVal arg3 As Date)
 
 
-End Sub";   // note: IDE removes excess spaces
+End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -1008,7 +1009,6 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [Ignore]    //todo fix refactoring
         [TestMethod]
         public void RemoveParametersRefactoring_PassTargetIn()
         {
@@ -1022,10 +1022,12 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(                  ByVal arg2 As String,                  ByVal arg3 As Date)
+@"Private Sub Foo( _
+                  ByVal arg2 As String, _
+                  ByVal arg3 As Date)
 
 
-End Sub";   // note: IDE removes excess spaces
+End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
