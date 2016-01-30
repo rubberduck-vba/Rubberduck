@@ -115,7 +115,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsNotNull(_unsyncedPresenter.Object.Provider, "_unsyncedPresenter.Object.Provider was null");
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ChangesCurrentBranchRefreshesWhenBranchIsCheckedOut()
         {
             //arrange
@@ -156,7 +156,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual("dev", changesView.Object.CurrentBranch);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void BranchesRefreshOnRefreshEvent()
         {
             //arrange
@@ -174,7 +174,7 @@ namespace RubberduckTests.SourceControl
             _branchesPresenter.Verify(b => b.RefreshView(), Times.Once());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ChangesRefreshOnRefreshEvent()
         {
             //arrange
@@ -192,7 +192,7 @@ namespace RubberduckTests.SourceControl
             _changesPresenter.Verify(c => c.RefreshView(), Times.Once);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void StatusIsOfflineWhenNoRepoIsFoundInConfig()
         {
             //arrange
@@ -209,7 +209,7 @@ namespace RubberduckTests.SourceControl
             VerifyOffline();
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void StatusIsOfflineWhenRepoListIsEmpty()
         {
             //arrange
@@ -227,7 +227,7 @@ namespace RubberduckTests.SourceControl
             VerifyOffline();
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void StatusIsOfflineIfNoMatchingRepoExists()
         {
             //arrange
@@ -246,7 +246,7 @@ namespace RubberduckTests.SourceControl
             VerifyOffline();
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void StatusIsOfflineWhenMultipleReposAreFound()
         {
             //arrange
@@ -268,7 +268,7 @@ namespace RubberduckTests.SourceControl
 
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void StatusIsOnlineWhenRepoIsFound()
         {
             //arrange 
@@ -286,7 +286,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual("Online", _view.Object.Status);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ChildPresentersHaveValidProviderIfRepoIsFoundInConfig()
         {
             //arrange 
@@ -309,7 +309,7 @@ namespace RubberduckTests.SourceControl
             VerifyChildPresentersHaveProviders();
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InitRepository_WhenUserCancels_RepoIsNotAddedToConfig()
         {
             //arrange
@@ -324,7 +324,7 @@ namespace RubberduckTests.SourceControl
             _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Never);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InitRepository_WhenUserCancels_RepoIsNotCreated()
         {
             //arrange
@@ -339,7 +339,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.InitVBAProject(It.IsAny<string>()), Times.Never);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InitRepository_WhenUserConfirms_RepoIsAddedToConfig()
         {
             //arrange
@@ -358,7 +358,7 @@ namespace RubberduckTests.SourceControl
             _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Once);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InitRepository_WhenUserConfirms_RepoIsInitalized()
         {
             //arrange
@@ -377,7 +377,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.InitVBAProject(It.IsAny<string>()), Times.Once);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void OpenWorkingDir_WhenUserCancels_RepoIsNotAddedToConfig()
         {
             //arrange
@@ -392,7 +392,7 @@ namespace RubberduckTests.SourceControl
             _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Never);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void OpenWorkingDir_WhenUserConfirms_RepoIsAddedToConfig()
         {
             //arrange
@@ -414,7 +414,7 @@ namespace RubberduckTests.SourceControl
         }
 
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InitRepository_WhenUserConfirms_StatusIsOnline()
         {
             //arrange
@@ -435,7 +435,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual("Online", _view.Object.Status);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void OpenWorkingDir_WhenUserConfirms_StatusIsOnline()
         {
             //arrange
@@ -456,7 +456,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual("Online", _view.Object.Status);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InitRepository_WhenUserConfirms_ChildPresenterSourceControlProvidersAreSet()
         {
             //arrange
@@ -482,7 +482,7 @@ namespace RubberduckTests.SourceControl
             VerifyChildPresentersHaveProviders();
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void OpenWorkingDir_WhenUserConfirms_ChildPresenterSourceControlProvidersAreSet()
         {
             //arrange
@@ -508,7 +508,7 @@ namespace RubberduckTests.SourceControl
             VerifyChildPresentersHaveProviders();
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void BranchesPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
         {
             //arrange
@@ -533,7 +533,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(expected, _failedActionView.Object.Message);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ChangesPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
         {
             //arrange
@@ -558,7 +558,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(expected, _failedActionView.Object.Message);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void SettingsPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
         {
             //arrange
@@ -583,7 +583,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(expected, _failedActionView.Object.Message);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
         {
             //arrange
@@ -608,7 +608,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(expected, _failedActionView.Object.Message);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void OpenWorkingDir_WhenProviderCreationFails_MessageIsShown()
         {
             //arrange
@@ -643,7 +643,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(expected, _failedActionView.Object.Message);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ActionFailed_DismissingHidesMessage()
         {
             //arrange
@@ -658,7 +658,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_view.Object.SecondaryPanelVisible);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_WhenNotAuthorized_LoginIsShown()
         {
             //arrange
@@ -680,7 +680,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsInstanceOfType(_view.Object.SecondaryPanel, typeof(ILoginView));
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_AfterLogin_NewPresenterIsCreatedWithCredentials()
         {
             //arrange

@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void VariableTypeNotDeclared_ReturnsResult_Parameter()
         {
             const string inputCode =
@@ -50,7 +50,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void VariableTypeNotDeclared_ReturnsResult_MultipleParams()
         {
             const string inputCode =
@@ -76,7 +76,7 @@ End Sub";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void VariableTypeNotDeclared_DoesNotReturnResult_Parameter()
         {
             const string inputCode =
@@ -102,7 +102,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void VariableTypeNotDeclared_ReturnsResult_SomeTypesNotDeclared_Parameters()
         {
             const string inputCode =
@@ -128,7 +128,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void VariableTypeNotDeclared_ReturnsResult_QuickFixWorks_Parameter()
         {
             const string inputCode =
@@ -161,7 +161,7 @@ End Sub";
             Assert.AreEqual(expectedCode, actual);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void VariableTypeNotDeclared_ReturnsResult_Variable()
         {
             const string inputCode =
@@ -188,7 +188,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void VariableTypeNotDeclared_ReturnsResult_MultipleVariables()
         {
             const string inputCode =
@@ -216,7 +216,7 @@ End Sub";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void VariableTypeNotDeclared_DoesNotReturnResult_Variable()
         {
             const string inputCode =
@@ -243,7 +243,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void VariableTypeNotDeclared_ReturnsResult_SomeTypesNotDeclared_Variables()
         {
             const string inputCode =
@@ -271,7 +271,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void VariableTypeNotDeclared_ReturnsResult_QuickFixWorks_Variable()
         {
             const string inputCode =
@@ -305,14 +305,14 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionType()
         {
             var inspection = new VariableTypeNotDeclaredInspection(null);
             Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionName()
         {
             const string inspectionName = "VariableTypeNotDeclaredInspection";

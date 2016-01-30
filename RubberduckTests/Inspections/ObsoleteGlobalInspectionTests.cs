@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ObsoleteGlobal_ReturnsResult()
         {
             const string inputCode =
@@ -49,7 +49,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ObsoleteGlobal_ReturnsResult_MultipleGlobals()
         {
             const string inputCode =
@@ -75,7 +75,7 @@ Global var2 As String";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ObsoleteGlobal_DoesNotReturnResult()
         {
             const string inputCode =
@@ -100,7 +100,7 @@ Global var2 As String";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ObsoleteGlobal_ReturnsResult_SomeConstantsUsed()
         {
             const string inputCode =
@@ -126,7 +126,7 @@ Global var2 As Date";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ObsoleteGlobal_QuickFixWorks()
         {
             const string inputCode =
@@ -158,14 +158,14 @@ Global var2 As Date";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionType()
         {
             var inspection = new ObsoleteGlobalInspection(null);
             Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteGlobalInspection";

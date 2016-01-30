@@ -30,7 +30,7 @@ namespace RubberduckTests.Refactoring
             }
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameSub()
         {
             //Input
@@ -76,7 +76,7 @@ End Sub";
             Assert.AreEqual(expectedCode, actual);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameVariable()
         {
             //Input
@@ -123,7 +123,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameParameter()
         {
             //Input
@@ -168,7 +168,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameSub_UpdatesReferences()
         {
             //Input
@@ -223,7 +223,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameVariable_UpdatesReferences()
         {
             //Input
@@ -272,7 +272,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameParameter_UpdatesReferences()
         {
             //Input
@@ -319,7 +319,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameGetterAndSetter()
         {
             //Input
@@ -370,7 +370,7 @@ End Property";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameGetterAndLetter()
         {
             //Input
@@ -421,7 +421,7 @@ End Property";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameFunction()
         {
             //Input
@@ -468,7 +468,7 @@ End Function";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameFunction_UpdatesReferences()
         {
             //Input
@@ -527,7 +527,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RefactorWithDeclaration()
         {
             //Input
@@ -572,7 +572,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameInterface()
         {
             //Input
@@ -635,7 +635,7 @@ End Sub";
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameEvent()
         {
             //Input
@@ -696,7 +696,7 @@ End Sub";
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_InterfaceRenamed_AcceptPrompt()
         {
             //Input
@@ -764,7 +764,7 @@ End Sub";
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_InterfaceRenamed_RejectPrompt()
         {
             //Input
@@ -808,7 +808,7 @@ End Sub";
             Assert.AreEqual(null, model.Target);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void Rename_PresenterIsNull()
         {
             //Input
@@ -848,7 +848,7 @@ End Sub";
             Assert.AreEqual(inputCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void Presenter_TargetIsNull()
         {
             //Input
@@ -887,7 +887,7 @@ End Sub";
             Assert.AreEqual(null, presenter.Show());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void Factory_SelectionIsNull()
         {
             //Input
@@ -927,7 +927,7 @@ End Sub";
             Assert.AreEqual(null, presenter.Show());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void Factory_SelectionIsNotNull_Accept()
         {
             const string newName = "Goo";
@@ -985,7 +985,7 @@ End Sub";
             Assert.AreEqual(model.NewName, presenter.Show().NewName);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void Factory_SelectionIsNotNull_Reject()
         {
             //Input
@@ -1039,7 +1039,7 @@ End Sub";
             Assert.AreEqual(null, presenter.Show());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void Factory_SelectionIsNotNull_PassInTarget_Accept()
         {
             const string newName = "Goo";
@@ -1097,7 +1097,7 @@ End Sub";
             Assert.AreEqual(model.NewName, presenter.Show(model.Target).NewName);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void Factory_SelectionIsNotNull_PassInTarget_Reject()
         {
             //Input
@@ -1152,7 +1152,7 @@ End Sub";
             Assert.AreEqual(null, presenter.Show(model.Target));
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameProject()
         {
             const string newName = "RenameProject";
@@ -1195,7 +1195,7 @@ End Sub";
             Assert.AreSame(newName, project.Name);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameSub_ConflictingNames_Reject()
         {
             //Input
@@ -1248,7 +1248,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameSub_ConflictingNames_Accept()
         {
             //Input
@@ -1301,7 +1301,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RenameRefactoring_RenameCodeModule()
         {
             const string newName = "RenameModule";

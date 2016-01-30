@@ -28,7 +28,7 @@ namespace RubberduckTests.Refactoring
             }
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ExtractMethod_PrivateFunction()
         {
             const string inputCode = @"

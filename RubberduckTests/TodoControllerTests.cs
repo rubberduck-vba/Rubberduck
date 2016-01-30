@@ -24,7 +24,7 @@ namespace RubberduckTests
             return markers;
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ConstructorWorks()
         {
             //arrange
@@ -38,7 +38,7 @@ namespace RubberduckTests
             Assert.IsNotNull(controller);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ViewTextIsNotNullOrEmptyAfterControllerConstruction()
         {
             //arrange
@@ -50,7 +50,7 @@ namespace RubberduckTests
             Assert.AreEqual("Todo:", view.ActiveMarkerText);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void SetActiveItemChangesViewSelectedIndex()
         {
             //arrange
@@ -65,7 +65,7 @@ namespace RubberduckTests
 
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ViewPriorityMatchesAfterSelectionChange()
         {
             var markers = new List<ToDoMarker>
@@ -83,7 +83,7 @@ namespace RubberduckTests
             Assert.AreEqual(TodoPriority.High, view.ActiveMarkerPriority);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ViewTextMatchesAfterSelectionChange()
         {
             var markers = new List<ToDoMarker>
@@ -100,7 +100,7 @@ namespace RubberduckTests
             Assert.AreEqual("Note:", view.ActiveMarkerText);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void MarkerChangeSavedOnPriorityChanged()
         {
             var markers = GetTestMarkers();
@@ -112,7 +112,7 @@ namespace RubberduckTests
             Assert.AreEqual(view.ActiveMarkerPriority, view.TodoMarkers[0].Priority);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void RemoveReallyDoesRemoveSelectedItem()
         {
             var markers = GetTestMarkers();
@@ -129,7 +129,7 @@ namespace RubberduckTests
             Assert.AreEqual(markers.Count - 1, view.Object.TodoMarkers.Count);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void AddReallyDoesDisplayAddMarkerWindow()
         {
             var markers = GetTestMarkers();
@@ -148,7 +148,7 @@ namespace RubberduckTests
             addView.Verify(a => a.Show(), Times.Once());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void AddMarkerReallyDoesBlockExistingNames()
         {
             var markers = GetTestMarkers();
@@ -169,7 +169,7 @@ namespace RubberduckTests
             Assert.IsFalse(addView.Object.IsValidMarker);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void AddMarkerReallyDoesBlockEmptyNames()
         {
             var markers = GetTestMarkers();
@@ -190,7 +190,7 @@ namespace RubberduckTests
             Assert.IsFalse(addView.Object.IsValidMarker);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void AddMarkerReallyDoesAllowExistingNames()
         {
             var markers = GetTestMarkers();
@@ -211,7 +211,7 @@ namespace RubberduckTests
             Assert.IsTrue(addView.Object.IsValidMarker);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void AddMarkerReallyDoesAddNewMarker()
         {
             var markers = GetTestMarkers();
@@ -236,7 +236,7 @@ namespace RubberduckTests
             Assert.IsTrue(view.Object.TodoMarkers.Contains(new ToDoMarker(newMarkerText, newMarkerPriority)));
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void AddMarkerHidesOnAdd()
         {
             var markers = GetTestMarkers();
@@ -258,7 +258,7 @@ namespace RubberduckTests
             addView.Verify(a => a.Hide(), Times.Once());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void AddMarkerHidesOnCancel()
         {
             var markers = GetTestMarkers();

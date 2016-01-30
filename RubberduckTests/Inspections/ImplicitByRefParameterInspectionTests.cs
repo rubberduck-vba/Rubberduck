@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitByRefParameter_ReturnsResult()
         {
             const string inputCode =
@@ -50,7 +50,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitByRefParameter_ReturnsResult_MultipleParams()
         {
             const string inputCode =
@@ -76,7 +76,7 @@ End Sub";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitByRefParameter_DoesNotReturnResult_ByRef()
         {
             const string inputCode =
@@ -102,7 +102,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitByRefParameter_DoesNotReturnResult_ByVal()
         {
             const string inputCode =
@@ -128,7 +128,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitByRefParameter_ReturnsResult_SomePassedByRefImplicitely()
         {
             const string inputCode =
@@ -154,7 +154,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitByRefParameter_ReturnsResult_InterfaceImplementation()
         {
             //Input
@@ -190,7 +190,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitByRefParameter_QuickFixWorks_PassByRef()
         {
             const string inputCode =
@@ -224,7 +224,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void ImplicitByRefParameter_QuickFixWorks_ParamArrayMustBePassedByRef()
         {
             const string inputCode =
@@ -250,14 +250,14 @@ End Sub";
             Assert.AreEqual(2, inspectionResults.First().QuickFixes.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionType()
         {
             var inspection = new ImplicitByRefParameterInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void InspectionName()
         {
             const string inspectionName = "ImplicitByRefParameterInspection";

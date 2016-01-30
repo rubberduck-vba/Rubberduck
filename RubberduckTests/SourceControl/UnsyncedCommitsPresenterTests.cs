@@ -38,7 +38,7 @@ namespace RubberduckTests.SourceControl
             _presenter = new UnsyncedCommitsPresenter(_view.Object) { Provider = _provider.Object };
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_AfterRefresh_ViewBranchIsCurrentBranch()
         {
             //Arrange
@@ -50,7 +50,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(_initialBranch.Name, _view.Object.CurrentBranch);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_AfterRefresh_IncomingCommitsAreDisplayed()
         {
             //Arrange
@@ -62,7 +62,7 @@ namespace RubberduckTests.SourceControl
             CollectionAssert.AreEquivalent(_provider.Object.UnsyncedRemoteCommits.ToList(), _view.Object.IncomingCommits.ToList());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_AfterRefresh_OutgoingCommitsAreDisplayed()
         {
             //Arrange
@@ -74,7 +74,7 @@ namespace RubberduckTests.SourceControl
             CollectionAssert.AreEquivalent(_provider.Object.UnsyncedLocalCommits.ToList(), _view.Object.OutgoingCommits.ToList());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_OnFetch_ProviderFetches()
         {
             //Arrange
@@ -86,7 +86,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Fetch(It.IsAny<string>()));
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_AfterFetch_IncomingCommitsRefreshes()
         {
             //Arrange
@@ -100,7 +100,7 @@ namespace RubberduckTests.SourceControl
             CollectionAssert.AreEquivalent(_provider.Object.UnsyncedRemoteCommits.ToList(), _view.Object.IncomingCommits.ToList());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_OnPull_ProviderPulls()
         {
             //Arrange
@@ -110,7 +110,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Pull());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_OnPush_ProviderPushes()
         {
             //Arrange
@@ -120,7 +120,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Push());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_OnSync_ProviderPullsThenPushes()
         {
             //Arrange
@@ -131,7 +131,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Push());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_WhenFetchFails_ActionFailedEventIsRaised()
         {
             //arrange
@@ -152,7 +152,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_WhenPushFails_ActionFailedEventIsRaised()
         {
             //arrange
@@ -173,7 +173,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_WhenPullFails_ActionFailedEventIsRaised()
         {
             //arrange
@@ -194,7 +194,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void UnsyncedPresenter_WhenSyncFails_ActionFailedEventIsRaised()
         {
             //arrange
