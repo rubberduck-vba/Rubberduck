@@ -40,6 +40,7 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private Sub Foo(ByVal bar As Boolean)
+    
 End Sub";
 
             //Arrange
@@ -81,6 +82,7 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private Sub Foo(ByVal buz As Integer, ByVal bar As Boolean)
+    
 End Sub";
 
             //Arrange
@@ -122,7 +124,9 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal buz As Integer,                  ByRef baz As Date, ByVal bar As Boolean)
+@"Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date, ByVal bar As Boolean)
+    
 End Sub";   // note: the VBE removes extra spaces
 
             //Arrange
@@ -166,8 +170,11 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal buz As Integer,                  ByRef baz As Date, ByVal bar As Boolean)
-    Dim bat As Date, bap As Integer
+@"Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date, ByVal bar As Boolean)
+    Dim _
+        bat As Date, _
+        bap As Integer
 End Sub";   // note: the VBE removes extra spaces
 
             //Arrange
@@ -211,8 +218,11 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal buz As Integer,                  ByRef baz As Date, ByVal bat As Date)
-    Dim bar As Boolean, bap As Integer
+@"Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date, ByVal bat As Date)
+    Dim bar As Boolean, _
+         _
+        bap As Integer
 End Sub";   // note: the VBE removes extra spaces
 
             //Arrange
@@ -256,8 +266,11 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal buz As Integer,                  ByRef baz As Date, ByVal bap As Integer)
-    Dim bar As Boolean, bat As Date
+@"Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date, ByVal bap As Integer)
+    Dim bar As Boolean, _
+        bat As Date
+        
 End Sub";   // note: the VBE removes extra spaces
 
             //Arrange
@@ -299,7 +312,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal buz As Integer,                  ByRef baz As Date, ByVal bar As Boolean)
+@"Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date, ByVal bar As Boolean)
     Dim bat As Date, bap As Integer
 End Sub";   // note: the VBE removes extra spaces
 
@@ -415,6 +429,56 @@ End Sub";
             messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                 It.IsAny<MessageBoxIcon>()), Times.Once);
             Assert.AreEqual(inputCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void PromoteLocalToParameterRefactoring_Properties()
+        {
+            //Input
+            const string inputCode =
+@"Property Get Foo(ByVal fizz As Boolean) As Boolean
+    Dim bar As Integer
+    Foo = fizz
+End Property
+
+Property Let Foo(ByVal fizz As Boolean, ByVal buzz As Boolean)
+End Property";
+            var selection = new Selection(2, 10, 2, 13); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Property Get Foo(ByVal fizz As Boolean, ByVal bar As Integer) As Boolean
+    
+    Foo = fizz
+End Property
+
+Property Let Foo(ByVal fizz As Boolean, ByVal bar As Integer, ByVal buzz As Boolean)
+End Property";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Act
+            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
         }
     }
 }
