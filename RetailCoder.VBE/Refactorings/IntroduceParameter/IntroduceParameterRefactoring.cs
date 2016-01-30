@@ -56,13 +56,22 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         {
             var target = _declarations.FindVariable(selection);
 
+            if (target == null)
+            {
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
             PromoteVariable(target);
         }
 
         public void Refactor(Declaration target)
         {
-            if (target.DeclarationType != DeclarationType.Variable)
+            if (target == null || target.DeclarationType != DeclarationType.Variable)
             {
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 throw new ArgumentException("Invalid declaration type");
             }
 
@@ -76,18 +85,15 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
-            if (IsContainedInClassOrModule(target))
+            if (new[] { DeclarationType.Class, DeclarationType.Module }.Contains(target.ParentDeclaration.DeclarationType))
             {
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
             RemoveVariable(target);
             UpdateSignature(target);
-        }
-
-        private bool IsContainedInClassOrModule(Declaration target)
-        {
-            return target.ParentDeclaration != null && IsContainedInClassOrModule(target.ParentDeclaration);
         }
 
         private bool PromptIfMethodImplementsInterface(Declaration targetVariable)
