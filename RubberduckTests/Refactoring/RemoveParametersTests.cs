@@ -236,7 +236,7 @@ End Sub
 End Sub
 
 Public Sub Goo()
- Foo arg2:=""test44"",  arg1:=3
+    Foo arg2:=""test44"",  arg1:=3
 End Sub
 "; //note: The IDE strips out the extra whitespace
 
@@ -384,7 +384,7 @@ End Sub
 End Function
 
 Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String)
- Foo  
+    Foo  
 End Sub
 "; //note: The IDE strips out the extra whitespace
 
@@ -577,7 +577,7 @@ End Sub
 End Sub
 
 Private Sub Bar()
- Foo  ""Hello""
+    Foo  ""Hello""
 End Sub
 "; //note: The IDE strips out the extra whitespace
 
@@ -633,7 +633,7 @@ End Sub
 End Sub
 
 Private Sub Bar()
- Foo 10 
+    Foo 10 
 End Sub
 "; //note: The IDE strips out the extra whitespace, you can't see it but there's a space after "Foo 10 "
 
@@ -701,7 +701,7 @@ Public Sub Goo(ByVal arg1 As Integer, _
                ByVal arg5 As Integer, _
                ByVal arg6 As Integer)
               
- Foo ""test""      
+    Foo ""test""      
 End Sub
 "; //note: The IDE strips out the extra whitespace, you can't see it but there are several spaces after " ParamArrayTest ""test""      "
 
@@ -922,7 +922,7 @@ End Sub";
 End Sub
 
 Private Sub Goo(ByVal arg1 As Integer)
- Foo 
+    Foo 
 End Sub";
 
             //Arrange
@@ -1174,7 +1174,7 @@ End Sub
 
 Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 
- Foo  arg2, arg3
+    Foo  arg2, arg3
 
 End Sub
 ";   // note: IDE removes excess spaces

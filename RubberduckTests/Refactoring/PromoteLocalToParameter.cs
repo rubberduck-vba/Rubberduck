@@ -193,5 +193,95 @@ End Sub";   // note: the VBE removes extra spaces
             //Assert
             Assert.AreEqual(expectedCode, module.Lines());
         }
+
+        [TestMethod, Timeout(1000)]
+        public void PromoteLocalToParameterRefactoring_MultipleVariablesInStatement_MoveSecond()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date)
+    Dim bar As Boolean, _
+        bat As Date, _
+        bap As Integer
+End Sub";
+            var selection = new Selection(4, 10, 4, 13); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo(ByVal buz As Integer,                  ByRef baz As Date, ByVal bat As Date)
+    Dim bar As Boolean, bap As Integer
+End Sub";   // note: the VBE removes extra spaces
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Act
+            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod, Timeout(1000)]
+        public void PromoteLocalToParameterRefactoring_MultipleVariablesInStatement_MoveLast()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date)
+    Dim bar As Boolean, _
+        bat As Date, _
+        bap As Integer
+End Sub";
+            var selection = new Selection(5, 10, 5, 13); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo(ByVal buz As Integer,                  ByRef baz As Date, ByVal bap As Integer)
+    Dim bar As Boolean, bat As Date
+End Sub";   // note: the VBE removes extra spaces
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Act
+            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
     }
 }

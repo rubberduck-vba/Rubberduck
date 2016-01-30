@@ -247,7 +247,7 @@ End Sub
 End Sub
 
 Private Sub Bar()
- Foo ""Hello"", 10
+    Foo ""Hello"", 10
 End Sub
 ";
 
@@ -303,7 +303,7 @@ End Sub
 End Sub
 
 Public Sub Goo()
- Foo arg2:=""test44"", arg1:=3, arg3:=6.1
+    Foo arg2:=""test44"", arg1:=3, arg3:=6.1
 End Sub
 ";
 
@@ -416,7 +416,7 @@ End Sub
 End Sub
 
 Public Sub Goo()
- Foo arg1:=3, arg2:=""test44""
+    Foo arg1:=3, arg2:=""test44""
 End Sub
 ";
 
@@ -742,7 +742,7 @@ End Sub
 
 Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 
- Foo arg3, arg2, arg1
+    Foo arg3, arg2, arg1
 
 End Sub
 ";
@@ -870,7 +870,7 @@ Public Sub Goo(ByVal arg As Date, _
                ByVal arg5 As Integer, _
                ByVal arg6 As Integer)
               
- Foo arg, ""test"", test1x, test2x, test3x, test4x, test5x, test6x
+    Foo arg, ""test"", test1x, test2x, test3x, test4x, test5x, test6x
 End Sub
 ";
 
@@ -958,7 +958,7 @@ Public Sub Goo(ByVal arg As Date, _
                ByVal arg5 As Integer, _
                ByVal arg6 As Integer)
               
- Foo arg, ""test"", test1x, test2x, test3x, test4x, test5x, test6x
+    Foo arg, ""test"", test1x, test2x, test3x, test4x, test5x, test6x
 End Sub
 ";
 
@@ -1076,7 +1076,7 @@ End Sub
 End Sub
 
 Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String)
- Foo arg2, arg1
+    Foo arg2, arg1
 End Sub
 ";
 
