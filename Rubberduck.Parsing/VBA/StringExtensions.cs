@@ -35,22 +35,6 @@ namespace Rubberduck.Parsing.VBA
             return Regex.Replace(line, "\"[^\"]*\"", match => new string(' ', match.Length));
         }
 
-        public static string RemoveExtraSpaces(this string line)
-        {
-            var newString = new StringBuilder();
-            var lastWasWhiteSpace = false;
-
-            foreach (var c in line)
-            {
-                if (char.IsWhiteSpace(c) && lastWasWhiteSpace) { continue; }
-
-                newString.Append(c);
-                lastWasWhiteSpace = char.IsWhiteSpace(c);
-            }
-
-            return newString.ToString().Replace('\r', ' ');
-        }
-
         public static string RemoveExtraSpacesLeavingIndentation(this string line)
         {
             var newString = new StringBuilder();

@@ -53,7 +53,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var args = argList.arg();
 
             var index = 0;
-            Parameters = args.Select(arg => new Parameter(arg.GetText().RemoveExtraSpaces(), index++)).ToList();
+            Parameters = args.Select(arg => new Parameter(arg.GetText().RemoveExtraSpacesLeavingIndentation(), index++)).ToList();
 
             if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
                 TargetDeclaration.DeclarationType == DeclarationType.PropertySet)

@@ -114,7 +114,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
-            var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _" + Environment.NewLine, string.Empty).RemoveExtraSpaces();
+            var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _" + Environment.NewLine, string.Empty).RemoveExtraSpacesLeavingIndentation();
 
             var parameterIndex = 0;
             var currentStringIndex = 0;
