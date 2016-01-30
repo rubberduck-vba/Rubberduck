@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Antlr4.Runtime.Misc;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -176,7 +177,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                     GetParameterDefinition(targetVariable) + ", " + argList.Last().GetText());
             }
 
-            module.ReplaceLine(paramList.Start.Line, newContent);
+            module.ReplaceLine(paramList.Start.Line, newContent.Replace(" _" + Environment.NewLine, string.Empty));
+            module.DeleteLines(paramList.Start.Line + 1, paramList.GetSelection().LineCount - 1);
         }
 
         private void UpdateProperties(Declaration target)
