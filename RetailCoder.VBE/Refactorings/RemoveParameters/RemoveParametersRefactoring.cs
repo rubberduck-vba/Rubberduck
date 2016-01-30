@@ -331,10 +331,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var lineNum = paramList.GetSelection().LineCount;
 
             module.ReplaceLine(paramList.Start.Line, signature);
-            for (var line = paramList.Start.Line + 1; line < paramList.Start.Line + lineNum; line++)
-            {
-                module.ReplaceLine(line, "");
-            }
+            module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
         }
     }
 }

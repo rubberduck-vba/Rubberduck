@@ -973,8 +973,6 @@ End Sub";
 @"Private Sub Foo( _
                   ByVal arg2 As String, _
                   ByVal arg3 As Date)
-
-
 End Sub";
 
             //Arrange
@@ -1010,6 +1008,106 @@ End Sub";
         }
 
         [TestMethod]
+        public void RemoveParametersRefactoring_SignatureOnMultipleLines_RemoveSecond()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As Integer, _
+                  ByVal arg2 As String, _
+                  ByVal arg3 As Date)
+End Sub";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo(ByVal arg1 As Integer, _
+                   _
+                  ByVal arg3 As Date)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var module = component.CodeModule;
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            model.Parameters[1].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RemoveParametersRefactoring_SignatureOnMultipleLines_RemoveLast()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As Integer, _
+                  ByVal arg2 As String, _
+                  ByVal arg3 As Date)
+End Sub";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo(ByVal arg1 As Integer, _
+                  ByVal arg2 As String _
+                  )
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var module = component.CodeModule;
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parseResult.State, qualifiedSelection, null);
+            model.Parameters[2].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
         public void RemoveParametersRefactoring_PassTargetIn()
         {
             //Input
@@ -1025,8 +1123,6 @@ End Sub";
 @"Private Sub Foo( _
                   ByVal arg2 As String, _
                   ByVal arg3 As Date)
-
-
 End Sub";
 
             //Arrange
