@@ -96,7 +96,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -143,7 +142,6 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -190,7 +188,6 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -247,7 +244,6 @@ End Sub
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -294,7 +290,6 @@ End Function"; //note: The IDE strips out the extra whitespace
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -341,7 +336,6 @@ End Function"; //note: The IDE strips out the extra whitespace
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -398,7 +392,6 @@ End Sub
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -445,7 +438,6 @@ End Property"; //note: The IDE strips out the extra whitespace
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -492,7 +484,6 @@ End Property"; //note: The IDE strips out the extra whitespace
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -538,7 +529,6 @@ End Property"; //note: The IDE strips out the extra whitespace
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -595,7 +585,6 @@ End Sub
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -652,7 +641,6 @@ End Sub
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -721,7 +709,6 @@ End Sub
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -763,8 +750,6 @@ End Property";
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
@@ -795,8 +780,6 @@ End Property";
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
@@ -946,7 +929,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -1113,7 +1095,6 @@ End Sub
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
