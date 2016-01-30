@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -6,216 +7,241 @@ using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-//    [TestClass]
-//    public class ImplicitVariantReturnTypeInspectionTests
-//    {
-//        [TestMethod]
-//        public void ImplicitVariantReturnType_ReturnsResult_Function()
-//        {
-//            const string inputCode =
-//@"Function Foo()
-//End Function";
+    [TestClass]
+    public class ImplicitVariantReturnTypeInspectionTests
+    {
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(0, 1);
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+        void State_StateChanged(object sender, ParserStateEventArgs e)
+        {
+            if (e.State == ParserState.Ready)
+            {
+                _semaphore.Release();
+            }
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void ImplicitVariantReturnType_ReturnsResult_Function()
+        {
+            const string inputCode =
+@"Function Foo()
+End Function";
 
-//            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void ImplicitVariantReturnType_ReturnsResult_PropertyGet()
-//        {
-//            const string inputCode =
-//@"Property Get Foo()
-//End Property";
+            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void ImplicitVariantReturnType_ReturnsResult_PropertyGet()
+        {
+            const string inputCode =
+@"Property Get Foo()
+End Property";
 
-//            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void ImplicitVariantReturnType_ReturnsResult_MultipleFunctions()
-//        {
-//            const string inputCode =
-//@"Function Foo()
-//End Function
-//
-//Function Goo()
-//End Function";
+            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void ImplicitVariantReturnType_ReturnsResult_MultipleFunctions()
+        {
+            const string inputCode =
+@"Function Foo()
+End Function
 
-//            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+Function Goo()
+End Function";
 
-//            Assert.AreEqual(2, inspectionResults.Count());
-//        }
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//        [TestMethod]
-//        public void ImplicitVariantReturnType_DoesNotReturnResult()
-//        {
-//            const string inputCode =
-//@"Function Foo() As Boolean
-//End Function";
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+            Assert.AreEqual(2, inspectionResults.Count());
+        }
 
-//            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+        [TestMethod]
+        public void ImplicitVariantReturnType_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Function Foo() As Boolean
+End Function";
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//        [TestMethod]
-//        public void ImplicitVariantReturnType_ReturnsResult_MultipleSubs_SomeReturning()
-//        {
-//            const string inputCode =
-//@"Function Foo()
-//End Function
-//
-//Function Goo() As String
-//End Function";
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-//            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+        [TestMethod]
+        public void ImplicitVariantReturnType_ReturnsResult_MultipleSubs_SomeReturning()
+        {
+            const string inputCode =
+@"Function Foo()
+End Function
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+Function Goo() As String
+End Function";
 
-//        [TestMethod]
-//        public void ImplicitVariantReturnType_QuickFixWorks_Function()
-//        {
-//            const string inputCode =
-//@"Function Foo()
-//End Function";
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            const string expectedCode =
-//@"Function Foo() As Variant
-//End Function";
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
-//            var module = project.VBComponents.Item(0).CodeModule;
+            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+        [TestMethod]
+        public void ImplicitVariantReturnType_QuickFixWorks_Function()
+        {
+            const string inputCode =
+@"Function Foo()
+End Function";
 
-//            inspectionResults.First().QuickFixes.First().Fix();
+            const string expectedCode =
+@"Function Foo() As Variant
+End Function";
 
-//            Assert.AreEqual(expectedCode, module.Lines());
-//        }
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//        [TestMethod]
-//        public void ImplicitVariantReturnType_QuickFixWorks_PropertyGet()
-//        {
-//            const string inputCode =
-//@"Property Get Foo()
-//End Property";
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//            const string expectedCode =
-//@"Property Get Foo() As Variant
-//End Property";
+            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
-//            var module = project.VBComponents.Item(0).CodeModule;
+            inspectionResults.First().QuickFixes.First().Fix();
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
 
-//            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+        [TestMethod]
+        public void ImplicitVariantReturnType_QuickFixWorks_PropertyGet()
+        {
+            const string inputCode =
+@"Property Get Foo()
+End Property";
 
-//            inspectionResults.First().QuickFixes.First().Fix();
+            const string expectedCode =
+@"Property Get Foo() As Variant
+End Property";
 
-//            Assert.AreEqual(expectedCode, module.Lines());
-//        }
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//        [TestMethod]
-//        public void InspectionType()
-//        {
-//            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
-//            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
-//        }
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void InspectionName()
-//        {
-//            const string inspectionName = "ImplicitVariantReturnTypeInspection";
-//            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
+            var inspection = new ImplicitVariantReturnTypeInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            Assert.AreEqual(inspectionName, inspection.Name);
-//        }
-//    }
+            inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void InspectionType()
+        {
+            var inspection = new ImplicitVariantReturnTypeInspection(null);
+            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
+        }
+
+        [TestMethod]
+        public void InspectionName()
+        {
+            const string inspectionName = "ImplicitVariantReturnTypeInspection";
+            var inspection = new ImplicitVariantReturnTypeInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+    }
 }

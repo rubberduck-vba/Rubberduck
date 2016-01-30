@@ -1,76 +1,96 @@
 ﻿using System.Linq;
+using System.Threading;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-//    [TestClass]
-    //public class DefaultProjectNameInspectionTests
-    //{
-    //    [TestMethod]
-    //    public void DefaultProjectName_ReturnsResult()
-    //    {
-    //        const string inputCode = @"";
+    [TestClass]
+    public class DefaultProjectNameInspectionTests
+    {
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(0, 1);
 
-    //        //Arrange
-    //        var builder = new MockVbeBuilder();
-    //        var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
-    //            .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-    //            .Build().Object;
+        void State_StateChanged(object sender, ParserStateEventArgs e)
+        {
+            if (e.State == ParserState.Ready)
+            {
+                _semaphore.Release();
+            }
+        }
 
-    //        var codePaneFactory = new CodePaneWrapperFactory();
-    //        var mockHost = new Mock<IHostApplication>();
-    //        mockHost.SetupAllProperties();
-    //        var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void DefaultProjectName_ReturnsResult()
+        {
+            const string inputCode = @"";
 
-    //        var inspection = new DefaultProjectNameInspection(parseResult.State);
-    //        var inspectionResults = inspection.GetInspectionResults();
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
 
-    //        Assert.AreEqual(1, inspectionResults.Count());
-    //    }
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-    //    [TestMethod]
-    //    public void DefaultProjectName_DoesNotReturnResult()
-    //    {
-    //        const string inputCode = @"";
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-    //        //Arrange
-    //        var builder = new MockVbeBuilder();
-    //        var project = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
-    //            .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-    //            .Build().Object;
+            var inspection = new DefaultProjectNameInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-    //        var codePaneFactory = new CodePaneWrapperFactory();
-    //        var mockHost = new Mock<IHostApplication>();
-    //        mockHost.SetupAllProperties();
-    //        var parseResult = new RubberduckParser().Parse(project);
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-    //        var inspection = new DefaultProjectNameInspection(parseResult.State);
-    //        var inspectionResults = inspection.GetInspectionResults();
+        [TestMethod]
+        public void DefaultProjectName_DoesNotReturnResult()
+        {
+            const string inputCode = @"";
 
-    //        Assert.AreEqual(0, inspectionResults.Count());
-    //    }
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
 
-    //    [TestMethod]
-    //    public void InspectionType()
-    //    {
-    //        var inspection = new DefaultProjectNameInspection(parseResult.State);
-    //        Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
-    //    }
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-    //    [TestMethod]
-    //    public void InspectionName()
-    //    {
-    //        const string inspectionName = "DefaultProjectNameInspection";
-    //        var inspection = new DefaultProjectNameInspection(parseResult.State);
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-    //        Assert.AreEqual(inspectionName, inspection.Name);
-    //    }
-    //}
+            var inspection = new DefaultProjectNameInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void InspectionType()
+        {
+            var inspection = new DefaultProjectNameInspection(null);
+            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
+        }
+
+        [TestMethod]
+        public void InspectionName()
+        {
+            const string inspectionName = "DefaultProjectNameInspection";
+            var inspection = new DefaultProjectNameInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+    }
 }

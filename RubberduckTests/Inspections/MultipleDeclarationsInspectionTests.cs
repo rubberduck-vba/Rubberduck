@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -6,260 +7,288 @@ using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-//    [TestClass]
-//    public class MultipleDeclarationsInspectionTests
-//    {
-//        [TestMethod]
-//        public void MultipleDeclarations_ReturnsResult_Variables()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo()
-//    Dim var1 As Integer, var2 As String
-//End Sub";
+    [TestClass]
+    public class MultipleDeclarationsInspectionTests
+    {
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(0, 1);
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+        void State_StateChanged(object sender, ParserStateEventArgs e)
+        {
+            if (e.State == ParserState.Ready)
+            {
+                _semaphore.Release();
+            }
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void MultipleDeclarations_ReturnsResult_Variables()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Dim var1 As Integer, var2 As String
+End Sub";
 
-//            var inspection = new MultipleDeclarationsInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void MultipleDeclarations_ReturnsResult_Constants()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo()
-//    Const var1 As Integer = 9, var2 As String = ""test""
-//End Sub";
+            var inspection = new MultipleDeclarationsInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void MultipleDeclarations_ReturnsResult_Constants()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Const var1 As Integer = 9, var2 As String = ""test""
+End Sub";
 
-//            var inspection = new MultipleDeclarationsInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void MultipleDeclarations_ReturnsResult_StaticVariables()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo()
-//    Static var1 As Integer, var2 As String
-//End Sub";
+            var inspection = new MultipleDeclarationsInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void MultipleDeclarations_ReturnsResult_StaticVariables()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Static var1 As Integer, var2 As String
+End Sub";
 
-//            var inspection = new MultipleDeclarationsInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void MultipleDeclarations_ReturnsResult_MultipleDeclarations()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo()
-//    Dim var1 As Integer, var2 As String
-//    Dim var3 As Boolean, var4 As Date
-//End Sub";
+            var inspection = new MultipleDeclarationsInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void MultipleDeclarations_ReturnsResult_MultipleDeclarations()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Dim var1 As Integer, var2 As String
+    Dim var3 As Boolean, var4 As Date
+End Sub";
 
-//            var inspection = new MultipleDeclarationsInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(2, inspectionResults.Count());
-//        }
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void MultipleDeclarations_ReturnsResult_SomeDeclarationsSeparate()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo()
-//    Dim var1 As Integer, var2 As String
-//    Dim var3 As Boolean
-//End Sub";
+            var inspection = new MultipleDeclarationsInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(2, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void MultipleDeclarations_ReturnsResult_SomeDeclarationsSeparate()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Dim var1 As Integer, var2 As String
+    Dim var3 As Boolean
+End Sub";
 
-//            var inspection = new MultipleDeclarationsInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void MultipleDeclarations_QuickFixWorks_Variables()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo()
-//    Dim var1 As Integer, var2 As String
-//End Sub";
+            var inspection = new MultipleDeclarationsInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            const string expectedCode =
-//@"Public Sub Foo()
-//Dim var1 As Integer
-//Dim var2 As String
-//
-//End Sub";
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
-//            var module = project.VBComponents.Item(0).CodeModule;
+        [TestMethod]
+        public void MultipleDeclarations_QuickFixWorks_Variables()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Dim var1 As Integer, var2 As String
+End Sub";
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+            const string expectedCode =
+@"Public Sub Foo()
+Dim var1 As Integer
+Dim var2 As String
 
-//            var inspection = new MultipleDeclarationsInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+End Sub";
 
-//            inspectionResults.First().QuickFixes.First().Fix();
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(expectedCode, module.Lines());
-//        }
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void MultipleDeclarations_QuickFixWorks_Constants()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo()
-//    Const var1 As Integer = 9, var2 As String = ""test""
-//End Sub";
+            var inspection = new MultipleDeclarationsInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            const string expectedCode =
-//@"Public Sub Foo()
-//Const var1 As Integer = 9
-//Const var2 As String = ""test""
-//
-//End Sub";
+            inspectionResults.First().QuickFixes.First().Fix();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
-//            var module = project.VBComponents.Item(0).CodeModule;
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void MultipleDeclarations_QuickFixWorks_Constants()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Const var1 As Integer = 9, var2 As String = ""test""
+End Sub";
 
-//            var inspection = new MultipleDeclarationsInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            const string expectedCode =
+@"Public Sub Foo()
+Const var1 As Integer = 9
+Const var2 As String = ""test""
 
-//            inspectionResults.First().QuickFixes.First().Fix();
+End Sub";
 
-//            Assert.AreEqual(expectedCode, module.Lines());
-//        }
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//        [TestMethod]
-//        public void MultipleDeclarations_QuickFixWorks_StaticVariables()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo()
-//    Static var1 As Integer, var2 As String
-//End Sub";
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//            const string expectedCode =
-//@"Public Sub Foo()
-//Static var1 As Integer
-//Static var2 As String
-//
-//End Sub";
+            var inspection = new MultipleDeclarationsInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
-//            var module = project.VBComponents.Item(0).CodeModule;
+            inspectionResults.First().QuickFixes.First().Fix();
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
 
-//            var inspection = new MultipleDeclarationsInspection(parseResult.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+        [TestMethod]
+        public void MultipleDeclarations_QuickFixWorks_StaticVariables()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Static var1 As Integer, var2 As String
+End Sub";
 
-//            inspectionResults.First().QuickFixes.First().Fix();
+            const string expectedCode =
+@"Public Sub Foo()
+Static var1 As Integer
+Static var2 As String
 
-//            Assert.AreEqual(expectedCode, module.Lines());
-//        }
+End Sub";
 
-//        [TestMethod]
-//        public void InspectionType()
-//        {
-//            var inspection = new MultipleDeclarationsInspection(parseResult.State);
-//            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
-//        }
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//        [TestMethod]
-//        public void InspectionName()
-//        {
-//            const string inspectionName = "MultipleDeclarationsInspection";
-//            var inspection = new MultipleDeclarationsInspection(parseResult.State);
+            parseResult.State.StateChanged += State_StateChanged;
+            parseResult.State.OnParseRequested();
+            _semaphore.Wait();
+            parseResult.State.StateChanged -= State_StateChanged;
 
-//            Assert.AreEqual(inspectionName, inspection.Name);
-//        }
-//    }
+            var inspection = new MultipleDeclarationsInspection(parseResult.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void InspectionType()
+        {
+            var inspection = new MultipleDeclarationsInspection(null);
+            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
+        }
+
+        [TestMethod]
+        public void InspectionName()
+        {
+            const string inspectionName = "MultipleDeclarationsInspection";
+            var inspection = new MultipleDeclarationsInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+    }
 }
