@@ -101,7 +101,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
-            var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _", "").RemoveExtraSpaces();
+            var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _" + Environment.NewLine, string.Empty).RemoveExtraSpaces();
             var currentStringIndex = 0;
 
             foreach (
@@ -143,10 +143,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             module.ReplaceLine(paramList.Start.Line, newContent);
-            for (var line = paramList.Start.Line + 1; line < paramList.Start.Line + lineCount; line++)
-            {
-                module.ReplaceLine(line, "");
-            }
+            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
         }
 
         private string GetOldSignature(Declaration target)
@@ -322,7 +319,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             {
                 try
                 {
-                    signature = ReplaceCommas(signature.Replace(paramNames.ElementAt(param.Index).GetText(), ""), _model.Parameters.FindIndex(item => item == param) - paramsRemoved.FindIndex(item => item == param));
+                    signature = ReplaceCommas(signature.Replace(paramNames.ElementAt(param.Index).GetText(), string.Empty), _model.Parameters.FindIndex(item => item == param) - paramsRemoved.FindIndex(item => item == param));
                 }
                 catch (ArgumentOutOfRangeException)
                 {
@@ -330,7 +327,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
             var lineNum = paramList.GetSelection().LineCount;
 
-            module.ReplaceLine(paramList.Start.Line, signature.Replace(" _" + Environment.NewLine, ""));
+            module.ReplaceLine(paramList.Start.Line, signature.Replace(" _" + Environment.NewLine, string.Empty));
             module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
         }
     }

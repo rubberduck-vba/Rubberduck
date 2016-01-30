@@ -114,7 +114,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
-            var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _", "").RemoveExtraSpaces();
+            var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _" + Environment.NewLine, string.Empty).RemoveExtraSpaces();
 
             var parameterIndex = 0;
             var currentStringIndex = 0;
@@ -137,11 +137,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             }
 
             module.ReplaceLine(paramList.Start.Line, newContent);
-
-            for (var line = paramList.Start.Line + 1; line < paramList.Start.Line + lineCount; line++)
-            {
-                module.ReplaceLine(line, "");
-            }
+            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
         }
 
         private void AdjustSignatures()
@@ -241,12 +237,8 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 }
             }
 
-            module.ReplaceLine(paramList.Start.Line, newContent);
-
-            for (var line = paramList.Start.Line + 1; line < paramList.Start.Line + lineNum; line++)
-            {
-                module.ReplaceLine(line, "");
-            }
+            module.ReplaceLine(paramList.Start.Line, newContent.Replace(" _" + Environment.NewLine, string.Empty));
+            module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
         }
 
         private string GetOldSignature(Declaration target)
