@@ -53,22 +53,22 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "Goo" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -101,22 +101,22 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "val2" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "val2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -146,22 +146,22 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "arg2" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "arg2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -201,22 +201,22 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "Hoo" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Hoo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -250,22 +250,22 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "val2" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "val2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -297,22 +297,22 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "arg2" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "arg2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -348,22 +348,22 @@ End Property";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "Goo" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -399,22 +399,22 @@ End Property";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "Goo" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -446,22 +446,22 @@ End Function";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "Goo" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -505,22 +505,22 @@ End Sub
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "Hoo" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Hoo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -550,22 +550,22 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "Goo" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(model.Target);
 
             //Assert
@@ -609,25 +609,25 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "DoNothing" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "DoNothing" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -670,25 +670,25 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "Goo" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -733,12 +733,12 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -750,13 +750,13 @@ End Sub";
                 m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                 .Returns(DialogResult.Yes);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, messageBox.Object) { NewName = "DoNothing" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, messageBox.Object) { NewName = "DoNothing" };
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(model.Selection);
 
             //Assert
@@ -790,12 +790,12 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -804,7 +804,7 @@ End Sub";
                 m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                 .Returns(DialogResult.No);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, messageBox.Object);
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, messageBox.Object);
             Assert.AreEqual(null, model.Target);
         }
 
@@ -825,12 +825,12 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -839,10 +839,10 @@ End Sub";
             codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
-            var factory = new RenamePresenterFactory(vbe.Object, null, parseResult.State, null, codePaneFactory);
+            var factory = new RenamePresenterFactory(vbe.Object, null, parser.State, null, codePaneFactory);
 
             //act
-            var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor();
 
             Assert.AreEqual(inputCode, module.Lines());
@@ -866,12 +866,12 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -880,7 +880,7 @@ End Sub";
             codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
-            var factory = new RenamePresenterFactory(vbe.Object, null, parseResult.State, null, codePaneFactory);
+            var factory = new RenamePresenterFactory(vbe.Object, null, parser.State, null, codePaneFactory);
 
             var presenter = factory.Create();
 
@@ -904,12 +904,12 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
@@ -921,7 +921,7 @@ End Sub";
             codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
-            var factory = new RenamePresenterFactory(vbe.Object, null, parseResult.State, null, codePaneFactory);
+            var factory = new RenamePresenterFactory(vbe.Object, null, parser.State, null, codePaneFactory);
 
             var presenter = factory.Create();
             Assert.AreEqual(null, presenter.Show());
@@ -946,16 +946,16 @@ End Sub";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = newName };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = newName };
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
@@ -979,7 +979,7 @@ End Sub";
             view.Setup(v => v.NewName).Returns(newName);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parseResult.State, null, codePaneFactoryMock.Object);
+            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parser.State, null, codePaneFactoryMock.Object);
 
             var presenter = factory.Create();
             Assert.AreEqual(model.NewName, presenter.Show().NewName);
@@ -1002,12 +1002,12 @@ End Sub";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1033,7 +1033,7 @@ End Sub";
             view.Setup(v => v.NewName).Returns("Goo");
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
 
-            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parseResult.State, null, codePaneFactoryMock.Object);
+            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parser.State, null, codePaneFactoryMock.Object);
 
             var presenter = factory.Create();
             Assert.AreEqual(null, presenter.Show());
@@ -1058,16 +1058,16 @@ End Sub";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = newName };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = newName };
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
@@ -1091,7 +1091,7 @@ End Sub";
             view.Setup(v => v.NewName).Returns(newName);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parseResult.State, null, codePaneFactoryMock.Object);
+            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parser.State, null, codePaneFactoryMock.Object);
 
             var presenter = factory.Create();
             Assert.AreEqual(model.NewName, presenter.Show(model.Target).NewName);
@@ -1114,16 +1114,16 @@ End Sub";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "Goo" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
@@ -1146,7 +1146,7 @@ End Sub";
             var view = new Mock<IRenameView>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
 
-            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parseResult.State, null, codePaneFactoryMock.Object);
+            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parser.State, null, codePaneFactoryMock.Object);
 
             var presenter = factory.Create();
             Assert.AreEqual(null, presenter.Show(model.Target));
@@ -1172,23 +1172,23 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = newName };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = newName };
             model.Target = model.Declarations.First(i => i.DeclarationType == DeclarationType.Project && !i.IsBuiltIn);
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(model.Target);
 
             //Assert
@@ -1220,16 +1220,16 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "Goo" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -1241,7 +1241,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.No);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1273,16 +1273,16 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = "Goo" };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -1294,7 +1294,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.Yes);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1324,23 +1324,23 @@ End Sub";
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RenameModel(vbe.Object, parseResult.State, qualifiedSelection, null) { NewName = newName };
+            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = newName };
             model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.Class && i.IdentifierName == "Class1");
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parseResult.State);
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
             refactoring.Refactor(model.Target);
 
             //Assert

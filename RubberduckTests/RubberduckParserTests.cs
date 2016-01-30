@@ -23,7 +23,7 @@ namespace RubberduckTests
         }
 
         [TestMethod, Timeout(1000)]
-        public void ParseResultDeclarations_IncludeVbaStandardLibDeclarations()
+        public void parserDeclarations_IncludeVbaStandardLibDeclarations()
         {
             //Arrange
             var builder = new MockVbeBuilder();
@@ -50,7 +50,7 @@ namespace RubberduckTests
         }
 
         [TestMethod, Timeout(1000)]
-        public void ParseResultDeclarations_MockHost_ExcludeExcelDeclarations()
+        public void parserDeclarations_MockHost_ExcludeExcelDeclarations()
         {
             //Arrange
             var builder = new MockVbeBuilder();
@@ -63,14 +63,14 @@ namespace RubberduckTests
             mockHost.SetupAllProperties();
 
             //Act
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             //Assert
-            Assert.IsFalse(parseResult.State.AllDeclarations.Any(item => item.IsBuiltIn && item.ParentScope.StartsWith("Excel")));
+            Assert.IsFalse(parser.State.AllDeclarations.Any(item => item.IsBuiltIn && item.ParentScope.StartsWith("Excel")));
         }
 
         [TestMethod, Timeout(1000)]
-        public void ParseResultDeclarations_ExcelHost_IncludesExcelDeclarations()
+        public void parserDeclarations_ExcelHost_IncludesExcelDeclarations()
         {
             //Arrange
             var builder = new MockVbeBuilder();
@@ -81,15 +81,15 @@ namespace RubberduckTests
             var vbe = builder.AddProject(project).Build();
 
             //Act
-            var parseResult = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parseResult.State.StateChanged += State_StateChanged;
-            parseResult.State.OnParseRequested();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
             _semaphore.Wait();
-            parseResult.State.StateChanged -= State_StateChanged;
+            parser.State.StateChanged -= State_StateChanged;
 
             //Assert
-            Assert.IsTrue(parseResult.State.AllDeclarations.Any(item => item.IsBuiltIn && item.ParentScope.StartsWith("Excel")));
+            Assert.IsTrue(parser.State.AllDeclarations.Any(item => item.IsBuiltIn && item.ParentScope.StartsWith("Excel")));
         }
     }
 }

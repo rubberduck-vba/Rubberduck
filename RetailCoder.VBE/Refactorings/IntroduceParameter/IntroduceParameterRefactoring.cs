@@ -75,15 +75,18 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
-            if (
-                !new[] {DeclarationType.Class, DeclarationType.Module}.Contains(
-                    target.ParentDeclaration.DeclarationType))
+            if (IsContainedInClassOrModule(target))
             {
                 return;
             }
 
             RemoveVariable(target);
             UpdateSignature(target);
+        }
+
+        private bool IsContainedInClassOrModule(Declaration target)
+        {
+            return target.ParentDeclaration != null && IsContainedInClassOrModule(target.ParentDeclaration);
         }
 
         private bool PromptIfMethodImplementsInterface(Declaration targetVariable)
@@ -241,7 +244,14 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
 
             _editor.DeleteLines(selection);
-            _editor.InsertLines(selection.StartLine, newLines);
+            var newLinesWithoutEmptyLines = newLines
+                    .Split(new[] {" _" + Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
+                    .Where(l => l.Trim() != string.Empty).ToList();
+
+            if (newLinesWithoutEmptyLines.Any())
+            {
+                _editor.InsertLines(selection.StartLine, string.Join(" _" + Environment.NewLine, newLinesWithoutEmptyLines));
+            }
         }
 
         private string GetOldSignature(Declaration target)
