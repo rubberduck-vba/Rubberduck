@@ -25,7 +25,7 @@ namespace RubberduckTests.Refactoring
             }
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void PromoteLocalToParameterRefactoring_NoParamsInList()
         {
             //Input
