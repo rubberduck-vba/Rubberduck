@@ -831,12 +831,6 @@ End Sub";
     Dim bar As Boolean
 End Sub";
 
-            //Expectation
-            const string expectedCode =
-@"Private Sub Foo(ByVal bar As Boolean)
-    
-End Sub";
-
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
@@ -871,7 +865,7 @@ End Sub";
             catch (ArgumentException e)
             {
                 Assert.AreEqual("Invalid declaration type", e.Message);
-                Assert.AreEqual(expectedCode, module.Lines());
+                Assert.AreEqual(inputCode, module.Lines());
                 return;
             }
 

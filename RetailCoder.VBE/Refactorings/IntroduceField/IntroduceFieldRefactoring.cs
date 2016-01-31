@@ -176,8 +176,6 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         private string GetFieldDefinition(Declaration target)
         {
-            if (target == null) { return null; }
-
             return "Private " + target.IdentifierName + " As " + target.AsTypeName;
         }
     }
