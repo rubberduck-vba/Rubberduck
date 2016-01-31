@@ -98,7 +98,7 @@
     <Compile Include="Mocks\MockVbeBuilder.cs" />
     <Compile Include="Mocks\MockWindowsCollection.cs" />
     <Compile Include="Refactoring\ExtractMethodTests.cs" />
-    <Compile Include="Refactoring\PromoteLocalToParameter.cs" />
+    <Compile Include="Refactoring\IntroduceParameterTests.cs" />
     <Compile Include="Refactoring\RemoveParametersTests.cs" />
     <Compile Include="Refactoring\RenameTests.cs" />
     <Compile Include="Refactoring\ReorderParametersTests.cs" />

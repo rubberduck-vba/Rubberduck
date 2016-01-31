@@ -123,20 +123,26 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             var paramList = (VBAParser.ArgListContext)proc.argList();
             var module = functionDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
-            AddParameter(functionDeclaration, targetVariable, paramList, module);
+            var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
+
+            if (functionDeclaration.DeclarationType != DeclarationType.PropertyGet &&
+                functionDeclaration.DeclarationType != DeclarationType.PropertyLet &&
+                functionDeclaration.DeclarationType != DeclarationType.PropertySet)
+            {
+                AddParameter(functionDeclaration, targetVariable, paramList, module);
+
+                if (interfaceImplementation == null) { return; }
+            }
 
             if (functionDeclaration.DeclarationType == DeclarationType.PropertyGet ||
                 functionDeclaration.DeclarationType == DeclarationType.PropertyLet ||
                 functionDeclaration.DeclarationType == DeclarationType.PropertySet)
             {
-                UpdateProperties(functionDeclaration);
+                UpdateProperties(functionDeclaration, targetVariable);
             }
 
-            var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
-            if (interfaceImplementation == null)
-            {
-                return;
-            }
+            if (interfaceImplementation == null) { return; }
+
             UpdateSignature(interfaceImplementation, targetVariable);
 
             var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
@@ -183,40 +189,49 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                     GetParameterDefinition(targetVariable) + ", " + argList.Last().GetText());
             }
 
-            module.ReplaceLine(paramList.Start.Line, newContent.Replace(" _" + Environment.NewLine, string.Empty));
+            module.ReplaceLine(paramList.Start.Line, newContent);
             module.DeleteLines(paramList.Start.Line + 1, paramList.GetSelection().LineCount - 1);
         }
 
-        private void UpdateProperties(Declaration target)
+        private void UpdateProperties(Declaration knownProperty, Declaration targetVariable)
         {
             var propertyGet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertyGet &&
-                    d.Scope == target.Scope &&
-                    d.IdentifierName == target.IdentifierName);
+                    d.Scope == knownProperty.Scope &&
+                    d.IdentifierName == knownProperty.IdentifierName);
 
             var propertyLet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertyLet &&
-                    d.Scope == target.Scope &&
-                    d.IdentifierName == target.IdentifierName);
+                    d.Scope == knownProperty.Scope &&
+                    d.IdentifierName == knownProperty.IdentifierName);
 
             var propertySet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertySet &&
-                    d.Scope == target.Scope &&
-                    d.IdentifierName == target.IdentifierName);
+                    d.Scope == knownProperty.Scope &&
+                    d.IdentifierName == knownProperty.IdentifierName);
 
-            if (target.DeclarationType != DeclarationType.PropertyGet && propertyGet != null)
+            var properties = new List<Declaration>();
+
+            if (propertyGet != null)
             {
-                UpdateSignature(propertyGet);
+                properties.Add(propertyGet);
             }
 
-            if (target.DeclarationType != DeclarationType.PropertyLet && propertyLet != null)
+            if (propertyLet != null)
             {
-                UpdateSignature(propertyLet);
+                properties.Add(propertyLet);
             }
 
-            if (target.DeclarationType != DeclarationType.PropertySet && propertySet != null)
+            if (propertySet != null)
             {
-                UpdateSignature(propertySet);
+                properties.Add(propertySet);
+            }
+
+            foreach (var property in
+                    properties.OrderByDescending(o => o.Selection.StartLine)
+                        .ThenByDescending(t => t.Selection.StartColumn))
+            {
+                UpdateSignature(property, targetVariable);
             }
         }
 
@@ -251,15 +266,29 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                     target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
             }
 
-            _editor.DeleteLines(selection);
-            var newLinesWithoutEmptyLines = newLines
-                    .Split(new[] {" _" + Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
-                    .Where(l => l.Trim() != string.Empty).ToList();
-
-            if (newLinesWithoutEmptyLines.Any())
+            var newLinesWithoutExcessSpaces = newLines.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+            for (var i = 0; i < newLinesWithoutExcessSpaces.Length; i++)
             {
-                _editor.InsertLines(selection.StartLine, string.Join(string.Empty, newLinesWithoutEmptyLines).RemoveExtraSpacesLeavingIndentation());
+                newLinesWithoutExcessSpaces[i] = newLinesWithoutExcessSpaces[i].RemoveExtraSpacesLeavingIndentation();
             }
+
+            for (var i = newLinesWithoutExcessSpaces.Length - 1; i >= 0; i--)
+            {
+                if (newLinesWithoutExcessSpaces[i].Trim() == string.Empty)
+                {
+                    continue;
+                }
+
+                if (newLinesWithoutExcessSpaces[i].EndsWith(" _"))
+                {
+                    newLinesWithoutExcessSpaces[i] =
+                        newLinesWithoutExcessSpaces[i].Remove(newLinesWithoutExcessSpaces[i].Length - 2);
+                }
+                break;
+            }
+
+            _editor.DeleteLines(selection);
+            _editor.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
         }
 
         private string GetOldSignature(Declaration target)
@@ -302,26 +331,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             if (propertySetStmtContext != null)
             {
                 lastTokenIndex = propertySetStmtContext.argList().RPAREN().Symbol.TokenIndex;
-            }
-
-            var declareStmtContext = context as VBAParser.DeclareStmtContext;
-            if (declareStmtContext != null)
-            {
-                lastTokenIndex = declareStmtContext.STRINGLITERAL().Last().Symbol.TokenIndex;
-                if (declareStmtContext.argList() != null)
-                {
-                    lastTokenIndex = declareStmtContext.argList().RPAREN().Symbol.TokenIndex;
-                }
-                if (declareStmtContext.asTypeClause() != null)
-                {
-                    lastTokenIndex = declareStmtContext.asTypeClause().Stop.TokenIndex;
-                }
-            }
-
-            var eventStmtContext = context as VBAParser.EventStmtContext;
-            if (eventStmtContext != null)
-            {
-                lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
             }
 
             return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
@@ -376,8 +385,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private string GetParameterDefinition(Declaration target)
         {
-            if (target == null) { return null; }
-
             return "ByVal " + target.IdentifierName + " As " + target.AsTypeName;
         }
     }
