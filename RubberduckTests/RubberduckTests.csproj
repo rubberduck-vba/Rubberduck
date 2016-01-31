@@ -75,6 +75,7 @@
     <Compile Include="Inspections\AssignedByValParameterInspectionTests.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\DefaultProjectNameInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyStringLiteralInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitByRefParameterInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitVariantReturnTypeInspectionTests.cs" />
