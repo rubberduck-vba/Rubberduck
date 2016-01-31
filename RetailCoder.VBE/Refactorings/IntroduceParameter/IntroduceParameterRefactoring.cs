@@ -333,12 +333,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 lastTokenIndex = propertySetStmtContext.argList().RPAREN().Symbol.TokenIndex;
             }
 
-            var eventStmtContext = context as VBAParser.EventStmtContext;
-            if (eventStmtContext != null)
-            {
-                lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
-            }
-
             return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
         }
 

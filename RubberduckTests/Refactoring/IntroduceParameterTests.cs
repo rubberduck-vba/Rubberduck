@@ -1,8 +1,12 @@
-﻿using System.Threading;
+﻿using System;
+using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Rubberduck.Common;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.IntroduceParameter;
 using Rubberduck.UI;
@@ -15,7 +19,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Refactoring
 {
     [TestClass]
-    public class PromoteLocalToParameter
+    public class IntroduceParameterTests
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(0, 1);
 
@@ -774,6 +778,103 @@ End Sub";
             //Assert
             Assert.AreEqual(inputCode1, module1.Lines());
             Assert.AreEqual(inputCode2, module2.Lines());
+        }
+
+        [TestMethod, Timeout(1000)]
+        public void PromoteLocalToParameterRefactoring_PassInTarget()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo()
+    Dim bar As Boolean
+End Sub";
+            var selection = new Selection(2, 10, 2, 13); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo(ByVal bar As Boolean)
+    
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Act
+            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            refactoring.Refactor(parser.State.AllUserDeclarations.FindVariable(qualifiedSelection));
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod, Timeout(1000)]
+        public void PromoteLocalToParameterRefactoring_PassInTarget_Nonvariable()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo()
+    Dim bar As Boolean
+End Sub";
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo(ByVal bar As Boolean)
+    
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                      .Returns(DialogResult.OK);
+
+            //Act
+            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+
+            //Assert
+            try
+            {
+                refactoring.Refactor(parser.State.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
+                messageBox.Verify(m =>
+                        m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                            It.IsAny<MessageBoxIcon>()), Times.Once);
+            }
+            catch (ArgumentException e)
+            {
+                Assert.AreEqual("Invalid declaration type", e.Message);
+                return;
+            }
+
+            Assert.Fail();
         }
     }
 }
