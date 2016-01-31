@@ -127,7 +127,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             while (codeLine.Remove(referenceSelection.StartColumn).LastIndexOf(':') == -1)
             {
                 codeLine = module.Lines[--currentLine, 1].StripStringLiterals();
-                if (!codeLine.EndsWith(" _" + Environment.NewLine))
+                if (!codeLine.EndsWith(" _"))
                 {
                     return new Selection(currentLine + 1, 1, currentLine + 1, 1);
                 }
@@ -173,11 +173,17 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                     target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
             }
 
+            var adjustedLines =
+                newLines.Split(new[] {Environment.NewLine}, StringSplitOptions.None)
+                    .Select(s => s.EndsWith(" _") ? s.Remove(s.Length - 2) : s)
+                    .Where(s => s.Trim() != string.Empty)
+                    .ToList();
+            
             _editor.DeleteLines(selection);
 
-            if (newLines.Trim() != string.Empty)
+            if (adjustedLines.Any())
             {
-                _editor.InsertLines(selection.StartLine, newLines);
+                _editor.InsertLines(selection.StartLine, string.Join(string.Empty, adjustedLines));
             }
         }
 

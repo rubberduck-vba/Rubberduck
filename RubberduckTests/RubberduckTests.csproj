@@ -101,6 +101,7 @@
     <Compile Include="Mocks\MockWindowsCollection.cs" />
     <Compile Include="Refactoring\ExtractMethodTests.cs" />
     <Compile Include="Refactoring\IntroduceFieldTests.cs" />
+    <Compile Include="Refactoring\MoveCloserToUsageTests.cs" />
     <Compile Include="Refactoring\IntroduceParameterTests.cs" />
     <Compile Include="Refactoring\RemoveParametersTests.cs" />
     <Compile Include="Refactoring\RenameTests.cs" />

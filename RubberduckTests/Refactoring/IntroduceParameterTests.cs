@@ -32,7 +32,7 @@ namespace RubberduckTests.Refactoring
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_NoParamsInList_Sub()
+        public void IntroduceParameterRefactoring_NoParamsInList_Sub()
         {
             //Input
             const string inputCode =
@@ -74,7 +74,7 @@ End Sub";
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_NoParamsInList_Function()
+        public void IntroduceParameterRefactoring_NoParamsInList_Function()
         {
             //Input
             const string inputCode =
@@ -118,7 +118,7 @@ End Function";
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_OneParamInList()
+        public void IntroduceParameterRefactoring_OneParamInList()
         {
             //Input
             const string inputCode =
@@ -160,7 +160,7 @@ End Sub";
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_MultipleParamsOnMultipleLines()
+        public void IntroduceParameterRefactoring_MultipleParamsOnMultipleLines()
         {
             //Input
             const string inputCode =
@@ -204,7 +204,7 @@ End Sub";   // note: the VBE removes extra spaces
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_MultipleVariablesInStatement_MoveFirst()
+        public void IntroduceParameterRefactoring_MultipleVariablesInStatement_MoveFirst()
         {
             //Input
             const string inputCode =
@@ -252,7 +252,7 @@ End Sub";   // note: the VBE removes extra spaces
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_MultipleVariablesInStatement_MoveSecond()
+        public void IntroduceParameterRefactoring_MultipleVariablesInStatement_MoveSecond()
         {
             //Input
             const string inputCode =
@@ -300,7 +300,7 @@ End Sub";   // note: the VBE removes extra spaces
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_MultipleVariablesInStatement_MoveLast()
+        public void IntroduceParameterRefactoring_MultipleVariablesInStatement_MoveLast()
         {
             //Input
             const string inputCode =
@@ -348,7 +348,7 @@ End Sub";   // note: the VBE removes extra spaces
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_MultipleVariablesInStatement_OnOneLine_MoveFirst()
+        public void IntroduceParameterRefactoring_MultipleVariablesInStatement_OnOneLine_MoveFirst()
         {
             //Input
             const string inputCode =
@@ -392,7 +392,7 @@ End Sub";   // note: the VBE removes extra spaces
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_DisplaysInvalidSelectionAndDoesNothingForField()
+        public void IntroduceParameterRefactoring_DisplaysInvalidSelectionAndDoesNothingForField()
         {
             //Input
             const string inputCode =
@@ -436,7 +436,7 @@ End Sub";
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_DisplaysInvalidSelectionAndDoesNothingForInvalidSelection()
+        public void IntroduceParameterRefactoring_DisplaysInvalidSelectionAndDoesNothingForInvalidSelection()
         {
             //Input
             const string inputCode =
@@ -480,7 +480,7 @@ End Sub";
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_Properties_GetAndLet()
+        public void IntroduceParameterRefactoring_Properties_GetAndLet()
         {
             //Input
             const string inputCode =
@@ -530,7 +530,7 @@ End Property";
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_Properties_GetAndSet()
+        public void IntroduceParameterRefactoring_Properties_GetAndSet()
         {
             //Input
             const string inputCode =
@@ -580,7 +580,7 @@ End Property";
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_ImplementsInterface()
+        public void IntroduceParameterRefactoring_ImplementsInterface()
         {
             //Input
             const string inputCode1 =
@@ -646,7 +646,7 @@ End Sub";
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_ImplementsInterface_MultipleInterfaceImplementations()
+        public void IntroduceParameterRefactoring_ImplementsInterface_MultipleInterfaceImplementations()
         {
             //Input
             const string inputCode1 =
@@ -727,7 +727,7 @@ End Sub";
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_ImplementsInterface_Reject()
+        public void IntroduceParameterRefactoring_ImplementsInterface_Reject()
         {
             //Input
             const string inputCode1 =
@@ -781,7 +781,7 @@ End Sub";
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_PassInTarget()
+        public void IntroduceParameterRefactoring_PassInTarget()
         {
             //Input
             const string inputCode =
@@ -823,7 +823,7 @@ End Sub";
         }
 
         [TestMethod, Timeout(1000)]
-        public void PromoteLocalToParameterRefactoring_PassInTarget_Nonvariable()
+        public void IntroduceParameterRefactoring_PassInTarget_Nonvariable()
         {
             //Input
             const string inputCode =
