@@ -529,7 +529,7 @@ End Property";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void PromoteLocalToParameterRefactoring_Properties_GetAndSet()
         {
             //Input
@@ -579,7 +579,7 @@ End Property";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void PromoteLocalToParameterRefactoring_ImplementsInterface()
         {
             //Input
@@ -645,7 +645,7 @@ End Sub";
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void PromoteLocalToParameterRefactoring_ImplementsInterface_MultipleInterfaceImplementations()
         {
             //Input
@@ -726,7 +726,7 @@ End Sub";
             Assert.AreEqual(expectedCode3, module3.Lines());
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void PromoteLocalToParameterRefactoring_ImplementsInterface_Reject()
         {
             //Input
@@ -871,6 +871,7 @@ End Sub";
             catch (ArgumentException e)
             {
                 Assert.AreEqual("Invalid declaration type", e.Message);
+                Assert.AreEqual(expectedCode, module.Lines());
                 return;
             }
 
