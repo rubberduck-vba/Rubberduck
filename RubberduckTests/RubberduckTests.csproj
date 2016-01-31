@@ -74,6 +74,7 @@
     <Compile Include="ConfigurationTests.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionTests.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\UseMeaningfulNameInspectionTests.cs" />
     <Compile Include="Inspections\DefaultProjectNameInspectionTests.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitByRefParameterInspectionTests.cs" />
