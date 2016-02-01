@@ -32,7 +32,7 @@ namespace RubberduckTests.Refactoring
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParams_SwapPositions()
         {
             //Input
@@ -78,7 +78,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParams_RefactorDeclaration()
         {
             //Input
@@ -124,7 +124,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParams_RefactorDeclaration_FailsInvalidTarget()
         {
             //Input
@@ -171,10 +171,10 @@ End Sub";
                 return;
             }
 
-            Assert.IsTrue(false);
+            Assert.Fail();
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParams_WithOptionalParam()
         {
             //Input
@@ -227,7 +227,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParams_SwapPositions_UpdatesCallers()
         {
             //Input
@@ -283,7 +283,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_ReorderNamedParams()
         {
             //Input
@@ -347,7 +347,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_ReorderNamedParams_Function()
         {
             //Input
@@ -396,7 +396,7 @@ End Function";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_ReorderNamedParams_WithOptionalParam()
         {
             //Input
@@ -460,7 +460,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_ReorderGetter()
         {
             //Input
@@ -514,7 +514,7 @@ End Property";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_ReorderLetter()
         {
             //Input
@@ -561,7 +561,7 @@ End Property";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_ReorderSetter()
         {
             //Input
@@ -608,7 +608,7 @@ End Property";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_ReorderLastParamFromSetter_NotAllowed()
         {
             //Input
@@ -638,7 +638,7 @@ End Property";
             Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from setter
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_ReorderLastParamFromLetter_NotAllowed()
         {
             //Input
@@ -668,7 +668,7 @@ End Property";
             Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from letter
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_SignatureOnMultipleLines()
         {
             //Input
@@ -717,7 +717,7 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_CallOnMultipleLines()
         {
             //Input
@@ -780,7 +780,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_ClientReferencesAreNotUpdated_ParamArray()
         {
             //Input
@@ -836,7 +836,7 @@ End Sub
             Assert.AreEqual(inputCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_ClientReferencesAreUpdated_ParamArray()
         {
             //Input
@@ -917,7 +917,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_ClientReferencesAreUpdated_ParamArray_CallOnMultiplelines()
         {
             //Input
@@ -1005,7 +1005,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParams_MoveOptionalParamBeforeNonOptionalParamFails()
         {
             //Input
@@ -1056,7 +1056,7 @@ End Sub";
             Assert.AreEqual(inputCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParams_ReorderCallsWithoutOptionalParams()
         {
             //Input
@@ -1119,7 +1119,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_ReorderFirstParamFromGetterAndSetter()
         {
             //Input
@@ -1172,7 +1172,7 @@ End Property";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_ReorderFirstParamFromGetterAndLetter()
         {
             //Input
@@ -1225,7 +1225,7 @@ End Property";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParams_PresenterIsNull()
         {
             //Input
@@ -1262,7 +1262,7 @@ End Sub";
             Assert.AreEqual(inputCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_InterfaceParamsSwapped()
         {
             //Input
@@ -1326,7 +1326,7 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_InterfaceParamsSwapped_ParamsHaveDifferentNames()
         {
             //Input
@@ -1390,7 +1390,7 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_InterfaceParamsSwapped_ParamsHaveDifferentNames_TwoImplementations()
         {
             //Input
@@ -1467,7 +1467,7 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode3, module3.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_InterfaceParamsSwapped_AcceptPrompt()
         {
             //Input
@@ -1537,7 +1537,7 @@ End Sub";
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_ParamsSwapped_RejectPrompt()
         {
             //Input
@@ -1581,7 +1581,7 @@ End Sub";
             Assert.IsNull(model.TargetDeclaration);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_EventParamsSwapped()
         {
             //Input
@@ -1645,7 +1645,7 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_EventParamsSwapped_DifferentParamNames()
         {
             //Input
@@ -1709,7 +1709,7 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ReorderParametersRefactoring_EventParamsSwapped_DifferentParamNames_TwoHandlers()
         {
             //Input
@@ -1787,7 +1787,7 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode3, module3.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void Presenter_AcceptDialog_ReordersProcedureWithTwoParameters()
         {
             //Input
@@ -1828,7 +1828,7 @@ End Sub";
             Assert.AreEqual(model.Parameters, presenter.Show().Parameters);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void Presenter_CancelDialogCreatesNullModel()
         {
             //Input
@@ -1871,7 +1871,7 @@ End Sub";
             Assert.IsNull(result);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void Presenter_ParameterlessMemberCreatesNullModel()
         {
             //Input
@@ -1912,7 +1912,7 @@ End Sub";
             Assert.IsNull(result);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void Presenter_SingleParameterMemberCreatesNullModel()
         {
             //Input
@@ -1953,7 +1953,7 @@ End Sub";
             Assert.IsNull(result);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void Presenter_NullTargetCreatesNullModel()
         {
             //Input
@@ -1992,7 +1992,7 @@ End Sub";
             Assert.IsNull(result);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void Factory_NullSelectionCreatesNullPresenter()
         {
             //Input

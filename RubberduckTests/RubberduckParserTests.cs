@@ -22,7 +22,7 @@ namespace RubberduckTests
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void parserDeclarations_IncludeVbaStandardLibDeclarations()
         {
             //Arrange
@@ -49,7 +49,7 @@ namespace RubberduckTests
             Assert.IsTrue(parser.State.AllDeclarations.Any(item => item.IsBuiltIn));
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void parserDeclarations_MockHost_ExcludeExcelDeclarations()
         {
             //Arrange
@@ -69,7 +69,7 @@ namespace RubberduckTests
             Assert.IsFalse(parser.State.AllDeclarations.Any(item => item.IsBuiltIn && item.ParentScope.StartsWith("Excel")));
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void parserDeclarations_ExcelHost_IncludesExcelDeclarations()
         {
             //Arrange

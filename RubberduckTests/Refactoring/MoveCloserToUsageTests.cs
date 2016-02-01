@@ -30,7 +30,7 @@ namespace RubberduckTests.Refactoring
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_Field()
         {
             //Input
@@ -75,7 +75,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_Variable()
         {
             //Input
@@ -122,7 +122,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_MultipleFields_MoveSecond()
         {
             //Input
@@ -173,7 +173,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveFirst()
         {
             //Input
@@ -223,7 +223,7 @@ End Sub";   // note: VBE will remove extra spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveSecond()
         {
             //Input
@@ -273,7 +273,7 @@ End Sub";   // note: VBE will remove extra spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveLast()
         {
             //Input
@@ -323,7 +323,7 @@ End Sub";   // note: VBE will remove extra spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveFirst()
         {
             //Input
@@ -375,7 +375,7 @@ End Sub";   // note: VBE will remove extra spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveSecond()
         {
             //Input
@@ -427,7 +427,7 @@ End Sub";   // note: VBE will remove extra spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveLast()
         {
             //Input
@@ -479,7 +479,7 @@ End Sub";   // note: VBE will remove extra spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_NoReferences()
         {
             //Input
@@ -522,7 +522,7 @@ End Sub";
             Assert.AreEqual(inputCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_ReferencedInMultipleProcedures()
         {
             //Input
@@ -569,7 +569,7 @@ End Sub";
             Assert.AreEqual(inputCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_Assignment()
         {
             //Input
@@ -613,7 +613,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_PassAsParam()
         {
             //Input
@@ -713,7 +713,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_ReferenceIsSeparatedWithColon()
         {
             //Input
@@ -759,7 +759,7 @@ Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceFieldRefactoring_PassInTarget_Nonvariable()
         {
             //Input

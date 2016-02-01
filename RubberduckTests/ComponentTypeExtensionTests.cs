@@ -7,7 +7,7 @@ namespace RubberduckTests
     [TestClass]
     public class ComponentTypeExtensionTests
     {
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ClassReturnsCls()
         {
             var type = vbext_ComponentType.vbext_ct_ClassModule;
@@ -15,14 +15,14 @@ namespace RubberduckTests
             Assert.AreEqual(".cls", type.FileExtension());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void FormReturnsFrm()
         {
             var type = vbext_ComponentType.vbext_ct_MSForm;
             Assert.AreEqual(".frm", type.FileExtension());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void StandardReturnsBas()
         {
             var type = vbext_ComponentType.vbext_ct_StdModule;

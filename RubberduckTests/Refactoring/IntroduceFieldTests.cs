@@ -31,7 +31,7 @@ namespace RubberduckTests.Refactoring
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceFieldRefactoring_NoFieldsInClass_Sub()
         {
             //Input
@@ -74,7 +74,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceFieldRefactoring_NoFieldsInList_Function()
         {
             //Input
@@ -119,7 +119,7 @@ End Function";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceFieldRefactoring_OneFieldInList()
         {
             //Input
@@ -164,7 +164,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceFieldRefactoring_MultipleFieldsOnMultipleLines()
         {
             //Input
@@ -213,7 +213,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveFirst()
         {
             //Input
@@ -262,7 +262,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveSecond()
         {
             //Input
@@ -311,7 +311,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveLast()
         {
             //Input
@@ -360,7 +360,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceFieldRefactoring_MultipleVariablesInStatement_OnOneLine_MoveFirst()
         {
             //Input
@@ -405,7 +405,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceFieldRefactoring_DisplaysInvalidSelectionAndDoesNothingForField()
         {
             //Input
@@ -449,7 +449,7 @@ End Sub";
             Assert.AreEqual(inputCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceFieldRefactoring_DisplaysInvalidSelectionAndDoesNothingForInvalidSelection()
         {
             //Input
@@ -493,7 +493,7 @@ End Sub";
             Assert.AreEqual(inputCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceFieldRefactoring_PassInTarget()
         {
             //Input
@@ -536,7 +536,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceFieldRefactoring_PassInTarget_Nonvariable()
         {
             //Input

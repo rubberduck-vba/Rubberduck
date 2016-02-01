@@ -15,7 +15,7 @@ namespace RubberduckTests.SourceControl
     [TestClass]
     public class SourceControlTests
     {
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InitVBAProjectIntitializesRepo()
         {
             //arrange
@@ -45,7 +45,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(Directory.Exists(repoDir), "Repo directory does not exist.");
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CloneCreatesLocalRepo()
         {
             //arrange
@@ -66,7 +66,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(Directory.Exists(Path.Combine(expected.LocalLocation, ".git")));
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranchTest()
         {
             var project = new Mock<VBProject>();

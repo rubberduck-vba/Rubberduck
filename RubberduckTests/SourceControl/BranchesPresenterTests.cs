@@ -47,7 +47,7 @@ namespace RubberduckTests.SourceControl
             _presenter = new BranchesPresenter(_view.Object, _createView.Object, _deleteView.Object, _mergeView.Object, _provider.Object);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void SelectedBranchShouldBeCurrentBranchAfterRefresh()
         {
             //arrange
@@ -60,7 +60,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(_provider.Object.CurrentBranch.Name, _view.Object.Current);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void PublishedBranchesAreListedAfterRefresh()
         {
             //arrange
@@ -74,7 +74,7 @@ namespace RubberduckTests.SourceControl
             CollectionAssert.AreEqual(expected, _view.Object.Published.ToList());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void UnPublishedBranchesAreListedAfterRefresh()
         {
             //arrange
@@ -88,7 +88,7 @@ namespace RubberduckTests.SourceControl
             CollectionAssert.AreEqual(expected, _view.Object.Unpublished.ToList());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void OnlyLocalBranchesInBranches()
         {
             //arrange 
@@ -102,7 +102,7 @@ namespace RubberduckTests.SourceControl
             CollectionAssert.AreEquivalent(expected, _view.Object.Local.ToList());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void HeadIsNotIncludedInPublishedBranches()
         {
             //arrange
@@ -115,7 +115,7 @@ namespace RubberduckTests.SourceControl
             CollectionAssert.DoesNotContain(_view.Object.Published.ToList(), "HEAD");
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void DeleteBranchViewIsShownOnDeleteBranch()
         {
             //arrange
@@ -128,7 +128,7 @@ namespace RubberduckTests.SourceControl
             _deleteView.Verify(d => d.Show(), Times.Once());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void DeleteBranch_AndBranchIsActive_OkButtonDisabled()
         {
             //arrange
@@ -146,7 +146,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_deleteView.Object.OkButtonEnabled);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void DeleteBranch_AndBranchIsNotActive_OkButtonEnabled()
         {
             //arrange
@@ -165,7 +165,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(_deleteView.Object.OkButtonEnabled);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void DeleteBranch_IshiddenAfterSubmit()
         {
             //arrange
@@ -184,7 +184,7 @@ namespace RubberduckTests.SourceControl
             _deleteView.Verify(c => c.Hide(), Times.Once);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void DeleteBranch_IshiddenAfterCancel()
         {
             //arrange
@@ -203,7 +203,7 @@ namespace RubberduckTests.SourceControl
             _deleteView.Verify(c => c.Hide(), Times.Once);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void DeleteBranch_AndBranchIsNotActive_BranchIsRemoved()
         {
             //arrange
@@ -227,7 +227,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(p => p.DeleteBranch(secondBranchName));
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranchViewIsShownOnCreateBranch()
         {
             //arrange
@@ -240,7 +240,7 @@ namespace RubberduckTests.SourceControl
             _createView.Verify(c => c.Show(), Times.Once());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_AndBranchExists()
         {
             //arrange
@@ -258,7 +258,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_AndValidBranchName()
         {
             //arrange
@@ -277,7 +277,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameContainsSpace()
         {
             //arrange
@@ -295,7 +295,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameContainsTwoConsecutiveDots()
         {
             //arrange
@@ -313,7 +313,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameContainsTilde()
         {
             //arrange
@@ -331,7 +331,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameContainsCaret()
         {
             //arrange
@@ -349,7 +349,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameContainsColon()
         {
             //arrange
@@ -367,7 +367,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameContainsQuestionMark()
         {
             //arrange
@@ -385,7 +385,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameContainsAsteriks()
         {
             //arrange
@@ -403,7 +403,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameContainsOpenBrace()
         {
             //arrange
@@ -421,7 +421,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameContainsTwoConsecutiveSlashes()
         {
             //arrange
@@ -439,7 +439,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameStartsWithSlash()
         {
             //arrange
@@ -457,7 +457,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameEndsWithSlash()
         {
             //arrange
@@ -475,7 +475,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameEndsWithDot()
         {
             //arrange
@@ -493,7 +493,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameIsAmpersand()
         {
             //arrange
@@ -511,7 +511,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameContainsConsecutiveAmpersandOpenBrace()
         {
             //arrange
@@ -529,7 +529,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameContainsBackslash()
         {
             //arrange
@@ -547,7 +547,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameContainsSlashSectionStartingWithDot()
         {
             //arrange
@@ -565,7 +565,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranch_NameContainsSlashSectionEndingWithDotlock()
         {
             //arrange
@@ -583,7 +583,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranchViewIsNotShownWhenLocal_IsNull()
         {
             //arrange
@@ -594,7 +594,7 @@ namespace RubberduckTests.SourceControl
             _createView.Verify(c => c.Show(), Times.Never());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ProviderCallsCreateBranchOnCreateBranchConfirm()
         {
             //arrange
@@ -607,7 +607,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.CreateBranch(It.Is<string>(s => s == expected)));
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranchViewIshiddenAfterSubmit()
         {
             //arrange
@@ -620,7 +620,7 @@ namespace RubberduckTests.SourceControl
             _createView.Verify(c => c.Hide(), Times.Once);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void CreateBranchUserInputIsClearedAfterSubmit()
         {
             //arrange
@@ -633,7 +633,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(string.Empty, _createView.Object.UserInputText);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MergeViewIsShownOnMergeClick()
         {
             //arrange
@@ -646,7 +646,7 @@ namespace RubberduckTests.SourceControl
             _mergeView.Verify(m => m.Show(), Times.Once);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MergeViewIsNotShownWhenLocal_IsNull()
         {
             //arrange
@@ -659,7 +659,7 @@ namespace RubberduckTests.SourceControl
             _mergeView.Verify(m => m.Show(), Times.Never);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MergeViewSourceBranchesAreSetBeforeShowing()
         {
             //arrange
@@ -673,7 +673,7 @@ namespace RubberduckTests.SourceControl
             CollectionAssert.AreEqual(_view.Object.Local.ToList(), _mergeView.Object.SourceSelectorData.ToList());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MergeViewSelectedSourceBranchIsCurrentBranch()
         {
             //arrange
@@ -689,7 +689,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(_intialBranch.Name, _mergeView.Object.SelectedSourceBranch);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MergeViewDestinationBranchesAreSetBeforeShowing()
         {
             //arrange
@@ -703,7 +703,7 @@ namespace RubberduckTests.SourceControl
             CollectionAssert.AreEqual(_view.Object.Local.ToList(), _mergeView.Object.DestinationSelectorData.ToList());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ProviderMergesOnMergeViewSubmit()
         {
             //arrange
@@ -717,7 +717,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Merge("dev", "master"));
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MergeViewIsHiddenOnSuccessfulMerge()
         {
             //arrange
@@ -731,7 +731,7 @@ namespace RubberduckTests.SourceControl
             _mergeView.Verify(m => m.Hide());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MergeViewIsHiddenOnCancel()
         {
             //act
@@ -741,7 +741,7 @@ namespace RubberduckTests.SourceControl
             _mergeView.Verify(m => m.Hide());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MergeStatusHiddenWhenViewIsFirstShown()
         {
             //arrange
@@ -754,7 +754,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_mergeView.Object.StatusTextVisible, "Merge Status Is Visible");
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MergeStatusIsUnknownWhenViewIsFirstShown()
         {
             //arrange
@@ -767,7 +767,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(MergeStatus.Unknown, _mergeView.Object.Status);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MergeStatusIsVisibleOnSuccess()
         {
             //arrange
@@ -782,7 +782,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(_mergeView.Object.StatusTextVisible, "Merge Status Is Not Visible");
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MergeStatusIsVisibleOnFailure()
         {
             //arrange
@@ -797,7 +797,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(_mergeView.Object.StatusTextVisible, "Merge Status Is Not Visible"); 
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MergeStatusTextIsEmptiedWhenStatusIsChangedToUnknown()
         {
             //arrange
@@ -812,7 +812,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(String.Empty, _mergeView.Object.StatusText);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         [ExpectedException(typeof(SourceControlException))]
         public void MergeStatusSetToFailIfProviderThrowsException()
         {
@@ -828,7 +828,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(MergeStatus.Failure, _mergeView.Object.Status);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ChangingSelectedBranchChecksOutThatBranch()
         {
             //arrange
@@ -843,7 +843,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Checkout("dev"));
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RefreshingViewShouldNotCheckoutBranch()
         {
             //arrange
@@ -857,7 +857,7 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Checkout(It.IsAny<string>()),Times.Never);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void OnBranchChange_WhenCheckoutFails_ActionFailedEventIsRaised()
         {
             //arrange
@@ -880,7 +880,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void OnDeleteBranch_WhenDeleteFails_ActionFailedEventIsRaised()
         {
             //arrange
@@ -902,7 +902,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void OnCreateBranch_WhenCreateFails_ActionFailedEventIsRaised()
         {
             //arrange

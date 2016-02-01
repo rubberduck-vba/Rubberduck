@@ -31,7 +31,7 @@ namespace RubberduckTests.Refactoring
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveBothParams()
         {
             //Input
@@ -78,7 +78,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveOnlyParam()
         {
             //Input
@@ -124,7 +124,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveFirstParam()
         {
             //Input
@@ -170,7 +170,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveSecondParam()
         {
             //Input
@@ -216,7 +216,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveNamedParam()
         {
             //Input
@@ -272,7 +272,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveLastFromFunction()
         {
             //Input
@@ -318,7 +318,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveAllFromFunction()
         {
             //Input
@@ -364,7 +364,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveAllFromFunction_UpdateCallReferences()
         {
             //Input
@@ -420,7 +420,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveFromGetter()
         {
             //Input
@@ -466,7 +466,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_QuickFix()
         {
             //Input
@@ -511,7 +511,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveFirstParamFromSetter()
         {
             //Input
@@ -557,7 +557,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_FirstParam()
         {
             //Input
@@ -613,7 +613,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_LastParam()
         {
             //Input
@@ -669,7 +669,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_ParamArray()
         {
             //Input
@@ -737,7 +737,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveLastParamFromSetter_NotAllowed()
         {
             //Input
@@ -767,7 +767,7 @@ End Property";
             Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from setter
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveLastParamFromLetter_NotAllowed()
         {
             //Input
@@ -798,7 +798,7 @@ End Property";
         }
 
         [Ignore]    //todo reinstate test after parser is fixed
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndSetter()
         {
             //Input
@@ -851,7 +851,7 @@ End Property"; //note: The IDE strips out the extra whitespace
         }
 
         [Ignore]    //todo reinstate test after parser is fixed
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndLetter()
         {
             //Input
@@ -903,7 +903,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_SignatureContainsOptionalParam()
         {
             //Input
@@ -957,7 +957,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_SignatureOnMultipleLines()
         {
             //Input
@@ -1005,7 +1005,7 @@ End Sub";   // note: VBE removes excess spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_SignatureOnMultipleLines_RemoveSecond()
         {
             //Input
@@ -1053,7 +1053,7 @@ End Sub";   // note: VBE removes excess spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_SignatureOnMultipleLines_RemoveLast()
         {
             //Input
@@ -1101,7 +1101,7 @@ End Sub";   // note: VBE removes excess spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_PassTargetIn()
         {
             //Input
@@ -1149,7 +1149,7 @@ End Sub";   // note: VBE removes excess spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_CallOnMultipleLines()
         {
             //Input
@@ -1211,7 +1211,7 @@ End Sub
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_LastInterfaceParamRemoved()
         {
             //Input
@@ -1276,7 +1276,7 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_LastInterfaceParamRemoved_ImplementationParamsHaveDifferentNames()
         {
             //Input
@@ -1341,7 +1341,7 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_LastInterfaceParamRemoved_ImplementationParamsHaveDifferentNames_TwoImplementations()
         {
             //Input
@@ -1419,7 +1419,7 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode3, module3.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_LastEventParamRemoved()
         {
             //Input
@@ -1484,7 +1484,7 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_LastEventParamRemoved_ParamsHaveDifferentNames()
         {
             //Input
@@ -1549,7 +1549,7 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_LastEventParamRemoved_ParamsHaveDifferentNames_TwoHandlers()
         {
             //Input
@@ -1627,7 +1627,7 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode3, module3.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_LastInterfaceParamsRemoved_AcceptPrompt()
         {
             //Input
@@ -1697,7 +1697,7 @@ End Sub";
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParametersRefactoring_LastInterfaceParamRemoved_RejectPrompt()
         {
             //Input
@@ -1741,7 +1741,7 @@ End Sub";
             Assert.IsNull(model.TargetDeclaration);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParams_RefactorDeclaration_FailsInvalidTarget()
         {
             //Input
@@ -1790,7 +1790,7 @@ End Sub";
             Assert.Fail();
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParams_PresenterIsNull()
         {
             //Input
@@ -1826,7 +1826,7 @@ End Sub";
             Assert.AreEqual(inputCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RemoveParams_ModelIsNull()
         {
             //Input
@@ -1866,7 +1866,7 @@ End Sub";
             Assert.AreEqual(inputCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void Presenter_Accept_ReturnsModelWithParametersChanged()
         {
             //Input
@@ -1907,7 +1907,7 @@ End Sub";
             Assert.AreEqual(model.Parameters, presenter.Show().Parameters);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void Presenter_Reject_ReturnsNull()
         {
             //Input
@@ -1948,7 +1948,7 @@ End Sub";
             Assert.AreEqual(null, presenter.Show());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void Presenter_Accept_AutoMarksSingleParamAsRemoved()
         {
             //Input
@@ -1985,7 +1985,7 @@ End Sub";
             Assert.IsTrue(model.Parameters[0].Declaration.Equals(presenter.Show().Parameters[0].Declaration));
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void Presenter_ParameterlessTargetReturnsNullModel()
         {
             //Input
@@ -2026,7 +2026,7 @@ End Sub";
             Assert.AreEqual(null, presenter.Show());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void Presenter_NullTargetReturnsNullModel()
         {
             //Input
@@ -2070,7 +2070,7 @@ End Sub";
             Assert.AreEqual(null, presenter.Show());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void Factory_NullSelectionNullReturnsNullPresenter()
         {
             //Input

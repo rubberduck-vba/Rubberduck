@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ObsoleteCallStatement_ReturnsResult()
         {
             const string inputCode =
@@ -51,7 +51,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ObsoleteCallStatement_DoesNotReturnResult()
         {
             const string inputCode =
@@ -78,7 +78,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ObsoleteCallStatement_ReturnsMultipleResults()
         {
             const string inputCode =
@@ -109,7 +109,7 @@ End Sub";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ObsoleteCallStatement_ReturnsResults_SomeObsoleteCallStatements()
         {
             const string inputCode =
@@ -140,7 +140,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ObsoleteCallStatement_QuickFixWorks_RemoveCallStatement()
         {
             const string inputCode =
@@ -188,14 +188,14 @@ End Sub";
             Assert.AreEqual(expectedCode, actual);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionType()
         {
             var inspection = new ObsoleteCallStatementInspection(null);
             Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteCallStatementInspection";
