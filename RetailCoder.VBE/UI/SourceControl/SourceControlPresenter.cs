@@ -26,6 +26,8 @@ namespace Rubberduck.UI.SourceControl
         private readonly IFailedMessageView _failedMessageView;
         private readonly ILoginView _loginView;
 
+        private readonly ICloneRepositoryView _cloneRepoView;
+
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public SourceControlPresenter(
@@ -40,6 +42,7 @@ namespace Rubberduck.UI.SourceControl
             ISourceControlProviderFactory providerFactory, 
             IFailedMessageView failedMessageView, 
             ILoginView loginView,
+            ICloneRepositoryView cloneRepoView,
             ICodePaneWrapperFactory wrapperFactory
             )
             : base(vbe, addin, view)
@@ -66,6 +69,11 @@ namespace Rubberduck.UI.SourceControl
             _loginView = loginView;
             _loginView.Confirm += _loginView_Confirm;
 
+            _cloneRepoView = cloneRepoView;
+            _cloneRepoView.Confirm += OnCloneRepoViewConfirm;
+            _cloneRepoView.Cancel += OnCloneRepoViewCancel;
+            _cloneRepoView.RemotePathChanged += OnCloneRepoRemotePathChanged;
+
             _failedMessageView = failedMessageView;
             _failedMessageView.DismissSecondaryPanel += DismissSecondaryPanel;
 
@@ -75,6 +83,7 @@ namespace Rubberduck.UI.SourceControl
             _view.RefreshData += OnRefreshChildren;
             _view.OpenWorkingDirectory += OnOpenWorkingDirectory;
             _view.InitializeNewRepository += OnInitNewRepository;
+            _view.CloneRepository += OnCloneRepository;
 
             _wrapperFactory = wrapperFactory;
         }
@@ -87,6 +96,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void _loginView_Confirm(object sender, EventArgs e)
         {
+            //TODO: Replace this with a WPF Password control so we get the SecureString natively.
             var pwd = new SecureString();
             foreach (var c in _loginView.Password.ToCharArray())
             {
@@ -146,6 +156,49 @@ namespace Rubberduck.UI.SourceControl
                 SetChildPresenterSourceControlProviders(_provider);
                 _view.Status = RubberduckUI.Online;
             }
+        }
+
+        private void OnCloneRepository(object sender, EventArgs e)
+        {
+            OnCloneRepoRemotePathChanged(sender, EventArgs.Empty);
+            _cloneRepoView.Show();
+        }
+
+        private void HideCloneRepoView()
+        {
+            _cloneRepoView.Hide();
+            _cloneRepoView.RemotePath = string.Empty;
+            _cloneRepoView.LocalDirectory = string.Empty;
+        }
+
+        private void OnCloneRepoViewConfirm(object sender, CloneRepositoryEventArgs e)
+        {
+            HideCloneRepoView();
+
+            IRepository repo;
+            try
+            {
+                _provider = _providerFactory.CreateProvider(VBE.ActiveVBProject);
+                repo = _provider.Clone(e.RemotePath, e.LocalDirectory);
+            }
+            catch (SourceControlException ex)
+            {
+                ShowSecondaryPanel(ex.Message, ex.InnerException.Message);
+                return;
+            }
+
+            AddRepoToConfig((Repository)repo);
+        }
+
+        private void OnCloneRepoViewCancel(object sender, EventArgs e)
+        {
+            HideCloneRepoView();
+        }
+
+        private void OnCloneRepoRemotePathChanged(object sender, EventArgs e)
+        {
+            Uri uri;
+            _cloneRepoView.IsValidRemotePath = Uri.TryCreate(_cloneRepoView.RemotePath, UriKind.Absolute, out uri);
         }
 
         private void OnOpenWorkingDirectory(object sender, EventArgs e)

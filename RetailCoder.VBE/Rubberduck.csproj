@@ -239,6 +239,7 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -294,6 +295,9 @@
     <Compile Include="Common\WinAPI\User32.cs" />
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
+    <Compile Include="Controls\GroupingGrid\GroupingGrid.xaml.cs">
+      <DependentUpon>GroupingGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspection.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspectionResult.cs" />
@@ -462,6 +466,7 @@
     <Compile Include="UI\Command\MenuItems\RefactorIntroduceParameterCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorMoveCloserToUsageCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RegexSearchReplaceCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\UiDispatcher.cs" />
     <Compile Include="UI\Command\NavigateCommand.cs" />
     <Compile Include="UI\Command\OptionsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\OptionsCommandMenuItem.cs" />
@@ -615,6 +620,12 @@
       <DependentUpon>ChangesControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\ChangesPresenter.cs" />
+    <Compile Include="UI\SourceControl\CloneRepositoryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\CloneRepositoryForm.Designer.cs">
+      <DependentUpon>CloneRepositoryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\CreateBranchForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -636,6 +647,7 @@
     </Compile>
     <Compile Include="UI\SourceControl\IBranchesView.cs" />
     <Compile Include="UI\SourceControl\IChangesView.cs" />
+    <Compile Include="UI\SourceControl\ICloneRepositoryView.cs" />
     <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
     <Compile Include="UI\SourceControl\IDeleteBranchView.cs" />
     <Compile Include="UI\SourceControl\IMergeView.cs" />
@@ -762,7 +774,11 @@
       <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\TodoSettingPresenter.cs" />
+    <Compile Include="UI\ToDoItems\ToDoExplorerControl.xaml.cs">
+      <DependentUpon>ToDoExplorerControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
+    <Compile Include="UI\ToDoItems\ToDoExplorerViewModel.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
     <Compile Include="UI\BindableSelectedItemBehavior.cs" />
     <Compile Include="UI\UnitTesting\StandardModuleTestExplorerModel.cs" />
@@ -857,14 +873,17 @@
     <EmbeddedResource Include="UI\RubberduckUI.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.ja.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.ja.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.sv.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.sv.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\AddMarkerForm.resx">
       <DependentUpon>AddMarkerForm.cs</DependentUpon>
@@ -915,6 +934,9 @@
     <EmbeddedResource Include="UI\SourceControl\ChangesControl.resx">
       <DependentUpon>ChangesControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\CloneRepositoryForm.resx">
+      <DependentUpon>CloneRepositoryForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\CreateBranchForm.resx">
       <DependentUpon>CreateBranchForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -938,6 +960,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ToDoItems\ToDoExplorerWindow.resx">
       <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\UnitTesting\TestExplorerWindow.resx">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>
@@ -1329,6 +1352,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\GroupingGrid\GroupingGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\BusyIndicator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1342,6 +1369,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToDoItems\ToDoExplorerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

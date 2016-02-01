@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using Rubberduck.UI;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -13,6 +14,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         public abstract string Name { get; }
         public abstract BitmapImage CollapsedIcon { get; }
         public abstract BitmapImage ExpandedIcon { get; }
+
+        public abstract QualifiedSelection? QualifiedSelection { get; }
 
         public CodeExplorerItemViewModel GetChild(string name)
         {

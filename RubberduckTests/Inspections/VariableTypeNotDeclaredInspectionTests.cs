@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -6,287 +7,318 @@ using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-//    [TestClass]
-//    public class VariableTypeNotDeclaredInspectionTests
-//    {
-//        [TestMethod]
-//        public void VariableTypeNotDeclared_ReturnsResult_Parameter()
-//        {
-//            const string inputCode =
-//@"Sub Foo(arg1)
-//End Sub";
+    [TestClass]
+    public class VariableTypeNotDeclaredInspectionTests
+    {
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(0, 1);
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+        void State_StateChanged(object sender, ParserStateEventArgs e)
+        {
+            if (e.State == ParserState.Ready)
+            {
+                _semaphore.Release();
+            }
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void VariableTypeNotDeclared_ReturnsResult_Parameter()
+        {
+            const string inputCode =
+@"Sub Foo(arg1)
+End Sub";
 
-//            var inspection = new VariableTypeNotDeclaredInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void VariableTypeNotDeclared_ReturnsResult_MultipleParams()
-//        {
-//            const string inputCode =
-//@"Sub Foo(arg1, arg2)
-//End Sub";
+            var inspection = new VariableTypeNotDeclaredInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void VariableTypeNotDeclared_ReturnsResult_MultipleParams()
+        {
+            const string inputCode =
+@"Sub Foo(arg1, arg2)
+End Sub";
 
-//            var inspection = new VariableTypeNotDeclaredInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(2, inspectionResults.Count());
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void VariableTypeNotDeclared_DoesNotReturnResult_Parameter()
-//        {
-//            const string inputCode =
-//@"Sub Foo(arg1 As Date)
-//End Sub";
+            var inspection = new VariableTypeNotDeclaredInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(2, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void VariableTypeNotDeclared_DoesNotReturnResult_Parameter()
+        {
+            const string inputCode =
+@"Sub Foo(arg1 As Date)
+End Sub";
 
-//            var inspection = new VariableTypeNotDeclaredInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void VariableTypeNotDeclared_ReturnsResult_SomeTypesNotDeclared_Parameters()
-//        {
-//            const string inputCode =
-//@"Sub Foo(arg1, arg2 As String)
-//End Sub";
+            var inspection = new VariableTypeNotDeclaredInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void VariableTypeNotDeclared_ReturnsResult_SomeTypesNotDeclared_Parameters()
+        {
+            const string inputCode =
+@"Sub Foo(arg1, arg2 As String)
+End Sub";
 
-//            var inspection = new VariableTypeNotDeclaredInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void VariableTypeNotDeclared_ReturnsResult_QuickFixWorks_Parameter()
-//        {
-//            const string inputCode =
-//@"Sub Foo(arg1)
-//End Sub";
+            var inspection = new VariableTypeNotDeclaredInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            const string expectedCode =
-//@"Sub Foo(arg1 As Variant)
-//End Sub";
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
-//            var module = project.VBComponents.Item(0).CodeModule;
+        [TestMethod]
+        public void VariableTypeNotDeclared_ReturnsResult_QuickFixWorks_Parameter()
+        {
+            const string inputCode =
+@"Sub Foo(arg1)
+End Sub";
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+            const string expectedCode =
+@"Sub Foo(arg1 As Variant)
+End Sub";
 
-//            var inspection = new VariableTypeNotDeclaredInspection();
-//            inspection.GetInspectionResults(parseResult).First().QuickFixes.First().Fix();
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            var actual = module.Lines();
-//            Assert.AreEqual(expectedCode, actual);
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void VariableTypeNotDeclared_ReturnsResult_Variable()
-//        {
-//            const string inputCode =
-//@"Sub Foo()
-//    Dim var1
-//End Sub";
+            var inspection = new VariableTypeNotDeclaredInspection(parser.State);
+            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            var actual = module.Lines();
+            Assert.AreEqual(expectedCode, actual);
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void VariableTypeNotDeclared_ReturnsResult_Variable()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1
+End Sub";
 
-//            var inspection = new VariableTypeNotDeclaredInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void VariableTypeNotDeclared_ReturnsResult_MultipleVariables()
-//        {
-//            const string inputCode =
-//@"Sub Foo()
-//    Dim var1
-//    Dim var2
-//End Sub";
+            var inspection = new VariableTypeNotDeclaredInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void VariableTypeNotDeclared_ReturnsResult_MultipleVariables()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1
+    Dim var2
+End Sub";
 
-//            var inspection = new VariableTypeNotDeclaredInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(2, inspectionResults.Count());
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void VariableTypeNotDeclared_DoesNotReturnResult_Variable()
-//        {
-//            const string inputCode =
-//@"Sub Foo()
-//    Dim var1 As Integer
-//End Sub";
+            var inspection = new VariableTypeNotDeclaredInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(2, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void VariableTypeNotDeclared_DoesNotReturnResult_Variable()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1 As Integer
+End Sub";
 
-//            var inspection = new VariableTypeNotDeclaredInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void VariableTypeNotDeclared_ReturnsResult_SomeTypesNotDeclared_Variables()
-//        {
-//            const string inputCode =
-//@"Sub Foo()
-//    Dim var1
-//    Dim var2 As Date
-//End Sub";
+            var inspection = new VariableTypeNotDeclaredInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void VariableTypeNotDeclared_ReturnsResult_SomeTypesNotDeclared_Variables()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1
+    Dim var2 As Date
+End Sub";
 
-//            var inspection = new VariableTypeNotDeclaredInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void VariableTypeNotDeclared_ReturnsResult_QuickFixWorks_Variable()
-//        {
-//            const string inputCode =
-//@"Sub Foo()
-//    Dim var1
-//End Sub";
+            var inspection = new VariableTypeNotDeclaredInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            const string expectedCode =
-//@"Sub Foo()
-//    Dim var1 As Variant
-//End Sub";
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
-//            var module = project.VBComponents.Item(0).CodeModule;
+        [TestMethod]
+        public void VariableTypeNotDeclared_ReturnsResult_QuickFixWorks_Variable()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1
+End Sub";
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+            const string expectedCode =
+@"Sub Foo()
+    Dim var1 As Variant
+End Sub";
 
-//            var inspection = new VariableTypeNotDeclaredInspection();
-//            inspection.GetInspectionResults(parseResult).First().QuickFixes.First().Fix();
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(expectedCode, module.Lines());
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void InspectionType()
-//        {
-//            var inspection = new VariableTypeNotDeclaredInspection();
-//            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
-//        }
+            var inspection = new VariableTypeNotDeclaredInspection(parser.State);
+            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-//        [TestMethod]
-//        public void InspectionName()
-//        {
-//            const string inspectionName = "VariableTypeNotDeclaredInspection";
-//            var inspection = new VariableTypeNotDeclaredInspection();
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
 
-//            Assert.AreEqual(inspectionName, inspection.Name);
-//        }
-//    }
+        [TestMethod]
+        public void InspectionType()
+        {
+            var inspection = new VariableTypeNotDeclaredInspection(null);
+            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
+        }
+
+        [TestMethod]
+        public void InspectionName()
+        {
+            const string inspectionName = "VariableTypeNotDeclaredInspection";
+            var inspection = new VariableTypeNotDeclaredInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+    }
 }

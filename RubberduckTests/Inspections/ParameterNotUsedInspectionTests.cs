@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -6,191 +7,216 @@ using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-//    [TestClass]
-//    public class ParameterNotUsedInspectionTests
-//    {
-//        [TestMethod]
-//        public void ParameterNotUsed_ReturnsResult()
-//        {
-//            const string inputCode = 
-//@"Private Sub Foo(ByVal arg1 as Integer)
-//End Sub";
+    [TestClass]
+    public class ParameterNotUsedInspectionTests
+    {
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(0, 1);
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+        void State_StateChanged(object sender, ParserStateEventArgs e)
+        {
+            if (e.State == ParserState.Ready)
+            {
+                _semaphore.Release();
+            }
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void ParameterNotUsed_ReturnsResult()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 as Integer)
+End Sub";
 
-//            var inspection = new ParameterNotUsedInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void ParameterNotUsed_ReturnsResult_MultipleSubs()
-//        {
-//            const string inputCode =
-//@"Private Sub Foo(ByVal arg1 as Integer)
-//End Sub
-//
-//Private Sub Goo(ByVal arg1 as Integer)
-//End Sub";
+            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void ParameterNotUsed_ReturnsResult_MultipleSubs()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 as Integer)
+End Sub
 
-//            var inspection = new ParameterNotUsedInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+Private Sub Goo(ByVal arg1 as Integer)
+End Sub";
 
-//            Assert.AreEqual(2, inspectionResults.Count());
-//        }
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//        [TestMethod]
-//        public void ParameterUsed_DoesNotReturnResult()
-//        {
-//            const string inputCode =
-//@"Private Sub Foo(ByVal arg1 as Integer)
-//    arg1 = 9
-//End Sub";
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+            Assert.AreEqual(2, inspectionResults.Count());
+        }
 
-//            var inspection = new ParameterNotUsedInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+        [TestMethod]
+        public void ParameterUsed_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 as Integer)
+    arg1 = 9
+End Sub";
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//        [TestMethod]
-//        public void ParameterNotUsed_ReturnsResult_SomeParamsUsed()
-//        {
-//            const string inputCode =
-//@"Private Sub Foo(ByVal arg1 as Integer, ByVal arg2 as String)
-//    arg1 = 9
-//End Sub";
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-//            var inspection = new ParameterNotUsedInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+        [TestMethod]
+        public void ParameterNotUsed_ReturnsResult_SomeParamsUsed()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 as Integer, ByVal arg2 as String)
+    arg1 = 9
+End Sub";
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//        [TestMethod]
-//        public void ParameterNotUsed_ReturnsResult_InterfaceImplementation()
-//        {
-//            //Input
-//            const string inputCode1 =
-//@"Public Sub DoSomething(ByVal a As Integer)
-//End Sub";
-//            const string inputCode2 =
-//@"Implements IClass1
-//
-//Private Sub IClass1_DoSomething(ByVal a As Integer)
-//End Sub";
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
-//                .Build().Object;
+            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var inspection = new ParameterNotUsedInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+        [TestMethod]
+        public void ParameterNotUsed_ReturnsResult_InterfaceImplementation()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Sub DoSomething(ByVal a As Integer)
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+Private Sub IClass1_DoSomething(ByVal a As Integer)
+End Sub";
 
-//        [TestMethod]
-//        public void ParameterNotUsed_QuickFixWorks()
-//        {
-//            const string inputCode =
-//@"Private Sub Foo(ByVal arg1 as Integer)
-//End Sub";
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
 
-//            const string expectedCode =
-//@"Private Sub Foo()
-//End Sub";
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
-//            var module = project.VBComponents.Item(0).CodeModule;
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            var inspection = new ParameterNotUsedInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            inspectionResults.First().QuickFixes.First().Fix();
+        [TestMethod]
+        public void ParameterNotUsed_QuickFixWorks()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 as Integer)
+End Sub";
 
-//            Assert.AreEqual(expectedCode, module.Lines());
-//        }
+            const string expectedCode =
+@"Private Sub Foo()
+End Sub";
 
-//        [TestMethod]
-//        public void InspectionType()
-//        {
-//            var inspection = new ParameterNotUsedInspection();
-//            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
-//        }
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//        [TestMethod]
-//        public void InspectionName()
-//        {
-//            const string inspectionName = "ParameterNotUsedInspection";
-//            var inspection = new ParameterNotUsedInspection();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//            Assert.AreEqual(inspectionName, inspection.Name);
-//        }
-//    }
+            var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void InspectionType()
+        {
+            var inspection = new ParameterNotUsedInspection(null, null, null);
+            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
+        }
+
+        [TestMethod]
+        public void InspectionName()
+        {
+            const string inspectionName = "ParameterNotUsedInspection";
+            var inspection = new ParameterNotUsedInspection(null, null, null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+    }
 }

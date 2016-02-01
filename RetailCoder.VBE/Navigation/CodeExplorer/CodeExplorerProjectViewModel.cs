@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 
 namespace Rubberduck.Navigation.CodeExplorer
@@ -12,6 +13,7 @@ namespace Rubberduck.Navigation.CodeExplorer
     public class CodeExplorerProjectViewModel : CodeExplorerItemViewModel
     {
         private readonly Declaration _declaration;
+
         private static readonly DeclarationType[] ComponentTypes =
         {
             DeclarationType.Class, 
@@ -75,5 +77,6 @@ namespace Rubberduck.Navigation.CodeExplorer
         public override BitmapImage ExpandedIcon { get { return _icon; } }
 
         public override string Name { get { return _declaration.CustomFolder; } }
+        public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
     }
 }

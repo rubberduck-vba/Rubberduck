@@ -14,9 +14,10 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private readonly RubberduckParserState _state;
 
-        public CodeExplorerViewModel(RubberduckParserState state)
+        public CodeExplorerViewModel(RubberduckParserState state, INavigateCommand navigateCommand)
         {
             _state = state;
+            _navigateCommand = navigateCommand;
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
@@ -25,6 +26,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly ICommand _refreshCommand;
         public ICommand RefreshCommand { get { return _refreshCommand; } }
+
+        private readonly INavigateCommand _navigateCommand;
+        public ICommand NavigateCommand { get { return _navigateCommand; } }
 
         private object _selectedItem;
         public object SelectedItem
@@ -75,7 +79,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
         {
             IsBusy = e.State == ParserState.Parsing;
-            if (e.State != ParserState.Resolving) // ParserState.Parsed state is too volatile
+            if (e.State != ParserState.Parsed) 
             {
                 return;
             }

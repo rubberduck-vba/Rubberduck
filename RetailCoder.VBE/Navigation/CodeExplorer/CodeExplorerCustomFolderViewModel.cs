@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 using resx = Rubberduck.Properties.Resources;
 
 namespace Rubberduck.Navigation.CodeExplorer
@@ -40,6 +41,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         public override string Name { get { return _name; } }
+
+        public override QualifiedSelection? QualifiedSelection { get { return null; } }
 
         private readonly BitmapImage _collapsedIcon;
         public override BitmapImage CollapsedIcon { get { return _collapsedIcon; } }

@@ -15,7 +15,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
         private readonly RubberduckParserState _parseResult;
         public RubberduckParserState ParseResult { get { return _parseResult; } }
 
-        private readonly IList<Declaration> _declarations;
+        private readonly IEnumerable<Declaration> _declarations;
         public IEnumerable<Declaration> Declarations { get { return _declarations; } }
 
         public Declaration TargetDeclaration { get; private set; }
@@ -26,7 +26,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
         public ReorderParametersModel(RubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {
             _parseResult = parseResult;
-            _declarations = parseResult.AllDeclarations.ToList();
+            _declarations = parseResult.AllUserDeclarations;
             _messageBox = messageBox;
 
             AcquireTarget(selection);
@@ -53,7 +53,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var args = argList.arg();
 
             var index = 0;
-            Parameters = args.Select(arg => new Parameter(arg.GetText().RemoveExtraSpaces(), index++)).ToList();
+            Parameters = args.Select(arg => new Parameter(arg.GetText().RemoveExtraSpacesLeavingIndentation(), index++)).ToList();
 
             if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
                 TargetDeclaration.DeclarationType == DeclarationType.PropertySet)

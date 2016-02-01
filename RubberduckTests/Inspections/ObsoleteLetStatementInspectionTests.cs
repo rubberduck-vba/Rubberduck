@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -6,181 +7,201 @@ using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-//    [TestClass]
-//    public class ObsoleteLetStatementInspectionTests
-//    {
-//        [TestMethod]
-//        public void ObsoleteLetStatement_ReturnsResult()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo()
-//    Dim var1 As Integer
-//    Dim var2 As Integer
-//    
-//    Let var2 = var1
-//End Sub";
+    [TestClass]
+    public class ObsoleteLetStatementInspectionTests
+    {
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(0, 1);
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+        void State_StateChanged(object sender, ParserStateEventArgs e)
+        {
+            if (e.State == ParserState.Ready)
+            {
+                _semaphore.Release();
+            }
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void ObsoleteLetStatement_ReturnsResult()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Dim var1 As Integer
+    Dim var2 As Integer
+    
+    Let var2 = var1
+End Sub";
 
-//            var inspection = new ObsoleteLetStatementInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void ObsoleteLetStatement_ReturnsResult_MultipleLets()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo()
-//    Dim var1 As Integer
-//    Dim var2 As Integer
-//    
-//    Let var2 = var1
-//    Let var1 = var2
-//End Sub";
+            var inspection = new ObsoleteLetStatementInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void ObsoleteLetStatement_ReturnsResult_MultipleLets()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Dim var1 As Integer
+    Dim var2 As Integer
+    
+    Let var2 = var1
+    Let var1 = var2
+End Sub";
 
-//            var inspection = new ObsoleteLetStatementInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(2, inspectionResults.Count());
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void ObsoleteLetStatement_DoesNotReturnResult()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo()
-//    Dim var1 As Integer
-//    Dim var2 As Integer
-//    
-//    var2 = var1
-//End Sub";
+            var inspection = new ObsoleteLetStatementInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(2, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void ObsoleteLetStatement_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Dim var1 As Integer
+    Dim var2 As Integer
+    
+    var2 = var1
+End Sub";
 
-//            var inspection = new ObsoleteLetStatementInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void ObsoleteLetStatement_ReturnsResult_SomeConstantsUsed()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo()
-//    Dim var1 As Integer
-//    Dim var2 As Integer
-//    
-//    Let var2 = var1
-//    var1 = var2
-//End Sub";
+            var inspection = new ObsoleteLetStatementInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+        [TestMethod]
+        public void ObsoleteLetStatement_ReturnsResult_SomeConstantsUsed()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Dim var1 As Integer
+    Dim var2 As Integer
+    
+    Let var2 = var1
+    var1 = var2
+End Sub";
 
-//            var inspection = new ObsoleteLetStatementInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//        [TestMethod]
-//        public void ObsoleteLetStatement_QuickFixWorks()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo()
-//    Dim var1 As Integer
-//    Dim var2 As Integer
-//    
-//    Let var2 = var1
-//End Sub";
+            var inspection = new ObsoleteLetStatementInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            const string expectedCode =
-//@"Public Sub Foo()
-//    Dim var1 As Integer
-//    Dim var2 As Integer
-//    
-//    var2 = var1
-//End Sub";
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-//                .Build().Object;
-//            var module = project.VBComponents.Item(0).CodeModule;
+        [TestMethod]
+        public void ObsoleteLetStatement_QuickFixWorks()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Dim var1 As Integer
+    Dim var2 As Integer
+    
+    Let var2 = var1
+End Sub";
 
-//            var codePaneFactory = new CodePaneWrapperFactory();
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parseResult = new RubberduckParser().Parse(project);
+            const string expectedCode =
+@"Public Sub Foo()
+    Dim var1 As Integer
+    Dim var2 As Integer
+    
+    var2 = var1
+End Sub";
 
-//            var inspection = new ObsoleteLetStatementInspection();
-//            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            inspectionResults.First().QuickFixes.First().Fix();
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
 
-//            Assert.AreEqual(expectedCode, module.Lines());
-//        }
+            var inspection = new ObsoleteLetStatementInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//        [TestMethod]
-//        public void InspectionType()
-//        {
-//            var inspection = new ObsoleteLetStatementInspection();
-//            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
-//        }
+            inspectionResults.First().QuickFixes.First().Fix();
 
-//        [TestMethod]
-//        public void InspectionName()
-//        {
-//            const string inspectionName = "ObsoleteLetStatementInspection";
-//            var inspection = new ObsoleteLetStatementInspection();
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
 
-//            Assert.AreEqual(inspectionName, inspection.Name);
-//        }
-//    }
+        [TestMethod]
+        public void InspectionType()
+        {
+            var inspection = new ObsoleteLetStatementInspection(null);
+            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
+        }
+
+        [TestMethod]
+        public void InspectionName()
+        {
+            const string inspectionName = "ObsoleteLetStatementInspection";
+            var inspection = new ObsoleteLetStatementInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+    }
 }

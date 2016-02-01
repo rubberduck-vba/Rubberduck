@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -30,7 +31,19 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void TreeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // todo: execute a NavigateCommand
+            if (ViewModel == null || ViewModel.SelectedItem == null)
+            {
+                return;
+            }
+
+            var selectedResult = ViewModel.SelectedItem as CodeExplorerItemViewModel;
+            if (selectedResult == null || !selectedResult.QualifiedSelection.HasValue)
+            {
+                return;
+            }
+
+            var arg = selectedResult.QualifiedSelection.Value.GetNavitationArgs();
+            ViewModel.NavigateCommand.Execute(arg);
         }
     }
 }

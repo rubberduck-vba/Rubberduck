@@ -39,17 +39,41 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         public void Refactor(QualifiedSelection selection)
         {
-            Refactor(_declarations.FindVariable(selection));
+            var target = _declarations.FindVariable(selection);
+
+            if (target == null)
+            {
+                _messageBox.Show(RubberduckUI.MoveCloserToUsage_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            MoveCloserToUsage(target);
         }
 
         public void Refactor(Declaration target)
         {
             if (target.DeclarationType != DeclarationType.Variable)
             {
+                _messageBox.Show(RubberduckUI.MoveCloserToUsage_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
                 // ReSharper disable once LocalizableElement
                 throw new ArgumentException("Invalid Argument. DeclarationType must be 'Variable'", "target");
             }
 
+            MoveCloserToUsage(target);
+        }
+
+        private bool TargetIsReferencedFromMultipleMethods(Declaration target)
+        {
+            var firstReference = target.References.FirstOrDefault();
+
+            return firstReference != null && target.References.Any(r => r.ParentScope != firstReference.ParentScope);
+        }
+
+        private void MoveCloserToUsage(Declaration target)
+        {
             if (!target.References.Any())
             {
                 var message = string.Format(RubberduckUI.MoveCloserToUsage_TargetHasNoReferences, target.IdentifierName);
@@ -69,18 +93,6 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 return;
             }
 
-            MoveDeclaration(target);
-        }
-
-        private bool TargetIsReferencedFromMultipleMethods(Declaration target)
-        {
-            var firstReference = target.References.FirstOrDefault();
-
-            return firstReference != null && target.References.Any(r => r.ParentScope != firstReference.ParentScope);
-        }
-
-        private void MoveDeclaration(Declaration target)
-        {
             InsertDeclaration(target);
             RemoveVariable(target);
         }
@@ -127,7 +139,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             while (codeLine.Remove(referenceSelection.StartColumn).LastIndexOf(':') == -1)
             {
                 codeLine = module.Lines[--currentLine, 1].StripStringLiterals();
-                if (!codeLine.EndsWith(" _" + Environment.NewLine))
+                if (!codeLine.EndsWith(" _"))
                 {
                     return new Selection(currentLine + 1, 1, currentLine + 1, 1);
                 }
@@ -173,11 +185,17 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                     target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
             }
 
+            var adjustedLines =
+                newLines.Split(new[] {Environment.NewLine}, StringSplitOptions.None)
+                    .Select(s => s.EndsWith(" _") ? s.Remove(s.Length - 2) : s)
+                    .Where(s => s.Trim() != string.Empty)
+                    .ToList();
+            
             _editor.DeleteLines(selection);
 
-            if (newLines.Trim() != string.Empty)
+            if (adjustedLines.Any())
             {
-                _editor.InsertLines(selection.StartLine, newLines);
+                _editor.InsertLines(selection.StartLine, string.Join(string.Empty, adjustedLines));
             }
         }
 

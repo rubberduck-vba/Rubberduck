@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 
 namespace Rubberduck.Navigation.CodeExplorer
@@ -76,6 +77,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly string _name;
         public override string Name { get { return _name; } }
+
+        public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
 
         private static string DetermineMemberName(Declaration declaration)
         {
