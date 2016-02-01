@@ -27,8 +27,6 @@ namespace RubberduckTests.Inspections
         [TestMethod]
         public void ObsoleteCommentSyntax_ReturnsResult()
         {
-            Assert.Fail("reinstate after parser is fixed");
-
             const string inputCode = @"Rem test";
 
             //Arrange
@@ -77,8 +75,6 @@ namespace RubberduckTests.Inspections
         [TestMethod]
         public void ObsoleteCommentSyntax_ReturnsMultipleResults()
         {
-            Assert.Fail("reinstate after parser is fixed");
-
             const string inputCode =
 @"Rem test1
 Rem test2";
@@ -105,8 +101,6 @@ Rem test2";
         [TestMethod]
         public void ObsoleteCommentSyntax_ReturnsResults_SomeObsoleteCommentSyntax()
         {
-            Assert.Fail("reinstate after parser is fixed");
-
             const string inputCode =
 @"Rem test1
 ' test2";
@@ -133,8 +127,6 @@ Rem test2";
         [TestMethod]
         public void ObsoleteCommentSyntax_QuickFixWorks_UpdateComment()
         {
-            Assert.Fail("reinstate after parser is fixed");
-
             const string inputCode =
 @"Rem test1";
 
@@ -167,8 +159,6 @@ Rem test2";
         [TestMethod]
         public void ObsoleteCommentSyntax_QuickFixWorks_RemoveComment()
         {
-            Assert.Fail("reinstate after parser is fixed");
-
             const string inputCode =
 @"Rem test1";
 
