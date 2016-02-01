@@ -11,7 +11,7 @@ namespace RubberduckTests
     [TestClass]
     public class SourceControlConfig
     {
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void Save()
         {
             var repo = new Repository
@@ -32,7 +32,7 @@ namespace RubberduckTests
             service.SaveConfiguration(config);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void Load()
         {
             var service = new SourceControlConfigurationService();

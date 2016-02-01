@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ConstantNotUsed_ReturnsResult()
         {
             const string inputCode =
@@ -51,7 +51,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ConstantNotUsed_ReturnsResult_MultipleConsts()
         {
             const string inputCode =
@@ -79,7 +79,7 @@ End Sub";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ConstantNotUsed_DoesNotReturnResult()
         {
             const string inputCode =
@@ -110,7 +110,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ConstantNotUsed_ReturnsResult_SomeConstantsUsed()
         {
             const string inputCode =
@@ -143,7 +143,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ConstantNotUsed_QuickFixWorks()
         {
             const string inputCode =
@@ -178,14 +178,14 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionType()
         {
             var inspection = new ConstantNotUsedInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionName()
         {
             const string inspectionName = "ConstantNotUsedInspection";

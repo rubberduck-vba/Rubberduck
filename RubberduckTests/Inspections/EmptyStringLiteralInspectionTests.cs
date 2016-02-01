@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void AssignedByValParameter_ReturnsResult_PassToProcedure()
         {
             const string inputCode =
@@ -54,7 +54,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void AssignedByValParameter_ReturnsResult_Assignment()
         {
             const string inputCode =
@@ -81,7 +81,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void AssignedByValParameter_DoesNotReturnResult()
         {
             const string inputCode =
@@ -108,7 +108,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void AssignedByValParameter_QuickFixWorks()
         {
             const string inputCode =
@@ -144,14 +144,14 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionType()
         {
             var inspection = new EmptyStringLiteralInspection(null);
             Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionName()
         {
             const string inspectionName = "EmptyStringLiteralInspection";

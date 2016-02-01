@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void NonReturningFunction_ReturnsResult()
         {
             const string inputCode =
@@ -50,7 +50,7 @@ End Function";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void NonReturningFunction_ReturnsResult_MultipleFunctions()
         {
             const string inputCode =
@@ -79,7 +79,7 @@ End Function";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void NonReturningFunction_DoesNotReturnResult()
         {
             const string inputCode =
@@ -106,7 +106,7 @@ End Function";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void NonReturningFunction_ReturnsResult_MultipleSubs_SomeReturning()
         {
             const string inputCode =
@@ -136,7 +136,7 @@ End Function";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void NonReturningFunction_ReturnsResult_InterfaceImplementation()
         {
             //Input
@@ -172,7 +172,7 @@ End Function";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void NonReturningFunction_QuickFixWorks()
         {
             const string inputCode =
@@ -206,7 +206,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void NonReturningFunction_ReturnsResult_InterfaceImplementation_NoQuickFix()
         {
             //Input
@@ -242,14 +242,14 @@ End Function";
             Assert.AreEqual(0, inspectionResults.First().QuickFixes.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionType()
         {
             var inspection = new NonReturningFunctionInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionName()
         {
             const string inspectionName = "NonReturningFunctionInspection";

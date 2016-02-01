@@ -23,7 +23,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void DefaultProjectName_ReturnsResult()
         {
             const string inputCode = @"";
@@ -50,7 +50,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void DefaultProjectName_DoesNotReturnResult()
         {
             const string inputCode = @"";
@@ -77,14 +77,14 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionType()
         {
             var inspection = new DefaultProjectNameInspection(null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionName()
         {
             const string inspectionName = "DefaultProjectNameInspection";

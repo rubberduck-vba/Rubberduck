@@ -23,7 +23,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void UseMeaningfulName_ReturnsResult_NameWithoutVowels()
         {
             const string inputCode = 
@@ -52,7 +52,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void UseMeaningfulName_ReturnsResult_NameUnderThreeLetters()
         {
             const string inputCode =
@@ -81,7 +81,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void UseMeaningfulName_ReturnsResult_NameEndsWithDigit()
         {
             const string inputCode =
@@ -110,7 +110,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void UseMeaningfulName_DoesNotReturnsResult()
         {
             const string inputCode =
@@ -139,14 +139,14 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionType()
         {
             var inspection = new UseMeaningfulNameInspection(null, null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionName()
         {
             const string inspectionName = "UseMeaningfulNameInspection";

@@ -31,7 +31,7 @@ namespace RubberduckTests.Refactoring
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_NoParamsInList_Sub()
         {
             //Input
@@ -73,7 +73,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_NoParamsInList_Function()
         {
             //Input
@@ -117,7 +117,7 @@ End Function";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_OneParamInList()
         {
             //Input
@@ -159,7 +159,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_MultipleParamsOnMultipleLines()
         {
             //Input
@@ -203,7 +203,7 @@ End Sub";   // note: the VBE removes extra spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_MultipleVariablesInStatement_MoveFirst()
         {
             //Input
@@ -251,7 +251,7 @@ End Sub";   // note: the VBE removes extra spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_MultipleVariablesInStatement_MoveSecond()
         {
             //Input
@@ -299,7 +299,7 @@ End Sub";   // note: the VBE removes extra spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_MultipleVariablesInStatement_MoveLast()
         {
             //Input
@@ -347,7 +347,7 @@ End Sub";   // note: the VBE removes extra spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_MultipleVariablesInStatement_OnOneLine_MoveFirst()
         {
             //Input
@@ -391,7 +391,7 @@ End Sub";   // note: the VBE removes extra spaces
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_DisplaysInvalidSelectionAndDoesNothingForField()
         {
             //Input
@@ -435,7 +435,7 @@ End Sub";
             Assert.AreEqual(inputCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_DisplaysInvalidSelectionAndDoesNothingForInvalidSelection()
         {
             //Input
@@ -479,7 +479,7 @@ End Sub";
             Assert.AreEqual(inputCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_Properties_GetAndLet()
         {
             //Input
@@ -529,7 +529,7 @@ End Property";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_Properties_GetAndSet()
         {
             //Input
@@ -579,7 +579,7 @@ End Property";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_ImplementsInterface()
         {
             //Input
@@ -645,7 +645,7 @@ End Sub";
             Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_ImplementsInterface_MultipleInterfaceImplementations()
         {
             //Input
@@ -726,7 +726,7 @@ End Sub";
             Assert.AreEqual(expectedCode3, module3.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_ImplementsInterface_Reject()
         {
             //Input
@@ -780,7 +780,7 @@ End Sub";
             Assert.AreEqual(inputCode2, module2.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_PassInTarget()
         {
             //Input
@@ -822,7 +822,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void IntroduceParameterRefactoring_PassInTarget_Nonvariable()
         {
             //Input

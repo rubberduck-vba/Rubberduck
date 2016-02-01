@@ -23,7 +23,7 @@ namespace RubberduckTests.SourceControl
             _providerMock.SetupGet(git => git.CurrentBranch).Returns(branch);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ProviderCommitIsCalledOnCommit()
         {
             //arrange
@@ -39,7 +39,7 @@ namespace RubberduckTests.SourceControl
             _providerMock.Verify(git => git.Commit(It.IsAny<string>()));
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ProviderStagesBeforeCommit()
         {
             //arrange
@@ -56,7 +56,7 @@ namespace RubberduckTests.SourceControl
             _providerMock.Verify(git => git.Commit(It.IsAny<string>()));
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ProviderCommitsAndPushes()
         {
             //arrange
@@ -74,7 +74,7 @@ namespace RubberduckTests.SourceControl
             _providerMock.Verify(git => git.Push());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ProviderCommitsAndSyncs()
         {
             //arrange
@@ -93,7 +93,7 @@ namespace RubberduckTests.SourceControl
             _providerMock.Verify(git => git.Push());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RefreshDisplaysChangedFiles()
         {
             //arrange
@@ -118,7 +118,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(@"C:\path\to\untracked.frx", _viewMock.Object.UntrackedFiles[0].FilePath);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void  CommitEnabledAfterActionSelectedAndMessageEntered()
         {
             //arrange
@@ -136,7 +136,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(_viewMock.Object.CommitEnabled);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ClearCommitMessageAfterSuccessfulCommit()
         {
 
@@ -154,7 +154,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(string.Empty, _viewMock.Object.CommitMessage);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void RefreshChangesAfterCommit()
         {
             //arrange
@@ -173,7 +173,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_viewMock.Object.IncludedChanges.Any());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ExcludedIsClearedAfterRefresh()
         {
             //arrange
@@ -190,7 +190,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(_viewMock.Object.ExcludedChanges.Any());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ChangesPresenter_WhenCommitFails_ActionFailedEventIsRaised()
         {
             //arrange

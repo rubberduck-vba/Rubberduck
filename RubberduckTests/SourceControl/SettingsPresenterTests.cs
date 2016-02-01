@@ -47,7 +47,7 @@ namespace RubberduckTests.SourceControl
             _folderBrowserFactory.Setup(f => f.CreateFolderBrowser(It.IsAny<string>(), false)).Returns(_folderBrowser.Object);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ViewIsPopulatedOnRefresh()
         {
             //arrange
@@ -62,7 +62,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(RepoLocation, _view.Object.DefaultRepositoryLocation, "Default Repo Location");
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ConfigIsPopulatedFromViewOnSave()
         {
             //arrange
@@ -82,7 +82,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(OtherRepoLocation, _config.DefaultRepositoryLocation, "Default Repo Location");
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ConfigIsSavedOnSave()
         {
             //arrange
@@ -96,7 +96,7 @@ namespace RubberduckTests.SourceControl
             _configService.Verify(s => s.SaveConfiguration(_config));
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ChangesToViewAreRevertedOnCancel()
         {
             //arrange
@@ -117,7 +117,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(RepoLocation, _view.Object.DefaultRepositoryLocation, "Default Repo Location");     
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void OnBrowseDefaultRepoLocation_WhenUserConfirms_ViewMatchesSelectedPath()
         {
             //arrange
@@ -134,7 +134,7 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(_folderBrowser.Object.SelectedPath, _view.Object.DefaultRepositoryLocation);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void OnBrowserDefaultRepoLocation_WhenUserCancels_ViewRemainsUnchanged()
         {
             //arrange

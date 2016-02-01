@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ParameterCanByByVal_ReturnsResult_PassedByNotSpecified()
         {
             const string inputCode =
@@ -50,7 +50,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ParameterCanByByVal_ReturnsResult_PassedByRef_Unassigned()
         {
             const string inputCode =
@@ -76,7 +76,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ParameterCanByByVal_ReturnsResult_Multiple()
         {
             const string inputCode =
@@ -102,7 +102,7 @@ End Sub";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ParameterCanByByVal_DoesNotReturnResult_PassedByValExplicitly()
         {
             const string inputCode =
@@ -128,7 +128,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ParameterCanByByVal_DoesNotReturnResult_PassedByRefAndAssigned()
         {
             const string inputCode =
@@ -155,7 +155,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ParameterCanByByVal_ReturnsResult_SomeParams()
         {
             const string inputCode =
@@ -181,7 +181,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ParameterCanByByVal_ReturnsResult_QuickFixWorks_PassedByUnspecified()
         {
             const string inputCode =
@@ -213,7 +213,7 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ParameterCanByByVal_ReturnsResult_QuickFixWorks_PassedByRefUnassigned()
         {
             const string inputCode =
@@ -245,14 +245,14 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionType()
         {
             var inspection = new ParameterCanBeByValInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionName()
         {
             const string inspectionName = "ParameterCanBeByValInspection";

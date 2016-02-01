@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void VariableNotAssigned_ReturnsResult()
         {
             const string inputCode =
@@ -51,7 +51,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void UnassignedVariable_ReturnsResult_MultipleVariables()
         {
             const string inputCode =
@@ -79,7 +79,7 @@ End Sub";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void UnassignedVariable_DoesNotReturnResult()
         {
             const string inputCode =
@@ -107,7 +107,7 @@ End Function";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void UnassignedVariable_ReturnsResult_MultipleVariables_SomeAssigned()
         {
             const string inputCode =
@@ -137,7 +137,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void UnassignedVariable_QuickFixWorks()
         {
             const string inputCode =
@@ -170,14 +170,14 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionType()
         {
             var inspection = new VariableNotAssignedInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionName()
         {
             const string inspectionName = "VariableNotAssignedInspection";

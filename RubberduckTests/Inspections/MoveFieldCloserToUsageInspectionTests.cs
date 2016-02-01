@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveFieldCloserToUsage_ReturnsResult()
         {
             const string inputCode =
@@ -52,7 +52,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveFieldCloserToUsage_DoesNotReturnsResult_MultipleReferenceInDifferentScope()
         {
             const string inputCode =
@@ -83,7 +83,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveFieldCloserToUsage_DoesNotReturnResult_Variable()
         {
             const string inputCode =
@@ -111,7 +111,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveFieldCloserToUsage_DoesNotReturnsResult_NoReferences()
         {
             const string inputCode =
@@ -138,7 +138,7 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveFieldCloserToUsage_DoesNotReturnsResult_ReferenceInPropertyGet()
         {
             const string inputCode =
@@ -166,7 +166,7 @@ End Property";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveFieldCloserToUsage_DoesNotReturnsResult_ReferenceInPropertyLet()
         {
             const string inputCode =
@@ -197,7 +197,7 @@ End Property";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveFieldCloserToUsage_DoesNotReturnsResult_ReferenceInPropertySet()
         {
             const string inputCode =
@@ -228,7 +228,7 @@ End Property";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void MoveFieldCloserToUsage_QuickFixWorks()
         {
             const string inputCode =
@@ -267,14 +267,14 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionType()
         {
             var inspection = new MoveFieldCloserToUsageInspection(null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void InspectionName()
         {
             const string inspectionName = "MoveFieldCloserToUsageInspection";
