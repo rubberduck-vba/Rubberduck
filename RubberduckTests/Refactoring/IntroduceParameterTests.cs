@@ -650,7 +650,7 @@ End Sub";
         {
             //Input
             const string inputCode1 =
-            @"Sub fizz(ByVal boo As Boolean)
+@"Sub fizz(ByVal boo As Boolean)
 End Sub";
 
             const string inputCode2 =

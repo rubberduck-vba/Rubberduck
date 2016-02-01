@@ -24,10 +24,11 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [Ignore]    // todo: reinstate after parser is fixed
         [TestMethod]
         public void ObsoleteCommentSyntax_ReturnsResult()
         {
+            Assert.Fail("reinstate after parser is fixed");
+
             const string inputCode = @"Rem test";
 
             //Arrange
@@ -73,10 +74,11 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [Ignore]    // todo: reinstate after parser is fixed
         [TestMethod]
         public void ObsoleteCommentSyntax_ReturnsMultipleResults()
         {
+            Assert.Fail("reinstate after parser is fixed");
+
             const string inputCode =
 @"Rem test1
 Rem test2";
@@ -100,10 +102,11 @@ Rem test2";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [Ignore]    // todo: reinstate after parser is fixed
         [TestMethod]
         public void ObsoleteCommentSyntax_ReturnsResults_SomeObsoleteCommentSyntax()
         {
+            Assert.Fail("reinstate after parser is fixed");
+
             const string inputCode =
 @"Rem test1
 ' test2";
@@ -127,10 +130,11 @@ Rem test2";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [Ignore]    // todo: reinstate after parser is fixed
         [TestMethod]
         public void ObsoleteCommentSyntax_QuickFixWorks_UpdateComment()
         {
+            Assert.Fail("reinstate after parser is fixed");
+
             const string inputCode =
 @"Rem test1";
 
@@ -160,10 +164,11 @@ Rem test2";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [Ignore]    // todo: reinstate after parser is fixed
         [TestMethod]
         public void ObsoleteCommentSyntax_QuickFixWorks_RemoveComment()
         {
+            Assert.Fail("reinstate after parser is fixed");
+
             const string inputCode =
 @"Rem test1";
 
