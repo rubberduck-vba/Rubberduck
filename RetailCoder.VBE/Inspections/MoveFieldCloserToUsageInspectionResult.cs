@@ -9,11 +9,11 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    public class MoveFieldCloseToUsageInspectionResult : CodeInspectionResultBase
+    public class MoveFieldCloserToUsageInspectionResult : CodeInspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public MoveFieldCloseToUsageInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
+        public MoveFieldCloserToUsageInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
             : base(inspection, string.Format(inspection.Description, target.IdentifierName), target)
         {
             _quickFixes = new[]

@@ -7,11 +7,11 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    public sealed class MoveFieldCloseToUsageInspection : InspectionBase
+    public sealed class MoveFieldCloserToUsageInspection : InspectionBase
     {
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public MoveFieldCloseToUsageInspection(RubberduckParserState state)
+        public MoveFieldCloserToUsageInspection(RubberduckParserState state)
             : base(state)
         {
             _wrapperFactory = new CodePaneWrapperFactory();
@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections
                            }.Contains(parentDeclaration.DeclarationType);
                 })
                 .Select(issue =>
-                        new MoveFieldCloseToUsageInspectionResult(this, issue, State, _wrapperFactory, new MessageBox()));
+                        new MoveFieldCloserToUsageInspectionResult(this, issue, State, _wrapperFactory, new MessageBox()));
         }
 
         private Declaration ParentDeclaration(IdentifierReference reference)
