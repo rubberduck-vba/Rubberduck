@@ -858,13 +858,14 @@ End Sub";
             try
             {
                 refactoring.Refactor(parser.State.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
-                messageBox.Verify(m =>
-                        m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                            It.IsAny<MessageBoxIcon>()), Times.Once);
             }
             catch (ArgumentException e)
             {
-                Assert.AreEqual("Invalid declaration type", e.Message);
+                messageBox.Verify(m =>
+                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                    It.IsAny<MessageBoxIcon>()), Times.Once);
+
+                Assert.AreEqual("Invalid declaration type\r\nParameter name: target", e.Message);
                 Assert.AreEqual(inputCode, module.Lines());
                 return;
             }
