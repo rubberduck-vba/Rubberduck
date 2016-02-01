@@ -797,10 +797,11 @@ End Property";
             Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from letter
         }
 
-        [Ignore]    //todo reinstate test after parser is fixed
         [TestMethod]
         public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndSetter()
         {
+            Assert.Fail("reinstate after parser is fixed");
+
             //Input
             const string inputCode =
 @"Private Property Get Foo(ByVal arg1 As Integer) 
@@ -850,10 +851,11 @@ End Property"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-        [Ignore]    //todo reinstate test after parser is fixed
         [TestMethod]
         public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndLetter()
         {
+            Assert.Fail("reinstate after parser is fixed");
+
             //Input
             const string inputCode =
 @"Private Property Get Foo(ByVal arg1 As Integer) 
