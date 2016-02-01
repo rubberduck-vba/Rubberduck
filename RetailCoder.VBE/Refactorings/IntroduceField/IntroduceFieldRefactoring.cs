@@ -57,7 +57,11 @@ namespace Rubberduck.Refactorings.IntroduceField
         {
             if (target.DeclarationType != DeclarationType.Variable)
             {
-                throw new ArgumentException("Invalid declaration type");
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                // ReSharper disable once LocalizableElement
+                throw new ArgumentException("Invalid declaration type", "target");
             }
 
             PromoteVariable(target);

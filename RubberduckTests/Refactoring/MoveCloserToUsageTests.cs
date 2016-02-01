@@ -796,18 +796,62 @@ End Sub";
             try
             {
                 refactoring.Refactor(parser.State.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
-                messageBox.Verify(m =>
-                        m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                            It.IsAny<MessageBoxIcon>()), Times.Once);
             }
             catch (ArgumentException e)
             {
                 Assert.AreEqual("Invalid Argument. DeclarationType must be 'Variable'\r\nParameter name: target", e.Message);
                 Assert.AreEqual(inputCode, module.Lines());
+                messageBox.Verify(m =>
+                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                        It.IsAny<MessageBoxIcon>()), Times.Once);
                 return;
             }
 
             Assert.Fail();
+        }
+
+        [TestMethod]
+        public void IntroduceFieldRefactoring_InvalidSelection()
+        {
+            //Input
+            const string inputCode =
+@"Private bar As Boolean
+Private Sub Foo()
+    bar = True
+End Sub";
+            var selection = new Selection(2, 15, 2, 15); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.State.StateChanged += State_StateChanged;
+            parser.State.OnParseRequested();
+            _semaphore.Wait();
+            parser.State.StateChanged -= State_StateChanged;
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                      .Returns(DialogResult.OK);
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //Act
+            var refactoring = new MoveCloserToUsageRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            messageBox.Verify(m =>
+                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                    It.IsAny<MessageBoxIcon>()), Times.Once);
+
+            Assert.AreEqual(inputCode, module.Lines());
         }
     }
 }

@@ -72,7 +72,9 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             {
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                throw new ArgumentException("Invalid declaration type");
+
+                // ReSharper disable once LocalizableElement
+                throw new ArgumentException("Invalid declaration type", "target");
             }
 
             PromoteVariable(target);
