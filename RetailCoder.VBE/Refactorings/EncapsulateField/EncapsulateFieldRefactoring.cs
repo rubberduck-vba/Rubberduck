@@ -7,7 +7,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    class EncapsulateFieldRefactoring : IRefactoring
+    public class EncapsulateFieldRefactoring : IRefactoring
     {
         private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
         private readonly IActiveCodePaneEditor _editor;

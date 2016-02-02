@@ -10,13 +10,13 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.IntroduceField
 {
-    public class IntroduceField : IRefactoring
+    public class IntroduceFieldRefactoring : IRefactoring
     {
         private readonly IList<Declaration> _declarations;
         private readonly IActiveCodePaneEditor _editor;
         private readonly IMessageBox _messageBox;
 
-        public IntroduceField(RubberduckParserState parserState, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public IntroduceFieldRefactoring(RubberduckParserState parserState, IActiveCodePaneEditor editor, IMessageBox messageBox)
         {
             _declarations =
                 parserState.AllDeclarations.Where(i => !i.IsBuiltIn && i.DeclarationType == DeclarationType.Variable)
