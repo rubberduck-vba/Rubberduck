@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading;
+using System.Linq;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -14,16 +13,6 @@ namespace RubberduckTests.Inspections
     [TestClass]
     public class ObsoleteCallStatementInspectionTests
     {
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(0, 1);
-
-        void State_StateChanged(object sender, ParserStateEventArgs e)
-        {
-            if (e.State == ParserState.Ready)
-            {
-                _semaphore.Release();
-            }
-        }
-
         [TestMethod]
         public void ObsoleteCallStatement_ReturnsResult()
         {
@@ -40,10 +29,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var inspection = new ObsoleteCallStatementInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -67,10 +53,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var inspection = new ObsoleteCallStatementInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -98,10 +81,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var inspection = new ObsoleteCallStatementInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -129,10 +109,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var inspection = new ObsoleteCallStatementInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -171,10 +148,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var inspection = new ObsoleteCallStatementInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
