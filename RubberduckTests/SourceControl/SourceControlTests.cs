@@ -1,4 +1,4 @@
-﻿//These tests work fine one at a time, but MSUnit runs async, so they all try to hit the
+//These tests work fine one at a time, but MSUnit runs async, so they all try to hit the
 //file system at the same time. Leaving them here because I'm sure I'll need them in the future.
 
 using System;

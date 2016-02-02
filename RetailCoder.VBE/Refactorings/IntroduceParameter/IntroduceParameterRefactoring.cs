@@ -14,7 +14,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.IntroduceParameter
 {
-    public class IntroduceParameter : IRefactoring
+    public class IntroduceParameterRefactoring : IRefactoring
     {
         private readonly RubberduckParserState _parseResult;
         private readonly IList<Declaration> _declarations;
@@ -30,7 +30,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             DeclarationType.PropertySet
         };
 
-        public IntroduceParameter(RubberduckParserState parseResult, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public IntroduceParameterRefactoring(RubberduckParserState parseResult, IActiveCodePaneEditor editor, IMessageBox messageBox)
         {
             _parseResult = parseResult;
             _declarations = parseResult.AllDeclarations.ToList();

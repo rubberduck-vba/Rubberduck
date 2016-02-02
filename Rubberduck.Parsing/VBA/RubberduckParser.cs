@@ -41,6 +41,27 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
            new ConcurrentDictionary<VBComponent, CancellationTokenSource>();
 
+        public void Parse()
+        {
+            var semaphore = new SemaphoreSlim(0, 1);
+
+            _state.StateChanged += (sender, e) =>
+            {
+                if (e.State == ParserState.Ready)
+                {
+                    semaphore.Release();
+                }
+                if (e.State == ParserState.Error)
+                {
+                    throw new ArgumentException("Parse failure");
+                }
+            };
+
+            _state.OnParseRequested();
+
+            semaphore.Wait();
+        }
+
         public void ParseComponent(VBComponent component, bool resolve = true, TokenStreamRewriter rewriter = null)
         {
             var tokenSource = RenewTokenSource(component);

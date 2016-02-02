@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
@@ -411,10 +411,7 @@ namespace RubberduckTests.SourceControl
 
             //assert
             _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Once);
-        }
-
-
-        [TestMethod]
+        }        [TestMethod]
         public void InitRepository_WhenUserConfirms_StatusIsOnline()
         {
             //arrange

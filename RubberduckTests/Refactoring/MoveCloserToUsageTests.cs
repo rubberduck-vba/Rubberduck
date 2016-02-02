@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,16 +19,6 @@ namespace RubberduckTests.Refactoring
     [TestClass]
     public class MoveCloserToUsageTests
     {
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(0, 1);
-
-        void State_StateChanged(object sender, ParserStateEventArgs e)
-        {
-            if (e.State == ParserState.Ready)
-            {
-                _semaphore.Release();
-            }
-        }
-
         [TestMethod]
         public void MoveCloserToUsageRefactoring_Field()
         {
@@ -60,10 +49,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -107,10 +93,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -158,10 +141,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -208,10 +188,7 @@ End Sub";   // note: VBE will remove extra spaces
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -258,10 +235,7 @@ End Sub";   // note: VBE will remove extra spaces
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -308,10 +282,7 @@ End Sub";   // note: VBE will remove extra spaces
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -360,10 +331,7 @@ End Sub";   // note: VBE will remove extra spaces
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -412,10 +380,7 @@ End Sub";   // note: VBE will remove extra spaces
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -464,10 +429,7 @@ End Sub";   // note: VBE will remove extra spaces
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -500,10 +462,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -547,10 +506,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -598,10 +554,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -646,10 +599,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -698,10 +648,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -744,10 +691,7 @@ Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -780,10 +724,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
@@ -832,10 +773,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))

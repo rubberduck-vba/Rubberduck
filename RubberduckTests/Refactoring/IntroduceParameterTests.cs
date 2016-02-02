@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -21,16 +20,6 @@ namespace RubberduckTests.Refactoring
     [TestClass]
     public class IntroduceParameterTests
     {
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(0, 1);
-
-        void State_StateChanged(object sender, ParserStateEventArgs e)
-        {
-            if (e.State == ParserState.Ready)
-            {
-                _semaphore.Release();
-            }
-        }
-
         [TestMethod]
         public void IntroduceParameterRefactoring_NoParamsInList_Sub()
         {
@@ -58,15 +47,12 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -102,15 +88,12 @@ End Function";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -144,15 +127,12 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -188,15 +168,12 @@ End Sub";   // note: the VBE removes extra spaces
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -236,15 +213,12 @@ End Sub";   // note: the VBE removes extra spaces
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -284,15 +258,12 @@ End Sub";   // note: the VBE removes extra spaces
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -332,15 +303,12 @@ End Sub";   // note: the VBE removes extra spaces
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -376,15 +344,12 @@ End Sub";   // note: the VBE removes extra spaces
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -413,10 +378,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -426,7 +388,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -457,10 +419,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -470,7 +429,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -514,15 +473,12 @@ End Property";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -564,15 +520,12 @@ End Property";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -622,10 +575,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -637,7 +587,7 @@ End Sub";
                       .Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -701,10 +651,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -717,7 +664,7 @@ End Sub";
                       .Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -757,10 +704,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -772,7 +716,7 @@ End Sub";
                       .Returns(DialogResult.No);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -807,15 +751,12 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(parser.State.AllUserDeclarations.FindVariable(qualifiedSelection));
 
             //Assert
@@ -842,17 +783,14 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.State.StateChanged += State_StateChanged;
-            parser.State.OnParseRequested();
-            _semaphore.Wait();
-            parser.State.StateChanged -= State_StateChanged;
+            parser.Parse();
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                       .Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new IntroduceParameter(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            var refactoring = new IntroduceParameterRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
 
             //Assert
             try
