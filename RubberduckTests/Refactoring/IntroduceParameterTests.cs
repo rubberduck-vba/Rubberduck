@@ -28,7 +28,7 @@ namespace RubberduckTests.Refactoring
 @"Private Sub Foo()
     Dim bar As Boolean
 End Sub";
-            var selection = new Selection(2, 10, 2, 13); //startLine, startCol, endLine, endCol
+            var selection = new Selection(2, 10, 2, 13);
 
             //Expectation
             const string expectedCode =
@@ -68,7 +68,7 @@ End Sub";
     Dim bar As Boolean
     Foo = True
 End Function";
-            var selection = new Selection(2, 10, 2, 13); //startLine, startCol, endLine, endCol
+            var selection = new Selection(2, 10, 2, 13);
 
             //Expectation
             const string expectedCode =
@@ -108,7 +108,7 @@ End Function";
 @"Private Sub Foo(ByVal buz As Integer)
     Dim bar As Boolean
 End Sub";
-            var selection = new Selection(2, 10, 2, 13); //startLine, startCol, endLine, endCol
+            var selection = new Selection(2, 10, 2, 13);
 
             //Expectation
             const string expectedCode =
@@ -148,7 +148,7 @@ End Sub";
                   ByRef baz As Date)
     Dim bar As Boolean
 End Sub";
-            var selection = new Selection(3, 8, 3, 20); //startLine, startCol, endLine, endCol
+            var selection = new Selection(3, 8, 3, 20);
 
             //Expectation
             const string expectedCode =
@@ -191,7 +191,7 @@ End Sub";   // note: the VBE removes extra spaces
         bat As Date, _
         bap As Integer
 End Sub";
-            var selection = new Selection(3, 10, 3, 13); //startLine, startCol, endLine, endCol
+            var selection = new Selection(3, 10, 3, 13);
 
             //Expectation
             const string expectedCode =
@@ -236,7 +236,7 @@ End Sub";   // note: the VBE removes extra spaces
         bat As Date, _
         bap As Integer
 End Sub";
-            var selection = new Selection(4, 10, 4, 13); //startLine, startCol, endLine, endCol
+            var selection = new Selection(4, 10, 4, 13);
 
             //Expectation
             const string expectedCode =
@@ -281,7 +281,7 @@ End Sub";   // note: the VBE removes extra spaces
         bat As Date, _
         bap As Integer
 End Sub";
-            var selection = new Selection(5, 10, 5, 13); //startLine, startCol, endLine, endCol
+            var selection = new Selection(5, 10, 5, 13);
 
             //Expectation
             const string expectedCode =
@@ -324,7 +324,7 @@ End Sub";   // note: the VBE removes extra spaces
                   ByRef baz As Date)
     Dim bar As Boolean, bat As Date, bap As Integer
 End Sub";
-            var selection = new Selection(3, 10, 3, 13); //startLine, startCol, endLine, endCol
+            var selection = new Selection(3, 10, 3, 13);
 
             //Expectation
             const string expectedCode =
@@ -365,7 +365,7 @@ End Sub";   // note: the VBE removes extra spaces
 
 Private Sub Foo()
 End Sub";
-            var selection = new Selection(1, 14, 1, 14); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 14, 1, 14);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -406,7 +406,7 @@ End Sub";
 
 Private Sub Foo()
 End Sub";
-            var selection = new Selection(3, 16, 3, 16); //startLine, startCol, endLine, endCol
+            var selection = new Selection(3, 16, 3, 16);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -450,7 +450,7 @@ End Property
 
 Property Let Foo(ByVal fizz As Boolean, ByVal buzz As Boolean)
 End Property";
-            var selection = new Selection(2, 10, 2, 13); //startLine, startCol, endLine, endCol
+            var selection = new Selection(2, 10, 2, 13);
 
             //Expectation
             const string expectedCode =
@@ -497,7 +497,7 @@ End Property
 
 Property Set Foo(ByVal fizz As Boolean, ByVal buzz As Variant)
 End Property";
-            var selection = new Selection(2, 10, 2, 13); //startLine, startCol, endLine, endCol
+            var selection = new Selection(2, 10, 2, 13);
 
             //Expectation
             const string expectedCode =
@@ -546,7 +546,7 @@ End Sub";
 Sub IClass1_fizz(ByVal boo As Boolean)
     Dim fizz As Date
 End Sub";
-            var selection = new Selection(4, 10, 4, 14); //startLine, startCol, endLine, endCol
+            var selection = new Selection(4, 10, 4, 14);
 
             //Expectation
             const string expectedCode1 =
@@ -615,7 +615,7 @@ End Sub";
 
 Sub IClass1_fizz(ByVal boo As Boolean)
 End Sub";
-            var selection = new Selection(4, 10, 4, 14); //startLine, startCol, endLine, endCol
+            var selection = new Selection(4, 10, 4, 14);
 
             //Expectation
             const string expectedCode1 =
@@ -687,7 +687,7 @@ End Sub";
 Sub IClass1_fizz(ByVal boo As Boolean)
     Dim fizz As Date
 End Sub";
-            var selection = new Selection(4, 10, 4, 14); //startLine, startCol, endLine, endCol
+            var selection = new Selection(4, 10, 4, 14);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -732,7 +732,7 @@ End Sub";
 @"Private Sub Foo()
     Dim bar As Boolean
 End Sub";
-            var selection = new Selection(2, 10, 2, 13); //startLine, startCol, endLine, endCol
+            var selection = new Selection(2, 10, 2, 13);
 
             //Expectation
             const string expectedCode =

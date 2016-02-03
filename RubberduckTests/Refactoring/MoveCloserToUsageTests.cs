@@ -28,7 +28,7 @@ namespace RubberduckTests.Refactoring
 Private Sub Foo()
     bar = True
 End Sub";
-            var selection = new Selection(1, 1, 1, 1); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 1, 1, 1);
 
             //Expectation
             const string expectedCode =
@@ -71,7 +71,7 @@ End Sub";
     Dim bat As Integer
     bar = True
 End Sub";
-            var selection = new Selection(4, 6, 4, 8); //startLine, startCol, endLine, endCol
+            var selection = new Selection(4, 6, 4, 8);
 
             //Expectation
             const string expectedCode =
@@ -117,7 +117,7 @@ Private bay As Date
 Private Sub Foo()
     bat = True
 End Sub";
-            var selection = new Selection(2, 1, 2, 1); //startLine, startCol, endLine, endCol
+            var selection = new Selection(2, 1, 2, 1);
 
             //Expectation
             const string expectedCode =
@@ -165,7 +165,7 @@ End Sub";
 Private Sub Foo()
     bar = 3
 End Sub";
-            var selection = new Selection(6, 6, 6, 6); //startLine, startCol, endLine, endCol
+            var selection = new Selection(6, 6, 6, 6);
 
             //Expectation
             const string expectedCode =
@@ -212,7 +212,7 @@ End Sub";   // note: VBE will remove extra spaces
 Private Sub Foo()
     bat = True
 End Sub";
-            var selection = new Selection(6, 6, 6, 6); //startLine, startCol, endLine, endCol
+            var selection = new Selection(6, 6, 6, 6);
 
             //Expectation
             const string expectedCode =
@@ -259,7 +259,7 @@ End Sub";   // note: VBE will remove extra spaces
 Private Sub Foo()
     bay = #1/13/2004#
 End Sub";
-            var selection = new Selection(6, 6, 6, 6); //startLine, startCol, endLine, endCol
+            var selection = new Selection(6, 6, 6, 6);
 
             //Expectation
             const string expectedCode =
@@ -307,7 +307,7 @@ End Sub";   // note: VBE will remove extra spaces
     bat = True
     bar = 3
 End Sub";
-            var selection = new Selection(2, 16, 2, 16); //startLine, startCol, endLine, endCol
+            var selection = new Selection(2, 16, 2, 16);
 
             //Expectation
             const string expectedCode =
@@ -356,7 +356,7 @@ End Sub";   // note: VBE will remove extra spaces
     bar = 1
     bat = True
 End Sub";
-            var selection = new Selection(3, 16, 3, 16); //startLine, startCol, endLine, endCol
+            var selection = new Selection(3, 16, 3, 16);
 
             //Expectation
             const string expectedCode =
@@ -405,7 +405,7 @@ End Sub";   // note: VBE will remove extra spaces
     bar = 4
     bay = #1/13/2004#
 End Sub";
-            var selection = new Selection(4, 16, 4, 16); //startLine, startCol, endLine, endCol
+            var selection = new Selection(4, 16, 4, 16);
 
             //Expectation
             const string expectedCode =
@@ -449,7 +449,7 @@ End Sub";   // note: VBE will remove extra spaces
 @"Private bar As Boolean
 Private Sub Foo()
 End Sub";
-            var selection = new Selection(1, 1, 1, 1); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 1, 1, 1);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -493,7 +493,7 @@ End Sub
 Private Sub Bar()
     bar = True
 End Sub";
-            var selection = new Selection(1, 1, 1, 1); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 1, 1, 1);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -541,7 +541,7 @@ End Sub";
     Dim bar As Boolean
     bat = bar
 End Sub";
-            var selection = new Selection(1, 1, 1, 1); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 1, 1, 1);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -586,7 +586,7 @@ End Sub";
 End Sub
 Sub Baz(ByVal bat As Boolean)
 End Sub";
-            var selection = new Selection(1, 1, 1, 1); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 1, 1, 1);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -635,7 +635,7 @@ End Sub";
 End Sub
 Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean)
 End Sub";
-            var selection = new Selection(1, 1, 1, 1); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 1, 1, 1);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -669,7 +669,7 @@ End Sub";
 Private Sub Foo(): Baz True, True, bar: End Sub
 Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean): End Sub";
 
-            var selection = new Selection(1, 1, 1, 1); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 1, 1, 1);
 
             // Yeah, this code is a mess.  That is why we got the SmartIndenter
             const string expectedCode =
@@ -760,7 +760,7 @@ End Sub";
 Private Sub Foo()
     bar = True
 End Sub";
-            var selection = new Selection(2, 15, 2, 15); //startLine, startCol, endLine, endCol
+            var selection = new Selection(2, 15, 2, 15);
 
             //Arrange
             var builder = new MockVbeBuilder();

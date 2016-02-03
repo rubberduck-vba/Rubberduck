@@ -28,7 +28,7 @@ namespace RubberduckTests.Refactoring
             const string inputCode =
 @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -71,7 +71,7 @@ End Sub";
             const string inputCode =
 @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -114,7 +114,7 @@ End Sub";
             const string inputCode =
 @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -161,7 +161,7 @@ End Sub";
             const string inputCode =
 @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String, Optional ByVal arg3 As Boolean = True)
 End Sub";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -216,7 +216,7 @@ Private Sub Bar()
     Foo 10, ""Hello""
 End Sub
 ";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -269,7 +269,7 @@ Public Sub Goo()
     Foo arg2:=""test44"", arg3:=6.1, arg1:=3
 End Sub
 ";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -326,7 +326,7 @@ End Sub
 @"Public Function Foo(ByVal arg1 As Integer, ByVal arg2 As String) As Boolean
     Foo = True
 End Function";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -376,7 +376,7 @@ Public Sub Goo()
     Foo arg2:=""test44"", arg1:=3
 End Sub
 ";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -432,7 +432,7 @@ End Sub
             const string inputCode =
 @"Private Property Get Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date) As Boolean
 End Property";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -483,7 +483,7 @@ End Property";
             const string inputCode =
 @"Private Property Let Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date) 
 End Property";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -527,7 +527,7 @@ End Property";
             const string inputCode =
 @"Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date) 
 End Property";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -571,7 +571,7 @@ End Property";
             const string inputCode =
 @"Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String) 
 End Property";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -598,7 +598,7 @@ End Property";
             const string inputCode =
 @"Private Property Let Foo(ByVal arg1 As Integer, ByVal arg2 As String) 
 End Property";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -627,7 +627,7 @@ End Property";
                   ByVal arg2 As String, _
                   ByVal arg3 As Date)
 End Sub";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -680,7 +680,7 @@ Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 
 End Sub
 ";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -742,7 +742,7 @@ Public Sub Goo(ByVal arg1 As Integer, _
     Foo ""test"", test1x, test2x, test3x, test4x, test5x, test6x
 End Sub
 ";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -796,7 +796,7 @@ Public Sub Goo(ByVal arg As Date, _
     Foo ""test"", arg, test1x, test2x, test3x, test4x, test5x, test6x
 End Sub
 ";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -881,7 +881,7 @@ Public Sub Goo(ByVal arg As Date, _
         test6x
 End Sub
 ";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -947,7 +947,7 @@ End Sub
             const string inputCode =
 @"Private Sub Foo(ByVal arg1 As Integer, Optional ByVal arg2 As String, Optional ByVal arg3 As Boolean = True)
 End Sub";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -1000,7 +1000,7 @@ Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String)
     Foo arg1, arg2
 End Sub
 ";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -1058,7 +1058,7 @@ End Property
 
 Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date)
 End Property";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -1108,7 +1108,7 @@ End Property
 
 Private Property Let Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date)
 End Property";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
@@ -1195,7 +1195,7 @@ End Sub";
 Private Sub IClass1_DoSomething(ByVal a As Integer, ByVal b As String)
 End Sub";
 
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode1 =
@@ -1256,7 +1256,7 @@ End Sub";
 Private Sub IClass1_DoSomething(ByVal v1 As Integer, ByVal v2 As String)
 End Sub";
 
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode1 =
@@ -1322,7 +1322,7 @@ End Sub";
 Private Sub IClass1_DoSomething(ByVal i As Integer, ByVal s As String)
 End Sub";
 
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode1 =
@@ -1391,7 +1391,7 @@ End Sub";
 @"Public Sub DoSomething(ByVal a As Integer, ByVal b As String)
 End Sub";
 
-            var selection = new Selection(3, 23, 3, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(3, 23, 3, 27);
 
             //Expectation
             const string expectedCode1 =
@@ -1458,7 +1458,7 @@ End Sub";
 @"Public Sub DoSomething(ByVal a As Integer, ByVal b As String)
 End Sub";
 
-            var selection = new Selection(3, 23, 3, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(3, 23, 3, 27);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -1499,7 +1499,7 @@ End Sub";
 Private Sub abc_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
 
-            var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 15, 1, 15);
 
             //Expectation
             const string expectedCode1 =
@@ -1560,7 +1560,7 @@ End Sub";   // note: IDE removes excess spaces
 Private Sub abc_Foo(ByVal i As Integer, ByVal s As String)
 End Sub";
 
-            var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 15, 1, 15);
 
             //Expectation
             const string expectedCode1 =
@@ -1626,7 +1626,7 @@ End Sub";
 Private Sub abc_Foo(ByVal v1 As Integer, ByVal v2 As String)
 End Sub";
 
-            var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 15, 1, 15);
 
             //Expectation
             const string expectedCode1 =
@@ -1690,7 +1690,7 @@ End Sub";   // note: IDE removes excess spaces
             const string inputCode =
 @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
-            var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 15, 1, 15);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -1728,7 +1728,7 @@ End Sub";
             const string inputCode =
 @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
-            var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 15, 1, 15);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -1768,7 +1768,7 @@ End Sub";
             const string inputCode =
 @"Private Sub Foo()
 End Sub";
-            var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 15, 1, 15);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -1806,7 +1806,7 @@ End Sub";
             const string inputCode =
 @"Private Sub Foo(ByVal arg1 As Integer)
 End Sub";
-            var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 15, 1, 15);
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -1845,7 +1845,7 @@ End Sub";
 @"
 Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
-            var selection = new Selection(1, 1, 1, 1); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 1, 1, 1);
 
             //Arrange
             var builder = new MockVbeBuilder();
