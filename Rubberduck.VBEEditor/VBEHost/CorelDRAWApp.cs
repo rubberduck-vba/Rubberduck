@@ -11,7 +11,16 @@ namespace Rubberduck.VBEditor.VBEHost
 		
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {
-            Application.GMSManager.RunMacro(qualifiedMemberName.QualifiedModuleName.ProjectName.ToString(), qualifiedMemberName.ToString(), null);
+            var projectName = qualifiedMemberName.QualifiedModuleName.ProjectName;
+            var memberName = qualifiedMemberName.QualifiedModuleName.ComponentName + "." + qualifiedMemberName.MemberName;
+
+            RunHelper(projectName, memberName);
+        }
+
+        private void RunHelper(string ProjectName, string MemberName, params object[] p)
+        {
+            //Application.GMSManager.RunMacro(ProjectName, MemberName, p);
+            //object GMS = Application.GMSManager;
         }
     }
 }
