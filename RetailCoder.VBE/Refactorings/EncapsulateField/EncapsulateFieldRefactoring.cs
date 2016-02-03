@@ -123,6 +123,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
             }
 
+            newLines = newLines.Replace(" _" + Environment.NewLine, string.Empty);
+
             _editor.DeleteLines(selection);
 
             if (newLines.Trim() != string.Empty)
@@ -173,24 +175,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 string.Format(Environment.NewLine + "Public Property Get {0}() As {1}", _model.PropertyName,
                     _model.TargetDeclaration.AsTypeName),
                 string.Format("    {0} = {1}", _model.PropertyName, _model.TargetDeclaration.IdentifierName),
-                "End Property");
+                "End Property" + Environment.NewLine);
 
             var letterText = string.Join(Environment.NewLine,
                 string.Format(Environment.NewLine + "Public Property Let {0}(ByVal {1} As {2})",
                     _model.PropertyName, _model.ParameterName, _model.TargetDeclaration.AsTypeName),
                 string.Format("    {0} = {1}", _model.TargetDeclaration.IdentifierName, _model.ParameterName),
-                "End Property");
+                "End Property" + Environment.NewLine);
 
             var setterText = string.Join(Environment.NewLine,
                 string.Format(Environment.NewLine + "Public Property Set {0}(ByVal {1} As {2})",
                     _model.PropertyName, _model.ParameterName, _model.TargetDeclaration.AsTypeName),
                 string.Format("    {0} = {1}", _model.TargetDeclaration.IdentifierName, _model.ParameterName),
-                "End Property");
+                "End Property" + Environment.NewLine);
 
-            return string.Join(Environment.NewLine,
+            return string.Join(string.Empty,
                         getterText,
                         (_model.ImplementLetSetterType ? letterText : string.Empty),
-                        (_model.ImplementSetSetterType ? setterText : string.Empty)).TrimEnd();
+                        (_model.ImplementSetSetterType ? setterText : string.Empty)).TrimEnd() + Environment.NewLine;
         }
     }
 }

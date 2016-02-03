@@ -15,7 +15,6 @@ using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBA;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -43,23 +42,28 @@ namespace Rubberduck.Parsing.VBA
 
         public void Parse()
         {
-            var semaphore = new SemaphoreSlim(0, 1);
-
-            _state.StateChanged += (sender, e) =>
+            try
             {
-                if (e.State == ParserState.Ready)
-                {
-                    semaphore.Release();
-                }
-                if (e.State == ParserState.Error)
-                {
-                    throw new ArgumentException("Parse failure");
-                }
-            };
+                var components = _vbe.VBProjects.Cast<VBProject>()
+                    .SelectMany(project => project.VBComponents.Cast<VBComponent>())
+                    .ToList();
 
-            _state.OnParseRequested();
+                SetComponentsState(components, ParserState.Pending);
 
-            semaphore.Wait();
+                foreach (var component in components)
+                {
+                    ParseComponent(component, false);
+                }
+
+                using (var tokenSource = new CancellationTokenSource())
+                {
+                    Resolve(tokenSource.Token);
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.Print(exception.ToString());
+            }
         }
 
         public void ParseComponent(VBComponent component, bool resolve = true, TokenStreamRewriter rewriter = null)
