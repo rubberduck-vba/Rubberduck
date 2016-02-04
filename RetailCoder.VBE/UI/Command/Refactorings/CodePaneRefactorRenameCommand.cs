@@ -24,6 +24,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
         public override void Execute(object parameter)
         {
+            if (Vbe.ActiveCodePane == null) { return; }
+
             using (var view = new RenameDialog())
             {
                 var factory = new RenamePresenterFactory(Vbe, view, _state, new MessageBox(), _wrapperWrapperFactory);

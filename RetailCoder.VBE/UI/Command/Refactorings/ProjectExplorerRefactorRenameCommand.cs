@@ -48,21 +48,16 @@ namespace Rubberduck.UI.Command.Refactorings
                             d.DeclarationType == DeclarationType.Project && d.IdentifierName == Vbe.ActiveVBProject.Name);
             }
             
-            if (Vbe.ActiveCodePane == null || Vbe.ActiveCodePane.CodeModule != Vbe.SelectedVBComponent.CodeModule)
-            {
-                return _state.AllUserDeclarations.SingleOrDefault(
-                        t => t.IdentifierName == Vbe.SelectedVBComponent.Name &&
-                             t.Project == Vbe.ActiveVBProject &&
-                             new[]
-                                 {
-                                     DeclarationType.Class,
-                                     DeclarationType.Document,
-                                     DeclarationType.Module,
-                                     DeclarationType.UserForm
-                                 }.Contains(t.DeclarationType));
-            }
-
-            return null;
+            return _state.AllUserDeclarations.SingleOrDefault(
+                    t => t.IdentifierName == Vbe.SelectedVBComponent.Name &&
+                            t.Project == Vbe.ActiveVBProject &&
+                            new[]
+                                {
+                                    DeclarationType.Class,
+                                    DeclarationType.Document,
+                                    DeclarationType.Module,
+                                    DeclarationType.UserForm
+                                }.Contains(t.DeclarationType));
         }
     }
 }
