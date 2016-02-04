@@ -8,6 +8,7 @@ using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
+using Ninject.Parameters;
 using Rubberduck.Navigation;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
@@ -182,7 +183,7 @@ namespace Rubberduck.Root
         {
             var items = new IMenuItem[]
             {
-                _kernel.Get<RefactorRenameCommandMenuItem>(),
+                _kernel.Get<CodePaneRefactorRenameCommandMenuItem>(),
                 _kernel.Get<RefactorExtractMethodCommandMenuItem>(),
                 _kernel.Get<RefactorReorderParametersCommandMenuItem>(),
                 _kernel.Get<RefactorRemoveParametersCommandMenuItem>(),
@@ -238,7 +239,7 @@ namespace Rubberduck.Root
         {
             return new IMenuItem[]
             {
-                _kernel.Get<RefactorRenameCommandMenuItem>(),
+                _kernel.Get<FormDesignerRefactorRenameCommandMenuItem>(),
             };
         }
 
@@ -246,7 +247,7 @@ namespace Rubberduck.Root
         {
             return new IMenuItem[]
             {
-                _kernel.Get<RefactorRenameCommandMenuItem>(),
+                _kernel.Get<ProjectExplorerRefactorRenameCommandMenuItem>(),
                 _kernel.Get<FindSymbolCommandMenuItem>(),
                 _kernel.Get<FindAllReferencesCommandMenuItem>(),
                 _kernel.Get<FindAllImplementationsCommandMenuItem>(),
