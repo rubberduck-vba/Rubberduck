@@ -22,23 +22,57 @@ namespace Rubberduck.UI.Refactorings
         }
 
         public Declaration TargetDeclaration { get; set; }
+
+        public bool CanImplementLetSetterType
+        {
+            get { return LetSetterTypeCheckBox.Enabled; }
+            set
+            {
+                if (!value)
+                {
+                    LetSetterTypeCheckBox.Checked = false;
+                }
+                LetSetterTypeCheckBox.Enabled = value;
+            }
+        }
+
+        public bool CanImplementSetSetterType
+        {
+            get { return SetSetterTypeCheckBox.Enabled; }
+            set
+            {
+                if (!value)
+                {
+                    SetSetterTypeCheckBox.Checked = false;
+                }
+                SetSetterTypeCheckBox.Enabled = value;
+            }
+        }
         
-        public bool ImplementLetSetterType
+        public bool MustImplementLetSetterType
         {
             get { return LetSetterTypeCheckBox.Checked; }
-            set { LetSetterTypeCheckBox.Checked = value; }
+            set
+            {
+                if (value)
+                {
+                    LetSetterTypeCheckBox.Checked = true;
+                }
+                LetSetterTypeCheckBox.Enabled = !value;
+            }
         }
 
-        public bool ImplementSetSetterType
+        public bool MustImplementSetSetterType
         {
             get { return SetSetterTypeCheckBox.Checked; }
-            set { SetSetterTypeCheckBox.Checked = value; }
-        }
-
-        public bool IsSetterTypeChangeable
-        {
-            get { return SetterTypeGroupBox.Enabled; }
-            set { SetterTypeGroupBox.Enabled = value; }
+            set
+            {
+                if (value)
+                {
+                    SetSetterTypeCheckBox.Checked = true;
+                }
+                SetSetterTypeCheckBox.Enabled = !value;
+            }
         }
 
         public EncapsulateFieldDialog()
@@ -113,8 +147,8 @@ namespace Rubberduck.UI.Refactorings
                 "End Property");
 
             PreviewBox.Text = getterText +
-                              (ImplementLetSetterType ? letterText : string.Empty) +
-                              (ImplementSetSetterType ? setterText : string.Empty);
+                              (MustImplementLetSetterType ? letterText : string.Empty) +
+                              (MustImplementSetSetterType ? setterText : string.Empty);
         }
 
         private void ValidatePropertyName()

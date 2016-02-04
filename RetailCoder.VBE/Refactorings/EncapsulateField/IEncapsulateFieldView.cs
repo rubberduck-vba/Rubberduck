@@ -8,10 +8,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
         Declaration TargetDeclaration { get; set; }
 
         string NewPropertyName { get; set; }
-        bool IsSetterTypeChangeable { get; set; }
+        bool CanImplementLetSetterType { get; set; }
+        bool CanImplementSetSetterType { get; set; }
 
-        bool ImplementLetSetterType { get; set; }
-        bool ImplementSetSetterType { get; set; }
+        bool MustImplementLetSetterType { get; set; }
+        bool MustImplementSetSetterType { get; set; }
 
         string ParameterName { get; set; }
     }
