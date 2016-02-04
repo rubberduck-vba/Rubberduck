@@ -32,6 +32,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultilineParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -55,6 +56,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultilineParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -86,6 +88,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultilineParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -112,6 +115,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultilineParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -146,6 +150,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new MultilineParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
