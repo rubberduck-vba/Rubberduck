@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows.Forms;
+using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -43,19 +44,48 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _view.NewPropertyName = _model.TargetDeclaration.IdentifierName;
             _view.TargetDeclaration = _model.TargetDeclaration;
 
-            if (PrimitiveTypes.Contains(_model.TargetDeclaration.AsTypeName))
+            if (_model.TargetDeclaration.References.Any(r => r.IsAssignment))
             {
-                _view.ImplementLetSetterType = true;
-                _view.IsSetterTypeChangeable = false;
-            }
-            else if (_model.TargetDeclaration.AsTypeName != Tokens.Variant)
-            {
-                _view.ImplementSetSetterType = true;
-                _view.IsSetterTypeChangeable = false;
+                if (PrimitiveTypes.Contains(_model.TargetDeclaration.AsTypeName))
+                {
+                    _view.MustImplementLetSetterType = true;
+                    _view.CanImplementSetSetterType = false;
+                }
+                else if (_model.TargetDeclaration.AsTypeName != Tokens.Variant)
+                {
+                    _view.MustImplementSetSetterType = true;
+                    _view.CanImplementLetSetterType = false;
+                }
+                else
+                {
+                    RuleContext node = _model.TargetDeclaration.References.First(r => r.IsAssignment).Context;
+                    while (!(node is VBAParser.LetStmtContext) && !(node is VBAParser.SetStmtContext))
+                    {
+                        node = node.Parent;
+                    }
+
+                    if (node is VBAParser.LetStmtContext)
+                    {
+                        _view.MustImplementLetSetterType = true;
+                        _view.CanImplementSetSetterType = false;
+                    }
+                    else
+                    {
+                        _view.MustImplementSetSetterType = true;
+                        _view.CanImplementLetSetterType = false;
+                    }
+                }
             }
             else
             {
-                _view.ImplementLetSetterType = true;
+                if (PrimitiveTypes.Contains(_model.TargetDeclaration.AsTypeName))
+                {
+                    _view.CanImplementSetSetterType = false;
+                }
+                else if (_model.TargetDeclaration.AsTypeName != Tokens.Variant)
+                {
+                    _view.CanImplementLetSetterType = false;
+                }
             }
 
             if (_view.ShowDialog() != DialogResult.OK)
@@ -64,8 +94,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
 
             _model.PropertyName = _view.NewPropertyName;
-            _model.ImplementLetSetterType = _view.ImplementLetSetterType;
-            _model.ImplementSetSetterType = _view.ImplementSetSetterType;
+            _model.ImplementLetSetterType = _view.MustImplementLetSetterType;
+            _model.ImplementSetSetterType = _view.MustImplementSetSetterType;
 
             _model.ParameterName = _view.ParameterName;
             return _model;
