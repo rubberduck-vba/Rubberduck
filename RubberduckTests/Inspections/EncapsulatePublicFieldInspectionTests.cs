@@ -11,18 +11,13 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class EmptyStringLiteralInspectionTests
+    public class EncapsulatePublicFieldInspectionTests
     {
         [TestMethod]
-        public void EmptyStringLiteral_ReturnsResult_PassToProcedure()
+        public void PublicField_ReturnsResult()
         {
             const string inputCode =
-@"Public Sub Bar()
-    Foo """"
-End Sub
-
-Public Sub Foo(ByRef arg1 As String)
-End Sub";
+@"Public fizz As Boolean";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -34,19 +29,19 @@ End Sub";
 
             parser.Parse();
 
-            var inspection = new EmptyStringLiteralInspection(parser.State);
+            var inspection = new EncapsulatePublicFieldInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void EmptyStringLiteral_ReturnsResult_Assignment()
+        public void MultiplePublicFields_ReturnMultipleResult()
         {
             const string inputCode =
-@"Public Sub Foo(ByRef arg1 As String)
-    arg1 = """"
-End Sub";
+@"Public fizz As Boolean
+Public buzz As Integer, _
+       bazz As Integer";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -58,19 +53,17 @@ End Sub";
 
             parser.Parse();
 
-            var inspection = new EmptyStringLiteralInspection(parser.State);
+            var inspection = new EncapsulatePublicFieldInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+            Assert.AreEqual(3, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void NotEmptyStringLiteral_DoesNotReturnResult()
+        public void PrivateField_DoesNotReturnResult()
         {
             const string inputCode =
-@"Public Sub Foo(ByRef arg1 As String)
-    arg1 = ""test""
-End Sub";
+@"Private fizz As Boolean";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -82,57 +75,47 @@ End Sub";
 
             parser.Parse();
 
-            var inspection = new EmptyStringLiteralInspection(parser.State);
+            var inspection = new EncapsulatePublicFieldInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void EmptyStringLiteral_QuickFixWorks()
+        public void PublicNonField_DoesNotReturnResult()
         {
             const string inputCode =
 @"Public Sub Foo(ByRef arg1 As String)
-    arg1 = """"
-End Sub";
-
-            const string expectedCode =
-@"Public Sub Foo(ByRef arg1 As String)
-    arg1 = vbNullString
 End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
 
-            var inspection = new EmptyStringLiteralInspection(parser.State);
+            var inspection = new EncapsulatePublicFieldInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
-
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [TestMethod]
         public void InspectionType()
         {
-            var inspection = new EmptyStringLiteralInspection(null);
-            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
+            var inspection = new EncapsulatePublicFieldInspection(null);
+            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
         [TestMethod]
         public void InspectionName()
         {
-            const string inspectionName = "EmptyStringLiteralInspection";
-            var inspection = new EmptyStringLiteralInspection(null);
+            const string inspectionName = "EncapsulatePublicFieldInspection";
+            var inspection = new EncapsulatePublicFieldInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
