@@ -27,6 +27,7 @@ namespace RubberduckTests
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
             parser.ParseComponent(project.Object.VBComponents.Cast<VBComponent>().First());
@@ -70,6 +71,7 @@ namespace RubberduckTests
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Assert
             Assert.IsTrue(parser.State.AllDeclarations.Any(item => item.IsBuiltIn && item.ParentScope.StartsWith("Excel")));
