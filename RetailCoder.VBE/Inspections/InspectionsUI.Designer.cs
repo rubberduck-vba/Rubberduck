@@ -196,6 +196,28 @@ namespace Rubberduck.Inspections {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Return value of function &apos;{0}&apos; is never used..
+        /// </summary>
+        internal static string FunctionReturnValueNotUsedInspection
+        {
+            get
+            {
+                return ResourceManager.GetString("FunctionReturnValueNotUsedInspection", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Function return value is never used..
+        /// </summary>
+        internal static string FunctionReturnValueNotUsedInspectionName
+        {
+            get
+            {
+                return ResourceManager.GetString("FunctionReturnValueNotUsedInspectionName", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Ignore Once
         /// </summary>
         internal static string IgnoreOnce

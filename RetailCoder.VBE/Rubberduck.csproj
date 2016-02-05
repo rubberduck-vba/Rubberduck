@@ -299,6 +299,9 @@
       <DependentUpon>GroupingGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
+    <Compile Include="Inspections\ConvertToProcedureQuickFix.cs" />
+    <Compile Include="Inspections\FunctionReturnValueNotUsedInspection.cs" />
+    <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspection.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspectionResult.cs" />
     <Compile Include="Inspections\InspectionsUI.Designer.cs">
@@ -846,6 +849,7 @@
     <EmbeddedResource Include="Inspections\InspectionsUI.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionsUI1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>

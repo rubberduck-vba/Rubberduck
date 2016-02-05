@@ -73,6 +73,7 @@
     <Compile Include="ComponentTypeExtensionTests.cs" />
     <Compile Include="ConfigurationTests.cs" />
     <Compile Include="Inspections\EncapsulatePublicFieldInspectionTests.cs" />
+    <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspectionTests.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionTests.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspectionTests.cs" />
