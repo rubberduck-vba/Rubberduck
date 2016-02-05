@@ -61,7 +61,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Use of obsolete type hint in {0} &apos;{1}&apos; ähnelt.
+        ///   Looks up a localized string similar to Use of obsolete type hint in {0} &apos;{1}&apos;.
         /// </summary>
         public static string _ObsoleteTypeHint_ {
             get {
@@ -70,7 +70,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die {0} &apos;{1}&apos; is implicitly Variant ähnelt.
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos; is implicitly Variant.
         /// </summary>
         public static string _TypeNotDeclared_ {
             get {
@@ -79,7 +79,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die All contributors to our GitHub repository ähnelt.
+        ///   Looks up a localized string similar to All contributors to our GitHub repository.
         /// </summary>
         public static string About_AllContributors {
             get {
@@ -88,7 +88,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die ...and anyone reading this! ähnelt.
+        ///   Looks up a localized string similar to ...and anyone reading this!.
         /// </summary>
         public static string About_Anyone {
             get {
@@ -97,7 +97,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Attributions ähnelt.
+        ///   Looks up a localized string similar to Attributions.
         /// </summary>
         public static string About_Attributions {
             get {
@@ -106,7 +106,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Blogs: ähnelt.
+        ///   Looks up a localized string similar to Blogs:.
         /// </summary>
         public static string About_Blogs {
             get {
@@ -115,7 +115,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die About Rubberduck ähnelt.
+        ///   Looks up a localized string similar to About Rubberduck.
         /// </summary>
         public static string About_Caption {
             get {
@@ -124,7 +124,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Code Review Stack Exchange ähnelt.
+        ///   Looks up a localized string similar to Code Review Stack Exchange.
         /// </summary>
         public static string About_CodeReview {
             get {
@@ -133,7 +133,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Community: ähnelt.
+        ///   Looks up a localized string similar to Community:.
         /// </summary>
         public static string About_Community {
             get {
@@ -142,7 +142,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Contributors &amp; supporters: ähnelt.
+        ///   Looks up a localized string similar to Contributors &amp; supporters:.
         /// </summary>
         public static string About_Contributors {
             get {
@@ -151,7 +151,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die © Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan ähnelt.
+        ///   Looks up a localized string similar to © Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan.
         /// </summary>
         public static string About_Copyright {
             get {
@@ -160,7 +160,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Fugue icons by Yusuke Kamiyamane ähnelt.
+        ///   Looks up a localized string similar to Fugue icons by Yusuke Kamiyamane.
         /// </summary>
         public static string About_FugueIconCredit {
             get {
@@ -169,7 +169,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die JetBrains ReSharper Community Team ähnelt.
+        ///   Looks up a localized string similar to JetBrains ReSharper Community Team.
         /// </summary>
         public static string About_JetBrains {
             get {
@@ -178,7 +178,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die GitHub integration powered by LibGit2Sharp ähnelt.
+        ///   Looks up a localized string similar to GitHub integration powered by LibGit2Sharp.
         /// </summary>
         public static string About_LibGit2SharpCredit {
             get {
@@ -187,7 +187,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Parsing powered by ANTLR ähnelt.
+        ///   Looks up a localized string similar to Parsing powered by ANTLR.
         /// </summary>
         public static string About_ParsingCredit {
             get {
@@ -196,7 +196,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Special Thanks ähnelt.
+        ///   Looks up a localized string similar to Special Thanks.
         /// </summary>
         public static string About_SpecialThanks {
             get {
@@ -205,7 +205,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Stack Overflow ähnelt.
+        ///   Looks up a localized string similar to Stack Overflow.
         /// </summary>
         public static string About_StackOverflow {
             get {
@@ -214,7 +214,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die All our stargazers, likers &amp; followers, for the warm fuzzies ähnelt.
+        ///   Looks up a localized string similar to All our stargazers, likers &amp; followers, for the warm fuzzies.
         /// </summary>
         public static string About_Stargazers {
             get {
@@ -223,7 +223,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Add ähnelt.
+        ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string Add {
             get {
@@ -232,7 +232,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Implementations of &apos;{0}&apos; ähnelt.
+        ///   Looks up a localized string similar to Implementations of &apos;{0}&apos;.
         /// </summary>
         public static string AllImplementations_Caption {
             get {
@@ -241,7 +241,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Class or member &apos;{0}&apos; is not implemented. ähnelt.
+        ///   Looks up a localized string similar to Class or member &apos;{0}&apos; is not implemented..
         /// </summary>
         public static string AllImplementations_NoneFound {
             get {
@@ -250,7 +250,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die All references: &apos;{0}&apos; ähnelt.
+        ///   Looks up a localized string similar to All references: &apos;{0}&apos;.
         /// </summary>
         public static string AllReferences_Caption {
             get {
@@ -259,7 +259,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die No references were found for identifier &apos;{0}&apos;. ähnelt.
+        ///   Looks up a localized string similar to No references were found for identifier &apos;{0}&apos;..
         /// </summary>
         public static string AllReferences_NoneFound {
             get {
@@ -268,7 +268,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die ByVal parameter &apos;{0}&apos; is assigned ähnelt.
+        ///   Looks up a localized string similar to ByVal parameter &apos;{0}&apos; is assigned.
         /// </summary>
         public static string ByValParameterIsAssigned_ {
             get {
@@ -277,7 +277,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Cancel ähnelt.
+        ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string CancelButtonText {
             get {
@@ -286,7 +286,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Change ähnelt.
+        ///   Looks up a localized string similar to Change.
         /// </summary>
         public static string Change {
             get {
@@ -295,7 +295,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Class module (.cls) ähnelt.
+        ///   Looks up a localized string similar to &amp;Class module (.cls).
         /// </summary>
         public static string CodeExplorer_AddClassText {
             get {
@@ -304,7 +304,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die User &amp;form ähnelt.
+        ///   Looks up a localized string similar to User &amp;form.
         /// </summary>
         public static string CodeExplorer_AddFormText {
             get {
@@ -313,7 +313,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Standard module (.bas) ähnelt.
+        ///   Looks up a localized string similar to &amp;Standard module (.bas).
         /// </summary>
         public static string CodeExplorer_AddStdModuleText {
             get {
@@ -322,7 +322,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Test module ähnelt.
+        ///   Looks up a localized string similar to &amp;Test module.
         /// </summary>
         public static string CodeExplorer_AddTestModuleText {
             get {
@@ -331,7 +331,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Display member &amp;names ähnelt.
+        ///   Looks up a localized string similar to Display member &amp;names.
         /// </summary>
         public static string CodeExplorer_DisplayMemberNamesText {
             get {
@@ -340,7 +340,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Display style ähnelt.
+        ///   Looks up a localized string similar to Display style.
         /// </summary>
         public static string CodeExplorer_DisplayModeToolTip {
             get {
@@ -349,7 +349,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Display full &amp;signatures ähnelt.
+        ///   Looks up a localized string similar to Display full &amp;signatures.
         /// </summary>
         public static string CodeExplorer_DisplaySignaturesText {
             get {
@@ -358,7 +358,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Find &amp;All Implementations... ähnelt.
+        ///   Looks up a localized string similar to Find &amp;All Implementations....
         /// </summary>
         public static string CodeExplorer_FindAllImplementationsText {
             get {
@@ -367,7 +367,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Find All References... ähnelt.
+        ///   Looks up a localized string similar to &amp;Find All References....
         /// </summary>
         public static string CodeExplorer_FindAllReferencesText {
             get {
@@ -376,7 +376,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Inspect ähnelt.
+        ///   Looks up a localized string similar to &amp;Inspect.
         /// </summary>
         public static string CodeExplorer_Inspect {
             get {
@@ -385,7 +385,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Na&amp;vigate ähnelt.
+        ///   Looks up a localized string similar to Na&amp;vigate.
         /// </summary>
         public static string CodeExplorer_Navigate {
             get {
@@ -394,7 +394,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;New ähnelt.
+        ///   Looks up a localized string similar to &amp;New.
         /// </summary>
         public static string CodeExplorer_New {
             get {
@@ -403,7 +403,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Add a component to the active project ähnelt.
+        ///   Looks up a localized string similar to Add a component to the active project.
         /// </summary>
         public static string CodeExplorer_NewToolTip {
             get {
@@ -412,7 +412,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die R&amp;efresh ähnelt.
+        ///   Looks up a localized string similar to R&amp;efresh.
         /// </summary>
         public static string CodeExplorer_Refresh {
             get {
@@ -421,7 +421,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Run All &amp;Tests ähnelt.
+        ///   Looks up a localized string similar to Run All &amp;Tests.
         /// </summary>
         public static string CodeExplorer_RunAllTestsText {
             get {
@@ -430,7 +430,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Show Designer ähnelt.
+        ///   Looks up a localized string similar to &amp;Show Designer.
         /// </summary>
         public static string CodeExplorer_ShowDesignerText {
             get {
@@ -439,7 +439,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Open Designer ähnelt.
+        ///   Looks up a localized string similar to Open Designer.
         /// </summary>
         public static string CodeExplorer_ShowDesignerToolTip {
             get {
@@ -448,7 +448,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Toggle folders ähnelt.
+        ///   Looks up a localized string similar to Toggle folders.
         /// </summary>
         public static string CodeExplorer_ShowFoldersToolTip {
             get {
@@ -457,7 +457,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Code Explorer ähnelt.
+        ///   Looks up a localized string similar to Code Explorer.
         /// </summary>
         public static string CodeExplorerDockablePresenter_Caption {
             get {
@@ -466,7 +466,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die {0} (parsing...) ähnelt.
+        ///   Looks up a localized string similar to {0} (parsing...).
         /// </summary>
         public static string CodeExplorerDockablePresenter_ParseStarted {
             get {
@@ -475,7 +475,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Code Inspections ähnelt.
+        ///   Looks up a localized string similar to Code Inspections.
         /// </summary>
         public static string CodeInspections {
             get {
@@ -484,7 +484,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Copy inspection results to clipboard ähnelt.
+        ///   Looks up a localized string similar to Copy inspection results to clipboard.
         /// </summary>
         public static string CodeInspections_CopyToolTip {
             get {
@@ -493,7 +493,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Navigate to selected issue ähnelt.
+        ///   Looks up a localized string similar to Navigate to selected issue.
         /// </summary>
         public static string CodeInspections_GoToolTip {
             get {
@@ -502,7 +502,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Inspecting... ähnelt.
+        ///   Looks up a localized string similar to Inspecting....
         /// </summary>
         public static string CodeInspections_Inspecting {
             get {
@@ -511,7 +511,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die {0} ({1} issues) ähnelt.
+        ///   Looks up a localized string similar to {0} ({1} issues).
         /// </summary>
         public static string CodeInspections_InspectingIssues_Plural {
             get {
@@ -520,7 +520,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die {0} ({1} issue) ähnelt.
+        ///   Looks up a localized string similar to {0} ({1} issue).
         /// </summary>
         public static string CodeInspections_InspectingIssues_Singular {
             get {
@@ -529,7 +529,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Navigate to next issue ähnelt.
+        ///   Looks up a localized string similar to Navigate to next issue.
         /// </summary>
         public static string CodeInspections_NextToolTip {
             get {
@@ -538,7 +538,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die {0} issues ähnelt.
+        ///   Looks up a localized string similar to {0} issues.
         /// </summary>
         public static string CodeInspections_NumberOfIssues_Plural {
             get {
@@ -547,7 +547,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die {0} issue ähnelt.
+        ///   Looks up a localized string similar to {0} issue.
         /// </summary>
         public static string CodeInspections_NumberOfIssues_Singular {
             get {
@@ -556,8 +556,8 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck Code Inspections - {0}
-        ///{1} issues found. ähnelt.
+        ///   Looks up a localized string similar to Rubberduck Code Inspections - {0}
+        ///{1} issues found..
         /// </summary>
         public static string CodeInspections_NumberOfIssuesFound_Plural {
             get {
@@ -566,8 +566,8 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck Code Inspections - {0}
-        ///{1} issue found. ähnelt.
+        ///   Looks up a localized string similar to Rubberduck Code Inspections - {0}
+        ///{1} issue found..
         /// </summary>
         public static string CodeInspections_NumberOfIssuesFound_Singular {
             get {
@@ -576,7 +576,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Navigate to previous issue ähnelt.
+        ///   Looks up a localized string similar to Navigate to previous issue.
         /// </summary>
         public static string CodeInspections_PreviousToolTip {
             get {
@@ -585,7 +585,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Address the issue ähnelt.
+        ///   Looks up a localized string similar to Address the issue.
         /// </summary>
         public static string CodeInspections_QuickFixToolTip {
             get {
@@ -594,7 +594,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Run code inspections ähnelt.
+        ///   Looks up a localized string similar to Run code inspections.
         /// </summary>
         public static string CodeInspections_RefreshToolTip {
             get {
@@ -702,7 +702,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Find all references... ähnelt.
+        ///   Looks up a localized string similar to &amp;Find all references....
         /// </summary>
         public static string ContextMenu_FindAllReferences {
             get {
@@ -711,7 +711,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Find &amp;symbol... ähnelt.
+        ///   Looks up a localized string similar to Find &amp;symbol....
         /// </summary>
         public static string ContextMenu_FindSymbol {
             get {
@@ -720,7 +720,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Go to &amp;implementation... ähnelt.
+        ///   Looks up a localized string similar to Go to &amp;implementation....
         /// </summary>
         public static string ContextMenu_GoToImplementation {
             get {
@@ -729,7 +729,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die class ähnelt.
+        ///   Looks up a localized string similar to class.
         /// </summary>
         public static string DeclarationType_Class {
             get {
@@ -738,7 +738,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die constant ähnelt.
+        ///   Looks up a localized string similar to constant.
         /// </summary>
         public static string DeclarationType_Constant {
             get {
@@ -747,7 +747,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die control ähnelt.
+        ///   Looks up a localized string similar to control.
         /// </summary>
         public static string DeclarationType_Control {
             get {
@@ -756,7 +756,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die enum ähnelt.
+        ///   Looks up a localized string similar to enum.
         /// </summary>
         public static string DeclarationType_Enumeration {
             get {
@@ -765,7 +765,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die enum member ähnelt.
+        ///   Looks up a localized string similar to enum member.
         /// </summary>
         public static string DeclarationType_EnumerationMember {
             get {
@@ -774,7 +774,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die event ähnelt.
+        ///   Looks up a localized string similar to event.
         /// </summary>
         public static string DeclarationType_Event {
             get {
@@ -783,7 +783,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die function ähnelt.
+        ///   Looks up a localized string similar to function.
         /// </summary>
         public static string DeclarationType_Function {
             get {
@@ -792,7 +792,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die library function ähnelt.
+        ///   Looks up a localized string similar to library function.
         /// </summary>
         public static string DeclarationType_LibraryFunction {
             get {
@@ -801,7 +801,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die line label ähnelt.
+        ///   Looks up a localized string similar to line label.
         /// </summary>
         public static string DeclarationType_LineLabel {
             get {
@@ -810,7 +810,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die module ähnelt.
+        ///   Looks up a localized string similar to module.
         /// </summary>
         public static string DeclarationType_Module {
             get {
@@ -819,7 +819,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die parameter ähnelt.
+        ///   Looks up a localized string similar to parameter.
         /// </summary>
         public static string DeclarationType_Parameter {
             get {
@@ -828,7 +828,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die procedure ähnelt.
+        ///   Looks up a localized string similar to procedure.
         /// </summary>
         public static string DeclarationType_Procedure {
             get {
@@ -837,7 +837,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die project ähnelt.
+        ///   Looks up a localized string similar to project.
         /// </summary>
         public static string DeclarationType_Project {
             get {
@@ -846,7 +846,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die property get accessor ähnelt.
+        ///   Looks up a localized string similar to property get accessor.
         /// </summary>
         public static string DeclarationType_PropertyGet {
             get {
@@ -855,7 +855,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die property let accessor ähnelt.
+        ///   Looks up a localized string similar to property let accessor.
         /// </summary>
         public static string DeclarationType_PropertyLet {
             get {
@@ -864,7 +864,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die property set accessor ähnelt.
+        ///   Looks up a localized string similar to property set accessor.
         /// </summary>
         public static string DeclarationType_PropertySet {
             get {
@@ -873,7 +873,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die user-defined type ähnelt.
+        ///   Looks up a localized string similar to user-defined type.
         /// </summary>
         public static string DeclarationType_UserDefinedType {
             get {
@@ -882,7 +882,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die user-defined type member ähnelt.
+        ///   Looks up a localized string similar to user-defined type member.
         /// </summary>
         public static string DeclarationType_UserDefinedTypeMember {
             get {
@@ -891,7 +891,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die variable ähnelt.
+        ///   Looks up a localized string similar to variable.
         /// </summary>
         public static string DeclarationType_Variable {
             get {
@@ -900,7 +900,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Deselect All ähnelt.
+        ///   Looks up a localized string similar to Deselect All.
         /// </summary>
         public static string DeselectAll_Button {
             get {
@@ -909,7 +909,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Disable this inspection ähnelt.
+        ///   Looks up a localized string similar to Disable this inspection.
         /// </summary>
         public static string DisableThisInspection {
             get {
@@ -918,7 +918,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die You&apos;ve earned the &quot;Continuator&quot; badge! ähnelt.
+        ///   Looks up a localized string similar to You&apos;ve earned the &quot;Continuator&quot; badge!.
         /// </summary>
         public static string EasterEgg_Continuator {
             get {
@@ -927,7 +927,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Encapsulate Field ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Encapsulate Field.
         /// </summary>
         public static string EncapsulateField_Caption {
             get {
@@ -936,7 +936,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Please specify property name, parameter accessibility, and setter type. ähnelt.
+        ///   Looks up a localized string similar to Please specify property name, parameter accessibility, and setter type..
         /// </summary>
         public static string EncapsulateField_InstructionText {
             get {
@@ -945,7 +945,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Parameter Name: ähnelt.
+        ///   Looks up a localized string similar to Parameter Name:.
         /// </summary>
         public static string EncapsulateField_ParameterName {
             get {
@@ -954,7 +954,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Preview: ähnelt.
+        ///   Looks up a localized string similar to Preview:.
         /// </summary>
         public static string EncapsulateField_Preview {
             get {
@@ -963,7 +963,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Property Name: ähnelt.
+        ///   Looks up a localized string similar to Property Name:.
         /// </summary>
         public static string EncapsulateField_PropertyName {
             get {
@@ -972,7 +972,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Setter Type: ähnelt.
+        ///   Looks up a localized string similar to Setter Type:.
         /// </summary>
         public static string EncapsulateField_SetterType {
             get {
@@ -981,7 +981,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Encapsulate Field ähnelt.
+        ///   Looks up a localized string similar to Encapsulate Field.
         /// </summary>
         public static string EncapsulateField_TitleText {
             get {
@@ -990,7 +990,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Extract Interface ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Extract Interface.
         /// </summary>
         public static string ExtractInterface_Caption {
             get {
@@ -999,7 +999,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Please specify interface name and members. ähnelt.
+        ///   Looks up a localized string similar to Please specify interface name and members..
         /// </summary>
         public static string ExtractInterface_InstructionLabel {
             get {
@@ -1008,7 +1008,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Members ähnelt.
+        ///   Looks up a localized string similar to Members.
         /// </summary>
         public static string ExtractInterface_MembersGroupBox {
             get {
@@ -1017,7 +1017,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Extract Interface ähnelt.
+        ///   Looks up a localized string similar to Extract Interface.
         /// </summary>
         public static string ExtractInterface_TitleLabel {
             get {
@@ -1026,7 +1026,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Accessibility: ähnelt.
+        ///   Looks up a localized string similar to Accessibility:.
         /// </summary>
         public static string ExtractMethod_AccessibilityLabel {
             get {
@@ -1035,7 +1035,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Extract Method ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Extract Method.
         /// </summary>
         public static string ExtractMethod_Caption {
             get {
@@ -1044,7 +1044,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Please specify method name, return type and/or parameters (if applicable), and other options. ähnelt.
+        ///   Looks up a localized string similar to Please specify method name, return type and/or parameters (if applicable), and other options..
         /// </summary>
         public static string ExtractMethod_InstructionsText {
             get {
@@ -1053,7 +1053,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die The current selection is not valid. ähnelt.
+        ///   Looks up a localized string similar to The current selection is not valid..
         /// </summary>
         public static string ExtractMethod_InvalidSelectionMessage {
             get {
@@ -1062,7 +1062,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die (none) ähnelt.
+        ///   Looks up a localized string similar to (none).
         /// </summary>
         public static string ExtractMethod_OutputNone {
             get {
@@ -1071,7 +1071,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Parameters: ähnelt.
+        ///   Looks up a localized string similar to Parameters:.
         /// </summary>
         public static string ExtractMethod_ParametersLabel {
             get {
@@ -1080,7 +1080,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Preview: ähnelt.
+        ///   Looks up a localized string similar to Preview:.
         /// </summary>
         public static string ExtractMethod_PreviewLabel {
             get {
@@ -1089,7 +1089,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Return: ähnelt.
+        ///   Looks up a localized string similar to Return:.
         /// </summary>
         public static string ExtractMethod_ReturnLabel {
             get {
@@ -1098,7 +1098,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Set ähnelt.
+        ///   Looks up a localized string similar to Set.
         /// </summary>
         public static string ExtractMethod_SetBoxLabel {
             get {
@@ -1107,7 +1107,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Extract method ähnelt.
+        ///   Looks up a localized string similar to Extract method.
         /// </summary>
         public static string ExtractMethod_TitleText {
             get {
@@ -1116,7 +1116,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Find symbol ähnelt.
+        ///   Looks up a localized string similar to Find symbol.
         /// </summary>
         public static string FindSymbolDialog_Caption {
             get {
@@ -1125,7 +1125,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Fix ähnelt.
+        ///   Looks up a localized string similar to Fix.
         /// </summary>
         public static string Fix {
             get {
@@ -1134,7 +1134,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Re&amp;name ähnelt.
+        ///   Looks up a localized string similar to Re&amp;name.
         /// </summary>
         public static string FormContextMenu_Rename {
             get {
@@ -1143,7 +1143,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Function &apos;{0}&apos; is never used ähnelt.
+        ///   Looks up a localized string similar to Function &apos;{0}&apos; is never used.
         /// </summary>
         public static string FunctionNotUsed_ {
             get {
@@ -1152,7 +1152,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Project &apos;{0}&apos; has generic name ähnelt.
+        ///   Looks up a localized string similar to Project &apos;{0}&apos; has generic name.
         /// </summary>
         public static string GenericProjectName_ {
             get {
@@ -1161,7 +1161,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Go ähnelt.
+        ///   Looks up a localized string similar to Go.
         /// </summary>
         public static string Go {
             get {
@@ -1170,7 +1170,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Home ähnelt.
+        ///   Looks up a localized string similar to Home.
         /// </summary>
         public static string Home {
             get {
@@ -1179,7 +1179,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Implement Interface ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Implement Interface.
         /// </summary>
         public static string ImplementInterface_Caption {
             get {
@@ -1188,7 +1188,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die The current selection is not valid. ähnelt.
+        ///   Looks up a localized string similar to The current selection is not valid..
         /// </summary>
         public static string ImplementInterface_InvalidSelectionMessage {
             get {
@@ -1197,7 +1197,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &apos;{0}&apos; is an implicit reference to the active worksheet ähnelt.
+        ///   Looks up a localized string similar to &apos;{0}&apos; is an implicit reference to the active worksheet.
         /// </summary>
         public static string ImplicitActiveSheetReference_ {
             get {
@@ -1206,7 +1206,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &apos;{0}&apos; is an implicit reference to the active workbook ähnelt.
+        ///   Looks up a localized string similar to &apos;{0}&apos; is an implicit reference to the active workbook.
         /// </summary>
         public static string ImplicitActiveWorkbookReference_ {
             get {
@@ -1215,7 +1215,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Parameter &apos;{0}&apos; is passed ByRef implicitly ähnelt.
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is passed ByRef implicitly.
         /// </summary>
         public static string ImplicitByRef_ {
             get {
@@ -1224,7 +1224,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Member &apos;{0}&apos; is implicitly Public ähnelt.
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; is implicitly Public.
         /// </summary>
         public static string ImplicitPublicMember_ {
             get {
@@ -1233,7 +1233,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Function &apos;{0}&apos; returns an implicit Variant ähnelt.
+        ///   Looks up a localized string similar to Function &apos;{0}&apos; returns an implicit Variant.
         /// </summary>
         public static string ImplicitVariantReturnType_ {
             get {
@@ -1242,7 +1242,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Current module ähnelt.
+        ///   Looks up a localized string similar to Current module.
         /// </summary>
         public static string IndentCurrentModule {
             get {
@@ -1251,7 +1251,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Current procedure ähnelt.
+        ///   Looks up a localized string similar to Current procedure.
         /// </summary>
         public static string IndentCurrentProcedure {
             get {
@@ -1260,7 +1260,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Entire project ähnelt.
+        ///   Looks up a localized string similar to Entire project.
         /// </summary>
         public static string IndentCurrentProject {
             get {
@@ -1269,7 +1269,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Inspect ähnelt.
+        ///   Looks up a localized string similar to Inspect.
         /// </summary>
         public static string Inspect {
             get {
@@ -1278,7 +1278,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Replace &apos;Global&apos; access modifier with &apos;Public&apos; ähnelt.
+        ///   Looks up a localized string similar to Replace &apos;Global&apos; access modifier with &apos;Public&apos;.
         /// </summary>
         public static string Inspections_ChangeGlobalAccessModifierToPublic {
             get {
@@ -1287,7 +1287,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Convert function to procedure ähnelt.
+        ///   Looks up a localized string similar to Convert function to procedure.
         /// </summary>
         public static string Inspections_ConvertFunctionToProcedure {
             get {
@@ -1296,7 +1296,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die declaration of  ähnelt.
+        ///   Looks up a localized string similar to declaration of .
         /// </summary>
         public static string Inspections_DeclarationOf {
             get {
@@ -1305,7 +1305,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Declare as explicit Variant ähnelt.
+        ///   Looks up a localized string similar to Declare as explicit Variant.
         /// </summary>
         public static string Inspections_DeclareAsExplicitVariant {
             get {
@@ -1314,7 +1314,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Introduce local variable ähnelt.
+        ///   Looks up a localized string similar to Introduce local variable.
         /// </summary>
         public static string Inspections_IntroduceLocalVariable {
             get {
@@ -1323,7 +1323,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Write variable on one line ähnelt.
+        ///   Looks up a localized string similar to Write variable on one line.
         /// </summary>
         public static string Inspections_MultilineParameter {
             get {
@@ -1332,7 +1332,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Pass parameter by reference ähnelt.
+        ///   Looks up a localized string similar to Pass parameter by reference.
         /// </summary>
         public static string Inspections_PassParamByReference {
             get {
@@ -1341,7 +1341,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Pass parameter by reference explicitly ähnelt.
+        ///   Looks up a localized string similar to Pass parameter by reference explicitly.
         /// </summary>
         public static string Inspections_PassParamByRefExplicitly {
             get {
@@ -1350,7 +1350,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Pass parameter by value ähnelt.
+        ///   Looks up a localized string similar to Pass parameter by value.
         /// </summary>
         public static string Inspections_PassParamByValue {
             get {
@@ -1359,7 +1359,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Remove comment ähnelt.
+        ///   Looks up a localized string similar to Remove comment.
         /// </summary>
         public static string Inspections_RemoveComment {
             get {
@@ -1368,7 +1368,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Remove obsolete statement ähnelt.
+        ///   Looks up a localized string similar to Remove obsolete statement.
         /// </summary>
         public static string Inspections_RemoveObsoleteStatement {
             get {
@@ -1377,7 +1377,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Remove type hints ähnelt.
+        ///   Looks up a localized string similar to Remove type hints.
         /// </summary>
         public static string Inspections_RemoveTypeHints {
             get {
@@ -1386,7 +1386,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Remove unassigned variable ähnelt.
+        ///   Looks up a localized string similar to Remove unassigned variable.
         /// </summary>
         public static string Inspections_RemoveUnassignedVariable {
             get {
@@ -1395,7 +1395,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Remove unused declaration ähnelt.
+        ///   Looks up a localized string similar to Remove unused declaration.
         /// </summary>
         public static string Inspections_RemoveUnusedDeclaration {
             get {
@@ -1404,7 +1404,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Remove unused parameter ähnelt.
+        ///   Looks up a localized string similar to Remove unused parameter.
         /// </summary>
         public static string Inspections_RemoveUnusedParameter {
             get {
@@ -1413,7 +1413,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Remove usage (breaks code) ähnelt.
+        ///   Looks up a localized string similar to Remove usage (breaks code).
         /// </summary>
         public static string Inspections_RemoveUsageBreaksCode {
             get {
@@ -1422,7 +1422,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Replace &apos;Rem&apos; usage with a single-quote comment marker ähnelt.
+        ///   Looks up a localized string similar to Replace &apos;Rem&apos; usage with a single-quote comment marker.
         /// </summary>
         public static string Inspections_ReplaceRemWithSingleQuoteMarker {
             get {
@@ -1431,7 +1431,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Return explicit Variant ähnelt.
+        ///   Looks up a localized string similar to Return explicit Variant.
         /// </summary>
         public static string Inspections_ReturnExplicitVariant {
             get {
@@ -1440,7 +1440,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Specify &apos;Option Explicit&apos; ähnelt.
+        ///   Looks up a localized string similar to Specify &apos;Option Explicit&apos;.
         /// </summary>
         public static string Inspections_SpecifyOptionExplicit {
             get {
@@ -1449,7 +1449,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Specify Public access modifier explicitly ähnelt.
+        ///   Looks up a localized string similar to Specify Public access modifier explicitly.
         /// </summary>
         public static string Inspections_SpecifyPublicModifierExplicitly {
             get {
@@ -1458,7 +1458,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Separate multiple declarations into multiple instructions ähnelt.
+        ///   Looks up a localized string similar to Separate multiple declarations into multiple instructions.
         /// </summary>
         public static string Inspections_SplitDeclarations {
             get {
@@ -1467,7 +1467,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die TODO ähnelt.
+        ///   Looks up a localized string similar to TODO.
         /// </summary>
         public static string Inspections_UnassignedVariableToDo {
             get {
@@ -1476,7 +1476,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die usage of  ähnelt.
+        ///   Looks up a localized string similar to usage of .
         /// </summary>
         public static string Inspections_UsageOf {
             get {
@@ -1485,7 +1485,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Introduce Field ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Introduce Field.
         /// </summary>
         public static string IntroduceField_Caption {
             get {
@@ -1494,7 +1494,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Introduce Parameter ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Introduce Parameter.
         /// </summary>
         public static string IntroduceParameter_Caption {
             get {
@@ -1503,7 +1503,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (Will propagate to all implementations.) ähnelt.
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (Will propagate to all implementations.).
         /// </summary>
         public static string IntroduceParameter_PromptIfTargetIsInterface {
             get {
@@ -1512,7 +1512,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Issue ähnelt.
+        ///   Looks up a localized string similar to Issue.
         /// </summary>
         public static string Issue {
             get {
@@ -1521,7 +1521,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die German ähnelt.
+        ///   Looks up a localized string similar to German.
         /// </summary>
         public static string Language_DE {
             get {
@@ -1530,7 +1530,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die English ähnelt.
+        ///   Looks up a localized string similar to English.
         /// </summary>
         public static string Language_EN {
             get {
@@ -1539,7 +1539,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die French ähnelt.
+        ///   Looks up a localized string similar to French.
         /// </summary>
         public static string Language_FR {
             get {
@@ -1548,7 +1548,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Japanese ähnelt.
+        ///   Looks up a localized string similar to Japanese.
         /// </summary>
         public static string Language_JP {
             get {
@@ -1557,7 +1557,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Swedish ähnelt.
+        ///   Looks up a localized string similar to Swedish.
         /// </summary>
         public static string Language_SV {
             get {
@@ -1566,7 +1566,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Line ähnelt.
+        ///   Looks up a localized string similar to Line.
         /// </summary>
         public static string Line {
             get {
@@ -1575,7 +1575,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Error Loading Rubberduck Configuration ähnelt.
+        ///   Looks up a localized string similar to Error Loading Rubberduck Configuration.
         /// </summary>
         public static string LoadConfigError {
             get {
@@ -1584,7 +1584,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Make ActiveSheet reference explicit ähnelt.
+        ///   Looks up a localized string similar to Make ActiveSheet reference explicit.
         /// </summary>
         public static string MakeActiveSheetReferenceExplicit {
             get {
@@ -1593,7 +1593,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Make ActiveWorkbook reference explicit ähnelt.
+        ///   Looks up a localized string similar to Make ActiveWorkbook reference explicit.
         /// </summary>
         public static string MakeActiveWorkbookReferenceExplicit {
             get {
@@ -1602,7 +1602,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Module Name ähnelt.
+        ///   Looks up a localized string similar to Module Name.
         /// </summary>
         public static string ModuleName {
             get {
@@ -1611,7 +1611,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Module options should be specified first ähnelt.
+        ///   Looks up a localized string similar to Module options should be specified first.
         /// </summary>
         public static string ModuleOptionsNotSpecifiedFirst {
             get {
@@ -1620,7 +1620,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Move Closer To Usage ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Move Closer To Usage.
         /// </summary>
         public static string MoveCloserToUsage_Caption {
             get {
@@ -1629,7 +1629,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Invalid Selection. ähnelt.
+        ///   Looks up a localized string similar to Invalid Selection..
         /// </summary>
         public static string MoveCloserToUsage_InvalidSelection {
             get {
@@ -1638,7 +1638,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &apos;{0}&apos; has no references. ähnelt.
+        ///   Looks up a localized string similar to &apos;{0}&apos; has no references..
         /// </summary>
         public static string MoveCloserToUsage_TargetHasNoReferences {
             get {
@@ -1647,7 +1647,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &apos;{0}&apos; has references in multiple methods. ähnelt.
+        ///   Looks up a localized string similar to &apos;{0}&apos; has references in multiple methods..
         /// </summary>
         public static string MoveCloserToUsage_TargetIsUsedInMultipleMethods {
             get {
@@ -1656,7 +1656,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Parameter &apos;{0}&apos; is declared on multiple lines ähnelt.
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is declared on multiple lines.
         /// </summary>
         public static string MultilineParameter_ {
             get {
@@ -1665,7 +1665,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Instruction contains multiple declarations ähnelt.
+        ///   Looks up a localized string similar to Instruction contains multiple declarations.
         /// </summary>
         public static string MultipleDeclarations {
             get {
@@ -1674,7 +1674,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Name ähnelt.
+        ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string Name {
             get {
@@ -1683,7 +1683,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Name: ähnelt.
+        ///   Looks up a localized string similar to Name:.
         /// </summary>
         public static string NameLabelText {
             get {
@@ -1692,7 +1692,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Navigate ähnelt.
+        ///   Looks up a localized string similar to Navigate.
         /// </summary>
         public static string Navigate {
             get {
@@ -1701,7 +1701,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Navigation ähnelt.
+        ///   Looks up a localized string similar to Navigation.
         /// </summary>
         public static string Navigation {
             get {
@@ -1710,7 +1710,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die New ähnelt.
+        ///   Looks up a localized string similar to New.
         /// </summary>
         public static string New {
             get {
@@ -1719,7 +1719,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Next ähnelt.
+        ///   Looks up a localized string similar to Next.
         /// </summary>
         public static string Next {
             get {
@@ -1728,7 +1728,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Return value for member &apos;{0}&apos; is never assigned ähnelt.
+        ///   Looks up a localized string similar to Return value for member &apos;{0}&apos; is never assigned.
         /// </summary>
         public static string NonReturningFunction_ {
             get {
@@ -1737,7 +1737,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Use of obsolete Call statement ähnelt.
+        ///   Looks up a localized string similar to Use of obsolete Call statement.
         /// </summary>
         public static string ObsoleteCall {
             get {
@@ -1746,7 +1746,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Use of obsolete Rem comment syntax ähnelt.
+        ///   Looks up a localized string similar to Use of obsolete Rem comment syntax.
         /// </summary>
         public static string ObsoleteComment {
             get {
@@ -1755,7 +1755,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Use of obsolete Global access modifier ähnelt.
+        ///   Looks up a localized string similar to Use of obsolete Global access modifier.
         /// </summary>
         public static string ObsoleteGlobal {
             get {
@@ -1764,7 +1764,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Use of obsolete Let statement ähnelt.
+        ///   Looks up a localized string similar to Use of obsolete Let statement.
         /// </summary>
         public static string ObsoleteLet {
             get {
@@ -1773,7 +1773,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Offline ähnelt.
+        ///   Looks up a localized string similar to Offline.
         /// </summary>
         public static string Offline {
             get {
@@ -1782,7 +1782,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Ok ähnelt.
+        ///   Looks up a localized string similar to Ok.
         /// </summary>
         public static string OK {
             get {
@@ -1791,7 +1791,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die OK ähnelt.
+        ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string OK_AllCaps {
             get {
@@ -1800,7 +1800,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Online ähnelt.
+        ///   Looks up a localized string similar to Online.
         /// </summary>
         public static string Online {
             get {
@@ -1809,7 +1809,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Potentially confusing implicit array lower bound ähnelt.
+        ///   Looks up a localized string similar to Potentially confusing implicit array lower bound.
         /// </summary>
         public static string OptionBase {
             get {
@@ -1818,7 +1818,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Option Explicit is not specified in &apos;{0}&apos; ähnelt.
+        ///   Looks up a localized string similar to Option Explicit is not specified in &apos;{0}&apos;.
         /// </summary>
         public static string OptionExplicit {
             get {
@@ -1827,7 +1827,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Outcome ähnelt.
+        ///   Looks up a localized string similar to Outcome.
         /// </summary>
         public static string Outcome {
             get {
@@ -1836,7 +1836,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Parameter ähnelt.
+        ///   Looks up a localized string similar to Parameter.
         /// </summary>
         public static string Parameter {
             get {
@@ -1845,7 +1845,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Parameter &apos;{0}&apos; can be passed by value ähnelt.
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; can be passed by value.
         /// </summary>
         public static string ParameterCanBeByVal_ {
             get {
@@ -1854,7 +1854,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Parameter &apos;{0}&apos; is not used ähnelt.
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is not used.
         /// </summary>
         public static string ParameterNotUsed_ {
             get {
@@ -1863,7 +1863,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Parser Errors ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Parser Errors.
         /// </summary>
         public static string ParseErrors_Caption {
             get {
@@ -1872,7 +1872,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Parsing &apos;{0}&apos;... ähnelt.
+        ///   Looks up a localized string similar to Parsing &apos;{0}&apos;....
         /// </summary>
         public static string ParseProgress {
             get {
@@ -1881,7 +1881,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Details ähnelt.
+        ///   Looks up a localized string similar to Details.
         /// </summary>
         public static string ParserProgress_ShowDetails {
             get {
@@ -1890,7 +1890,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Parsing project components... ähnelt.
+        ///   Looks up a localized string similar to Parsing project components....
         /// </summary>
         public static string ParseStarted {
             get {
@@ -1899,7 +1899,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die (parsing...) ähnelt.
+        ///   Looks up a localized string similar to (parsing...).
         /// </summary>
         public static string Parsing {
             get {
@@ -1908,7 +1908,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Passed ähnelt.
+        ///   Looks up a localized string similar to Passed.
         /// </summary>
         public static string Passed {
             get {
@@ -1917,7 +1917,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Previous ähnelt.
+        ///   Looks up a localized string similar to Previous.
         /// </summary>
         public static string Previous {
             get {
@@ -1926,7 +1926,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Priority ähnelt.
+        ///   Looks up a localized string similar to Priority.
         /// </summary>
         public static string Priority {
             get {
@@ -1935,7 +1935,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Procedure &apos;{0}&apos; is never used ähnelt.
+        ///   Looks up a localized string similar to Procedure &apos;{0}&apos; is never used.
         /// </summary>
         public static string ProcedureNotUsed_ {
             get {
@@ -1944,7 +1944,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Project ähnelt.
+        ///   Looks up a localized string similar to Project.
         /// </summary>
         public static string Project {
             get {
@@ -1953,7 +1953,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Project Name ähnelt.
+        ///   Looks up a localized string similar to Project Name.
         /// </summary>
         public static string ProjectName {
             get {
@@ -1962,7 +1962,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Selection is not a variable. ähnelt.
+        ///   Looks up a localized string similar to Selection is not a variable..
         /// </summary>
         public static string PromoteVariable_InvalidSelection {
             get {
@@ -1971,13 +1971,13 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die {0}
+        ///   Looks up a localized string similar to {0}
         ///{1}
         ///
         ///{2}
         ///
         ///Would you like to restore default configuration?
-        ///Warning: All customized settings will be lost.  Your old file will be saved in &apos;{3}&apos;. ähnelt.
+        ///Warning: All customized settings will be lost.  Your old file will be saved in &apos;{3}&apos;..
         /// </summary>
         public static string PromptLoadDefaultConfig {
             get {
@@ -1986,7 +1986,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Fix all occurrences in module ähnelt.
+        ///   Looks up a localized string similar to Fix all occurrences in module.
         /// </summary>
         public static string QuickFix_ThisModule {
             get {
@@ -1995,7 +1995,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Fix all occurrences in project ähnelt.
+        ///   Looks up a localized string similar to Fix all occurrences in project.
         /// </summary>
         public static string QuickFix_ThisProject {
             get {
@@ -2004,7 +2004,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Use &apos;{0}$&apos; instead of &apos;{0}&apos;. ähnelt.
+        ///   Looks up a localized string similar to Use &apos;{0}$&apos; instead of &apos;{0}&apos;..
         /// </summary>
         public static string QuickFixUseTypedFunction_ {
             get {
@@ -2013,7 +2013,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (Will propagate to all implementations.) ähnelt.
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (Will propagate to all implementations.).
         /// </summary>
         public static string Refactoring_TargetIsInterfaceMemberImplementation {
             get {
@@ -2022,7 +2022,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Encapsulate Field ähnelt.
+        ///   Looks up a localized string similar to &amp;Encapsulate Field.
         /// </summary>
         public static string RefactorMenu_EncapsulateField {
             get {
@@ -2031,7 +2031,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die E&amp;xtract Interface ähnelt.
+        ///   Looks up a localized string similar to E&amp;xtract Interface.
         /// </summary>
         public static string RefactorMenu_ExtractInterface {
             get {
@@ -2040,7 +2040,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Extract &amp;Method ähnelt.
+        ///   Looks up a localized string similar to Extract &amp;Method.
         /// </summary>
         public static string RefactorMenu_ExtractMethod {
             get {
@@ -2049,7 +2049,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Implement Interface ähnelt.
+        ///   Looks up a localized string similar to Implement Interface.
         /// </summary>
         public static string RefactorMenu_ImplementInterface {
             get {
@@ -2058,7 +2058,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Introduce &amp;Field ähnelt.
+        ///   Looks up a localized string similar to Introduce &amp;Field.
         /// </summary>
         public static string RefactorMenu_IntroduceField {
             get {
@@ -2067,7 +2067,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Introduce Parameter ähnelt.
+        ///   Looks up a localized string similar to &amp;Introduce Parameter.
         /// </summary>
         public static string RefactorMenu_IntroduceParameter {
             get {
@@ -2076,7 +2076,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Move Closer To &amp;Usage ähnelt.
+        ///   Looks up a localized string similar to Move Closer To &amp;Usage.
         /// </summary>
         public static string RefactorMenu_MoveCloserToUsage {
             get {
@@ -2085,7 +2085,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Remo&amp;ve Parameters ähnelt.
+        ///   Looks up a localized string similar to Remo&amp;ve Parameters.
         /// </summary>
         public static string RefactorMenu_RemoveParameter {
             get {
@@ -2094,7 +2094,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Rename ähnelt.
+        ///   Looks up a localized string similar to &amp;Rename.
         /// </summary>
         public static string RefactorMenu_Rename {
             get {
@@ -2103,7 +2103,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Re&amp;order Parameters ähnelt.
+        ///   Looks up a localized string similar to Re&amp;order Parameters.
         /// </summary>
         public static string RefactorMenu_ReorderParameters {
             get {
@@ -2112,7 +2112,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Refresh ähnelt.
+        ///   Looks up a localized string similar to Refresh.
         /// </summary>
         public static string Refresh {
             get {
@@ -2121,7 +2121,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Regex Search &amp; Replace ähnelt.
+        ///   Looks up a localized string similar to Regex Search &amp; Replace.
         /// </summary>
         public static string RegexSearchReplace_Caption {
             get {
@@ -2130,7 +2130,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Find ähnelt.
+        ///   Looks up a localized string similar to Find.
         /// </summary>
         public static string RegexSearchReplace_FindButtonLabel {
             get {
@@ -2139,7 +2139,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Replace All ähnelt.
+        ///   Looks up a localized string similar to Replace All.
         /// </summary>
         public static string RegexSearchReplace_ReplaceAllButtonLabel {
             get {
@@ -2148,7 +2148,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Replace ähnelt.
+        ///   Looks up a localized string similar to Replace.
         /// </summary>
         public static string RegexSearchReplace_ReplaceButtonLabel {
             get {
@@ -2157,7 +2157,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Replace: ähnelt.
+        ///   Looks up a localized string similar to Replace:.
         /// </summary>
         public static string RegexSearchReplace_ReplaceLabel {
             get {
@@ -2166,7 +2166,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Scope: ähnelt.
+        ///   Looks up a localized string similar to Scope:.
         /// </summary>
         public static string RegexSearchReplace_ScopeLabel {
             get {
@@ -2175,7 +2175,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Search: ähnelt.
+        ///   Looks up a localized string similar to Search:.
         /// </summary>
         public static string RegexSearchReplace_SearchLabel {
             get {
@@ -2184,7 +2184,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die All Opened Files ähnelt.
+        ///   Looks up a localized string similar to All Opened Files.
         /// </summary>
         public static string RegexSearchReplaceScope_AllOpenedFiles {
             get {
@@ -2193,7 +2193,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die All Open Projects ähnelt.
+        ///   Looks up a localized string similar to All Open Projects.
         /// </summary>
         public static string RegexSearchReplaceScope_AllOpenProjects {
             get {
@@ -2202,7 +2202,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Current Block ähnelt.
+        ///   Looks up a localized string similar to Current Block.
         /// </summary>
         public static string RegexSearchReplaceScope_CurrentBlock {
             get {
@@ -2211,7 +2211,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Current File ähnelt.
+        ///   Looks up a localized string similar to Current File.
         /// </summary>
         public static string RegexSearchReplaceScope_CurrentFile {
             get {
@@ -2220,7 +2220,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Current Project ähnelt.
+        ///   Looks up a localized string similar to Current Project.
         /// </summary>
         public static string RegexSearchReplaceScope_CurrentProject {
             get {
@@ -2229,7 +2229,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Selection ähnelt.
+        ///   Looks up a localized string similar to Selection.
         /// </summary>
         public static string RegexSearchReplaceScope_Selection {
             get {
@@ -2238,7 +2238,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Remove ähnelt.
+        ///   Looks up a localized string similar to Remove.
         /// </summary>
         public static string Remove {
             get {
@@ -2247,7 +2247,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Remove Parameters ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Remove Parameters.
         /// </summary>
         public static string RemoveParamsDialog_Caption {
             get {
@@ -2256,7 +2256,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Select a parameter and double-click it or use buttons to remove or restore it. ähnelt.
+        ///   Looks up a localized string similar to Select a parameter and double-click it or use buttons to remove or restore it..
         /// </summary>
         public static string RemoveParamsDialog_InstructionsLabelText {
             get {
@@ -2265,7 +2265,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Cannot remove last parameter from setter or letter. ähnelt.
+        ///   Looks up a localized string similar to Cannot remove last parameter from setter or letter..
         /// </summary>
         public static string RemoveParamsDialog_RemoveIllegalSetterLetterParameter {
             get {
@@ -2274,7 +2274,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Remove parameters ähnelt.
+        ///   Looks up a localized string similar to Remove parameters.
         /// </summary>
         public static string RemoveParamsDialog_TitleText {
             get {
@@ -2283,7 +2283,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die No parameters in method &apos;{0}&apos;. ähnelt.
+        ///   Looks up a localized string similar to No parameters in method &apos;{0}&apos;..
         /// </summary>
         public static string RemovePresenter_NoParametersError {
             get {
@@ -2292,7 +2292,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rename ähnelt.
+        ///   Looks up a localized string similar to Rename.
         /// </summary>
         public static string Rename {
             get {
@@ -2301,7 +2301,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rename {0} ähnelt.
+        ///   Looks up a localized string similar to Rename {0}.
         /// </summary>
         public static string Rename_DeclarationType {
             get {
@@ -2310,7 +2310,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Rename ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Rename.
         /// </summary>
         public static string RenameDialog_Caption {
             get {
@@ -2319,8 +2319,8 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Renaming to &apos;{0}&apos; clashes with &apos;{1}&apos; in the same scope.
-        ///Are you sure you want to proceed with this rename? ähnelt.
+        ///   Looks up a localized string similar to Renaming to &apos;{0}&apos; clashes with &apos;{1}&apos; in the same scope.
+        ///Are you sure you want to proceed with this rename?.
         /// </summary>
         public static string RenameDialog_ConflictingNames {
             get {
@@ -2329,7 +2329,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Please specify new name for {0} &apos;{1}&apos;. ähnelt.
+        ///   Looks up a localized string similar to Please specify new name for {0} &apos;{1}&apos;..
         /// </summary>
         public static string RenameDialog_InstructionsLabelText {
             get {
@@ -2338,7 +2338,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Could not rename module. ähnelt.
+        ///   Looks up a localized string similar to Could not rename module..
         /// </summary>
         public static string RenameDialog_ModuleRenameError {
             get {
@@ -2347,7 +2347,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Could not rename project. ähnelt.
+        ///   Looks up a localized string similar to Could not rename project..
         /// </summary>
         public static string RenameDialog_ProjectRenameError {
             get {
@@ -2356,7 +2356,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rename identifier ähnelt.
+        ///   Looks up a localized string similar to Rename identifier.
         /// </summary>
         public static string RenameDialog_TitleText {
             get {
@@ -2365,7 +2365,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Rename the interface member? ähnelt.
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Rename the interface member?.
         /// </summary>
         public static string RenamePresenter_TargetIsInterfaceMemberImplementation {
             get {
@@ -2374,7 +2374,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Reorder Parameters ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Reorder Parameters.
         /// </summary>
         public static string ReorderParamsDialog_Caption {
             get {
@@ -2383,7 +2383,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Select a parameter and drag it or use buttons to move it up or down. ähnelt.
+        ///   Looks up a localized string similar to Select a parameter and drag it or use buttons to move it up or down..
         /// </summary>
         public static string ReorderParamsDialog_InstructionsLabelText {
             get {
@@ -2392,7 +2392,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Move down ähnelt.
+        ///   Looks up a localized string similar to Move down.
         /// </summary>
         public static string ReorderParamsDialog_MoveDownButtonText {
             get {
@@ -2401,7 +2401,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Move up ähnelt.
+        ///   Looks up a localized string similar to Move up.
         /// </summary>
         public static string ReorderParamsDialog_MoveUpButtonText {
             get {
@@ -2410,7 +2410,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Reorder parameters ähnelt.
+        ///   Looks up a localized string similar to Reorder parameters.
         /// </summary>
         public static string ReorderParamsDialog_TitleText {
             get {
@@ -2419,7 +2419,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Less than two parameters in method &apos;{0}&apos;. ähnelt.
+        ///   Looks up a localized string similar to Less than two parameters in method &apos;{0}&apos;..
         /// </summary>
         public static string ReorderPresenter_LessThanTwoParametersError {
             get {
@@ -2428,7 +2428,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Optional parameters must be specified at the end of the parameter list. ähnelt.
+        ///   Looks up a localized string similar to Optional parameters must be specified at the end of the parameter list..
         /// </summary>
         public static string ReorderPresenter_OptionalParametersMustBeLastError {
             get {
@@ -2437,7 +2437,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die ParamArray parameter must be specified last. ähnelt.
+        ///   Looks up a localized string similar to ParamArray parameter must be specified last..
         /// </summary>
         public static string ReorderPresenter_ParamArrayError {
             get {
@@ -2446,7 +2446,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Resolving... ähnelt.
+        ///   Looks up a localized string similar to Resolving....
         /// </summary>
         public static string ResolutionProgress {
             get {
@@ -2455,7 +2455,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Restore ähnelt.
+        ///   Looks up a localized string similar to Restore.
         /// </summary>
         public static string Restore {
             get {
@@ -2464,7 +2464,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Result ähnelt.
+        ///   Looks up a localized string similar to Result.
         /// </summary>
         public static string Result {
             get {
@@ -2473,7 +2473,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Build {0} ({1}) ähnelt.
+        ///   Looks up a localized string similar to Build {0} ({1}).
         /// </summary>
         public static string Rubberduck_AboutBuild {
             get {
@@ -2482,7 +2482,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck Add-In could not be loaded ähnelt.
+        ///   Looks up a localized string similar to Rubberduck Add-In could not be loaded.
         /// </summary>
         public static string RubberduckLoadFailure {
             get {
@@ -2491,7 +2491,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Ru&amp;bberduck ähnelt.
+        ///   Looks up a localized string similar to Ru&amp;bberduck.
         /// </summary>
         public static string RubberduckMenu {
             get {
@@ -2500,7 +2500,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;About... ähnelt.
+        ///   Looks up a localized string similar to &amp;About....
         /// </summary>
         public static string RubberduckMenu_About {
             get {
@@ -2509,7 +2509,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Code Explorer ähnelt.
+        ///   Looks up a localized string similar to &amp;Code Explorer.
         /// </summary>
         public static string RubberduckMenu_CodeExplorer {
             get {
@@ -2518,7 +2518,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Code &amp;Inspections ähnelt.
+        ///   Looks up a localized string similar to Code &amp;Inspections.
         /// </summary>
         public static string RubberduckMenu_CodeInspections {
             get {
@@ -2527,7 +2527,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Na&amp;vigate ähnelt.
+        ///   Looks up a localized string similar to Na&amp;vigate.
         /// </summary>
         public static string RubberduckMenu_Navigate {
             get {
@@ -2536,7 +2536,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Options ähnelt.
+        ///   Looks up a localized string similar to &amp;Options.
         /// </summary>
         public static string RubberduckMenu_Options {
             get {
@@ -2545,7 +2545,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Refactor ähnelt.
+        ///   Looks up a localized string similar to &amp;Refactor.
         /// </summary>
         public static string RubberduckMenu_Refactor {
             get {
@@ -2554,7 +2554,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Source Control ähnelt.
+        ///   Looks up a localized string similar to &amp;Source Control.
         /// </summary>
         public static string RubberduckMenu_SourceControl {
             get {
@@ -2563,7 +2563,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die To&amp;Do Items ähnelt.
+        ///   Looks up a localized string similar to To&amp;Do Items.
         /// </summary>
         public static string RubberduckMenu_ToDoItems {
             get {
@@ -2572,7 +2572,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Unit &amp;Tests ähnelt.
+        ///   Looks up a localized string similar to Unit &amp;Tests.
         /// </summary>
         public static string RubberduckMenu_UnitTests {
             get {
@@ -2581,7 +2581,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Run ähnelt.
+        ///   Looks up a localized string similar to Run.
         /// </summary>
         public static string Run {
             get {
@@ -2590,7 +2590,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Select All ähnelt.
+        ///   Looks up a localized string similar to Select All.
         /// </summary>
         public static string SelectAll_Button {
             get {
@@ -2599,7 +2599,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck Settings ähnelt.
+        ///   Looks up a localized string similar to Rubberduck Settings.
         /// </summary>
         public static string Settings_Caption {
             get {
@@ -2608,7 +2608,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Display language: ähnelt.
+        ///   Looks up a localized string similar to Display language:.
         /// </summary>
         public static string Settings_LanguageLabel {
             get {
@@ -2617,7 +2617,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Reset ähnelt.
+        ///   Looks up a localized string similar to Reset.
         /// </summary>
         public static string Settings_ResetSettings {
             get {
@@ -2626,7 +2626,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Reset settings to default configuration? ähnelt.
+        ///   Looks up a localized string similar to Reset settings to default configuration?.
         /// </summary>
         public static string Settings_ResetSettingsConfirmation {
             get {
@@ -2635,7 +2635,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Code Inspection Settings ähnelt.
+        ///   Looks up a localized string similar to Code Inspection Settings.
         /// </summary>
         public static string SettingsCaption_CodeInspections {
             get {
@@ -2644,7 +2644,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die General Settings ähnelt.
+        ///   Looks up a localized string similar to General Settings.
         /// </summary>
         public static string SettingsCaption_GeneralSettings {
             get {
@@ -2653,7 +2653,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die ToDo Settings ähnelt.
+        ///   Looks up a localized string similar to ToDo Settings.
         /// </summary>
         public static string SettingsCaption_ToDoSettings {
             get {
@@ -2662,7 +2662,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Configure inspection severity. Use &quot;DoNotShow&quot; to disable an inspection. ähnelt.
+        ///   Looks up a localized string similar to Configure inspection severity. Use &quot;DoNotShow&quot; to disable an inspection..
         /// </summary>
         public static string SettingsInstructions_CodeInspections {
             get {
@@ -2671,7 +2671,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Click [Ok] to close the window and apply changes, or [Cancel] to discard them. ähnelt.
+        ///   Looks up a localized string similar to Click [Ok] to close the window and apply changes, or [Cancel] to discard them..
         /// </summary>
         public static string SettingsInstructions_GeneralSettings {
             get {
@@ -2680,7 +2680,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Configure markers to be recognized in comments. ähnelt.
+        ///   Looks up a localized string similar to Configure markers to be recognized in comments..
         /// </summary>
         public static string SettingsInstructions_ToDoSettings {
             get {
@@ -2689,7 +2689,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Severity ähnelt.
+        ///   Looks up a localized string similar to Severity.
         /// </summary>
         public static string Severity {
             get {
@@ -2698,7 +2698,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Indent ähnelt.
+        ///   Looks up a localized string similar to Indent.
         /// </summary>
         public static string SmartIndenterMenu {
             get {
@@ -2707,7 +2707,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &apos;.gitattributes&apos; File ähnelt.
+        ///   Looks up a localized string similar to &apos;.gitattributes&apos; File.
         /// </summary>
         public static string SourceControl_AttributesFile {
             get {
@@ -2716,7 +2716,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Branches ähnelt.
+        ///   Looks up a localized string similar to Branches.
         /// </summary>
         public static string SourceControl_Branches {
             get {
@@ -2725,7 +2725,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Cancel ähnelt.
+        ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string SourceControl_CancelGlobalSettings {
             get {
@@ -2734,7 +2734,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Changes ähnelt.
+        ///   Looks up a localized string similar to Changes.
         /// </summary>
         public static string SourceControl_Changes {
             get {
@@ -2743,7 +2743,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Commit ähnelt.
+        ///   Looks up a localized string similar to Commit.
         /// </summary>
         public static string SourceControl_Commit {
             get {
@@ -2752,7 +2752,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Go ähnelt.
+        ///   Looks up a localized string similar to Go.
         /// </summary>
         public static string SourceControl_CommitButtonLabel {
             get {
@@ -2761,7 +2761,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Commit message: ähnelt.
+        ///   Looks up a localized string similar to Commit message:.
         /// </summary>
         public static string SourceControl_CommitMessageLabel {
             get {
@@ -2770,7 +2770,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Commit and Push ähnelt.
+        ///   Looks up a localized string similar to Commit and Push.
         /// </summary>
         public static string SourceControl_CommitPush {
             get {
@@ -2779,7 +2779,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Commit and Sync ähnelt.
+        ///   Looks up a localized string similar to Commit and Sync.
         /// </summary>
         public static string SourceControl_CommitSync {
             get {
@@ -2788,7 +2788,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Create Branch ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Create Branch.
         /// </summary>
         public static string SourceControl_CreateNewBranchCaption {
             get {
@@ -2797,7 +2797,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Please specify branch name. ähnelt.
+        ///   Looks up a localized string similar to Please specify branch name..
         /// </summary>
         public static string SourceControl_CreateNewBranchInstructions {
             get {
@@ -2806,7 +2806,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die New branch ähnelt.
+        ///   Looks up a localized string similar to New branch.
         /// </summary>
         public static string SourceControl_CreateNewBranchTitle {
             get {
@@ -2815,7 +2815,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Create New Repository ähnelt.
+        ///   Looks up a localized string similar to Create New Repository.
         /// </summary>
         public static string SourceControl_CreateNewRepo {
             get {
@@ -2824,7 +2824,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Branch: ähnelt.
+        ///   Looks up a localized string similar to Branch:.
         /// </summary>
         public static string SourceControl_CurrentBranchLabel {
             get {
@@ -2833,7 +2833,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Default Repository Location ähnelt.
+        ///   Looks up a localized string similar to Default Repository Location.
         /// </summary>
         public static string SourceControl_DefaultRepoLocationLabel {
             get {
@@ -2842,7 +2842,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Delete branch ähnelt.
+        ///   Looks up a localized string similar to Delete branch.
         /// </summary>
         public static string SourceControl_DeleteBranchButton {
             get {
@@ -2851,7 +2851,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Delete Branch ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Delete Branch.
         /// </summary>
         public static string SourceControl_DeleteBranchCaption {
             get {
@@ -2860,7 +2860,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Please specify branch name. ähnelt.
+        ///   Looks up a localized string similar to Please specify branch name..
         /// </summary>
         public static string SourceControl_DeleteBranchInstructionsLabel {
             get {
@@ -2869,7 +2869,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Delete branch ähnelt.
+        ///   Looks up a localized string similar to Delete branch.
         /// </summary>
         public static string SourceControl_DeleteBranchTitleLable {
             get {
@@ -2878,7 +2878,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Destination ähnelt.
+        ///   Looks up a localized string similar to Destination.
         /// </summary>
         public static string SourceControl_DestinationLabel {
             get {
@@ -2887,7 +2887,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Email Address ähnelt.
+        ///   Looks up a localized string similar to Email Address.
         /// </summary>
         public static string SourceControl_EmailAddressLabel {
             get {
@@ -2896,7 +2896,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Excluded changes ähnelt.
+        ///   Looks up a localized string similar to Excluded changes.
         /// </summary>
         public static string SourceControl_ExcludedChanges {
             get {
@@ -2905,7 +2905,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Fetch ähnelt.
+        ///   Looks up a localized string similar to Fetch.
         /// </summary>
         public static string SourceControl_FetchCommitsLabel {
             get {
@@ -2914,7 +2914,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Global Settings ähnelt.
+        ///   Looks up a localized string similar to Global Settings.
         /// </summary>
         public static string SourceControl_GlobalSettings {
             get {
@@ -2923,7 +2923,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &apos;.gitignore&apos; File ähnelt.
+        ///   Looks up a localized string similar to &apos;.gitignore&apos; File.
         /// </summary>
         public static string SourceControl_IgnoreFile {
             get {
@@ -2932,7 +2932,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Included changes ähnelt.
+        ///   Looks up a localized string similar to Included changes.
         /// </summary>
         public static string SourceControl_IncludedChanges {
             get {
@@ -2941,7 +2941,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Incoming commits ähnelt.
+        ///   Looks up a localized string similar to Incoming commits.
         /// </summary>
         public static string SourceControl_IncomingCommits {
             get {
@@ -2950,7 +2950,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Init New Repo from this Project ähnelt.
+        ///   Looks up a localized string similar to Init New Repo from this Project.
         /// </summary>
         public static string SourceControl_InitRepoButtonToolTip {
             get {
@@ -2959,7 +2959,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Merge ähnelt.
+        ///   Looks up a localized string similar to Merge.
         /// </summary>
         public static string SourceControl_MergeBranch {
             get {
@@ -2968,7 +2968,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rubberduck - Merge ähnelt.
+        ///   Looks up a localized string similar to Rubberduck - Merge.
         /// </summary>
         public static string SourceControl_MergeFormCaption {
             get {
@@ -2977,7 +2977,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Please select source and destination branches. ähnelt.
+        ///   Looks up a localized string similar to Please select source and destination branches..
         /// </summary>
         public static string SourceControl_MergeFormInstructions {
             get {
@@ -2986,7 +2986,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Merge branches ähnelt.
+        ///   Looks up a localized string similar to Merge branches.
         /// </summary>
         public static string SourceControl_MergeFormTitle {
             get {
@@ -2995,7 +2995,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die New Branch ähnelt.
+        ///   Looks up a localized string similar to New Branch.
         /// </summary>
         public static string SourceControl_NewBranch {
             get {
@@ -3004,7 +3004,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die No repository found. ähnelt.
+        ///   Looks up a localized string similar to No repository found..
         /// </summary>
         public static string SourceControl_NoRepoFound {
             get {
@@ -3013,7 +3013,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Open Working Directory ähnelt.
+        ///   Looks up a localized string similar to Open Working Directory.
         /// </summary>
         public static string SourceControl_OpenWorkingDirectory {
             get {
@@ -3022,7 +3022,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Open Working Directory ähnelt.
+        ///   Looks up a localized string similar to Open Working Directory.
         /// </summary>
         public static string SourceControl_OpenWorkingFolderToolTip {
             get {
@@ -3031,7 +3031,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Outgoing commits ähnelt.
+        ///   Looks up a localized string similar to Outgoing commits.
         /// </summary>
         public static string SourceControl_OutgoingCommits {
             get {
@@ -3040,7 +3040,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Published Branches ähnelt.
+        ///   Looks up a localized string similar to Published Branches.
         /// </summary>
         public static string SourceControl_PublishedBranchesLabel {
             get {
@@ -3049,7 +3049,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Pull ähnelt.
+        ///   Looks up a localized string similar to Pull.
         /// </summary>
         public static string SourceControl_PullCommitsLabel {
             get {
@@ -3058,7 +3058,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Push ähnelt.
+        ///   Looks up a localized string similar to Push.
         /// </summary>
         public static string SourceControl_PushCommitsLabel {
             get {
@@ -3067,7 +3067,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Refreshes pending changes ähnelt.
+        ///   Looks up a localized string similar to Refreshes pending changes.
         /// </summary>
         public static string SourceControl_RefreshButtonToolTip {
             get {
@@ -3076,7 +3076,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Repository Settings ähnelt.
+        ///   Looks up a localized string similar to Repository Settings.
         /// </summary>
         public static string SourceControl_RespositorySettings {
             get {
@@ -3085,7 +3085,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Settings ähnelt.
+        ///   Looks up a localized string similar to Settings.
         /// </summary>
         public static string SourceControl_Settings {
             get {
@@ -3094,7 +3094,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Source ähnelt.
+        ///   Looks up a localized string similar to Source.
         /// </summary>
         public static string SourceControl_SourceLabel {
             get {
@@ -3103,7 +3103,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully Merged {0} into {1} ähnelt.
+        ///   Looks up a localized string similar to Successfully Merged {0} into {1}.
         /// </summary>
         public static string SourceControl_SuccessfulMerge {
             get {
@@ -3112,7 +3112,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Sync ähnelt.
+        ///   Looks up a localized string similar to Sync.
         /// </summary>
         public static string SourceControl_SyncCommitsLabel {
             get {
@@ -3121,7 +3121,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Unpublished Branches ähnelt.
+        ///   Looks up a localized string similar to Unpublished Branches.
         /// </summary>
         public static string SourceControl_UnpublishedBranchesLabel {
             get {
@@ -3130,7 +3130,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Unsynced commits ähnelt.
+        ///   Looks up a localized string similar to Unsynced commits.
         /// </summary>
         public static string SourceControl_UnsyncedCommits {
             get {
@@ -3139,7 +3139,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Untracked files ähnelt.
+        ///   Looks up a localized string similar to Untracked files.
         /// </summary>
         public static string SourceControl_UntrackedFiles {
             get {
@@ -3148,7 +3148,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Update ähnelt.
+        ///   Looks up a localized string similar to Update.
         /// </summary>
         public static string SourceControl_UpdateGlobalSettings {
             get {
@@ -3157,7 +3157,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die User Name ähnelt.
+        ///   Looks up a localized string similar to User Name.
         /// </summary>
         public static string SourceControl_UserNameLabel {
             get {
@@ -3166,7 +3166,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Source Control ähnelt.
+        ///   Looks up a localized string similar to Source Control.
         /// </summary>
         public static string SourceControlPanel_Caption {
             get {
@@ -3175,7 +3175,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Add ähnelt.
+        ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string TestExplorer_AddButtonText {
             get {
@@ -3184,7 +3184,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Test Method (Expected Error) ähnelt.
+        ///   Looks up a localized string similar to Test Method (Expected Error).
         /// </summary>
         public static string TestExplorer_AddExpectedErrorTestMethod {
             get {
@@ -3193,7 +3193,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Test Method ähnelt.
+        ///   Looks up a localized string similar to Test Method.
         /// </summary>
         public static string TestExplorer_AddTestMethod {
             get {
@@ -3202,7 +3202,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Test Module ähnelt.
+        ///   Looks up a localized string similar to Test Module.
         /// </summary>
         public static string TestExplorer_AddTestModule {
             get {
@@ -3211,7 +3211,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Duration ähnelt.
+        ///   Looks up a localized string similar to Duration.
         /// </summary>
         public static string TestExplorer_Duration {
             get {
@@ -3220,7 +3220,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Navigate to selected ähnelt.
+        ///   Looks up a localized string similar to Navigate to selected.
         /// </summary>
         public static string TestExplorer_GotoSelectionToolTip {
             get {
@@ -3229,7 +3229,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Message ähnelt.
+        ///   Looks up a localized string similar to Message.
         /// </summary>
         public static string TestExplorer_Message {
             get {
@@ -3238,7 +3238,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Method Name ähnelt.
+        ///   Looks up a localized string similar to Method Name.
         /// </summary>
         public static string TestExplorer_MethodName {
             get {
@@ -3247,7 +3247,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Qualified Member Name ähnelt.
+        ///   Looks up a localized string similar to Qualified Member Name.
         /// </summary>
         public static string TestExplorer_QualifiedMemberName {
             get {
@@ -3256,7 +3256,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die All Tests ähnelt.
+        ///   Looks up a localized string similar to All Tests.
         /// </summary>
         public static string TestExplorer_RunAllTests {
             get {
@@ -3265,7 +3265,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Run ähnelt.
+        ///   Looks up a localized string similar to Run.
         /// </summary>
         public static string TestExplorer_RunButtonText {
             get {
@@ -3274,7 +3274,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Failed Tests ähnelt.
+        ///   Looks up a localized string similar to Failed Tests.
         /// </summary>
         public static string TestExplorer_RunFailedTests {
             get {
@@ -3283,7 +3283,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Repeat Last Run ähnelt.
+        ///   Looks up a localized string similar to Repeat Last Run.
         /// </summary>
         public static string TestExplorer_RunLastRunTests {
             get {
@@ -3292,7 +3292,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Not Run Tests ähnelt.
+        ///   Looks up a localized string similar to Not Run Tests.
         /// </summary>
         public static string TestExplorer_RunNotRunTests {
             get {
@@ -3301,7 +3301,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Passed Tests ähnelt.
+        ///   Looks up a localized string similar to Passed Tests.
         /// </summary>
         public static string TestExplorer_RunPassedTests {
             get {
@@ -3310,7 +3310,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Selected Tests ähnelt.
+        ///   Looks up a localized string similar to Selected Tests.
         /// </summary>
         public static string TestExplorer_RunSelectedTests {
             get {
@@ -3319,7 +3319,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die {0} Failed ähnelt.
+        ///   Looks up a localized string similar to {0} Failed.
         /// </summary>
         public static string TestExplorer_TestNumberFailed {
             get {
@@ -3328,7 +3328,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die {0} Inconclusive ähnelt.
+        ///   Looks up a localized string similar to {0} Inconclusive.
         /// </summary>
         public static string TestExplorer_TestNumberInconclusive {
             get {
@@ -3337,7 +3337,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die {0} Passed ähnelt.
+        ///   Looks up a localized string similar to {0} Passed.
         /// </summary>
         public static string TestExplorer_TestNumberPassed {
             get {
@@ -3346,7 +3346,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue. ähnelt.
+        ///   Looks up a localized string similar to Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue..
         /// </summary>
         public static string TestExplorerDockablePresenter_MultipleTestsSameNameError {
             get {
@@ -3355,7 +3355,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Test Explorer ähnelt.
+        ///   Looks up a localized string similar to Test Explorer.
         /// </summary>
         public static string TestExplorerWindow_Caption {
             get {
@@ -3364,7 +3364,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Run All Tests ähnelt.
+        ///   Looks up a localized string similar to &amp;Run All Tests.
         /// </summary>
         public static string TestMenu_RunAllTests {
             get {
@@ -3373,7 +3373,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &amp;Test Explorer ähnelt.
+        ///   Looks up a localized string similar to &amp;Test Explorer.
         /// </summary>
         public static string TestMenu_TextExplorer {
             get {
@@ -3382,7 +3382,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die ToDo Explorer ähnelt.
+        ///   Looks up a localized string similar to ToDo Explorer.
         /// </summary>
         public static string ToDoExplorer_Caption {
             get {
@@ -3391,7 +3391,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Description ähnelt.
+        ///   Looks up a localized string similar to Description.
         /// </summary>
         public static string TodoExplorer_Description {
             get {
@@ -3400,7 +3400,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Line Number ähnelt.
+        ///   Looks up a localized string similar to Line Number.
         /// </summary>
         public static string TodoExplorer_LineNumber {
             get {
@@ -3409,7 +3409,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die BUG: ähnelt.
+        ///   Looks up a localized string similar to BUG.
         /// </summary>
         public static string ToDoMarkerBug {
             get {
@@ -3418,7 +3418,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die NOTE: ähnelt.
+        ///   Looks up a localized string similar to NOTE.
         /// </summary>
         public static string ToDoMarkerNote {
             get {
@@ -3427,7 +3427,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die TODO: ähnelt.
+        ///   Looks up a localized string similar to TODO.
         /// </summary>
         public static string ToDoMarkerToDo {
             get {
@@ -3436,7 +3436,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die High ähnelt.
+        ///   Looks up a localized string similar to High.
         /// </summary>
         public static string ToDoPriority_High {
             get {
@@ -3445,7 +3445,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Low ähnelt.
+        ///   Looks up a localized string similar to Low.
         /// </summary>
         public static string ToDoPriority_Low {
             get {
@@ -3454,7 +3454,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Medium ähnelt.
+        ///   Looks up a localized string similar to Medium.
         /// </summary>
         public static string ToDoPriority_Medium {
             get {
@@ -3463,7 +3463,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die To-Do Explorer ähnelt.
+        ///   Looks up a localized string similar to To-Do Explorer.
         /// </summary>
         public static string TodoSettings_Caption {
             get {
@@ -3472,7 +3472,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Priority ähnelt.
+        ///   Looks up a localized string similar to Priority.
         /// </summary>
         public static string TodoSettings_Priority {
             get {
@@ -3481,7 +3481,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Priority: ähnelt.
+        ///   Looks up a localized string similar to Priority:.
         /// </summary>
         public static string TodoSettings_PriorityLabel {
             get {
@@ -3490,7 +3490,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Text ähnelt.
+        ///   Looks up a localized string similar to Text.
         /// </summary>
         public static string TodoSettings_Text {
             get {
@@ -3499,7 +3499,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Text: ähnelt.
+        ///   Looks up a localized string similar to Text:.
         /// </summary>
         public static string TodoSettings_TextLabel {
             get {
@@ -3508,7 +3508,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Token Text: ähnelt.
+        ///   Looks up a localized string similar to Token Text:.
         /// </summary>
         public static string TodoSettings_TokenLabel {
             get {
@@ -3517,7 +3517,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Token List: ähnelt.
+        ///   Looks up a localized string similar to Token List:.
         /// </summary>
         public static string TodoSettings_TokenListLabel {
             get {
@@ -3526,7 +3526,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Type ähnelt.
+        ///   Looks up a localized string similar to Type.
         /// </summary>
         public static string Type {
             get {
@@ -3535,7 +3535,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Use of unassigned variable &apos;{0}&apos; ähnelt.
+        ///   Looks up a localized string similar to Use of unassigned variable &apos;{0}&apos;.
         /// </summary>
         public static string UnassignedVariableUsage_ {
             get {
@@ -3544,7 +3544,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Use of untyped function &apos;{0}&apos;. String-returning version &apos;{0}$&apos; is available. ähnelt.
+        ///   Looks up a localized string similar to Use of untyped function &apos;{0}&apos;. String-returning version &apos;{0}$&apos; is available..
         /// </summary>
         public static string UntypedFunctionUsage_ {
             get {
@@ -3553,7 +3553,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Variable &apos;{0}&apos; is never assigned ähnelt.
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is never assigned.
         /// </summary>
         public static string VariableNotAssigned_ {
             get {
@@ -3562,7 +3562,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Variable &apos;{0}&apos; is never used ähnelt.
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is never used.
         /// </summary>
         public static string VariableNotUsed_ {
             get {
@@ -3571,7 +3571,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Warning ähnelt.
+        ///   Looks up a localized string similar to Warning.
         /// </summary>
         public static string Warning {
             get {
@@ -3580,7 +3580,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Property &apos;{0}&apos; has no getter. ähnelt.
+        ///   Looks up a localized string similar to Property &apos;{0}&apos; has no getter..
         /// </summary>
         public static string WriteOnlyProperty_ {
             get {

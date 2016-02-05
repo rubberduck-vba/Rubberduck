@@ -17,9 +17,9 @@ namespace RubberduckTests
         {
             var markers = new List<ToDoMarker>
             {
-                new ToDoMarker("Todo:", TodoPriority.Medium),
-                new ToDoMarker("Note:", TodoPriority.Low),
-                new ToDoMarker("Bug:", TodoPriority.High)
+                new ToDoMarker("Todo", TodoPriority.Medium),
+                new ToDoMarker("Note", TodoPriority.Low),
+                new ToDoMarker("Bug", TodoPriority.High)
             };
             return markers;
         }
@@ -42,12 +42,12 @@ namespace RubberduckTests
         public void ViewTextIsNotNullOrEmptyAfterControllerConstruction()
         {
             //arrange
-            var markers = new List<ToDoMarker> {new ToDoMarker("Todo:", TodoPriority.Medium)};
+            var markers = new List<ToDoMarker> {new ToDoMarker("Todo", TodoPriority.Medium)};
 
             var view = new TodoListSettingsUserControl(markers, new Mock<GridViewSort<ToDoMarker>>("", false).Object);
 
             //assert
-            Assert.AreEqual("Todo:", view.ActiveMarkerText);
+            Assert.AreEqual("Todo", view.ActiveMarkerText);
         }
 
         [TestMethod]
@@ -70,9 +70,9 @@ namespace RubberduckTests
         {
             var markers = new List<ToDoMarker>
             {
-                new ToDoMarker("Todo:", TodoPriority.Medium),
-                new ToDoMarker("Note:", TodoPriority.Low),
-                new ToDoMarker("Bug:", TodoPriority.High)
+                new ToDoMarker("Todo", TodoPriority.Medium),
+                new ToDoMarker("Note", TodoPriority.Low),
+                new ToDoMarker("Bug", TodoPriority.High)
             };
 
             var view = new TodoListSettingsUserControl(markers, new Mock<GridViewSort<ToDoMarker>>("", false).Object);
@@ -88,8 +88,8 @@ namespace RubberduckTests
         {
             var markers = new List<ToDoMarker>
             {
-                new ToDoMarker("Todo:", TodoPriority.Medium),
-                new ToDoMarker("Note:", TodoPriority.Low)
+                new ToDoMarker("Todo", TodoPriority.Medium),
+                new ToDoMarker("Note", TodoPriority.Low)
             };
 
             var view = new TodoListSettingsUserControl(markers, new Mock<GridViewSort<ToDoMarker>>("", false).Object);
@@ -154,7 +154,7 @@ namespace RubberduckTests
             var markers = GetTestMarkers();
 
             var addView = new Mock<IAddTodoMarkerView>();
-            addView.SetupProperty(a => a.MarkerText, "TODO:");
+            addView.SetupProperty(a => a.MarkerText, "TODO");
             addView.SetupProperty(a => a.IsValidMarker);
 
             var view = new Mock<ITodoSettingsView>();

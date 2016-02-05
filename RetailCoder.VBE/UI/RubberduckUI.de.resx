@@ -444,13 +444,13 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <comment>0: Version; 1: Architektur</comment>
   </data>
   <data name="ToDoMarkerBug" xml:space="preserve">
-    <value>BUG:</value>
+    <value>BUG</value>
   </data>
   <data name="ToDoMarkerNote" xml:space="preserve">
-    <value>NOTE:</value>
+    <value>NOTE</value>
   </data>
   <data name="ToDoMarkerToDo" xml:space="preserve">
-    <value>TODO:</value>
+    <value>TODO</value>
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementierungen von '{0}'</value>
