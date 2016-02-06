@@ -55,8 +55,8 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            UpdateSignature();
             UpdateCalls();
+            UpdateSignature();
         }
 
         private void UpdateSignature()
@@ -68,7 +68,7 @@ namespace Rubberduck.Inspections
             var newArgText = argText.Contains("ByRef ") ? argText.Replace("ByRef ", "ByVal ") : "ByVal " + argText;
 
             var newFunctionWithoutReturn = subStmtText.Insert(subStmtText.IndexOf(argListText, StringComparison.Ordinal) + argListText.Length,
-                                                              _argQualifiedContext.Context.asTypeClause().GetText())
+                                                              " " + _argQualifiedContext.Context.asTypeClause().GetText())
                                                       .Replace("Sub", "Function")
                                                       .Replace(argText, newArgText);
 
