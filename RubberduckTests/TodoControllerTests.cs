@@ -97,7 +97,7 @@ namespace RubberduckTests
             //act
             view.SelectedIndex = 1;
 
-            Assert.AreEqual("Note:", view.ActiveMarkerText);
+            Assert.AreEqual("Note", view.ActiveMarkerText);
         }
 
         [TestMethod]

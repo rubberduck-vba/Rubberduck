@@ -440,13 +440,13 @@
     <value>「0」（「1」）をビルド</value>
   </data>
   <data name="ToDoMarkerBug" xml:space="preserve">
-    <value>BUG</value>
+    <value>BUG </value>
   </data>
   <data name="ToDoMarkerNote" xml:space="preserve">
-    <value>NOTE</value>
+    <value>NOTE </value>
   </data>
   <data name="ToDoMarkerToDo" xml:space="preserve">
-    <value>TODO</value>
+    <value>TODO </value>
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>「{0}」の実装</value>

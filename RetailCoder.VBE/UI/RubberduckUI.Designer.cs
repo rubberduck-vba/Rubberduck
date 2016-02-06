@@ -3409,7 +3409,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BUG.
+        ///   Looks up a localized string similar to BUG .
         /// </summary>
         public static string ToDoMarkerBug {
             get {
@@ -3418,7 +3418,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NOTE.
+        ///   Looks up a localized string similar to NOTE .
         /// </summary>
         public static string ToDoMarkerNote {
             get {
@@ -3427,7 +3427,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TODO.
+        ///   Looks up a localized string similar to TODO .
         /// </summary>
         public static string ToDoMarkerToDo {
             get {

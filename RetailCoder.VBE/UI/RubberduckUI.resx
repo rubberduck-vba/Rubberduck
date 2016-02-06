@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -444,13 +444,13 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <comment>0: Version; 1: ProcessorArchitecture</comment>
   </data>
   <data name="ToDoMarkerBug" xml:space="preserve">
-    <value>BUG</value>
+    <value>BUG </value>
   </data>
   <data name="ToDoMarkerNote" xml:space="preserve">
-    <value>NOTE</value>
+    <value>NOTE </value>
   </data>
   <data name="ToDoMarkerToDo" xml:space="preserve">
-    <value>TODO</value>
+    <value>TODO </value>
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementations of '{0}'</value>
