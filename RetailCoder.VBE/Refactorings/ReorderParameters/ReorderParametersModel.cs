@@ -93,12 +93,9 @@ namespace Rubberduck.Refactorings.ReorderParameters
         {
             foreach (var events in Declarations.Where(item => item.DeclarationType == DeclarationType.Event))
             {
-                foreach (var reference in Declarations.FindHandlersForEvent(events))
+                if (Declarations.FindHandlersForEvent(events).Any(reference => Equals(reference.Item2, TargetDeclaration)))
                 {
-                    if (Equals(reference.Item2, TargetDeclaration))
-                    {
-                        return events;
-                    }
+                    return events;
                 }
             }
             return TargetDeclaration;
