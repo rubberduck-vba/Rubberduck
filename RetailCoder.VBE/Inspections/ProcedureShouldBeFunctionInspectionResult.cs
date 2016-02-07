@@ -72,6 +72,22 @@ namespace Rubberduck.Inspections
                                                       .Replace("Sub", "Function")
                                                       .Replace(argText, newArgText);
 
+            var indexOfInstructionSeparators = new List<int>();
+            var functionWithoutStringLiterals = newFunctionWithoutReturn.StripStringLiterals();
+            for (var i = 0; i < functionWithoutStringLiterals.Length; i++)
+            {
+                if (functionWithoutStringLiterals[i] == ':')
+                {
+                    indexOfInstructionSeparators.Add(i);
+                }
+            }
+
+            if (indexOfInstructionSeparators.Count > 1)
+            {
+                indexOfInstructionSeparators.Reverse();
+                newFunctionWithoutReturn = indexOfInstructionSeparators.Aggregate(newFunctionWithoutReturn, (current, index) => current.Remove(index, 1).Insert(index, Environment.NewLine));
+            }
+
             var newfunctionWithReturn = newFunctionWithoutReturn
                 .Insert(newFunctionWithoutReturn.LastIndexOf(Environment.NewLine, StringComparison.Ordinal),
                         Environment.NewLine + "    " + _subStmtQualifiedContext.Context.ambiguousIdentifier().GetText() +

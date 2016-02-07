@@ -315,12 +315,52 @@ End Sub";
 
             const string expectedCode =
 @"Private Function Foo(ByVal arg1 As Integer) As Integer
-    arg1 = 6
-    Goo arg1
+ arg1 = 6
+ Goo arg1
     Foo = arg1
-End Function
+ End Function
 
 Sub Goo(ByVal a As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody_BodyOnSingleLine_BodyHasStringLiteralContainingColon()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByRef arg1 As Integer): arg1 = 6: Goo ""test: test"": End Sub
+
+Sub Goo(ByVal a As String)
+End Sub";
+
+            const string expectedCode =
+@"Private Function Foo(ByVal arg1 As Integer) As Integer
+ arg1 = 6
+ Goo ""test: test""
+    Foo = arg1
+ End Function
+
+Sub Goo(ByVal a As String)
 End Sub";
 
             //Arrange
