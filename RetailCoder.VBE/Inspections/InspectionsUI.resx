@@ -371,4 +371,10 @@
   <data name="SelfAssignedDeclarationInspectionName" xml:space="preserve">
     <value>Self-assigned property</value>
   </data>
+  <data name="FunctionReturnValueNotUsedInspectionName" xml:space="preserve">
+    <value>Function return value is never used.</value>
+  </data>
+  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+    <value>Return value of function '{0}' is never used.</value>
+  </data>
 </root>
