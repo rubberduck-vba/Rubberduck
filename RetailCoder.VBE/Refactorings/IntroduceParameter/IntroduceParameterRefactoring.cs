@@ -340,8 +340,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private Declaration GetInterfaceImplementation(Declaration target)
         {
-            var declaration = target;
-            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
+            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(target));
 
             if (interfaceImplementation == null) { return null; }
 

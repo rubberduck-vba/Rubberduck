@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -11,18 +11,15 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class FunctionReturnValueNotUsedInspectionTests
+    public class ProcedureShouldBeFunctionInspectionTests
     {
         [TestMethod]
-        public void FunctionReturnValueNotUsed_ReturnsResult_ExplicitCallWithoutAssignment()
+        public void ProcedureShouldBeFunction_ReturnsResult()
         {
             const string inputCode =
-@"Public Function Foo(ByVal bar As String) As Integer
-    Foo = 42
-End Function
-Public Sub Bar()
-    Call Foo(""Test"")
+@"Private Sub Foo(ByRef foo As Boolean)
 End Sub";
+
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
@@ -34,161 +31,20 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void FunctionReturnValueNotUsed_ReturnsResult_CallWithoutAssignment()
+        public void ProcedureShouldBeFunction_ReturnsResult_MultipleSubs()
         {
             const string inputCode =
-@"Public Function Foo(ByVal bar As String) As Integer
-    Foo = 42
-End Function
-Public Sub Bar()
-    Foo ""Test""
-End Sub";
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void FunctionReturnValueNotUsed_ReturnsResult_AddressOf()
-        {
-            const string inputCode =
-@"Public Function Foo(ByVal bar As String) As Integer
-    Foo = 42
-End Function
-Public Sub Bar()
-    Bar AddressOf Foo
-End Sub";
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void FunctionReturnValueNotUsed_ReturnsResult_NoReturnValueAssignment()
-        {
-            const string inputCode =
-@"Public Function Foo() As Integer
-End Function
-Public Sub Bar()
-    Foo
-End Sub";
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_MultipleConsecutiveCalls()
-        {
-            const string inputCode =
-@"Public Function Foo(ByVal bar As String) As Integer
-    Foo = 42
-End Function
-Public Sub Baz()
-    Foo Foo(Foo(""Bar""))
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_IfStatement()
-        {
-            const string inputCode =
-@"Public Function Foo(ByVal bar As String) As Integer
-    Foo = 42
-End Function
-Public Sub Baz()
-    If Foo(""Test"") Then
-    End If
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_ForEachStatement()
-        {
-            const string inputCode =
-@"Public Function Foo(ByVal bar As String) As Integer
-    Foo = 42
-End Function
-Sub Bar(ByVal fizz As Boolean)
+@"Private Sub Foo(ByRef foo As Boolean)
 End Sub
-Public Sub Baz()
-    For Each Bar In Foo
-    Next Bar
+
+Private Sub Goo(ByRef foo As Integer)
 End Sub";
 
             //Arrange
@@ -202,176 +58,229 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+            Assert.AreEqual(2, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_WhileStatement()
+        public void ProcedureShouldBeFunction_DoesNotReturnResult_Function()
         {
             const string inputCode =
-@"Public Function Foo(ByVal bar As String) As Integer
-    Foo = 42
-End Function
-Sub Bar(ByVal fizz As Boolean)
-End Sub
-Public Sub Baz()
-    While Foo
-    Wend
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_DoUntilStatement()
-        {
-            const string inputCode =
-@"Public Function Foo(ByVal bar As String) As Integer
-    Foo = 42
-End Function
-Sub Bar(ByVal fizz As Boolean)
-End Sub
-Public Sub Baz()
-    Do Until Foo
-    Loop
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_ReturnValueAssignment()
-        {
-            const string inputCode =
-@"Public Function Foo(ByVal bar As String) As Integer
-    Foo = 42
-End Function
-Public Sub Baz()
-    TestVal = Foo(""Test"")
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_ArgumentFunctionCall()
-        {
-            const string inputCode =
-@"Public Function Foo(ByVal bar As String) As Integer
-    Foo = 42
-End Function
-Sub Bar(ByVal fizz As Boolean)
-End Sub
-Public Sub Baz()
-    Bar Foo(""Test"")
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_IgnoresBuiltInFunctions()
-        {
-            const string inputCode =
-@"Public Sub Dummy()
-    MsgBox ""Test""
-    Workbooks.Add
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void FunctionReturnValueNotUsed_QuickFixWorks()
-        {
-            const string inputCode =
-@"Public Function Foo(ByVal bar As String) As Boolean
-    If True Then
-        Foo = _
-        True
-    Else
-        Foo = False
-    End If
+@"Private Function Foo(ByRef bar As Integer) As Integer
+    Foo = bar
 End Function";
 
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void ProcedureShouldBeFunction_DoesNotReturnResult_SingleByValParam()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal foo As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void ProcedureShouldBeFunction_DoesNotReturnsResult_MultipleByValParams()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal foo As Integer, ByVal goo As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void ProcedureShouldBeFunction_DoesNotReturnsResult_MultipleByRefParams()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByRef foo As Integer, ByRef goo As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void ProcedureShouldBeFunction_DoesNotReturnResult_InterfaceImplementation()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Sub DoSomething(ByRef a As Integer)
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByRef a As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void ProcedureShouldBeFunction_DoesNotReturnResult_EventImplementation()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Event Foo(ByRef arg1 As Integer)";
+            const string inputCode2 =
+@"Private WithEvents abc As Class1
+
+Private Sub abc_Foo(ByRef arg1 As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void ProcedureShouldBeFunction_QuickFixWorks()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByRef arg1 As Integer)
+End Sub";
+
             const string expectedCode =
-@"Public Sub Foo(ByVal bar As String)
-    If True Then
-    Else
-    End If
+@"Private Function Foo(ByVal arg1 As Integer) As Integer
+    Foo = arg1
+End Function";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByRef arg1 As Integer)
+    arg1 = 6
+    Goo arg1
+End Sub
+
+Sub Goo(ByVal a As Integer)
+End Sub";
+
+            const string expectedCode =
+@"Private Function Foo(ByVal arg1 As Integer) As Integer
+    arg1 = 6
+    Goo arg1
+    Foo = arg1
+End Function
+
+Sub Goo(ByVal a As Integer)
 End Sub";
 
             //Arrange
@@ -387,12 +296,176 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.First().Fix();
 
-            string actual = module.Lines();
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody_BodyOnSingleLine()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByRef arg1 As Integer): arg1 = 6: Goo arg1: End Sub
+
+Sub Goo(ByVal a As Integer)
+End Sub";
+
+            const string expectedCode =
+@"Private Function Foo(ByVal arg1 As Integer) As Integer
+ arg1 = 6
+ Goo arg1
+    Foo = arg1
+ End Function
+
+Sub Goo(ByVal a As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody_BodyOnSingleLine_BodyHasStringLiteralContainingColon()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByRef arg1 As Integer): arg1 = 6: Goo ""test: test"": End Sub
+
+Sub Goo(ByVal a As String)
+End Sub";
+
+            const string expectedCode =
+@"Private Function Foo(ByVal arg1 As Integer) As Integer
+ arg1 = 6
+ Goo ""test: test""
+    Foo = arg1
+ End Function
+
+Sub Goo(ByVal a As String)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void ProcedureShouldBeFunction_QuickFixWorks_UpdatesCallsAbove()
+        {
+            const string inputCode =
+@"Sub Goo(ByVal a As Integer)
+    Dim fizz As Integer
+    Foo fizz
+End Sub
+
+Private Sub Foo(ByRef arg1 As Integer)
+End Sub";
+
+            const string expectedCode =
+@"Sub Goo(ByVal a As Integer)
+    Dim fizz As Integer
+    fizz = Foo(fizz)
+End Sub
+
+Private Function Foo(ByVal arg1 As Integer) As Integer
+    Foo = arg1
+End Function";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void ProcedureShouldBeFunction_QuickFixWorks_UpdatesCallsBelow()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByRef arg1 As Integer)
+End Sub
+
+Sub Goo(ByVal a As Integer)
+    Dim fizz As Integer
+    Foo fizz
+End Sub";
+
+            const string expectedCode =
+@"Private Function Foo(ByVal arg1 As Integer) As Integer
+    Foo = arg1
+End Function
+
+Sub Goo(ByVal a As Integer)
+    Dim fizz As Integer
+    fizz = Foo(fizz)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }
@@ -400,15 +473,15 @@ End Sub";
         [TestMethod]
         public void InspectionType()
         {
-            var inspection = new FunctionReturnValueNotUsedInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
+            var inspection = new ProcedureShouldBeFunctionInspection(null);
+            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
         [TestMethod]
         public void InspectionName()
         {
-            const string inspectionName = "FunctionReturnValueNotUsedInspection";
-            var inspection = new FunctionReturnValueNotUsedInspection(null);
+            const string inspectionName = "ProcedureShouldBeFunctionInspection";
+            var inspection = new ProcedureShouldBeFunctionInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

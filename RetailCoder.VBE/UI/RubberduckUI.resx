@@ -444,13 +444,13 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <comment>0: Version; 1: ProcessorArchitecture</comment>
   </data>
   <data name="ToDoMarkerBug" xml:space="preserve">
-    <value>BUG:</value>
+    <value>BUG </value>
   </data>
   <data name="ToDoMarkerNote" xml:space="preserve">
-    <value>NOTE:</value>
+    <value>NOTE </value>
   </data>
   <data name="ToDoMarkerToDo" xml:space="preserve">
-    <value>TODO:</value>
+    <value>TODO </value>
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementations of '{0}'</value>
