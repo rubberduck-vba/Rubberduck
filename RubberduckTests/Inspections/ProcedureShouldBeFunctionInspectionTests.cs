@@ -161,72 +161,72 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-//        [TestMethod]
-//        public void ProcedureShouldBeFunction_DoesNotReturnResult_InterfaceImplementation()
-//        {
-//            //Input
-//            const string inputCode1 =
-//@"Public Sub DoSomething(ByRef a As Integer)
-//End Sub";
-//            const string inputCode2 =
-//@"Implements IClass1
-//
-//Private Sub IClass1_DoSomething(ByRef a As Integer)
-//End Sub";
+        [TestMethod]
+        public void ProcedureShouldBeFunction_DoesNotReturnResult_InterfaceImplementation()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Sub DoSomething(ByRef a As Integer)
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
-//                .Build();
-//            var vbe = builder.AddProject(project).Build();
+Private Sub IClass1_DoSomething(ByRef a As Integer)
+End Sub";
 
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
 
-//            parser.Parse();
-//            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//        [TestMethod]
-//        public void ProcedureShouldBeFunction_DoesNotReturnResult_EventImplementation()
-//        {
-//            //Input
-//            const string inputCode1 =
-//@"Public Event Foo(ByRef arg1 As Integer)";
-//            const string inputCode2 =
-//@"Private WithEvents abc As Class1
-//
-//Private Sub abc_Foo(ByRef arg1 As Integer)
-//End Sub";
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-//                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-//                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
-//                .Build();
-//            var vbe = builder.AddProject(project).Build();
+        [TestMethod]
+        public void ProcedureShouldBeFunction_DoesNotReturnResult_EventImplementation()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Event Foo(ByRef arg1 As Integer)";
+            const string inputCode2 =
+@"Private WithEvents abc As Class1
 
-//            var mockHost = new Mock<IHostApplication>();
-//            mockHost.SetupAllProperties();
-//            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+Private Sub abc_Foo(ByRef arg1 As Integer)
+End Sub";
 
-//            parser.Parse();
-//            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
 
-//            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
         [TestMethod]
         public void ProcedureShouldBeFunction_QuickFixWorks()
