@@ -5,6 +5,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.Inspections
 {
@@ -26,36 +27,5 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
-    }
-
-    public class ConvertToProcedureQuickFix : CodeInspectionQuickFix
-    {
-        public ConvertToProcedureQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_ConvertFunctionToProcedure)
-        {
-        }
-
-        public override void Fix()
-        {
-            var context = (VBAParser.FunctionStmtContext) Context;
-            var visibility = context.visibility() == null ? string.Empty : context.visibility().GetText() + ' ';
-            var name = ' ' + context.ambiguousIdentifier().GetText();
-            var args = context.argList().GetText();
-            var asType = context.asTypeClause() == null ? string.Empty : ' ' + context.asTypeClause().GetText();
-
-            var oldSignature = visibility + Tokens.Function + name + args + asType;
-            var newSignature = visibility + Tokens.Sub + name + args;
-
-            var procedure = Context.GetText();
-            var result = procedure.Replace(oldSignature, newSignature)
-                .Replace(Tokens.End + ' ' + Tokens.Function, Tokens.End + ' ' + Tokens.Sub)
-                .Replace(Tokens.Exit + ' ' + Tokens.Function, Tokens.Exit + ' ' + Tokens.Sub);
-
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var selection = Context.GetSelection();
-
-            module.DeleteLines(selection.StartLine, selection.LineCount);
-            module.InsertLines(selection.StartLine, result);
-        }
     }
 }
