@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -90,10 +90,7 @@ namespace RubberduckTests
 
             module.SetupGet(m => m.Parent).Returns(component.Object);
             return component;
-        }
-
-
-        private Mock<VBComponents> SetupMockComponents(ICollection<Mock<VBComponent>> items, VBProject project)
+        }        private Mock<VBComponents> SetupMockComponents(ICollection<Mock<VBComponent>> items, VBProject project)
         {
             var components = MockFactory.CreateComponentsMock(items, project);
             components.SetupGet(m => m.Parent).Returns(project);

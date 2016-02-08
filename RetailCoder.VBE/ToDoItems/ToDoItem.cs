@@ -34,21 +34,20 @@ namespace Rubberduck.ToDoItems
         private readonly QualifiedSelection _selection;
         public QualifiedSelection GetSelection() { return _selection; }
 
-        public ToDoItem(TodoPriority priority, CommentNode comment)
-            : this(priority, comment.CommentText, comment.QualifiedSelection)
+        public ToDoItem(string markerText, TodoPriority priority, CommentNode comment)
+            : this(markerText, priority, comment.CommentText, comment.QualifiedSelection)
         {
         }
 
-        public ToDoItem(TodoPriority priority, string description, QualifiedSelection qualifiedSelection)
+        public ToDoItem(string markerText, TodoPriority priority, string description, QualifiedSelection qualifiedSelection)
         {
             _priority = priority;
             _description = description;
             _selection = qualifiedSelection;
-            _projectName = qualifiedSelection.QualifiedName.Project.Name;
-            _moduleName = qualifiedSelection.QualifiedName.Component.Name;
+            _projectName = qualifiedSelection.QualifiedName.ProjectName;
+            _moduleName = qualifiedSelection.QualifiedName.ComponentName;
             _lineNumber = qualifiedSelection.Selection.StartLine;
-            int idxDelimiter = description.IndexOf(":", StringComparison.InvariantCulture);
-            _type = description.Substring(0, idxDelimiter);
+            _type = markerText;
         }
     }
 }

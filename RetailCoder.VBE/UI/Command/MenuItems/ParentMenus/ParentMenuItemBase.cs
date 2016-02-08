@@ -45,6 +45,12 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             foreach (var kvp in _items)
             {
                 kvp.Value.Caption = kvp.Key.Caption.Invoke();
+
+                var childMenu = kvp.Key as ParentMenuItemBase;
+                if (childMenu != null)
+                {
+                    childMenu.Localize();
+                }
             }
         }
 
@@ -111,7 +117,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             SetButtonImage(child, item.Image, item.Mask);
 
             child.BeginGroup = item.BeginGroup;
-            child.Tag = item.Key;
+            child.Tag = item.GetType().FullName;
             child.Caption = item.Caption.Invoke();
 
             Debug.WriteLine("Menu item '{0}' created; hash code: {1} (command hash code {2})", child.Caption, child.GetHashCode(), item.Command.GetHashCode());
@@ -125,7 +131,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
         private void child_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.Key == Ctrl.Tag) as ICommandMenuItem;
+            var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.GetType().FullName == Ctrl.Tag) as ICommandMenuItem;
             if (item == null || Ctrl.GetHashCode() == _lastHashCode)
             {
                 return;

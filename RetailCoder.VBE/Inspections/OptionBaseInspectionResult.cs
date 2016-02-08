@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
 

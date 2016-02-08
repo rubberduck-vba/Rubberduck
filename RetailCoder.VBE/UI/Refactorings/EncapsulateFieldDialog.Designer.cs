@@ -262,6 +262,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "EncapsulateFieldDialog";
+            this.ShowInTaskbar = false;
             this.Text = "Rubberduck - Encapsulate Field";
             this.DescriptionPanel.ResumeLayout(false);
             this.DescriptionPanel.PerformLayout();
