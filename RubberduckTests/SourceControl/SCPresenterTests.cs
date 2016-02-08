@@ -90,11 +90,7 @@ namespace RubberduckTests.SourceControl
                 _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
                 _settingsPresenter.Object, _unsyncedPresenter.Object,
                 _folderBrowserFactory.Object, _providerFactory.Object,
-<<<<<<< HEAD
-                _failedActionView.Object, _loginView.Object, null, new CodePaneWrapperFactory());
-=======
                 _failedActionView.Object, _loginView.Object, _cloneRepo.Object, new CodePaneWrapperFactory());
->>>>>>> 8ba01d07c36ca1edb2e33dbeb22d5fb81da3cbc9
             return presenter;
         }
 
@@ -150,11 +146,7 @@ namespace RubberduckTests.SourceControl
                                                         _view.Object, changesPresenter, branchesPresenter,
                                                         _settingsPresenter.Object, _unsyncedPresenter.Object,
                                                         _folderBrowserFactory.Object, _providerFactory.Object,
-<<<<<<< HEAD
-                                                        _failedActionView.Object, _loginView.Object, null, new CodePaneWrapperFactory());
-=======
                                                         _failedActionView.Object, _loginView.Object, _cloneRepo.Object, new CodePaneWrapperFactory());
->>>>>>> 8ba01d07c36ca1edb2e33dbeb22d5fb81da3cbc9
 
             //act
             branchesView.Object.Current = "dev";
@@ -419,7 +411,8 @@ namespace RubberduckTests.SourceControl
 
             //assert
             _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Once);
-        }        [TestMethod]
+        }
+        [TestMethod]
         public void InitRepository_WhenUserConfirms_StatusIsOnline()
         {
             //arrange
@@ -714,12 +707,12 @@ namespace RubberduckTests.SourceControl
         private SourceControlConfiguration GetDummyConfig()
         {
             return new SourceControlConfiguration()
-                    {
-                        Repositories = new List<Repository>() 
+            {
+                Repositories = new List<Repository>() 
                         { 
                             (Repository)GetDummyRepo()
                         }
-                    };
+            };
         }
 
         private static IRepository GetDummyRepo()

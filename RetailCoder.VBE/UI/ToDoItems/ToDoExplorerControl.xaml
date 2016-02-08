@@ -5,18 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:toDoItems="clr-namespace:Rubberduck.UI.ToDoItems"
-<<<<<<< HEAD
-             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+             xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
              xmlns:groupingGrid="clr-namespace:Rubberduck.UI.Controls.GroupingGrid"
-=======
-             xmlns:controls="clr-namespace:Rubberduck.Controls"
-             xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Class="Rubberduck.UI.ToDoItems.ToDoExplorerControl"
->>>>>>> 8ba01d07c36ca1edb2e33dbeb22d5fb81da3cbc9
+             x:Class="Rubberduck.UI.ToDoItems.ToDoExplorerControl"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type toDoItems:ToDoExplorerViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-        
+
         <BitmapImage x:Key="RefreshImage" UriSource="../../Resources/arrow-circle-double.png" />
         <BitmapImage x:Key="DeleteImage" UriSource="../../Resources/cross-script.png" />
 
@@ -254,42 +250,26 @@
                 </Button>
             </ToolBar>
         </ToolBarTray>
-<<<<<<< HEAD
         <groupingGrid:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False"
-                               SelectedItem="{Binding SelectedToDo}" IsExpanded="True"
-                               CanUserReorderColumns="False" IsReadOnly="True"
-                               HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
-                               HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                               ItemContainerStyle="{StaticResource PrettifyRow}">
-            <DataGrid.CellStyle>
-                <Style TargetType="DataGridCell">
-=======
-        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False"
 			SelectedItem="{Binding SelectedToDo}" IsExpanded="True"
 			CanUserReorderColumns="False" IsReadOnly="True"
 			HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
 			HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
 			ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22">
-            <controls:GroupingGrid.CellStyle>
+            <groupingGrid:GroupingGrid.CellStyle>
                 <Style TargetType="{x:Type DataGridCell}">
->>>>>>> 8ba01d07c36ca1edb2e33dbeb22d5fb81da3cbc9
                     <Setter Property="BorderThickness" Value="0" />
                     <Setter Property="VerticalAlignment" Value="Center" />
                     <Setter Property="Background" Value="Transparent" />
                 </Style>
-            </controls:GroupingGrid.CellStyle>
-            <controls:GroupingGrid.Columns>
+            </groupingGrid:GroupingGrid.CellStyle>
+            <groupingGrid:GroupingGrid.Columns>
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.Priority}" Binding="{Binding Priority}" />
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.ProjectName}" Binding="{Binding ProjectName}" />
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.ModuleName}" Binding="{Binding ModuleName}" />
                 <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoExplorer_LineNumber}" Binding="{Binding LineNumber}" />
-<<<<<<< HEAD
-            </DataGrid.Columns>
+            </groupingGrid:GroupingGrid.Columns>
         </groupingGrid:GroupingGrid>
-=======
-            </controls:GroupingGrid.Columns>
-        </controls:GroupingGrid>
->>>>>>> 8ba01d07c36ca1edb2e33dbeb22d5fb81da3cbc9
     </DockPanel>
 </UserControl>
