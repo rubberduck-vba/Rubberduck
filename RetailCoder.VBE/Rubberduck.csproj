@@ -540,6 +540,9 @@
     <Compile Include="UI\Settings\AddMarkerForm.Designer.cs">
       <DependentUpon>AddMarkerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Settings\GeneralSettings.xaml.cs">
+      <DependentUpon>GeneralSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Settings\IAddTodoSettingsView.cs" />
     <Compile Include="UI\Settings\SettingsControl.xaml.cs">
       <DependentUpon>SettingsControl.xaml</DependentUpon>
@@ -1389,6 +1392,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\GeneralSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

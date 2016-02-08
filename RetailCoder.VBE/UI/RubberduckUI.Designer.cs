@@ -1550,9 +1550,9 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to Japanese.
         /// </summary>
-        public static string Language_JP {
+        public static string Language_JA {
             get {
-                return ResourceManager.GetString("Language_JP", resourceCulture);
+                return ResourceManager.GetString("Language_JA", resourceCulture);
             }
         }
         

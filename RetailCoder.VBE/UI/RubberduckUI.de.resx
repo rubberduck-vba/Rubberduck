@@ -1110,7 +1110,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="RubberduckMenu_Navigate" xml:space="preserve">
     <value>Na&amp;vigieren</value>
   </data>
-  <data name="Language_JP" xml:space="preserve">
+  <data name="Language_JA" xml:space="preserve">
     <value>Japanisch</value>
   </data>
   <data name="Inspections_MultilineParameter" xml:space="preserve">

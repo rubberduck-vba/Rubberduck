@@ -630,7 +630,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Language_FR" xml:space="preserve">
     <value>French</value>
   </data>
-  <data name="Language_JP" xml:space="preserve">
+  <data name="Language_JA" xml:space="preserve">
     <value>Japanese</value>
   </data>
   <data name="RemoveParamsDialog_Caption" xml:space="preserve">

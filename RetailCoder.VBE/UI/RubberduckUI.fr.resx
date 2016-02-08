@@ -1117,7 +1117,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="RubberduckMenu_Navigate" xml:space="preserve">
     <value>Na&amp;viguer</value>
   </data>
-  <data name="Language_JP" xml:space="preserve">
+  <data name="Language_JA" xml:space="preserve">
     <value />
   </data>
   <data name="Inspections_MultilineParameter" xml:space="preserve">
