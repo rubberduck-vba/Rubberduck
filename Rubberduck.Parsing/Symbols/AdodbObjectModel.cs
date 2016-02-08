@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Rubberduck.VBEditor;
+using System.Runtime.CompilerServices;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -19,7 +18,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 if (_adodbDeclarations == null)
                 {
-                    var nestedTypes = typeof(AdodbObjectModel).GetNestedTypes(BindingFlags.NonPublic);
+                    var nestedTypes = typeof(AdodbObjectModel).GetNestedTypes(BindingFlags.NonPublic).Where(t => Attribute.GetCustomAttribute(t, typeof(CompilerGeneratedAttribute)) == null);
                     var fields = nestedTypes.SelectMany(t => t.GetFields());
                     var values = fields.Select(f => f.GetValue(null));
                     _adodbDeclarations = values.Cast<Declaration>();

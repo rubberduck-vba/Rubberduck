@@ -20,7 +20,7 @@ namespace Rubberduck.UI.ToDoItems
         public ToDoExplorerViewModel(RubberduckParserState state, IGeneralConfigService configService)
         {
             _state = state;
-            _markers = configService.GetDefaultConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
+            _markers = configService.LoadConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
 
             _uiDispatcher = Dispatcher.CurrentDispatcher;
         }
@@ -119,9 +119,15 @@ namespace Rubberduck.UI.ToDoItems
 
         private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)
         {
+            var c = _markers.Where(marker => !string.IsNullOrEmpty(marker.Text));
+            var t = _markers.Select(marker => marker.Text.ToLowerInvariant());
+            var v = comment.Comment.ToLowerInvariant();
+            var y = _markers.Where(marker => comment.Comment.ToLowerInvariant().Contains(marker.Text.ToLowerInvariant()));
+            var z = _markers.Select(marker => new ToDoItem(marker.Text, marker.Priority, comment)).ToList();
+
             return _markers.Where(marker => !string.IsNullOrEmpty(marker.Text)
                 && comment.Comment.ToLowerInvariant().Contains(marker.Text.ToLowerInvariant()))
-                .Select(marker => new ToDoItem(marker.Priority, comment));
+                .Select(marker => new ToDoItem(marker.Text, marker.Priority, comment)).ToList();
         }
 
         private async Task<IOrderedEnumerable<ToDoItem>> GetItems()

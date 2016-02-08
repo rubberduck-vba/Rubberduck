@@ -239,6 +239,7 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -298,6 +299,9 @@
       <DependentUpon>GroupingGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
+    <Compile Include="Inspections\ConvertToProcedureQuickFix.cs" />
+    <Compile Include="Inspections\FunctionReturnValueNotUsedInspection.cs" />
+    <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspection.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspectionResult.cs" />
     <Compile Include="Inspections\InspectionsUI.Designer.cs">
@@ -438,6 +442,8 @@
     <Compile Include="UI\Command\MenuItems\AddTestMethodCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\AddTestMethodExpectedErrorCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\AddTestModuleCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\ProjectExplorerRefactorRenameCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\FormDesignerRefactorRenameCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\FindAllReferencesCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\FindSymbolCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\FindAllImplementationsCommandMenuItem.cs" />
@@ -474,14 +480,16 @@
     <Compile Include="UI\Command\MenuItems\RefactorExtractMethodCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\RefactoringsParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorRemoveParametersCommandMenuItem.cs" />
+    <Compile Include="UI\Command\Refactorings\FormDesignerRefactorRenameCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\ProjectExplorerRefactorRenameCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorEncapsulateFieldCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorImplementInterfaceCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorExtractInterfaceCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorIntroduceFieldCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorIntroduceParameterCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorMoveCloserToUsageCommand.cs" />
-    <Compile Include="UI\Command\Refactorings\RefactorRenameCommand.cs" />
-    <Compile Include="UI\Command\MenuItems\RefactorRenameCommandMenuItem.cs" />
+    <Compile Include="UI\Command\Refactorings\CodePaneRefactorRenameCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\CodePaneRefactorRenameCommandMenuItem.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorReorderParametersCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorReorderParametersCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\RubberduckParentMenu.cs" />
@@ -841,6 +849,7 @@
     <EmbeddedResource Include="Inspections\InspectionsUI.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionsUI1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>

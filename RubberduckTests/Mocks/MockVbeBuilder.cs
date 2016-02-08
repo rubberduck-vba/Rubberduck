@@ -33,6 +33,7 @@ namespace RubberduckTests.Mocks
         public MockVbeBuilder AddProject(Mock<VBProject> project)
         {
             project.SetupGet(m => m.VBE).Returns(_vbe.Object);
+
             _projects.Add(project.Object);
 
             foreach (var component in _projects.SelectMany(vbProject => vbProject.VBComponents.Cast<VBComponent>()))
@@ -41,6 +42,9 @@ namespace RubberduckTests.Mocks
             }
 
             _vbe.SetupGet(vbe => vbe.ActiveVBProject).Returns(project.Object);
+
+            _vbProjects = CreateProjectsMock();
+            _vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
 
             return this;
         }

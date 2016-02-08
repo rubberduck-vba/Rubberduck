@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -138,7 +138,6 @@
   <data name="About_StackOverflow" xml:space="preserve">
     <value>Stack Overflow</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="DeclarationType_Class" xml:space="preserve">
     <value>クラス</value>
   </data>
@@ -441,13 +440,13 @@
     <value>「0」（「1」）をビルド</value>
   </data>
   <data name="ToDoMarkerBug" xml:space="preserve">
-    <value>BUG：</value>
+    <value>BUG </value>
   </data>
   <data name="ToDoMarkerNote" xml:space="preserve">
-    <value>NOTE：</value>
+    <value>NOTE </value>
   </data>
   <data name="ToDoMarkerToDo" xml:space="preserve">
-    <value>TODO：</value>
+    <value>TODO </value>
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>「{0}」の実装</value>
@@ -1113,190 +1112,190 @@
   <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
     <value>ブランチ削除</value>
   </data>
-  <data name="EncapsulateField_ParameterName">
+  <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value />
   </data>
-  <data name="QuickFix_ThisModule">
+  <data name="QuickFix_ThisModule" xml:space="preserve">
     <value />
   </data>
-  <data name="MakeActiveWorkbookReferenceExplicit">
+  <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
     <value />
   </data>
-  <data name="SelectAll_Button">
+  <data name="SelectAll_Button" xml:space="preserve">
     <value />
   </data>
-  <data name="RegexSearchReplace_ScopeLabel">
+  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
     <value />
   </data>
-  <data name="SmartIndenterMenu">
+  <data name="SmartIndenterMenu" xml:space="preserve">
     <value />
   </data>
-  <data name="RegexSearchReplaceScope_Selection">
+  <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
     <value />
   </data>
-  <data name="UntypedFunctionUsage_">
+  <data name="UntypedFunctionUsage_" xml:space="preserve">
     <value />
   </data>
-  <data name="RefactorMenu_MoveCloserToUsage">
+  <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
     <value />
   </data>
-  <data name="IndentCurrentProject">
+  <data name="IndentCurrentProject" xml:space="preserve">
     <value />
   </data>
-  <data name="MoveCloserToUsage_Caption">
+  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value />
   </data>
-  <data name="ExtractInterface_TitleLabel">
+  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
     <value />
   </data>
-  <data name="ExtractInterface_InstructionLabel">
+  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
     <value />
   </data>
-  <data name="ExtractInterface_Caption">
+  <data name="ExtractInterface_Caption" xml:space="preserve">
     <value />
   </data>
-  <data name="MoveCloserToUsage_TargetHasNoReferences">
+  <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
     <value />
   </data>
-  <data name="RefactorMenu_IntroduceField">
+  <data name="RefactorMenu_IntroduceField" xml:space="preserve">
     <value />
   </data>
-  <data name="DisableThisInspection">
+  <data name="DisableThisInspection" xml:space="preserve">
     <value />
   </data>
-  <data name="EncapsulateField_TitleText">
+  <data name="EncapsulateField_TitleText" xml:space="preserve">
     <value />
   </data>
-  <data name="IntroduceParameter_Caption">
+  <data name="IntroduceParameter_Caption" xml:space="preserve">
     <value />
   </data>
-  <data name="DeselectAll_Button">
+  <data name="DeselectAll_Button" xml:space="preserve">
     <value />
   </data>
-  <data name="RegexSearchReplace_Caption">
+  <data name="RegexSearchReplace_Caption" xml:space="preserve">
     <value />
   </data>
-  <data name="RegexSearchReplaceScope_CurrentProject">
+  <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
     <value />
   </data>
-  <data name="RegexSearchReplace_SearchLabel">
+  <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
     <value />
   </data>
-  <data name="ImplicitActiveWorkbookReference_">
+  <data name="ImplicitActiveWorkbookReference_" xml:space="preserve">
     <value />
   </data>
-  <data name="ImplementInterface_Caption">
+  <data name="ImplementInterface_Caption" xml:space="preserve">
     <value />
   </data>
-  <data name="RegexSearchReplace_ReplaceLabel">
+  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
     <value />
   </data>
-  <data name="EncapsulateField_Caption">
+  <data name="EncapsulateField_Caption" xml:space="preserve">
     <value />
   </data>
-  <data name="RegexSearchReplaceScope_AllOpenedFiles">
+  <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
     <value />
   </data>
-  <data name="RegexSearchReplaceScope_CurrentFile">
+  <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
     <value />
   </data>
-  <data name="MakeActiveSheetReferenceExplicit">
+  <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
     <value />
   </data>
-  <data name="Language_JP">
+  <data name="Language_JP" xml:space="preserve">
     <value />
   </data>
-  <data name="ParserProgress_ShowDetails">
+  <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value />
   </data>
-  <data name="RegexSearchReplaceScope_CurrentBlock">
+  <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
     <value />
   </data>
-  <data name="EncapsulateField_PropertyName">
+  <data name="EncapsulateField_PropertyName" xml:space="preserve">
     <value />
   </data>
-  <data name="RegexSearchReplaceScope_AllOpenProjects">
+  <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
     <value />
   </data>
-  <data name="RegexSearchReplace_FindButtonLabel">
+  <data name="RegexSearchReplace_FindButtonLabel" xml:space="preserve">
     <value />
   </data>
-  <data name="RefactorMenu_EncapsulateField">
+  <data name="RefactorMenu_EncapsulateField" xml:space="preserve">
     <value />
   </data>
-  <data name="ImplementInterface_InvalidSelectionMessage">
+  <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
     <value />
   </data>
-  <data name="QuickFix_ThisProject">
+  <data name="QuickFix_ThisProject" xml:space="preserve">
     <value />
   </data>
-  <data name="WriteOnlyProperty_">
+  <data name="WriteOnlyProperty_" xml:space="preserve">
     <value />
   </data>
-  <data name="IndentCurrentProcedure">
+  <data name="IndentCurrentProcedure" xml:space="preserve">
     <value />
   </data>
-  <data name="QuickFixUseTypedFunction_">
+  <data name="QuickFixUseTypedFunction_" xml:space="preserve">
     <value />
   </data>
-  <data name="PromoteVariable_InvalidSelection">
+  <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value />
   </data>
-  <data name="ExtractInterface_MembersGroupBox">
+  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
     <value />
   </data>
-  <data name="RefactorMenu_ExtractInterface">
+  <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
     <value />
   </data>
-  <data name="CodeExplorer_DisplayModeToolTip">
+  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="RegexSearchReplace_ReplaceButtonLabel">
+  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
     <value />
   </data>
-  <data name="Inspections_SpecifyOptionExplicit">
+  <data name="Inspections_SpecifyOptionExplicit" xml:space="preserve">
     <value />
   </data>
-  <data name="EncapsulateField_InstructionText">
+  <data name="EncapsulateField_InstructionText" xml:space="preserve">
     <value />
   </data>
-  <data name="IndentCurrentModule">
+  <data name="IndentCurrentModule" xml:space="preserve">
     <value />
   </data>
-  <data name="CodeExplorer_NewToolTip">
+  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="FindSymbolDialog_Caption">
+  <data name="FindSymbolDialog_Caption" xml:space="preserve">
     <value />
   </data>
-  <data name="EncapsulateField_Preview">
+  <data name="EncapsulateField_Preview" xml:space="preserve">
     <value />
   </data>
-  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods">
+  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value />
   </data>
-  <data name="RefactorMenu_IntroduceParameter">
+  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
     <value />
   </data>
-  <data name="RegexSearchReplace_ReplaceAllButtonLabel">
+  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
     <value />
   </data>
-  <data name="EncapsulateField_SetterType">
+  <data name="EncapsulateField_SetterType" xml:space="preserve">
     <value />
   </data>
-  <data name="MoveCloserToUsage_InvalidSelection">
+  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
     <value />
   </data>
-  <data name="IntroduceField_Caption">
+  <data name="IntroduceField_Caption" xml:space="preserve">
     <value />
   </data>
-  <data name="ImplicitActiveSheetReference_">
+  <data name="ImplicitActiveSheetReference_" xml:space="preserve">
     <value />
   </data>
-  <data name="IntroduceParameter_PromptIfTargetIsInterface">
+  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
     <value />
   </data>
-  <data name="RefactorMenu_ImplementInterface">
+  <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
     <value />
   </data>
 </root>

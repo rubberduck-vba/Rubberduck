@@ -1,13 +1,12 @@
-using System;
 using System.Windows.Input;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-    public class RefactorRenameCommandMenuItem : CommandMenuItemBase
+    public class FormDesignerRefactorRenameCommandMenuItem : CommandMenuItemBase
     {
-        public RefactorRenameCommandMenuItem(ICommand command)
+        public FormDesignerRefactorRenameCommandMenuItem(ICommand command)
             : base(command)
         {
         }

@@ -15,7 +15,6 @@ using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBA;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -40,6 +39,32 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
            new ConcurrentDictionary<VBComponent, CancellationTokenSource>();
+
+        public void Parse()
+        {
+            try
+            {
+                var components = _vbe.VBProjects.Cast<VBProject>()
+                    .SelectMany(project => project.VBComponents.Cast<VBComponent>())
+                    .ToList();
+
+                SetComponentsState(components, ParserState.Pending);
+
+                foreach (var component in components)
+                {
+                    ParseComponent(component, false);
+                }
+
+                using (var tokenSource = new CancellationTokenSource())
+                {
+                    Resolve(tokenSource.Token);
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.Print(exception.ToString());
+            }
+        }
 
         public void ParseComponent(VBComponent component, bool resolve = true, TokenStreamRewriter rewriter = null)
         {

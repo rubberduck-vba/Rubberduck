@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Rubberduck.VBEditor;
+using System.Runtime.CompilerServices;
+using System;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -19,7 +21,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 if (_standardLibDeclarations == null)
                 {
-                    var nestedTypes = typeof(VbaStandardLib).GetNestedTypes(BindingFlags.NonPublic);
+                    var nestedTypes = typeof(VbaStandardLib).GetNestedTypes(BindingFlags.NonPublic).Where(t => Attribute.GetCustomAttribute(t, typeof(CompilerGeneratedAttribute)) == null);
                     var fields = nestedTypes.SelectMany(t => t.GetFields());
                     var values = fields.Select(f => f.GetValue(null));
                     _standardLibDeclarations = values.Cast<Declaration>();

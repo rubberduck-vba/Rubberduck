@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Antlr4.Runtime.Misc;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -13,7 +14,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.IntroduceParameter
 {
-    public class IntroduceParameter : IRefactoring
+    public class IntroduceParameterRefactoring : IRefactoring
     {
         private readonly RubberduckParserState _parseResult;
         private readonly IList<Declaration> _declarations;
@@ -29,7 +30,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             DeclarationType.PropertySet
         };
 
-        public IntroduceParameter(RubberduckParserState parseResult, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public IntroduceParameterRefactoring(RubberduckParserState parseResult, IActiveCodePaneEditor editor, IMessageBox messageBox)
         {
             _parseResult = parseResult;
             _declarations = parseResult.AllDeclarations.ToList();
@@ -55,14 +56,25 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         {
             var target = _declarations.FindVariable(selection);
 
+            if (target == null)
+            {
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
             PromoteVariable(target);
         }
 
         public void Refactor(Declaration target)
         {
-            if (target.DeclarationType != DeclarationType.Variable)
+            if (target == null || target.DeclarationType != DeclarationType.Variable)
             {
-                throw new ArgumentException("Invalid declaration type");
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                // ReSharper disable once LocalizableElement
+                throw new ArgumentException("Invalid declaration type", "target");
             }
 
             PromoteVariable(target);
@@ -75,10 +87,10 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
-            if (
-                !new[] {DeclarationType.Class, DeclarationType.Module}.Contains(
-                    target.ParentDeclaration.DeclarationType))
+            if (new[] { DeclarationType.Class, DeclarationType.Module }.Contains(target.ParentDeclaration.DeclarationType))
             {
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -113,20 +125,26 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             var paramList = (VBAParser.ArgListContext)proc.argList();
             var module = functionDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
-            AddParameter(functionDeclaration, targetVariable, paramList, module);
+            var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
+
+            if (functionDeclaration.DeclarationType != DeclarationType.PropertyGet &&
+                functionDeclaration.DeclarationType != DeclarationType.PropertyLet &&
+                functionDeclaration.DeclarationType != DeclarationType.PropertySet)
+            {
+                AddParameter(functionDeclaration, targetVariable, paramList, module);
+
+                if (interfaceImplementation == null) { return; }
+            }
 
             if (functionDeclaration.DeclarationType == DeclarationType.PropertyGet ||
                 functionDeclaration.DeclarationType == DeclarationType.PropertyLet ||
                 functionDeclaration.DeclarationType == DeclarationType.PropertySet)
             {
-                UpdateProperties(functionDeclaration);
+                UpdateProperties(functionDeclaration, targetVariable);
             }
 
-            var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
-            if (interfaceImplementation == null)
-            {
-                return;
-            }
+            if (interfaceImplementation == null) { return; }
+
             UpdateSignature(interfaceImplementation, targetVariable);
 
             var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
@@ -174,38 +192,48 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
 
             module.ReplaceLine(paramList.Start.Line, newContent);
+            module.DeleteLines(paramList.Start.Line + 1, paramList.GetSelection().LineCount - 1);
         }
 
-        private void UpdateProperties(Declaration target)
+        private void UpdateProperties(Declaration knownProperty, Declaration targetVariable)
         {
             var propertyGet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertyGet &&
-                    d.Scope == target.Scope &&
-                    d.IdentifierName == target.IdentifierName);
+                    d.Scope == knownProperty.Scope &&
+                    d.IdentifierName == knownProperty.IdentifierName);
 
             var propertyLet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertyLet &&
-                    d.Scope == target.Scope &&
-                    d.IdentifierName == target.IdentifierName);
+                    d.Scope == knownProperty.Scope &&
+                    d.IdentifierName == knownProperty.IdentifierName);
 
             var propertySet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertySet &&
-                    d.Scope == target.Scope &&
-                    d.IdentifierName == target.IdentifierName);
+                    d.Scope == knownProperty.Scope &&
+                    d.IdentifierName == knownProperty.IdentifierName);
 
-            if (target.DeclarationType != DeclarationType.PropertyGet && propertyGet != null)
+            var properties = new List<Declaration>();
+
+            if (propertyGet != null)
             {
-                UpdateSignature(propertyGet);
+                properties.Add(propertyGet);
             }
 
-            if (target.DeclarationType != DeclarationType.PropertyLet && propertyLet != null)
+            if (propertyLet != null)
             {
-                UpdateSignature(propertyLet);
+                properties.Add(propertyLet);
             }
 
-            if (target.DeclarationType != DeclarationType.PropertySet && propertySet != null)
+            if (propertySet != null)
             {
-                UpdateSignature(propertySet);
+                properties.Add(propertySet);
+            }
+
+            foreach (var property in
+                    properties.OrderByDescending(o => o.Selection.StartLine)
+                        .ThenByDescending(t => t.Selection.StartColumn))
+            {
+                UpdateSignature(property, targetVariable);
             }
         }
 
@@ -240,8 +268,29 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                     target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
             }
 
+            var newLinesWithoutExcessSpaces = newLines.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+            for (var i = 0; i < newLinesWithoutExcessSpaces.Length; i++)
+            {
+                newLinesWithoutExcessSpaces[i] = newLinesWithoutExcessSpaces[i].RemoveExtraSpacesLeavingIndentation();
+            }
+
+            for (var i = newLinesWithoutExcessSpaces.Length - 1; i >= 0; i--)
+            {
+                if (newLinesWithoutExcessSpaces[i].Trim() == string.Empty)
+                {
+                    continue;
+                }
+
+                if (newLinesWithoutExcessSpaces[i].EndsWith(" _"))
+                {
+                    newLinesWithoutExcessSpaces[i] =
+                        newLinesWithoutExcessSpaces[i].Remove(newLinesWithoutExcessSpaces[i].Length - 2);
+                }
+                break;
+            }
+
             _editor.DeleteLines(selection);
-            _editor.InsertLines(selection.StartLine, newLines);
+            _editor.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
         }
 
         private string GetOldSignature(Declaration target)
@@ -286,33 +335,12 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 lastTokenIndex = propertySetStmtContext.argList().RPAREN().Symbol.TokenIndex;
             }
 
-            var declareStmtContext = context as VBAParser.DeclareStmtContext;
-            if (declareStmtContext != null)
-            {
-                lastTokenIndex = declareStmtContext.STRINGLITERAL().Last().Symbol.TokenIndex;
-                if (declareStmtContext.argList() != null)
-                {
-                    lastTokenIndex = declareStmtContext.argList().RPAREN().Symbol.TokenIndex;
-                }
-                if (declareStmtContext.asTypeClause() != null)
-                {
-                    lastTokenIndex = declareStmtContext.asTypeClause().Stop.TokenIndex;
-                }
-            }
-
-            var eventStmtContext = context as VBAParser.EventStmtContext;
-            if (eventStmtContext != null)
-            {
-                lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
-            }
-
             return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
         }
 
         private Declaration GetInterfaceImplementation(Declaration target)
         {
-            var declaration = target;
-            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
+            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(target));
 
             if (interfaceImplementation == null) { return null; }
 
@@ -358,8 +386,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private string GetParameterDefinition(Declaration target)
         {
-            if (target == null) { return null; }
-
             return "ByVal " + target.IdentifierName + " As " + target.AsTypeName;
         }
     }

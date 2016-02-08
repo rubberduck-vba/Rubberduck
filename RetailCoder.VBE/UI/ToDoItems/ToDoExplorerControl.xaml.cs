@@ -16,7 +16,9 @@ namespace Rubberduck.UI.ToDoItems
         {
             var viewModel = DataContext as ToDoExplorerViewModel;
 
-            if (viewModel != null)
+            // this seems idiotic, but if you hold CTRL while you double-click an item
+            // it both unselected the item and triggers the double-click, resulting in an NRE here
+            if (viewModel != null && viewModel.SelectedToDo != null)
             {
                 viewModel.NavigateToToDo.Execute(new NavigateCodeEventArgs(viewModel.SelectedToDo.GetSelection()));
             }
