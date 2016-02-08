@@ -31,6 +31,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new UseMeaningfulNameInspection(null, parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -57,6 +58,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new UseMeaningfulNameInspection(null, parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -83,6 +85,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new UseMeaningfulNameInspection(null, parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -91,7 +94,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void UseMeaningfulName_DoesNotReturnsResult()
+        public void UseMeaningfulName_DoesNotReturnsResult_GoodName()
         {
             const string inputCode =
 @"Sub FooBar()
@@ -100,7 +103,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .AddComponent("MyClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -109,11 +112,38 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new UseMeaningfulNameInspection(null, parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void UseMeaningfulName_DoesNotReturnsResult_OptionBase()
+        {
+            const string inputCode =
+@"Option Base 1";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("MyClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new UseMeaningfulNameInspection(null, parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [TestMethod]

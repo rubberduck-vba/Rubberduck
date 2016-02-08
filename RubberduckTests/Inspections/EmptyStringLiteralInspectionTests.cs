@@ -14,7 +14,7 @@ namespace RubberduckTests.Inspections
     public class EmptyStringLiteralInspectionTests
     {
         [TestMethod]
-        public void AssignedByValParameter_ReturnsResult_PassToProcedure()
+        public void EmptyStringLiteral_ReturnsResult_PassToProcedure()
         {
             const string inputCode =
 @"Public Sub Bar()
@@ -33,6 +33,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new EmptyStringLiteralInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -41,7 +42,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void AssignedByValParameter_ReturnsResult_Assignment()
+        public void EmptyStringLiteral_ReturnsResult_Assignment()
         {
             const string inputCode =
 @"Public Sub Foo(ByRef arg1 As String)
@@ -57,6 +58,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new EmptyStringLiteralInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -65,7 +67,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void AssignedByValParameter_DoesNotReturnResult()
+        public void NotEmptyStringLiteral_DoesNotReturnResult()
         {
             const string inputCode =
 @"Public Sub Foo(ByRef arg1 As String)
@@ -81,6 +83,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new EmptyStringLiteralInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -89,7 +92,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void AssignedByValParameter_QuickFixWorks()
+        public void EmptyStringLiteral_QuickFixWorks()
         {
             const string inputCode =
 @"Public Sub Foo(ByRef arg1 As String)
@@ -112,6 +115,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new EmptyStringLiteralInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();

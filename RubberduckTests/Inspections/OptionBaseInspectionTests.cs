@@ -4,22 +4,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class ObsoleteCallStatementInspectionTests
+    public class OptionBaseInspectionTests
     {
         [TestMethod]
-        public void ObsoleteCallStatement_ReturnsResult()
+        public void OptionBaseOneSpecified_ReturnsResult()
         {
-            const string inputCode =
-@"Sub Foo()
-    Call Foo
-End Sub";
+            const string inputCode = @"Option Base 1";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -32,19 +28,16 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ObsoleteCallStatementInspection(parser.State);
+            var inspection = new OptionBaseInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_DoesNotReturnResult()
+        public void OptionBaseNotSpecified_DoesNotReturnResult()
         {
-            const string inputCode =
-@"Sub Foo()
-    Foo
-End Sub";
+            const string inputCode = @"";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -57,23 +50,16 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ObsoleteCallStatementInspection(parser.State);
+            var inspection = new OptionBaseInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_ReturnsMultipleResults()
+        public void OptionBaseZeroSpecified_DoesNotReturnResult()
         {
-            const string inputCode =
-@"Sub Foo()
-    Call Goo(1, ""test"")
-End Sub
-
-Sub Goo(arg1 As Integer, arg1 As String)
-    Call Foo
-End Sub";
+            const string inputCode = @"Option Base 0";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -86,28 +72,52 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ObsoleteCallStatementInspection(parser.State);
+            var inspection = new OptionBaseInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void OptionBaseOneSpecified_ReturnsMultipleResults()
+        {
+            const string inputCode = @"Option Base 1";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new OptionBaseInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_ReturnsResults_SomeObsoleteCallStatements()
+        public void OptionBaseOnePartiallySpecified_ReturnsResults()
         {
-            const string inputCode =
-@"Sub Foo()
-    Call Goo(1, ""test"")
-End Sub
-
-Sub Goo(arg1 As Integer, arg1 As String)
-    Foo
-End Sub";
+            const string inputCode1 = @"";
+            const string inputCode2 = @"Option Base 1";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
@@ -115,70 +125,24 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ObsoleteCallStatementInspection(parser.State);
+            var inspection = new OptionBaseInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_QuickFixWorks_RemoveCallStatement()
-        {
-            const string inputCode =
-@"Sub Foo()
-    Call Goo(1, ""test"")
-End Sub
-
-Sub Goo(arg1 As Integer, arg1 As String)
-    Call Foo
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-    Goo 1, ""test""
-End Sub
-
-Sub Goo(arg1 As Integer, arg1 As String)
-    Foo
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
-            var module = project.VBComponents.Item(0).CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ObsoleteCallStatementInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            foreach (var inspectionResult in inspectionResults)
-            {
-                inspectionResult.QuickFixes.First().Fix();
-            }
-
-            var actual = module.Lines();
-            Assert.AreEqual(expectedCode, actual);
-        }
-
-        [TestMethod]
         public void InspectionType()
         {
-            var inspection = new ObsoleteCallStatementInspection(null);
-            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
+            var inspection = new OptionBaseInspection(null);
+            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
         [TestMethod]
         public void InspectionName()
         {
-            const string inspectionName = "ObsoleteCallStatementInspection";
-            var inspection = new ObsoleteCallStatementInspection(null);
+            const string inspectionName = "OptionBaseInspection";
+            var inspection = new OptionBaseInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

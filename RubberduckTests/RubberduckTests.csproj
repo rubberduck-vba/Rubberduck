@@ -72,9 +72,13 @@
   <ItemGroup>
     <Compile Include="ComponentTypeExtensionTests.cs" />
     <Compile Include="ConfigurationTests.cs" />
+    <Compile Include="Inspections\EncapsulatePublicFieldInspectionTests.cs" />
+    <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspectionTests.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionTests.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\OptionBaseInspectionTests.cs" />
+    <Compile Include="Inspections\ProcedureShouldBeFunctionInspectionTests.cs" />
     <Compile Include="Inspections\UseMeaningfulNameInspectionTests.cs" />
     <Compile Include="Inspections\DefaultProjectNameInspectionTests.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspectionTests.cs" />

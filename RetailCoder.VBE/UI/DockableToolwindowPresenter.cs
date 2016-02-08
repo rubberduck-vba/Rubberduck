@@ -108,7 +108,10 @@ namespace Rubberduck.UI
                 UserControl.Dispose();
             }
 
-            Marshal.ReleaseComObject(_window);
+            if (_window != null)
+            { 
+                Marshal.ReleaseComObject(_window);
+            }
         }
     }
 }

@@ -46,6 +46,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -89,6 +90,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -132,6 +134,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -175,6 +178,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -228,6 +232,7 @@ End Sub
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -271,6 +276,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -314,6 +320,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -367,6 +374,7 @@ End Sub
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -410,6 +418,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -453,6 +462,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -495,6 +505,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -548,6 +559,7 @@ End Sub
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -601,6 +613,7 @@ End Sub
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -666,6 +679,7 @@ End Sub
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -702,6 +716,7 @@ End Property";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -729,6 +744,7 @@ End Property";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -771,6 +787,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -822,6 +839,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -873,6 +891,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -918,6 +937,7 @@ End Sub";   // note: VBE removes excess spaces
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -963,6 +983,7 @@ End Sub";   // note: VBE removes excess spaces
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1008,6 +1029,7 @@ End Sub";   // note: VBE removes excess spaces
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1053,6 +1075,7 @@ End Sub";   // note: VBE removes excess spaces
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1112,6 +1135,7 @@ End Sub
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1170,6 +1194,7 @@ End Sub";   // note: IDE removes excess spaces
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1232,6 +1257,7 @@ End Sub";   // note: IDE removes excess spaces
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1305,6 +1331,7 @@ End Sub";   // note: IDE removes excess spaces
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1369,6 +1396,7 @@ End Sub";   // note: IDE removes excess spaces
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1378,6 +1406,68 @@ End Sub";   // note: IDE removes excess spaces
             //Specify Params to remove
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode1, module1.Lines());
+            Assert.AreEqual(expectedCode2, module2.Lines());
+        }
+
+        [TestMethod]
+        public void ReorderParametersRefactoring_LastEventParamRemoved_EventImplementationSelected()
+        {
+            //Input
+            const string inputCode1 =
+@"Private WithEvents abc As Class2
+
+Private Sub abc_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+
+            const string inputCode2 =
+@"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)";
+
+            var selection = new Selection(3, 15, 3, 15);
+
+            //Expectation
+            const string expectedCode1 =
+@"Private WithEvents abc As Class2
+
+Private Sub abc_Foo(ByVal arg1 As Integer )
+End Sub";   // note: IDE removes excess spaces
+
+            const string expectedCode2 =
+@"Public Event Foo(ByVal arg1 As Integer )";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = project.Object.VBComponents.Item(0);
+
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var module1 = project.Object.VBComponents.Item(0).CodeModule;
+            var module2 = project.Object.VBComponents.Item(1).CodeModule;
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            model.Parameters.Last().IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -1431,6 +1521,7 @@ End Sub";   // note: IDE removes excess spaces
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1504,6 +1595,7 @@ End Sub";   // note: IDE removes excess spaces
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1569,6 +1661,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1624,6 +1717,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1655,6 +1749,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1701,6 +1796,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
@@ -1735,6 +1831,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1770,6 +1867,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1808,6 +1906,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1846,6 +1945,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1884,6 +1984,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var codePane = project.Object.VBComponents.Item(0).CodeModule.CodePane;
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), selection);
@@ -1924,6 +2025,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var codePane = project.Object.VBComponents.Item(0).CodeModule.CodePane;
             var ext = codePaneFactory.Create(codePane);
@@ -1962,6 +2064,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);

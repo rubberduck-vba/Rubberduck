@@ -50,6 +50,7 @@ End Property
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -105,6 +106,7 @@ End Property
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -156,6 +158,7 @@ End Property
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -224,6 +227,7 @@ End Function";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -298,6 +302,7 @@ End Property";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -355,6 +360,7 @@ End Property
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -417,6 +423,7 @@ End Property
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -475,6 +482,7 @@ End Property
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -533,6 +541,7 @@ End Property
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -588,6 +597,7 @@ End Property
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -658,6 +668,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -744,6 +755,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -803,6 +815,7 @@ End Property
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -843,6 +856,7 @@ End Property
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
@@ -875,6 +889,7 @@ End Property
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -909,6 +924,7 @@ End Property
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
@@ -940,6 +956,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var codePane = project.Object.VBComponents.Item(0).CodeModule.CodePane;
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), selection);
@@ -977,6 +994,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var codePane = project.Object.VBComponents.Item(0).CodeModule.CodePane;
             var ext = codePaneFactory.Create(codePane);
@@ -1011,6 +1029,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1046,6 +1065,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1079,6 +1099,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1113,6 +1134,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1120,7 +1142,7 @@ End Sub";
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             var view = new Mock<IEncapsulateFieldView>();
-            view.Setup(v => v.ImplementLetSetterType).Returns(true);
+            view.SetupProperty(v => v.MustImplementLetSetterType, true);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
@@ -1147,6 +1169,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1154,7 +1177,7 @@ End Sub";
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             var view = new Mock<IEncapsulateFieldView>();
-            view.Setup(v => v.ImplementSetSetterType).Returns(true);
+            view.SetupProperty(v => v.MustImplementSetSetterType, true);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
@@ -1165,7 +1188,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void Presenter_Accept_ReturnsModelWithImplementSetNotAllowedForPrimitiveTypes()
+        public void Presenter_Accept_ReturnsModelWithImplementLetAllowedForPrimitiveTypes_NoReferences()
         {
             //Input
             const string inputCode =
@@ -1181,6 +1204,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1188,16 +1212,49 @@ End Sub";
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             var view = new Mock<IEncapsulateFieldView>();
-            view.SetupProperty(v => v.IsSetterTypeChangeable, true);
+            view.SetupProperty(v => v.CanImplementLetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
             factory.Create().Show();
 
-            Assert.AreEqual(false, view.Object.IsSetterTypeChangeable);
+            Assert.AreEqual(true, view.Object.CanImplementLetSetterType);
         }
 
         [TestMethod]
-        public void Presenter_Accept_ReturnsModelWithImplementLetNotAllowedForNonVariantNonPrimitiveType()
+        public void Presenter_Accept_ReturnsModelWithImplementSetNotAllowedForPrimitiveTypes_NoReferences()
+        {
+            //Input
+            const string inputCode =
+@"Private fizz As Boolean";
+            var selection = new Selection(1, 15, 1, 15);
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            var view = new Mock<IEncapsulateFieldView>();
+            view.SetupProperty(v => v.CanImplementSetSetterType, true);
+
+            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            factory.Create().Show();
+
+            Assert.AreEqual(false, view.Object.CanImplementSetSetterType);
+        }
+
+        [TestMethod]
+        public void Presenter_Accept_ReturnsModelWithImplementSetAllowedForNonVariantNonPrimitiveTypes_NoReferences()
         {
             //Input
             const string inputCode =
@@ -1213,6 +1270,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1220,16 +1278,49 @@ End Sub";
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             var view = new Mock<IEncapsulateFieldView>();
-            view.SetupProperty(v => v.IsSetterTypeChangeable, true);
+            view.SetupProperty(v => v.CanImplementSetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
             factory.Create().Show();
 
-            Assert.AreEqual(false, view.Object.IsSetterTypeChangeable);
+            Assert.AreEqual(true, view.Object.CanImplementSetSetterType);
         }
 
         [TestMethod]
-        public void Presenter_Accept_ReturnsModelWithImplementLetAndSetAllowedForVariant()
+        public void Presenter_Accept_ReturnsModelWithImplementLetNotAllowedForNonVariantNonPrimitiveType_NoReferences()
+        {
+            //Input
+            const string inputCode =
+@"Private fizz As Icon";
+            var selection = new Selection(1, 15, 1, 15);
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            var view = new Mock<IEncapsulateFieldView>();
+            view.SetupProperty(v => v.CanImplementLetSetterType, true);
+
+            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            factory.Create().Show();
+
+            Assert.AreEqual(false, view.Object.CanImplementLetSetterType);
+        }
+
+        [TestMethod]
+        public void Presenter_Accept_ReturnsModelWithImplementLetAllowedForVariant_NoReferences()
         {
             //Input
             const string inputCode =
@@ -1245,6 +1336,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1252,16 +1344,193 @@ End Sub";
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             var view = new Mock<IEncapsulateFieldView>();
-            view.SetupProperty(v => v.IsSetterTypeChangeable, true);
+            view.SetupProperty(v => v.CanImplementLetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
             factory.Create().Show();
 
-            Assert.AreEqual(true, view.Object.IsSetterTypeChangeable);
+            Assert.AreEqual(true, view.Object.CanImplementLetSetterType);
         }
 
         [TestMethod]
-        public void Presenter_Accept_DefaultCreateLetForPrimitiveTypes()
+        public void Presenter_Accept_ReturnsModelWithImplementSetAllowedForVariant_NoReferences()
+        {
+            //Input
+            const string inputCode =
+@"Private fizz As Variant";
+            var selection = new Selection(1, 15, 1, 15);
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            var view = new Mock<IEncapsulateFieldView>();
+            view.SetupProperty(v => v.CanImplementSetSetterType, true);
+
+            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            factory.Create().Show();
+
+            Assert.AreEqual(true, view.Object.CanImplementSetSetterType);
+        }
+
+        [TestMethod]
+        public void Presenter_Accept_ReturnsModelWithImplementLetRequiredForPrimitiveTypes_References()
+        {
+            //Input
+            const string inputCode =
+@"Private fizz As Boolean
+Sub foo()
+    fizz = True
+End Sub";
+            var selection = new Selection(1, 15, 1, 15);
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            var view = new Mock<IEncapsulateFieldView>();
+            view.SetupProperty(v => v.MustImplementLetSetterType, false);
+
+            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            factory.Create().Show();
+
+            Assert.AreEqual(true, view.Object.MustImplementLetSetterType);
+        }
+
+        [TestMethod]
+        public void Presenter_Accept_ReturnsModelWithImplementSetRequiredForNonVariantNonPrimitiveTypes_References()
+        {
+            //Input
+            const string inputCode =
+@"Private fizz As Class1
+Sub foo()
+    Set fizz = New Class1
+End Sub";
+            var selection = new Selection(1, 15, 1, 15);
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            var view = new Mock<IEncapsulateFieldView>();
+            view.SetupProperty(v => v.MustImplementSetSetterType, false);
+
+            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            factory.Create().Show();
+
+            Assert.AreEqual(true, view.Object.MustImplementSetSetterType);
+        }
+
+        [TestMethod]
+        public void Presenter_Accept_ReturnsModelWithImplementLetRequiredForNonSetVariant_References()
+        {
+            //Input
+            const string inputCode =
+@"Private fizz As Variant
+Sub Foo()
+    fizz = True
+End Sub";
+            var selection = new Selection(1, 15, 1, 15);
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            var view = new Mock<IEncapsulateFieldView>();
+            view.SetupProperty(v => v.MustImplementLetSetterType, false);
+
+            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            factory.Create().Show();
+
+            Assert.AreEqual(true, view.Object.MustImplementLetSetterType);
+        }
+
+        [TestMethod]
+        public void Presenter_Accept_ReturnsModelWithImplementSetRequiredForSetVariant_References()
+        {
+            //Input
+            const string inputCode =
+@"Private fizz As Variant
+Sub foo()
+    Set fizz = New Class1
+End Sub";
+            var selection = new Selection(1, 15, 1, 15);
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            var view = new Mock<IEncapsulateFieldView>();
+            view.SetupProperty(v => v.MustImplementSetSetterType, false);
+
+            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            factory.Create().Show();
+
+            Assert.AreEqual(true, view.Object.MustImplementSetSetterType);
+        }
+
+        [TestMethod]
+        public void Presenter_Accept_DefaultCreateGetOnly_PrimitiveType_NoReference()
         {
             //Input
             const string inputCode =
@@ -1277,6 +1546,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1284,17 +1554,17 @@ End Sub";
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             var view = new Mock<IEncapsulateFieldView>();
-            view.SetupProperty(v => v.ImplementLetSetterType);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
             var model = factory.Create().Show();
 
-            Assert.AreEqual(true, model.ImplementLetSetterType);
+            Assert.AreEqual(false, model.ImplementLetSetterType);
+            Assert.AreEqual(false, model.ImplementSetSetterType);
         }
 
         [TestMethod]
-        public void Presenter_Accept_DefaultCreateSetForNonVariantNonPrimitiveTypes()
+        public void Presenter_Accept_DefaultCreateGetOnly_NonPrimitiveTypeNonVariant_NoReference()
         {
             //Input
             const string inputCode =
@@ -1310,6 +1580,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1317,17 +1588,17 @@ End Sub";
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             var view = new Mock<IEncapsulateFieldView>();
-            view.SetupProperty(v => v.ImplementSetSetterType);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
             var model = factory.Create().Show();
 
-            Assert.AreEqual(true, model.ImplementSetSetterType);
+            Assert.AreEqual(false, model.ImplementLetSetterType);
+            Assert.AreEqual(false, model.ImplementSetSetterType);
         }
 
         [TestMethod]
-        public void Presenter_Accept_DefaultCreateLetForVariant()
+        public void Presenter_Accept_DefaultCreateGetOnly_Variant_NoReference()
         {
             //Input
             const string inputCode =
@@ -1343,6 +1614,7 @@ End Sub";
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1350,13 +1622,13 @@ End Sub";
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             var view = new Mock<IEncapsulateFieldView>();
-            view.SetupProperty(v => v.ImplementLetSetterType);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
             var model = factory.Create().Show();
 
-            Assert.AreEqual(true, model.ImplementLetSetterType);
+            Assert.AreEqual(false, model.ImplementLetSetterType);
+            Assert.AreEqual(false, model.ImplementSetSetterType);
         }
 
         #region setup
