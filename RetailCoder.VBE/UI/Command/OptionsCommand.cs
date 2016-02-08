@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Command
 
         public override void Execute(object parameter)
         {
-            using (var window = new SettingsDialog(_service))
+            using (var window = new SettingsForm())
             {
                 window.ShowDialog();
             }
