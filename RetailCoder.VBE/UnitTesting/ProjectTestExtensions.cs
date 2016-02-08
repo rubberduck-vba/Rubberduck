@@ -36,7 +36,6 @@ namespace Rubberduck.UnitTesting
 
         public static IEnumerable<TestMethod> TestMethods(this VBProject project)
         {
-            var hostApp = project.VBE.HostApplication();
 
             var result = project.VBComponents
                           .Cast<VBComponent>()
@@ -50,7 +49,6 @@ namespace Rubberduck.UnitTesting
 
         public static IEnumerable<TestMethod> TestMethods(this VBComponent component)
         {
-            var hostApp = component.VBE.HostApplication();
 
             if (component.Type == vbext_ComponentType.vbext_ct_StdModule 
                 && component.CodeModule.HasAttribute<TestModuleAttribute>())

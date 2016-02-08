@@ -62,11 +62,11 @@ namespace Rubberduck.VBEditor.Extensions
                 switch (reference.Name)
                 {
                     case "Excel":
-                        return new ExcelApp();
+                        return new ExcelApp(vbe);
                     case "Access":
                         return new AccessApp();
                     case "Word":
-                        return new WordApp();
+                        return new WordApp(vbe);
                     case "PowerPoint":
                         return new PowerPointApp();
                     case "Outlook":
@@ -75,6 +75,8 @@ namespace Rubberduck.VBEditor.Extensions
                         return new PublisherApp();
 					case "AutoCAD":
                         return new AutoCADApp();
+                    case "CorelDRAW":
+                        return new CorelDRAWApp(vbe);
                 }
             }
 

@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		appveyor.yml = appveyor.yml
 		libs\Autodesk.AutoCAD.Interop.Common.dll = libs\Autodesk.AutoCAD.Interop.Common.dll
 		libs\Autodesk.AutoCAD.Interop.dll = libs\Autodesk.AutoCAD.Interop.dll
+		libs\Corel.GraphicsSuite.Interop.CorelDRAW.dll = libs\Corel.GraphicsSuite.Interop.CorelDRAW.dll
 		libs\Interop.VisioViewer.dll = libs\Interop.VisioViewer.dll
 		libs\Microsoft.Office.Interop.Access.dll = libs\Microsoft.Office.Interop.Access.dll
 		libs\Microsoft.Office.Interop.Excel.dll = libs\Microsoft.Office.Interop.Excel.dll
