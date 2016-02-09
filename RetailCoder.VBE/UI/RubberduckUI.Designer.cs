@@ -2662,6 +2662,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unit Test Settings.
+        /// </summary>
+        public static string SettingsCaption_UnitTestSettings {
+            get {
+                return ResourceManager.GetString("SettingsCaption_UnitTestSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Configure inspection severity. Use &quot;DoNotShow&quot; to disable an inspection..
         /// </summary>
         public static string SettingsInstructions_CodeInspections {

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Rubberduck.UI.Settings
 {
@@ -15,6 +7,19 @@ namespace Rubberduck.UI.Settings
         public SettingsForm()
         {
             InitializeComponent();
+
+            ViewModel = new SettingsControlViewModel();
+        }
+
+        private SettingsControlViewModel _viewModel;
+        private SettingsControlViewModel ViewModel
+        {
+            get { return _viewModel; }
+            set
+            {
+                _viewModel = value;
+                SettingsControl.DataContext = _viewModel;
+            }
         }
     }
 }

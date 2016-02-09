@@ -1,11 +1,11 @@
 ﻿namespace Rubberduck.UI.Settings
 {
     /// <summary>
-    /// Interaction logic for SettingsControl.xaml
+    /// Interaction logic for GeneralSettings.xaml
     /// </summary>
-    public partial class SettingsControl
+    public partial class GeneralSettings : ISettingsView
     {
-        public SettingsControl()
+        public GeneralSettings()
         {
             InitializeComponent();
         }

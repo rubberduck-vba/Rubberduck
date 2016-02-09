@@ -544,6 +544,7 @@
       <DependentUpon>GeneralSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\IAddTodoSettingsView.cs" />
+    <Compile Include="UI\Settings\ISettingsView.cs" />
     <Compile Include="UI\Settings\SettingsControl.xaml.cs">
       <DependentUpon>SettingsControl.xaml</DependentUpon>
     </Compile>
@@ -553,6 +554,9 @@
     <Compile Include="UI\Settings\SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Settings\SettingsControlViewModel.cs" />
+    <Compile Include="UI\Settings\SettingsViews.cs" />
+    <Compile Include="UI\Settings\SettingsViewToPageConverter.cs" />
     <Compile Include="UI\SourceControl\ActionFailedEventArgs.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

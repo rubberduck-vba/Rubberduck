@@ -1314,4 +1314,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
     <value>Members</value>
   </data>
+  <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
+    <value>Unit Test Settings</value>
+  </data>
 </root>

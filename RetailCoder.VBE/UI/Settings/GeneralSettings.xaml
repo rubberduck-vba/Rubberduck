@@ -9,7 +9,7 @@
     <Grid>
         <StackPanel>
             <Image Source="../../Resources/Rubberduck.png" VerticalAlignment="Top" HorizontalAlignment="Left" Stretch="Fill" MaxWidth="536" />
-            <ComboBox Width="210" HorizontalAlignment="Left" Margin="15, 10">
+            <ComboBox Width="210" HorizontalAlignment="Left" Margin="15, 10" SelectedIndex="0">
                 <TextBlock Text="{x:Static resx:RubberduckUI.Language_EN}" />
                 <TextBlock Text="{x:Static resx:RubberduckUI.Language_FR}" />
                 <TextBlock Text="{x:Static resx:RubberduckUI.Language_DE}" />
