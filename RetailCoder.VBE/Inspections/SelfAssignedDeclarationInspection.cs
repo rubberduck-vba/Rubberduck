@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -18,7 +19,7 @@ namespace Rubberduck.Inspections
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
             return UserDeclarations
-                .Where(declaration => declaration.IsSelfAssigned)
+                .Where(declaration => declaration.IsSelfAssigned && declaration.DeclarationType == DeclarationType.Variable)
                 .Select(issue => new SelfAssignedDeclarationInspectionResult(this, issue));
         }
     }
