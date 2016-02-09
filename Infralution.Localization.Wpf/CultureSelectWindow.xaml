@@ -1,5 +1,0 @@
-<Window x:Class="Infralution.Localization.Wpf.CultureSelectWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:p="clr-namespace:Infralution.Localization.Wpf" Title="Select Culture" Height="90" Width="338" MinHeight="90" MinWidth="174" Topmost="True" Icon="{p:Resx ResxName=Infralution.Localization.Wpf.Properties.Resources, Key=UICultureIcon}" ResizeMode="NoResize" MaxWidth="Infinity" MaxHeight="90">
-  <Grid>
-    <ComboBox Margin="12,12,12,0" Name="_cultureCombo" Height="27" VerticalAlignment="Top" SelectionChanged="_cultureCombo_SelectionChanged" DisplayMemberPath="DisplayName" />
-  </Grid>
-</Window>
