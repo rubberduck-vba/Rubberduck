@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Rubberduck.Settings;
@@ -9,13 +10,11 @@ namespace Rubberduck.UI.Settings
 {
     public class TodoSetting
     {
-        public string PriorityText { get; set; }
         public TodoPriority Priority { get; set; }
         public string Text { get; set; }
 
         public TodoSetting(ToDoMarker marker)
         {
-            PriorityText = marker.PriorityLabel;
             Priority = marker.Priority;
             Text = marker.Text;
         }

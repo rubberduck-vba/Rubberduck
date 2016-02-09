@@ -6,15 +6,24 @@
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
+             xmlns:core="clr-namespace:System;assembly=mscorlib"
+             xmlns:toDoItems="clr-namespace:Rubberduck.ToDoItems"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type settings:TodoSettingsViewModel}, IsDesignTimeCreatable=False}">
+             d:DataContext="{d:DesignInstance {x:Type settings:TodoSettingsViewModel}, IsDesignTimeCreatable=False}"
+             Name="View">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         
         <BitmapImage x:Key="AddImage" UriSource="../../Resources/plus-circle.png" />
         <BitmapImage x:Key="DeleteImage" UriSource="../../Resources/cross-script.png" />
-        
+
+        <ObjectDataProvider x:Key="Priorities" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="toDoItems:TodoPriority"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
         <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
             <Style.Resources>
                 <Style TargetType="{x:Type Border}">
@@ -236,22 +245,26 @@
                 </ToolBar>
             </ToolBarTray>
             <DataGrid Name="TodoMarkerGrid" ItemsSource="{Binding TodoSettings}" AutoGenerateColumns="False"
-			CanUserReorderColumns="False" IsReadOnly="True" SelectionMode="Single"
-			HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
-			HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-			ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22">
-            <DataGrid.CellStyle>
-                <Style TargetType="{x:Type DataGridCell}">
-                    <Setter Property="BorderThickness" Value="0" />
-                    <Setter Property="VerticalAlignment" Value="Center" />
-                    <Setter Property="Background" Value="Transparent" />
-                </Style>
-            </DataGrid.CellStyle>
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoSettings_TextLabel}" Width="*" Binding="{Binding Text}" />
-                <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoSettings_PriorityLabel}" Width="*" Binding="{Binding PriorityText}" SortMemberPath="Priority" />
-            </DataGrid.Columns>
-        </DataGrid>
+			    CanUserReorderColumns="False" IsReadOnly="True" SelectionMode="Single"
+			    HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
+			    HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+			    ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22">
+                <DataGrid.InputBindings>
+                    <KeyBinding Key="Delete" Command="{Binding DeleteTodoCommand}" CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem}" />
+                </DataGrid.InputBindings>
+                <DataGrid.CellStyle>
+                    <Style TargetType="{x:Type DataGridCell}">
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoSettings_TextLabel}" Width="*" Binding="{Binding Text}" />
+                    <DataGridComboBoxColumn Header="{x:Static resx:RubberduckUI.TodoSettings_PriorityLabel}" Width="*" ItemsSource="{Binding Source={StaticResource Priorities}}" SelectedItemBinding="{Binding Priority}" />
+
+                </DataGrid.Columns>
+            </DataGrid>
         </DockPanel>
     </Grid>
 </UserControl>
