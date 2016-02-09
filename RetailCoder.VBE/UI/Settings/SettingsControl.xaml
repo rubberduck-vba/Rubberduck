@@ -7,7 +7,6 @@
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600"
-             DataContextChanged="UserControl_DataContextChanged"
              d:DataContext="{d:DesignInstance {x:Type settings:SettingsControlViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
@@ -65,7 +64,7 @@
                 <TextBlock Text="{x:Static resx:RubberduckUI.SettingsInstructions_GeneralSettings}" Margin="10, 0" />
             </StackPanel>
         </Border>
-        <ListBox Name="ListBox" Grid.Row="1" Grid.Column="0" ItemContainerStyle="{StaticResource PrettifyRow}" ItemsSource="{Binding SettingsViews}" DisplayMemberPath="Label" SelectedIndex="0" />
+        <ListBox Name="ListBox" Grid.Row="1" Grid.Column="0" ItemContainerStyle="{StaticResource PrettifyRow}" ItemsSource="{Binding SettingsViews}" DisplayMemberPath="Label" SelectedItem="{Binding SelectedSettingsView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <Frame Grid.Row="1"  Grid.Column="1" Content="{Binding ElementName=ListBox, Path=SelectedValue, Converter={StaticResource SettingsViewToPage}}" NavigationUIVisibility="Hidden" />
         <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Height="40" VerticalAlignment="Bottom" BorderBrush="Black" BorderThickness="0, 1, 0, 0">
             <DockPanel VerticalAlignment="Center" Height="50" Background="{x:Static SystemColors.ControlDarkBrush}">

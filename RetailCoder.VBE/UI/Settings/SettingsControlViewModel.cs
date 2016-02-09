@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
-using Rubberduck.UI.Command;
+using System.Linq;
 
 namespace Rubberduck.UI.Settings
 {
@@ -20,11 +19,8 @@ namespace Rubberduck.UI.Settings
 
     public class SettingsControlViewModel : ViewModelBase
     {
-        public SettingsViews View { get; set; }
-
-        public SettingsControlViewModel(SettingsViews view = Settings.SettingsViews.TodoSettings)
+        public SettingsControlViewModel(SettingsViews view = Settings.SettingsViews.GeneralSettings)
         {
-            View = view;
             SettingsViews = new ObservableCollection<SettingsView>
             {
                 new SettingsView(RubberduckUI.SettingsCaption_GeneralSettings, new GeneralSettings(), Settings.SettingsViews.GeneralSettings),
@@ -32,6 +28,8 @@ namespace Rubberduck.UI.Settings
                 new SettingsView(RubberduckUI.SettingsCaption_CodeInspections, new GeneralSettings(), Settings.SettingsViews.InspectionSettings),
                 new SettingsView(RubberduckUI.SettingsCaption_UnitTestSettings, new GeneralSettings(), Settings.SettingsViews.UnitTestSettings)
             };
+
+            SelectedSettingsView = SettingsViews.First(v => v.View == view);
         }
 
         private ObservableCollection<SettingsView> _settingsViews;
@@ -46,6 +44,20 @@ namespace Rubberduck.UI.Settings
                 if (_settingsViews != value)
                 {
                     _settingsViews = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private SettingsView _seletedSettingsView;
+        public SettingsView SelectedSettingsView
+        {
+            get { return _seletedSettingsView; }
+            set
+            {
+                if (_seletedSettingsView != value)
+                {
+                    _seletedSettingsView = value;
                     OnPropertyChanged();
                 }
             }
