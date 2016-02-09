@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.Office.Interop.Excel;
+using Microsoft.Office.Interop.Publisher;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
