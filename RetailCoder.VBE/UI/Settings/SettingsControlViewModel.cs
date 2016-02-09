@@ -1,5 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
 {
@@ -60,6 +63,66 @@ namespace Rubberduck.UI.Settings
                     _seletedSettingsView = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        public event EventHandler OnOKButtonClicked;
+        public event EventHandler OnCancelButtonClicked;
+
+        private ICommand _okButtonCommand;
+        public ICommand OKButtonCommand
+        {
+            get
+            {
+                if (_okButtonCommand != null)
+                {
+                    return _okButtonCommand;
+                }
+                return _okButtonCommand = new DelegateCommand(_ =>
+                {
+                    var handler = OnOKButtonClicked;
+                    if (handler != null)
+                    {
+                        // todo update config
+                        handler(this, EventArgs.Empty);
+                    }
+                });
+            }
+        }
+
+        private ICommand _cancelButtonCommand;
+        public ICommand CancelButtonCommand
+        {
+            get
+            {
+                if (_cancelButtonCommand != null)
+                {
+                    return _cancelButtonCommand;
+                }
+                return _cancelButtonCommand = new DelegateCommand(_ =>
+                {
+                    var handler = OnCancelButtonClicked;
+                    if (handler != null)
+                    {
+                        handler(this, EventArgs.Empty);
+                    }
+                });
+            }
+        }
+
+        private ICommand _refreshButtonCommand;
+        public ICommand RefreshButtonCommand
+        {
+            get
+            {
+                if (_refreshButtonCommand != null)
+                {
+                    return _refreshButtonCommand;
+                }
+                return _refreshButtonCommand = new DelegateCommand(_ =>
+                {
+                    // todo impplement
+                });
             }
         }
     }

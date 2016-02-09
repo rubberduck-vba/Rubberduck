@@ -9,6 +9,19 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
 
             ViewModel = new SettingsControlViewModel();
+
+            ViewModel.OnOKButtonClicked += ViewModel_OnOKButtonClicked;
+            ViewModel.OnCancelButtonClicked += ViewModel_OnCancelButtonClicked;
+        }
+
+        void ViewModel_OnOKButtonClicked(object sender, System.EventArgs e)
+        {
+            Close();
+        }
+
+        void ViewModel_OnCancelButtonClicked(object sender, System.EventArgs e)
+        {
+            Close();
         }
 
         private SettingsControlViewModel _viewModel;
