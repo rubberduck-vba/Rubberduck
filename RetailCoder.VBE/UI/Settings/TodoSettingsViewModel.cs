@@ -67,17 +67,21 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private ICommand _removeTodoCommand;
-        public ICommand RemoveTodoCommand
+        private ICommand _deleteTodoCommand;
+        public ICommand DeleteTodoCommand
         {
             get
             {
-                if (_removeTodoCommand != null)
+                if (_deleteTodoCommand != null)
                 {
-                    return _removeTodoCommand;
+                    return _deleteTodoCommand;
                 }
-                return _removeTodoCommand = new DelegateCommand(_ =>
+                return _deleteTodoCommand = new DelegateCommand(_ =>
                 {
+                    TodoSettings.Remove(_ as TodoSetting);
+
+                    // ReSharper disable once ExplicitCallerInfoArgument
+                    OnPropertyChanged("TodoSettings");
                 });
             }
         }

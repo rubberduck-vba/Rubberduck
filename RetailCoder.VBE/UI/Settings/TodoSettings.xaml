@@ -227,7 +227,7 @@
                             <TextBlock Text="{x:Static resx:RubberduckUI.Add}" />
                         </StackPanel>
                     </Button>
-                    <Button ToolTip="{x:Static resx:RubberduckUI.Remove}" Command="{Binding DeleteTodoCommand}" BorderThickness="0" Background="Transparent">
+                    <Button ToolTip="{x:Static resx:RubberduckUI.Remove}" Command="{Binding DeleteTodoCommand}" CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem}" BorderThickness="0" Background="Transparent">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource DeleteImage}" />
                             <TextBlock Text="{x:Static resx:RubberduckUI.Remove}" />
@@ -235,7 +235,7 @@
                     </Button>
                 </ToolBar>
             </ToolBarTray>
-            <DataGrid ItemsSource="{Binding TodoSettings}" AutoGenerateColumns="False"
+            <DataGrid Name="TodoMarkerGrid" ItemsSource="{Binding TodoSettings}" AutoGenerateColumns="False"
 			CanUserReorderColumns="False" IsReadOnly="True" SelectionMode="Single"
 			HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
 			HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
