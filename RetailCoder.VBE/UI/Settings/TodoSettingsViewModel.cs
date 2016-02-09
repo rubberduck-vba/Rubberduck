@@ -1,13 +1,24 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using Rubberduck.Settings;
+using Rubberduck.ToDoItems;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
 {
     public class TodoSetting
     {
-        public string Priority { get; set; }
+        public string PriorityText { get; set; }
+        public TodoPriority Priority { get; set; }
         public string Text { get; set; }
+
+        public TodoSetting(ToDoMarker marker)
+        {
+            PriorityText = marker.PriorityLabel;
+            Priority = marker.Priority;
+            Text = marker.Text;
+        }
     }
 
     public class TodoSettingsViewModel : ViewModelBase
@@ -22,7 +33,7 @@ namespace Rubberduck.UI.Settings
 
             TodoSettings = new ObservableCollection<TodoSetting>(
                     _config.UserSettings.ToDoListSettings.ToDoMarkers.Select(
-                        m => new TodoSetting {Text = m.Text, Priority = m.PriorityLabel}));
+                        m => new TodoSetting(m)));
         }
 
         private ObservableCollection<TodoSetting> _todoSettings;
@@ -38,5 +49,39 @@ namespace Rubberduck.UI.Settings
                 }
             }
         }
+
+        #region Commands
+
+        private ICommand _addTodoCommand;
+        public ICommand AddTodoCommand
+        {
+            get
+            {
+                if (_addTodoCommand != null)
+                {
+                    return _addTodoCommand;
+                }
+                return _addTodoCommand = new DelegateCommand(_ =>
+                {
+                });
+            }
+        }
+
+        private ICommand _removeTodoCommand;
+        public ICommand RemoveTodoCommand
+        {
+            get
+            {
+                if (_removeTodoCommand != null)
+                {
+                    return _removeTodoCommand;
+                }
+                return _removeTodoCommand = new DelegateCommand(_ =>
+                {
+                });
+            }
+        }
+
+        #endregion
     }
 }
