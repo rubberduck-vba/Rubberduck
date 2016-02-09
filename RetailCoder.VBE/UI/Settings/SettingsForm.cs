@@ -1,14 +1,22 @@
 ﻿using System.Windows.Forms;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
 {
     public partial class SettingsForm : Form
     {
+        private readonly IGeneralConfigService _configService;
+
         public SettingsForm()
         {
             InitializeComponent();
+        }
 
-            ViewModel = new SettingsControlViewModel();
+        public SettingsForm(IGeneralConfigService configService) : this()
+        {
+            _configService = configService;
+
+            ViewModel = new SettingsControlViewModel(_configService);
 
             ViewModel.OnOKButtonClicked += ViewModel_OnOKButtonClicked;
             ViewModel.OnCancelButtonClicked += ViewModel_OnCancelButtonClicked;

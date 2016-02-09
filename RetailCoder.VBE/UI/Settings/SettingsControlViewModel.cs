@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
@@ -11,25 +12,41 @@ namespace Rubberduck.UI.Settings
         public string Label { get; set; }
         public ISettingsView Control { get; set; }
         public SettingsViews View { get; set; }
-
-        public SettingsView(string label, ISettingsView control, SettingsViews view)
-        {
-            Label = label;
-            Control = control;
-            View = view;
-        }
     }
 
     public class SettingsControlViewModel : ViewModelBase
     {
-        public SettingsControlViewModel(SettingsViews view = Settings.SettingsViews.GeneralSettings)
+        private readonly IGeneralConfigService _configService;
+
+        public SettingsControlViewModel(IGeneralConfigService configService, SettingsViews view = Settings.SettingsViews.GeneralSettings)
         {
+            _configService = configService;
             SettingsViews = new ObservableCollection<SettingsView>
             {
-                new SettingsView(RubberduckUI.SettingsCaption_GeneralSettings, new GeneralSettings(), Settings.SettingsViews.GeneralSettings),
-                new SettingsView(RubberduckUI.SettingsCaption_ToDoSettings, new GeneralSettings(), Settings.SettingsViews.TodoSettings),
-                new SettingsView(RubberduckUI.SettingsCaption_CodeInspections, new GeneralSettings(), Settings.SettingsViews.InspectionSettings),
-                new SettingsView(RubberduckUI.SettingsCaption_UnitTestSettings, new GeneralSettings(), Settings.SettingsViews.UnitTestSettings)
+                new SettingsView
+                {
+                    Label = RubberduckUI.SettingsCaption_GeneralSettings,
+                    Control = new GeneralSettings(),
+                    View = Settings.SettingsViews.GeneralSettings
+                },
+                new SettingsView
+                {
+                    Label = RubberduckUI.SettingsCaption_ToDoSettings,
+                    Control = new TodoSettings(new TodoSettingsViewModel(_configService)),
+                    View = Settings.SettingsViews.TodoSettings
+                },
+                new SettingsView
+                {
+                    Label = RubberduckUI.SettingsCaption_CodeInspections,
+                    Control = new GeneralSettings(),
+                    View = Settings.SettingsViews.InspectionSettings
+                },
+                new SettingsView
+                {
+                    Label = RubberduckUI.SettingsCaption_UnitTestSettings,
+                    Control = new GeneralSettings(),
+                    View = Settings.SettingsViews.UnitTestSettings
+                }
             };
 
             SelectedSettingsView = SettingsViews.First(v => v.View == view);
@@ -68,6 +85,8 @@ namespace Rubberduck.UI.Settings
 
         public event EventHandler OnOKButtonClicked;
         public event EventHandler OnCancelButtonClicked;
+
+        #region Commands
 
         private ICommand _okButtonCommand;
         public ICommand OKButtonCommand
@@ -125,5 +144,7 @@ namespace Rubberduck.UI.Settings
                 });
             }
         }
+
+        #endregion
     }
 }
