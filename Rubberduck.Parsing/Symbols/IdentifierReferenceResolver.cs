@@ -168,11 +168,20 @@ namespace Rubberduck.Parsing.Symbols
             return null;
         }
 
-        private Declaration ResolveType(VBAParser.ComplexTypeContext context)
+        private void ResolveType(VBAParser.ICS_S_MembersCallContext context)
+        {
+            var first = context.iCS_S_VariableOrProcedureCall().ambiguousIdentifier();
+            var identifiers = new[] {first}.Concat(context.iCS_S_MemberCall()
+                        .Select(member => member.iCS_S_VariableOrProcedureCall().ambiguousIdentifier()))
+                        .ToList();
+            ResolveType(identifiers);
+        }
+
+        private void ResolveType(VBAParser.ComplexTypeContext context)
         {
             if (context == null)
             {
-                return null;
+                return;
             }
 
             var identifiers = context.ambiguousIdentifier()
@@ -182,10 +191,16 @@ namespace Rubberduck.Parsing.Symbols
             // if there's only 1 identifier, resolve to the tightest-scope match:
             if (identifiers.Count == 1)
             {
-                return ResolveInScopeType(identifiers.Single().GetText(), _currentScope);
+                ResolveInScopeType(identifiers.Single().GetText(), _currentScope);
+                return;
             }
 
             // if there's 2 or more identifiers, resolve to the deepest path:
+            ResolveType(identifiers);
+        }
+
+        private void ResolveType(IList<VBAParser.AmbiguousIdentifierContext> identifiers)
+        {
             var first = identifiers[0].GetText();
             var projectMatch = _currentScope.ProjectName == first
                 ? _declarations.SingleOrDefault(declaration =>
@@ -223,22 +238,25 @@ namespace Rubberduck.Parsing.Symbols
                         if (udtMatch != null)
                         {
                             var udtReference = CreateReference(identifiers[2], udtMatch);
-                            
+
                             projectMatch.AddReference(projectReference);
                             _alreadyResolved.Add(projectReference.Context);
 
                             moduleMatch.AddReference(moduleReference);
                             _alreadyResolved.Add(moduleReference.Context);
-                            
+
                             udtMatch.AddReference(udtReference);
                             _alreadyResolved.Add(udtReference.Context);
-                            
-                            return udtMatch;
+
+                            return;
                         }
                     }
                 }
                 else
                 {
+                    projectMatch.AddReference(projectReference);
+                    _alreadyResolved.Add(projectReference.Context);
+
                     var match = _declarations.SingleOrDefault(declaration =>
                         !declaration.IsBuiltIn && declaration.ParentDeclaration != null
                         && declaration.ParentDeclaration.Equals(projectMatch)
@@ -248,20 +266,19 @@ namespace Rubberduck.Parsing.Symbols
                     if (match != null)
                     {
                         var reference = CreateReference(identifiers[1], match);
-                        match.AddReference(reference);
-                        _alreadyResolved.Add(reference.Context);
-                        return match;
+                        if (reference != null)
+                        {
+                            match.AddReference(reference);
+                            _alreadyResolved.Add(reference.Context);
+                            return;
+                        }
                     }
                 }
             }
 
             // first identifier didn't match current project.
             // if there are 3 identifiers, type isn't in current project.
-            if (identifiers.Count == 3)
-            {
-                return null;
-            }
-            else
+            if (identifiers.Count != 3)
             {
                 var moduleMatch = _declarations.SingleOrDefault(declaration =>
                     !declaration.IsBuiltIn && declaration.ParentDeclaration != null
@@ -288,13 +305,9 @@ namespace Rubberduck.Parsing.Symbols
 
                         udtMatch.AddReference(udtReference);
                         _alreadyResolved.Add(udtReference.Context);
-
-                        return udtMatch;
                     }
                 }
             }
-            
-            return null;
         }
 
         private IEnumerable<Declaration> FindMatchingTypes(string identifier)
@@ -306,12 +319,12 @@ namespace Rubberduck.Parsing.Symbols
                 .ToList();
         }
 
-        private Declaration ResolveInScopeType(string identifier, Declaration scope)
+        private void ResolveInScopeType(string identifier, Declaration scope)
         {
             var matches = FindMatchingTypes(identifier).ToList();
             if (matches.Count == 1)
             {
-                return matches.Single();
+                return;
             }
 
             // more than one matching identifiers found.
@@ -324,12 +337,12 @@ namespace Rubberduck.Parsing.Symbols
 
             if (sameScopeUdt.Count == 1)
             {
-                return sameScopeUdt.Single();
+                return;
             }
             
             // todo: try to resolve identifier using referenced projects
 
-            return null; // match is ambiguous or unknown, return null
+            return;
         }
 
 
@@ -709,6 +722,13 @@ namespace Rubberduck.Parsing.Symbols
                 return;
             }
 
+            if (context.Parent.Parent.Parent is VBAParser.VsNewContext)
+            {
+                // if we're in a ValueStatement/New context, we're actually resolving for a type:
+                ResolveType(context);
+                return;
+            }
+
             Declaration parent;
             if (_withBlockQualifiers.Any())
             {
@@ -721,7 +741,7 @@ namespace Rubberduck.Parsing.Symbols
             else
             {
                 parent = ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), _currentScope)
-                          ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), _currentScope);
+                        ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), _currentScope);
                 parent = ResolveType(parent);
             }
 
