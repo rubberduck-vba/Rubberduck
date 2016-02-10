@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace Rubberduck.UI.Settings.Converters
 {
-    public class SelectedItemsToBooleanConverter : IValueConverter
+    public class SelectedItemToBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

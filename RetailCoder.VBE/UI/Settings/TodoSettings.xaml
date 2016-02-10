@@ -25,7 +25,7 @@
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-        <converters:SelectedItemsToBooleanConverter x:Key="HasSelectedItems"/>
+        <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
 
         <BitmapImage x:Key="AddImage" UriSource="../../Resources/plus-circle.png" />
         <BitmapImage x:Key="DeleteImage" UriSource="../../Resources/cross-script.png" />
@@ -253,7 +253,7 @@
     </UserControl.Resources>
     <Grid>
         <DockPanel Margin="5,5,5,0">
-            <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" Content="{x:Static resx:RubberduckUI.SettingsCaption_ToDoSettings}" Margin="0,0,0,3">
+            <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" FontWeight="SemiBold" Content="{x:Static resx:RubberduckUI.SettingsCaption_ToDoSettings}" Margin="0,0,0,3">
                 <Label.Style>
                     <Style>
                         <Style.Resources>
@@ -264,8 +264,8 @@
                     </Style>
                 </Label.Style>
             </Label>
-            <ToolBarTray DockPanel.Dock="Top" IsLocked="True">
-                <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
+            <ToolBarTray DockPanel.Dock="Top" IsLocked="True" Background="Transparent">
+                <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}" Background="Transparent">
                     <Button ToolTip="{x:Static resx:RubberduckUI.Add}" Command="{Binding AddTodoCommand}" BorderThickness="0" Background="Transparent">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource AddImage}" />

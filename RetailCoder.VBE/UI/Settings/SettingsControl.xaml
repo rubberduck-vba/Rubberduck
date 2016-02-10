@@ -53,7 +53,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
             <RowDefinition />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -65,10 +65,10 @@
                 <TextBlock Text="{x:Static resx:RubberduckUI.SettingsInstructions_GeneralSettings}" Margin="10, 0" />
             </StackPanel>
         </Border>
-        <ListBox Name="ListBox" Grid.Row="1" Grid.Column="0" ItemContainerStyle="{StaticResource PrettifyRow}" ItemsSource="{Binding SettingsViews}" DisplayMemberPath="Label" SelectedItem="{Binding SelectedSettingsView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        <Frame Grid.Row="1"  Grid.Column="1" Content="{Binding ElementName=ListBox, Path=SelectedValue, Converter={StaticResource SettingsViewToPage}}" NavigationUIVisibility="Hidden" />
+        <ListBox Name="ListBox" Grid.Row="1" Grid.Column="0" ItemContainerStyle="{StaticResource PrettifyRow}" ItemsSource="{Binding SettingsViews}" DisplayMemberPath="Label" SelectedItem="{Binding SelectedSettingsView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,5,0,5" />
+        <Frame Grid.Row="1"  Grid.Column="1" Content="{Binding ElementName=ListBox, Path=SelectedValue, Converter={StaticResource SettingsViewToPage}}" NavigationUIVisibility="Hidden" Margin="0,0,0,5" />
         <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Height="40" VerticalAlignment="Bottom" BorderBrush="Black" BorderThickness="0, 1, 0, 0">
-            <DockPanel VerticalAlignment="Center" Height="50" Background="{x:Static SystemColors.ControlDarkBrush}">
+            <DockPanel VerticalAlignment="Center" Height="40" Background="{x:Static SystemColors.ControlDarkBrush}">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Content="{x:Static resx:RubberduckUI.Settings_ResetSettings}" MinWidth="75" Height="20"  HorizontalAlignment="Right" Margin="20,0" Command="{Binding RefreshButtonCommand}" />
                     <Button Content="{x:Static resx:RubberduckUI.CancelButtonText}" MinWidth="75" Height="20" HorizontalAlignment="Right" Margin="5, 0" Command="{Binding OKButtonCommand}" />

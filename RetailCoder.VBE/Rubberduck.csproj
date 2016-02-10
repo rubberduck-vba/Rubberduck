@@ -542,7 +542,7 @@
       <DependentUpon>AddMarkerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\Converters\LanguagesEnumValueToTextConverter.cs" />
-    <Compile Include="UI\Settings\Converters\SelectedItemsToBooleanConverter.cs" />
+    <Compile Include="UI\Settings\Converters\SelectedItemToBooleanConverter.cs" />
     <Compile Include="UI\Settings\GeneralSettings.xaml.cs">
       <DependentUpon>GeneralSettings.xaml</DependentUpon>
     </Compile>
