@@ -541,9 +541,12 @@
     <Compile Include="UI\Settings\AddMarkerForm.Designer.cs">
       <DependentUpon>AddMarkerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Settings\Converters\LanguagesEnumValueToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\SelectedItemsToBooleanConverter.cs" />
     <Compile Include="UI\Settings\GeneralSettings.xaml.cs">
       <DependentUpon>GeneralSettings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Settings\GeneralSettingsViewModel.cs" />
     <Compile Include="UI\Settings\IAddTodoSettingsView.cs" />
     <Compile Include="UI\Settings\ISettingsView.cs" />
     <Compile Include="UI\Settings\SettingsControl.xaml.cs">
@@ -557,7 +560,8 @@
     </Compile>
     <Compile Include="UI\Settings\SettingsControlViewModel.cs" />
     <Compile Include="UI\Settings\SettingsViews.cs" />
-    <Compile Include="UI\Settings\SettingsViewToPageConverter.cs" />
+    <Compile Include="UI\Settings\Converters\LanguagesEnumToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\SettingsViewToPageConverter.cs" />
     <Compile Include="UI\Settings\TodoSettings.xaml.cs">
       <DependentUpon>TodoSettings.xaml</DependentUpon>
     </Compile>

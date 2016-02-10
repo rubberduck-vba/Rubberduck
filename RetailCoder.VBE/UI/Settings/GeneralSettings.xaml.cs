@@ -9,5 +9,10 @@
         {
             InitializeComponent();
         }
+
+        public GeneralSettings(GeneralSettingsViewModel vm) : this()
+        {
+            DataContext = vm;
+        }
     }
 }

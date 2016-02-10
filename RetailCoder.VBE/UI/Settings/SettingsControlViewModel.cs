@@ -26,7 +26,7 @@ namespace Rubberduck.UI.Settings
                 new SettingsView
                 {
                     Label = RubberduckUI.SettingsCaption_GeneralSettings,
-                    Control = new GeneralSettings(),
+                    Control = new GeneralSettings(new GeneralSettingsViewModel(_configService)),
                     View = Settings.SettingsViews.GeneralSettings
                 },
                 new SettingsView

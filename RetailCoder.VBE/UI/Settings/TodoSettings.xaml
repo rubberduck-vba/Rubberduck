@@ -8,6 +8,7 @@
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
              xmlns:core="clr-namespace:System;assembly=mscorlib"
              xmlns:toDoItems="clr-namespace:Rubberduck.ToDoItems"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type settings:TodoSettingsViewModel}, IsDesignTimeCreatable=False}">
@@ -22,9 +23,10 @@
         </LinearGradientBrush>
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
-        
+
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-        
+        <converters:SelectedItemsToBooleanConverter x:Key="HasSelectedItems"/>
+
         <BitmapImage x:Key="AddImage" UriSource="../../Resources/plus-circle.png" />
         <BitmapImage x:Key="DeleteImage" UriSource="../../Resources/cross-script.png" />
 
@@ -250,7 +252,7 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <DockPanel Margin="5">
+        <DockPanel Margin="5,5,5,0">
             <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" Content="{x:Static resx:RubberduckUI.SettingsCaption_ToDoSettings}" Margin="0,0,0,3">
                 <Label.Style>
                     <Style>
@@ -270,7 +272,7 @@
                             <TextBlock Text="{x:Static resx:RubberduckUI.Add}" Margin="2,0" />
                         </StackPanel>
                     </Button>
-                    <Button ToolTip="{x:Static resx:RubberduckUI.Remove}" Command="{Binding DeleteTodoCommand}" CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem}" BorderThickness="0" Background="Transparent">
+                    <Button ToolTip="{x:Static resx:RubberduckUI.Remove}" Command="{Binding DeleteTodoCommand}" CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=CurrentItem}" BorderThickness="0" Background="Transparent" IsEnabled="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource DeleteImage}" />
                             <TextBlock Text="{x:Static resx:RubberduckUI.Remove}" Margin="2,0" />

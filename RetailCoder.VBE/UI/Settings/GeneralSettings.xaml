@@ -4,18 +4,36 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:resx="clr-namespace:Rubberduck.UI"
+             xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
+             xmlns:core="clr-namespace:System;assembly=mscorlib"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance {x:Type settings:GeneralSettingsViewModel}, IsDesignTimeCreatable=False}">
+    <Page.Resources>
+        <converters:LanguagesEnumToTextConverter x:Key="LanguagesEnumToText" />
+        <converters:LanguagesEnumValueToTextConverter x:Key="LanguagesEnumValueToText" />
+        
+        <ObjectDataProvider x:Key="Languages" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="settings:Languages"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Page.Resources>
     <Grid>
-        <StackPanel>
-            <Image Source="../../Resources/Rubberduck.png" VerticalAlignment="Top" HorizontalAlignment="Left" Stretch="Fill" MaxWidth="536" />
-            <ComboBox Width="210" HorizontalAlignment="Left" Margin="15, 10" SelectedIndex="0">
-                <TextBlock Text="{x:Static resx:RubberduckUI.Language_EN}" />
-                <TextBlock Text="{x:Static resx:RubberduckUI.Language_FR}" />
-                <TextBlock Text="{x:Static resx:RubberduckUI.Language_DE}" />
-                <TextBlock Text="{x:Static resx:RubberduckUI.Language_SV}" />
-                <TextBlock Text="{x:Static resx:RubberduckUI.Language_JA}" />
-            </ComboBox>
+        <StackPanel Margin="5,5,5,0">
+            <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" Content="{x:Static resx:RubberduckUI.SettingsCaption_GeneralSettings}" Margin="0,0,0,3">
+                <Label.Style>
+                    <Style>
+                        <Style.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Style.Resources>
+                    </Style>
+                </Label.Style>
+            </Label>
+            <ComboBox Width="210" HorizontalAlignment="Left" Margin="5" SelectedItem="{Binding SelectedLanguage, Mode=TwoWay, Converter={StaticResource LanguagesEnumValueToText}}" ItemsSource="{Binding Source={StaticResource Languages}, Converter={StaticResource LanguagesEnumToText}, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
     </Grid>
 </Page>
