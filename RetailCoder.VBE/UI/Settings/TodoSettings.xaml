@@ -242,13 +242,13 @@
                     <Button ToolTip="{x:Static resx:RubberduckUI.Add}" Command="{Binding AddTodoCommand}" BorderThickness="0" Background="Transparent">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource AddImage}" />
-                            <TextBlock Text="{x:Static resx:RubberduckUI.Add}" />
+                            <TextBlock Text="{x:Static resx:RubberduckUI.Add}" Margin="2,0" />
                         </StackPanel>
                     </Button>
                     <Button ToolTip="{x:Static resx:RubberduckUI.Remove}" Command="{Binding DeleteTodoCommand}" CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem}" BorderThickness="0" Background="Transparent">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource DeleteImage}" />
-                            <TextBlock Text="{x:Static resx:RubberduckUI.Remove}" />
+                            <TextBlock Text="{x:Static resx:RubberduckUI.Remove}" Margin="2,0" />
                         </StackPanel>
                     </Button>
                 </ToolBar>
