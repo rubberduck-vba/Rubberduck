@@ -8,6 +8,8 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:codeInspections="clr-namespace:Rubberduck.UI.CodeInspections"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
+             Language="{UICulture}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeInspections:InspectionResultsViewModel}">
     <UserControl.Resources>
@@ -204,7 +206,7 @@
             <Separator />
             <Menu>
                 <MenuItem VerticalAlignment="Center" 
-                          Header="{x:Static resx:RubberduckUI.Fix}"
+                          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Fix}"
                           ItemsSource="{Binding SelectedItem.QuickFixes}">
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/tick.png" />
@@ -263,15 +265,15 @@
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteQuickFixInModule, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding QuickFixInModuleCommand}"
-                            Content="{x:Static resx:RubberduckUI.QuickFix_ThisModule}" />
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=QuickFix_ThisModule}" />
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding QuickFixInProjectCommand}"
-                            Content="{x:Static resx:RubberduckUI.QuickFix_ThisProject}" />
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=QuickFix_ThisProject}" />
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding DisableInspectionCommand}"
-                            Content="{x:Static resx:RubberduckUI.DisableThisInspection}" />
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=DisableThisInspection}" />
                 </WrapPanel>
             </StackPanel>
         </Border>
