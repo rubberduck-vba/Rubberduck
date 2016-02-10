@@ -411,7 +411,8 @@ namespace RubberduckTests.SourceControl
 
             //assert
             _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Once);
-        }        [TestMethod]
+        }
+        [TestMethod]
         public void InitRepository_WhenUserConfirms_StatusIsOnline()
         {
             //arrange
@@ -706,12 +707,12 @@ namespace RubberduckTests.SourceControl
         private SourceControlConfiguration GetDummyConfig()
         {
             return new SourceControlConfiguration()
-                    {
-                        Repositories = new List<Repository>() 
+            {
+                Repositories = new List<Repository>() 
                         { 
                             (Repository)GetDummyRepo()
                         }
-                    };
+            };
         }
 
         private static IRepository GetDummyRepo()

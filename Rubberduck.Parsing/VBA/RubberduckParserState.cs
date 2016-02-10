@@ -28,9 +28,22 @@ namespace Rubberduck.Parsing.VBA
         public ParserState State { get {return _state; } }
     }
 
+    public class ParseRequestEventArgs : EventArgs
+    {
+        private readonly VBComponent _component;
+
+        public ParseRequestEventArgs(VBComponent component)
+        {
+            _component = component;
+        }
+
+        public VBComponent Component { get { return _component; } }
+        public bool IsFullReparseRequest { get { return _component == null; } }
+    }
+
     public sealed class RubberduckParserState
     {
-        public event EventHandler ParseRequest;
+        public event EventHandler<ParseRequestEventArgs> ParseRequest;
 
         // keys are the declarations; values indicate whether a declaration is resolved.
         private readonly ConcurrentDictionary<Declaration, ResolutionState> _declarations =
@@ -291,12 +304,18 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void OnParseRequested()
+        /// <summary>
+        /// Requests reparse for specified component.
+        /// Omit parameter to request a full reparse.
+        /// </summary>
+        /// <param name="component">The component to reparse.</param>
+        public void OnParseRequested(VBComponent component = null)
         {
             var handler = ParseRequest;
             if (handler != null)
             {
-                handler.Invoke(this, EventArgs.Empty);
+                var args = new ParseRequestEventArgs(component);
+                handler.Invoke(this, args);
             }
         }
     }

@@ -132,7 +132,7 @@ namespace Rubberduck.Root
                 .Configure(binding => binding.InSingletonScope()));
         }
 
-        // note: IInspection implementations are discovered in the Rubberduck assembly via reflection.
+        // note: InspectionBase implementations are discovered in the Rubberduck assembly via reflection.
         private void BindCodeInspectionTypes()
         {
             var inspections = Assembly.GetExecutingAssembly()

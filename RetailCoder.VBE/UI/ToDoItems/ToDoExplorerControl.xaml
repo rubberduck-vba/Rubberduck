@@ -7,6 +7,7 @@
              xmlns:toDoItems="clr-namespace:Rubberduck.UI.ToDoItems"
              xmlns:controls="clr-namespace:Rubberduck.Controls"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Class="Rubberduck.UI.ToDoItems.ToDoExplorerControl"
+             Language="{UICulture}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type toDoItems:ToDoExplorerViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
@@ -240,11 +241,11 @@
     <DockPanel LastChildFill="True">
         <ToolBarTray DockPanel.Dock="Top" IsLocked="True">
             <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
-                <Button ToolTip="{x:Static resx:RubberduckUI.Refresh}" Command="{Binding RefreshCommand, Mode=OneWay}" BorderThickness="0" Background="Transparent">
+                <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}" Command="{Binding RefreshCommand, Mode=OneWay}" BorderThickness="0" Background="Transparent">
                     <Image Source="{StaticResource RefreshImage}" />
                 </Button>
                 <Separator />
-                <Button ToolTip="{x:Static resx:RubberduckUI.Remove}" Command="{Binding Remove}" BorderThickness="0" Background="Transparent">
+                <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}" Command="{Binding Remove}" BorderThickness="0" Background="Transparent">
                     <Image Source="{StaticResource DeleteImage}" />
                 </Button>
             </ToolBar>
@@ -263,11 +264,11 @@
                 </Style>
             </controls:GroupingGrid.CellStyle>
             <controls:GroupingGrid.Columns>
-                <DataGridTextColumn Header="{x:Static resx:RubberduckUI.Priority}" Binding="{Binding Priority}" />
-                <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
-                <DataGridTextColumn Header="{x:Static resx:RubberduckUI.ProjectName}" Binding="{Binding ProjectName}" />
-                <DataGridTextColumn Header="{x:Static resx:RubberduckUI.ModuleName}" Binding="{Binding ModuleName}" />
-                <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoExplorer_LineNumber}" Binding="{Binding LineNumber}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Priority}" Binding="{Binding Priority}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ProjectName}" Binding="{Binding ProjectName}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ModuleName}" Binding="{Binding ModuleName}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_LineNumber}" Binding="{Binding LineNumber}" />
             </controls:GroupingGrid.Columns>
         </controls:GroupingGrid>
     </DockPanel>

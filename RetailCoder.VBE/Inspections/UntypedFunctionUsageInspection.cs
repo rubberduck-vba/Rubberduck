@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections
         public UntypedFunctionUsageInspection(RubberduckParserState state)
             : base(state)
         {
-            Severity = CodeInspectionSeverity.Hint;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public override string Description { get { return RubberduckUI.UntypedFunctionUsage_; } }
