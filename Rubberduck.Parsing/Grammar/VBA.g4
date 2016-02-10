@@ -359,18 +359,18 @@ macroConstStmt : MACRO_CONST WS? ambiguousIdentifier WS? EQ WS? valueStmt;
 macroIfThenElseStmt : macroIfBlockStmt macroElseIfBlockStmt* macroElseBlockStmt? MACRO_END_IF;
 
 macroIfBlockStmt : 
-	MACRO_IF WS? ifConditionStmt WS THEN NEWLINE+ 
-	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)?
+	MACRO_IF WS? ifConditionStmt WS THEN NEWLINE*
+	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)*
 ;
 
 macroElseIfBlockStmt : 
-	MACRO_ELSEIF WS? ifConditionStmt WS THEN NEWLINE+ 
-	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)?
+	MACRO_ELSEIF WS? ifConditionStmt WS THEN NEWLINE* 
+	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)*
 ;
 
 macroElseBlockStmt : 
-	MACRO_ELSE NEWLINE+ 
-	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)?
+	MACRO_ELSE NEWLINE* 
+	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)*
 ;
 
 midStmt : MID WS? LPAREN WS? argsCall WS? RPAREN;
@@ -797,8 +797,8 @@ LSET : L S E T;
 MACRO_CONST : '#' C O N S T WS;
 MACRO_IF : '#' I F WS;
 MACRO_ELSEIF : '#' E L S E I F WS;
-MACRO_ELSE : '#' E L S E WS;
-MACRO_END_IF : '#' E N D WS I F;
+MACRO_ELSE : '#' E L S E NEWLINE;
+MACRO_END_IF : '#' E N D WS I F NEWLINE;
 ME : M E;
 MID : M I D;
 MKDIR : M K D I R;
