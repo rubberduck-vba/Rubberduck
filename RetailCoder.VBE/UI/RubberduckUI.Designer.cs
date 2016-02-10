@@ -2707,6 +2707,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Severity:.
+        /// </summary>
+        public static string SeverityLabelText {
+            get {
+                return ResourceManager.GetString("SeverityLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Indent.
         /// </summary>
         public static string SmartIndenterMenu {

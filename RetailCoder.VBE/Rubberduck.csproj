@@ -551,6 +551,10 @@
     </Compile>
     <Compile Include="UI\Settings\GeneralSettingsViewModel.cs" />
     <Compile Include="UI\Settings\IAddTodoSettingsView.cs" />
+    <Compile Include="UI\Settings\InspectionSettings.xaml.cs">
+      <DependentUpon>InspectionSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\InspectionSettingsViewModel.cs" />
     <Compile Include="UI\Settings\ISettingsView.cs" />
     <Compile Include="UI\Settings\SettingsControl.xaml.cs">
       <DependentUpon>SettingsControl.xaml</DependentUpon>
@@ -1412,6 +1416,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Settings\GeneralSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\InspectionSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

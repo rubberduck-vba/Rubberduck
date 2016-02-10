@@ -38,7 +38,7 @@ namespace Rubberduck.UI.Settings
                 new SettingsView
                 {
                     Label = RubberduckUI.SettingsCaption_CodeInspections,
-                    Control = new GeneralSettings(),
+                    Control = new InspectionSettings(new InspectionSettingsViewModel(_configService)),
                     View = Settings.SettingsViews.InspectionSettings
                 },
                 new SettingsView

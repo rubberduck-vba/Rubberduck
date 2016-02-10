@@ -1317,4 +1317,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
     <value>Unit Test Settings</value>
   </data>
+  <data name="SeverityLabelText" xml:space="preserve">
+    <value>Severity:</value>
+  </data>
 </root>
