@@ -9,6 +9,8 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
+             ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
+             Language="{UICulture}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeExplorer:CodeExplorerViewModel}">
     <UserControl.Resources>
@@ -185,11 +187,11 @@
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteRefactorRename, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding RefactorRenameCommand}"
-                            Content="{x:Static resx:RubberduckUI.RefactorMenu_Rename}" />
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RefactorMenu_Rename}" />
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteFindAllReferences, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding FindAllReferencesCommand}"
-                            Content="{x:Static resx:RubberduckUI.ContextMenu_FindAllReferences}" />-->
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ContextMenu_FindAllReferences}" />-->
                 </WrapPanel>
             </Grid>
         </Border>
