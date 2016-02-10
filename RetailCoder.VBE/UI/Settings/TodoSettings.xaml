@@ -10,8 +10,7 @@
              xmlns:toDoItems="clr-namespace:Rubberduck.ToDoItems"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type settings:TodoSettingsViewModel}, IsDesignTimeCreatable=False}"
-             Name="View">
+             d:DataContext="{d:DesignInstance {x:Type settings:TodoSettingsViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         
@@ -32,7 +31,6 @@
             </Style.Resources>
             <Setter Property="BorderThickness" Value="0,.5,0,0" />
             <Setter Property="BorderBrush" Value="DarkGray" />
-            <Setter Property="Height" Value="22" />
             <Setter Property="TextBlock.FontWeight" Value="Normal" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
@@ -245,7 +243,7 @@
                 </ToolBar>
             </ToolBarTray>
             <DataGrid Name="TodoMarkerGrid" ItemsSource="{Binding TodoSettings}" AutoGenerateColumns="False"
-			    CanUserReorderColumns="False" IsReadOnly="True" SelectionMode="Single"
+			    CanUserReorderColumns="False" IsReadOnly="False" SelectionMode="Single"
 			    HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
 			    HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
 			    ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22">
@@ -262,7 +260,6 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TodoSettings_TextLabel}" Width="*" Binding="{Binding Text}" />
                     <DataGridComboBoxColumn Header="{x:Static resx:RubberduckUI.TodoSettings_PriorityLabel}" Width="*" ItemsSource="{Binding Source={StaticResource Priorities}}" SelectedItemBinding="{Binding Priority}" />
-
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
