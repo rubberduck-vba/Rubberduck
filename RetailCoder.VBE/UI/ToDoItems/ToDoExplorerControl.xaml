@@ -6,7 +6,7 @@
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:toDoItems="clr-namespace:Rubberduck.UI.ToDoItems"
              xmlns:controls="clr-namespace:Rubberduck.Controls"
-             xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Class="Rubberduck.UI.ToDoItems.ToDoExplorerControl"
+             xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Class="Rubberduck.UI.ToDoItems.ToDoExplorerControl"
              Language="{UICulture}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type toDoItems:ToDoExplorerViewModel}, IsDesignTimeCreatable=False}">
@@ -250,13 +250,13 @@
                 </Button>
             </ToolBar>
         </ToolBarTray>
-        <groupingGrid:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False"
+        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False"
 			SelectedItem="{Binding SelectedToDo}" IsExpanded="True"
 			CanUserReorderColumns="False" IsReadOnly="True"
 			HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
 			HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
 			ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22">
-            <groupingGrid:GroupingGrid.CellStyle>
+            <controls:GroupingGrid.CellStyle>
                 <Style TargetType="{x:Type DataGridCell}">
                     <Setter Property="BorderThickness" Value="0" />
                     <Setter Property="VerticalAlignment" Value="Center" />

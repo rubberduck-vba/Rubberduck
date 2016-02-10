@@ -242,7 +242,7 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="PresentationFramework.Aero2" />
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -298,7 +298,7 @@
     <Compile Include="Common\WinAPI\User32.cs" />
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
-    <Compile Include="UI\Controls\GroupingGrid\GroupingGrid.xaml.cs">
+    <Compile Include="Controls\GroupingGrid\GroupingGrid.xaml.cs">
       <DependentUpon>GroupingGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
@@ -1363,7 +1363,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Controls\GroupingGrid\GroupingGrid.xaml">
+    <Page Include="Controls\GroupingGrid\GroupingGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
