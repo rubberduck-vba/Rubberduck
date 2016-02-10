@@ -909,7 +909,7 @@ INTEGERLITERAL : (PLUS|MINUS)? ('0'..'9')+ ( ('e' | 'E') INTEGERLITERAL)* ('#' |
 DOUBLELITERAL : (PLUS|MINUS)? ('0'..'9')* '.' ('0'..'9')+ ( ('e' | 'E') (PLUS|MINUS)? ('0'..'9')+)* ('#' | '&')?;
 BYTELITERAL : ('0'..'9')+;
 // identifier
-IDENTIFIER :  LETTER (LETTERORDIGIT)* | L_SQUARE_BRACKET (~[!\]\r\n])+ R_SQUARE_BRACKET;
+IDENTIFIER :  (~[!\]\(\)\r\n\t ])+ | L_SQUARE_BRACKET (~[!\]\r\n])+ R_SQUARE_BRACKET;
 // whitespace, line breaks, comments, ...
 LINE_CONTINUATION : [ \t]+ '_' '\r'? '\n' -> skip;
 NEWLINE : (':' WS?) | (WS? ('\r'? '\n') WS?); 
