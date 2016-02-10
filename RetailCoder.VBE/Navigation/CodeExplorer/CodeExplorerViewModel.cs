@@ -1,20 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Properties;
+using Rubberduck.UI;
 using Rubberduck.UI.Command;
 
-namespace Rubberduck.UI.CodeExplorer
+namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerViewModel : ViewModelBase
     {
         private readonly RubberduckParserState _state;
 
-        public CodeExplorerViewModel(RubberduckParserState state)
+        public CodeExplorerViewModel(RubberduckParserState state, INavigateCommand navigateCommand)
         {
             _state = state;
+            _navigateCommand = navigateCommand;
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
@@ -23,6 +26,9 @@ namespace Rubberduck.UI.CodeExplorer
 
         private readonly ICommand _refreshCommand;
         public ICommand RefreshCommand { get { return _refreshCommand; } }
+
+        private readonly INavigateCommand _navigateCommand;
+        public ICommand NavigateCommand { get { return _navigateCommand; } }
 
         private object _selectedItem;
         public object SelectedItem
@@ -73,7 +79,7 @@ namespace Rubberduck.UI.CodeExplorer
         private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
         {
             IsBusy = e.State == ParserState.Parsing;
-            if (e.State != ParserState.Resolving) // Parsed state is too volatile
+            if (e.State != ParserState.Parsed) 
             {
                 return;
             }

@@ -8,7 +8,7 @@ namespace Rubberduck.Settings
 
         protected override string ConfigFile
         {
-            get { return Path.Combine(this.rootPath, "SourceControl.rubberduck"); }
+            get { return Path.Combine(rootPath, "SourceControl.rubberduck"); }
         }
 
         public override SourceControlConfiguration LoadConfiguration()

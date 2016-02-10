@@ -7,6 +7,7 @@
              xmlns:unitTesting="clr-namespace:Rubberduck.UnitTesting"
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             Language="{UICulture}"
              mc:Ignorable="d" 
              d:DesignHeight="255" d:DesignWidth="255"
              MinWidth="255" MinHeight="255" d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
@@ -119,52 +120,52 @@
             <Separator />
 
             <Menu>
-                <MenuItem VerticalAlignment="Center" Header="{x:Static resx:RubberduckUI.Run}">
+                <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RubberduckUI.Run}">
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/control.png" />
                     </MenuItem.Icon>
-                    <MenuItem Command="{Binding RunAllTestsCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunAllTests}">
+                    <MenuItem Command="{Binding RunAllTestsCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_RunAllTests}">
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/flask--arrow.png" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Command="{Binding RunNotExecutedTestsCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunNotRunTests}" >
+                    <MenuItem Command="{Binding RunNotExecutedTestsCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_RunNotRunTests}" >
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/question-white.png" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Command="{Binding RunPassedTestsCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunPassedTests}" >
+                    <MenuItem Command="{Binding RunPassedTestsCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_RunPassedTests}" >
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/tick-circle.png" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Command="{Binding RunFailedTestsCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunFailedTests}">
+                    <MenuItem Command="{Binding RunFailedTestsCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_RunFailedTests}">
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/cross-circle.png" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Command="{Binding RepeatLastRunCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunLastRunTests}">
+                    <MenuItem Command="{Binding RepeatLastRunCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_RunLastRunTests}">
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/arrow-repeat.png" />
                         </MenuItem.Icon>
                     </MenuItem>
 
                 </MenuItem>
-                <MenuItem VerticalAlignment="Center" Header="{x:Static resx:RubberduckUI.Add}">
+                <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}">
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/flask--plus.png" />
                     </MenuItem.Icon>
-                    <MenuItem Command="{Binding AddTestModuleCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_AddTestModule}">
+                    <MenuItem Command="{Binding AddTestModuleCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_AddTestModule}">
                     </MenuItem>
                     <Separator />
-                    <MenuItem Command="{Binding AddTestMethodCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_AddTestMethod}">
+                    <MenuItem Command="{Binding AddTestMethodCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_AddTestMethod}">
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/flask.png" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Command="{Binding AddErrorTestMethodCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_AddExpectedErrorTestMethod}">
+                    <MenuItem Command="{Binding AddErrorTestMethodCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_AddExpectedErrorTestMethod}">
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/flask--exclamation.png" />
                         </MenuItem.Icon>
@@ -209,7 +210,7 @@
             <TreeView.ContextMenu>
                 <ContextMenu>
                     <MenuItem VerticalAlignment="Center" 
-                              Header="{x:Static resx:RubberduckUI.Run}" 
+                              Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Run}" 
                               Command="{Binding RunSelectedTestCommand}"
                               IsEnabled="{Binding Model.IsReady, Mode=OneWay}">
                         <MenuItem.Icon>

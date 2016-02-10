@@ -19,10 +19,10 @@ namespace Rubberduck.Settings
 
         public SourceControlConfiguration()
         {
-            this.Repositories = new List<Repository>();
-            this.UserName = string.Empty;
-            this.EmailAddress = string.Empty;
-            this.DefaultRepositoryLocation = string.Empty;
+            Repositories = new List<Repository>();
+            UserName = string.Empty;
+            EmailAddress = string.Empty;
+            DefaultRepositoryLocation = string.Empty;
         }
 
         public SourceControlConfiguration
@@ -33,10 +33,10 @@ namespace Rubberduck.Settings
                 List<Repository> repositories
             )
         {
-            this.Repositories = repositories;
-            this.UserName = username;
-            this.EmailAddress = email;
-            this.DefaultRepositoryLocation = defaultRepoLocation;
+            Repositories = repositories;
+            UserName = username;
+            EmailAddress = email;
+            DefaultRepositoryLocation = defaultRepoLocation;
         }
     }
 }

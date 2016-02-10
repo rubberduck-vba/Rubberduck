@@ -228,6 +228,9 @@
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Infralution.Localization.Wpf">
+      <HintPath>..\libs\Infralution.Localization.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject.Extensions.Conventions">
       <HintPath>..\packages\ninject.extensions.conventions.3.2.0.0\lib\net45-full\Ninject.Extensions.Conventions.dll</HintPath>
     </Reference>
@@ -239,6 +242,7 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -294,18 +298,30 @@
     <Compile Include="Common\WinAPI\User32.cs" />
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
+    <Compile Include="Controls\GroupingGrid\GroupingGrid.xaml.cs">
+      <DependentUpon>GroupingGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
+    <Compile Include="Inspections\ConvertToProcedureQuickFix.cs" />
+    <Compile Include="Inspections\FunctionReturnValueNotUsedInspection.cs" />
+    <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionResult.cs" />
+    <Compile Include="Inspections\SelfAssignedDeclarationInspection.cs" />
+    <Compile Include="Inspections\SelfAssignedDeclarationInspectionResult.cs" />
+    <Compile Include="Inspections\InspectionsUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InspectionsUI.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Inspections\MoveFieldCloserToUsageInspection.cs" />
+    <Compile Include="Inspections\EncapsulatePublicFieldInspection.cs" />
+    <Compile Include="Inspections\MoveFieldCloserToUsageInspectionResult.cs" />
+    <Compile Include="Inspections\EncapsulatePublicFieldInspectionResult.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspection.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspectionResult.cs" />
     <Compile Include="Inspections\IgnoreOnceQuickFix.cs" />
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspection.cs" />
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspection.cs" />
     <Compile Include="Inspections\InspectionBase.cs" />
-    <Compile Include="Inspections\InspectionsUI.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InspectionsUI.resx</DependentUpon>
-    </Compile>
     <Compile Include="Inspections\MultipleFolderAnnotationsInspection.cs" />
     <Compile Include="Inspections\ProcedureShouldBeFunctionInspection.cs" />
     <Compile Include="Inspections\ProcedureShouldBeFunctionInspectionResult.cs" />
@@ -314,6 +330,8 @@
     <Compile Include="Inspections\UseMeaningfulNameInspectionResult.cs" />
     <Compile Include="Inspections\WriteOnlyPropertyInspection.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspection.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerCustomFolderViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerItemViewModel.cs" />
     <Compile Include="Navigation\NavigateAllReferences.cs" />
     <Compile Include="Navigation\NavigateAllImplementations.cs" />
     <Compile Include="Navigation\IDeclarationNavigator.cs" />
@@ -398,13 +416,18 @@
     <Compile Include="UI\BusyIndicator.xaml.cs">
       <DependentUpon>BusyIndicator.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\CodeExplorer\CodeExplorerComponentViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerComponentViewModel.cs" />
+    <Compile Include="UI\CodeExplorer\CodeExplorer.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CodeExplorer.resx</DependentUpon>
+    </Compile>
     <Compile Include="UI\CodeExplorer\CodeExplorerControl.xaml.cs">
       <DependentUpon>CodeExplorerControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\CodeExplorer\CodeExplorerMemberViewModel.cs" />
-    <Compile Include="UI\CodeExplorer\CodeExplorerProjectViewModel.cs" />
-    <Compile Include="UI\CodeExplorer\CodeExplorerViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerMemberViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerProjectViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerViewModel.cs" />
     <Compile Include="UI\CodeInspections\InspectionDescriptionConverter.cs" />
     <Compile Include="UI\CodeInspections\InspectionImageSourceConverter.cs" />
     <Compile Include="UI\CodeInspections\InspectionResultsControl.xaml.cs">
@@ -422,6 +445,8 @@
     <Compile Include="UI\Command\MenuItems\AddTestMethodCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\AddTestMethodExpectedErrorCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\AddTestModuleCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\ProjectExplorerRefactorRenameCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\FormDesignerRefactorRenameCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\FindAllReferencesCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\FindSymbolCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\FindAllImplementationsCommandMenuItem.cs" />
@@ -449,6 +474,7 @@
     <Compile Include="UI\Command\MenuItems\RefactorIntroduceParameterCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorMoveCloserToUsageCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RegexSearchReplaceCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\UiDispatcher.cs" />
     <Compile Include="UI\Command\NavigateCommand.cs" />
     <Compile Include="UI\Command\OptionsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\OptionsCommandMenuItem.cs" />
@@ -457,14 +483,16 @@
     <Compile Include="UI\Command\MenuItems\RefactorExtractMethodCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\RefactoringsParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorRemoveParametersCommandMenuItem.cs" />
+    <Compile Include="UI\Command\Refactorings\FormDesignerRefactorRenameCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\ProjectExplorerRefactorRenameCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorEncapsulateFieldCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorImplementInterfaceCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorExtractInterfaceCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorIntroduceFieldCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorIntroduceParameterCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorMoveCloserToUsageCommand.cs" />
-    <Compile Include="UI\Command\Refactorings\RefactorRenameCommand.cs" />
-    <Compile Include="UI\Command\MenuItems\RefactorRenameCommandMenuItem.cs" />
+    <Compile Include="UI\Command\Refactorings\CodePaneRefactorRenameCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\CodePaneRefactorRenameCommandMenuItem.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorReorderParametersCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorReorderParametersCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\RubberduckParentMenu.cs" />
@@ -530,8 +558,6 @@
     <Compile Include="Refactorings\Rename\RenamePresenterFactory.cs" />
     <Compile Include="Refactorings\Rename\RenameRefactoring.cs" />
     <Compile Include="Refactorings\ReorderParameters\Parameter.cs" />
-    <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
-    <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
     <Compile Include="UI\FindSymbol\FindSymbolControl.xaml.cs">
       <DependentUpon>FindSymbolControl.xaml</DependentUpon>
     </Compile>
@@ -604,6 +630,12 @@
       <DependentUpon>ChangesControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\ChangesPresenter.cs" />
+    <Compile Include="UI\SourceControl\CloneRepositoryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\CloneRepositoryForm.Designer.cs">
+      <DependentUpon>CloneRepositoryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\CreateBranchForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -625,6 +657,7 @@
     </Compile>
     <Compile Include="UI\SourceControl\IBranchesView.cs" />
     <Compile Include="UI\SourceControl\IChangesView.cs" />
+    <Compile Include="UI\SourceControl\ICloneRepositoryView.cs" />
     <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
     <Compile Include="UI\SourceControl\IDeleteBranchView.cs" />
     <Compile Include="UI\SourceControl\IMergeView.cs" />
@@ -751,7 +784,11 @@
       <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\TodoSettingPresenter.cs" />
+    <Compile Include="UI\ToDoItems\ToDoExplorerControl.xaml.cs">
+      <DependentUpon>ToDoExplorerControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
+    <Compile Include="UI\ToDoItems\ToDoExplorerViewModel.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
     <Compile Include="UI\BindableSelectedItemBehavior.cs" />
     <Compile Include="UI\UnitTesting\StandardModuleTestExplorerModel.cs" />
@@ -814,10 +851,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Inspections\InspectionsUI.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
+      <LastGenOutput>InspectionsUI1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\CodeExplorer\CodeExplorer.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CodeExplorer.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\CodeExplorer\CodeExplorerWindow.resx">
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
@@ -842,14 +884,17 @@
     <EmbeddedResource Include="UI\RubberduckUI.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.ja.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.ja.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.sv.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.sv.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\AddMarkerForm.resx">
       <DependentUpon>AddMarkerForm.cs</DependentUpon>
@@ -900,6 +945,9 @@
     <EmbeddedResource Include="UI\SourceControl\ChangesControl.resx">
       <DependentUpon>ChangesControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\CloneRepositoryForm.resx">
+      <DependentUpon>CloneRepositoryForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\CreateBranchForm.resx">
       <DependentUpon>CreateBranchForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -923,6 +971,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ToDoItems\ToDoExplorerWindow.resx">
       <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\UnitTesting\TestExplorerWindow.resx">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>
@@ -1105,6 +1154,15 @@
     <Content Include="Resources\balloon_mask.bmp" />
     <Content Include="Resources\balloon_prohibition.bmp" />
     <Content Include="Resources\balloon_smiley.bmp" />
+    <Resource Include="Resources\blue-folder-horizontal-open.png" />
+    <Resource Include="Resources\blue-folder-horizontal.png" />
+    <Resource Include="Resources\lock--exclamation.png" />
+    <None Include="Resources\document-smiley-sad.png" />
+    <None Include="Resources\document-word.png" />
+    <None Include="Resources\document-office.png" />
+    <None Include="Resources\document-outlook.png" />
+    <None Include="Resources\document-powerpoint.png" />
+    <None Include="Resources\document-excel.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
@@ -1305,6 +1363,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\GroupingGrid\GroupingGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\BusyIndicator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1318,6 +1380,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToDoItems\ToDoExplorerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

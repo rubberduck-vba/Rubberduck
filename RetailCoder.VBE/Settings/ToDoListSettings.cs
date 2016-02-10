@@ -20,7 +20,7 @@ namespace Rubberduck.Settings
 
         public ToDoListSettings(ToDoMarker[] markers)
         {
-            this.ToDoMarkers = markers;
+            ToDoMarkers = markers;
         }
     }
 }

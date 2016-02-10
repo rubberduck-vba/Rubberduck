@@ -10,8 +10,8 @@ namespace Rubberduck.Common.WinAPI
 
         public POINT(int x, int y)
         {
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
         }
 
         public POINT(System.Drawing.Point pt) : this(pt.X, pt.Y) { }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -448,13 +448,13 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <comment>0: Version; 1: ProcessorArchitecture</comment>
   </data>
   <data name="ToDoMarkerBug" xml:space="preserve">
-    <value>BUG:</value>
+    <value>BUG </value>
   </data>
   <data name="ToDoMarkerNote" xml:space="preserve">
-    <value>NOTE:</value>
+    <value>NOTE </value>
   </data>
   <data name="ToDoMarkerToDo" xml:space="preserve">
-    <value>TODO:</value>
+    <value>TODO </value>
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implémentations de '{0}'</value>
@@ -1120,13 +1120,193 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Language_JP" xml:space="preserve">
     <value />
   </data>
-  <data name="Ducky" xml:space="preserve">
-    <value />
-  </data>
   <data name="Inspections_MultilineParameter" xml:space="preserve">
     <value />
   </data>
   <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
     <value>Supprimer branche</value>
+  </data>
+  <data name="EncapsulateField_ParameterName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="QuickFix_ThisModule" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SelectAll_Button" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SmartIndenterMenu" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UntypedFunctionUsage_" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IndentCurrentProject" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ExtractInterface_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RefactorMenu_IntroduceField" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DisableThisInspection" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EncapsulateField_TitleText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IntroduceParameter_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DeselectAll_Button" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplace_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ImplicitActiveWorkbookReference_" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ImplementInterface_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EncapsulateField_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ParserProgress_ShowDetails" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EncapsulateField_PropertyName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplace_FindButtonLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RefactorMenu_EncapsulateField" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="QuickFix_ThisProject" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WriteOnlyProperty_" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IndentCurrentProcedure" xml:space="preserve">
+    <value />
+  </data>
+  <data name="QuickFixUseTypedFunction_" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Inspections_SpecifyOptionExplicit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EncapsulateField_InstructionText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IndentCurrentModule" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FindSymbolDialog_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EncapsulateField_Preview" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EncapsulateField_SetterType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IntroduceField_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ImplicitActiveSheetReference_" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
+    <value />
   </data>
 </root>

@@ -18,7 +18,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         private Declaration _targetClass;
         private readonly IMessageBox _messageBox;
 
-        private const string MemberBody = "    Err.Raise 5 'TODO: implement interface member";
+        private const string MemberBody = "    Err.Raise 5 'TODO implement interface member";
 
         public ImplementInterfaceRefactoring(RubberduckParserState state, IActiveCodePaneEditor editor, IMessageBox messageBox)
         {

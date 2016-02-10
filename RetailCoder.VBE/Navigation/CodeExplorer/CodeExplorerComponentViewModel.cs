@@ -1,14 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
+using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 
-namespace Rubberduck.UI.CodeExplorer
+namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerComponentViewModel : ViewModelBase
+    public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel
     {
         private readonly Declaration _declaration;
-        private readonly IEnumerable<CodeExplorerMemberViewModel> _members;
 
         private static readonly DeclarationType[] MemberTypes =
         {
@@ -29,17 +31,15 @@ namespace Rubberduck.UI.CodeExplorer
         public CodeExplorerComponentViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
         {
             _declaration = declaration;
-            _members = declarations.GroupBy(item => item.Scope)
-                .SelectMany(grouping =>
-                    grouping.Where(item => item.ParentDeclaration != null && item.ParentDeclaration.Equals(declaration) &&  MemberTypes.Contains(item.DeclarationType))
-                        .Select(item => new CodeExplorerMemberViewModel(item, grouping)))
-                        .OrderBy(item => item.Name)
-                        .ToList();
-
-            _customFolder = declaration.CustomFolder;
+            _icon = Icons[DeclarationType];
+            Items = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
+                            grouping.Where(item => item.ParentDeclaration != null
+                                                && item.ParentScope == declaration.Scope
+                                                && MemberTypes.Contains(item.DeclarationType))
+                                .OrderBy(item => item.QualifiedSelection.Selection.StartLine)
+                                .Select(item => new CodeExplorerMemberViewModel(item, grouping)));
+            
         }
-
-        public IEnumerable<CodeExplorerMemberViewModel> Members { get { return _members; } }
 
         private bool _isErrorState;
         public bool IsErrorState { get { return _isErrorState; } set { _isErrorState = value; OnPropertyChanged(); } }
@@ -53,12 +53,9 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
-        public string Name { get { return _declaration.IdentifierName; } }
+        public override string Name { get { return _declaration.IdentifierName; } }
 
-        private readonly string _customFolder;
-        public string CustomFolder { get { return _customFolder; } }
-
-        public string TypeFolder { get { return DeclarationType.ToString(); } }
+        public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
 
         private vbext_ComponentType ComponentType { get { return _declaration.QualifiedName.QualifiedModuleName.Component.Type; } }
 
@@ -70,7 +67,7 @@ namespace Rubberduck.UI.CodeExplorer
             { vbext_ComponentType.vbext_ct_MSForm, DeclarationType.UserForm }
         };
 
-        public DeclarationType DeclarationType
+        private DeclarationType DeclarationType
         {
             get
             {
@@ -83,5 +80,17 @@ namespace Rubberduck.UI.CodeExplorer
                 return result;
             }
         }
+
+        private static readonly IDictionary<DeclarationType,BitmapImage> Icons = new Dictionary<DeclarationType, BitmapImage>
+        {
+            { DeclarationType.Class, GetImageSource(resx.VSObject_Class) },
+            { DeclarationType.Module, GetImageSource(resx.VSObject_Module) },
+            { DeclarationType.UserForm, GetImageSource(resx.VSProject_form) },
+            { DeclarationType.Document, GetImageSource(resx.document_office) }
+        };
+
+        private readonly BitmapImage _icon;
+        public override BitmapImage CollapsedIcon { get { return _icon; } }
+        public override BitmapImage ExpandedIcon { get { return _icon; } }
     }
 }

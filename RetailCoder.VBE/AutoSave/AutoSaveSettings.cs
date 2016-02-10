@@ -12,7 +12,7 @@ namespace Rubberduck.AutoSave
 
     public class AutoSaveSettings : IAutoSaveSettings
     {
-        public AutoSaveSettings(bool isEnabled = true, int timerDelay = 600000)
+        public AutoSaveSettings(bool isEnabled = false, int timerDelay = 600000)
         {
             IsEnabled = isEnabled;
             TimerDelay = timerDelay;

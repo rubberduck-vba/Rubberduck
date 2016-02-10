@@ -1,8 +1,4 @@
-﻿
-using Ninject;
-using Ninject.Modules;
-using Rubberduck.Settings;
-using Rubberduck.SourceControl;
+﻿using Ninject.Modules;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -17,16 +13,17 @@ namespace Rubberduck.UI.SourceControl
 
             //user controls (views)
 
-            Bind<ISourceControlView>().To<SourceControlPanel>();
+            Bind<ISourceControlView>().To<SourceControlPanel>().InSingletonScope();
 
-            Bind<IFailedMessageView>().To<FailedActionControl>();
-            Bind<ILoginView>().To<LoginControl>();
+            Bind<IFailedMessageView>().To<FailedActionControl>().InSingletonScope();
+            Bind<ILoginView>().To<LoginControl>().InSingletonScope();
 
-            Bind<IChangesView>().To<ChangesControl>();
-            Bind<IUnsyncedCommitsView>().To<UnsyncedCommitsControl>();
-            Bind<ISettingsView>().To<SettingsControl>();
-            Bind<IBranchesView>().To<BranchesControl>();
+            Bind<IChangesView>().To<ChangesControl>().InSingletonScope();
+            Bind<IUnsyncedCommitsView>().To<UnsyncedCommitsControl>().InSingletonScope();
+            Bind<ISettingsView>().To<SettingsControl>().InSingletonScope();
+            Bind<IBranchesView>().To<BranchesControl>().InSingletonScope();
 
+            Bind<ICloneRepositoryView>().To<CloneRepositoryForm>();
             Bind<ICreateBranchView>().To<CreateBranchForm>();
             Bind<IDeleteBranchView>().To<DeleteBranchForm>();
             Bind<IMergeView>().To<MergeForm>();

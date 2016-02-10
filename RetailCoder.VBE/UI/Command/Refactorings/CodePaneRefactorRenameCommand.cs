@@ -10,12 +10,12 @@ using Rubberduck.UI.Refactorings;
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class RefactorRenameCommand : RefactorCommandBase
+    public class CodePaneRefactorRenameCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorRenameCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
+        public CodePaneRefactorRenameCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
             : base (vbe, editor)
         {
             _state = state;
@@ -24,10 +24,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         public override void Execute(object parameter)
         {
-            if (Vbe.ActiveCodePane == null)
-            {
-                return;
-            }
+            if (Vbe.ActiveCodePane == null) { return; }
 
             using (var view = new RenameDialog())
             {
@@ -35,6 +32,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 var refactoring = new RenameRefactoring(factory, Editor, new MessageBox(), _state);
 
                 var target = parameter as Declaration;
+
                 if (target == null)
                 {
                     refactoring.Refactor();

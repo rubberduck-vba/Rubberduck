@@ -39,17 +39,41 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         public void Refactor(QualifiedSelection selection)
         {
-            Refactor(_declarations.FindVariable(selection));
+            var target = _declarations.FindVariable(selection);
+
+            if (target == null)
+            {
+                _messageBox.Show(RubberduckUI.MoveCloserToUsage_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            MoveCloserToUsage(target);
         }
 
         public void Refactor(Declaration target)
         {
             if (target.DeclarationType != DeclarationType.Variable)
             {
+                _messageBox.Show(RubberduckUI.MoveCloserToUsage_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
                 // ReSharper disable once LocalizableElement
                 throw new ArgumentException("Invalid Argument. DeclarationType must be 'Variable'", "target");
             }
 
+            MoveCloserToUsage(target);
+        }
+
+        private bool TargetIsReferencedFromMultipleMethods(Declaration target)
+        {
+            var firstReference = target.References.FirstOrDefault();
+
+            return firstReference != null && target.References.Any(r => r.ParentScope != firstReference.ParentScope);
+        }
+
+        private void MoveCloserToUsage(Declaration target)
+        {
             if (!target.References.Any())
             {
                 var message = string.Format(RubberduckUI.MoveCloserToUsage_TargetHasNoReferences, target.IdentifierName);
@@ -69,18 +93,6 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 return;
             }
 
-            MoveDeclaration(target);
-        }
-
-        private bool TargetIsReferencedFromMultipleMethods(Declaration target)
-        {
-            var firstReference = target.References.FirstOrDefault();
-
-            return firstReference != null && target.References.Any(r => r.ParentScope != firstReference.ParentScope);
-        }
-
-        private void MoveDeclaration(Declaration target)
-        {
             InsertDeclaration(target);
             RemoveVariable(target);
         }
@@ -89,11 +101,52 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         {
             var firstReference = target.References.OrderBy(r => r.Selection.StartLine).First();
 
-            var oldLines = _editor.GetLines(firstReference.Selection);
-            var newLines = oldLines.Insert(firstReference.Selection.StartColumn - 1, GetDeclarationString(target));
+            var beginningOfInstructionSelection = GetBeginningOfInstructionSelection(target, firstReference.Selection);
 
-            _editor.DeleteLines(firstReference.Selection);
-            _editor.InsertLines(firstReference.Selection.StartLine, newLines);
+            var oldLines = _editor.GetLines(beginningOfInstructionSelection);
+            var newLines = oldLines.Insert(beginningOfInstructionSelection.StartColumn - 1, GetDeclarationString(target));
+
+            var newLinesWithoutStringLiterals = newLines.StripStringLiterals();
+
+            var lastIndexOfColon = newLinesWithoutStringLiterals.LastIndexOf(':');
+            while (lastIndexOfColon != -1)
+            {
+                var numberOfCharsToRemove = lastIndexOfColon == newLines.Length - 1 || newLines[lastIndexOfColon + 1] != ' '
+                    ? 1
+                    : 2;
+
+                newLinesWithoutStringLiterals = newLinesWithoutStringLiterals
+                        .Remove(lastIndexOfColon, numberOfCharsToRemove)
+                        .Insert(lastIndexOfColon, Environment.NewLine);
+
+                newLines = newLines
+                        .Remove(lastIndexOfColon, numberOfCharsToRemove)
+                        .Insert(lastIndexOfColon, Environment.NewLine);
+
+                lastIndexOfColon = newLinesWithoutStringLiterals.LastIndexOf(':');
+            }
+
+            _editor.DeleteLines(beginningOfInstructionSelection);
+            _editor.InsertLines(beginningOfInstructionSelection.StartLine, newLines);
+        }
+
+        private Selection GetBeginningOfInstructionSelection(Declaration target, Selection referenceSelection)
+        {
+            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            var currentLine = referenceSelection.StartLine;
+
+            var codeLine = module.Lines[currentLine, 1].StripStringLiterals();
+            while (codeLine.Remove(referenceSelection.StartColumn).LastIndexOf(':') == -1)
+            {
+                codeLine = module.Lines[--currentLine, 1].StripStringLiterals();
+                if (!codeLine.EndsWith(" _"))
+                {
+                    return new Selection(currentLine + 1, 1, currentLine + 1, 1);
+                }
+            }
+
+            var index = codeLine.Remove(referenceSelection.StartColumn).LastIndexOf(':') + 1;
+            return new Selection(currentLine, index, currentLine, index);
         }
 
         private string GetDeclarationString(Declaration target)
@@ -132,11 +185,17 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                     target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
             }
 
+            var adjustedLines =
+                newLines.Split(new[] {Environment.NewLine}, StringSplitOptions.None)
+                    .Select(s => s.EndsWith(" _") ? s.Remove(s.Length - 2) : s)
+                    .Where(s => s.Trim() != string.Empty)
+                    .ToList();
+            
             _editor.DeleteLines(selection);
 
-            if (newLines.Trim() != string.Empty)
+            if (adjustedLines.Any())
             {
-                _editor.InsertLines(selection.StartLine, newLines);
+                _editor.InsertLines(selection.StartLine, string.Join(string.Empty, adjustedLines));
             }
         }
 
@@ -171,7 +230,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
              *          dizz as Double _
              *         , iizz as Integer
              */
-            
+
             var commaToRemove = numParams == indexRemoved ? indexRemoved - 1 : indexRemoved;
 
             return str.Remove(str.NthIndexOf(',', commaToRemove), 1);

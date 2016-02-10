@@ -47,7 +47,7 @@ namespace Rubberduck.Inspections
             var parameter = lines.Substring(adjustedStartColumn,
                 adjustedEndColumn - adjustedStartColumn)
                 .Replace("_", "")
-                .RemoveExtraSpaces();
+                .RemoveExtraSpacesLeavingIndentation();
 
             var start = startLine.Remove(adjustedStartColumn);
             var end = lines.Remove(0, adjustedEndColumn);

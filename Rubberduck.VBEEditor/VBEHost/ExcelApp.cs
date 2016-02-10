@@ -1,11 +1,13 @@
 ﻿using System.Reflection;
 using Microsoft.Office.Interop.Excel;
+using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
-    public class ExcelApp : HostApplicationBase<Application>
+    public class ExcelApp : HostApplicationBase<Microsoft.Office.Interop.Excel.Application>
     {
         public ExcelApp() : base("Excel") { }
+        public ExcelApp(VBE vbe) : base(vbe, "Excel") { }
 
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {

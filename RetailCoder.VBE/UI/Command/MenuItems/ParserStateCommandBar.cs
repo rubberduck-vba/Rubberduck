@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
@@ -36,7 +31,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         private void State_StateChanged(object sender, ParserStateEventArgs e)
         {
-            _statusButton.Caption = e.State.ToString();
+            UiDispatcher.Invoke(() => _statusButton.Caption = e.State.ToString());
         }
 
         public event EventHandler Refresh;

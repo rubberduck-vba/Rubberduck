@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -444,13 +444,13 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <comment>0: Version; 1: Architektur</comment>
   </data>
   <data name="ToDoMarkerBug" xml:space="preserve">
-    <value>BUG:</value>
+    <value>BUG </value>
   </data>
   <data name="ToDoMarkerNote" xml:space="preserve">
-    <value>NOTE:</value>
+    <value>NOTE </value>
   </data>
   <data name="ToDoMarkerToDo" xml:space="preserve">
-    <value>TODO:</value>
+    <value>TODO </value>
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementierungen von '{0}'</value>
@@ -576,7 +576,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Möglicherweise verwirrende implizite Untergrenze des Arrays</value>
   </data>
   <data name="OptionExplicit" xml:space="preserve">
-    <value>'Option Explicit' ist nicht angegeben</value>
+    <value>'Option Explicit' ist für '{0}' nicht angegeben</value>
   </data>
   <data name="ParameterCanBeByVal_" xml:space="preserve">
     <value>Parameter '{0}' kann als Wert übergeben werden</value>
@@ -891,10 +891,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="About_Stargazers" xml:space="preserve">
     <value>Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Ducky" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="SourceControlPanel_Caption" xml:space="preserve">
     <value>Versionsverwaltung</value>
   </data>
@@ -965,7 +961,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Ausgeschlossene Änderungen</value>
   </data>
   <data name="SourceControl_FetchCommitsLabel" xml:space="preserve">
-    <value>Fetch</value>
+    <value>Holen</value>
   </data>
   <data name="SourceControl_IncludedChanges" xml:space="preserve">
     <value>Verwendete Änderungen</value>
@@ -989,10 +985,10 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Veröffentlichte Zweige</value>
   </data>
   <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
-    <value>Pull</value>
+    <value>Aktualisieren</value>
   </data>
   <data name="SourceControl_PushCommitsLabel" xml:space="preserve">
-    <value>Push</value>
+    <value>Versenden</value>
   </data>
   <data name="SourceControl_Settings" xml:space="preserve">
     <value>Einstellungen</value>
@@ -1153,9 +1149,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="QuickFix_ThisProject" xml:space="preserve">
     <value>Alle Instanzen des Projektes</value>
   </data>
-  <data name="QuickFix_ThisInstance" xml:space="preserve">
-    <value>Diese Instanz</value>
-  </data>
   <data name="QuickFix_ThisModule" xml:space="preserve">
     <value>Alle Instanzen des Modules</value>
   </data>
@@ -1209,5 +1202,104 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
     <value>Zweig löschen</value>
+  </data>
+  <data name="ExtractInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Extrahiere Interface</value>
+  </data>
+  <data name="DeselectAll_Button" xml:space="preserve">
+    <value>Alles abwählen</value>
+  </data>
+  <data name="SelectAll_Button" xml:space="preserve">
+    <value>Alles auswählen</value>
+  </data>
+  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
+    <value>Extrahiere Interface</value>
+  </data>
+  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
+    <value>Mitglieder</value>
+  </data>
+  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
+    <value>Bitte spezifizieren Sie den Interface-Namen und die Mitglieder </value>
+  </data>
+  <data name="IndentCurrentModule" xml:space="preserve">
+    <value>Aktuelles Projekt</value>
+  </data>
+  <data name="IndentCurrentProcedure" xml:space="preserve">
+    <value>Aktuelle Prozedur</value>
+  </data>
+  <data name="IndentCurrentProject" xml:space="preserve">
+    <value>Ganzes Projekt</value>
+  </data>
+  <data name="SmartIndenterMenu" xml:space="preserve">
+    <value>Einrücken</value>
+  </data>
+  <data name="RefactorMenu_IntroduceField" xml:space="preserve">
+    <value>&amp;Feld einführen</value>
+  </data>
+  <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
+    <value>Die Auswahl ist keine Variable</value>
+  </data>
+  <data name="RefactorMenu_EncapsulateField" xml:space="preserve">
+    <value>F&amp;eld kapseln</value>
+  </data>
+  <data name="EncapsulateField_Caption" xml:space="preserve">
+    <value>Rubberduck - Gekapseltes Feld</value>
+  </data>
+  <data name="EncapsulateField_Preview" xml:space="preserve">
+    <value>Vorschau:</value>
+  </data>
+  <data name="EncapsulateField_PropertyName" xml:space="preserve">
+    <value>Eigenschaftsname:</value>
+  </data>
+  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
+    <value>Parameter e&amp;inführen</value>
+  </data>
+  <data name="EncapsulateField_TitleText" xml:space="preserve">
+    <value>Feld Kapseln</value>
+  </data>
+  <data name="EncapsulateField_ParameterName" xml:space="preserve">
+    <value>Eigenschaftsname</value>
+  </data>
+  <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
+    <value>E&amp;xtrahiere Interface</value>
+  </data>
+  <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
+    <value>Implementiere Interface</value>
+  </data>
+  <data name="EncapsulateField_SetterType" xml:space="preserve">
+    <value>Typ für 'Set':</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
+    <value>'{0}' hat keine Referenzen.</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
+    <value>'{0}' hat Referenzen in mehrere Methoden.</value>
+  </data>
+  <data name="IntroduceField_Caption" xml:space="preserve">
+    <value>Rubberduck - Feld einfügen</value>
+  </data>
+  <data name="IntroduceParameter_Caption" xml:space="preserve">
+    <value>Rubberduck - Parameter einfügen</value>
+  </data>
+  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
+    <value>Methode '{0}' implementiert '{1}.{2}'. Ändern der Interface Signatur? (Wird auf alle Implementierungen angewendet.)</value>
+  </data>
+  <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
+    <value>Näher an die N&amp;utzung verschieben</value>
+  </data>
+  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
+    <value>Rubberduck - Näher an die Nutzung führen</value>
+  </data>
+  <data name="EncapsulateField_InstructionText" xml:space="preserve">
+    <value>Spezifizierung des Eigenschaftsnamen, Parameterverfügbarkeit und 'Setter type' notwendig.</value>
+  </data>
+  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+    <value>Ungültige Auswahl.</value>
+  </data>
+  <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
+    <value>Die aktuelle Auswahl ist ungültig.</value>
+  </data>
+  <data name="ImplementInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Interface Implementieren</value>
   </data>
 </root>

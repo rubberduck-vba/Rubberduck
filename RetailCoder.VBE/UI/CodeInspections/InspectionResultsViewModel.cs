@@ -21,7 +21,6 @@ namespace Rubberduck.UI.CodeInspections
         private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
         private readonly VBE _vbe;
-        private readonly INavigateCommand _navigateCommand;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
 
@@ -107,6 +106,7 @@ namespace Rubberduck.UI.CodeInspections
             }
         }
 
+        private readonly INavigateCommand _navigateCommand;
         public ICommand NavigateCommand { get { return _navigateCommand; } }
 
         private readonly ICommand _refreshCommand;
@@ -156,7 +156,7 @@ namespace Rubberduck.UI.CodeInspections
             IsBusy = true;
 
             _state.StateChanged += _state_StateChanged;
-            _state.OnParseRequested();
+            //_state.OnParseRequested();
         }
 
         private bool CanExecuteRefreshCommand(object parameter)
@@ -203,7 +203,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private bool CanExecuteQuickFixCommand(object parameter)
         {
-            return true; //!IsBusy && SelectedItem is IInspection;
+            return !IsBusy && SelectedItem is IInspection;
         }
 
         private bool _canExecuteQuickFixInModule;

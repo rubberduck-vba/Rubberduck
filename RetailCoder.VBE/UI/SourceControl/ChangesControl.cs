@@ -30,20 +30,20 @@ namespace Rubberduck.UI.SourceControl
 
         public string CurrentBranch
         {
-            get { return this.ChangesBranchNameLabel.Text; }
-            set { this.ChangesBranchNameLabel.Text = value; }
+            get { return ChangesBranchNameLabel.Text; }
+            set { ChangesBranchNameLabel.Text = value; }
         }
 
         public string CommitMessage
         {
-            get { return this.CommitMessageBox.Text; }
-            set { this.CommitMessageBox.Text = value; }
+            get { return CommitMessageBox.Text; }
+            set { CommitMessageBox.Text = value; }
         }
 
         public CommitAction CommitAction
         {
-            get { return (CommitAction)this.CommitActionDropdown.SelectedIndex; }
-            set { this.CommitActionDropdown.SelectedIndex = (int)value; }
+            get { return (CommitAction)CommitActionDropdown.SelectedIndex; }
+            set { CommitActionDropdown.SelectedIndex = (int)value; }
         }
 
         private BindingList<IFileStatusEntry> _includedChanges = new BindingList<IFileStatusEntry>();
@@ -53,8 +53,8 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _includedChanges = new BindingList<IFileStatusEntry>(value);
-                this.IncludedChangesGrid.DataSource = _includedChanges;
-                this.IncludedChangesGrid.Refresh();
+                IncludedChangesGrid.DataSource = _includedChanges;
+                IncludedChangesGrid.Refresh();
             }
         }
 
@@ -65,8 +65,8 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _excludedChanges = new BindingList<IFileStatusEntry>(value);
-                this.ExcludedChangesGrid.DataSource = _excludedChanges;
-                this.ExcludedChangesGrid.Refresh();
+                ExcludedChangesGrid.DataSource = _excludedChanges;
+                ExcludedChangesGrid.Refresh();
             }
         }
 
@@ -77,15 +77,15 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _untrackedFiles = new BindingList<IFileStatusEntry>(value);
-                this.UntrackedFilesGrid.DataSource = _untrackedFiles;
-                this.UntrackedFilesGrid.Refresh();
+                UntrackedFilesGrid.DataSource = _untrackedFiles;
+                UntrackedFilesGrid.Refresh();
             }
         }
 
         public bool CommitEnabled
         {
-            get { return this.CommitButton.Enabled; }
-            set { this.CommitButton.Enabled = value; }
+            get { return CommitButton.Enabled; }
+            set { CommitButton.Enabled = value; }
         }
 
         public event EventHandler<EventArgs> SelectedActionChanged;
@@ -144,9 +144,9 @@ namespace Rubberduck.UI.SourceControl
                 if (_dragBox != Rectangle.Empty && !_dragBox.Contains(e.X, e.Y))
                 {
                     _dragSource = sender;
-                    if (_dragSource == this.UntrackedFilesGrid)
+                    if (_dragSource == UntrackedFilesGrid)
                     {
-                        this.ExcludedChangesGrid.AllowDrop = false;
+                        ExcludedChangesGrid.AllowDrop = false;
                     }
 
                     try
@@ -155,7 +155,7 @@ namespace Rubberduck.UI.SourceControl
                     }
                     finally
                     {
-                        this.ExcludedChangesGrid.AllowDrop = true;
+                        ExcludedChangesGrid.AllowDrop = true;
                         _dragSource = null;
                     }
                 }
@@ -164,9 +164,9 @@ namespace Rubberduck.UI.SourceControl
 
         private void ExcludedChangesGrid_DragDrop(object sender, DragEventArgs e)
         {
-            if (_dragSource != null && _dragSource != this.UntrackedFilesGrid)
+            if (_dragSource != null && _dragSource != UntrackedFilesGrid)
             {
-                this.ExcludedChangesGrid.DataSource = MoveFileStatusItem(_excludedChanges, _includedChanges, _row);
+                ExcludedChangesGrid.DataSource = MoveFileStatusItem(_excludedChanges, _includedChanges, _row);
             }
 
         }
@@ -175,14 +175,14 @@ namespace Rubberduck.UI.SourceControl
         {
             if (_dragSource != null)
             {
-                if (_dragSource == this.ExcludedChangesGrid)
+                if (_dragSource == ExcludedChangesGrid)
                 {
-                    this.IncludedChangesGrid.DataSource = MoveFileStatusItem(_includedChanges, _excludedChanges, _row);
+                    IncludedChangesGrid.DataSource = MoveFileStatusItem(_includedChanges, _excludedChanges, _row);
                 }
 
-                if (_dragSource == this.UntrackedFilesGrid)
+                if (_dragSource == UntrackedFilesGrid)
                 {
-                    this.IncludedChangesGrid.DataSource = MoveFileStatusItem(_includedChanges, _untrackedFiles, _row);
+                    IncludedChangesGrid.DataSource = MoveFileStatusItem(_includedChanges, _untrackedFiles, _row);
                 }
             }
         }

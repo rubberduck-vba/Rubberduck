@@ -900,6 +900,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deselect All.
+        /// </summary>
+        public static string DeselectAll_Button {
+            get {
+                return ResourceManager.GetString("DeselectAll_Button", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disable this inspection.
         /// </summary>
         public static string DisableThisInspection {
@@ -977,6 +986,42 @@ namespace Rubberduck.UI {
         public static string EncapsulateField_TitleText {
             get {
                 return ResourceManager.GetString("EncapsulateField_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Extract Interface.
+        /// </summary>
+        public static string ExtractInterface_Caption {
+            get {
+                return ResourceManager.GetString("ExtractInterface_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify interface name and members..
+        /// </summary>
+        public static string ExtractInterface_InstructionLabel {
+            get {
+                return ResourceManager.GetString("ExtractInterface_InstructionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Members.
+        /// </summary>
+        public static string ExtractInterface_MembersGroupBox {
+            get {
+                return ResourceManager.GetString("ExtractInterface_MembersGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract Interface.
+        /// </summary>
+        public static string ExtractInterface_TitleLabel {
+            get {
+                return ResourceManager.GetString("ExtractInterface_TitleLabel", resourceCulture);
             }
         }
         
@@ -2545,6 +2590,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select All.
+        /// </summary>
+        public static string SelectAll_Button {
+            get {
+                return ResourceManager.GetString("SelectAll_Button", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck Settings.
         /// </summary>
         public static string Settings_Caption {
@@ -3355,7 +3409,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BUG:.
+        ///   Looks up a localized string similar to BUG .
         /// </summary>
         public static string ToDoMarkerBug {
             get {
@@ -3364,7 +3418,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NOTE:.
+        ///   Looks up a localized string similar to NOTE .
         /// </summary>
         public static string ToDoMarkerNote {
             get {
@@ -3373,7 +3427,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TODO:.
+        ///   Looks up a localized string similar to TODO .
         /// </summary>
         public static string ToDoMarkerToDo {
             get {

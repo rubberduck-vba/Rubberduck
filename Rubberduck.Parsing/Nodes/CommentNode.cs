@@ -1,3 +1,4 @@
+using System;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 
@@ -35,7 +36,7 @@ namespace Rubberduck.Parsing.Nodes
         /// <summary>
         /// Gets the trimmed comment text, without the comment marker.
         /// </summary>
-        public string CommentText { get { return _comment.Replace(Marker, string.Empty).TrimStart(); } }
+        public string CommentText { get { return _comment.Remove(_comment.IndexOf(Marker, StringComparison.Ordinal), Marker.Length).Trim(); } }
 
         /// <summary>
         /// The token used to indicate a comment.

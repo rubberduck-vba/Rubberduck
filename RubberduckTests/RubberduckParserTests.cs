@@ -1,76 +1,80 @@
-﻿using System.Linq;
+using System.Linq;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests
 {
-    //[TestClass]
-    //public class RubberduckParserTests
-    //{
-    //    [TestMethod]
-    //    public void ParseResultDeclarations_IncludeVbaStandardLibDeclarations()
-    //    {
-    //        //Arrange
-    //        var builder = new MockVbeBuilder();
-    //        var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-    //            .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, "")
-    //            .Build().Object;
+    [TestClass]
+    public class RubberduckParserTests
+    {
+        [TestMethod]
+        public void parserDeclarations_IncludeVbaStandardLibDeclarations()
+        {
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, "")
+                                 .Build();
 
-    //        var codePaneFactory = new CodePaneWrapperFactory();
-    //        var mockHost = new Mock<IHostApplication>();
-    //        mockHost.SetupAllProperties();
-            
-    //        //Act
-    //        var parseResult = new RubberduckParser().Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
 
-    //        //Assert
-    //        Assert.IsTrue(parseResult.Declarations.Items.Any(item => item.IsBuiltIn));
-    //    }
+            var vbe = builder.AddProject(project).Build();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-    //    [TestMethod]
-    //    public void ParseResultDeclarations_MockHost_ExcludeExcelDeclarations()
-    //    {
-    //        //Arrange
-    //        var builder = new MockVbeBuilder();
-    //        var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-    //            .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, "")
-    //            .Build().Object;
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-    //        var codePaneFactory = new CodePaneWrapperFactory();
-    //        var mockHost = new Mock<IHostApplication>();
-    //        mockHost.SetupAllProperties();
+            //Act
+            parser.ParseComponent(project.Object.VBComponents.Cast<VBComponent>().First());
 
-    //        //Act
-    //        var parseResult = new RubberduckParser().Parse(project);
+            //Assert
+            Assert.IsTrue(parser.State.AllDeclarations.Any(item => item.IsBuiltIn));
+        }
 
-    //        //Assert
-    //        Assert.IsFalse(parseResult.Declarations.Items.Any(item => item.IsBuiltIn && item.ParentScope.StartsWith("Excel")));
-    //    }
+        [TestMethod]
+        public void parserDeclarations_MockHost_ExcludeExcelDeclarations()
+        {
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, "")
+                .Build();
+            var vbe = builder.AddProject(project).Build();
 
-    //    [TestMethod]
-    //    public void ParseResultDeclarations_ExcelHost_IncludesExcelDeclarations()
-    //    {
-    //        //Arrange
-    //        var builder = new MockVbeBuilder();
-    //        var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-    //            .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, "")
-    //            .AddReference("Excel", @"C:\Program Files\Microsoft Office\Office14\EXCEL.EXE", true)
-    //            .Build();
-    //        var vbe = builder.AddProject(project).Build();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
 
-    //        var codePaneFactory = new CodePaneWrapperFactory();
+            //Act
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-    //        //Act
-    //        var parseResult = new RubberduckParser().Parse(project.Object);
+            //Assert
+            Assert.IsFalse(parser.State.AllDeclarations.Any(item => item.IsBuiltIn && item.ParentScope.StartsWith("Excel")));
+        }
 
-    //        //Assert
-    //        Assert.IsTrue(parseResult.Declarations.Items.Any(item => item.IsBuiltIn && item.ParentScope.StartsWith("Excel")));
-    //    }
-    //}
+        [TestMethod]
+        public void parserDeclarations_ExcelHost_IncludesExcelDeclarations()
+        {
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, "")
+                .AddReference("Excel", @"C:\Program Files\Microsoft Office\Office14\EXCEL.EXE", true)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            //Act
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            //Assert
+            Assert.IsTrue(parser.State.AllDeclarations.Any(item => item.IsBuiltIn && item.ParentScope.StartsWith("Excel")));
+        }
+    }
 }

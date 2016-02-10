@@ -59,7 +59,6 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, SyntaxErrorException> _moduleExceptions =
             new ConcurrentDictionary<VBComponent, SyntaxErrorException>();
 
-        private readonly object _lock = new object();
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
         private void OnModuleStateChanged(VBComponent component, ParserState state)
@@ -74,21 +73,18 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleState(VBComponent component, ParserState state, SyntaxErrorException parserError = null)
         {
-            // prevent multiple threads from changing state simultaneously:
-            lock(_lock)
-            {
-                _moduleStates[component] = state;
-                _moduleExceptions[component] = parserError;
-                OnModuleStateChanged(component, state);
-                Status = EvaluateParserState();
-            }
+            _moduleStates[component] = state;
+            _moduleExceptions[component] = parserError;
+            OnModuleStateChanged(component, state);
+            Status = EvaluateParserState();
         }
+
+        private static readonly ParserState[] States = Enum.GetValues(typeof (ParserState)).Cast<ParserState>().ToArray();
 
         private ParserState EvaluateParserState()
         {
             var moduleStates = _moduleStates.Values.ToList();
-            var state = Enum.GetValues(typeof (ParserState)).Cast<ParserState>()
-                .SingleOrDefault(value => moduleStates.All(ps => ps == value));
+            var state = States.SingleOrDefault(value => moduleStates.All(ps => ps == value));
 
             if (state != default(ParserState))
             {
@@ -102,7 +98,7 @@ namespace Rubberduck.Parsing.VBA
                 // error state takes precedence over every other state
                 return ParserState.Error;
             }
-            if (moduleStates.Any(ms => ms == ParserState.Parsing || ms == ParserState.Parsed))
+            if (moduleStates.Any(ms => ms == ParserState.Parsing))
             {
                 return ParserState.Parsing;
             }
@@ -284,7 +280,7 @@ namespace Rubberduck.Parsing.VBA
             var builtInDeclarations = VbaStandardLib.Declarations;
 
             // cannot be strongly-typed here because of constraints on COM interop and generics in the inheritance hierarchy. </rant>
-            if (hostApplication /*is ExcelApp*/ .ApplicationName == "Excel")
+            if (hostApplication != null && hostApplication.ApplicationName == "Excel")
             {
                 builtInDeclarations = builtInDeclarations.Concat(ExcelObjectModel.Declarations);
             }

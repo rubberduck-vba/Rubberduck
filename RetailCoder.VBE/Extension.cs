@@ -8,6 +8,8 @@ using Ninject;
 using Ninject.Extensions.Factory;
 using Rubberduck.Root;
 using Rubberduck.UI;
+using System.Reflection;
+using System.IO;
 
 namespace Rubberduck
 {
@@ -36,9 +38,15 @@ namespace Rubberduck
         {
             try
             {
+                AppDomain currentDomain = AppDomain.CurrentDomain;
+                currentDomain.AssemblyResolve += LoadFromSameFolder;
+
                 _kernel.Load(new RubberduckModule(_kernel, (VBE)Application, (AddIn)AddInInst));
                 _kernel.Load(new UI.SourceControl.SourceControlBindings());
                 _kernel.Load(new CommandBarsModule(_kernel));
+
+                var app = _kernel.Get<App>();
+                app.Startup();
             }
             catch (Exception exception)
             {
@@ -46,10 +54,20 @@ namespace Rubberduck
             }
         }
 
+        Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
+        {
+            string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
+            if (!File.Exists(assemblyPath))
+            {
+                return null;
+            }
+            Assembly assembly = Assembly.LoadFrom(assemblyPath);
+            return assembly;
+        }
+
         public void OnStartupComplete(ref Array custom)
         {
-            var app = _kernel.Get<App>();
-            app.Startup();
         }
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)

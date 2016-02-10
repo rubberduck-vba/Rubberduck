@@ -16,6 +16,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.ParserErrors;
 using Rubberduck.VBEditor.Extensions;
+using Infralution.Localization.Wpf;
 
 namespace Rubberduck
 {
@@ -64,6 +65,8 @@ namespace Rubberduck
             _configService.SettingsChanged += _configService_SettingsChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _stateBar.Refresh += _stateBar_Refresh;
+
+            UiDispatcher.Initialize();
         }
 
         private Keys _firstStepHotKey;
@@ -187,7 +190,7 @@ namespace Rubberduck
             var currentCulture = RubberduckUI.Culture;
             try
             {
-                RubberduckUI.Culture = CultureInfo.GetCultureInfo(_config.UserSettings.LanguageSetting.Code);
+                CultureManager.UICulture = CultureInfo.GetCultureInfo(_config.UserSettings.LanguageSetting.Code);
                 _appMenus.Localize();
             }
             catch (CultureNotFoundException exception)

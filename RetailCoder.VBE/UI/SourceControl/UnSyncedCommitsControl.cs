@@ -18,8 +18,8 @@ namespace Rubberduck.UI.SourceControl
 
         public string CurrentBranch 
         { 
-            get { return this.UnsyncedCommitsBranchNameLabel.Text; }
-            set { this.UnsyncedCommitsBranchNameLabel.Text = value; }
+            get { return UnsyncedCommitsBranchNameLabel.Text; }
+            set { UnsyncedCommitsBranchNameLabel.Text = value; }
         }
 
         private BindingList<ICommit> _incomingCommits;
@@ -29,7 +29,7 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                _incomingCommits = new BindingList<ICommit>(value);
-                this.IncomingCommitsGrid.DataSource = _incomingCommits;
+                IncomingCommitsGrid.DataSource = _incomingCommits;
             }
         }
 
@@ -40,7 +40,7 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _outgoingCommits = new BindingList<ICommit>(value);
-                this.OutgoingCommitsGrid.DataSource = _outgoingCommits;
+                OutgoingCommitsGrid.DataSource = _outgoingCommits;
             }
         }
 

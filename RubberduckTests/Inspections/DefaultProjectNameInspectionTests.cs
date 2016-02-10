@@ -1,76 +1,81 @@
-﻿using System.Linq;
+using System.Linq;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-//    [TestClass]
-    //public class DefaultProjectNameInspectionTests
-    //{
-    //    [TestMethod]
-    //    public void DefaultProjectName_ReturnsResult()
-    //    {
-    //        const string inputCode = @"";
+    [TestClass]
+    public class DefaultProjectNameInspectionTests
+    {
+        [TestMethod]
+        public void DefaultProjectName_ReturnsResult()
+        {
+            const string inputCode = @"";
 
-    //        //Arrange
-    //        var builder = new MockVbeBuilder();
-    //        var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
-    //            .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-    //            .Build().Object;
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
 
-    //        var codePaneFactory = new CodePaneWrapperFactory();
-    //        var mockHost = new Mock<IHostApplication>();
-    //        mockHost.SetupAllProperties();
-    //        var parseResult = new RubberduckParser().Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-    //        var inspection = new DefaultProjectNameInspection();
-    //        var inspectionResults = inspection.GetInspectionResults(parseResult);
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-    //        Assert.AreEqual(1, inspectionResults.Count());
-    //    }
+            var inspection = new DefaultProjectNameInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-    //    [TestMethod]
-    //    public void DefaultProjectName_DoesNotReturnResult()
-    //    {
-    //        const string inputCode = @"";
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-    //        //Arrange
-    //        var builder = new MockVbeBuilder();
-    //        var project = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
-    //            .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-    //            .Build().Object;
+        [TestMethod]
+        public void DefaultProjectName_DoesNotReturnResult()
+        {
+            const string inputCode = @"";
 
-    //        var codePaneFactory = new CodePaneWrapperFactory();
-    //        var mockHost = new Mock<IHostApplication>();
-    //        mockHost.SetupAllProperties();
-    //        var parseResult = new RubberduckParser().Parse(project);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
 
-    //        var inspection = new DefaultProjectNameInspection();
-    //        var inspectionResults = inspection.GetInspectionResults(parseResult);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-    //        Assert.AreEqual(0, inspectionResults.Count());
-    //    }
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-    //    [TestMethod]
-    //    public void InspectionType()
-    //    {
-    //        var inspection = new DefaultProjectNameInspection();
-    //        Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
-    //    }
+            var inspection = new DefaultProjectNameInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
-    //    [TestMethod]
-    //    public void InspectionName()
-    //    {
-    //        const string inspectionName = "DefaultProjectNameInspection";
-    //        var inspection = new DefaultProjectNameInspection();
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-    //        Assert.AreEqual(inspectionName, inspection.Name);
-    //    }
-    //}
+        [TestMethod]
+        public void InspectionType()
+        {
+            var inspection = new DefaultProjectNameInspection(null);
+            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
+        }
+
+        [TestMethod]
+        public void InspectionName()
+        {
+            const string inspectionName = "DefaultProjectNameInspection";
+            var inspection = new DefaultProjectNameInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+    }
 }

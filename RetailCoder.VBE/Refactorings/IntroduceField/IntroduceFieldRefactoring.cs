@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -9,13 +10,13 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.IntroduceField
 {
-    public class IntroduceField : IRefactoring
+    public class IntroduceFieldRefactoring : IRefactoring
     {
         private readonly IList<Declaration> _declarations;
         private readonly IActiveCodePaneEditor _editor;
         private readonly IMessageBox _messageBox;
 
-        public IntroduceField(RubberduckParserState parserState, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public IntroduceFieldRefactoring(RubberduckParserState parserState, IActiveCodePaneEditor editor, IMessageBox messageBox)
         {
             _declarations =
                 parserState.AllDeclarations.Where(i => !i.IsBuiltIn && i.DeclarationType == DeclarationType.Variable)
@@ -31,7 +32,7 @@ namespace Rubberduck.Refactorings.IntroduceField
             if (!selection.HasValue)
             {
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceField_Caption,
-                    System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -42,6 +43,13 @@ namespace Rubberduck.Refactorings.IntroduceField
         {
             var target = _declarations.FindVariable(selection);
 
+            if (target == null)
+            {
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
             PromoteVariable(target);
         }
 
@@ -49,7 +57,11 @@ namespace Rubberduck.Refactorings.IntroduceField
         {
             if (target.DeclarationType != DeclarationType.Variable)
             {
-                throw new ArgumentException("Invalid declaration type");
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                // ReSharper disable once LocalizableElement
+                throw new ArgumentException("Invalid declaration type", "target");
             }
 
             PromoteVariable(target);
@@ -57,6 +69,13 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         private void PromoteVariable(Declaration target)
         {
+            if (new[] { DeclarationType.Class, DeclarationType.Module }.Contains(target.ParentDeclaration.DeclarationType))
+            {
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
             RemoveVariable(target);
             AddField(target);
         }
@@ -98,8 +117,29 @@ namespace Rubberduck.Refactorings.IntroduceField
                     target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
             }
 
+            var newLinesWithoutExcessSpaces = newLines.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            for (var i = 0; i < newLinesWithoutExcessSpaces.Length; i++)
+            {
+                newLinesWithoutExcessSpaces[i] = newLinesWithoutExcessSpaces[i].RemoveExtraSpacesLeavingIndentation();
+            }
+
+            for (var i = newLinesWithoutExcessSpaces.Length - 1; i >= 0; i--)
+            {
+                if (newLinesWithoutExcessSpaces[i].Trim() == string.Empty)
+                {
+                    continue;
+                }
+
+                if (newLinesWithoutExcessSpaces[i].EndsWith(" _"))
+                {
+                    newLinesWithoutExcessSpaces[i] =
+                        newLinesWithoutExcessSpaces[i].Remove(newLinesWithoutExcessSpaces[i].Length - 2);
+                }
+                break;
+            }
+
             _editor.DeleteLines(selection);
-            _editor.InsertLines(selection.StartLine, newLines);
+            _editor.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
         }
 
         private string RemoveExtraComma(string str, int numParams, int indexRemoved)
@@ -140,8 +180,6 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         private string GetFieldDefinition(Declaration target)
         {
-            if (target == null) { return null; }
-
             return "Private " + target.IdentifierName + " As " + target.AsTypeName;
         }
     }
