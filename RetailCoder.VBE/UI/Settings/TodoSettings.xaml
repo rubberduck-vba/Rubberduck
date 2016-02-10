@@ -225,7 +225,18 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <DockPanel>
+        <DockPanel Margin="5">
+            <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" Content="{x:Static resx:RubberduckUI.SettingsCaption_ToDoSettings}" Margin="0,0,0,3">
+                <Label.Style>
+                    <Style>
+                        <Style.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Style.Resources>
+                    </Style>
+                </Label.Style>
+            </Label>
             <ToolBarTray DockPanel.Dock="Top" IsLocked="True">
                 <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
                     <Button ToolTip="{x:Static resx:RubberduckUI.Add}" Command="{Binding AddTodoCommand}" BorderThickness="0" Background="Transparent">
@@ -246,7 +257,7 @@
 			    CanUserReorderColumns="False" IsReadOnly="False" SelectionMode="Single"
 			    HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
 			    HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-			    ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22">
+			    ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22" BorderThickness="0">
                 <DataGrid.InputBindings>
                     <KeyBinding Key="Delete" Command="{Binding DeleteTodoCommand}" CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem}" />
                 </DataGrid.InputBindings>
