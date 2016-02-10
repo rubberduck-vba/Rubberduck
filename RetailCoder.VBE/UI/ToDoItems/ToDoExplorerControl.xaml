@@ -250,13 +250,13 @@
                 </Button>
             </ToolBar>
         </ToolBarTray>
-        <groupingGrid:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False"
+        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False"
 			SelectedItem="{Binding SelectedToDo}" IsExpanded="True"
 			CanUserReorderColumns="False" IsReadOnly="True"
 			HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
 			HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
 			ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22">
-            <groupingGrid:GroupingGrid.CellStyle>
+            <controls:GroupingGrid.CellStyle>
                 <Style TargetType="{x:Type DataGridCell}">
                     <Setter Property="BorderThickness" Value="0" />
                     <Setter Property="VerticalAlignment" Value="Center" />
