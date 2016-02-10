@@ -61,7 +61,7 @@ namespace Rubberduck.UI.Settings
                 }
                 return _addTodoCommand = new DelegateCommand(_ =>
                 {
-                    TodoSettings.Add(new TodoSetting(new ToDoMarker("PLACEHOLDER", TodoPriority.Low)));
+                    TodoSettings.Add(new TodoSetting(new ToDoMarker("PLACEHOLDER ", TodoPriority.Low)));
                 });
             }
         }
