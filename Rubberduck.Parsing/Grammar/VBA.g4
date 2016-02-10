@@ -360,17 +360,17 @@ macroIfThenElseStmt : macroIfBlockStmt macroElseIfBlockStmt* macroElseBlockStmt?
 
 macroIfBlockStmt : 
 	MACRO_IF WS? ifConditionStmt WS THEN NEWLINE+ 
-	(moduleBody NEWLINE+)?
+	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)?
 ;
 
 macroElseIfBlockStmt : 
 	MACRO_ELSEIF WS? ifConditionStmt WS THEN NEWLINE+ 
-	(moduleBody NEWLINE+)?
+	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)?
 ;
 
 macroElseBlockStmt : 
 	MACRO_ELSE NEWLINE+ 
-	(moduleBody NEWLINE+)?
+	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)?
 ;
 
 midStmt : MID WS? LPAREN WS? argsCall WS? RPAREN;
