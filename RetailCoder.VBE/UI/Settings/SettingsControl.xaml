@@ -28,7 +28,7 @@
                     <Setter Property="CornerRadius" Value="2"/>
                 </Style>
             </Style.Resources>
-            <Setter Property="BorderThickness" Value="0,.5,0,0" />
+            <Setter Property="BorderThickness" Value="0" />
             <Setter Property="BorderBrush" Value="DarkGray" />
             <Setter Property="Height" Value="22" />
             <Style.Triggers>

@@ -6,12 +6,15 @@
           mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <DataGrid.Resources>
+        <Style TargetType="{x:Type DataGridColumnHeadersPresenter}">
+            <Setter Property="Margin" Value="25,0,0,0" />
+        </Style>
         <Style x:Key="GroupHeaderStyle" TargetType="{x:Type GroupItem}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
                         <Expander Background="WhiteSmoke" Foreground="Black" Header="{Binding Name}" IsExpanded="True">
-                            <ItemsPresenter></ItemsPresenter>
+                            <ItemsPresenter Margin="25,0,0,0"></ItemsPresenter>
                         </Expander>
                     </ControlTemplate>
                 </Setter.Value>

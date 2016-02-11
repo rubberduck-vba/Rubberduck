@@ -21,7 +21,7 @@
         </LinearGradientBrush>
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
-
+        
         <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
             <Style.Resources>
                 <Style TargetType="{x:Type Border}">
@@ -32,6 +32,7 @@
             <Setter Property="BorderBrush" Value="DarkGray" />
             <Setter Property="MinHeight" Value="22" />
             <Setter Property="TextBlock.FontWeight" Value="Normal" />
+            <Setter Property="Padding" Value="20,0,0,0" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="BorderThickness" Value="1.5" />
