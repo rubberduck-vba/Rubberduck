@@ -74,6 +74,7 @@
 *   - fixed precompiler directives, which can now be nested. they still can't interfere with other blocks though.
 *   - optional parameters can be a valueStmt.
 *   - added support for Octal and Currency literals.
+*   - implemented proper specs for DATELITERAL.
 *
 *======================================================================================
 *
@@ -937,9 +938,9 @@ IDENTIFIER :  (~[\[\]\(\)\r\n\t.,'"|!@#$%^&*-+:=; ])+ | L_SQUARE_BRACKET (~[!\]\
 
 
 // letters
-fragment LETTER : [a-zA-Z_‰ˆ¸ƒ÷‹];
+fragment LETTER : [a-zA-Z_√§√∂√º√Ñ√ñ√ú];
 fragment DIGIT : [0-9];
-fragment LETTERORDIGIT : [a-zA-Z0-9_‰ˆ¸ƒ÷‹];
+fragment LETTERORDIGIT : [a-zA-Z0-9_√§√∂√º√Ñ√ñ√ú];
 
 // case insensitive chars
 fragment A:('a'|'A');
