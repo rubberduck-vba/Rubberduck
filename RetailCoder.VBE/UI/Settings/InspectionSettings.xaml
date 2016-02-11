@@ -14,7 +14,6 @@
     <UserControl.Resources>
         <converters:CodeInspectionSeverityEnumToTextConverter x:Key="CodeInspectionSeverityEnumToText" />
         <converters:CodeInspectionSeverityEnumValueToTextConverter x:Key="CodeInspectionSeverityEnumValueToText" />
-        <converters:InspectionToToolTipConverter x:Key="InspectionToToolTip" />
         
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
@@ -93,7 +92,20 @@
                     </Style>
                 </controls:GroupingGrid.CellStyle>
                 <controls:GroupingGrid.Columns>
-                    <DataGridTextColumn ToolTipService.IsEnabled="True" ToolTipService.InitialShowDelay="0" ToolTipService.ToolTip="{Binding ElementName=InspectionGrid, Path=SelectedItem, Converter={StaticResource InspectionToToolTip}}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}" Width="2.75*" Binding="{Binding Description}" IsReadOnly="True" />
+                    <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}" Width="2.75*" IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Description}">
+                                    <TextBlock.ToolTip>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Description}" />
+                                            <TextBlock Text="{Binding Meta}" />
+                                        </StackPanel>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SeverityLabelText}" Width="*" ItemsSource="{Binding Source={StaticResource Severities}, Converter={StaticResource CodeInspectionSeverityEnumToText}, UpdateSourceTrigger=PropertyChanged}" SelectedItemBinding="{Binding Path=Severity, Mode=TwoWay, Converter={StaticResource CodeInspectionSeverityEnumValueToText}}" />
                 </controls:GroupingGrid.Columns>
             </controls:GroupingGrid>

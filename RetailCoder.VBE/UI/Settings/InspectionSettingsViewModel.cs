@@ -11,6 +11,7 @@ namespace Rubberduck.UI.Settings
         public string Description { get; set; }
         public CodeInspectionSeverity Severity { get; set; }
         public CodeInspectionType Type { get; set; }
+        public string Meta { get { return InspectionsUI.ResourceManager.GetString(Name + "Meta"); } }
 
         public string TypeLabel
         {
