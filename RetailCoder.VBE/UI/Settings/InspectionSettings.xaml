@@ -34,7 +34,7 @@
             </Style.Resources>
             <Setter Property="BorderThickness" Value="0,.5,0,0" />
             <Setter Property="BorderBrush" Value="DarkGray" />
-            <Setter Property="MinHeight" Value="22" />
+            <Setter Property="Height" Value="26" />
             <Setter Property="TextBlock.FontWeight" Value="Normal" />
             <Setter Property="Padding" Value="20,0,0,0" />
             <Style.Triggers>
@@ -79,10 +79,10 @@
                     </Style>
                 </Label.Style>
             </Label>
-            <controls:GroupingGrid x:Name="InspectionGrid" ItemsSource="{Binding InspectionSettings}" AutoGenerateColumns="False"
+            <controls:GroupingGrid ItemsSource="{Binding InspectionSettings}" AutoGenerateColumns="False"
 			    CanUserReorderColumns="False" IsReadOnly="False" SelectionMode="Single"
 			    HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
-			    HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+			    HeadersVisibility="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
 			    ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22" BorderThickness="0">
                 <controls:GroupingGrid.CellStyle>
                     <Style TargetType="{x:Type DataGridCell}">

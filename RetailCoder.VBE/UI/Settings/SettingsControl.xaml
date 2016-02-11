@@ -60,7 +60,7 @@
         </Grid.ColumnDefinitions>
         <Border Grid.ColumnSpan="2" Height="50" VerticalAlignment="Top" BorderBrush="Black" BorderThickness="0, 1">
             <StackPanel Background="White">
-                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_GeneralSettings}" FontWeight="Bold" />
+                <Label Content="{Binding ElementName=ListBox, Path=SelectedItem.Label}" FontWeight="Bold" />
                 <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsInstructions_GeneralSettings}" Margin="10, 0" />
             </StackPanel>
         </Border>
