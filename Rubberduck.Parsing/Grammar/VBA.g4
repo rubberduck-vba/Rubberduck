@@ -123,8 +123,8 @@ moduleAttributes : (attributeStmt NEWLINE+)+;
 moduleDeclarations : moduleDeclarationsElement (NEWLINE+ moduleDeclarationsElement)*;
 
 moduleOption : 
-	OPTION_BASE INTEGERLITERAL 			# optionBaseStmt
-	| OPTION_COMPARE (BINARY | TEXT | DATABASE) 	# optionCompareStmt
+	OPTION_BASE WS? SHORTLITERAL 			# optionBaseStmt
+	| OPTION_COMPARE WS? (BINARY | TEXT | DATABASE) 	# optionCompareStmt
 	| OPTION_EXPLICIT 						# optionExplicitStmt
 	| OPTION_PRIVATE_MODULE 				# optionPrivateModuleStmt
 ;
@@ -666,7 +666,7 @@ letterrange : certainIdentifier (WS? MINUS WS? certainIdentifier)?;
 
 lineLabel : ambiguousIdentifier ':';
 
-literal : HEXLITERAL | OCTLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
+literal : HEXLITERAL | OCTLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | SHORTLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
 
 type : (baseType | complexType) (WS? LPAREN WS? RPAREN)?;
 
@@ -906,15 +906,14 @@ L_SQUARE_BRACKET : '[';
 R_SQUARE_BRACKET : ']';
 
 
-// literals
-STRINGLITERAL : '"' (~["\r\n] | '""')* '"';
-DATELITERAL : '#' [0-9]+ '/' [0-9]+ '/' [0-9]+ '#';
-OCTLITERAL : '&O' [0-8]+ '&'?;
-HEXLITERAL : '&H' [0-9A-F]+ '&'?;
-SHORTLITERAL : (PLUS|MINUS)? ('0'..'9')+ ('#' | '&' | '@')?
-INTEGERLITERAL : SHORTLITERAL ( ('e' | 'E') SHORTLITERAL)*;
-DOUBLELITERAL : (PLUS|MINUS)? ('0'..'9')* '.' ('0'..'9')+ ( ('e' | 'E') SHORTLITERAL)*;
-BYTELITERAL : ('0'..'9')+;
+	// literals
+	STRINGLITERAL : '"' (~["\r\n] | '""')* '"';
+	DATELITERAL : '#' DIGIT+ '/' DIGIT+ '/' DIGIT+ '#';
+	OCTLITERAL : '&O' [0-8]+ '&'?;
+	HEXLITERAL : '&H' [0-9A-F]+ '&'?;
+	SHORTLITERAL : (PLUS|MINUS)? DIGIT+ ('#' | '&' | '@')?;
+	INTEGERLITERAL : SHORTLITERAL (E SHORTLITERAL)?;
+	DOUBLELITERAL : (PLUS|MINUS)? DIGIT* '.' DIGIT+ (E SHORTLITERAL)?;
 
 // whitespace, line breaks, comments, ...
 LINE_CONTINUATION : [ \t]+ '_' '\r'? '\n' -> skip;
@@ -928,6 +927,7 @@ IDENTIFIER :  (~[\[\]\(\)\r\n\t.,'"|!@#$%^&*-+:=; ])+ | L_SQUARE_BRACKET (~[!\]\
 
 // letters
 fragment LETTER : [a-zA-Z_הצüִײÜ];
+fragment DIGIT : [0-9];
 fragment LETTERORDIGIT : [a-zA-Z0-9_הצüִײÜ];
 
 // case insensitive chars
