@@ -73,6 +73,7 @@
 *   - made seekStmt, lockStmt, unlockStmt, getStmt and widthStmt accept a fileNumber (needed to support '#')
 *   - fixed precompiler directives, which can now be nested. they still can't interfere with other blocks though.
 *   - optional parameters can be a valueStmt.
+*   - added support for Octal literals
 *
 *======================================================================================
 *
@@ -665,7 +666,7 @@ letterrange : certainIdentifier (WS? MINUS WS? certainIdentifier)?;
 
 lineLabel : ambiguousIdentifier ':';
 
-literal : COLORLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
+literal : HEXLITERAL | OCTLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
 
 type : (baseType | complexType) (WS? LPAREN WS? RPAREN)?;
 
@@ -908,10 +909,12 @@ R_SQUARE_BRACKET : ']';
 // literals
 STRINGLITERAL : '"' (~["\r\n] | '""')* '"';
 DATELITERAL : '#' [0-9]+ '/' [0-9]+ '/' [0-9]+ '#';
-COLORLITERAL : '&H' [0-9A-F]+ '&'?;
+OCTLITERAL : '&O' [0-8]+ '&'?;
+HEXLITERAL : '&H' [0-9A-F]+ '&'?;
 INTEGERLITERAL : (PLUS|MINUS)? ('0'..'9')+ ( ('e' | 'E') INTEGERLITERAL)* ('#' | '&')?;
 DOUBLELITERAL : (PLUS|MINUS)? ('0'..'9')* '.' ('0'..'9')+ ( ('e' | 'E') (PLUS|MINUS)? ('0'..'9')+)* ('#' | '&')?;
 BYTELITERAL : ('0'..'9')+;
+
 // whitespace, line breaks, comments, ...
 LINE_CONTINUATION : [ \t]+ '_' '\r'? '\n' -> skip;
 NEWLINE : (':' WS?) | (WS? ('\r'? '\n') WS?);
