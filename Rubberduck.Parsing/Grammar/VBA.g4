@@ -69,6 +69,10 @@
 *   - modified NEWLINE lexer rule to properly support instructions separator (':').
 *   - tightened DATELITERAL lexer rule to the format enforced by the VBE, because "#fn: Close #" 
 *     in "Dim fn: fn = FreeFile: Open "filename" For Output As #fn: Close #fn" was picked up as a date literal.
+*   - redefined IDENTIFIER lexer rule to support non-Latin characters (e.g. Japanese)
+*   - made seekStmt, lockStmt, unlockStmt, getStmt and widthStmt accept a fileNumber (needed to support '#')
+*   - fixed precompiler directives, which can now be nested. they still can't interfere with other blocks though.
+*   - optional parameters can be a valueStmt.
 *
 *======================================================================================
 *
@@ -629,7 +633,7 @@ argList : LPAREN (WS? arg (WS? ',' WS? arg)*)? WS? RPAREN;
 
 arg : (OPTIONAL WS)? ((BYVAL | BYREF) WS)? (PARAMARRAY WS)? ambiguousIdentifier (WS? LPAREN WS? RPAREN)? (WS? asTypeClause)? (WS? argDefaultValue)?;
 
-argDefaultValue : EQ WS? (literal | ambiguousIdentifier);
+argDefaultValue : EQ WS? valueStmt;
 
 subscripts : subscript (WS? ',' WS? subscript)*;
 
