@@ -63,12 +63,17 @@
 *   - added ON_LOCAL_ERROR token, to support legacy ON LOCAL ERROR statements.
 *   - added additional typeHint? token to declareStmt, to support "Declare Function Foo$".
 *   - modified WS lexer rule to correctly account for line continuations;
-*     modified multi-word lexer rules to use WS lexer token instead of ' '; this makes
+*   - modified multi-word lexer rules to use WS lexer token instead of ' '; this makes
 *     the grammar support "Option _\n Explicit" and other keywords being specified on multiple lines.
 *	- modified moduleOption rules to account for WS token in corresponding lexer rules.
 *   - modified NEWLINE lexer rule to properly support instructions separator (':').
 *   - tightened DATELITERAL lexer rule to the format enforced by the VBE, because "#fn: Close #" 
 *     in "Dim fn: fn = FreeFile: Open "filename" For Output As #fn: Close #fn" was picked up as a date literal.
+*   - redefined IDENTIFIER lexer rule to support non-Latin characters (e.g. Japanese)
+*   - made seekStmt, lockStmt, unlockStmt, getStmt and widthStmt accept a fileNumber (needed to support '#')
+*   - fixed precompiler directives, which can now be nested. they still can't interfere with other blocks though.
+*   - optional parameters can be a valueStmt.
+*   - added support for Octal and Currency literals.
 *
 *======================================================================================
 *
@@ -629,7 +634,7 @@ argList : LPAREN (WS? arg (WS? ',' WS? arg)*)? WS? RPAREN;
 
 arg : (OPTIONAL WS)? ((BYVAL | BYREF) WS)? (PARAMARRAY WS)? ambiguousIdentifier (WS? LPAREN WS? RPAREN)? (WS? asTypeClause)? (WS? argDefaultValue)?;
 
-argDefaultValue : EQ WS? (literal | ambiguousIdentifier);
+argDefaultValue : EQ WS? valueStmt;
 
 subscripts : subscript (WS? ',' WS? subscript)*;
 
@@ -661,7 +666,7 @@ letterrange : certainIdentifier (WS? MINUS WS? certainIdentifier)?;
 
 lineLabel : ambiguousIdentifier ':';
 
-literal : COLORLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
+literal : HEXLITERAL | OCTLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
 
 type : (baseType | complexType) (WS? LPAREN WS? RPAREN)?;
 
@@ -904,17 +909,21 @@ R_SQUARE_BRACKET : ']';
 // literals
 STRINGLITERAL : '"' (~["\r\n] | '""')* '"';
 DATELITERAL : '#' [0-9]+ '/' [0-9]+ '/' [0-9]+ '#';
-COLORLITERAL : '&H' [0-9A-F]+ '&'?;
-INTEGERLITERAL : (PLUS|MINUS)? ('0'..'9')+ ( ('e' | 'E') INTEGERLITERAL)* ('#' | '&')?;
-DOUBLELITERAL : (PLUS|MINUS)? ('0'..'9')* '.' ('0'..'9')+ ( ('e' | 'E') (PLUS|MINUS)? ('0'..'9')+)* ('#' | '&')?;
+OCTLITERAL : '&O' [0-8]+ '&'?;
+HEXLITERAL : '&H' [0-9A-F]+ '&'?;
+SHORTLITERAL : (PLUS|MINUS)? ('0'..'9')+ ('#' | '&' | '@')?
+INTEGERLITERAL : SHORTLITERAL ( ('e' | 'E') SHORTLITERAL)*;
+DOUBLELITERAL : (PLUS|MINUS)? ('0'..'9')* '.' ('0'..'9')+ ( ('e' | 'E') SHORTLITERAL)*;
 BYTELITERAL : ('0'..'9')+;
-// identifier
-IDENTIFIER :  (~[!\]\(\)\r\n\t ])+ | L_SQUARE_BRACKET (~[!\]\r\n])+ R_SQUARE_BRACKET;
+
 // whitespace, line breaks, comments, ...
 LINE_CONTINUATION : [ \t]+ '_' '\r'? '\n' -> skip;
-NEWLINE : (':' WS?) | (WS? ('\r'? '\n') WS?); 
+NEWLINE : (':' WS?) | (WS? ('\r'? '\n') WS?);
 COMMENT : WS? ('\'' | ':'? REM WS) (LINE_CONTINUATION | ~('\n' | '\r'))* -> skip;
 WS : ([ \t] | LINE_CONTINUATION)+;
+
+// identifier
+IDENTIFIER :  (~[\[\]\(\)\r\n\t.,'"|!@#$%^&*-+:=; ])+ | L_SQUARE_BRACKET (~[!\]\r\n])+ R_SQUARE_BRACKET;
 
 
 // letters
