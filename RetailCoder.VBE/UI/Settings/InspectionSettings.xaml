@@ -98,8 +98,8 @@
                                 <TextBlock Text="{Binding Description}">
                                     <TextBlock.ToolTip>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding Description}" FontWeight="SemiBold" />
-                                            <TextBlock Text="{Binding Meta}" />
+                                            <TextBlock Text="{Binding Description}" FontWeight="SemiBold" MaxWidth="300" TextWrapping="Wrap" />
+                                            <TextBlock Text="{Binding Meta}" MaxWidth="300" TextWrapping="Wrap" />
                                         </StackPanel>
                                     </TextBlock.ToolTip>
                                 </TextBlock>
