@@ -317,43 +317,51 @@ namespace Rubberduck.Inspections {
                 return ResourceManager.GetString("ImplicitVariantReturnTypeInspectionName", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Move &apos;{0}&apos; closer to usage.
-        /// </summary>
-        internal static string MoveFieldCloseToUsageInspection {
-            get {
-                return ResourceManager.GetString("MoveFieldCloseToUsageInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A field that is only used in one method should be a local variable..
-        /// </summary>
-        internal static string MoveFieldCloseToUsageInspectionMeta {
-            get {
-                return ResourceManager.GetString("MoveFieldCloseToUsageInspectionMeta", resourceCulture);
-            }
-        }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Move field closer to usage.
         /// </summary>
-        internal static string MoveFieldCloseToUsageInspectionName {
-            get {
-                return ResourceManager.GetString("MoveFieldCloseToUsageInspectionName", resourceCulture);
+        internal static string MoveFieldCloserToUsageInspection
+        {
+            get
+            {
+                return ResourceManager.GetString("MoveFieldCloserToUsageInspection", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to A field that is only used in one method should be a local variable..
+        /// </summary>
+        internal static string MoveFieldCloserToUsageInspectionMeta
+        {
+            get
+            {
+                return ResourceManager.GetString("MoveFieldCloserToUsageInspectionMeta", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Move field closer to usage.
+        /// </summary>
+        internal static string MoveFieldCloserToUsageInspectionName
+        {
+            get
+            {
+                return ResourceManager.GetString("MoveFieldCloserToUsageInspectionName", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Move field &apos;{0}&apos; closer to usage.
         /// </summary>
-        internal static string MoveFieldCloseToUsageInspectionQuickFix {
-            get {
-                return ResourceManager.GetString("MoveFieldCloseToUsageInspectionQuickFix", resourceCulture);
+        internal static string MoveFieldCloserToUsageInspectionQuickFix
+        {
+            get
+            {
+                return ResourceManager.GetString("MoveFieldCloserToUsageInspectionQuickFix", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Consider continuing long signatures between parameters. Splitting a parameter declaration across multiple lines arguably hurts readability..
         /// </summary>

@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public override string Description { get { return InspectionsUI.MoveFieldCloseToUsageInspectionName; } }
+        public override string Description { get { return InspectionsUI.MoveFieldCloserToUsageInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()

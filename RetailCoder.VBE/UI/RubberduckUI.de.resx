@@ -392,7 +392,7 @@
     <value>Unbenutzte Variable entfernen</value>
   </data>
   <data name="Inspections_RemoveUnusedDeclaration" xml:space="preserve">
-    <value>Unbenutzte Deklaration entforenen</value>
+    <value>Unbenutzte Deklaration entfernen</value>
   </data>
   <data name="Inspections_RemoveUnusedParameter" xml:space="preserve">
     <value>Unbenutzten Parameter entfernen</value>
