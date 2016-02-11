@@ -63,7 +63,7 @@
 *   - added ON_LOCAL_ERROR token, to support legacy ON LOCAL ERROR statements.
 *   - added additional typeHint? token to declareStmt, to support "Declare Function Foo$".
 *   - modified WS lexer rule to correctly account for line continuations;
-*     modified multi-word lexer rules to use WS lexer token instead of ' '; this makes
+*   - modified multi-word lexer rules to use WS lexer token instead of ' '; this makes
 *     the grammar support "Option _\n Explicit" and other keywords being specified on multiple lines.
 *	- modified moduleOption rules to account for WS token in corresponding lexer rules.
 *   - modified NEWLINE lexer rule to properly support instructions separator (':').
@@ -73,7 +73,7 @@
 *   - made seekStmt, lockStmt, unlockStmt, getStmt and widthStmt accept a fileNumber (needed to support '#')
 *   - fixed precompiler directives, which can now be nested. they still can't interfere with other blocks though.
 *   - optional parameters can be a valueStmt.
-*   - added support for Octal literals
+*   - added support for Octal and Currency literals.
 *
 *======================================================================================
 *
@@ -911,8 +911,9 @@ STRINGLITERAL : '"' (~["\r\n] | '""')* '"';
 DATELITERAL : '#' [0-9]+ '/' [0-9]+ '/' [0-9]+ '#';
 OCTLITERAL : '&O' [0-8]+ '&'?;
 HEXLITERAL : '&H' [0-9A-F]+ '&'?;
-INTEGERLITERAL : (PLUS|MINUS)? ('0'..'9')+ ( ('e' | 'E') INTEGERLITERAL)* ('#' | '&')?;
-DOUBLELITERAL : (PLUS|MINUS)? ('0'..'9')* '.' ('0'..'9')+ ( ('e' | 'E') (PLUS|MINUS)? ('0'..'9')+)* ('#' | '&')?;
+SHORTLITERAL : (PLUS|MINUS)? ('0'..'9')+ ('#' | '&' | '@')?
+INTEGERLITERAL : SHORTLITERAL ( ('e' | 'E') SHORTLITERAL)*;
+DOUBLELITERAL : (PLUS|MINUS)? ('0'..'9')* '.' ('0'..'9')+ ( ('e' | 'E') SHORTLITERAL)*;
 BYTELITERAL : ('0'..'9')+;
 
 // whitespace, line breaks, comments, ...
