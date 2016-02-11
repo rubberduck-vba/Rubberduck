@@ -7,10 +7,15 @@
              xmlns:core="clr-namespace:System;assembly=mscorlib"
              xmlns:inspections="clr-namespace:Rubberduck.Inspections"
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type settings:InspectionSettingsViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
+        <converters:CodeInspectionSeverityEnumToTextConverter x:Key="CodeInspectionSeverityEnumToText" />
+        <converters:CodeInspectionSeverityEnumValueToTextConverter x:Key="CodeInspectionSeverityEnumValueToText" />
+        <converters:InspectionToToolTipConverter x:Key="InspectionToToolTip" />
+        
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
             <GradientStop Color="#FF9BDDFB" Offset="1"/>
@@ -75,7 +80,7 @@
                     </Style>
                 </Label.Style>
             </Label>
-            <controls:GroupingGrid ItemsSource="{Binding InspectionSettings}" AutoGenerateColumns="False"
+            <controls:GroupingGrid x:Name="InspectionGrid" ItemsSource="{Binding InspectionSettings}" AutoGenerateColumns="False"
 			    CanUserReorderColumns="False" IsReadOnly="False" SelectionMode="Single"
 			    HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
 			    HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -88,8 +93,8 @@
                     </Style>
                 </controls:GroupingGrid.CellStyle>
                 <controls:GroupingGrid.Columns>
-                    <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}" Width="*" Binding="{Binding Name}" IsReadOnly="True" />
-                    <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SeverityLabelText}" Width="*" ItemsSource="{Binding Source={StaticResource Severities}}" SelectedItemBinding="{Binding Severity}" />
+                    <DataGridTextColumn ToolTipService.IsEnabled="True" ToolTipService.InitialShowDelay="0" ToolTipService.ToolTip="{Binding ElementName=InspectionGrid, Path=SelectedItem, Converter={StaticResource InspectionToToolTip}}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}" Width="2.75*" Binding="{Binding Description}" IsReadOnly="True" />
+                    <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SeverityLabelText}" Width="*" ItemsSource="{Binding Source={StaticResource Severities}, Converter={StaticResource CodeInspectionSeverityEnumToText}, UpdateSourceTrigger=PropertyChanged}" SelectedItemBinding="{Binding Path=Severity, Mode=TwoWay, Converter={StaticResource CodeInspectionSeverityEnumValueToText}}" />
                 </controls:GroupingGrid.Columns>
             </controls:GroupingGrid>
         </DockPanel>

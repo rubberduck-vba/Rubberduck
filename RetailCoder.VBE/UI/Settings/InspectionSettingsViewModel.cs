@@ -7,13 +7,20 @@ namespace Rubberduck.UI.Settings
 {
     public class InspectionSetting
     {
-        public string Name { get; set; }
+        public string Name { get; private set; }
+        public string Description { get; set; }
         public CodeInspectionSeverity Severity { get; set; }
         public CodeInspectionType Type { get; set; }
+
+        public string TypeLabel
+        {
+            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSettings_" + Type); }
+        }
 
         public InspectionSetting(CodeInspectionSetting setting)
         {
             Name = setting.Name;
+            Description = setting.Description;
             Severity = setting.Severity;
             Type = setting.InspectionType;
         }
@@ -35,7 +42,7 @@ namespace Rubberduck.UI.Settings
 
             if (InspectionSettings.GroupDescriptions != null)
             {
-                InspectionSettings.GroupDescriptions.Add(new PropertyGroupDescription("Type"));
+                InspectionSettings.GroupDescriptions.Add(new PropertyGroupDescription("TypeLabel"));
             }
         }
 

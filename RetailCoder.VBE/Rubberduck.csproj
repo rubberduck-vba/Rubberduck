@@ -544,6 +544,9 @@
     <Compile Include="UI\Settings\AddMarkerForm.Designer.cs">
       <DependentUpon>AddMarkerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Settings\Converters\InspectionToTooltipConverter.cs" />
+    <Compile Include="UI\Settings\Converters\CodeInspectionSeverityEnumToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\CodeInspectionSeverityEnumValueToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\LanguagesEnumValueToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\SelectedItemToBooleanConverter.cs" />
     <Compile Include="UI\Settings\GeneralSettings.xaml.cs">
