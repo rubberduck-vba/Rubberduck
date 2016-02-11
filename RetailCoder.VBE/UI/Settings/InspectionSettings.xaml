@@ -98,7 +98,7 @@
                                 <TextBlock Text="{Binding Description}">
                                     <TextBlock.ToolTip>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding Description}" />
+                                            <TextBlock Text="{Binding Description}" FontWeight="SemiBold" />
                                             <TextBlock Text="{Binding Meta}" />
                                         </StackPanel>
                                     </TextBlock.ToolTip>
