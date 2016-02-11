@@ -908,13 +908,14 @@ COLORLITERAL : '&H' [0-9A-F]+ '&'?;
 INTEGERLITERAL : (PLUS|MINUS)? ('0'..'9')+ ( ('e' | 'E') INTEGERLITERAL)* ('#' | '&')?;
 DOUBLELITERAL : (PLUS|MINUS)? ('0'..'9')* '.' ('0'..'9')+ ( ('e' | 'E') (PLUS|MINUS)? ('0'..'9')+)* ('#' | '&')?;
 BYTELITERAL : ('0'..'9')+;
-// identifier
-IDENTIFIER :  (~[!\]\(\)\r\n\t ])+ | L_SQUARE_BRACKET (~[!\]\r\n])+ R_SQUARE_BRACKET;
 // whitespace, line breaks, comments, ...
 LINE_CONTINUATION : [ \t]+ '_' '\r'? '\n' -> skip;
-NEWLINE : (':' WS?) | (WS? ('\r'? '\n') WS?); 
+NEWLINE : (':' WS?) | (WS? ('\r'? '\n') WS?);
 COMMENT : WS? ('\'' | ':'? REM WS) (LINE_CONTINUATION | ~('\n' | '\r'))* -> skip;
 WS : ([ \t] | LINE_CONTINUATION)+;
+
+// identifier
+IDENTIFIER :  (~[\[\]\(\)\r\n\t.,'"|!@#$%^&*-+:=; ])+ | L_SQUARE_BRACKET (~[!\]\r\n])+ R_SQUARE_BRACKET;
 
 
 // letters
