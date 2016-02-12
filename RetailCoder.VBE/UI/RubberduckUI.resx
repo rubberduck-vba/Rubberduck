@@ -1356,4 +1356,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="UnitTestSettings_StrictAssert" xml:space="preserve">
     <value>Strict assert</value>
   </data>
+  <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
+    <value>Test Module Template</value>
+  </data>
 </root>

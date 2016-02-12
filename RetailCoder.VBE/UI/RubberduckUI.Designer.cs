@@ -3670,6 +3670,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Test Module Template.
+        /// </summary>
+        public static string UnitTestSettings_TestModuleTemplateHeader {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_TestModuleTemplateHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use of untyped function &apos;{0}&apos;. String-returning version &apos;{0}$&apos; is available..
         /// </summary>
         public static string UntypedFunctionUsage_ {
