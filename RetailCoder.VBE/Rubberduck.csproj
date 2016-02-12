@@ -574,7 +574,11 @@
     <Compile Include="UI\Settings\TodoSettings.xaml.cs">
       <DependentUpon>TodoSettings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Settings\UnitTestSettingsViewModel.cs" />
     <Compile Include="UI\Settings\TodoSettingsViewModel.cs" />
+    <Compile Include="UI\Settings\UnitTestSettings.xaml.cs">
+      <DependentUpon>UnitTestSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\ActionFailedEventArgs.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -1430,6 +1434,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Settings\TodoSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\UnitTestSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

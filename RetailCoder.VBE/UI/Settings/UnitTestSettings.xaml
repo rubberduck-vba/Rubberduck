@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="Rubberduck.UI.Settings.UnitTestSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance {x:Type settings:UnitTestSettingsViewModel}, IsDesignTimeCreatable=False}">
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Margin="5,5,5,0">
+                <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" FontWeight="SemiBold" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_UnitTestSettings}" Margin="0,0,0,3">
+                    <Label.Style>
+                        <Style>
+                            <Style.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="5"/>
+                                </Style>
+                            </Style.Resources>
+                        </Style>
+                    </Label.Style>
+                </Label>
+
+                <Label Content="Early/late test method binding?" FontWeight="SemiBold" />
+                <ComboBox SelectedIndex="0" Margin="0,0,0,5">
+                    <TextBlock Text="Early Binding" />
+                    <TextBlock Text="Late Binding" />
+                </ComboBox>
+
+                <Label Content="Strict/permissive test assert?" FontWeight="SemiBold" />
+                <ComboBox SelectedIndex="0" Margin="0,0,0,15">
+                    <TextBlock Text="Strict assert" />
+                    <TextBlock Text="Permissive assert" />
+                </ComboBox>
+
+                <CheckBox Content="Include test module initialization/cleanup?" Margin="0,0,0,5" />
+
+                <CheckBox Content="Include test method initialization/cleanup?" Margin="0,0,0,5" />
+
+                <CheckBox Content="Include test method stub when creating a test module?" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

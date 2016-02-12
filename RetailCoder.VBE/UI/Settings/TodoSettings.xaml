@@ -253,7 +253,7 @@
     </UserControl.Resources>
     <Grid>
         <DockPanel Margin="5,5,5,0">
-            <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" FontWeight="SemiBold" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ToDoSettings}" Margin="0,0,0,3">
+            <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" FontWeight="SemiBold" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_TodoSettings}" Margin="0,0,0,3">
                 <Label.Style>
                     <Style>
                         <Style.Resources>

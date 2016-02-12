@@ -51,7 +51,7 @@ namespace Rubberduck.UI.Settings
                 new SettingsView
                 {
                     Label = RubberduckUI.SettingsCaption_UnitTestSettings,
-                    Control = new GeneralSettings(),
+                    Control = new UnitTestSettings(new UnitTestSettingsViewModel(_configService)),
                     View = Settings.SettingsViews.UnitTestSettings
                 },
                 new SettingsView
