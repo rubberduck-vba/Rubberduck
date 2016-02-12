@@ -203,7 +203,8 @@ namespace Rubberduck.UI.CodeInspections
 
         private bool CanExecuteQuickFixCommand(object parameter)
         {
-            return !IsBusy && SelectedItem is IInspection;
+            var quickFix = parameter as CodeInspectionQuickFix;
+            return !IsBusy && quickFix != null;
         }
 
         private bool _canExecuteQuickFixInModule;

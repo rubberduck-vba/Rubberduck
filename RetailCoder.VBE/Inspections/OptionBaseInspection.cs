@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections
                 return new List<CodeInspectionResultBase>();
             }
 
-            var issues = options.Where(option => ((VBAParser.OptionBaseStmtContext)option.Context).INTEGERLITERAL().GetText() == "1")
+            var issues = options.Where(option => ((VBAParser.OptionBaseStmtContext)option.Context).SHORTLITERAL().GetText() == "1")
                                 .Select(issue => new OptionBaseInspectionResult(this, issue.QualifiedName.QualifiedModuleName));
 
             return issues;
