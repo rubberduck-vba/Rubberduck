@@ -22,14 +22,15 @@ namespace Rubberduck.UI.Command
 
         public override bool CanExecute(object parameter)
         {
-            if (_vbe.HostApplication() == null)
+            var app = _vbe.HostApplication();
+            if (app == null)
             {
                 return false;
             }
             else
             {
                 // Outlook requires test methods to be located in [ThisOutlookSession] class.
-                return _vbe.HostApplication().ApplicationName != "Outlook";
+                return app.ApplicationName != "Outlook";
             }
         }
 
