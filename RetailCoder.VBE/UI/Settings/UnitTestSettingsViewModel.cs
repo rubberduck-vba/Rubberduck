@@ -2,15 +2,15 @@
 
 namespace Rubberduck.UI.Settings
 {
-    public class UnitTestSettingsViewModel : ViewModelBase
+    public class UnitTestSettingsViewModel : ViewModelBase, ISettingsViewModel
     {
-        private readonly IGeneralConfigService _configService;
         private readonly Configuration _config;
 
-        public UnitTestSettingsViewModel(IGeneralConfigService configService)
+        public UnitTestSettingsViewModel(Configuration config)
         {
-            _configService = configService;
-            _config = configService.LoadConfiguration();
+            _config = config;
         }
+
+        public void UpdateConfig(Configuration config) { }
     }
 }

@@ -10,9 +10,11 @@
             InitializeComponent();
         }
 
-        public InspectionSettings(InspectionSettingsViewModel vm) : this()
+        public InspectionSettings(ISettingsViewModel vm) : this()
         {
             DataContext = vm;
         }
+
+        public ISettingsViewModel ViewModel { get { return DataContext as ISettingsViewModel; } }
     }
 }

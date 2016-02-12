@@ -10,9 +10,12 @@
             InitializeComponent();
         }
 
-        public TodoSettings(TodoSettingsViewModel vm) : this()
+        public TodoSettings(ISettingsViewModel vm)
+            : this()
         {
             DataContext = vm;
         }
+
+        public ISettingsViewModel ViewModel { get { return DataContext as ISettingsViewModel; } }
     }
 }

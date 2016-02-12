@@ -1,44 +1,49 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
 {
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public enum Languages
+    public class GeneralSettingsViewModel : ViewModelBase, ISettingsViewModel
     {
-        EN,
-        FR,
-        DE,
-        SV,
-        JA
-    }
-
-    public class GeneralSettingsViewModel : ViewModelBase
-    {
-        private readonly IGeneralConfigService _configService;
         private readonly Configuration _config;
 
-        public GeneralSettingsViewModel(IGeneralConfigService configService)
+        public GeneralSettingsViewModel(Configuration config)
         {
-            _configService = configService;
-            _config = configService.LoadConfiguration();
+            _config = config;
 
-            SelectedLanguage = (Languages)Enum.Parse(typeof(Languages), _config.UserSettings.LanguageSetting.Code.Substring(0, 2).ToUpper());
+            Languages = new ObservableCollection<DisplayLanguageSetting>(
+                new[] 
+            {
+                new DisplayLanguageSetting("en-US"),
+                new DisplayLanguageSetting("fr-CA"),
+                new DisplayLanguageSetting("de-DE"),
+                new DisplayLanguageSetting("sv-SE"),
+                new DisplayLanguageSetting("ja-JP")
+            });
+
+            SelectedLanguage = Languages.First(l => l.Code == _config.UserSettings.LanguageSetting.Code);
         }
 
-        private Languages _selectedLanguage;
-        public Languages SelectedLanguage
+        public ObservableCollection<DisplayLanguageSetting> Languages { get; set; } 
+
+        private DisplayLanguageSetting _selectedLanguage;
+        public DisplayLanguageSetting SelectedLanguage
         {
             get { return _selectedLanguage; }
             set
             {
-                if (_selectedLanguage != value)
+                if (!Equals(_selectedLanguage, value))
                 {
                     _selectedLanguage = value;
                     OnPropertyChanged();
                 }
             }
+        }
+
+        public void UpdateConfig(Configuration config)
+        {
+            config.UserSettings.LanguageSetting = SelectedLanguage;
         }
     }
 }

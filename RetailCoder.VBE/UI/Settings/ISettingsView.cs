@@ -2,6 +2,6 @@
 {
     public interface ISettingsView
     {
-         
+        ISettingsViewModel ViewModel { get; }
     }
 }

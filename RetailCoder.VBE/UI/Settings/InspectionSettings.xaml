@@ -13,7 +13,6 @@
              d:DataContext="{d:DesignInstance {x:Type settings:InspectionSettingsViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <converters:CodeInspectionSeverityEnumToTextConverter x:Key="CodeInspectionSeverityEnumToText" />
-        <converters:CodeInspectionSeverityEnumValueToTextConverter x:Key="CodeInspectionSeverityEnumValueToText" />
         
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
@@ -80,7 +79,7 @@
                 </Label.Style>
             </Label>
             <controls:GroupingGrid ItemsSource="{Binding InspectionSettings}" AutoGenerateColumns="False"
-			    CanUserReorderColumns="False" IsReadOnly="False" SelectionMode="Single"
+			    CanUserReorderColumns="False" IsReadOnly="False" SelectionMode="Single" CanUserAddRows="False"
 			    HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
 			    HeadersVisibility="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
 			    ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22" BorderThickness="0">
@@ -106,7 +105,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SeverityLabelText}" Width="*" ItemsSource="{Binding Source={StaticResource Severities}, Converter={StaticResource CodeInspectionSeverityEnumToText}, UpdateSourceTrigger=PropertyChanged}" SelectedItemBinding="{Binding Path=Severity, Mode=TwoWay, Converter={StaticResource CodeInspectionSeverityEnumValueToText}}" />
+                    <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SeverityLabelText}" Width="*" ItemsSource="{Binding Source={StaticResource Severities}, Converter={StaticResource CodeInspectionSeverityEnumToText}, UpdateSourceTrigger=PropertyChanged}" SelectedItemBinding="{Binding Path=SeverityLabel, Mode=TwoWay}" />
                 </controls:GroupingGrid.Columns>
             </controls:GroupingGrid>
         </DockPanel>

@@ -10,10 +10,12 @@
             InitializeComponent();
         }
 
-        public UnitTestSettings(UnitTestSettingsViewModel vm)
+        public UnitTestSettings(ISettingsViewModel vm)
             : this()
         {
             DataContext = vm;
         }
+
+        public ISettingsViewModel ViewModel { get { return DataContext as ISettingsViewModel; } }
     }
 }

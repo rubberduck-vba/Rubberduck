@@ -7,35 +7,16 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
 {
-    public class TodoSetting
+    public class TodoSettingsViewModel : ViewModelBase, ISettingsViewModel
     {
-        public TodoPriority Priority { get; set; }
-        public string Text { get; set; }
-
-        public TodoSetting(ToDoMarker marker)
+        public TodoSettingsViewModel(Configuration config)
         {
-            Priority = marker.Priority;
-            Text = marker.Text;
-        }
-    }
-
-    public class TodoSettingsViewModel : ViewModelBase
-    {
-        private readonly IGeneralConfigService _configService;
-        private readonly Configuration _config;
-
-        public TodoSettingsViewModel(IGeneralConfigService configService)
-        {
-            _configService = configService;
-            _config = configService.LoadConfiguration();
-
-            TodoSettings = new ObservableCollection<TodoSetting>(
-                    _config.UserSettings.ToDoListSettings.ToDoMarkers.Select(
-                        m => new TodoSetting(m)));
+            TodoSettings = new ObservableCollection<ToDoMarker>(
+                    config.UserSettings.ToDoListSettings.ToDoMarkers);
         }
 
-        private ObservableCollection<TodoSetting> _todoSettings;
-        public ObservableCollection<TodoSetting> TodoSettings
+        private ObservableCollection<ToDoMarker> _todoSettings;
+        public ObservableCollection<ToDoMarker> TodoSettings
         {
             get { return _todoSettings; }
             set
@@ -61,7 +42,7 @@ namespace Rubberduck.UI.Settings
                 }
                 return _addTodoCommand = new DelegateCommand(_ =>
                 {
-                    TodoSettings.Add(new TodoSetting(new ToDoMarker("PLACEHOLDER ", TodoPriority.Low)));
+                    TodoSettings.Add(new ToDoMarker("PLACEHOLDER ", TodoPriority.Low));
                 });
             }
         }
@@ -77,7 +58,7 @@ namespace Rubberduck.UI.Settings
                 }
                 return _deleteTodoCommand = new DelegateCommand(_ =>
                 {
-                    TodoSettings.Remove(_ as TodoSetting);
+                    TodoSettings.Remove(_ as ToDoMarker);
 
                     // ReSharper disable once ExplicitCallerInfoArgument
                     OnPropertyChanged("TodoSettings");
@@ -86,5 +67,10 @@ namespace Rubberduck.UI.Settings
         }
 
         #endregion
+
+        public void UpdateConfig(Configuration config)
+        {
+            config.UserSettings.ToDoListSettings.ToDoMarkers = TodoSettings.ToArray();
+        }
     }
 }

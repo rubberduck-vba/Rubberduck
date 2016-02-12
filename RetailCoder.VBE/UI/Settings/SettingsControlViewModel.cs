@@ -24,42 +24,45 @@ namespace Rubberduck.UI.Settings
     public class SettingsControlViewModel : ViewModelBase
     {
         private readonly IGeneralConfigService _configService;
+        private readonly Configuration _config;
 
         public SettingsControlViewModel(IGeneralConfigService configService, SettingsViews view = Settings.SettingsViews.GeneralSettings)
         {
             _configService = configService;
+            _config = configService.LoadConfiguration();
+
             SettingsViews = new ObservableCollection<SettingsView>
             {
                 new SettingsView
                 {
                     Label = RubberduckUI.SettingsCaption_GeneralSettings,
-                    Control = new GeneralSettings(new GeneralSettingsViewModel(_configService)),
+                    Control = new GeneralSettings(new GeneralSettingsViewModel(_config)),
                     View = Settings.SettingsViews.GeneralSettings
                 },
                 new SettingsView
                 {
                     Label = RubberduckUI.SettingsCaption_TodoSettings,
-                    Control = new TodoSettings(new TodoSettingsViewModel(_configService)),
+                    Control = new TodoSettings(new TodoSettingsViewModel(_config)),
                     View = Settings.SettingsViews.TodoSettings
                 },
                 new SettingsView
                 {
                     Label = RubberduckUI.SettingsCaption_CodeInspections,
-                    Control = new InspectionSettings(new InspectionSettingsViewModel(_configService)),
+                    Control = new InspectionSettings(new InspectionSettingsViewModel(_config)),
                     View = Settings.SettingsViews.InspectionSettings
                 },
                 new SettingsView
                 {
                     Label = RubberduckUI.SettingsCaption_UnitTestSettings,
-                    Control = new UnitTestSettings(new UnitTestSettingsViewModel(_configService)),
+                    Control = new UnitTestSettings(new UnitTestSettingsViewModel(_config)),
                     View = Settings.SettingsViews.UnitTestSettings
                 },
-                new SettingsView
+                /*new SettingsView
                 {
                     Label = RubberduckUI.SettingsCaption_IndenterSettings,
                     Control = new GeneralSettings(),
                     View = Settings.SettingsViews.IndenterSettings
-                }
+                }*/
             };
 
             SelectedSettingsView = SettingsViews.First(v => v.View == view);
@@ -96,6 +99,18 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private void SaveConfig()
+        {
+            var oldLangCode = _config.UserSettings.LanguageSetting.Code;
+
+            foreach (var vm in SettingsViews.Select(v => v.Control.ViewModel))
+            {
+                vm.UpdateConfig(_config);
+            }
+
+            _configService.SaveConfiguration(_config, _config.UserSettings.LanguageSetting.Code != oldLangCode);
+        }
+
         public event EventHandler OnOKButtonClicked;
         public event EventHandler OnCancelButtonClicked;
 
@@ -112,10 +127,11 @@ namespace Rubberduck.UI.Settings
                 }
                 return _okButtonCommand = new DelegateCommand(_ =>
                 {
+                    SaveConfig();
+
                     var handler = OnOKButtonClicked;
                     if (handler != null)
                     {
-                        // todo update config
                         handler(this, EventArgs.Empty);
                     }
                 });
@@ -153,7 +169,7 @@ namespace Rubberduck.UI.Settings
                 }
                 return _refreshButtonCommand = new DelegateCommand(_ =>
                 {
-                    // todo impplement
+                    // todo implement
                 });
             }
         }

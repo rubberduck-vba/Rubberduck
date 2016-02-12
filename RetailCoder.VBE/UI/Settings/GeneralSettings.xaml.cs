@@ -10,9 +10,11 @@
             InitializeComponent();
         }
 
-        public GeneralSettings(GeneralSettingsViewModel vm) : this()
+        public GeneralSettings(ISettingsViewModel vm) : this()
         {
             DataContext = vm;
         }
+
+        public ISettingsViewModel ViewModel { get { return DataContext as ISettingsViewModel; } }
     }
 }

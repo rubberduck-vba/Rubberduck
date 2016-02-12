@@ -281,7 +281,7 @@
                 </ToolBar>
             </ToolBarTray>
             <DataGrid Name="TodoMarkerGrid" ItemsSource="{Binding TodoSettings}" AutoGenerateColumns="False"
-			    CanUserReorderColumns="False" IsReadOnly="False" SelectionMode="Single"
+			    CanUserReorderColumns="False" IsReadOnly="False" SelectionMode="Single" CanUserAddRows="False"
 			    HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
 			    HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
 			    ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22" BorderThickness="0">
