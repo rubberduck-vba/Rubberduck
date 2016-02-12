@@ -2689,7 +2689,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I&apos;m not sure what this should say....
+        ///   Looks up a localized string similar to Configure indenter settings..
         /// </summary>
         public static string SettingsInstructions_IndenterSettings {
             get {
@@ -2716,7 +2716,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I&apos;m not sure what this should say....
+        ///   Looks up a localized string similar to Configure the settings for new unit test modules and methods..
         /// </summary>
         public static string SettingsInstructions_UnitTestSettings {
             get {
@@ -3585,6 +3585,87 @@ namespace Rubberduck.UI {
         public static string UnassignedVariableUsage_ {
             get {
                 return ResourceManager.GetString("UnassignedVariableUsage_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test method assert mode:.
+        /// </summary>
+        public static string UnitTestSettings_AssertMode {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_AssertMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test method binding mode:.
+        /// </summary>
+        public static string UnitTestSettings_BindingMode {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_BindingMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Early binding.
+        /// </summary>
+        public static string UnitTestSettings_EarlyBinding {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_EarlyBinding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include test method initialization/cleanup?.
+        /// </summary>
+        public static string UnitTestSettings_IncludeTestMethodInitCleanupPrompt {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_IncludeTestMethodInitCleanupPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include test method stub when creating a test module?.
+        /// </summary>
+        public static string UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include test module initialization/cleanup?.
+        /// </summary>
+        public static string UnitTestSettings_IncludeTestModuleInitCleanupPrompt {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_IncludeTestModuleInitCleanupPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Late binding.
+        /// </summary>
+        public static string UnitTestSettings_LateBinding {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_LateBinding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permissive assert.
+        /// </summary>
+        public static string UnitTestSettings_PermissiveAssert {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_PermissiveAssert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strict assert.
+        /// </summary>
+        public static string UnitTestSettings_StrictAssert {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_StrictAssert", resourceCulture);
             }
         }
         

@@ -1324,9 +1324,36 @@ Are you sure you want to proceed with this rename?</value>
     <value>Indenter Settings</value>
   </data>
   <data name="SettingsInstructions_IndenterSettings" xml:space="preserve">
-    <value>I'm not sure what this should say...</value>
+    <value>Configure indenter settings.</value>
   </data>
   <data name="SettingsInstructions_UnitTestSettings" xml:space="preserve">
-    <value>I'm not sure what this should say...</value>
+    <value>Configure the settings for new unit test modules and methods.</value>
+  </data>
+  <data name="UnitTestSettings_AssertMode" xml:space="preserve">
+    <value>Test method assert mode:</value>
+  </data>
+  <data name="UnitTestSettings_BindingMode" xml:space="preserve">
+    <value>Test method binding mode:</value>
+  </data>
+  <data name="UnitTestSettings_EarlyBinding" xml:space="preserve">
+    <value>Early binding</value>
+  </data>
+  <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
+    <value>Include test method initialization/cleanup?</value>
+  </data>
+  <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt" xml:space="preserve">
+    <value>Include test method stub when creating a test module?</value>
+  </data>
+  <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
+    <value>Include test module initialization/cleanup?</value>
+  </data>
+  <data name="UnitTestSettings_LateBinding" xml:space="preserve">
+    <value>Late binding</value>
+  </data>
+  <data name="UnitTestSettings_PermissiveAssert" xml:space="preserve">
+    <value>Permissive assert</value>
+  </data>
+  <data name="UnitTestSettings_StrictAssert" xml:space="preserve">
+    <value>Strict assert</value>
   </data>
 </root>

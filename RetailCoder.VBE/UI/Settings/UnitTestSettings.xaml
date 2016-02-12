@@ -22,23 +22,23 @@
                     </Label.Style>
                 </Label>
 
-                <Label Content="Early/late test method binding?" FontWeight="SemiBold" />
-                <ComboBox SelectedIndex="0" Margin="0,0,0,5">
-                    <TextBlock Text="Early Binding" />
-                    <TextBlock Text="Late Binding" />
+                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_BindingMode}" FontWeight="SemiBold" />
+                <ComboBox Margin="0,0,0,5" Width="210" HorizontalAlignment="Left">
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_EarlyBinding}" />
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_LateBinding}" />
                 </ComboBox>
 
-                <Label Content="Strict/permissive test assert?" FontWeight="SemiBold" />
-                <ComboBox SelectedIndex="0" Margin="0,0,0,15">
-                    <TextBlock Text="Strict assert" />
-                    <TextBlock Text="Permissive assert" />
+                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_AssertMode}" FontWeight="SemiBold" />
+                <ComboBox Margin="0,0,0,15" Width="210" HorizontalAlignment="Left">
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_StrictAssert}" />
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_PermissiveAssert}" />
                 </ComboBox>
 
-                <CheckBox Content="Include test module initialization/cleanup?" Margin="0,0,0,5" />
+                <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_IncludeTestModuleInitCleanupPrompt}" Margin="0,0,0,5" />
 
-                <CheckBox Content="Include test method initialization/cleanup?" Margin="0,0,0,5" />
+                <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_IncludeTestMethodInitCleanupPrompt}" Margin="0,0,0,5" />
 
-                <CheckBox Content="Include test method stub when creating a test module?" />
+                <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt}" />
             </StackPanel>
         </ScrollViewer>
     </Grid>
