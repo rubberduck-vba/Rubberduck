@@ -169,7 +169,11 @@ namespace Rubberduck.UI.Settings
                 }
                 return _refreshButtonCommand = new DelegateCommand(_ =>
                 {
-                    // todo implement
+                    var defaultConfig = _configService.GetDefaultConfiguration();
+                    foreach (var vm in SettingsViews.Select(v => v.Control.ViewModel))
+                    {
+                        vm.SetToDefaults(defaultConfig);
+                    }
                 });
             }
         }

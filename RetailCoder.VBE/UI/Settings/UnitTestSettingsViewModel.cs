@@ -10,5 +10,6 @@ namespace Rubberduck.UI.Settings
         }
 
         public void UpdateConfig(Configuration config) { }
+        public void SetToDefaults(Configuration config) {}
     }
 }

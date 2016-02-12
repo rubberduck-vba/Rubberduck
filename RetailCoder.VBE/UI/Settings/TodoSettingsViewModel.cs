@@ -72,5 +72,11 @@ namespace Rubberduck.UI.Settings
         {
             config.UserSettings.ToDoListSettings.ToDoMarkers = TodoSettings.ToArray();
         }
+
+        public void SetToDefaults(Configuration config)
+        {
+            TodoSettings = new ObservableCollection<ToDoMarker>(
+                    config.UserSettings.ToDoListSettings.ToDoMarkers);
+        }
     }
 }

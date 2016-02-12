@@ -36,5 +36,16 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.CodeInspectionSettings.CodeInspections =
                 InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>().ToArray();
         }
+
+        public void SetToDefaults(Configuration config)
+        {
+            InspectionSettings = new ListCollectionView(
+                config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
+
+            if (InspectionSettings.GroupDescriptions != null)
+            {
+                InspectionSettings.GroupDescriptions.Add(new PropertyGroupDescription("TypeLabel"));
+            }
+        }
     }
 }

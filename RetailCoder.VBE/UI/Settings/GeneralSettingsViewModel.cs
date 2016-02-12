@@ -6,12 +6,8 @@ namespace Rubberduck.UI.Settings
 {
     public class GeneralSettingsViewModel : ViewModelBase, ISettingsViewModel
     {
-        private readonly Configuration _config;
-
         public GeneralSettingsViewModel(Configuration config)
         {
-            _config = config;
-
             Languages = new ObservableCollection<DisplayLanguageSetting>(
                 new[] 
             {
@@ -22,7 +18,7 @@ namespace Rubberduck.UI.Settings
                 new DisplayLanguageSetting("ja-JP")
             });
 
-            SelectedLanguage = Languages.First(l => l.Code == _config.UserSettings.LanguageSetting.Code);
+            SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.LanguageSetting.Code);
         }
 
         public ObservableCollection<DisplayLanguageSetting> Languages { get; set; } 
@@ -44,6 +40,11 @@ namespace Rubberduck.UI.Settings
         public void UpdateConfig(Configuration config)
         {
             config.UserSettings.LanguageSetting = SelectedLanguage;
+        }
+
+        public void SetToDefaults(Configuration config)
+        {
+            SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.LanguageSetting.Code);
         }
     }
 }
