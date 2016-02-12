@@ -74,6 +74,7 @@
 *   - fixed precompiler directives, which can now be nested. they still can't interfere with other blocks though.
 *   - optional parameters can be a valueStmt.
 *   - added support for Octal and Currency literals.
+*   - implemented proper specs for DATELITERAL.
 *
 *======================================================================================
 *
@@ -906,14 +907,25 @@ L_SQUARE_BRACKET : '[';
 R_SQUARE_BRACKET : ']';
 
 
-	// literals
-	STRINGLITERAL : '"' (~["\r\n] | '""')* '"';
-	DATELITERAL : '#' DIGIT+ '/' DIGIT+ '/' DIGIT+ '#';
-	OCTLITERAL : '&O' [0-8]+ '&'?;
-	HEXLITERAL : '&H' [0-9A-F]+ '&'?;
-	SHORTLITERAL : (PLUS|MINUS)? DIGIT+ ('#' | '&' | '@')?;
-	INTEGERLITERAL : SHORTLITERAL (E SHORTLITERAL)?;
-	DOUBLELITERAL : (PLUS|MINUS)? DIGIT* '.' DIGIT+ (E SHORTLITERAL)?;
+// literals
+STRINGLITERAL : '"' (~["\r\n] | '""')* '"';
+OCTLITERAL : '&O' [0-8]+ '&'?;
+HEXLITERAL : '&H' [0-9A-F]+ '&'?;
+SHORTLITERAL : (PLUS|MINUS)? DIGIT+ ('#' | '&' | '@')?;
+INTEGERLITERAL : SHORTLITERAL (E SHORTLITERAL)?;
+DOUBLELITERAL : (PLUS|MINUS)? DIGIT* '.' DIGIT+ (E SHORTLITERAL)?;
+
+DATELITERAL : '#' DATEORTIME '#';
+fragment DATEORTIME : DATEVALUE WS? TIMEVALUE | DATEVALUE | TIMEVALUE;
+fragment DATEVALUE : DATEVALUEPART DATESEPARATOR DATEVALUEPART (DATESEPARATOR DATEVALUEPART)?;
+fragment DATEVALUEPART : DIGIT+ | MONTHNAME;
+fragment DATESEPARATOR : WS? [/,-]? WS?;
+fragment MONTHNAME : ENGLISHMONTHNAME | ENGLISHMONTHABBREVIATION;
+fragment ENGLISHMONTHNAME : J A N U A R Y | F E B R U A R Y | M A R C H | A P R I L | M A Y | J U N E  | A U G U S T | S E P T E M B E R | O C T O B E R | N O V E M B E R | D E C E M B E R;
+fragment ENGLISHMONTHABBREVIATION : J A N | F E B | M A R | A P R | J U N | J U L | A U G | S E P |  O C T | N O V | D E C;
+fragment TIMEVALUE : DIGIT+ AMPM | DIGIT+ TIMESEPARATOR DIGIT+ (TIMESEPARATOR DIGIT+)? AMPM?;
+fragment TIMESEPARATOR : WS? (':' | '.') WS?;
+fragment AMPM : WS? (A M | P M | A | P);
 
 // whitespace, line breaks, comments, ...
 LINE_CONTINUATION : [ \t]+ '_' '\r'? '\n' -> skip;
@@ -926,9 +938,9 @@ IDENTIFIER :  (~[\[\]\(\)\r\n\t.,'"|!@#$%^&*-+:=; ])+ | L_SQUARE_BRACKET (~[!\]\
 
 
 // letters
-fragment LETTER : [a-zA-Z_‰ˆ¸ƒ÷‹];
+fragment LETTER : [a-zA-Z_√§√∂√º√Ñ√ñ√ú];
 fragment DIGIT : [0-9];
-fragment LETTERORDIGIT : [a-zA-Z0-9_‰ˆ¸ƒ÷‹];
+fragment LETTERORDIGIT : [a-zA-Z0-9_√§√∂√º√Ñ√ñ√ú];
 
 // case insensitive chars
 fragment A:('a'|'A');
