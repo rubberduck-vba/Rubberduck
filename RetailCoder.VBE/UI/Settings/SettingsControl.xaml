@@ -61,7 +61,7 @@
         <Border Grid.ColumnSpan="2" Height="50" VerticalAlignment="Top" BorderBrush="Black" BorderThickness="0, 1">
             <StackPanel Background="White">
                 <Label Content="{Binding ElementName=ListBox, Path=SelectedItem.Label}" FontWeight="Bold" />
-                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsInstructions_GeneralSettings}" Margin="10, 0" />
+                <TextBlock Text="{Binding ElementName=ListBox, Path=SelectedItem.Instructions}" Margin="10, 0" />
             </StackPanel>
         </Border>
         <ListBox Name="ListBox" Grid.Row="1" Grid.Column="0" ItemContainerStyle="{StaticResource PrettifyRow}" ItemsSource="{Binding SettingsViews}" DisplayMemberPath="Label" SelectedItem="{Binding SelectedSettingsView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,5,0,5" />

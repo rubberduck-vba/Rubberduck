@@ -10,6 +10,13 @@ namespace Rubberduck.UI.Settings
     public class SettingsView
     {
         public string Label { get; set; }
+        public string Instructions
+        { 
+            get
+            {
+                return RubberduckUI.ResourceManager.GetString("SettingsInstructions_" + View);
+            } 
+        }
         public ISettingsView Control { get; set; }
         public SettingsViews View { get; set; }
     }
@@ -31,7 +38,7 @@ namespace Rubberduck.UI.Settings
                 },
                 new SettingsView
                 {
-                    Label = RubberduckUI.SettingsCaption_ToDoSettings,
+                    Label = RubberduckUI.SettingsCaption_TodoSettings,
                     Control = new TodoSettings(new TodoSettingsViewModel(_configService)),
                     View = Settings.SettingsViews.TodoSettings
                 },
@@ -46,6 +53,12 @@ namespace Rubberduck.UI.Settings
                     Label = RubberduckUI.SettingsCaption_UnitTestSettings,
                     Control = new GeneralSettings(),
                     View = Settings.SettingsViews.UnitTestSettings
+                },
+                new SettingsView
+                {
+                    Label = RubberduckUI.SettingsCaption_IndenterSettings,
+                    Control = new GeneralSettings(),
+                    View = Settings.SettingsViews.IndenterSettings
                 }
             };
 

@@ -1469,9 +1469,9 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to TODO.
         /// </summary>
-        public static string Inspections_UnassignedVariableToDo {
+        public static string Inspections_UnassignedVariableTodo {
             get {
-                return ResourceManager.GetString("Inspections_UnassignedVariableToDo", resourceCulture);
+                return ResourceManager.GetString("Inspections_UnassignedVariableTodo", resourceCulture);
             }
         }
         
@@ -2565,9 +2565,9 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to To&amp;Do Items.
         /// </summary>
-        public static string RubberduckMenu_ToDoItems {
+        public static string RubberduckMenu_TodoItems {
             get {
-                return ResourceManager.GetString("RubberduckMenu_ToDoItems", resourceCulture);
+                return ResourceManager.GetString("RubberduckMenu_TodoItems", resourceCulture);
             }
         }
         
@@ -2653,11 +2653,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ToDo Settings.
+        ///   Looks up a localized string similar to Indenter Settings.
         /// </summary>
-        public static string SettingsCaption_ToDoSettings {
+        public static string SettingsCaption_IndenterSettings {
             get {
-                return ResourceManager.GetString("SettingsCaption_ToDoSettings", resourceCulture);
+                return ResourceManager.GetString("SettingsCaption_IndenterSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Todo Settings.
+        /// </summary>
+        public static string SettingsCaption_TodoSettings {
+            get {
+                return ResourceManager.GetString("SettingsCaption_TodoSettings", resourceCulture);
             }
         }
         
@@ -2671,15 +2680,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure inspection severity. Use &quot;DoNotShow&quot; to disable an inspection..
-        /// </summary>
-        public static string SettingsInstructions_CodeInspections {
-            get {
-                return ResourceManager.GetString("SettingsInstructions_CodeInspections", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Click [Ok] to close the window and apply changes, or [Cancel] to discard them..
         /// </summary>
         public static string SettingsInstructions_GeneralSettings {
@@ -2689,11 +2689,38 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I&apos;m not sure what this should say....
+        /// </summary>
+        public static string SettingsInstructions_IndenterSettings {
+            get {
+                return ResourceManager.GetString("SettingsInstructions_IndenterSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure inspection severity. Use &quot;DoNotShow&quot; to disable an inspection..
+        /// </summary>
+        public static string SettingsInstructions_InspectionSettings {
+            get {
+                return ResourceManager.GetString("SettingsInstructions_InspectionSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Configure markers to be recognized in comments..
         /// </summary>
-        public static string SettingsInstructions_ToDoSettings {
+        public static string SettingsInstructions_TodoSettings {
             get {
-                return ResourceManager.GetString("SettingsInstructions_ToDoSettings", resourceCulture);
+                return ResourceManager.GetString("SettingsInstructions_TodoSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I&apos;m not sure what this should say....
+        /// </summary>
+        public static string SettingsInstructions_UnitTestSettings {
+            get {
+                return ResourceManager.GetString("SettingsInstructions_UnitTestSettings", resourceCulture);
             }
         }
         
@@ -3400,11 +3427,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ToDo Explorer.
+        ///   Looks up a localized string similar to Todo Explorer.
         /// </summary>
-        public static string ToDoExplorer_Caption {
+        public static string TodoExplorer_Caption {
             get {
-                return ResourceManager.GetString("ToDoExplorer_Caption", resourceCulture);
+                return ResourceManager.GetString("TodoExplorer_Caption", resourceCulture);
             }
         }
         
@@ -3429,54 +3456,54 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to BUG .
         /// </summary>
-        public static string ToDoMarkerBug {
+        public static string TodoMarkerBug {
             get {
-                return ResourceManager.GetString("ToDoMarkerBug", resourceCulture);
+                return ResourceManager.GetString("TodoMarkerBug", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to NOTE .
         /// </summary>
-        public static string ToDoMarkerNote {
+        public static string TodoMarkerNote {
             get {
-                return ResourceManager.GetString("ToDoMarkerNote", resourceCulture);
+                return ResourceManager.GetString("TodoMarkerNote", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to TODO .
         /// </summary>
-        public static string ToDoMarkerToDo {
+        public static string TodoMarkerTodo {
             get {
-                return ResourceManager.GetString("ToDoMarkerToDo", resourceCulture);
+                return ResourceManager.GetString("TodoMarkerTodo", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to High.
         /// </summary>
-        public static string ToDoPriority_High {
+        public static string TodoPriority_High {
             get {
-                return ResourceManager.GetString("ToDoPriority_High", resourceCulture);
+                return ResourceManager.GetString("TodoPriority_High", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Low.
         /// </summary>
-        public static string ToDoPriority_Low {
+        public static string TodoPriority_Low {
             get {
-                return ResourceManager.GetString("ToDoPriority_Low", resourceCulture);
+                return ResourceManager.GetString("TodoPriority_Low", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Medium.
         /// </summary>
-        public static string ToDoPriority_Medium {
+        public static string TodoPriority_Medium {
             get {
-                return ResourceManager.GetString("ToDoPriority_Medium", resourceCulture);
+                return ResourceManager.GetString("TodoPriority_Medium", resourceCulture);
             }
         }
         

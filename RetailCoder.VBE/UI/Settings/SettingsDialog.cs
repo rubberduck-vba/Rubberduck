@@ -149,15 +149,15 @@ namespace Rubberduck.UI.Settings
 
             if (e.Node.Text == RubberduckUI.TodoSettings_Caption)
             {
-                TitleLabel.Text = RubberduckUI.SettingsCaption_ToDoSettings;
-                InstructionsLabel.Text = RubberduckUI.SettingsInstructions_ToDoSettings;
+                TitleLabel.Text = RubberduckUI.SettingsCaption_TodoSettings;
+                InstructionsLabel.Text = RubberduckUI.SettingsInstructions_TodoSettings;
                 controlToActivate = _todoView;
             }
 
             if (e.Node.Parent.Text == RubberduckUI.CodeInspections)
             {
                 TitleLabel.Text = RubberduckUI.SettingsCaption_CodeInspections;
-                InstructionsLabel.Text = RubberduckUI.SettingsInstructions_CodeInspections;
+                InstructionsLabel.Text = RubberduckUI.SettingsInstructions_InspectionSettings;
                 var inspectionType = (CodeInspectionType)Enum.Parse(typeof(CodeInspectionType), e.Node.Name);
                 var settingGridViewSort = new GridViewSort<CodeInspectionSetting>(RubberduckUI.Name, true);
                 controlToActivate = new CodeInspectionSettingsControl(GetInspectionSettings(inspectionType), settingGridViewSort);
