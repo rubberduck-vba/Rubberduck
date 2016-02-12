@@ -4,11 +4,9 @@ namespace Rubberduck.UI.Settings
 {
     public class UnitTestSettingsViewModel : ViewModelBase, ISettingsViewModel
     {
-        private readonly Configuration _config;
-
         public UnitTestSettingsViewModel(Configuration config)
         {
-            _config = config;
+            // load from config.UserSettings.UnitTestSettings
         }
 
         public void UpdateConfig(Configuration config) { }

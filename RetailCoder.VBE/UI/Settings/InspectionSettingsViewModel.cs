@@ -6,14 +6,10 @@ namespace Rubberduck.UI.Settings
 {
     public class InspectionSettingsViewModel : ViewModelBase, ISettingsViewModel
     {
-        private readonly Configuration _config;
-
         public InspectionSettingsViewModel(Configuration config)
         {
-            _config = config;
-
             InspectionSettings = new ListCollectionView(
-                    _config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
+                    config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
 
             if (InspectionSettings.GroupDescriptions != null)
             {
