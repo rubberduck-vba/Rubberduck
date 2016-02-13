@@ -116,7 +116,8 @@ namespace Rubberduck.Settings
             var userSettings = new UserSettings(
                                     new DisplayLanguageSetting("en-US"), 
                                     new ToDoListSettings(GetDefaultTodoMarkers()),
-                                    new CodeInspectionSettings(GetDefaultCodeInspections()), 
+                                    new CodeInspectionSettings(GetDefaultCodeInspections()),
+                                    new UnitTestSettings(),
                                     GetDefaultIndenterSettings());
 
             return new Configuration(userSettings);
