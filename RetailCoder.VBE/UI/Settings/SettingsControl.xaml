@@ -56,7 +56,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="2.5*" />
         </Grid.ColumnDefinitions>
         <Border Grid.ColumnSpan="2" Height="50" VerticalAlignment="Top" BorderBrush="Black" BorderThickness="0, 1">
             <StackPanel Background="White">
@@ -65,7 +65,7 @@
             </StackPanel>
         </Border>
         <ListBox Name="ListBox" Grid.Row="1" Grid.Column="0" ItemContainerStyle="{StaticResource PrettifyRow}" ItemsSource="{Binding SettingsViews}" DisplayMemberPath="Label" SelectedItem="{Binding SelectedSettingsView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,5,0,5" />
-        <Frame Grid.Row="1"  Grid.Column="1" Content="{Binding ElementName=ListBox, Path=SelectedValue, Converter={StaticResource SettingsViewToPage}}" NavigationUIVisibility="Hidden" Margin="0,0,0,5" />
+        <Frame Grid.Row="1" Grid.Column="1" Content="{Binding ElementName=ListBox, Path=SelectedValue, Converter={StaticResource SettingsViewToPage}}" NavigationUIVisibility="Hidden" Margin="0,0,0,5" />
         <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Height="40" VerticalAlignment="Bottom" BorderBrush="Black" BorderThickness="0, 1, 0, 0">
             <DockPanel VerticalAlignment="Center" Height="40" Background="{x:Static SystemColors.ControlDarkBrush}">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

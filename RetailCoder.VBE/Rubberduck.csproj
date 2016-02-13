@@ -302,6 +302,9 @@
     <Compile Include="Controls\GroupingGrid\GroupingGrid.xaml.cs">
       <DependentUpon>GroupingGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\NumberPicker\NumberPicker.xaml.cs">
+      <DependentUpon>NumberPicker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
     <Compile Include="Inspections\ConvertToProcedureQuickFix.cs" />
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspection.cs" />
@@ -539,12 +542,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.sv.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleToVisibilityConverter.cs" />
     <Compile Include="UI\Settings\Converters\CodeInspectionSeverityEnumToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\SelectedItemToBooleanConverter.cs" />
     <Compile Include="UI\Settings\GeneralSettings.xaml.cs">
       <DependentUpon>GeneralSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\GeneralSettingsViewModel.cs" />
+    <Compile Include="UI\Settings\IndenterSettings.xaml.cs">
+      <DependentUpon>IndenterSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\IndenterSettingsViewModel.cs" />
     <Compile Include="UI\Settings\InspectionSettings.xaml.cs">
       <DependentUpon>InspectionSettings.xaml</DependentUpon>
     </Compile>
@@ -1346,6 +1354,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\NumberPicker\NumberPicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\BusyIndicator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1363,6 +1375,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Settings\GeneralSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\IndenterSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

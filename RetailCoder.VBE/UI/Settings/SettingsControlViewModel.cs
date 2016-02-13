@@ -57,12 +57,12 @@ namespace Rubberduck.UI.Settings
                     Control = new UnitTestSettings(new UnitTestSettingsViewModel(_config)),
                     View = Settings.SettingsViews.UnitTestSettings
                 },
-                /*new SettingsView
+                new SettingsView
                 {
                     Label = RubberduckUI.SettingsCaption_IndenterSettings,
-                    Control = new GeneralSettings(),
+                    Control = new IndenterSettings(new IndenterSettingsViewModel(_config)),
                     View = Settings.SettingsViews.IndenterSettings
-                }*/
+                }
             };
 
             SelectedSettingsView = SettingsViews.First(v => v.View == view);
