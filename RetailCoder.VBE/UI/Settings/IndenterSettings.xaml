@@ -77,7 +77,7 @@
                 <CheckBox Content="End of Line Align Column" Margin="0,0,0,5" />
                 <Label Content="End of Line Comment Style:" />
                 <StackPanel Orientation="Horizontal">
-                    <ComboBox Name="EndOfLineCommentStyle" Margin="0,0,0,5" Text="End of Line Comment Style" SelectedIndex="0" Width="210" HorizontalAlignment="Left">
+                    <ComboBox Name="EndOfLineCommentStyle" Margin="0,0,0,5" SelectedIndex="0" Width="210" HorizontalAlignment="Left">
                         <TextBlock Text="Absolute" />
                         <TextBlock Text="Align in Column" />
                         <TextBlock Text="Same Gap" />
