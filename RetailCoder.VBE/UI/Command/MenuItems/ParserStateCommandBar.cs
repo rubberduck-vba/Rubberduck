@@ -47,16 +47,18 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public void Initialize()
         {
-            var commandbar = _vbe.CommandBars.Add("Parsing", MsoBarPosition.msoBarTop, false, true);
+            var commandbar = _vbe.CommandBars.Add("Rubberduck", MsoBarPosition.msoBarTop, false, true);
 
             _refreshButton = (CommandBarButton)commandbar.Controls.Add(MsoControlType.msoControlButton);
             ParentMenuItemBase.SetButtonImage(_refreshButton, Resources.arrow_circle_double, Resources.arrow_circle_double_mask);
             _refreshButton.Style = MsoButtonStyle.msoButtonIcon;
+            _refreshButton.Tag = "Refresh";
             _refreshButton.TooltipText = "Parse all opened projects";
             _refreshButton.Click += refreshButton_Click;
 
             _statusButton = (CommandBarButton)commandbar.Controls.Add(MsoControlType.msoControlButton);
             _statusButton.Style = MsoButtonStyle.msoButtonCaption;
+            _statusButton.Tag = "Status";
 
             commandbar.Visible = true;
         }
