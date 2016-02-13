@@ -306,6 +306,8 @@
     <Compile Include="Inspections\ConvertToProcedureQuickFix.cs" />
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspection.cs" />
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionResult.cs" />
+    <Compile Include="Inspections\IInspection.cs" />
+    <Compile Include="Inspections\IInspectionModel.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspection.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspectionResult.cs" />
     <Compile Include="Inspections\InspectionsUI.Designer.cs">
@@ -385,7 +387,6 @@
     <Compile Include="Inspections\DefaultProjectNameInspection.cs" />
     <Compile Include="Inspections\DefaultProjectNameInspectionResult.cs" />
     <Compile Include="Inspections\ICodeInspectionResult.cs" />
-    <Compile Include="Inspections\IInspectionModel.cs" />
     <Compile Include="Inspections\IInspector.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionResult.cs" />
@@ -736,7 +737,6 @@
     <Compile Include="Inspections\CodeInspectionResultBase.cs" />
     <Compile Include="Inspections\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\CodeInspectionType.cs" />
-    <Compile Include="Inspections\IInspection.cs" />
     <Compile Include="Inspections\ImplicitByRefParameterInspection.cs" />
     <Compile Include="Inspections\ImplicitByRefParameterInspectionResult.cs" />
     <Compile Include="Inspections\ImplicitVariantReturnTypeInspection.cs" />

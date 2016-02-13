@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
-             xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
+             xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:core="clr-namespace:System;assembly=mscorlib"
              xmlns:toDoItems="clr-namespace:Rubberduck.ToDoItems"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
