@@ -1,33 +1,27 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    public class OptionBaseInspection : IInspection
+    public sealed class OptionBaseInspection : InspectionBase
     {
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
-
-        public OptionBaseInspection()
+        public OptionBaseInspection(RubberduckParserState state)
+            : base(state)
         {
-            _wrapperFactory = new CodePaneWrapperFactory();
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "OptionBaseInspection"; } }
-        public string Description { get { return RubberduckUI.OptionBase; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.OptionBase; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var options = parseResult.Declarations.Items
-                .Where(declaration => !declaration.IsBuiltIn
-                                      && declaration.DeclarationType == DeclarationType.ModuleOption
+            var options = UserDeclarations
+                .Where(declaration => declaration.DeclarationType == DeclarationType.ModuleOption
                                       && declaration.Context is VBAParser.OptionBaseStmtContext)
                 .ToList();
 
@@ -36,8 +30,8 @@ namespace Rubberduck.Inspections
                 return new List<CodeInspectionResultBase>();
             }
 
-            var issues = options.Where(option => ((VBAParser.OptionBaseStmtContext)option.Context).INTEGERLITERAL().GetText() == "1")
-                                .Select(issue => new OptionBaseInspectionResult(Description, Severity, issue.QualifiedName.QualifiedModuleName));
+            var issues = options.Where(option => ((VBAParser.OptionBaseStmtContext)option.Context).SHORTLITERAL().GetText() == "1")
+                                .Select(issue => new OptionBaseInspectionResult(this, issue.QualifiedName.QualifiedModuleName));
 
             return issues;
         }

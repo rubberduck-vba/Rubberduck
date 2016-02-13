@@ -1,25 +1,26 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class ParameterCanBeByValInspection : IInspection
+    public sealed class ParameterCanBeByValInspection : InspectionBase
     {
-        public ParameterCanBeByValInspection()
+        public ParameterCanBeByValInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { { return "ParameterCanBeByValInspection"; } } }
-        public string Description { get { return RubberduckUI.ParameterCanBeByVal_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ParameterCanBeByVal_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        private static string[] PrimitiveTypes =
+        // if we don't want to suggest passing non-primitive types ByRef (i.e. object types and Variant), then we need this:
+        private static readonly string[] PrimitiveTypes =
         {
             Tokens.Boolean,
             Tokens.Byte,
@@ -35,43 +36,88 @@ namespace Rubberduck.Inspections
             Tokens.StrPtr
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var interfaceMembers = parseResult.Declarations.FindInterfaceMembers()
-                .Concat(parseResult.Declarations.FindInterfaceImplementationMembers())
+            var declarations = UserDeclarations.ToList();
+
+            var interfaceMembers = declarations.FindInterfaceMembers()
+                .Concat(declarations.FindInterfaceImplementationMembers())
                 .ToList();
 
-            var formEventHandlerScopes = parseResult.Declarations.FindFormEventHandlers()
+            var formEventHandlerScopes = declarations.FindFormEventHandlers()
                 .Select(handler => handler.Scope);
 
-            var eventScopes = parseResult.Declarations.Items.Where(item => 
+            var eventScopes = declarations.Where(item => 
                 !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event)
                 .Select(e => e.Scope);
 
-            var declareScopes = parseResult.Declarations.Items.Where(item => 
+            var declareScopes = declarations.Where(item => 
                     item.DeclarationType == DeclarationType.LibraryFunction 
                     || item.DeclarationType == DeclarationType.LibraryProcedure)
                 .Select(e => e.Scope);
 
             var ignoredScopes = formEventHandlerScopes.Concat(eventScopes).Concat(declareScopes);
 
-            var issues = parseResult.Declarations.Items.Where(declaration =>
+            var issues = declarations.Where(declaration =>
                 !ignoredScopes.Contains(declaration.ParentScope)
                 && declaration.DeclarationType == DeclarationType.Parameter
                 && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
-                && PrimitiveTypes.Contains(declaration.AsTypeName)
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
-                && !IsUsedAsByRefParam(parseResult.Declarations, declaration)
+                && !IsUsedAsByRefParam(declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(string.Format(Description, issue.IdentifierName), Severity, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName));
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, string.Format(Description, issue.IdentifierName), ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName));
 
             return issues;
         }
 
-        private bool IsUsedAsByRefParam(Declarations declarations, Declaration parameter)
+        private static bool IsUsedAsByRefParam(IEnumerable<Declaration> declarations, Declaration parameter)
         {
-            // todo: enable tracking parameter references 
-            // by linking Parameter declarations to their parent Procedure/Function/Property member.
+            // find the procedure calls in the procedure of the parameter.
+            // note: works harder than it needs to when procedure has more than a single procedure call...
+            //       ...but caching [declarations] would be a memory leak
+            var items = declarations as List<Declaration> ?? declarations.ToList();
+
+            var procedureCalls = items.Where(item => item.DeclarationType.HasFlag(DeclarationType.Member))
+                .SelectMany(member => member.References.Where(reference => reference.ParentScope == parameter.ParentScope))
+                .GroupBy(call => call.Declaration)
+                .ToList(); // only check a procedure once. its declaration doesn't change if it's called 20 times anyway.
+
+            foreach (var item in procedureCalls)
+            {
+                var calledProcedureArgs = items
+                    .Where(arg => arg.DeclarationType == DeclarationType.Parameter && arg.ParentScope == item.Key.Scope)
+                    .OrderBy(arg => arg.Selection.StartLine)
+                    .ThenBy(arg => arg.Selection.StartColumn)
+                    .ToArray();
+
+                for (var i = 0; i < calledProcedureArgs.Count(); i++)
+                {
+                    if (((VBAParser.ArgContext) calledProcedureArgs[i].Context).BYVAL() != null)
+                    {
+                        continue;
+                    }
+
+                    foreach (var reference in item)
+                    {
+                        if (reference.Context.Parent is VBAParser.ICS_S_VariableOrProcedureCallContext)
+                        {
+                            // parameterless call (what's this doing here?)
+                            continue;
+                        }
+
+                        var context = ((dynamic)reference.Context.Parent).argsCall() as VBAParser.ArgsCallContext;
+                        if (context == null)
+                        {
+                            continue;
+                        }
+                        if (parameter.IdentifierName == context.GetText())
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
             return false;
         }
     }

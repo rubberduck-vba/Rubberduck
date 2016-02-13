@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+using System.Windows.Input;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
@@ -12,7 +12,5 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override string Key { get { return "RubberduckMenu_RegexSearchReplace"; } }
         public override int DisplayOrder { get { return (int)NavigationMenuItemDisplayOrder.RegexSearchReplace; } }
-
-        public override bool BeginGroup { get { return true; } }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -10,13 +11,14 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public IdentifierNotAssignedInspectionResult(string inspection, CodeInspectionSeverity type,
+        public IdentifierNotAssignedInspectionResult(IInspection inspection, Declaration target,
             ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, type, context, qualifiedName)
+            : base(inspection, target, context, qualifiedName)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new RemoveUnassignedIdentifierQuickFix(Context, QualifiedSelection), 
+                new IgnoreOnceQuickFix(context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

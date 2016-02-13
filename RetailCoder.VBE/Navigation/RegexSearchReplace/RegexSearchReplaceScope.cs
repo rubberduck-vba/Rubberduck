@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Navigation.RegexSearchReplace
+namespace Rubberduck.Navigation.RegexSearchReplace
 {
     public enum RegexSearchReplaceScope
     {

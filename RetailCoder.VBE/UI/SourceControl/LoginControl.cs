@@ -14,14 +14,14 @@ namespace Rubberduck.UI.SourceControl
 
         public string Username
         {
-            get { return this.UsernameBox.Text; }
-            set { this.UsernameBox.Text = value; }
+            get { return UsernameBox.Text; }
+            set { UsernameBox.Text = value; }
         }
 
         public string Password
         {
-            get { return this.PasswordBox.Text; }
-            set { this.PasswordBox.Text = value; }
+            get { return PasswordBox.Text; }
+            set { PasswordBox.Text = value; }
         }
 
         public event EventHandler Confirm;

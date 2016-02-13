@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBA;
 using Rubberduck.VBEditor;
@@ -11,8 +12,8 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public MultilineParameterInspectionResult(string inspection, CodeInspectionSeverity severity, ParserRuleContext context, QualifiedMemberName qualifiedName)
-            : base(inspection, severity, qualifiedName.QualifiedModuleName, context)
+        public MultilineParameterInspectionResult(IInspection inspection, string result, ParserRuleContext context, QualifiedMemberName qualifiedName)
+            : base(inspection, result, qualifiedName.QualifiedModuleName, context)
         {
             _quickFixes = new[]
             {
@@ -46,7 +47,7 @@ namespace Rubberduck.Inspections
             var parameter = lines.Substring(adjustedStartColumn,
                 adjustedEndColumn - adjustedStartColumn)
                 .Replace("_", "")
-                .RemoveExtraSpaces();
+                .RemoveExtraSpacesLeavingIndentation();
 
             var start = startLine.Remove(adjustedStartColumn);
             var end = lines.Remove(0, adjustedEndColumn);

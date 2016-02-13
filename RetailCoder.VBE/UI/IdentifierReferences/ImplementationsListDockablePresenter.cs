@@ -8,7 +8,7 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.IdentifierReferences
 {
-    public class ImplementationsListDockablePresenter : DockablePresenterBase
+    public class ImplementationsListDockablePresenter : DockableToolwindowPresenter
     {
         private static ICodePaneWrapperFactory _wrapperFactory;
 

@@ -11,12 +11,13 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public VariableTypeNotDeclaredInspectionResult(string inspection, CodeInspectionSeverity type, ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, type, qualifiedName, context)
+        public VariableTypeNotDeclaredInspectionResult(IInspection inspection, string result, ParserRuleContext context, QualifiedModuleName qualifiedName)
+            : base(inspection, result, qualifiedName, context)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new DeclareAsExplicitVariantQuickFix(Context, QualifiedSelection), 
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 
@@ -37,7 +38,8 @@ namespace Rubberduck.Inspections
 
             // methods return empty string if soft-cast context is null - just concat results:
             string originalInstruction;
-            var fix = DeclareExplicitVariant(Context.Parent as VBAParser.VariableSubStmtContext, out originalInstruction);
+            
+            var fix = DeclareExplicitVariant(Context as VBAParser.VariableSubStmtContext, out originalInstruction);
 
             if (string.IsNullOrEmpty(originalInstruction))
             {
@@ -46,7 +48,12 @@ namespace Rubberduck.Inspections
 
             if (string.IsNullOrEmpty(originalInstruction))
             {
-                fix = DeclareExplicitVariant(Context.Parent as VBAParser.ArgContext, out originalInstruction);
+                fix = DeclareExplicitVariant(Context as VBAParser.ArgContext, out originalInstruction);
+            }
+
+            if (string.IsNullOrEmpty(originalInstruction))
+            {
+                return;
             }
 
             var fixedCodeLine = codeLine.Replace(originalInstruction, fix);

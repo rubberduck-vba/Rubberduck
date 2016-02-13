@@ -1,10 +1,11 @@
-﻿using System.Linq;
+using System.Linq;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -21,15 +22,17 @@ End Function";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new NonReturningFunctionInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            var inspection = new NonReturningFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -46,15 +49,17 @@ End Function";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new NonReturningFunctionInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            var inspection = new NonReturningFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(2, inspectionResults.Count());
         }
@@ -69,15 +74,17 @@ End Function";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new NonReturningFunctionInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            var inspection = new NonReturningFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -95,15 +102,17 @@ End Function";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new NonReturningFunctionInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            var inspection = new NonReturningFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -126,13 +135,18 @@ End Function";
             var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
                 .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
-                .Build().Object;
+                .Build();
+            var vbe = builder.AddProject(project).Build();
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            var inspection = new NonReturningFunctionInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new NonReturningFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -150,16 +164,19 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new NonReturningFunctionInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            var inspection = new NonReturningFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.First().Fix();
 
@@ -184,13 +201,18 @@ End Function";
             var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
                 .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
-                .Build().Object;
+                .Build();
+            var vbe = builder.AddProject(project).Build();
 
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            var inspection = new NonReturningFunctionInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new NonReturningFunctionInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.First().QuickFixes.Count());
         }
@@ -198,7 +220,7 @@ End Function";
         [TestMethod]
         public void InspectionType()
         {
-            var inspection = new NonReturningFunctionInspection();
+            var inspection = new NonReturningFunctionInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
@@ -206,7 +228,7 @@ End Function";
         public void InspectionName()
         {
             const string inspectionName = "NonReturningFunctionInspection";
-            var inspection = new NonReturningFunctionInspection();
+            var inspection = new NonReturningFunctionInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

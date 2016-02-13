@@ -340,6 +340,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Display style.
+        /// </summary>
+        public static string CodeExplorer_DisplayModeToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_DisplayModeToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display full &amp;signatures.
         /// </summary>
         public static string CodeExplorer_DisplaySignaturesText {
@@ -390,6 +399,15 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_New {
             get {
                 return ResourceManager.GetString("CodeExplorer_New", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a component to the active project.
+        /// </summary>
+        public static string CodeExplorer_NewToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_NewToolTip", resourceCulture);
             }
         }
         
@@ -882,12 +900,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        ///   Looks up a localized string similar to Deselect All.
         /// </summary>
-        public static System.Drawing.Icon Ducky {
+        public static string DeselectAll_Button {
             get {
-                object obj = ResourceManager.GetObject("Ducky", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                return ResourceManager.GetString("DeselectAll_Button", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable this inspection.
+        /// </summary>
+        public static string DisableThisInspection {
+            get {
+                return ResourceManager.GetString("DisableThisInspection", resourceCulture);
             }
         }
         
@@ -897,6 +923,105 @@ namespace Rubberduck.UI {
         public static string EasterEgg_Continuator {
             get {
                 return ResourceManager.GetString("EasterEgg_Continuator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Encapsulate Field.
+        /// </summary>
+        public static string EncapsulateField_Caption {
+            get {
+                return ResourceManager.GetString("EncapsulateField_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify property name, parameter accessibility, and setter type..
+        /// </summary>
+        public static string EncapsulateField_InstructionText {
+            get {
+                return ResourceManager.GetString("EncapsulateField_InstructionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter Name:.
+        /// </summary>
+        public static string EncapsulateField_ParameterName {
+            get {
+                return ResourceManager.GetString("EncapsulateField_ParameterName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview:.
+        /// </summary>
+        public static string EncapsulateField_Preview {
+            get {
+                return ResourceManager.GetString("EncapsulateField_Preview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property Name:.
+        /// </summary>
+        public static string EncapsulateField_PropertyName {
+            get {
+                return ResourceManager.GetString("EncapsulateField_PropertyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setter Type:.
+        /// </summary>
+        public static string EncapsulateField_SetterType {
+            get {
+                return ResourceManager.GetString("EncapsulateField_SetterType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Encapsulate Field.
+        /// </summary>
+        public static string EncapsulateField_TitleText {
+            get {
+                return ResourceManager.GetString("EncapsulateField_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Extract Interface.
+        /// </summary>
+        public static string ExtractInterface_Caption {
+            get {
+                return ResourceManager.GetString("ExtractInterface_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify interface name and members..
+        /// </summary>
+        public static string ExtractInterface_InstructionLabel {
+            get {
+                return ResourceManager.GetString("ExtractInterface_InstructionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Members.
+        /// </summary>
+        public static string ExtractInterface_MembersGroupBox {
+            get {
+                return ResourceManager.GetString("ExtractInterface_MembersGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract Interface.
+        /// </summary>
+        public static string ExtractInterface_TitleLabel {
+            get {
+                return ResourceManager.GetString("ExtractInterface_TitleLabel", resourceCulture);
             }
         }
         
@@ -991,6 +1116,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Find symbol.
+        /// </summary>
+        public static string FindSymbolDialog_Caption {
+            get {
+                return ResourceManager.GetString("FindSymbolDialog_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fix.
         /// </summary>
         public static string Fix {
@@ -1045,6 +1179,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Implement Interface.
+        /// </summary>
+        public static string ImplementInterface_Caption {
+            get {
+                return ResourceManager.GetString("ImplementInterface_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The current selection is not valid..
+        /// </summary>
+        public static string ImplementInterface_InvalidSelectionMessage {
+            get {
+                return ResourceManager.GetString("ImplementInterface_InvalidSelectionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is an implicit reference to the active worksheet.
+        /// </summary>
+        public static string ImplicitActiveSheetReference_ {
+            get {
+                return ResourceManager.GetString("ImplicitActiveSheetReference_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is an implicit reference to the active workbook.
+        /// </summary>
+        public static string ImplicitActiveWorkbookReference_ {
+            get {
+                return ResourceManager.GetString("ImplicitActiveWorkbookReference_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is passed ByRef implicitly.
         /// </summary>
         public static string ImplicitByRef_ {
@@ -1068,6 +1238,33 @@ namespace Rubberduck.UI {
         public static string ImplicitVariantReturnType_ {
             get {
                 return ResourceManager.GetString("ImplicitVariantReturnType_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current module.
+        /// </summary>
+        public static string IndentCurrentModule {
+            get {
+                return ResourceManager.GetString("IndentCurrentModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current procedure.
+        /// </summary>
+        public static string IndentCurrentProcedure {
+            get {
+                return ResourceManager.GetString("IndentCurrentProcedure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Entire project.
+        /// </summary>
+        public static string IndentCurrentProject {
+            get {
+                return ResourceManager.GetString("IndentCurrentProject", resourceCulture);
             }
         }
         
@@ -1243,6 +1440,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Specify &apos;Option Explicit&apos;.
+        /// </summary>
+        public static string Inspections_SpecifyOptionExplicit {
+            get {
+                return ResourceManager.GetString("Inspections_SpecifyOptionExplicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specify Public access modifier explicitly.
         /// </summary>
         public static string Inspections_SpecifyPublicModifierExplicitly {
@@ -1275,6 +1481,33 @@ namespace Rubberduck.UI {
         public static string Inspections_UsageOf {
             get {
                 return ResourceManager.GetString("Inspections_UsageOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Introduce Field.
+        /// </summary>
+        public static string IntroduceField_Caption {
+            get {
+                return ResourceManager.GetString("IntroduceField_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Introduce Parameter.
+        /// </summary>
+        public static string IntroduceParameter_Caption {
+            get {
+                return ResourceManager.GetString("IntroduceParameter_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (Will propagate to all implementations.).
+        /// </summary>
+        public static string IntroduceParameter_PromptIfTargetIsInterface {
+            get {
+                return ResourceManager.GetString("IntroduceParameter_PromptIfTargetIsInterface", resourceCulture);
             }
         }
         
@@ -1351,6 +1584,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Make ActiveSheet reference explicit.
+        /// </summary>
+        public static string MakeActiveSheetReferenceExplicit {
+            get {
+                return ResourceManager.GetString("MakeActiveSheetReferenceExplicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make ActiveWorkbook reference explicit.
+        /// </summary>
+        public static string MakeActiveWorkbookReferenceExplicit {
+            get {
+                return ResourceManager.GetString("MakeActiveWorkbookReferenceExplicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Module Name.
         /// </summary>
         public static string ModuleName {
@@ -1365,6 +1616,42 @@ namespace Rubberduck.UI {
         public static string ModuleOptionsNotSpecifiedFirst {
             get {
                 return ResourceManager.GetString("ModuleOptionsNotSpecifiedFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Move Closer To Usage.
+        /// </summary>
+        public static string MoveCloserToUsage_Caption {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Selection..
+        /// </summary>
+        public static string MoveCloserToUsage_InvalidSelection {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_InvalidSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; has no references..
+        /// </summary>
+        public static string MoveCloserToUsage_TargetHasNoReferences {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_TargetHasNoReferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; has references in multiple methods..
+        /// </summary>
+        public static string MoveCloserToUsage_TargetIsUsedInMultipleMethods {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_TargetIsUsedInMultipleMethods", resourceCulture);
             }
         }
         
@@ -1531,7 +1818,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Option Explicit is not specified.
+        ///   Looks up a localized string similar to Option Explicit is not specified in &apos;{0}&apos;.
         /// </summary>
         public static string OptionExplicit {
             get {
@@ -1590,6 +1877,15 @@ namespace Rubberduck.UI {
         public static string ParseProgress {
             get {
                 return ResourceManager.GetString("ParseProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Details.
+        /// </summary>
+        public static string ParserProgress_ShowDetails {
+            get {
+                return ResourceManager.GetString("ParserProgress_ShowDetails", resourceCulture);
             }
         }
         
@@ -1666,6 +1962,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selection is not a variable..
+        /// </summary>
+        public static string PromoteVariable_InvalidSelection {
+            get {
+                return ResourceManager.GetString("PromoteVariable_InvalidSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}
         ///{1}
         ///
@@ -1681,11 +1986,56 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (will propagate to all implementations).
+        ///   Looks up a localized string similar to Fix all occurrences in module.
+        /// </summary>
+        public static string QuickFix_ThisModule {
+            get {
+                return ResourceManager.GetString("QuickFix_ThisModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fix all occurrences in project.
+        /// </summary>
+        public static string QuickFix_ThisProject {
+            get {
+                return ResourceManager.GetString("QuickFix_ThisProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use &apos;{0}$&apos; instead of &apos;{0}&apos;..
+        /// </summary>
+        public static string QuickFixUseTypedFunction_ {
+            get {
+                return ResourceManager.GetString("QuickFixUseTypedFunction_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (Will propagate to all implementations.).
         /// </summary>
         public static string Refactoring_TargetIsInterfaceMemberImplementation {
             get {
                 return ResourceManager.GetString("Refactoring_TargetIsInterfaceMemberImplementation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Encapsulate Field.
+        /// </summary>
+        public static string RefactorMenu_EncapsulateField {
+            get {
+                return ResourceManager.GetString("RefactorMenu_EncapsulateField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E&amp;xtract Interface.
+        /// </summary>
+        public static string RefactorMenu_ExtractInterface {
+            get {
+                return ResourceManager.GetString("RefactorMenu_ExtractInterface", resourceCulture);
             }
         }
         
@@ -1695,6 +2045,42 @@ namespace Rubberduck.UI {
         public static string RefactorMenu_ExtractMethod {
             get {
                 return ResourceManager.GetString("RefactorMenu_ExtractMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implement Interface.
+        /// </summary>
+        public static string RefactorMenu_ImplementInterface {
+            get {
+                return ResourceManager.GetString("RefactorMenu_ImplementInterface", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Introduce &amp;Field.
+        /// </summary>
+        public static string RefactorMenu_IntroduceField {
+            get {
+                return ResourceManager.GetString("RefactorMenu_IntroduceField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Introduce Parameter.
+        /// </summary>
+        public static string RefactorMenu_IntroduceParameter {
+            get {
+                return ResourceManager.GetString("RefactorMenu_IntroduceParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move Closer To &amp;Usage.
+        /// </summary>
+        public static string RefactorMenu_MoveCloserToUsage {
+            get {
+                return ResourceManager.GetString("RefactorMenu_MoveCloserToUsage", resourceCulture);
             }
         }
         
@@ -1717,7 +2103,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reorder &amp;Parameters.
+        ///   Looks up a localized string similar to Re&amp;order Parameters.
         /// </summary>
         public static string RefactorMenu_ReorderParameters {
             get {
@@ -2060,7 +2446,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Resolving &apos;{0}&apos;....
+        ///   Looks up a localized string similar to Resolving....
         /// </summary>
         public static string ResolutionProgress {
             get {
@@ -2213,6 +2599,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select All.
+        /// </summary>
+        public static string SelectAll_Button {
+            get {
+                return ResourceManager.GetString("SelectAll_Button", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck Settings.
         /// </summary>
         public static string Settings_Caption {
@@ -2312,7 +2707,16 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attributes File.
+        ///   Looks up a localized string similar to Indent.
+        /// </summary>
+        public static string SmartIndenterMenu {
+            get {
+                return ResourceManager.GetString("SmartIndenterMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;.gitattributes&apos; File.
         /// </summary>
         public static string SourceControl_AttributesFile {
             get {
@@ -2447,6 +2851,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete branch.
+        /// </summary>
+        public static string SourceControl_DeleteBranchButton {
+            get {
+                return ResourceManager.GetString("SourceControl_DeleteBranchButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Delete Branch.
         /// </summary>
         public static string SourceControl_DeleteBranchCaption {
@@ -2519,7 +2932,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ignore File.
+        ///   Looks up a localized string similar to &apos;.gitignore&apos; File.
         /// </summary>
         public static string SourceControl_IgnoreFile {
             get {
@@ -3005,7 +3418,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BUG:.
+        ///   Looks up a localized string similar to BUG .
         /// </summary>
         public static string ToDoMarkerBug {
             get {
@@ -3014,7 +3427,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NOTE:.
+        ///   Looks up a localized string similar to NOTE .
         /// </summary>
         public static string ToDoMarkerNote {
             get {
@@ -3023,7 +3436,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TODO:.
+        ///   Looks up a localized string similar to TODO .
         /// </summary>
         public static string ToDoMarkerToDo {
             get {
@@ -3140,6 +3553,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use of untyped function &apos;{0}&apos;. String-returning version &apos;{0}$&apos; is available..
+        /// </summary>
+        public static string UntypedFunctionUsage_ {
+            get {
+                return ResourceManager.GetString("UntypedFunctionUsage_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable &apos;{0}&apos; is never assigned.
         /// </summary>
         public static string VariableNotAssigned_ {
@@ -3163,6 +3585,15 @@ namespace Rubberduck.UI {
         public static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property &apos;{0}&apos; has no getter..
+        /// </summary>
+        public static string WriteOnlyProperty_ {
+            get {
+                return ResourceManager.GetString("WriteOnlyProperty_", resourceCulture);
             }
         }
     }

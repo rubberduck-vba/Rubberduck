@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.Parsing;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -10,21 +11,21 @@ namespace Rubberduck.Refactorings.RemoveParameters
 {
     public class RemoveParametersModel
     {
-        private readonly VBProjectParseResult _parseResult;
-        public VBProjectParseResult ParseResult { get { return _parseResult; } }
+        private readonly RubberduckParserState _parseResult;
+        public RubberduckParserState ParseResult { get { return _parseResult; } }
 
-        private readonly Declarations _declarations;
-        public Declarations Declarations { get { return _declarations; } }
+        private readonly IList<Declaration> _declarations;
+        public IEnumerable<Declaration> Declarations { get { return _declarations; } }
 
         public Declaration TargetDeclaration { get; private set; }
         public List<Parameter> Parameters { get; set; }
 
         private readonly IMessageBox _messageBox;
 
-        public RemoveParametersModel(VBProjectParseResult parseResult, QualifiedSelection selection, IMessageBox messageBox)
+        public RemoveParametersModel(RubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {
             _parseResult = parseResult;
-            _declarations = parseResult.Declarations;
+            _declarations = parseResult.AllDeclarations.ToList();
             _messageBox = messageBox;
 
             AcquireTarget(selection);
@@ -35,8 +36,9 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private void AcquireTarget(QualifiedSelection selection)
         {
-            TargetDeclaration = Declarations.FindSelection(selection, ValidDeclarationTypes);
+            TargetDeclaration = Declarations.FindTarget(selection, ValidDeclarationTypes);
             TargetDeclaration = PromptIfTargetImplementsInterface();
+            TargetDeclaration = GetEvent();
             TargetDeclaration = GetGetter();
         }
 
@@ -63,8 +65,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 TargetDeclaration.Context.Stop.Line,
                 TargetDeclaration.Context.Stop.Column);
 
-            return Declarations.Items
-                              .Where(d => d.DeclarationType == DeclarationType.Parameter
+            return Declarations.Where(d => d.DeclarationType == DeclarationType.Parameter
                                        && d.ComponentName == TargetDeclaration.ComponentName
                                        && d.Project.Equals(TargetDeclaration.Project)
                                        && targetSelection.Contains(d.Selection))
@@ -98,6 +99,18 @@ namespace Rubberduck.Refactorings.RemoveParameters
             return confirm == DialogResult.No ? null : interfaceMember;
         }
 
+        private Declaration GetEvent()
+        {
+            foreach (var events in Declarations.Where(item => item.DeclarationType == DeclarationType.Event))
+            {
+                if (Declarations.FindHandlersForEvent(events).Any(reference => Equals(reference.Item2, TargetDeclaration)))
+                {
+                    return events;
+                }
+            }
+            return TargetDeclaration;
+        }
+
         private Declaration GetGetter()
         {
             if (TargetDeclaration == null) { return null; }
@@ -108,7 +121,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 return TargetDeclaration;
             }
 
-            var getter = _declarations.Items.FirstOrDefault(item => item.Scope == TargetDeclaration.Scope &&
+            var getter = Declarations.FirstOrDefault(item => item.Scope == TargetDeclaration.Scope &&
                                           item.IdentifierName == TargetDeclaration.IdentifierName &&
                                           item.DeclarationType == DeclarationType.PropertyGet);
 

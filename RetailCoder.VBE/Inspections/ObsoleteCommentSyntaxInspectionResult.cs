@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBA;
 using Rubberduck.VBEditor;
@@ -13,13 +14,14 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ObsoleteCommentSyntaxInspectionResult(string inspection, CodeInspectionSeverity type, CommentNode comment) 
-            : base(inspection, type, comment)
+        public ObsoleteCommentSyntaxInspectionResult(IInspection inspection, CommentNode comment) 
+            : base(inspection, inspection.Description, comment)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new ReplaceCommentMarkerQuickFix(Context, QualifiedSelection, comment),
                 new RemoveCommentQuickFix(Context, QualifiedSelection, comment), 
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

@@ -10,13 +10,14 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public UnassignedVariableUsageInspectionResult(string inspection, CodeInspectionSeverity type,
+        public UnassignedVariableUsageInspectionResult(IInspection inspection, string result, 
             ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, type, qualifiedName, context)
+            : base(inspection, result, qualifiedName, context)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                new RemoveUnassignedVariableUsageQuickFix(Context, QualifiedSelection)
+                new RemoveUnassignedVariableUsageQuickFix(Context, QualifiedSelection),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

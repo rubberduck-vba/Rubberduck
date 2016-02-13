@@ -17,9 +17,9 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
             get { return _codePane.TopLine; } 
             set { _codePane.TopLine = value; }
         }
-        public int CountOfVisibleLines { get { return _codePane.CountOfVisibleLines; } }
-        public CodeModule CodeModule { get { return _codePane.CodeModule; } }
-        public vbext_CodePaneview CodePaneView { get { return _codePane.CodePaneView; } }
+        public int CountOfVisibleLines { get { return _codePane == null ? 0 : _codePane.CountOfVisibleLines; } }
+        public CodeModule CodeModule { get { return _codePane == null ? null : _codePane.CodeModule; } }
+        public vbext_CodePaneview CodePaneView { get { return _codePane == null ? vbext_CodePaneview.vbext_cv_FullModuleView : _codePane.CodePaneView; } }
 
         public CodePaneWrapper(CodePane codePane)
         {
@@ -42,8 +42,6 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
             _codePane.Show();
         }
 
-        /// <summary>   A CodePane extension method that gets the current selection. </summary>
-        /// <returns>   The selection. </returns>
         public Selection Selection
         {
             get
@@ -82,7 +80,7 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
             if (endLine > startLine && endColumn == 1)
             {
                 endLine--;
-                endColumn = CodeModule.Lines[endLine, 1].Length;
+                endColumn = CodeModule.get_Lines(endLine, 1).Length;
             }
 
             return new Selection(startLine, startColumn, endLine, endColumn);
@@ -97,10 +95,18 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
         /// <summary>   A CodePane extension method that forces focus onto the CodePane. This patches a bug in VBE.Interop.</summary>
         public void ForceFocus()
         {
-            Show();
+            _codePane.ForceFocus();
+        }
+    }
 
-            var mainWindowHandle = VBE.MainWindow.Handle();
-            var childWindowFinder = new NativeWindowMethods.ChildWindowFinder(Window.Caption);
+    public static class CodePaneExtensions
+    {
+        public static void ForceFocus(this CodePane pane)
+        {
+            pane.Show();
+
+            var mainWindowHandle = pane.VBE.MainWindow.Handle();
+            var childWindowFinder = new NativeWindowMethods.ChildWindowFinder(pane.Window.Caption);
 
             NativeWindowMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
             var handle = childWindowFinder.ResultHandle;
@@ -110,5 +116,6 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
                 NativeWindowMethods.ActivateWindow(handle, mainWindowHandle);
             }
         }
+
     }
 }

@@ -6,16 +6,25 @@ using System.Windows.Input;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Ninject;
+using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
+using Ninject.Parameters;
 using Rubberduck.Navigation;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.UI.Command.Refactorings;
 
 namespace Rubberduck.Root
 {
     public class CommandBarsModule : NinjectModule
     {
+        private const int MenuBar = 1;
+        private const int CodeWindow = 9;
+        private const int ProjectWindow = 14;
+        private const int MsForms = 17;
+        private const int MsFormsControl = 18;
+
         private readonly IKernel _kernel;
 
         public CommandBarsModule(IKernel kernel)
@@ -37,7 +46,7 @@ namespace Rubberduck.Root
         private void ConfigureRubberduckMenu()
         {
             const int windowMenuId = 30009;
-            var parent = _kernel.Get<VBE>().CommandBars["Menu Bar"].Controls;
+            var parent = _kernel.Get<VBE>().CommandBars[MenuBar].Controls;
             var beforeIndex = FindRubberduckMenuInsertionIndex(parent, windowMenuId);
 
             var items = GetRubberduckMenuItems();
@@ -47,18 +56,20 @@ namespace Rubberduck.Root
         private void ConfigureCodePaneContextMenu()
         {
             const int listMembersMenuId = 2529;
-            var parent = _kernel.Get<VBE>().CommandBars["Code Window"].Controls;
-            var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == listMembersMenuId).Index;
+            var parent = _kernel.Get<VBE>().CommandBars[CodeWindow].Controls;
+            var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == listMembersMenuId);
+            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
 
             var items = GetCodePaneContextMenuItems();
-            BindParentMenuItem<RubberduckParentMenu>(parent, beforeIndex, items);
+            BindParentMenuItem<CodePaneContextParentMenu>(parent, beforeIndex, items);
         }
 
         private void ConfigureFormDesignerContextMenu()
         {
             const int viewCodeMenuId = 2558;
-            var parent = _kernel.Get<VBE>().CommandBars["MSForms"].Controls;
-            var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == viewCodeMenuId).Index;
+            var parent = _kernel.Get<VBE>().CommandBars[MsForms].Controls;
+            var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == viewCodeMenuId);
+            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
 
             var items = GetFormDesignerContextMenuItems();
             BindParentMenuItem<FormDesignerContextParentMenu>(parent, beforeIndex, items);
@@ -67,8 +78,9 @@ namespace Rubberduck.Root
         private void ConfigureFormDesignerControlContextMenu()
         {
             const int viewCodeMenuId = 2558;
-            var parent = _kernel.Get<VBE>().CommandBars["MSForms Control"].Controls;
-            var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == viewCodeMenuId).Index;
+            var parent = _kernel.Get<VBE>().CommandBars[MsFormsControl].Controls;
+            var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == viewCodeMenuId);
+            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
 
             var items = GetFormDesignerContextMenuItems();
             BindParentMenuItem<FormDesignerControlContextParentMenu>(parent, beforeIndex, items);
@@ -77,8 +89,9 @@ namespace Rubberduck.Root
         private void ConfigureProjectExplorerContextMenu()
         {
             const int projectPropertiesMenuId = 2578;
-            var parent = _kernel.Get<VBE>().CommandBars["Project Window"].Controls;
-            var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == projectPropertiesMenuId).Index;
+            var parent = _kernel.Get<VBE>().CommandBars[ProjectWindow].Controls;
+            var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == projectPropertiesMenuId);
+            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
 
             var items = GetProjectWindowContextMenuItems();
             BindParentMenuItem<ProjectWindowContextParentMenu>(parent, beforeIndex, items);
@@ -87,7 +100,8 @@ namespace Rubberduck.Root
         private void BindParentMenuItem<TParentMenu>(CommandBarControls parent, int beforeIndex, IEnumerable<IMenuItem> items)
         {
             _kernel.Bind<IParentMenuItem>().To(typeof(TParentMenu))
-                .InSingletonScope()
+                .WhenInjectedInto<IAppMenu>()
+                .InCallScope()
                 .WithConstructorArgument("items", items)
                 .WithConstructorArgument("beforeIndex", beforeIndex)
                 .WithPropertyValue("Parent", parent);
@@ -108,16 +122,16 @@ namespace Rubberduck.Root
 
         private void BindCommandsToMenuItems()
         {
-            //_kernel.Bind<ICommand>().To<NavigateCommand>().InSingletonScope();
-            _kernel.Bind<IDeclarationNavigator>().To<NavigateAllImplementations>().WhenTargetHas<FindImplementationsAttribute>().InSingletonScope();
-            _kernel.Bind<IDeclarationNavigator>().To<NavigateAllReferences>().WhenTargetHas<FindReferencesAttribute>().InSingletonScope();
+            _kernel.Bind<IDeclarationNavigator>().To<NavigateAllImplementations>().WhenTargetHas<FindImplementationsAttribute>();
+            _kernel.Bind<IDeclarationNavigator>().To<NavigateAllReferences>().WhenTargetHas<FindReferencesAttribute>();
 
             var types = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(type => type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty))
+                .Where(type => type.IsClass && type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty))
                 .ToList();
 
             // note: ICommand naming convention: [Foo]Command
-            var commands = types.Where(type => type.IsClass && type.BaseType == typeof(CommandBase) && type.Name.EndsWith("Command"));
+            var baseCommandTypes = new[] {typeof (CommandBase), typeof (RefactorCommandBase)};
+            var commands = types.Where(type => type.IsClass && baseCommandTypes.Contains(type.BaseType) && type.Name.EndsWith("Command"));
             foreach (var command in commands)
             {
                 var commandName = command.Name.Substring(0, command.Name.Length - "Command".Length);
@@ -127,8 +141,7 @@ namespace Rubberduck.Root
                     var item = types.SingleOrDefault(type => type.Name == commandName + "CommandMenuItem");
                     if (item != null)
                     {
-                        _kernel.Bind(item).ToSelf().InSingletonScope();
-                        _kernel.Bind<ICommand>().To(command).WhenInjectedInto(item).InSingletonScope();
+                        _kernel.Bind<ICommand>().To(command).WhenInjectedExactlyInto(item).InSingletonScope();
                     }
                 }
                 catch (InvalidOperationException exception)
@@ -143,10 +156,11 @@ namespace Rubberduck.Root
             return new IMenuItem[]
             {
                 _kernel.Get<AboutCommandMenuItem>(),
-                _kernel.Get<OptionsCommandMenuItem>(), 
+                _kernel.Get<OptionsCommandMenuItem>(),
                 _kernel.Get<RunCodeInspectionsCommandMenuItem>(),
-                _kernel.Get<ShowSourceControlPanelCommandMenuItem>(), 
+                _kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
                 GetUnitTestingParentMenu(),
+                GetSmartIndenterParentMenu(),
                 GetRefactoringsParentMenu(),
                 GetNavigateParentMenu(),
             };
@@ -156,13 +170,12 @@ namespace Rubberduck.Root
         {
             var items = new IMenuItem[]
             {
-                _kernel.Get<RunAllTestsCommandMenuItem>(), 
-                _kernel.Get<TestExplorerCommandMenuItem>(), 
+                _kernel.Get<RunAllTestsCommandMenuItem>(),
+                _kernel.Get<TestExplorerCommandMenuItem>(),
                 _kernel.Get<AddTestModuleCommandMenuItem>(),
                 _kernel.Get<AddTestMethodCommandMenuItem>(),
                 _kernel.Get<AddTestMethodExpectedErrorCommandMenuItem>(),
             };
-
             return new UnitTestingParentMenu(items);
         }
 
@@ -170,12 +183,17 @@ namespace Rubberduck.Root
         {
             var items = new IMenuItem[]
             {
-                _kernel.Get<RefactorRenameCommandMenuItem>(), 
-                _kernel.Get<RefactorExtractMethodCommandMenuItem>(), 
-                _kernel.Get<RefactorReorderParametersCommandMenuItem>(), 
-                _kernel.Get<RefactorRemoveParametersCommandMenuItem>(), 
+                _kernel.Get<CodePaneRefactorRenameCommandMenuItem>(),
+                _kernel.Get<RefactorExtractMethodCommandMenuItem>(),
+                _kernel.Get<RefactorReorderParametersCommandMenuItem>(),
+                _kernel.Get<RefactorRemoveParametersCommandMenuItem>(),
+                _kernel.Get<RefactorIntroduceParameterCommandMenuItem>(),
+                _kernel.Get<RefactorIntroduceFieldCommandMenuItem>(),
+                _kernel.Get<RefactorEncapsulateFieldCommandMenuItem>(),
+                _kernel.Get<RefactorMoveCloserToUsageCommandMenuItem>(),
+                _kernel.Get<RefactorExtractInterfaceCommandMenuItem>(),
+                _kernel.Get<RefactorImplementInterfaceCommandMenuItem>()
             };
-
             return new RefactoringsParentMenu(items);
         }
 
@@ -185,6 +203,7 @@ namespace Rubberduck.Root
             {
                 _kernel.Get<CodeExplorerCommandMenuItem>(),
                 _kernel.Get<ToDoExplorerCommandMenuItem>(),
+                _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
                 _kernel.Get<FindSymbolCommandMenuItem>(),
                 _kernel.Get<FindAllReferencesCommandMenuItem>(),
                 _kernel.Get<FindAllImplementationsCommandMenuItem>(),
@@ -193,11 +212,24 @@ namespace Rubberduck.Root
             return new NavigateParentMenu(items);
         }
 
+        private IMenuItem GetSmartIndenterParentMenu()
+        {
+            var items = new IMenuItem[]
+            {
+                _kernel.Get<IndentCurrentProcedureCommandMenuItem>(),
+                _kernel.Get<IndentCurrentModuleCommandMenuItem>()
+            };
+
+            return new SmartIndenterParentMenu(items);
+        }
+
         private IEnumerable<IMenuItem> GetCodePaneContextMenuItems()
         {
             return new IMenuItem[]
             {
                 GetRefactoringsParentMenu(),
+                GetSmartIndenterParentMenu(),
+                _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
                 _kernel.Get<FindSymbolCommandMenuItem>(),
                 _kernel.Get<FindAllReferencesCommandMenuItem>(),
                 _kernel.Get<FindAllImplementationsCommandMenuItem>(),
@@ -208,7 +240,7 @@ namespace Rubberduck.Root
         {
             return new IMenuItem[]
             {
-                _kernel.Get<RefactorRenameCommandMenuItem>(), 
+                _kernel.Get<FormDesignerRefactorRenameCommandMenuItem>(),
             };
         }
 
@@ -216,11 +248,12 @@ namespace Rubberduck.Root
         {
             return new IMenuItem[]
             {
-                _kernel.Get<RefactorRenameCommandMenuItem>(), 
+                _kernel.Get<ProjectExplorerRefactorRenameCommandMenuItem>(),
                 _kernel.Get<FindSymbolCommandMenuItem>(),
                 _kernel.Get<FindAllReferencesCommandMenuItem>(),
                 _kernel.Get<FindAllImplementationsCommandMenuItem>(),
             };
         }
+
     }
 }

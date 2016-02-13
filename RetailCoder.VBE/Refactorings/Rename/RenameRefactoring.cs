@@ -5,9 +5,11 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -18,13 +20,15 @@ namespace Rubberduck.Refactorings.Rename
         private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
         private readonly IActiveCodePaneEditor _editor;
         private readonly IMessageBox _messageBox;
+        private readonly RubberduckParserState _state;
         private RenameModel _model;
 
-        public RenameRefactoring(IRefactoringPresenterFactory<IRenamePresenter> factory, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public RenameRefactoring(IRefactoringPresenterFactory<IRenamePresenter> factory, IActiveCodePaneEditor editor, IMessageBox messageBox, RubberduckParserState state)
         {
             _factory = factory;
             _editor = editor;
             _messageBox = messageBox;
+            _state = state;
         }
 
         public void Refactor()
@@ -55,11 +59,14 @@ namespace Rubberduck.Refactorings.Rename
             }
         }
 
-        private Declaration AmbiguousId()
+        private Declaration FindDeclarationForIdentifier()
         {
-            var values = _model.Declarations.Items.Where(item => (item.Scope.Contains(_model.Target.Scope)
-                                              || _model.Target.ParentScope.Contains(item.ParentScope))
-                                              && _model.NewName == item.IdentifierName).ToList();
+            var values = _model.Declarations.Where(item => 
+                _model.NewName == item.IdentifierName 
+                && ((item.Scope.Contains(_model.Target.Scope)
+                || (item.ParentScope == null && string.IsNullOrEmpty(_model.Target.ParentScope)) 
+                || (item.ParentScope != null && _model.Target.ParentScope.Contains(item.ParentScope))))
+                ).ToList();
 
             if (values.Any())
             {
@@ -69,7 +76,7 @@ namespace Rubberduck.Refactorings.Rename
             foreach (var reference in _model.Target.References)
             {
                 var targetReference = reference;
-                var potentialDeclarations = _model.Declarations.Items.Where(item => !item.IsBuiltIn
+                var potentialDeclarations = _model.Declarations.Where(item => !item.IsBuiltIn
                                                          && item.Project.Equals(targetReference.Declaration.Project)
                                                          && ((item.Context != null
                                                          && item.Context.Start.Line <= targetReference.Selection.StartLine
@@ -99,8 +106,9 @@ namespace Rubberduck.Refactorings.Rename
 
                 if (target == null) { continue; }
 
-                values = _model.Declarations.Items.Where(item => (item.Scope.Contains(target.Scope)
-                                              || target.ParentScope.Contains(item.ParentScope))
+                values = _model.Declarations.Where(item => (item.Scope.Contains(target.Scope)
+                                              || (item.ParentScope == null && string.IsNullOrEmpty(target.ParentScope))
+                                              || (item.ParentScope != null && target.ParentScope.Contains(item.ParentScope)))
                                               && _model.NewName == item.IdentifierName).ToList();
 
                 if (values.Any())
@@ -120,10 +128,10 @@ namespace Rubberduck.Refactorings.Rename
 
         private void Rename()
         {
-            var ambiguousId = AmbiguousId();
-            if (ambiguousId != null)
+            var declaration = FindDeclarationForIdentifier();
+            if (declaration != null)
             {
-                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName, ambiguousId.IdentifierName);
+                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName, declaration.IdentifierName);
                 var rename = _messageBox.Show(message, RubberduckUI.RenameDialog_Caption,
                     MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 
@@ -139,7 +147,7 @@ namespace Rubberduck.Refactorings.Rename
             if (_model.Target.DeclarationType.HasFlag(DeclarationType.Property))
             {
                 // properties can have more than 1 member.
-                var members = _model.Declarations[_model.Target.IdentifierName]
+                var members = _model.Declarations.Named(_model.Target.IdentifierName)
                     .Where(item => item.Project == _model.Target.Project
                         && item.ComponentName == _model.Target.ComponentName
                         && item.DeclarationType.HasFlag(DeclarationType.Property));
@@ -207,6 +215,7 @@ namespace Rubberduck.Refactorings.Rename
                 if (project != null)
                 {
                     project.Name = _model.NewName;
+                    _state.RemoveDeclaration(_model.Target);
                 }
             }
             catch (COMException)
@@ -240,7 +249,7 @@ namespace Rubberduck.Refactorings.Rename
             }
             else
             {
-                var members = _model.Declarations[target.IdentifierName]
+                var members = _model.Declarations.Named(target.IdentifierName)
                     .Where(item => item.Project == target.Project
                         && item.ComponentName == target.ComponentName
                         && item.DeclarationType.HasFlag(DeclarationType.Property));
@@ -351,12 +360,12 @@ namespace Rubberduck.Refactorings.Rename
                 // renaming interface
                 if (grouping.Any(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
                 {
-                    var members = _model.Declarations.FindMembers(target).OrderByDescending(m => m.Selection.StartColumn);
+                    var members = _model.Declarations.InScope(target).OrderByDescending(m => m.Selection.StartColumn);
                     foreach (var member in members)
                     {
                         var oldMemberName = target.IdentifierName + '_' + member.IdentifierName;
                         var newMemberName = _model.NewName + '_' + member.IdentifierName;
-                        var method = _model.Declarations[oldMemberName].SingleOrDefault(m => m.QualifiedName.QualifiedModuleName == grouping.Key);
+                        var method = _model.Declarations.Named(oldMemberName).SingleOrDefault(m => m.QualifiedName.QualifiedModuleName == grouping.Key);
                         if (method == null)
                         {
                             continue;
@@ -378,18 +387,12 @@ namespace Rubberduck.Refactorings.Rename
 
         private string GetReplacementLine(CodeModule module, Declaration target, string newName)
         {
-            var targetModule = _model.ParseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == target.QualifiedName.QualifiedModuleName);
-            if (targetModule == null)
-            {
-                return null;
-            }
-
             var content = module.Lines[target.Selection.StartLine, 1];
 
             if (target.DeclarationType == DeclarationType.Parameter)
             {
                 var argContext = (VBAParser.ArgContext)target.Context;
-                var rewriter = targetModule.GetRewriter();
+                var rewriter = _model.ParseResult.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
                 rewriter.Replace(argContext.ambiguousIdentifier().Start.TokenIndex, _model.NewName);
 
                 // Target.Context is an ArgContext, its parent is an ArgsListContext;

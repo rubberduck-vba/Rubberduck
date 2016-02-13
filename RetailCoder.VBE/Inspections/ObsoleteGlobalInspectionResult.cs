@@ -12,12 +12,13 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ObsoleteGlobalInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<ParserRuleContext> context)
-            : base(inspection, type, context.ModuleName, context.Context)
+        public ObsoleteGlobalInspectionResult(IInspection inspection, string result, QualifiedContext<ParserRuleContext> context)
+            : base(inspection, result, context.ModuleName, context.Context)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                new ReplaceGlobalModifierQuickFix(Context, QualifiedSelection)
+                new ReplaceGlobalModifierQuickFix(Context, QualifiedSelection),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

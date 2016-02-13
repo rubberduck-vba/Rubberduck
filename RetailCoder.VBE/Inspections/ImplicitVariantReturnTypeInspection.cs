@@ -3,21 +3,21 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class ImplicitVariantReturnTypeInspection : IInspection
+    public sealed class ImplicitVariantReturnTypeInspection : InspectionBase
     {
-        public ImplicitVariantReturnTypeInspection()
+        public ImplicitVariantReturnTypeInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "ImplicitVariantReturnTypeInspection"; } }
-        public string Description { get { return RubberduckUI.ImplicitVariantReturnType_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ImplicitVariantReturnType_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         private static readonly DeclarationType[] ProcedureTypes = 
         {
@@ -26,14 +26,14 @@ namespace Rubberduck.Inspections
             DeclarationType.LibraryFunction
         };
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var issues = from item in parseResult.Declarations.Items
-                               where !item.IsBuiltIn
+            var issues = from item in UserDeclarations
+                               where !item.IsInspectionDisabled(AnnotationName)
                                 && ProcedureTypes.Contains(item.DeclarationType)
                                 && !item.IsTypeSpecified()
                                let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
-                               select new ImplicitVariantReturnTypeInspectionResult(string.Format(Description, issue.Declaration.IdentifierName), Severity, issue.QualifiedContext);
+                               select new ImplicitVariantReturnTypeInspectionResult(this, string.Format(Description, issue.Declaration.IdentifierName), issue.QualifiedContext);
             return issues;
         }
     }

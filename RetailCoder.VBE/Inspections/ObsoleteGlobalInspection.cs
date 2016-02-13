@@ -3,28 +3,27 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteGlobalInspection : IInspection
+    public sealed class ObsoleteGlobalInspection : InspectionBase
     {
-        public ObsoleteGlobalInspection()
+        public ObsoleteGlobalInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return "ObsoleteGlobalInspection"; } }
-        public string Description { get { return RubberduckUI.ObsoleteGlobal; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ObsoleteGlobal; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var issues = from item in parseResult.Declarations.Items
-                         where !item.IsBuiltIn && item.Accessibility == Accessibility.Global
-                         && item.Context != null
-                         select new ObsoleteGlobalInspectionResult(Description, Severity, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context));
+            var issues = from item in UserDeclarations
+                         where item.Accessibility == Accessibility.Global && item.Context != null
+                         select new ObsoleteGlobalInspectionResult(this, Description, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context));
 
             return issues;
         }

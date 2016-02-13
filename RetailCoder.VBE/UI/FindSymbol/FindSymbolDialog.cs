@@ -26,6 +26,8 @@ namespace Rubberduck.UI.FindSymbol
         public FindSymbolDialog()
         {
             InitializeComponent();
+
+            Text = string.Format("Rubberduck - {0}", RubberduckUI.FindSymbolDialog_Caption);
         }
     }
 }

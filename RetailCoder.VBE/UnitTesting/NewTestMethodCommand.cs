@@ -16,7 +16,7 @@ namespace Rubberduck.UnitTesting
 
         private static readonly string TestMethodTemplate = string.Concat(
             "'@TestMethod\n",
-            "Public Sub ", NamePlaceholder, "() 'TODO: Rename test\n",
+            "Public Sub ", NamePlaceholder, "() 'TODO Rename test\n",
             "    On Error GoTo TestFail\n",
             "    \n",
             "    'Arrange:\n\n",
@@ -32,8 +32,8 @@ namespace Rubberduck.UnitTesting
 
         private static readonly string TestMethodExpectedErrorTemplate = string.Concat(
             "'@TestMethod\n",
-            "Public Sub ", NamePlaceholder, "() 'TODO: Rename test\n",
-            "    Const ExpectedError As Long = 0 'TODO: Change to expected error number\n",
+            "Public Sub ", NamePlaceholder, "() 'TODO Rename test\n",
+            "    Const ExpectedError As Long = 0 'TODO Change to expected error number\n",
             "    On Error GoTo TestFail\n",
             "    \n",
             "    'Arrange:\n\n",

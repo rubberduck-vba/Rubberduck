@@ -13,13 +13,13 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public MultipleDeclarationsInspectionResult(string inspection, CodeInspectionSeverity type, 
-            QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
+        public MultipleDeclarationsInspectionResult(IInspection inspection, string result, QualifiedContext<ParserRuleContext> qualifiedContext)
+            : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            _quickFixes = new[]
+            _quickFixes = new CodeInspectionQuickFix[]
             {
                 new SplitMultipleDeclarationsQuickFix(Context, QualifiedSelection), 
+                new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

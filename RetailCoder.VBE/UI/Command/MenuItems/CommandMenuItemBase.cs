@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Input;
 using Castle.Core.Internal;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -25,6 +26,17 @@ namespace Rubberduck.UI.Command.MenuItems
                     ? string.Empty 
                     : RubberduckUI.ResourceManager.GetString(Key, RubberduckUI.Culture);
             }
+        }
+
+        /// <summary>
+        /// Evaluates current parser state to determine whether command can be executed.
+        /// </summary>
+        /// <param name="state">The current parser state.</param>
+        /// <returns>Returns <c>true</c> if command can be executed.</returns>
+        /// <remarks>Returns <c>true</c> if not overridden.</remarks>
+        public virtual bool EvaluateCanExecute(RubberduckParserState state)
+        {
+            return true;
         }
 
         public virtual bool BeginGroup { get { return false; } }

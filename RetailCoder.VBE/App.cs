@@ -1,48 +1,154 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
 using NLog;
+using Rubberduck.AutoSave;
+using Rubberduck.Common;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
+using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.ParserErrors;
+using Rubberduck.VBEditor.Extensions;
+using Infralution.Localization.Wpf;
 
 namespace Rubberduck
 {
     public class App : IDisposable
     {
+        private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
         private readonly IParserErrorsPresenterFactory _parserErrorsPresenterFactory;
-        private readonly IRubberduckParserFactory _parserFactory;
+        private readonly IRubberduckParser _parser;
         private readonly IInspectorFactory _inspectorFactory;
+        private readonly AutoSave.AutoSave _autoSave;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
+        private readonly ParserStateCommandBar _stateBar;
+        private readonly IIndenter _indenter;
+        private readonly IRubberduckHooks _hooks;
 
-        private IParserErrorsPresenter _parserErrorsPresenter;
         private readonly Logger _logger;
-        private IRubberduckParser _parser;
 
         private Configuration _config;
 
-        public App(IMessageBox messageBox,
+        public App(VBE vbe, IMessageBox messageBox,
             IParserErrorsPresenterFactory parserErrorsPresenterFactory,
-            IRubberduckParserFactory parserFactory,
-            IInspectorFactory inspectorFactory, 
+            IRubberduckParser parser,
+            IInspectorFactory inspectorFactory,
             IGeneralConfigService configService,
-            IAppMenu appMenus)
+            IAppMenu appMenus,
+            ParserStateCommandBar stateBar,
+            IIndenter indenter,
+            IRubberduckHooks hooks)
         {
+            _vbe = vbe;
             _messageBox = messageBox;
             _parserErrorsPresenterFactory = parserErrorsPresenterFactory;
-            _parserFactory = parserFactory;
+            _parser = parser;
             _inspectorFactory = inspectorFactory;
+            _autoSave = new AutoSave.AutoSave(_vbe, new AutoSaveSettings());
             _configService = configService;
             _appMenus = appMenus;
+            _stateBar = stateBar;
+            _indenter = indenter;
+            _hooks = hooks;
             _logger = LogManager.GetCurrentClassLogger();
 
+            _hooks.MessageReceived += hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
+            _parser.State.StateChanged += Parser_StateChanged;
+            _stateBar.Refresh += _stateBar_Refresh;
+
+            UiDispatcher.Initialize();
+        }
+
+        private Keys _firstStepHotKey;
+        private bool _isAwaitingTwoStepKey;
+        private bool _skipKeyUp;
+
+        private async void hooks_MessageReceived(object sender, HookEventArgs e)
+        {
+            if (sender is LowLevelKeyboardHook)
+            {
+                if (_skipKeyUp)
+                {
+                    _skipKeyUp = false;
+                    return;
+                }
+
+                if (_isAwaitingTwoStepKey)
+                {
+                    // todo: use _firstStepHotKey and e.Key to run 2-step hotkey action
+                    if (_firstStepHotKey == Keys.I && e.Key == Keys.M)
+                    {
+                        _indenter.IndentCurrentModule();
+                    }
+
+                    AwaitNextKey();
+                    return;
+                }
+
+                var component = _vbe.ActiveCodePane.CodeModule.Parent;
+                _parser.ParseComponent(component);
+
+                AwaitNextKey();
+                return;
+            }
+
+            var hotKey = sender as IHotKey;
+            if (hotKey == null)
+            {
+                AwaitNextKey();
+                return;
+            }
+
+            if (hotKey.IsTwoStepHotKey)
+            {
+                _firstStepHotKey = hotKey.HotKeyInfo.Keys;
+                AwaitNextKey(true, hotKey.HotKeyInfo);
+            }
+            else
+            {
+                // todo: use e.Key to run 1-step hotkey action
+                _firstStepHotKey = Keys.None;
+                AwaitNextKey();
+            }
+        }
+
+        private void AwaitNextKey(bool eatNextKey = false, HotKeyInfo info = default(HotKeyInfo))
+        {
+            _isAwaitingTwoStepKey = eatNextKey;
+            foreach (var hook in _hooks.Hooks.OfType<ILowLevelKeyboardHook>())
+            {
+                hook.EatNextKey = eatNextKey;
+            }
+
+            _skipKeyUp = eatNextKey;
+            if (eatNextKey)
+            {
+                _stateBar.SetStatusText("(" + info + ") was pressed. Waiting for second key...");
+            }
+            else
+            {
+                _stateBar.SetStatusText(_parser.State.Status.ToString());
+            }
+        }
+
+        private void _stateBar_Refresh(object sender, EventArgs e)
+        {
+            _parser.State.OnParseRequested();
+        }
+
+        private void Parser_StateChanged(object sender, ParserStateEventArgs e)
+        {
+            _appMenus.EvaluateCanExecute(_parser.State);
         }
 
         public void Startup()
@@ -51,12 +157,23 @@ namespace Rubberduck
 
             _appMenus.Initialize();
             _appMenus.Localize();
+
+            // delay to allow the VBE to properly load. HostApplication is null until then.
+            Task.Delay(1000).ContinueWith(t =>
+            {
+                _parser.State.AddBuiltInDeclarations(_vbe.HostApplication());
+                _parser.State.OnParseRequested();
+            });
+
+            //_hooks.AddHook(new LowLevelKeyboardHook(_vbe));
+            //_hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^R", Keys.R));
+            //_hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^I", Keys.I));
+            //_hooks.Attach();
         }
 
         private void CleanReloadConfig()
         {
             LoadConfig();
-            CleanUp();
             Setup();
         }
 
@@ -67,14 +184,14 @@ namespace Rubberduck
 
         private void LoadConfig()
         {
-
             _logger.Debug("Loading configuration");
             _config = _configService.LoadConfiguration();
 
             var currentCulture = RubberduckUI.Culture;
             try
             {
-                RubberduckUI.Culture = CultureInfo.GetCultureInfo(_config.UserSettings.LanguageSetting.Code);
+                CultureManager.UICulture = CultureInfo.GetCultureInfo(_config.UserSettings.LanguageSetting.Code);
+                _appMenus.Localize();
             }
             catch (CultureNotFoundException exception)
             {
@@ -87,45 +204,18 @@ namespace Rubberduck
 
         private void Setup()
         {
-            _parser = _parserFactory.Create();
-            _parser.ParseStarted += _parser_ParseStarted;
-            _parser.ParserError += _parser_ParserError;
-
             _inspectorFactory.Create();
-
-            _parserErrorsPresenter = _parserErrorsPresenterFactory.Create();
-        }
-
-        private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
-        {
-            _parserErrorsPresenter.Clear();
-        }
-
-        private void _parser_ParserError(object sender, ParseErrorEventArgs e)
-        {
-            _parserErrorsPresenter.AddError(e);
-            _parserErrorsPresenter.Show();
+            _parserErrorsPresenterFactory.Create();
         }
 
         public void Dispose()
         {
-            Dispose(true);
-        }
+            _hooks.MessageReceived -= hooks_MessageReceived;
+            _configService.SettingsChanged -= _configService_SettingsChanged;
+            _parser.State.StateChanged -= Parser_StateChanged;
+            _autoSave.Dispose();
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing) { return; }
-
-            CleanUp();
-        }
-
-        private void CleanUp()
-        {
-            if (_parser != null)
-            {
-                _parser.ParseStarted -= _parser_ParseStarted;
-                _parser.ParserError -= _parser_ParserError;
-            }
+            _hooks.Dispose();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor;
 

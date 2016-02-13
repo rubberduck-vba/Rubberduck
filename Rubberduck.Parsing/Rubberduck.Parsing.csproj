@@ -58,6 +58,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBABaseListener.cs" />
     <Compile Include="Grammar\VBABaseVisitor.cs" />
@@ -67,8 +68,12 @@
     <Compile Include="Grammar\VBAVisitor.cs" />
     <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IRubberduckParser.cs" />
+    <Compile Include="Symbols\AdodbObjectModel.cs" />
+    <Compile Include="Symbols\DeclarationEventArgs.cs" />
+    <Compile Include="Symbols\ExcelObjectModel.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
+    <Compile Include="Symbols\MemberProcessedEventArgs.cs" />
     <Compile Include="Symbols\SyntaxErrorException.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />
@@ -80,7 +85,6 @@
     <Compile Include="Symbols\Accessibility.cs" />
     <Compile Include="Symbols\DeclarationSymbolsListener.cs" />
     <Compile Include="Symbols\DeclarationType.cs" />
-    <Compile Include="Symbols\Declarations.cs" />
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
     <Compile Include="Symbols\MsFormsLib.cs" />
@@ -90,11 +94,12 @@
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
     <Compile Include="VBA\ParseErrorEventArgs.cs" />
+    <Compile Include="VBA\ParserState.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
+    <Compile Include="VBA\RubberduckParserState.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
     <Compile Include="VBA\WalkerCancelledException.cs" />
     <Compile Include="VBComponentExtensions.cs" />
-    <Compile Include="VBComponentParseResult.cs" />
     <Compile Include="VBProjectParseResult.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +107,7 @@
     <None Include="Grammar\VBA.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +115,9 @@
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\Debug\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

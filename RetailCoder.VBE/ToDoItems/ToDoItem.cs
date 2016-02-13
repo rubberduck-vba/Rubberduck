@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Nodes;
+﻿using System;
+using Rubberduck.Parsing.Nodes;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -27,22 +28,26 @@ namespace Rubberduck.ToDoItems
         private readonly int _lineNumber;
         public int LineNumber { get { return _lineNumber; } }
 
+        private readonly string _type;
+        public string Type { get { return _type; } }
+
         private readonly QualifiedSelection _selection;
         public QualifiedSelection GetSelection() { return _selection; }
 
-        public ToDoItem(TodoPriority priority, CommentNode comment)
-            : this(priority, comment.CommentText, comment.QualifiedSelection)
+        public ToDoItem(string markerText, TodoPriority priority, CommentNode comment)
+            : this(markerText, priority, comment.CommentText, comment.QualifiedSelection)
         {
         }
 
-        public ToDoItem(TodoPriority priority, string description, QualifiedSelection qualifiedSelection)
+        public ToDoItem(string markerText, TodoPriority priority, string description, QualifiedSelection qualifiedSelection)
         {
             _priority = priority;
             _description = description;
             _selection = qualifiedSelection;
-            _projectName = qualifiedSelection.QualifiedName.Project.Name;
-            _moduleName = qualifiedSelection.QualifiedName.Component.Name;
+            _projectName = qualifiedSelection.QualifiedName.ProjectName;
+            _moduleName = qualifiedSelection.QualifiedName.ComponentName;
             _lineNumber = qualifiedSelection.Selection.StartLine;
+            _type = markerText;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Rubberduck.UI.SourceControl
             CurrentBranch.Text = RubberduckUI.SourceControl_CurrentBranchLabel;
             NewBranchButton.Text = RubberduckUI.SourceControl_NewBranch;
             MergeBranchButton.Text = RubberduckUI.SourceControl_MergeBranch;
+            DeleteBranchButton.Text = RubberduckUI.SourceControl_DeleteBranchButton;
             PublishedBranchesBox.Text = RubberduckUI.SourceControl_PublishedBranchesLabel;
             UnpublishedBranchesBox.Text = RubberduckUI.SourceControl_UnpublishedBranchesLabel;
         }
@@ -32,14 +33,14 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _branches = new BindingList<string>(value);
-                this.CurrentBranchSelector.DataSource = _branches;
+                CurrentBranchSelector.DataSource = _branches;
             }
         }
 
         public string Current
         {
-            get { return this.CurrentBranchSelector.SelectedItem.ToString(); }
-            set { this.CurrentBranchSelector.SelectedItem = value; }
+            get { return CurrentBranchSelector.SelectedItem.ToString(); }
+            set { CurrentBranchSelector.SelectedItem = value; }
         }
 
         private BindingList<string> _publishedBranches;
@@ -49,7 +50,7 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _publishedBranches = new BindingList<string>(value);
-                this.PublishedBranchesList.DataSource = _publishedBranches;
+                PublishedBranchesList.DataSource = _publishedBranches;
             }
         }
 
@@ -60,14 +61,14 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _unpublishedBranches = new BindingList<string>(value);
-                this.UnpublishedBranchesList.DataSource = _unpublishedBranches;
+                UnpublishedBranchesList.DataSource = _unpublishedBranches;
             }
         }
 
         public event EventHandler<EventArgs> SelectedBranchChanged;
         public void OnSelectedBranchChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(this.Current))
+            if (!string.IsNullOrWhiteSpace(Current))
             {
                 RaiseGenericEvent(SelectedBranchChanged, e);
             }

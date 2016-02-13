@@ -1,9 +1,6 @@
 ﻿using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows.Input;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Inspections;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
@@ -15,30 +12,20 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class RunCodeInspectionsCommand : CommandBase
     {
-        private readonly VBE _vbe;
-        private readonly IInspector _inspector;
-        private readonly IRubberduckParser _parser;
+        private readonly IPresenter _presenter;
 
-        public RunCodeInspectionsCommand(VBE vbe, IInspector inspector, IRubberduckParser parser)
+        public RunCodeInspectionsCommand(IPresenter presenter)
         {
-            _vbe = vbe;
-            _inspector = inspector;
-            _parser = parser;
+            _presenter = presenter;
         }
 
         /// <summary>
         /// Runs code inspections 
         /// </summary>
         /// <param name="parameter"></param>
-        public override async void Execute(object parameter)
+        public override void Execute(object parameter)
         {
-            // todo: find a way to run this from UI
-            //var project = parameter as VBProject;
-            //var parseResult = project == null 
-            //    ? _parser.Parse(_vbe.ActiveVBProject)
-            //    : _parser.Parse(project);
-
-            //var results = _inspector.FindIssuesAsync(parseResult, CancellationToken.None);
+            _presenter.Show();
         }
     }
 
@@ -51,5 +38,10 @@ namespace Rubberduck.UI.Command
 
         public override string Key { get { return "RubberduckMenu_CodeInspections"; } }
         public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.CodeInspections; } }
+
+        public override bool EvaluateCanExecute(RubberduckParserState state)
+        {
+            return state.Status == ParserState.Ready;
+        }
     }
 }

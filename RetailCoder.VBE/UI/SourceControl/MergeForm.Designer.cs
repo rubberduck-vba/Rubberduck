@@ -31,6 +31,7 @@ namespace Rubberduck.UI.SourceControl
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MergeForm));
             this.SourceSelector = new System.Windows.Forms.ComboBox();
             this.DestinationSelector = new System.Windows.Forms.ComboBox();
             this.SourceLabel = new System.Windows.Forms.Label();
@@ -190,7 +191,6 @@ namespace Rubberduck.UI.SourceControl
             this.AcceptButton = this.OkButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.CancelButton;
             this.ClientSize = new System.Drawing.Size(441, 246);
             this.ControlBox = false;
             this.Controls.Add(this.panel1);
@@ -201,11 +201,10 @@ namespace Rubberduck.UI.SourceControl
             this.Controls.Add(this.SourceLabel);
             this.Controls.Add(this.DestinationSelector);
             this.Controls.Add(this.SourceSelector);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = global::Rubberduck.UI.RubberduckUI.Ducky;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "MergeForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

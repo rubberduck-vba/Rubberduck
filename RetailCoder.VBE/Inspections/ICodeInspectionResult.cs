@@ -5,12 +5,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public interface ICodeInspectionResult
+    public interface ICodeInspectionResult : IComparable<ICodeInspectionResult>, IComparable
     {
         IEnumerable<CodeInspectionQuickFix> QuickFixes { get; }
+        CodeInspectionQuickFix DefaultQuickFix { get; }
         ParserRuleContext Context { get; }
         string Name { get; }
         QualifiedSelection QualifiedSelection { get; }
-        CodeInspectionSeverity Severity { get; }
+        IInspection Inspection { get; }
+        string ToCsvString();
     }
 }

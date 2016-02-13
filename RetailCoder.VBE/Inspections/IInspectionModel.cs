@@ -10,6 +10,8 @@
         /// </summary>
         string Name { get; }
 
+        string AnnotationName { get; }
+
         /// <summary>
         /// Gets a short description for the code inspection.
         /// </summary>

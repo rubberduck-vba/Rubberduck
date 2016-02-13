@@ -1,37 +1,39 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class ImplicitByRefParameterInspection : IInspection
+    public sealed class ImplicitByRefParameterInspection : InspectionBase
     {
-        public ImplicitByRefParameterInspection()
+        public ImplicitByRefParameterInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "ImplicitByRefParameterInspection"; } }
-        public string Description { get { return RubberduckUI.ImplicitByRef_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return RubberduckUI.ImplicitByRef_; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var interfaceMembers = parseResult.Declarations.FindInterfaceImplementationMembers();
+            var interfaceMembers = UserDeclarations.FindInterfaceImplementationMembers();
 
-            var issues = (from item in parseResult.Declarations.Items
-                where item.DeclarationType == DeclarationType.Parameter
-                    && !item.IsBuiltIn
+            var issues = (from item in UserDeclarations
+                where !item.IsInspectionDisabled(AnnotationName)
+                    && item.DeclarationType == DeclarationType.Parameter
                     && !interfaceMembers.Select(m => m.Scope).Contains(item.ParentScope)
                 let arg = item.Context as VBAParser.ArgContext
                 where arg != null && arg.BYREF() == null && arg.BYVAL() == null
                 select new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg))
-                .Select(issue => new ImplicitByRefParameterInspectionResult(string.Format(Description, issue.Context.ambiguousIdentifier().GetText()), Severity, issue));
+                .Select(issue => new ImplicitByRefParameterInspectionResult(this, string.Format(Description, issue.Context.ambiguousIdentifier().GetText()), issue));
 
+ 
             return issues;
         }
     }

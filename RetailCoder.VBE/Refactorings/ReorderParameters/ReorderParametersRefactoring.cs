@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Antlr4.Runtime.Misc;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ReorderParameters
@@ -113,7 +114,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
-            var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _", "").RemoveExtraSpaces();
+            var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _" + Environment.NewLine, string.Empty).RemoveExtraSpacesLeavingIndentation();
 
             var parameterIndex = 0;
             var currentStringIndex = 0;
@@ -136,11 +137,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             }
 
             module.ReplaceLine(paramList.Start.Line, newContent);
-
-            for (var line = paramList.Start.Line + 1; line < paramList.Start.Line + lineCount; line++)
-            {
-                module.ReplaceLine(line, "");
-            }
+            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
         }
 
         private void AdjustSignatures()
@@ -152,7 +149,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             // if we are reordering a property getter, check if we need to reorder a letter/setter too
             if (_model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
             {
-                var setter = _model.Declarations.Items.FirstOrDefault(item => item.ParentScope == _model.TargetDeclaration.ParentScope &&
+                var setter = _model.Declarations.FirstOrDefault(item => item.ParentScope == _model.TargetDeclaration.ParentScope &&
                                               item.IdentifierName == _model.TargetDeclaration.IdentifierName &&
                                               item.DeclarationType == DeclarationType.PropertySet);
 
@@ -162,7 +159,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                     AdjustReferences(setter.References);
                 }
 
-                var letter = _model.Declarations.Items.FirstOrDefault(item => item.ParentScope == _model.TargetDeclaration.ParentScope &&
+                var letter = _model.Declarations.FirstOrDefault(item => item.ParentScope == _model.TargetDeclaration.ParentScope &&
                               item.IdentifierName == _model.TargetDeclaration.IdentifierName &&
                               item.DeclarationType == DeclarationType.PropertyLet);
 
@@ -175,7 +172,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             RewriteSignature(_model.TargetDeclaration, paramList, module);
 
-            foreach (var withEvents in _model.Declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName))
+            foreach (var withEvents in _model.Declarations.Where(item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName))
             {
                 foreach (var reference in _model.Declarations.FindEventProcedures(withEvents))
                 {
@@ -240,23 +237,13 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 }
             }
 
-            module.ReplaceLine(paramList.Start.Line, newContent);
-
-            for (var line = paramList.Start.Line + 1; line < paramList.Start.Line + lineNum; line++)
-            {
-                module.ReplaceLine(line, "");
-            }
+            module.ReplaceLine(paramList.Start.Line, newContent.Replace(" _" + Environment.NewLine, string.Empty));
+            module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
         }
 
         private string GetOldSignature(Declaration target)
         {
-            var targetModule = _model.ParseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == target.QualifiedName.QualifiedModuleName);
-            if (targetModule == null)
-            {
-                return null;
-            }
-
-            var rewriter = targetModule.GetRewriter();
+            var rewriter = _model.ParseResult.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
 
             var context = target.Context;
             var firstTokenIndex = context.Start.TokenIndex;

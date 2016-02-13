@@ -3,12 +3,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.IdentifierReferences;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Navigation
@@ -17,66 +17,64 @@ namespace Rubberduck.Navigation
     {
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
-        private readonly IRubberduckParser _parser;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly IMessageBox _messageBox;
 
-        public NavigateAllImplementations(VBE vbe, AddIn addIn, IRubberduckParser parser, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
+        public NavigateAllImplementations(VBE vbe, AddIn addIn, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
         {
             _vbe = vbe;
             _addIn = addIn;
-            _parser = parser;
             _wrapperFactory = wrapperFactory;
             _messageBox = messageBox;
         }
 
         public void Find()
         {
-            var codePane = _wrapperFactory.Create(_vbe.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
-            var progress = new ParsingProgressPresenter();
-            var parseResult = progress.Parse(_parser, _vbe.ActiveVBProject);
+            //var codePane = _wrapperFactory.Create(_vbe.ActiveCodePane);
+            //var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
+            //var progress = new ParsingProgressPresenter();
+            //var parseResult = progress.Parse(_parser, _vbe.ActiveVBProject);
 
-            var implementsStatement = parseResult.Declarations.FindInterfaces()
-                .SelectMany(i => i.References.Where(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
-                .SingleOrDefault(r => r.QualifiedModuleName == selection.QualifiedName && r.Selection.Contains(selection.Selection));
+            //var implementsStatement = parseResult.Declarations.FindInterfaces()
+            //    .SelectMany(i => i.References.Where(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
+            //    .SingleOrDefault(r => r.QualifiedModuleName == selection.QualifiedName && r.Selection.Contains(selection.Selection));
 
-            if (implementsStatement != null)
-            {
-                Find(implementsStatement.Declaration, parseResult);
-            }
+            //if (implementsStatement != null)
+            //{
+            //    Find(implementsStatement.Declaration, parseResult);
+            //}
 
-            var member = parseResult.Declarations.FindInterfaceImplementationMembers()
-                .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
-                                      && m.ComponentName == selection.QualifiedName.ComponentName
-                                      && m.Selection.Contains(selection.Selection)) ??
-                         parseResult.Declarations.FindInterfaceMembers()
-                                          .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
-                                                                && m.ComponentName == selection.QualifiedName.ComponentName
-                                                                && m.Selection.Contains(selection.Selection));
+            //var member = parseResult.Declarations.FindInterfaceImplementationMembers()
+            //    .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
+            //                          && m.ComponentName == selection.QualifiedName.ComponentName
+            //                          && m.Selection.Contains(selection.Selection)) ??
+            //             parseResult.Declarations.FindInterfaceMembers()
+            //                              .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
+            //                                                    && m.ComponentName == selection.QualifiedName.ComponentName
+            //                                                    && m.Selection.Contains(selection.Selection));
 
-            if (member == null)
-            {
-                return;
-            }
+            //if (member == null)
+            //{
+            //    return;
+            //}
 
-            Find(member, parseResult);
+            //Find(member, parseResult);
         }
 
         public void Find(Declaration target)
         {
-            var progress = new ParsingProgressPresenter();
-            var parseResult = progress.Parse(_parser, _vbe.ActiveVBProject);
-            Find(target, parseResult);
+            //var progress = new ParsingProgressPresenter();
+            //var parseResult = progress.Parse(_parser, _vbe.ActiveVBProject);
+            //Find(target, parseResult);
         }
 
-        private void Find(Declaration target, VBProjectParseResult parseResult)
+        private void Find(Declaration target, RubberduckParserState parseResult)
         {
+            var items = parseResult.AllDeclarations;
             string name;
             var implementations = (target.DeclarationType == DeclarationType.Class
-                ? FindAllImplementationsOfClass(target, parseResult, out name)
-                : FindAllImplementationsOfMember(target, parseResult, out name)) ??
-                                  new List<Declaration>();
+                ? FindAllImplementationsOfClass(target, items, out name)
+                : FindAllImplementationsOfMember(target, items, out name)) ?? new List<Declaration>();
 
             var declarations = implementations as IList<Declaration> ?? implementations.ToList();
             var implementationsCount = declarations.Count();
@@ -108,7 +106,7 @@ namespace Rubberduck.Navigation
             }
         }
 
-        private IEnumerable<Declaration> FindAllImplementationsOfClass(Declaration target, VBProjectParseResult parseResult, out string name)
+        private IEnumerable<Declaration> FindAllImplementationsOfClass(Declaration target, IEnumerable<Declaration> declarations, out string name)
         {
             if (target.DeclarationType != DeclarationType.Class)
             {
@@ -116,16 +114,18 @@ namespace Rubberduck.Navigation
                 return null;
             }
 
+            var identifiers = declarations as IList<Declaration> ?? declarations.ToList();
+
             var result = target.References
                 .Where(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext)
-                .SelectMany(reference => parseResult.Declarations[reference.QualifiedModuleName.ComponentName])
+                .SelectMany(reference => identifiers.Where(identifier => identifier.IdentifierName == reference.QualifiedModuleName.ComponentName))
                 .ToList();
 
             name = target.ComponentName;
             return result;
         }
 
-        private IEnumerable<Declaration> FindAllImplementationsOfMember(Declaration target, VBProjectParseResult parseResult, out string name)
+        private IEnumerable<Declaration> FindAllImplementationsOfMember(Declaration target, IEnumerable<Declaration> declarations, out string name)
         {
             if (!target.DeclarationType.HasFlag(DeclarationType.Member))
             {
@@ -133,20 +133,22 @@ namespace Rubberduck.Navigation
                 return null;
             }
 
-            var isInterface = parseResult.Declarations.FindInterfaces()
+            var items = declarations as IList<Declaration> ?? declarations.ToList();
+
+            var isInterface = items.FindInterfaces()
                 .Select(i => i.QualifiedName.QualifiedModuleName.ToString())
                 .Contains(target.QualifiedName.QualifiedModuleName.ToString());
 
             if (isInterface)
             {
                 name = target.ComponentName + "." + target.IdentifierName;
-                return parseResult.Declarations.FindInterfaceImplementationMembers(target.IdentifierName)
+                return items.FindInterfaceImplementationMembers(target.IdentifierName)
                        .Where(item => item.IdentifierName == target.ComponentName + "_" + target.IdentifierName);
             }
 
-            var member = parseResult.Declarations.FindInterfaceMember(target);
+            var member = items.FindInterfaceMember(target);
             name = member.ComponentName + "." + member.IdentifierName;
-            return parseResult.Declarations.FindInterfaceImplementationMembers(member.IdentifierName)
+            return items.FindInterfaceImplementationMembers(member.IdentifierName)
                    .Where(item => item.IdentifierName == member.ComponentName + "_" + member.IdentifierName);
         }
 

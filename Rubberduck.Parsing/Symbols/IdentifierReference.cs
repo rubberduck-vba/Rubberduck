@@ -7,15 +7,17 @@ namespace Rubberduck.Parsing.Symbols
 {
     public class IdentifierReference
     {
-        public IdentifierReference(QualifiedModuleName qualifiedName, string identifierName, Selection selection, ParserRuleContext context, Declaration declaration, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
+        public IdentifierReference(QualifiedModuleName qualifiedName, string parentScope, string identifierName, Selection selection, ParserRuleContext context, Declaration declaration, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false, string annotations = null)
         {
             _qualifiedName = qualifiedName;
+            _parentScope = parentScope;
             _identifierName = identifierName;
             _selection = selection;
             _context = context;
             _declaration = declaration;
             _hasExplicitLetStatement = hasExplicitLetStatement;
             _isAssignmentTarget = isAssignmentTarget;
+            _annotations = annotations ?? string.Empty;
         }
 
         private readonly QualifiedModuleName _qualifiedName;
@@ -27,6 +29,9 @@ namespace Rubberduck.Parsing.Symbols
         private readonly Selection _selection;
         public Selection Selection { get { return _selection; } }
 
+        private readonly string _parentScope;
+        public string ParentScope { get { return _parentScope; } }
+
         private readonly bool _isAssignmentTarget;
         public bool IsAssignment { get { return _isAssignmentTarget; } }
 
@@ -35,6 +40,15 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly Declaration _declaration;
         public Declaration Declaration { get { return _declaration; } }
+
+        private readonly string _annotations;
+        public string Annotations { get { return _annotations ?? string.Empty; } }
+
+        public bool IsInspectionDisabled(string inspectionName)
+        {
+            return Annotations.Contains(Grammar.Annotations.IgnoreInspection)
+                && Annotations.Contains(inspectionName);
+        }
 
         private readonly bool _hasExplicitLetStatement;
         public bool HasExplicitLetStatement { get { return _hasExplicitLetStatement; } }

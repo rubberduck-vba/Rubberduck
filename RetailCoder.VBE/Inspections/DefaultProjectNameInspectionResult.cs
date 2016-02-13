@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Antlr4.Runtime;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
@@ -15,8 +14,8 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
 
-        public DefaultProjectNameInspectionResult(string inspection, CodeInspectionSeverity type, Declaration target, VBProjectParseResult parseResult, ICodePaneWrapperFactory wrapperFactory) 
-            : base(inspection, type, target)
+        public DefaultProjectNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
+            : base(inspection, string.Format(inspection.Description, target.IdentifierName), target)
         {
             _quickFixes = new[]
             {
@@ -33,14 +32,14 @@ namespace Rubberduck.Inspections
     public class RenameProjectQuickFix : CodeInspectionQuickFix
     {
         private readonly Declaration _target;
-        private readonly VBProjectParseResult _parseResult;
+        private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public RenameProjectQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, VBProjectParseResult parseResult, ICodePaneWrapperFactory wrapperFactory)
+        public RenameProjectQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory)
             : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + DeclarationType.Project, RubberduckUI.Culture)))
         {
             _target = target;
-            _parseResult = parseResult;
+            _state = state;
             _wrapperFactory = wrapperFactory;
         }
 
@@ -50,10 +49,13 @@ namespace Rubberduck.Inspections
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(vbe, view, _parseResult, new MessageBox(), _wrapperFactory);
-                var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory), new MessageBox());
+                var factory = new RenamePresenterFactory(vbe, view, _state, new MessageBox(), _wrapperFactory);
+                var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory), new MessageBox(), _state);
                 refactoring.Refactor(_target);
             }
         }
+
+        public override bool CanFixInModule { get { return false; } }
+        public override bool CanFixInProject { get { return false; } }
     }
 }

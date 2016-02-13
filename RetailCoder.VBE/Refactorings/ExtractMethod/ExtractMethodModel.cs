@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -10,9 +11,11 @@ namespace Rubberduck.Refactorings.ExtractMethod
 {
     public class ExtractMethodModel
     {
-        public ExtractMethodModel(IActiveCodePaneEditor editor, Declarations declarations, QualifiedSelection selection)
+        public ExtractMethodModel(IActiveCodePaneEditor editor, IEnumerable<Declaration> declarations, QualifiedSelection selection)
         {
-            _sourceMember = declarations.FindSelectedDeclaration(selection, Declarations.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
+            var items = declarations.ToList();
+
+            _sourceMember = items.FindSelectedDeclaration(selection, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
             if (_sourceMember == null)
             {
                 throw new InvalidOperationException("Invalid selection.");
@@ -23,19 +26,22 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _selection = selection;
             _selectedCode = editor.GetLines(selection.Selection);
 
-            var inScopeDeclarations = declarations.Items.Where(item => item.ParentScope == _sourceMember.Scope).ToList();
+            var inScopeDeclarations = items.Where(item => item.ParentScope == _sourceMember.Scope).ToList();
 
             var inSelection = inScopeDeclarations.SelectMany(item => item.References)
                 .Where(item => selection.Selection.Contains(item.Selection))
                 .ToList();
 
             var usedInSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
+                selection.Selection.Contains(item.Selection) ||
                 item.References.Any(reference => inSelection.Contains(reference))));
 
             var usedBeforeSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
+                item.Selection.StartLine < selection.Selection.StartLine ||
                 item.References.Any(reference => reference.Selection.StartLine < selection.Selection.StartLine)));
 
             var usedAfterSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
+                item.Selection.StartLine > selection.Selection.StartLine ||
                 item.References.Any(reference => reference.Selection.StartLine > selection.Selection.EndLine)));
 
             // identifiers used inside selection and before selection (or if it's a parameter) are candidates for parameters:

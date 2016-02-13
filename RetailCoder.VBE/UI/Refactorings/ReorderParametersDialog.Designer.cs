@@ -52,7 +52,7 @@ namespace Rubberduck.UI.Refactorings
             this.MoveDownButton.Image = ((System.Drawing.Image)(resources.GetObject("MoveDownButton.Image")));
             this.MoveDownButton.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.MoveDownButton.Location = new System.Drawing.Point(421, 190);
-            this.MoveDownButton.Margin = new System.Windows.Forms.Padding(4);
+            this.MoveDownButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MoveDownButton.Name = "MoveDownButton";
             this.MoveDownButton.Size = new System.Drawing.Size(100, 89);
             this.MoveDownButton.TabIndex = 2;
@@ -70,7 +70,7 @@ namespace Rubberduck.UI.Refactorings
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 285);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
+            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(11, 10, 0, 10);
             this.flowLayoutPanel2.Size = new System.Drawing.Size(536, 53);
@@ -81,7 +81,7 @@ namespace Rubberduck.UI.Refactorings
             this.CancelDialogButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.CancelDialogButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.CancelDialogButton.Location = new System.Drawing.Point(421, 14);
-            this.CancelDialogButton.Margin = new System.Windows.Forms.Padding(4);
+            this.CancelDialogButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.CancelDialogButton.Name = "CancelDialogButton";
             this.CancelDialogButton.Size = new System.Drawing.Size(100, 28);
             this.CancelDialogButton.TabIndex = 0;
@@ -93,7 +93,7 @@ namespace Rubberduck.UI.Refactorings
             this.OkButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.OkButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.OkButton.Location = new System.Drawing.Point(313, 14);
-            this.OkButton.Margin = new System.Windows.Forms.Padding(4);
+            this.OkButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.OkButton.Name = "OkButton";
             this.OkButton.Size = new System.Drawing.Size(100, 28);
             this.OkButton.TabIndex = 1;
@@ -107,7 +107,7 @@ namespace Rubberduck.UI.Refactorings
             this.panel1.Controls.Add(this.TitleLabel);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(536, 87);
             this.panel1.TabIndex = 4;
@@ -119,7 +119,7 @@ namespace Rubberduck.UI.Refactorings
             this.InstructionsLabel.Location = new System.Drawing.Point(12, 37);
             this.InstructionsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(5);
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.InstructionsLabel.Size = new System.Drawing.Size(511, 42);
             this.InstructionsLabel.TabIndex = 6;
             this.InstructionsLabel.Text = "Select a parameter and drag it or use buttons to move it up or down.";
@@ -163,7 +163,7 @@ namespace Rubberduck.UI.Refactorings
             this.MoveUpButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.MoveUpButton.Image = ((System.Drawing.Image)(resources.GetObject("MoveUpButton.Image")));
             this.MoveUpButton.Location = new System.Drawing.Point(421, 95);
-            this.MoveUpButton.Margin = new System.Windows.Forms.Padding(4);
+            this.MoveUpButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MoveUpButton.Name = "MoveUpButton";
             this.MoveUpButton.Size = new System.Drawing.Size(100, 89);
             this.MoveUpButton.TabIndex = 1;
@@ -186,11 +186,12 @@ namespace Rubberduck.UI.Refactorings
             this.Controls.Add(this.MoveDownButton);
             this.Controls.Add(this.MoveUpButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = global::Rubberduck.UI.RubberduckUI.Ducky;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ReorderParametersDialog";
+            this.ShowInTaskbar = false;
             this.Text = "Rubberduck - Reorder Parameters";
             this.flowLayoutPanel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);

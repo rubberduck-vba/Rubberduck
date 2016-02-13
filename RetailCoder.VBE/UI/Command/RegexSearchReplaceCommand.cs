@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using Rubberduck.Navigation.RegexSearchReplace;
 
 namespace Rubberduck.UI.Command

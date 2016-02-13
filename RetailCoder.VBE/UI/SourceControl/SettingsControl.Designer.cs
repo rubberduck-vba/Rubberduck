@@ -78,9 +78,9 @@ namespace Rubberduck.UI.SourceControl
             // 
             // EditAttributeFileButton
             // 
-            this.EditAttributeFileButton.Location = new System.Drawing.Point(105, 31);
+            this.EditAttributeFileButton.Location = new System.Drawing.Point(123, 31);
             this.EditAttributeFileButton.Name = "EditAttributeFileButton";
-            this.EditAttributeFileButton.Size = new System.Drawing.Size(92, 23);
+            this.EditAttributeFileButton.Size = new System.Drawing.Size(109, 23);
             this.EditAttributeFileButton.TabIndex = 1;
             this.EditAttributeFileButton.Text = "Attributes File";
             this.EditAttributeFileButton.UseVisualStyleBackColor = true;
@@ -90,7 +90,7 @@ namespace Rubberduck.UI.SourceControl
             // 
             this.EditIgnoreFileButton.Location = new System.Drawing.Point(7, 31);
             this.EditIgnoreFileButton.Name = "EditIgnoreFileButton";
-            this.EditIgnoreFileButton.Size = new System.Drawing.Size(92, 23);
+            this.EditIgnoreFileButton.Size = new System.Drawing.Size(109, 23);
             this.EditIgnoreFileButton.TabIndex = 0;
             this.EditIgnoreFileButton.Text = "Ignore File";
             this.EditIgnoreFileButton.UseVisualStyleBackColor = true;
@@ -119,9 +119,9 @@ namespace Rubberduck.UI.SourceControl
             // 
             // CancelGlobalSettingsButton
             // 
-            this.CancelGlobalSettingsButton.Location = new System.Drawing.Point(105, 168);
+            this.CancelGlobalSettingsButton.Location = new System.Drawing.Point(123, 168);
             this.CancelGlobalSettingsButton.Name = "CancelGlobalSettingsButton";
-            this.CancelGlobalSettingsButton.Size = new System.Drawing.Size(92, 23);
+            this.CancelGlobalSettingsButton.Size = new System.Drawing.Size(109, 23);
             this.CancelGlobalSettingsButton.TabIndex = 8;
             this.CancelGlobalSettingsButton.Text = "Cancel";
             this.CancelGlobalSettingsButton.UseVisualStyleBackColor = true;
@@ -131,7 +131,7 @@ namespace Rubberduck.UI.SourceControl
             // 
             this.UpdateGlobalSettingsButton.Location = new System.Drawing.Point(7, 168);
             this.UpdateGlobalSettingsButton.Name = "UpdateGlobalSettingsButton";
-            this.UpdateGlobalSettingsButton.Size = new System.Drawing.Size(92, 23);
+            this.UpdateGlobalSettingsButton.Size = new System.Drawing.Size(109, 23);
             this.UpdateGlobalSettingsButton.TabIndex = 7;
             this.UpdateGlobalSettingsButton.Text = "Update";
             this.UpdateGlobalSettingsButton.UseVisualStyleBackColor = true;

@@ -49,13 +49,32 @@
 *   - added moduleDeclarations rule, moved moduleOptions there; options can now be
 *     located anywhere in declarations section, without breaking the parser.
 *   - added support for Option Compare Database.
-*   - added support for numbered lines (amended lineLabel rule).
 *   - added support for VBA 7.0 PtrSafe attribute for Declare statements.
 *   - implemented a fileNumber rule to locate identifier usages in file numbers.
 *   - added support for anonymous declarations in With blocks (With New Something)
 *   - blockStmt rules being sorted alphabetically was wrong. moved implicit call statement last.
 *   - '!' in dictionary call statement rule gets picked up as a type hint; changed member call
 *     to accept '!' as well as '.', but this complicates resolving the '!' shorthand syntax.
+*   - added a subscripts rule in procedure calls, to avoid breaking the parser with 
+*     a function call that returns an array that is immediately accessed.
+*   - added missing macroConstStmt (#CONST) rule.
+*   - amended selectCaseStmt rules to support all valid syntaxes.
+*   - blockStmt is now illegal in declarations section.
+*   - added ON_LOCAL_ERROR token, to support legacy ON LOCAL ERROR statements.
+*   - added additional typeHint? token to declareStmt, to support "Declare Function Foo$".
+*   - modified WS lexer rule to correctly account for line continuations;
+*   - modified multi-word lexer rules to use WS lexer token instead of ' '; this makes
+*     the grammar support "Option _\n Explicit" and other keywords being specified on multiple lines.
+*	- modified moduleOption rules to account for WS token in corresponding lexer rules.
+*   - modified NEWLINE lexer rule to properly support instructions separator (':').
+*   - tightened DATELITERAL lexer rule to the format enforced by the VBE, because "#fn: Close #" 
+*     in "Dim fn: fn = FreeFile: Open "filename" For Output As #fn: Close #fn" was picked up as a date literal.
+*   - redefined IDENTIFIER lexer rule to support non-Latin characters (e.g. Japanese)
+*   - made seekStmt, lockStmt, unlockStmt, getStmt and widthStmt accept a fileNumber (needed to support '#')
+*   - fixed precompiler directives, which can now be nested. they still can't interfere with other blocks though.
+*   - optional parameters can be a valueStmt.
+*   - added support for Octal and Currency literals.
+*   - implemented proper specs for DATELITERAL.
 *
 *======================================================================================
 *
@@ -72,7 +91,6 @@
 * v1.0 Initial revision
 */
 
-//grammar VisualBasic6;
 grammar VBA;
 
 // module ----------------------------------
@@ -106,17 +124,20 @@ moduleAttributes : (attributeStmt NEWLINE+)+;
 moduleDeclarations : moduleDeclarationsElement (NEWLINE+ moduleDeclarationsElement)*;
 
 moduleOption : 
-	OPTION_BASE WS INTEGERLITERAL 			# optionBaseStmt
-	| OPTION_COMPARE WS (BINARY | TEXT | DATABASE) 	# optionCompareStmt
+	OPTION_BASE WS? SHORTLITERAL 			# optionBaseStmt
+	| OPTION_COMPARE WS? (BINARY | TEXT | DATABASE) 	# optionCompareStmt
 	| OPTION_EXPLICIT 						# optionExplicitStmt
 	| OPTION_PRIVATE_MODULE 				# optionPrivateModuleStmt
 ;
 
 moduleDeclarationsElement :
-	moduleBlock
-	| declareStmt
+	declareStmt
 	| enumerationStmt 
 	| eventStmt
+	| constStmt
+	| implementsStmt
+	| variableStmt
+	| macroConstStmt
 	| macroIfThenElseStmt
 	| moduleOption
 	| typeStmt
@@ -126,9 +147,9 @@ moduleBody :
 	moduleBodyElement (NEWLINE+ moduleBodyElement)*;
 
 moduleBodyElement : 
-	moduleBlock
-	| functionStmt 
+	functionStmt 
 	| macroIfThenElseStmt
+	| macroConstStmt
 	| propertyGetStmt 
 	| propertySetStmt 
 	| propertyLetStmt 
@@ -138,11 +159,9 @@ moduleBodyElement :
 
 // block ----------------------------------
 
-moduleBlock : block;
-
 attributeStmt : ATTRIBUTE WS implicitCallStmt_InStmt WS? EQ WS? literal (WS? ',' WS? literal)*;
 
-block : blockStmt (NEWLINE* WS? blockStmt)* NEWLINE*;
+block : blockStmt WS* (NEWLINE* WS? blockStmt)* WS? NEWLINE*;
 
 blockStmt : lineLabel
     | appactivateStmt
@@ -232,7 +251,7 @@ constSubStmt : ambiguousIdentifier typeHint? (WS asTypeClause)? WS? EQ WS? value
 
 dateStmt : DATE WS? EQ WS? valueStmt;
 
-declareStmt : (visibility WS)? DECLARE WS (PTRSAFE WS)? (FUNCTION | SUB) WS ambiguousIdentifier WS LIB WS STRINGLITERAL (WS ALIAS WS STRINGLITERAL)? (WS? argList)? (WS asTypeClause)?;
+declareStmt : (visibility WS)? DECLARE WS (PTRSAFE WS)? ((FUNCTION typeHint?) | SUB) WS ambiguousIdentifier typeHint? WS LIB WS STRINGLITERAL (WS ALIAS WS STRINGLITERAL)? (WS? argList)? (WS asTypeClause)?;
 
 deftypeStmt : 
 	(
@@ -292,12 +311,12 @@ forNextStmt :
 ; 
 
 functionStmt :
-	(visibility WS)? (STATIC WS)? FUNCTION WS ambiguousIdentifier (WS? argList)? (WS asTypeClause)? NEWLINE+
+	(visibility WS)? (STATIC WS)? FUNCTION WS? ambiguousIdentifier typeHint? (WS? argList)? (WS? asTypeClause)? NEWLINE+
 	(block NEWLINE+)?
 	END_FUNCTION
 ;
 
-getStmt : GET WS valueStmt WS? ',' WS? valueStmt? WS? ',' WS? valueStmt;
+getStmt : GET WS fileNumber WS? ',' WS? valueStmt? WS? ',' WS? valueStmt;
 
 goSubStmt : GOSUB WS valueStmt;
 
@@ -341,21 +360,23 @@ lockStmt : LOCK WS valueStmt (WS? ',' WS? valueStmt (WS TO WS valueStmt)?)?;
 
 lsetStmt : LSET WS implicitCallStmt_InStmt WS? EQ WS? valueStmt;
 
+macroConstStmt : MACRO_CONST WS? ambiguousIdentifier WS? EQ WS? valueStmt;
+
 macroIfThenElseStmt : macroIfBlockStmt macroElseIfBlockStmt* macroElseBlockStmt? MACRO_END_IF;
 
 macroIfBlockStmt : 
-	MACRO_IF WS? ifConditionStmt WS THEN NEWLINE+ 
-	(moduleBody NEWLINE+)?
+	MACRO_IF WS? ifConditionStmt WS THEN NEWLINE*
+	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)*
 ;
 
 macroElseIfBlockStmt : 
-	MACRO_ELSEIF WS? ifConditionStmt WS THEN NEWLINE+ 
-	(moduleBody NEWLINE+)?
+	MACRO_ELSEIF WS? ifConditionStmt WS THEN NEWLINE* 
+	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)*
 ;
 
 macroElseBlockStmt : 
-	MACRO_ELSE NEWLINE+ 
-	(moduleBody NEWLINE+)?
+	MACRO_ELSE NEWLINE* 
+	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)*
 ;
 
 midStmt : MID WS? LPAREN WS? argsCall WS? RPAREN;
@@ -364,7 +385,7 @@ mkdirStmt : MKDIR WS valueStmt;
 
 nameStmt : NAME WS valueStmt WS AS WS valueStmt;
 
-onErrorStmt : ON_ERROR WS (GOTO WS valueStmt | RESUME WS NEXT);
+onErrorStmt : ON_ERROR | ON_LOCAL_ERROR WS (GOTO WS valueStmt | RESUME WS NEXT);
 
 onGoToStmt : ON WS valueStmt WS GOTO WS valueStmt (WS? ',' WS? valueStmt)*;
 
@@ -391,7 +412,7 @@ outputList_Expression :
 printStmt : PRINT WS fileNumber WS? ',' (WS? outputList)?;
 
 propertyGetStmt : 
-	(visibility WS)? (STATIC WS)? PROPERTY_GET WS ambiguousIdentifier (WS? argList)? (WS asTypeClause)? NEWLINE+ 
+	(visibility WS)? (STATIC WS)? PROPERTY_GET WS ambiguousIdentifier typeHint? (WS? argList)? (WS asTypeClause)? NEWLINE+ 
 	(block NEWLINE+)? 
 	END_PROPERTY
 ;
@@ -432,7 +453,7 @@ savepictureStmt : SAVEPICTURE WS valueStmt WS? ',' WS? valueStmt;
 
 saveSettingStmt : SAVESETTING WS valueStmt WS? ',' WS? valueStmt WS? ',' WS? valueStmt WS? ',' WS? valueStmt;
 
-seekStmt : SEEK WS valueStmt WS? ',' WS? valueStmt;
+seekStmt : SEEK WS fileNumber WS? ',' WS? valueStmt;
 
 selectCaseStmt : 
 	SELECT WS CASE WS valueStmt NEWLINE+ 
@@ -440,17 +461,21 @@ selectCaseStmt :
 	WS? END_SELECT
 ;
 
+sC_Selection :
+    IS WS? comparisonOperator WS? valueStmt                         # caseCondIs
+    | valueStmt WS TO WS valueStmt                                # caseCondTo
+    | valueStmt                                                     # caseCondValue
+;
+
 sC_Case : 
-	CASE WS sC_Cond WS? (':'? NEWLINE* | NEWLINE+)  
-	(block NEWLINE+)?
+	CASE WS sC_Cond WS? (':'? NEWLINE*)
+	(block NEWLINE+)*
 ;
 
 // ELSE first, so that it is not interpreted as a variable call
-sC_Cond : 
-	ELSE 															# caseCondElse
-	| IS WS? comparisonOperator WS? valueStmt 						# caseCondIs
-	| valueStmt (WS? ',' WS? valueStmt)* 							# caseCondValue
-	| INTEGERLITERAL WS TO WS valueStmt (WS? ',' WS? valueStmt)* 	# caseCondTo
+sC_Cond :
+    ELSE                                                            # caseCondElse
+    | sC_Selection (WS? ',' WS? sC_Selection)*                      # caseCondSelection
 ;
 
 sendkeysStmt : SENDKEYS WS valueStmt (WS? ',' WS? valueStmt)?;
@@ -462,7 +487,7 @@ setStmt : SET WS implicitCallStmt_InStmt WS? EQ WS? valueStmt;
 stopStmt : STOP;
 
 subStmt : 
-	(visibility WS)? (STATIC WS)? SUB WS ambiguousIdentifier (WS? argList)? NEWLINE+ 
+	(visibility WS)? (STATIC WS)? SUB WS? ambiguousIdentifier (WS? argList)? NEWLINE+ 
 	(block NEWLINE+)? 
 	END_SUB
 ;
@@ -481,21 +506,21 @@ typeOfStmt : TYPEOF WS valueStmt (WS IS WS type)?;
 
 unloadStmt : UNLOAD WS valueStmt;
 
-unlockStmt : UNLOCK WS valueStmt (WS? ',' WS? valueStmt (WS TO WS valueStmt)?)?;
+unlockStmt : UNLOCK WS fileNumber (WS? ',' WS? valueStmt (WS TO WS valueStmt)?)?;
 
 // operator precedence is represented by rule order
 valueStmt : 
 	literal 												# vsLiteral
 	| implicitCallStmt_InStmt 								# vsICS
 	| LPAREN WS? valueStmt (WS? ',' WS? valueStmt)* RPAREN 	# vsStruct
-	| NEW WS valueStmt 										# vsNew
+	| NEW WS? valueStmt 										# vsNew
 	| typeOfStmt 											# vsTypeOf
 	| midStmt 												# vsMid
-	| ADDRESSOF WS valueStmt 								# vsAddressOf
+	| ADDRESSOF WS? valueStmt 								# vsAddressOf
 	| implicitCallStmt_InStmt WS? ASSIGN WS? valueStmt 		# vsAssign
-
-	| valueStmt WS IS WS valueStmt 							# vsIs
-	| valueStmt WS LIKE WS valueStmt 						# vsLike
+	
+	| valueStmt WS? IS WS? valueStmt 							# vsIs
+	| valueStmt WS? LIKE WS? valueStmt 						# vsLike
 	| valueStmt WS? GEQ WS? valueStmt 						# vsGeq
 	| valueStmt WS? LEQ WS? valueStmt 						# vsLeq
 	| valueStmt WS? GT WS? valueStmt 						# vsGt
@@ -503,7 +528,7 @@ valueStmt :
 	| valueStmt WS? NEQ WS? valueStmt 						# vsNeq
 	| valueStmt WS? EQ WS? valueStmt 						# vsEq
 
-	| valueStmt WS AMPERSAND WS valueStmt 					# vsAmp
+	| valueStmt WS? AMPERSAND WS? valueStmt 					# vsAmp
 	| MINUS WS? valueStmt 									# vsNegation
 	| PLUS WS? valueStmt 									# vsPlus
 	| valueStmt WS? PLUS WS? valueStmt 						# vsAdd
@@ -513,12 +538,12 @@ valueStmt :
 	| valueStmt WS? MINUS WS? valueStmt 					# vsMinus
 	| valueStmt WS? POW WS? valueStmt 						# vsPow
 
-	| valueStmt WS IMP WS valueStmt 						# vsImp
-	| valueStmt WS EQV WS valueStmt 						# vsEqv
+	| valueStmt WS? IMP WS? valueStmt 						# vsImp
+	| valueStmt WS? EQV WS? valueStmt 						# vsEqv
 	| valueStmt WS? XOR WS? valueStmt 						# vsXor
 	| valueStmt WS? OR WS? valueStmt 						# vsOr
-	| valueStmt WS AND WS valueStmt 						# vsAnd
-	| NOT WS valueStmt 										# vsNot
+	| valueStmt WS? AND WS? valueStmt 						# vsAnd
+	| NOT WS? valueStmt 										# vsNot
 ;
 
 variableStmt : (DIM | STATIC | visibility) WS (WITHEVENTS WS)? variableListStmt;
@@ -533,7 +558,7 @@ whileWendStmt :
 	WEND
 ;
 
-widthStmt : WIDTH WS valueStmt WS? ',' WS? valueStmt;
+widthStmt : WIDTH WS fileNumber WS? ',' WS? valueStmt;
 
 withStmt : 
 	WITH WS (implicitCallStmt_InStmt | (NEW WS type)) NEWLINE+ 
@@ -544,7 +569,7 @@ withStmt :
 writeStmt : WRITE WS fileNumber WS? ',' (WS? outputList)?;
 
 
-fileNumber : '#'? (ambiguousIdentifier | INTEGERLITERAL);
+fileNumber : '#'? valueStmt;
 
 
 // complex call statements ----------------------------------
@@ -555,10 +580,12 @@ explicitCallStmt :
 ;
 
 // parantheses are required in case of args -> empty parantheses are removed
-eCS_ProcedureCall : CALL WS ambiguousIdentifier typeHint? (WS? LPAREN WS? argsCall WS? RPAREN)?;
+eCS_ProcedureCall : CALL WS ambiguousIdentifier typeHint? (WS? LPAREN WS? argsCall WS? RPAREN)? (WS? LPAREN subscripts RPAREN)*;
+
+
 
 // parantheses are required in case of args -> empty parantheses are removed
-eCS_MemberProcedureCall : CALL WS implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS? LPAREN WS? argsCall WS? RPAREN)?;
+eCS_MemberProcedureCall : CALL WS implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS? LPAREN WS? argsCall WS? RPAREN)? (WS? LPAREN subscripts RPAREN)*;
 
 
 implicitCallStmt_InBlock :
@@ -566,12 +593,12 @@ implicitCallStmt_InBlock :
 	| iCS_B_ProcedureCall
 ;
 
-iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS argsCall)? dictionaryCallStmt?;
+iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS argsCall)? dictionaryCallStmt? (WS? LPAREN subscripts RPAREN)*;
 
 // parantheses are forbidden in case of args
 // variables cannot be called in blocks
 // certainIdentifier instead of ambiguousIdentifier for preventing ambiguity with statement keywords 
-iCS_B_ProcedureCall : certainIdentifier (WS argsCall)?;
+iCS_B_ProcedureCall : certainIdentifier (WS argsCall)? (WS? LPAREN subscripts RPAREN)*;
 
 
 // iCS_S_MembersCall first, so that member calls are not resolved as separate iCS_S_VariableOrProcedureCalls
@@ -582,11 +609,11 @@ implicitCallStmt_InStmt :
 	| iCS_S_DictionaryCall
 ;
 
-iCS_S_VariableOrProcedureCall : ambiguousIdentifier typeHint? dictionaryCallStmt?;
+iCS_S_VariableOrProcedureCall : ambiguousIdentifier typeHint? dictionaryCallStmt? (WS? LPAREN subscripts RPAREN)*;
 
-iCS_S_ProcedureOrArrayCall : (ambiguousIdentifier | baseType) typeHint? WS? LPAREN WS? (argsCall WS?)? RPAREN dictionaryCallStmt?;
+iCS_S_ProcedureOrArrayCall : (ambiguousIdentifier | baseType) typeHint? WS? LPAREN WS? (argsCall WS?)? RPAREN dictionaryCallStmt? (WS? LPAREN subscripts RPAREN)*;
 
-iCS_S_MembersCall : (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall)? iCS_S_MemberCall+ dictionaryCallStmt?;
+iCS_S_MembersCall : (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall)? iCS_S_MemberCall+ dictionaryCallStmt? (WS? LPAREN subscripts RPAREN)*;
 
 iCS_S_MemberCall : ('.' | '!') (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall);
 
@@ -597,7 +624,7 @@ iCS_S_DictionaryCall : dictionaryCallStmt;
 
 argsCall : (argCall? WS? (',' | ';') WS?)* argCall (WS? (',' | ';') WS? argCall?)*;
 
-argCall : ((BYVAL | BYREF | PARAMARRAY) WS)? valueStmt;
+argCall : LPAREN? ((BYVAL | BYREF | PARAMARRAY) WS)? RPAREN? valueStmt;
 
 dictionaryCallStmt : '!' ambiguousIdentifier typeHint?;
 
@@ -606,9 +633,9 @@ dictionaryCallStmt : '!' ambiguousIdentifier typeHint?;
 
 argList : LPAREN (WS? arg (WS? ',' WS? arg)*)? WS? RPAREN;
 
-arg : (OPTIONAL WS)? ((BYVAL | BYREF) WS)? (PARAMARRAY WS)? ambiguousIdentifier (WS? LPAREN WS? RPAREN)? (WS asTypeClause)? (WS? argDefaultValue)?;
+arg : (OPTIONAL WS)? ((BYVAL | BYREF) WS)? (PARAMARRAY WS)? ambiguousIdentifier (WS? LPAREN WS? RPAREN)? (WS? asTypeClause)? (WS? argDefaultValue)?;
 
-argDefaultValue : EQ WS? (literal | ambiguousIdentifier);
+argDefaultValue : EQ WS? valueStmt;
 
 subscripts : subscript (WS? ',' WS? subscript)*;
 
@@ -619,10 +646,9 @@ subscript : (valueStmt WS TO WS)? valueStmt;
 
 ambiguousIdentifier : 
 	(IDENTIFIER | ambiguousKeyword)+
-	| L_SQUARE_BRACKET (IDENTIFIER | ambiguousKeyword)+ R_SQUARE_BRACKET
 ;
 
-asTypeClause : AS WS (NEW WS)? type (WS fieldLength)?;
+asTypeClause : AS WS? (NEW WS)? type (WS? fieldLength)?;
 
 baseType : BOOLEAN | BYTE | COLLECTION | DATE | DOUBLE | INTEGER | LONG | SINGLE | STRING | VARIANT;
 
@@ -641,7 +667,7 @@ letterrange : certainIdentifier (WS? MINUS WS? certainIdentifier)?;
 
 lineLabel : ambiguousIdentifier ':';
 
-literal : COLORLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
+literal : HEXLITERAL | OCTLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | SHORTLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
 
 type : (baseType | complexType) (WS? LPAREN WS? RPAREN)?;
 
@@ -725,25 +751,25 @@ DOUBLE : D O U B L E;
 EACH : E A C H;
 ELSE : E L S E;
 ELSEIF : E L S E I F;
-END_ENUM : E N D ' ' E N U M;
-END_FUNCTION : E N D ' ' F U N C T I O N;
-END_IF : E N D ' ' I F;
-END_PROPERTY : E N D ' ' P R O P E R T Y;
-END_SELECT : E N D ' ' S E L E C T;
-END_SUB : E N D ' ' S U B;
-END_TYPE : E N D ' ' T Y P E;
-END_WITH : E N D ' ' W I T H;
+END_ENUM : E N D WS E N U M;
+END_FUNCTION : E N D WS F U N C T I O N;
+END_IF : E N D WS I F;
+END_PROPERTY : E N D WS P R O P E R T Y;
+END_SELECT : E N D WS S E L E C T;
+END_SUB : E N D WS S U B;
+END_TYPE : E N D WS T Y P E;
+END_WITH : E N D WS W I T H;
 END : E N D;
 ENUM : E N U M;
 EQV : E Q V;
 ERASE : E R A S E;
 ERROR : E R R O R;
 EVENT : E V E N T;
-EXIT_DO : E X I T ' ' D O;
-EXIT_FOR : E X I T ' ' F O R;
-EXIT_FUNCTION : E X I T ' ' F U N C T I O N;
-EXIT_PROPERTY : E X I T ' ' P R O P E R T Y;
-EXIT_SUB : E X I T ' ' S U B;
+EXIT_DO : E X I T WS D O;
+EXIT_FOR : E X I T WS F O R;
+EXIT_FUNCTION : E X I T WS F U N C T I O N;
+EXIT_PROPERTY : E X I T WS P R O P E R T Y;
+EXIT_SUB : E X I T WS S U B;
 FALSE : F A L S E;
 FILECOPY : F I L E C O P Y;
 FRIEND : F R I E N D;
@@ -769,15 +795,16 @@ LEN : L E N;
 LET : L E T;
 LIB : L I B;
 LIKE : L I K E;
-LINE_INPUT : L I N E ' ' I N P U T;
-LOCK_READ : L O C K ' ' R E A D;
-LOCK_WRITE : L O C K ' ' W R I T E;
-LOCK_READ_WRITE : L O C K ' ' R E A D ' ' W R I T E;
+LINE_INPUT : L I N E WS I N P U T;
+LOCK_READ : L O C K WS R E A D;
+LOCK_WRITE : L O C K WS W R I T E;
+LOCK_READ_WRITE : L O C K WS R E A D WS W R I T E;
 LSET : L S E T;
-MACRO_IF : '#' I F ' ';
-MACRO_ELSEIF : '#' E L S E I F ' ';
-MACRO_ELSE : '#' E L S E ' ';
-MACRO_END_IF : '#' E N D ' ' I F;
+MACRO_CONST : '#' C O N S T WS;
+MACRO_IF : '#' I F WS;
+MACRO_ELSEIF : '#' E L S E I F WS;
+MACRO_ELSE : '#' E L S E NEWLINE;
+MACRO_END_IF : '#' E N D WS I F NEWLINE;
 ME : M E;
 MID : M I D;
 MKDIR : M K D I R;
@@ -789,22 +816,23 @@ NOT : N O T;
 NOTHING : N O T H I N G;
 NULL : N U L L;
 ON : O N;
-ON_ERROR : O N ' ' E R R O R;
+ON_ERROR : O N WS E R R O R;
+ON_LOCAL_ERROR : O N WS L O C A L WS E R R O R;
 OPEN : O P E N;
 OPTIONAL : O P T I O N A L;
-OPTION_BASE : O P T I O N ' ' B A S E;
-OPTION_EXPLICIT : O P T I O N ' ' E X P L I C I T;
-OPTION_COMPARE : O P T I O N ' ' C O M P A R E;
-OPTION_PRIVATE_MODULE : O P T I O N ' ' P R I V A T E ' ' M O D U L E;
+OPTION_BASE : O P T I O N WS B A S E WS;
+OPTION_EXPLICIT : O P T I O N WS E X P L I C I T;
+OPTION_COMPARE : O P T I O N WS C O M P A R E WS;
+OPTION_PRIVATE_MODULE : O P T I O N WS P R I V A T E WS M O D U L E;
 OR : O R;
 OUTPUT : O U T P U T;
 PARAMARRAY : P A R A M A R R A Y;
 PRESERVE : P R E S E R V E;
 PRINT : P R I N T;
 PRIVATE : P R I V A T E;
-PROPERTY_GET : P R O P E R T Y ' ' G E T;
-PROPERTY_LET : P R O P E R T Y ' ' L E T;
-PROPERTY_SET : P R O P E R T Y ' ' S E T;
+PROPERTY_GET : P R O P E R T Y WS G E T;
+PROPERTY_LET : P R O P E R T Y WS L E T;
+PROPERTY_SET : P R O P E R T Y WS S E T;
 PTRSAFE : P T R S A F E;
 PUBLIC : P U B L I C;
 PUT : P U T;
@@ -812,7 +840,7 @@ RANDOM : R A N D O M;
 RANDOMIZE : R A N D O M I Z E;
 RAISEEVENT : R A I S E E V E N T;
 READ : R E A D;
-READ_WRITE : R E A D ' ' W R I T E;
+READ_WRITE : R E A D WS W R I T E;
 REDIM : R E D I M;
 REM : R E M;
 RESET : R E S E T;
@@ -881,23 +909,38 @@ R_SQUARE_BRACKET : ']';
 
 // literals
 STRINGLITERAL : '"' (~["\r\n] | '""')* '"';
-DATELITERAL : '#' (~[#\r\n])* '#';
-COLORLITERAL : '&H' [0-9A-F]+ '&'?;
-INTEGERLITERAL : (PLUS|MINUS)? ('0'..'9')+ ( ('e' | 'E') INTEGERLITERAL)* ('#' | '&')?;
-DOUBLELITERAL : (PLUS|MINUS)? ('0'..'9')* '.' ('0'..'9')+ ( ('e' | 'E') (PLUS|MINUS)? ('0'..'9')+)* ('#' | '&')?;
-BYTELITERAL : ('0'..'9')+;
-// identifier
-IDENTIFIER : LETTER (LETTERORDIGIT)*;
+OCTLITERAL : '&O' [0-8]+ '&'?;
+HEXLITERAL : '&H' [0-9A-F]+ '&'?;
+SHORTLITERAL : (PLUS|MINUS)? DIGIT+ ('#' | '&' | '@')?;
+INTEGERLITERAL : SHORTLITERAL (E SHORTLITERAL)?;
+DOUBLELITERAL : (PLUS|MINUS)? DIGIT* '.' DIGIT+ (E SHORTLITERAL)?;
+
+DATELITERAL : '#' DATEORTIME '#';
+fragment DATEORTIME : DATEVALUE WS? TIMEVALUE | DATEVALUE | TIMEVALUE;
+fragment DATEVALUE : DATEVALUEPART DATESEPARATOR DATEVALUEPART (DATESEPARATOR DATEVALUEPART)?;
+fragment DATEVALUEPART : DIGIT+ | MONTHNAME;
+fragment DATESEPARATOR : WS? [/,-]? WS?;
+fragment MONTHNAME : ENGLISHMONTHNAME | ENGLISHMONTHABBREVIATION;
+fragment ENGLISHMONTHNAME : J A N U A R Y | F E B R U A R Y | M A R C H | A P R I L | M A Y | J U N E  | A U G U S T | S E P T E M B E R | O C T O B E R | N O V E M B E R | D E C E M B E R;
+fragment ENGLISHMONTHABBREVIATION : J A N | F E B | M A R | A P R | J U N | J U L | A U G | S E P |  O C T | N O V | D E C;
+fragment TIMEVALUE : DIGIT+ AMPM | DIGIT+ TIMESEPARATOR DIGIT+ (TIMESEPARATOR DIGIT+)? AMPM?;
+fragment TIMESEPARATOR : WS? (':' | '.') WS?;
+fragment AMPM : WS? (A M | P M | A | P);
+
 // whitespace, line breaks, comments, ...
-LINE_CONTINUATION : ' ' '_' '\r'? '\n' -> skip;
-NEWLINE : WS? ('\r'? '\n' | ':' ' ') WS?;
-COMMENT : WS? ('\'' | ':'? REM ' ') (LINE_CONTINUATION | ~('\n' | '\r'))* -> skip;
-WS : [ \t]+;
+LINE_CONTINUATION : [ \t]+ '_' '\r'? '\n' -> skip;
+NEWLINE : (':' WS?) | (WS? ('\r'? '\n') WS?);
+COMMENT : WS? ('\'' | ':'? REM WS) (LINE_CONTINUATION | ~('\n' | '\r'))* -> skip;
+WS : ([ \t] | LINE_CONTINUATION)+;
+
+// identifier
+IDENTIFIER :  (~[\[\]\(\)\r\n\t.,'"|!@#$%^&*-+:=; ])+ | L_SQUARE_BRACKET (~[!\]\r\n])+ R_SQUARE_BRACKET;
 
 
 // letters
-fragment LETTER : [a-zA-Z_‰ˆ¸ƒ÷‹];
-fragment LETTERORDIGIT : [a-zA-Z0-9_‰ˆ¸ƒ÷‹];
+fragment LETTER : [a-zA-Z_√§√∂√º√Ñ√ñ√ú];
+fragment DIGIT : [0-9];
+fragment LETTERORDIGIT : [a-zA-Z0-9_√§√∂√º√Ñ√ñ√ú];
 
 // case insensitive chars
 fragment A:('a'|'A');

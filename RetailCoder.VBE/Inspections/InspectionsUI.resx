@@ -1,0 +1,380 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AssignedByValParameterInspectionMeta" xml:space="preserve">
+    <value>Parameter is passed by value, but is assigned a new value/reference. Consider making a local copy instead.</value>
+  </data>
+  <data name="AssignedByValParameterInspectionName" xml:space="preserve">
+    <value>ByVal parameter is assigned</value>
+  </data>
+  <data name="CodeQualityIssues" xml:space="preserve">
+    <value>Code quality issues</value>
+  </data>
+  <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
+    <value>Constant value is declared but Rubberduck could not find any reference to it. Consider removing the unused declaration.</value>
+  </data>
+  <data name="ConstantNotUsedInspectionName" xml:space="preserve">
+    <value>Constant is not referred to</value>
+  </data>
+  <data name="DefaultProjectNameInspectionMeta" xml:space="preserve">
+    <value>Consider naming your VBA project.</value>
+  </data>
+  <data name="DefaultProjectNameInspectionName" xml:space="preserve">
+    <value>Project has default project name</value>
+  </data>
+  <data name="EmptyStringLiteralInspection" xml:space="preserve">
+    <value>Prefer 'vbNullString' to an empty string literal</value>
+  </data>
+  <data name="EmptyStringLiteralInspectionMeta" xml:space="preserve">
+    <value>The built-in constant 'vbNullString' is a null string pointer taking up 0 bytes of memory, that unambiguously conveys the intent of an empty string.</value>
+  </data>
+  <data name="EmptyStringLiteralInspectionName" xml:space="preserve">
+    <value>Empty string literal</value>
+  </data>
+  <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
+    <value>Replace empty string with the 'vbNullString' constant</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
+    <value>Make field '{0}' a property</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionMeta" xml:space="preserve">
+    <value>Use properties rather than public fields.</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionName" xml:space="preserve">
+    <value>Use properties rather than public fields.</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionQuickFix" xml:space="preserve">
+    <value>Encapsulate field '{0}' with property</value>
+  </data>
+  <data name="IgnoreOnce" xml:space="preserve">
+    <value>Ignore once</value>
+  </data>
+  <data name="ImplicitActiveSheetReferenceInspectionMeta" xml:space="preserve">
+    <value>Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they're intended, and prefer working off object references.</value>
+  </data>
+  <data name="ImplicitActiveSheetReferenceInspectionName" xml:space="preserve">
+    <value>Implicit reference to ActiveSheet</value>
+  </data>
+  <data name="ImplicitActiveWorkbookReferenceInspectionMeta" xml:space="preserve">
+    <value>Implicit references to the active workbook make the code frail and harder to debug. Consider making these references explicit when they're intended, and prefer working off object references.</value>
+  </data>
+  <data name="ImplicitActiveWorkbookReferenceInspectionName" xml:space="preserve">
+    <value>Implicit reference to ActiveWorkbook</value>
+  </data>
+  <data name="ImplicitByRefParameterInspectionMeta" xml:space="preserve">
+    <value>Parameters are passed by reference unless specified otherwise, which can be confusing and bug-prone. Prefer passing parameters by value, and specify ByRef explicitly when passing parameters by reference.</value>
+  </data>
+  <data name="ImplicitByRefParameterInspectionName" xml:space="preserve">
+    <value>Implicit ByRef parameter</value>
+  </data>
+  <data name="ImplicitPublicMemberInspectionMeta" xml:space="preserve">
+    <value>Module members are public by default, which can be counter-intuitive. Consider specifying explicit access modifiers to avoid ambiguity.</value>
+  </data>
+  <data name="ImplicitPublicMemberInspectionName" xml:space="preserve">
+    <value>Implicitly public member</value>
+  </data>
+  <data name="ImplicitVariantReturnTypeInspectionMeta" xml:space="preserve">
+    <value>Members with a return value implicitly return a 'Variant' unless specified otherwise. Consider returning an explicit 'Variant' when the return type isn't known, or specify it explicitly.</value>
+  </data>
+  <data name="ImplicitVariantReturnTypeInspectionName" xml:space="preserve">
+    <value>Return type is implicitly 'Variant'</value>
+  </data>
+  <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
+    <value>Move field closer to usage</value>
+  </data>
+  <data name="MoveFieldCloserToUsageInspectionMeta" xml:space="preserve">
+    <value>A field that is only used in one method should be a local variable.</value>
+  </data>
+  <data name="MoveFieldCloserToUsageInspectionName" xml:space="preserve">
+    <value>Move field closer to usage</value>
+  </data>
+  <data name="MoveFieldCloserToUsageInspectionQuickFix" xml:space="preserve">
+    <value>Move field '{0}' closer to usage</value>
+  </data>
+  <data name="LanguageOpportunities" xml:space="preserve">
+    <value>Language opportunities</value>
+  </data>
+  <data name="MaintainabilityAndReadabilityIssues" xml:space="preserve">
+    <value>Maintainability &amp; readability issues</value>
+  </data>
+  <data name="MultilineParameterInspectionMeta" xml:space="preserve">
+    <value>Consider continuing long signatures between parameters. Splitting a parameter declaration across multiple lines arguably hurts readability.</value>
+  </data>
+  <data name="MultilineParameterInspectionName" xml:space="preserve">
+    <value>Parameter declaration is split on multiple lines</value>
+  </data>
+  <data name="MultipleDeclarationsInspectionMeta" xml:space="preserve">
+    <value>Declaring multiple variables in the same instruction is legal, but should be used sparingly. Consider declaring variables closer to their usage, in a single instruction per declaration.</value>
+  </data>
+  <data name="MultipleDeclarationsInspectionName" xml:space="preserve">
+    <value>Instruction contains multiple declarations</value>
+  </data>
+  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
+    <value>'{0}' has more than one '@Folder' annotation.</value>
+  </data>
+  <data name="MultipleFolderAnnotationsInspectionMeta" xml:space="preserve">
+    <value>Rubberduck only uses the first '@Folder' annotation in a code module; consider removing extraneous ones.</value>
+  </data>
+  <data name="MultipleFolderAnnotationsInspectionName" xml:space="preserve">
+    <value>'{0}' has more than one folder annotation.</value>
+  </data>
+  <data name="NonReturningFunctionInspectionMeta" xml:space="preserve">
+    <value>This is likely a bug. The return value of a function or property getter must be assigned before exiting, otherwise the program will not be working with expected results. If a function has no meaningful return value, consider declaring it as a 'Sub' procedure instead.</value>
+  </data>
+  <data name="NonReturningFunctionInspectionName" xml:space="preserve">
+    <value>Non-returning function or property getter</value>
+  </data>
+  <data name="ObsoleteCallStatementInspectionMeta" xml:space="preserve">
+    <value>The 'Call' statement is no longer required to call procedures, and only exists in the language to support legacy code that required it; it can be safely rewritten to an implicit call.</value>
+  </data>
+  <data name="ObsoleteCallStatementInspectionName" xml:space="preserve">
+    <value>'Call' statement usage</value>
+  </data>
+  <data name="ObsoleteCommentSyntaxInspectionMeta" xml:space="preserve">
+    <value>The 'Rem' statement only exists in the language to support legacy code that required it; it can be safely replaced with an apostrophe / single-quote comment.</value>
+  </data>
+  <data name="ObsoleteCommentSyntaxInspectionName" xml:space="preserve">
+    <value>'Rem' statement usage</value>
+  </data>
+  <data name="ObsoleteGlobalInspectionMeta" xml:space="preserve">
+    <value>The 'Global' keyword only exists in the language to support legacy code that required it; it can be safely replaced with the 'Public' modifier.</value>
+  </data>
+  <data name="ObsoleteGlobalInspectionName" xml:space="preserve">
+    <value>'Global' statement usage</value>
+  </data>
+  <data name="ObsoleteLetStatementInspectionMeta" xml:space="preserve">
+    <value>The 'Let' statement only exists in the language to support legacy code that required it; it can be safely removed, since modern VBA does not require that keyword for value assignments.</value>
+  </data>
+  <data name="ObsoleteLetStatementInspectionName" xml:space="preserve">
+    <value>'Let' statement usage</value>
+  </data>
+  <data name="ObsoleteTypeHintInspectionMeta" xml:space="preserve">
+    <value>Type hint characters only exist in the language to support legacy code that required it; they can be safely replaced in declarations with an "As" type clause that specifies the type explicitly, and they can be omitted in other identifier references.</value>
+  </data>
+  <data name="ObsoleteTypeHintInspectionName" xml:space="preserve">
+    <value>Type hint usage</value>
+  </data>
+  <data name="OptionBaseInspectionMeta" xml:space="preserve">
+    <value>Arrays are typically zero-based. This option changes the default lower boundary for implicitly-sized arrays, which can introduce off-by-one errors if one isn't cautious.</value>
+  </data>
+  <data name="OptionBaseInspectionName" xml:space="preserve">
+    <value>'Option Base 1' is specified</value>
+  </data>
+  <data name="OptionExplicitInspectionMeta" xml:space="preserve">
+    <value>Rubberduck works best when all used identifiers are declared. Allowing the usage of undeclared variables can cause easily avoidable bugs. Always specify Option Explicit.</value>
+  </data>
+  <data name="OptionExplicitInspectionName" xml:space="preserve">
+    <value>'Option Explicit' is not specified</value>
+  </data>
+  <data name="ParameterCanBeByValInspectionMeta" xml:space="preserve">
+    <value>A parameter that is passed by reference and isn't assigned a new value/reference, could be passed by value instead.</value>
+  </data>
+  <data name="ParameterCanBeByValInspectionName" xml:space="preserve">
+    <value>Parameter can be passed by value</value>
+  </data>
+  <data name="ParameterNotUsedInspectionMeta" xml:space="preserve">
+    <value>A parameter is passed into a member that does not use it. Consider removing that parameter.</value>
+  </data>
+  <data name="ParameterNotUsedInspectionName" xml:space="preserve">
+    <value>Parameter is not referred to</value>
+  </data>
+  <data name="ProcedureNotUsedInspectionMeta" xml:space="preserve">
+    <value>Rubberduck could not find any caller for a procedure. If the procedure is hooked to a macro-button, used as a user-defined function (UDF) or handles an application event that Rubberduck didn't know of you can safely ignore this inspection result; otherwise, consider removing it.</value>
+  </data>
+  <data name="ProcedureNotUsedInspectionName" xml:space="preserve">
+    <value>Procedure is not referred to</value>
+  </data>
+  <data name="UnassignedVariableUsageInspectionMeta" xml:space="preserve">
+    <value>This is likely a bug. A variable is being referred to, but is never assigned.</value>
+  </data>
+  <data name="UnassignedVariableUsageInspectionName" xml:space="preserve">
+    <value>Variable is used but not assigned</value>
+  </data>
+  <data name="UntypedFunctionUsageInspectionMeta" xml:space="preserve">
+    <value>A string-returning equivalent function exists and should preferably be used to avoid implicit type conversions.</value>
+  </data>
+  <data name="UntypedFunctionUsageInspectionName" xml:space="preserve">
+    <value>Use of variant-returning string function</value>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
+    <value>Procedure '{0}' can be written as a function.</value>
+    <comment>{0} Procedure name</comment>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
+    <value>Implement as function and update usages.</value>
+  </data>
+  <data name="UseMeaningfulNameInspection" xml:space="preserve">
+    <value>Consider renaming {0} '{1}'</value>
+  </data>
+  <data name="UseMeaningfulNameInspectionMeta" xml:space="preserve">
+    <value>Identifier names should indicate what they're used for and should be readable; avoid disemvoweling, numeric suffixes, and 1-2 character names.</value>
+  </data>
+  <data name="UseMeaningfulNameInspectionName" xml:space="preserve">
+    <value>Use meaningful names</value>
+  </data>
+  <data name="VariableNotAssignedInspectionMeta" xml:space="preserve">
+    <value>A variable is declared, but never assigned a value/reference. If Rubberduck is correct, the variable could probably be safely removed.</value>
+  </data>
+  <data name="VariableNotAssignedInspectionName" xml:space="preserve">
+    <value>Unassigned variable</value>
+  </data>
+  <data name="VariableNotUsedInspectionMeta" xml:space="preserve">
+    <value>A variable is declared and assigned a value/reference, but it's never referred to.</value>
+  </data>
+  <data name="VariableNotUsedInspectionName" xml:space="preserve">
+    <value>Variable is not referred to</value>
+  </data>
+  <data name="VariableTypeNotDeclaredInspectionMeta" xml:space="preserve">
+    <value>A variable whose type isn't explicitly declared, is implicitly 'Variant'. Consider making it an explicit 'Variant' if that's intended, or declare a more specific type.</value>
+  </data>
+  <data name="VariableTypeNotDeclaredInspectionName" xml:space="preserve">
+    <value>Variable is implicitly 'Variant'</value>
+  </data>
+  <data name="WriteOnlyPropertyInspectionMeta" xml:space="preserve">
+    <value>A property that exposes a mutator but no accessor is a design smell and makes a confusing API. Consider exposing a getter, or converting the mutator to a method.</value>
+  </data>
+  <data name="WriteOnlyPropertyInspectionName" xml:space="preserve">
+    <value>Write-only property</value>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspectionMeta" xml:space="preserve">
+    <value>A procedure that only has one parameter passed by reference that is assigned a new value/reference before the procedure exits, is using a ByRef parameter as a return value: consider making it a function instead.</value>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspectionName" xml:space="preserve">
+    <value>Procedure can be written as a function</value>
+  </data>
+  <data name="WriteOnlyPropertyInspection" xml:space="preserve">
+    <value>Property '{0}' has no getter</value>
+    <comment>{0} Property name</comment>
+  </data>
+  <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
+    <value>Declaration '{0}' is self-assigned</value>
+  </data>
+  <data name="SelfAssignedDeclarationInspectionMeta" xml:space="preserve">
+    <value>A declaration should not be self-assigned.</value>
+  </data>
+  <data name="SelfAssignedDeclarationInspectionName" xml:space="preserve">
+    <value>Self-assigned property</value>
+  </data>
+  <data name="FunctionReturnValueNotUsedInspectionName" xml:space="preserve">
+    <value>Function return value is never used.</value>
+  </data>
+  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+    <value>Return value of function '{0}' is never used.</value>
+  </data>
+</root>

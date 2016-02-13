@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Common;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
@@ -12,44 +15,44 @@ namespace Rubberduck.Navigation.RegexSearchReplace
     public class RegexSearchReplace : IRegexSearchReplace
     {
         private readonly RegexSearchReplaceModel _model;
+        private readonly VBE _vbe;
+        private readonly IRubberduckParser _parser;
         private readonly ICodePaneWrapperFactory _codePaneFactory;
 
-        public RegexSearchReplace (RegexSearchReplaceModel model, ICodePaneWrapperFactory codePaneFactory)
+        public RegexSearchReplace(VBE vbe, IRubberduckParser parser, ICodePaneWrapperFactory codePaneFactory)
         {
-            _model = model;
+            _vbe = vbe;
+            _parser = parser;
             _codePaneFactory = codePaneFactory;
+            _search = new Dictionary<RegexSearchReplaceScope, Func<string, IEnumerable<RegexSearchResult>>>
+            {
+                { RegexSearchReplaceScope.Selection, SearchSelection},
+                { RegexSearchReplaceScope.CurrentBlock, SearchCurrentBlock},
+                { RegexSearchReplaceScope.CurrentFile, SearchCurrentFile},
+                { RegexSearchReplaceScope.AllOpenedFiles, SearchOpenFiles},
+                { RegexSearchReplaceScope.CurrentProject, SearchCurrentProject},
+                { RegexSearchReplaceScope.AllOpenProjects, SearchOpenProjects},
+            };
         }
 
-        public List<RegexSearchResult> Find(string searchPattern, RegexSearchReplaceScope scope)
+        private readonly IDictionary<RegexSearchReplaceScope,Func<string,IEnumerable<RegexSearchResult>>> _search;
+
+        public IEnumerable<RegexSearchResult> Search(string searchPattern, RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile)
         {
-            switch (scope)
+            Func<string,IEnumerable<RegexSearchResult>> searchFunc;
+            if (_search.TryGetValue(scope, out searchFunc))
             {
-                case RegexSearchReplaceScope.Selection:
-                    return GetResults_Selection(searchPattern);
-
-                case RegexSearchReplaceScope.CurrentBlock:
-                    return GetResults_CurrentBlock(searchPattern);
-
-                case RegexSearchReplaceScope.CurrentFile:
-                    return GetResults_CurrentFile(searchPattern);
-
-                case RegexSearchReplaceScope.AllOpenedFiles:
-                    return GetResults_AllOpenedFiles(searchPattern);
-
-                case RegexSearchReplaceScope.CurrentProject:
-                    return GetResults_CurrentProject(searchPattern);
-
-                case RegexSearchReplaceScope.AllOpenProjects:
-                    return GetResults_AllOpenProjects(searchPattern);
-
-                default:
-                    return new List<RegexSearchResult>();
+                return searchFunc.Invoke(searchPattern);
+            }
+            else
+            {
+                return new List<RegexSearchResult>();
             }
         }
 
         public void Replace(string searchPattern, string replaceValue, RegexSearchReplaceScope scope)
         {
-            var results = Find(searchPattern, scope);
+            var results = Search(searchPattern, scope).ToList();
 
             if (results.Count == 0) { return; }
 
@@ -67,7 +70,7 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         public void ReplaceAll(string searchPattern, string replaceValue, RegexSearchReplaceScope scope)
         {
-            var results = Find(searchPattern, scope);
+            var results = Search(searchPattern, scope);
 
             foreach (RegexSearchResult result in results)
             {
@@ -96,22 +99,23 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         private void SetSelection(RegexSearchResult item)
         {
-            var project = item.Module.VBE.ActiveVBProject;
-            foreach (var proj in item.Module.VBE.VBProjects.Cast<VBProject>().Where(proj => proj.VBComponents.Cast<VBComponent>().Any(v => v.CodeModule == item.Module)))
+            var project = _vbe.ActiveVBProject;
+            foreach (var proj in _vbe.VBProjects.Cast<VBProject>())
             {
                 project = proj;
                 break;
             }
-            _model.VBE.SetSelection(project, item.Selection, item.Module.Name, _codePaneFactory);
+            _vbe.SetSelection(project, item.Selection, item.Module.Name, _codePaneFactory);
         }
 
-        private List<RegexSearchResult> GetResults_Selection(string searchPattern)
+        private List<RegexSearchResult> SearchSelection(string searchPattern)
         {
-            IEnumerable<RegexSearchResult> results = GetResultsFromModule(_model.VBE.ActiveCodePane.CodeModule, searchPattern);
-            return results.Where(r => _model.Selection.Selection.Contains(r.Selection)).ToList();
+            var wrapper = _codePaneFactory.Create(_vbe.ActiveCodePane);
+            var results = GetResultsFromModule(_vbe.ActiveCodePane.CodeModule, searchPattern);
+            return results.Where(r => wrapper.Selection.Contains(r.Selection)).ToList();
         }
 
-        private List<RegexSearchResult> GetResults_CurrentBlock(string searchPattern)
+        private List<RegexSearchResult> SearchCurrentBlock(string searchPattern)
         {
             var declarationTypes = new[]
                     {
@@ -123,23 +127,26 @@ namespace Rubberduck.Navigation.RegexSearchReplace
                         DeclarationType.PropertySet
                     };
 
-            IEnumerable<RegexSearchResult> results = GetResultsFromModule(_model.VBE.ActiveCodePane.CodeModule, searchPattern);
-            dynamic block = _model.ParseResult.Declarations.FindSelection(_model.Selection, declarationTypes).Context.Parent;
-            var selection = new Selection(block.Start.Line, block.Start.Column, block.Stop.Line,
-                block.Stop.Column);
+            var parseResult = _parser.State;
+            var results = GetResultsFromModule(_vbe.ActiveCodePane.CodeModule, searchPattern);
+
+            var wrapper = _codePaneFactory.Create(_vbe.ActiveCodePane);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(wrapper.CodeModule.Parent), wrapper.Selection);
+            dynamic block = parseResult.AllDeclarations.FindTarget(qualifiedSelection, declarationTypes).Context.Parent;
+            var selection = new Selection(block.Start.Line, block.Start.Column, block.Stop.Line, block.Stop.Column);
             return results.Where(r => selection.Contains(r.Selection)).ToList();
         }
 
-        private List<RegexSearchResult> GetResults_CurrentFile(string searchPattern)
+        private List<RegexSearchResult> SearchCurrentFile(string searchPattern)
         {
-            return GetResultsFromModule(_model.VBE.ActiveCodePane.CodeModule, searchPattern).ToList();
+            return GetResultsFromModule(_vbe.ActiveCodePane.CodeModule, searchPattern).ToList();
         }
 
-        private List<RegexSearchResult> GetResults_AllOpenedFiles(string searchPattern)
+        private List<RegexSearchResult> SearchOpenFiles(string searchPattern)
         {
             var results = new List<RegexSearchResult>();
 
-            foreach (var codePane in _model.VBE.CodePanes.Cast<CodePane>().Where(codePane => ReferenceEquals(_model.VBE, codePane.VBE)))
+            foreach (var codePane in _vbe.CodePanes.Cast<CodePane>())
             {
                 results.AddRange(GetResultsFromModule(codePane.CodeModule, searchPattern));
             }
@@ -147,35 +154,28 @@ namespace Rubberduck.Navigation.RegexSearchReplace
             return results;
         }
 
-        private List<RegexSearchResult> GetResults_CurrentProject(string searchPattern)
+        private List<RegexSearchResult> SearchCurrentProject(string searchPattern)
         {
             var results = new List<RegexSearchResult>();
 
-            foreach (var component in _model.VBE.ActiveVBProject.VBComponents.Cast<VBComponent>())
+            foreach (var component in _vbe.ActiveVBProject.VBComponents.Cast<VBComponent>())
             {
                 var module = component.CodeModule;
-
-                if (!ReferenceEquals(_model.VBE.ActiveVBProject, module.VBE.ActiveVBProject)) { continue; }
                 results.AddRange(GetResultsFromModule(module, searchPattern));
             }
 
             return results;
         }
 
-        private List<RegexSearchResult> GetResults_AllOpenProjects(string searchPattern)
+        private List<RegexSearchResult> SearchOpenProjects(string searchPattern)
         {
             var results = new List<RegexSearchResult>();
 
-            foreach (VBProject project in _model.VBE.VBProjects)
+            foreach (VBProject project in _vbe.VBProjects)
             {
                 foreach (var component in project.VBComponents.Cast<VBComponent>())
                 {
                     var module = component.CodeModule;
-
-                    if (!ReferenceEquals(_model.VBE, module.VBE))
-                    {
-                        continue;
-                    }
                     results.AddRange(GetResultsFromModule(module, searchPattern));
                 }
             }

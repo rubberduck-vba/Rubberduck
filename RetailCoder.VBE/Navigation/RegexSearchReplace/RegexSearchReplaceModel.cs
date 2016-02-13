@@ -1,20 +1,20 @@
-﻿using Microsoft.Vbe.Interop;
+﻿using System.Windows.Input;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Navigation.RegexSearchReplace
 {
-    public class RegexSearchReplaceModel
+    public class RegexSearchReplaceModel : ViewModelBase
     {
-        public VBE VBE { get; private set; }
-        public VBProjectParseResult ParseResult { get; private set; }
-        public QualifiedSelection Selection { get; private set; }
+        private string _searchPattern;
+        public string SearchPattern { get { return _searchPattern; } set { _searchPattern = value; OnPropertyChanged(); } }
 
-        public RegexSearchReplaceModel(VBE vbe, VBProjectParseResult parseResult, QualifiedSelection selection)
-        {
-            VBE = vbe;
-            ParseResult = parseResult;
-            Selection = selection;
-        }
+        private string _replacePattern;
+        public string ReplacePattern { get { return _replacePattern; } set { _replacePattern = value; OnPropertyChanged(); } }
+
+        private RegexSearchReplaceScope _searchScope;
+        public RegexSearchReplaceScope SearchScope { get { return _searchScope; } set { _searchScope = value; OnPropertyChanged(); } }
     }
 }

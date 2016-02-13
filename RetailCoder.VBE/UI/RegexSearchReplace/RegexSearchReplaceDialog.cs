@@ -6,7 +6,7 @@ using Rubberduck.Navigation.RegexSearchReplace;
 
 namespace Rubberduck.UI.RegexSearchReplace
 {
-    public partial class RegexSearchReplaceDialog : Form, IRegexSearchReplaceView
+    public partial class RegexSearchReplaceDialog : Form, IRegexSearchReplaceDialog
     {
         public string SearchPattern { get { return SearchBox.Text.Replace(@"\\", @"\"); } }
         public string ReplacePattern { get { return ReplaceBox.Text; } }
@@ -44,7 +44,7 @@ namespace Rubberduck.UI.RegexSearchReplace
         private RegexSearchReplaceScope ConvertScopeLabelsToEnum()
         {
             var scopes = from RegexSearchReplaceScope scope in Enum.GetValues(typeof(RegexSearchReplaceScope))
-                         where RubberduckUI.ResourceManager.GetString("RegexSearchReplaceScope_" + scope, RubberduckUI.Culture) == ScopeComboBox.SelectedValue
+                         where ReferenceEquals(RubberduckUI.ResourceManager.GetString("RegexSearchReplaceScope_" + scope, RubberduckUI.Culture), ScopeComboBox.SelectedValue)
                          select scope;
 
 

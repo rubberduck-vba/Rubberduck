@@ -31,6 +31,9 @@ namespace Rubberduck.Settings
         [XmlIgnore]
         public string Description { get; set; } // not serialized because culture-dependent
 
+        [XmlIgnore]
+        public string AnnotationName { get; set; }
+
         [XmlAttribute]
         public CodeInspectionSeverity Severity { get; set; }
 

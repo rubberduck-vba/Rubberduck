@@ -13,7 +13,7 @@ namespace Rubberduck.UI.Settings
     public partial class SettingsDialog : Form
     {
         private Configuration _config;
-        private IGeneralConfigService _configService;
+        private readonly IGeneralConfigService _configService;
         private ConfigurationTreeViewControl _treeview;
         private Control _activeControl;
 
@@ -34,6 +34,18 @@ namespace Rubberduck.UI.Settings
             ResetButton.Click += ResetButton_Click;
 
             InitWindow();
+        }
+
+        public SettingsDialog(IGeneralConfigService configService)
+            : this()
+        {
+            _configService = configService;
+            _config = _configService.LoadConfiguration();
+            _codeInspectionSettings = _config.UserSettings.CodeInspectionSettings.CodeInspections;
+
+            LoadWindow();
+
+            RegisterEvents();
         }
 
         private void ResetButton_Click(object sender, EventArgs e)
@@ -58,7 +70,7 @@ namespace Rubberduck.UI.Settings
 
         private void InitWindow()
         {
-            this.Text = RubberduckUI.Settings_Caption;
+            Text = RubberduckUI.Settings_Caption;
             OkButton.Text = RubberduckUI.OK;
             CancelButton.Text = RubberduckUI.CancelButtonText;
             ResetButton.Text = RubberduckUI.Settings_ResetSettings;
@@ -78,18 +90,6 @@ namespace Rubberduck.UI.Settings
         {
             SaveConfig();
             Close();
-        }
-
-        public SettingsDialog(IGeneralConfigService configService)
-            : this()
-        {
-            _configService = configService;
-            _config = _configService.LoadConfiguration();
-            _codeInspectionSettings = _config.UserSettings.CodeInspectionSettings.CodeInspections;
-
-            LoadWindow();
-
-            RegisterEvents();
         }
 
         private void LoadWindow()

@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -41,14 +34,14 @@ namespace Rubberduck.UI.UnitTesting
             newValue.TestCompleted += ViewModel_TestCompleted;
         }
 
-        private void ViewModel_TestCompleted(object sender, TestCompletedEventArgs e)
+        private void ViewModel_TestCompleted(object sender, EventArgs e)
         {
-            UpdateTestMethod(e.Test);
+            UpdateOutcomeViewSource();
         }
 
         private TestExplorerViewModel Context { get { return DataContext as TestExplorerViewModel; } }
 
-        private void UpdateTestMethod(TestMethod test)
+        private void UpdateOutcomeViewSource()
         {
             var view = ((CollectionViewSource)Resources["OutcomeGroupViewSource"]).View;
             view.Refresh();

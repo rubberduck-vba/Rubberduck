@@ -1,34 +1,32 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class AssignedByValParameterInspection : IInspection
+    public sealed class AssignedByValParameterInspection : InspectionBase
     {
-        public AssignedByValParameterInspection()
+        public AssignedByValParameterInspection(RubberduckParserState state)
+            : base(state)
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "AssignedByValParameterInspection"; } }
-        public string Description { get { return RubberduckUI.ByValParameterIsAssigned_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Description { get { return InspectionsUI.AssignedByValParameterInspectionName; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
-            var assignedByValParameters =
-                parseResult.Declarations.Items.Where(declaration => !declaration.IsBuiltIn &&
+            var assignedByValParameters = UserDeclarations.Where(declaration => 
                     declaration.DeclarationType == DeclarationType.Parameter
                     && ((VBAParser.ArgContext)declaration.Context).BYVAL() != null
                     && declaration.References.Any(reference => reference.IsAssignment));
 
             var issues = assignedByValParameters
-                .Select(param => new AssignedByValParameterInspectionResult(string.Format(Description, param.IdentifierName), Severity, param.Context, param.QualifiedName));
+                .Select(param => new AssignedByValParameterInspectionResult(this, string.Format(Description, param.IdentifierName), param.Context, param.QualifiedName));
 
             return issues;
         }

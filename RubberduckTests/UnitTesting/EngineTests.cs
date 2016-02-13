@@ -1,13 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Vbe.Interop;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor;
-using Moq;
-using Rubberduck.VBEditor.VBEHost;
-
 namespace RubberduckTests.UnitTesting
 {
     //[TestClass]

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
+using Rubberduck.Parsing.VBA;
 using stdole;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
@@ -42,6 +45,12 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             foreach (var kvp in _items)
             {
                 kvp.Value.Caption = kvp.Key.Caption.Invoke();
+
+                var childMenu = kvp.Key as ParentMenuItemBase;
+                if (childMenu != null)
+                {
+                    childMenu.Localize();
+                }
             }
         }
 
@@ -61,6 +70,27 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             {
                 _items[item] = InitializeChildControl(item as ICommandMenuItem)
                             ?? InitializeChildControl(item as IParentMenuItem);
+            }
+
+            Debug.Print("'{0}' ({1}) parent menu initialized, hash code {2}.", _key, GetHashCode(), Item.GetHashCode());
+        }
+
+        public void EvaluateCanExecute(RubberduckParserState state)
+        {
+            foreach (var kvp in _items)
+            {
+                var parentItem = kvp.Key as IParentMenuItem;
+                if (parentItem != null)
+                {
+                    parentItem.EvaluateCanExecute(state);
+                    continue;
+                }
+
+                var commandItem = kvp.Key as ICommandMenuItem;
+                if (commandItem != null)
+                {
+                    kvp.Value.Enabled = commandItem.EvaluateCanExecute(state);
+                }
             }
         }
 
@@ -87,14 +117,38 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             SetButtonImage(child, item.Image, item.Mask);
 
             child.BeginGroup = item.BeginGroup;
-            child.Tag = item.Key;
+            child.Tag = item.GetType().FullName;
             child.Caption = item.Caption.Invoke();
-            child.Click += delegate { item.Command.Execute(null); };
 
+            Debug.WriteLine("Menu item '{0}' created; hash code: {1} (command hash code {2})", child.Caption, child.GetHashCode(), item.Command.GetHashCode());
+
+            child.Click += child_Click;
             return child;
         }
 
-        private static void SetButtonImage(CommandBarButton button, Image image, Image mask)
+        // note: HAAAAACK!!!
+        private static int _lastHashCode;
+
+        private void child_Click(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.GetType().FullName == Ctrl.Tag) as ICommandMenuItem;
+            if (item == null || Ctrl.GetHashCode() == _lastHashCode)
+            {
+                return;
+            }
+
+            // without this hack, handler runs once for each menu item that's hooked up to the command.
+            // hash code is different on every frakkin' click. go figure. I've had it, this is the fix.
+            _lastHashCode = Ctrl.GetHashCode();
+
+            Debug.WriteLine("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), Ctrl.Caption, Ctrl.GetHashCode());
+            item.Command.Execute(null);
+        }
+
+        /// <summary>
+        /// Creates a transparent <see cref="IPictureDisp"/> icon for the specified <see cref="CommandBarButton"/>.
+        /// </summary>
+        public static void SetButtonImage(CommandBarButton button, Image image, Image mask)
         {
             button.FaceId = 0;
             if (image == null || mask == null)
@@ -102,8 +156,15 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 return;
             }
 
-            button.Picture = AxHostConverter.ImageToPictureDisp(image);
-            button.Mask = AxHostConverter.ImageToPictureDisp(mask);
+            try
+            {
+                button.Picture = AxHostConverter.ImageToPictureDisp(image);
+                button.Mask = AxHostConverter.ImageToPictureDisp(mask);
+            }
+            catch (COMException exception)
+            {
+                Debug.Print("Button image could not be set for button [" + button.Caption + "]\n" + exception);
+            }
         }
 
         private class AxHostConverter : AxHost
