@@ -6,7 +6,6 @@ namespace Rubberduck.UI.Settings
     {
         public UnitTestSettingsViewModel(Configuration config)
         {
-            // load from config.UserSettings.UnitTestSettings
             BindingMode = config.UserSettings.UnitTestSettings.BindingMode;
             AssertMode = config.UserSettings.UnitTestSettings.AssertMode;
             ModuleInit = config.UserSettings.UnitTestSettings.ModuleInit;
@@ -90,8 +89,20 @@ namespace Rubberduck.UI.Settings
 
         public void UpdateConfig(Configuration config)
         {
+            config.UserSettings.UnitTestSettings.BindingMode = BindingMode;
+            config.UserSettings.UnitTestSettings.AssertMode = AssertMode;
+            config.UserSettings.UnitTestSettings.ModuleInit = ModuleInit;
+            config.UserSettings.UnitTestSettings.MethodInit = MethodInit;
+            config.UserSettings.UnitTestSettings.DefaultTestStubInNewModule = DefaultTestStubInNewModule;
         }
 
-        public void SetToDefaults(Configuration config) {}
+        public void SetToDefaults(Configuration config)
+        {
+            BindingMode = config.UserSettings.UnitTestSettings.BindingMode;
+            AssertMode = config.UserSettings.UnitTestSettings.AssertMode;
+            ModuleInit = config.UserSettings.UnitTestSettings.ModuleInit;
+            MethodInit = config.UserSettings.UnitTestSettings.MethodInit;
+            DefaultTestStubInNewModule = config.UserSettings.UnitTestSettings.DefaultTestStubInNewModule;
+        }
     }
 }

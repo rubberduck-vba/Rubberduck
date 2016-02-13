@@ -58,6 +58,11 @@ namespace Rubberduck.Settings
                 config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
             }
 
+            if (config.UserSettings.UnitTestSettings == null)
+            {
+                config.UserSettings.UnitTestSettings = new UnitTestSettings();
+            }
+
             var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
             
             configInspections = MergeImplementedInspectionsNotInConfig(configInspections, _inspections);
