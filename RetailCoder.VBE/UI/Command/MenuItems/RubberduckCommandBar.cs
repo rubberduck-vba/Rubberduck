@@ -8,7 +8,7 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-    public class ParserStateCommandBar
+    public class RubberduckCommandBar
     {
         private readonly IRubberduckParser _parser;
         private readonly VBE _vbe;
@@ -16,7 +16,7 @@ namespace Rubberduck.UI.Command.MenuItems
         private CommandBarButton _refreshButton;
         private CommandBarButton _statusButton;
 
-        public ParserStateCommandBar(IRubberduckParser parser, VBE vbe)
+        public RubberduckCommandBar(IRubberduckParser parser, VBE vbe)
         {
             _parser = parser;
             _vbe = vbe;
