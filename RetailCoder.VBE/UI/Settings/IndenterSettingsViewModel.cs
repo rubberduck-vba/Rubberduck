@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Settings
         {
             AlignContinuations = config.UserSettings.IndenterSettings.AlignContinuations;
             AlignDim = config.UserSettings.IndenterSettings.AlignDim;
-            AlignDimColumn = 15;
+            AlignDimColumn = config.UserSettings.IndenterSettings.AlignDimColumn;
             AlignEndOfLine = config.UserSettings.IndenterSettings.AlignEndOfLine;
             AlignIgnoreOps = config.UserSettings.IndenterSettings.AlignIgnoreOps;
         }

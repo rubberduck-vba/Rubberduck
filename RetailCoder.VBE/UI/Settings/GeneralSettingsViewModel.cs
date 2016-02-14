@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
@@ -32,6 +34,20 @@ namespace Rubberduck.UI.Settings
                 if (!Equals(_selectedLanguage, value))
                 {
                     _selectedLanguage = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private ObservableCollection<Hotkey> _hotkeys;
+        public ObservableCollection<Hotkey> Hotkeys
+        {
+            get { return _hotkeys; }
+            set
+            {
+                if (_hotkeys != value)
+                {
+                    _hotkeys = value;
                     OnPropertyChanged();
                 }
             }
