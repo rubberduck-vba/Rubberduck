@@ -74,7 +74,7 @@
                         <TextBlock Text="Same Gap" />
                         <TextBlock Text="Standard Gap" />
                     </ComboBox>
-                    <!--<numberPicker:NumberPicker Margin="0,-4,0,0" NumValue="50" Visibility="{Binding ElementName=EndOfLineCommentStyle, Path=SelectedIndex, Converter={StaticResource EndOfLineCommentStyleToVisibility}}" />-->
+                    <numberPicker:NumberPicker Margin="0,-4,0,0" NumValue="50" Visibility="{Binding ElementName=EndOfLineCommentStyle, Path=SelectedIndex, Converter={StaticResource EndOfLineCommentStyleToVisibility}}" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
