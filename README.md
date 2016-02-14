@@ -5,10 +5,8 @@
 | **master** | [![master branch build status][masterBuildStatus]][masterBuild] |
 | **next**   | [![next branch build status][nextBuildStatus]][nextBuild] |
 
-[nextBuild]:https://ci.appveyor.com/project/ckuhn203/rubberduck-3v9qv/branch/next
-[nextBuildStatus]:https://ci.appveyor.com/api/projects/status/bfwl1pwu9eeqd11o/branch/next?svg=true
-[masterBuild]:https://ci.appveyor.com/project/ckuhn203/rubberduck-3v9qv/branch/master
-[masterBuildStatus]:https://ci.appveyor.com/api/projects/status/bfwl1pwu9eeqd11o/branch/master?svg=true
+[nextBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/next?svg=true
+[masterBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/master?svg=true
 
 Rubberduck is a COM Add-In for the VBA IDE that makes VBA development even more enjoyable, by extending the Visual Basic Editor (VBE) with menus, toolbars and toolwindows that enable things we didn't even think were possible when we first started this project.
 
