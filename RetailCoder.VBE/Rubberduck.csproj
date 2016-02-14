@@ -1164,9 +1164,9 @@
     <None Include="Resources\document-outlook.png" />
     <None Include="Resources\document-powerpoint.png" />
     <None Include="Resources\document-excel.png" />
-    <Content Include="Resources\folder--pencil.png" />
-    <Content Include="Resources\folder--plus.png" />
-    <Content Include="Resources\folder-rename.png" />
+    <Resource Include="Resources\folder--pencil.png" />
+    <Resource Include="Resources\folder--plus.png" />
+    <Resource Include="Resources\folder-rename.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
