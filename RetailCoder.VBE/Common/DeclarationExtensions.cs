@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Annotations;
