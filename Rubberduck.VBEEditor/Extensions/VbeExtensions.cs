@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Microsoft.Vbe.Interop;
+using Microsoft.Office.Core;
 using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
@@ -53,6 +54,36 @@ namespace Rubberduck.VBEditor.Extensions
         {
             if (vbe.ActiveVBProject == null)
             {
+                const int ctl_view_host = 106;
+
+                CommandBarControl host_app_control = vbe.CommandBars.FindControl(MsoControlType.msoControlButton, ctl_view_host);
+
+                if (host_app_control == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    switch (host_app_control.Caption)
+                    {
+                        case "Microsoft Excel":
+                            return new ExcelApp();
+                        case "Microsoft Access":
+                            return new AccessApp();
+                        case "Microsoft Word":
+                            return new WordApp();
+                        case "Microsoft PowerPoint":
+                            return new PowerPointApp();
+                        case "Microsoft Outlook":
+                            return new OutlookApp();
+                        case "Microsoft Publisher":
+                            return new PublisherApp();
+                        case "AutoCAD":
+                            return null; //TODO - Confirm the button caption
+                        case "CorelDRAW":
+                            return null;
+                    }
+                }
                 return null;
             }
 

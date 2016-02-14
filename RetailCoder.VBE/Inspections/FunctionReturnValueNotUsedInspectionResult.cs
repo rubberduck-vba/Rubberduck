@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using Antlr4.Runtime;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
+﻿using Antlr4.Runtime;
 using Rubberduck.VBEditor;
-using System.Text.RegularExpressions;
-using System.Linq;
 using System;
-using Rubberduck.Parsing;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.Inspections
 {
@@ -14,12 +10,29 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public FunctionReturnValueNotUsedInspectionResult(IInspection inspection, ParserRuleContext context, QualifiedMemberName qualifiedName, IEnumerable<string> returnStatements)
+        public FunctionReturnValueNotUsedInspectionResult(
+            IInspection inspection,
+            ParserRuleContext context,
+            QualifiedMemberName qualifiedName,
+            IEnumerable<string> returnStatements)
+            : this(inspection, context, qualifiedName, returnStatements, new List<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>>())
+        {
+        }
+
+        public FunctionReturnValueNotUsedInspectionResult(
+            IInspection inspection,
+            ParserRuleContext context,
+            QualifiedMemberName qualifiedName,
+            IEnumerable<string> returnStatements,
+            IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>> children)
             : base(inspection, string.Format(inspection.Description, qualifiedName.MemberName), qualifiedName.QualifiedModuleName, context)
         {
+            var root = new ConvertToProcedureQuickFix(context, QualifiedSelection, returnStatements);
+            var compositeFix = new CompositeCodeInspectionFix(root);
+            children.ToList().ForEach(child => compositeFix.AddChild(new ConvertToProcedureQuickFix(child.Item1, child.Item2, child.Item3)));
             _quickFixes = new[]
             {
-                new ConvertToProcedureQuickFix(context, QualifiedSelection, returnStatements),
+                compositeFix
             };
         }
 

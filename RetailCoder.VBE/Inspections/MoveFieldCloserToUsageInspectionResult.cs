@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections
         private readonly IMessageBox _messageBox;
 
         public MoveFieldCloserToUsageQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
-            : base(context, selection, string.Format(InspectionsUI.MoveFieldCloseToUsageInspectionQuickFix, target.IdentifierName))
+            : base(context, selection, string.Format(InspectionsUI.MoveFieldCloserToUsageInspectionQuickFix, target.IdentifierName))
         {
             _target = target;
             _parseResult = parseResult;

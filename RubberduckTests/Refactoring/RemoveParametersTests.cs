@@ -757,8 +757,6 @@ End Property";
         [TestMethod]
         public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndSetter()
         {
-            Assert.Fail("reinstate after parser is fixed");
-
             //Input
             const string inputCode =
 @"Private Property Get Foo(ByVal arg1 As Integer) 
@@ -809,8 +807,6 @@ End Property"; //note: The IDE strips out the extra whitespace
         [TestMethod]
         public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndLetter()
         {
-            Assert.Fail("reinstate after parser is fixed");
-
             //Input
             const string inputCode =
 @"Private Property Get Foo(ByVal arg1 As Integer) 

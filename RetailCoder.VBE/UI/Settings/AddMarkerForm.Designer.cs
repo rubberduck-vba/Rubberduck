@@ -128,7 +128,7 @@
             this.AcceptButton = this.OkButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.CancelButton;
+            base.CancelButton = this.CancelButton;
             this.ClientSize = new System.Drawing.Size(380, 203);
             this.Controls.Add(this.InvalidNameValidationIcon);
             this.Controls.Add(this.flowLayoutPanel2);
