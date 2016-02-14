@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="Rubberduck.UI.Settings.IndenterSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
+             xmlns:numberPicker="clr-namespace:Rubberduck.Controls.NumberPicker"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="550" d:DesignWidth="500"
+             d:DataContext="{d:DesignInstance {x:Type settings:IndenterSettingsViewModel}, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+        <converters:EndOfLineCommentStyleToVisibilityConverter x:Key="EndOfLineCommentStyleToVisibility" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="100" />
+        </Grid.RowDefinitions>
+        <ScrollViewer>
+            <StackPanel Margin="5">
+                <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" FontWeight="SemiBold" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_IndenterSettings}" Margin="0,0,0,3">
+                    <Label.Style>
+                        <Style>
+                            <Style.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="5"/>
+                                </Style>
+                            </Style.Resources>
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.3*" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <Label Content="Alignment Options" FontWeight="SemiBold" />
+                        <CheckBox Content="Align Continuations" IsChecked="{Binding AlignContinuations}" Margin="0,0,0,5" />
+                        <CheckBox Content="Align Dim" IsChecked="{Binding AlignDim}" Margin="0,0,0,5" />
+                        <CheckBox Content="Align End Of Line" IsChecked="{Binding AlignEndOfLine}" Margin="0,0,0,5" />
+                        <CheckBox Content="Align Ignore Ops" IsChecked="{Binding AlignIgnoreOps}" Margin="0,0,0,5" />
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Name="AlignDimColumn" Content="Align Dim Column" Margin="0,0,0,5" />
+                            <numberPicker:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}" NumValue="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AlignDimColumn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+
+                        <Label Content="Special Options" FontWeight="SemiBold" />
+                        <CheckBox Content="Force Compiler Directives to Column 1" Margin="0,0,0,5" />
+                        <CheckBox Content="Force Debug Directives to Column 1" Margin="0,0,0,5" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+                        <Label Content="Indent Options" FontWeight="SemiBold" />
+                        <CheckBox Content="Indent Case" Margin="0,0,0,5" />
+                        <CheckBox Content="Indent Options" Margin="0,0,0,5" />
+                        <CheckBox Content="Indent Compiler Stuff" Margin="0,0,0,5" />
+                        <CheckBox Content="Indent Dim" Margin="0,0,0,5" />
+                        <CheckBox Content="Indent First" Margin="0,0,0,5" />
+                        <CheckBox Content="Indent Procedure" Margin="0,0,0,5" />
+                        <CheckBox Content="Indent Spaces" Margin="0,0,0,5" />
+                        <Label Content="Enable Options" FontWeight="SemiBold" />
+                        <CheckBox Content="Enable Undo" Margin="0,0,0,5" />
+                    </StackPanel>
+                </Grid>
+                <Label Content="End of Line Options" FontWeight="SemiBold" />
+                <CheckBox Content="End of Line Align Column" Margin="0,0,0,5" />
+                <Label Content="End of Line Comment Style:" />
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox Name="EndOfLineCommentStyle" Margin="0,0,0,5" SelectedIndex="0" Width="210" HorizontalAlignment="Left">
+                        <TextBlock Text="Absolute" />
+                        <TextBlock Text="Align in Column" />
+                        <TextBlock Text="Same Gap" />
+                        <TextBlock Text="Standard Gap" />
+                    </ComboBox>
+                    <numberPicker:NumberPicker Margin="0,-4,0,0" NumValue="50" Visibility="{Binding ElementName=EndOfLineCommentStyle, Path=SelectedIndex, Converter={StaticResource EndOfLineCommentStyleToVisibility}}" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <TextBlock Grid.Row="1" Background="White" Height="100" xml:space="preserve" Margin="5,0" FontFamily="Consolas" VerticalAlignment="Bottom">Sub Foo()
+    ' Do something here
+    ' xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ' comment here
+End Sub
+        </TextBlock>
+    </Grid>
+</UserControl>
+

@@ -190,14 +190,14 @@ namespace Rubberduck
             var currentCulture = RubberduckUI.Culture;
             try
             {
-                CultureManager.UICulture = CultureInfo.GetCultureInfo(_config.UserSettings.LanguageSetting.Code);
+                CultureManager.UICulture = CultureInfo.GetCultureInfo(_config.UserSettings.GeneralSettings.Language.Code);
                 _appMenus.Localize();
             }
             catch (CultureNotFoundException exception)
             {
                 _logger.Error(exception, "Error Setting Culture for RubberDuck");
                 _messageBox.Show(exception.Message, "Rubberduck", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                _config.UserSettings.LanguageSetting.Code = currentCulture.Name;
+                _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);
             }
         }

@@ -1,20 +1,17 @@
-﻿<UserControl
+﻿<UserControl x:Class="Rubberduck.UI.Settings.TodoSettings"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:toDoItems="clr-namespace:Rubberduck.UI.ToDoItems"
-             xmlns:controls="clr-namespace:Rubberduck.Controls"
-             xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Class="Rubberduck.UI.ToDoItems.ToDoExplorerControl"
-             Language="{UICulture}"
+             xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
+             xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+             xmlns:core="clr-namespace:System;assembly=mscorlib"
+             xmlns:toDoItems="clr-namespace:Rubberduck.ToDoItems"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type toDoItems:ToDoExplorerViewModel}, IsDesignTimeCreatable=False}">
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance {x:Type settings:TodoSettingsViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-        
-        <BitmapImage x:Key="RefreshImage" UriSource="../../Resources/arrow-circle-double.png" />
-        <BitmapImage x:Key="DeleteImage" UriSource="../../Resources/cross-script.png" />
-
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
             <GradientStop Color="#FF9BDDFB" Offset="1"/>
@@ -26,16 +23,27 @@
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
 
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
+
+        <BitmapImage x:Key="AddImage" UriSource="../../Resources/plus-circle.png" />
+        <BitmapImage x:Key="DeleteImage" UriSource="../../Resources/cross-script.png" />
+
+        <ObjectDataProvider x:Key="Priorities" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="toDoItems:TodoPriority"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
         <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
             <Style.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="2"/>
                 </Style>
             </Style.Resources>
-            <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
             <Setter Property="BorderThickness" Value="0,.5,0,0" />
             <Setter Property="BorderBrush" Value="DarkGray" />
-            <Setter Property="Height" Value="22" />
+            <Setter Property="Height" Value="26" />
             <Setter Property="TextBlock.FontWeight" Value="Normal" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
@@ -243,38 +251,55 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <DockPanel LastChildFill="True">
-        <ToolBarTray DockPanel.Dock="Top" IsLocked="True">
-            <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
-                <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}" Command="{Binding RefreshCommand, Mode=OneWay}" BorderThickness="0" Background="Transparent">
-                    <Image Source="{StaticResource RefreshImage}" />
-                </Button>
-                <Separator />
-                <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}" Command="{Binding Remove}" BorderThickness="0" Background="Transparent">
-                    <Image Source="{StaticResource DeleteImage}" />
-                </Button>
-            </ToolBar>
-        </ToolBarTray>
-        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False"
-			SelectedItem="{Binding SelectedToDo}" IsExpanded="True"
-			CanUserReorderColumns="False" IsReadOnly="True"
-			HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
-			HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-			ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22">
-            <controls:GroupingGrid.CellStyle>
-                <Style TargetType="{x:Type DataGridCell}">
-                    <Setter Property="BorderThickness" Value="0" />
-                    <Setter Property="VerticalAlignment" Value="Center" />
-                    <Setter Property="Background" Value="Transparent" />
-                </Style>
-            </controls:GroupingGrid.CellStyle>
-            <controls:GroupingGrid.Columns>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Priority}" Binding="{Binding Priority}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ProjectName}" Binding="{Binding ProjectName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ModuleName}" Binding="{Binding ModuleName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_LineNumber}" Binding="{Binding LineNumber}" />
-            </controls:GroupingGrid.Columns>
-        </controls:GroupingGrid>
-    </DockPanel>
+    <Grid>
+        <DockPanel Margin="5,5,5,0">
+            <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" FontWeight="SemiBold" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_TodoSettings}" Margin="0,0,0,3">
+                <Label.Style>
+                    <Style>
+                        <Style.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Style.Resources>
+                    </Style>
+                </Label.Style>
+            </Label>
+            <ToolBarTray DockPanel.Dock="Top" IsLocked="True" Background="Transparent">
+                <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}" Background="Transparent">
+                    <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}" Command="{Binding AddTodoCommand}" BorderThickness="0" Background="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{StaticResource AddImage}" />
+                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}" Margin="2,0" />
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}" Command="{Binding DeleteTodoCommand}" CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=CurrentItem}" BorderThickness="0" Background="Transparent" IsEnabled="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{StaticResource DeleteImage}" />
+                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}" Margin="2,0" />
+                        </StackPanel>
+                    </Button>
+                </ToolBar>
+            </ToolBarTray>
+            <DataGrid Name="TodoMarkerGrid" ItemsSource="{Binding TodoSettings}" AutoGenerateColumns="False"
+			    CanUserReorderColumns="False" IsReadOnly="False" SelectionMode="Single" CanUserAddRows="False"
+			    HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
+			    HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+			    ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22" BorderThickness="0">
+                <DataGrid.InputBindings>
+                    <KeyBinding Key="Delete" Command="{Binding DeleteTodoCommand}" CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem}" />
+                </DataGrid.InputBindings>
+                <DataGrid.CellStyle>
+                    <Style TargetType="{x:Type DataGridCell}">
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoSettings_TextLabel}" Width="*" Binding="{Binding Text}" />
+                    <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoSettings_PriorityLabel}" Width="*" ItemsSource="{Binding Source={StaticResource Priorities}}" SelectedItemBinding="{Binding Priority}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+    </Grid>
 </UserControl>
