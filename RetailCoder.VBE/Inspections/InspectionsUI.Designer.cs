@@ -194,36 +194,30 @@ namespace Rubberduck.Inspections {
                 return ResourceManager.GetString("EncapsulatePublicFieldInspectionQuickFix", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Return value of function &apos;{0}&apos; is never used..
         /// </summary>
-        internal static string FunctionReturnValueNotUsedInspection
-        {
-            get
-            {
+        internal static string FunctionReturnValueNotUsedInspection {
+            get {
                 return ResourceManager.GetString("FunctionReturnValueNotUsedInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Function return value is never used..
         /// </summary>
-        internal static string FunctionReturnValueNotUsedInspectionName
-        {
-            get
-            {
+        internal static string FunctionReturnValueNotUsedInspectionName {
+            get {
                 return ResourceManager.GetString("FunctionReturnValueNotUsedInspectionName", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Ignore Once
+        ///   Looks up a localized string similar to Ignore once.
         /// </summary>
-        internal static string IgnoreOnce
-        {
-            get
-            {
+        internal static string IgnoreOnce {
+            get {
                 return ResourceManager.GetString("IgnoreOnce", resourceCulture);
             }
         }
@@ -317,51 +311,61 @@ namespace Rubberduck.Inspections {
                 return ResourceManager.GetString("ImplicitVariantReturnTypeInspectionName", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language opportunities.
+        /// </summary>
+        internal static string LanguageOpportunities {
+            get {
+                return ResourceManager.GetString("LanguageOpportunities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maintainability &amp; readability issues.
+        /// </summary>
+        internal static string MaintainabilityAndReadabilityIssues {
+            get {
+                return ResourceManager.GetString("MaintainabilityAndReadabilityIssues", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Move field closer to usage.
         /// </summary>
-        internal static string MoveFieldCloserToUsageInspection
-        {
-            get
-            {
+        internal static string MoveFieldCloserToUsageInspection {
+            get {
                 return ResourceManager.GetString("MoveFieldCloserToUsageInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to A field that is only used in one method should be a local variable..
         /// </summary>
-        internal static string MoveFieldCloserToUsageInspectionMeta
-        {
-            get
-            {
+        internal static string MoveFieldCloserToUsageInspectionMeta {
+            get {
                 return ResourceManager.GetString("MoveFieldCloserToUsageInspectionMeta", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Move field closer to usage.
         /// </summary>
-        internal static string MoveFieldCloserToUsageInspectionName
-        {
-            get
-            {
+        internal static string MoveFieldCloserToUsageInspectionName {
+            get {
                 return ResourceManager.GetString("MoveFieldCloserToUsageInspectionName", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Move field &apos;{0}&apos; closer to usage.
         /// </summary>
-        internal static string MoveFieldCloserToUsageInspectionQuickFix
-        {
-            get
-            {
+        internal static string MoveFieldCloserToUsageInspectionQuickFix {
+            get {
                 return ResourceManager.GetString("MoveFieldCloserToUsageInspectionQuickFix", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Consider continuing long signatures between parameters. Splitting a parameter declaration across multiple lines arguably hurts readability..
         /// </summary>
@@ -658,36 +662,30 @@ namespace Rubberduck.Inspections {
                 return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionQuickFix", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Declaration '{0}' is self-assigned
+        ///   Looks up a localized string similar to Declaration &apos;{0}&apos; is self-assigned.
         /// </summary>
-        internal static string SelfAssignedDeclarationInspection
-        {
-            get
-            {
+        internal static string SelfAssignedDeclarationInspection {
+            get {
                 return ResourceManager.GetString("SelfAssignedDeclarationInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to A declaration should not be self-assigned.
+        ///   Looks up a localized string similar to A declaration should not be self-assigned..
         /// </summary>
-        internal static string SelfAssignedDeclarationInspectionMeta
-        {
-            get
-            {
+        internal static string SelfAssignedDeclarationInspectionMeta {
+            get {
                 return ResourceManager.GetString("SelfAssignedDeclarationInspectionMeta", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Self-assigned property
+        ///   Looks up a localized string similar to Self-assigned property.
         /// </summary>
-        internal static string SelfAssignedDeclarationInspectionName
-        {
-            get
-            {
+        internal static string SelfAssignedDeclarationInspectionName {
+            get {
                 return ResourceManager.GetString("SelfAssignedDeclarationInspectionName", resourceCulture);
             }
         }

@@ -43,9 +43,9 @@ namespace Rubberduck.Settings
 
             var config = base.LoadConfiguration();
 
-            if (config.UserSettings.LanguageSetting == null)
+            if (config.UserSettings.GeneralSettings == null)
             {
-                config.UserSettings.LanguageSetting = new DisplayLanguageSetting("en-US");
+                config.UserSettings.GeneralSettings = GetDefaultGeneralSettings();
             }
 
             if (config.UserSettings.ToDoListSettings == null)
@@ -56,6 +56,16 @@ namespace Rubberduck.Settings
             if (config.UserSettings.CodeInspectionSettings == null)
             {
                 config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
+            }
+
+            if (config.UserSettings.UnitTestSettings == null)
+            {
+                config.UserSettings.UnitTestSettings = new UnitTestSettings();
+            }
+
+            if (config.UserSettings.IndenterSettings == null)
+            {
+                config.UserSettings.IndenterSettings = GetDefaultIndenterSettings();
             }
 
             var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
@@ -114,19 +124,30 @@ namespace Rubberduck.Settings
         public Configuration GetDefaultConfiguration()
         {
             var userSettings = new UserSettings(
-                                    new DisplayLanguageSetting("en-US"), 
+                                    GetDefaultGeneralSettings(), 
                                     new ToDoListSettings(GetDefaultTodoMarkers()),
-                                    new CodeInspectionSettings(GetDefaultCodeInspections()), 
+                                    new CodeInspectionSettings(GetDefaultCodeInspections()),
+                                    new UnitTestSettings(),
                                     GetDefaultIndenterSettings());
 
             return new Configuration(userSettings);
         }
 
+        private GeneralSettings GetDefaultGeneralSettings()
+        {
+            return new GeneralSettings(new DisplayLanguageSetting("en-US"),
+                new[]
+                {
+                    new Hotkey{Name="Indent Module", IsEnabled=true, KeyDisplaySymbol="CTRL-M"},
+                    new Hotkey{Name="Indent Procedure", IsEnabled=true, KeyDisplaySymbol="CTRL-P"}
+                });
+        }
+
         public ToDoMarker[] GetDefaultTodoMarkers()
         {
-            var note = new ToDoMarker(RubberduckUI.ToDoMarkerNote, TodoPriority.Low);
-            var todo = new ToDoMarker(RubberduckUI.ToDoMarkerToDo, TodoPriority.Medium);
-            var bug = new ToDoMarker(RubberduckUI.ToDoMarkerBug, TodoPriority.High);
+            var note = new ToDoMarker(RubberduckUI.TodoMarkerNote, TodoPriority.Low);
+            var todo = new ToDoMarker(RubberduckUI.TodoMarkerTodo, TodoPriority.Medium);
+            var bug = new ToDoMarker(RubberduckUI.TodoMarkerBug, TodoPriority.High);
 
             return new[] { note, todo, bug };
         }

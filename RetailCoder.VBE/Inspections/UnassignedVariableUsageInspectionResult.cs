@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections
             var originalInstruction = Context.GetText();
             module.DeleteLines(selection.StartLine, selection.LineCount);
 
-            var newInstruction = RubberduckUI.Inspections_UnassignedVariableToDo;
+            var newInstruction = RubberduckUI.Inspections_UnassignedVariableTodo;
             var newCodeLines = string.IsNullOrEmpty(newInstruction)
                 ? string.Empty
                 : originalCodeLines.Replace(originalInstruction, newInstruction);

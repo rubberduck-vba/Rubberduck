@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="Rubberduck.UI.Settings.UnitTestSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
+             xmlns:settingsConfig="clr-namespace:Rubberduck.Settings"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
+             xmlns:core="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance {x:Type settings:UnitTestSettingsViewModel}, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+        <converters:BindingModeToTextConverter x:Key="BindingModeToText" />
+        <converters:BindingModeValueToTextConverter x:Key="BindingModeValueToText" />
+        <converters:AssertModeToTextConverter x:Key="AssertModeToText" />
+        <converters:AssertModeValueToTextConverter x:Key="AssertModeValueToText" />
+        
+        <ObjectDataProvider x:Key="BindingMode" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="settingsConfig:BindingMode"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="AssertMode" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="settingsConfig:AssertMode"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel Margin="5,5,5,0">
+            <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" FontWeight="SemiBold" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_UnitTestSettings}" Margin="0,0,0,3">
+                <Label.Style>
+                    <Style>
+                        <Style.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Style.Resources>
+                    </Style>
+                </Label.Style>
+            </Label>
+
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_BindingMode}" FontWeight="SemiBold" />
+            <ComboBox Margin="0,0,0,5" Width="210" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource BindingMode}, Converter={StaticResource BindingModeToText}, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding BindingMode, Converter={StaticResource BindingModeValueToText}}" />
+
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_AssertMode}" FontWeight="SemiBold" />
+            <ComboBox Margin="0,0,0,5" Width="210" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource AssertMode}, Converter={StaticResource AssertModeToText}, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding AssertMode, Converter={StaticResource AssertModeValueToText}}" />
+
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_TestModuleTemplateHeader}" FontWeight="SemiBold" />
+            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_IncludeTestModuleInitCleanupPrompt}" IsChecked="{Binding ModuleInit, Mode=TwoWay}" Margin="0,0,0,5" />
+            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_IncludeTestMethodInitCleanupPrompt}" IsChecked="{Binding MethodInit, Mode=TwoWay}" Margin="0,0,0,5" />
+            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt}" IsChecked="{Binding DefaultTestStubInNewModule, Mode=TwoWay}" />
+        </StackPanel>
+    </Grid>
+</UserControl>
