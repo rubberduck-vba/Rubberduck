@@ -4,12 +4,13 @@ using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Controls;
 using Rubberduck.UnitTesting;
 using resx = Rubberduck.UI.RubberduckUI;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    public class TestExplorerViewModel : ViewModelBase
+    public class TestExplorerViewModel : ViewModelBase, INavigateSelection
     {
         private readonly ITestEngine _testEngine;
         private readonly TestExplorerModelBase _model;
@@ -37,6 +38,8 @@ namespace Rubberduck.UI.UnitTesting
             _runSelectedTestCommand = new DelegateCommand(ExecuteSelectedTestCommand, CanExecuteSelectedTestCommand);
 
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
+
+
         }
 
         private bool CanExecuteRunPassedTestsCommand(object obj)
@@ -69,13 +72,15 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        private TestMethod _selectedItem;
-        public TestMethod SelectedItem
+        public INavigateSource SelectedItem { get { return SelectedTest; } set { SelectedTest = value as TestMethod; } }
+
+        private TestMethod _selectedTest;
+        public TestMethod SelectedTest
         {
-            get { return _selectedItem; }
+            get { return _selectedTest; }
             set
             {
-                _selectedItem = value;
+                _selectedTest = value;
                 OnPropertyChanged();
             }
         }
@@ -111,7 +116,7 @@ namespace Rubberduck.UI.UnitTesting
         public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
 
         private readonly NavigateCommand _navigateCommand;
-        public ICommand NavigateCommand { get { return _navigateCommand; } }
+        public NavigateCommand NavigateCommand { get { return _navigateCommand; } }
 
         private readonly ICommand _runSelectedTestCommand;
         public ICommand RunSelectedTestCommand { get { return _runSelectedTestCommand; } }
@@ -126,7 +131,7 @@ namespace Rubberduck.UI.UnitTesting
             }
 
             _model.Refresh();
-            SelectedItem = null;
+            SelectedTest = null;
         }
 
         private bool CanExecuteRefreshCommand(object parameter)
@@ -149,7 +154,7 @@ namespace Rubberduck.UI.UnitTesting
             _model.ClearLastRun();
 
             Model.IsBusy = true;
-            _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Unknown));
+            _testEngine.Run(_model.LastRun.Where(test => test.Result.Outcome == TestOutcome.Unknown));
             Model.IsBusy = false;
         }
 
@@ -158,7 +163,7 @@ namespace Rubberduck.UI.UnitTesting
             _model.ClearLastRun();
 
             Model.IsBusy = true;
-            _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Failed));
+            _testEngine.Run(_model.LastRun.Where(test => test.Result.Outcome == TestOutcome.Failed));
             Model.IsBusy = false;
         }
 
@@ -167,7 +172,7 @@ namespace Rubberduck.UI.UnitTesting
             _model.ClearLastRun();
 
             Model.IsBusy = true;
-            _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Succeeded));
+            _testEngine.Run(_model.LastRun.Where(test => test.Result.Outcome == TestOutcome.Succeeded));
             Model.IsBusy = false;
         }
 
@@ -178,7 +183,7 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteSelectedTestCommand(object obj)
         {
-            if (SelectedItem == null)
+            if (SelectedTest == null)
             {
                 return;
             }
@@ -186,16 +191,16 @@ namespace Rubberduck.UI.UnitTesting
             _model.ClearLastRun();
 
             Model.IsBusy = true;
-            _testEngine.Run(new[] { SelectedItem });
+            _testEngine.Run(new[] { SelectedTest });
             Model.IsBusy = false;
         }
 
         private void ExecuteCopyResultsCommand(object parameter)
         {
-            var results = string.Join("\n", _model.Tests.Select(test => test.ToString()));
-            var passed = _model.Tests.Count(test => test.Result.Outcome == TestOutcome.Succeeded) + " " + TestOutcome.Succeeded;
-            var failed = _model.Tests.Count(test => test.Result.Outcome == TestOutcome.Failed) + " " + TestOutcome.Failed;
-            var inconclusive = _model.Tests.Count(test => test.Result.Outcome == TestOutcome.Inconclusive) + " " + TestOutcome.Inconclusive;
+            var results = string.Join("\n", _model.LastRun.Select(test => test.ToString()));
+            var passed = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Succeeded) + " " + TestOutcome.Succeeded;
+            var failed = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Failed) + " " + TestOutcome.Failed;
+            var inconclusive = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Inconclusive) + " " + TestOutcome.Inconclusive;
             var resource = "Rubberduck Unit Tests - {0}\n{1} | {2} | {3}\n";
             var text = string.Format(resource, DateTime.Now, passed, failed, inconclusive) + results;
 

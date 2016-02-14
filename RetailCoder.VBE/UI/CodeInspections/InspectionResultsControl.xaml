@@ -115,7 +115,7 @@
             <StackPanel Orientation="Horizontal" Margin="2" Height="22" HorizontalAlignment="Stretch">
                 <TextBlock VerticalAlignment="Center" 
                            Margin="4"
-                           Text="{Binding Name}" 
+                           Text="{Binding Description}" 
                            TextWrapping="NoWrap"/>
             </StackPanel>
         </DataTemplate>

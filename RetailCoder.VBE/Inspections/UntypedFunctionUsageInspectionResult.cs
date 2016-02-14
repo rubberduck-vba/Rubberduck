@@ -5,13 +5,15 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class UntypedFunctionUsageInspectionResult : CodeInspectionResultBase
+    public class UntypedFunctionUsageInspectionResult : InspectionResultBase
     {
+        private readonly string _result;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public UntypedFunctionUsageInspectionResult(IInspection inspection, string result, QualifiedModuleName qualifiedName, ParserRuleContext context) 
-            : base(inspection, result, qualifiedName, context)
+            : base(inspection, qualifiedName, context)
         {
+            _result = result;
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new UntypedFunctionUsageQuickFix(Context, QualifiedSelection), 
@@ -20,6 +22,14 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get
+            {
+                return _result;
+            }
+        }
     }
 
     public class UntypedFunctionUsageQuickFix : CodeInspectionQuickFix

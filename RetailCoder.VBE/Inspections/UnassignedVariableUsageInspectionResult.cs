@@ -6,13 +6,13 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class UnassignedVariableUsageInspectionResult : CodeInspectionResultBase
+    public class UnassignedVariableUsageInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public UnassignedVariableUsageInspectionResult(IInspection inspection, string result, 
+        public UnassignedVariableUsageInspectionResult(IInspection inspection, 
             ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, result, qualifiedName, context)
+            : base(inspection, qualifiedName, context)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
@@ -22,6 +22,14 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.UnassignedVariableUsageInspectionResultFormat, Target.IdentifierName);
+            }
+        }
     }
 
     public class RemoveUnassignedVariableUsageQuickFix : CodeInspectionQuickFix
@@ -43,7 +51,7 @@ namespace Rubberduck.Inspections
             var originalInstruction = Context.GetText();
             module.DeleteLines(selection.StartLine, selection.LineCount);
 
-            var newInstruction = RubberduckUI.Inspections_UnassignedVariableToDo;
+            var newInstruction = RubberduckUI.Inspections_UnassignedVariableTodo;
             var newCodeLines = string.IsNullOrEmpty(newInstruction)
                 ? string.Empty
                 : originalCodeLines.Replace(originalInstruction, newInstruction);

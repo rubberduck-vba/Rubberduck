@@ -9,10 +9,11 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Controls;
 
 namespace Rubberduck.UI.ToDoItems
 {
-    public class ToDoExplorerViewModel : ViewModelBase
+    public class ToDoExplorerViewModel : ViewModelBase, INavigateSelection
     {
         private readonly RubberduckParserState _state;
         private readonly IEnumerable<ToDoMarker> _markers;
@@ -72,6 +73,7 @@ namespace Rubberduck.UI.ToDoItems
             });
         }
 
+        public INavigateSource SelectedItem { get { return SelectedToDo; } set { SelectedToDo = value as ToDoItem; } }
         public ToDoItem SelectedToDo { get; set; }
 
         private ICommand _clear;
@@ -102,18 +104,18 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
-        private ICommand _navigateToToDo;
+        private NavigateCommand _navigateCommand;
         private readonly Dispatcher _uiDispatcher;
 
-        public ICommand NavigateToToDo
+        public NavigateCommand NavigateCommand
         {
             get
             {
-                if (_navigateToToDo != null)
+                if (_navigateCommand != null)
                 {
-                    return _navigateToToDo;
+                    return _navigateCommand;
                 }
-                return _navigateToToDo = new NavigateCommand();
+                return _navigateCommand = new NavigateCommand();
             }
         }
 

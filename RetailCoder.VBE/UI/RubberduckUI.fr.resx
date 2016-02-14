@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -193,16 +193,16 @@
   <data name="SettingsCaption_CodeInspections" xml:space="preserve">
     <value>Configuration des Inspections</value>
   </data>
-  <data name="SettingsCaption_ToDoSettings" xml:space="preserve">
+  <data name="SettingsCaption_TodoSettings" xml:space="preserve">
     <value>Configuration des markeurs "TODO"</value>
   </data>
-  <data name="SettingsInstructions_CodeInspections" xml:space="preserve">
+  <data name="SettingsInstructions_InspectionSettings" xml:space="preserve">
     <value>Configuration des niveaux de sévérité des inspections. Utiliser "DoNotShow" pour désactiver une inspection.</value>
   </data>
   <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
     <value>Cliquez [Ok] pour appliquer les modifications, ou [Annuler] pour conserver la configuration actuelle.</value>
   </data>
-  <data name="SettingsInstructions_ToDoSettings" xml:space="preserve">
+  <data name="SettingsInstructions_TodoSettings" xml:space="preserve">
     <value>Configurer les marqueurs à reconnaître dans les commentaires.</value>
   </data>
   <data name="RenameDialog_ProjectRenameError" xml:space="preserve">
@@ -339,7 +339,7 @@
   <data name="RubberduckMenu_SourceControl" xml:space="preserve">
     <value>Contrôle des &amp;Sources</value>
   </data>
-  <data name="RubberduckMenu_ToDoItems" xml:space="preserve">
+  <data name="RubberduckMenu_TodoItems" xml:space="preserve">
     <value>Liste de To&amp;Do</value>
   </data>
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
@@ -416,7 +416,7 @@
   <data name="Inspections_SplitDeclarations" xml:space="preserve">
     <value>Séparer les déclarations en autant d'instructions</value>
   </data>
-  <data name="Inspections_UnassignedVariableToDo" xml:space="preserve">
+  <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
     <value>TODO</value>
   </data>
   <data name="LoadConfigError" xml:space="preserve">
@@ -447,13 +447,13 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Version {0} ({1})</value>
     <comment>0: Version; 1: ProcessorArchitecture</comment>
   </data>
-  <data name="ToDoMarkerBug" xml:space="preserve">
+  <data name="TodoMarkerBug" xml:space="preserve">
     <value>BUG </value>
   </data>
-  <data name="ToDoMarkerNote" xml:space="preserve">
+  <data name="TodoMarkerNote" xml:space="preserve">
     <value>NOTE </value>
   </data>
-  <data name="ToDoMarkerToDo" xml:space="preserve">
+  <data name="TodoMarkerTodo" xml:space="preserve">
     <value>TODO </value>
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
@@ -519,7 +519,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="TestExplorerWindow_Caption" xml:space="preserve">
     <value>Explorateur de tests</value>
   </data>
-  <data name="ToDoExplorer_Caption" xml:space="preserve">
+  <data name="TodoExplorer_Caption" xml:space="preserve">
     <value>Explorateur de marqueurs "TODO"</value>
   </data>
   <data name="Warning" xml:space="preserve">
@@ -1065,13 +1065,13 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="SourceControl_NoRepoFound" xml:space="preserve">
     <value>Dépôt introuvable.</value>
   </data>
-  <data name="ToDoPriority_High" xml:space="preserve">
+  <data name="TodoPriority_High" xml:space="preserve">
     <value>Haute</value>
   </data>
-  <data name="ToDoPriority_Low" xml:space="preserve">
+  <data name="TodoPriority_Low" xml:space="preserve">
     <value>Basse</value>
   </data>
-  <data name="ToDoPriority_Medium" xml:space="preserve">
+  <data name="TodoPriority_Medium" xml:space="preserve">
     <value>Moyenne</value>
   </data>
   <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
@@ -1117,7 +1117,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="RubberduckMenu_Navigate" xml:space="preserve">
     <value>Na&amp;viguer</value>
   </data>
-  <data name="Language_JP" xml:space="preserve">
+  <data name="Language_JA" xml:space="preserve">
     <value />
   </data>
   <data name="Inspections_MultilineParameter" xml:space="preserve">

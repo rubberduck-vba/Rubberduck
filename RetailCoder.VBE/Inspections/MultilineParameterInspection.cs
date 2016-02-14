@@ -10,15 +10,15 @@ namespace Rubberduck.Inspections
     public sealed class MultilineParameterInspection : InspectionBase
     {
         public MultilineParameterInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.MultilineParameter_; } }
+        public override string Meta { get { return InspectionsUI.MultilineParameterInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.MultilineParameterInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var multilineParameters = from p in UserDeclarations
                 .Where(item => item.DeclarationType == DeclarationType.Parameter)
@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections
                 select p;
 
             var issues = multilineParameters
-                .Select(param => new MultilineParameterInspectionResult(this, string.Format(param.Context.GetSelection().LineCount > 3 ? RubberduckUI.EasterEgg_Continuator : Description, param.IdentifierName), param.Context, param.QualifiedName));
+                .Select(param => new MultilineParameterInspectionResult(this, param.Context, param.QualifiedName));
 
             return issues;
         }

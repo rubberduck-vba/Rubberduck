@@ -64,7 +64,7 @@ namespace Rubberduck.UI.CodeInspections
                 CanExecuteQuickFixInModule = false;
                 CanExecuteQuickFixInProject = false;
 
-                var inspectionResult = _selectedItem as CodeInspectionResultBase;
+                var inspectionResult = _selectedItem as InspectionResultBase;
 
                 if (inspectionResult != null)
                 {
@@ -221,7 +221,7 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            var selectedResult = SelectedItem as CodeInspectionResultBase;
+            var selectedResult = SelectedItem as InspectionResultBase;
             if (selectedResult == null)
             {
                 return;

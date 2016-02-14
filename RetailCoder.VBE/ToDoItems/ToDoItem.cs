@@ -1,6 +1,7 @@
 ﻿using System;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.UI;
+using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.ToDoItems
@@ -9,7 +10,7 @@ namespace Rubberduck.ToDoItems
     /// Represents a Todo comment and the necessary information to display and navigate to that comment.
     /// This is a binding item. Changing it's properties changes how it is displayed.
     /// </summary>
-    public class ToDoItem
+    public class ToDoItem : INavigateSource
     {
         private readonly TodoPriority _priority;
         public TodoPriority Priority { get { return _priority; } }
@@ -48,6 +49,11 @@ namespace Rubberduck.ToDoItems
             _moduleName = qualifiedSelection.QualifiedName.ComponentName;
             _lineNumber = qualifiedSelection.Selection.StartLine;
             _type = markerText;
+        }
+
+        public NavigateCodeEventArgs GetNavigationArgs()
+        {
+            return new NavigateCodeEventArgs(_selection);
         }
     }
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Inspections_UnassignedVariableToDo" xml:space="preserve">
+  <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
     <value>TODO</value>
   </data>
   <data name="OK_AllCaps" xml:space="preserve">
@@ -267,13 +267,13 @@
   <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
     <value>メソッド「{0}」のパラメーターが2つ以下です。</value>
   </data>
-  <data name="SettingsInstructions_ToDoSettings" xml:space="preserve">
+  <data name="SettingsInstructions_TodoSettings" xml:space="preserve">
     <value>コメントで認識されるマーカーを設定してください。</value>
   </data>
   <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
     <value>「OK」をクリックでウインドウを閉じ、変更を保存します。「キャンセル」で変更を廃棄します。</value>
   </data>
-  <data name="SettingsInstructions_CodeInspections" xml:space="preserve">
+  <data name="SettingsInstructions_InspectionSettings" xml:space="preserve">
     <value>検査の重要度設定。検査を無効にするには、「DoNotShow」を使用します。</value>
   </data>
   <data name="ExtractMethod_Caption" xml:space="preserve">
@@ -355,13 +355,13 @@
   <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
     <value>{1}に{0}が正常にマージされました。</value>
   </data>
-  <data name="ToDoPriority_Medium" xml:space="preserve">
+  <data name="TodoPriority_Medium" xml:space="preserve">
     <value>中</value>
   </data>
-  <data name="ToDoPriority_Low" xml:space="preserve">
+  <data name="TodoPriority_Low" xml:space="preserve">
     <value>低</value>
   </data>
-  <data name="ToDoPriority_High" xml:space="preserve">
+  <data name="TodoPriority_High" xml:space="preserve">
     <value>高</value>
   </data>
   <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
@@ -439,13 +439,13 @@
   <data name="Rubberduck_AboutBuild" xml:space="preserve">
     <value>「0」（「1」）をビルド</value>
   </data>
-  <data name="ToDoMarkerBug" xml:space="preserve">
+  <data name="TodoMarkerBug" xml:space="preserve">
     <value>BUG </value>
   </data>
-  <data name="ToDoMarkerNote" xml:space="preserve">
+  <data name="TodoMarkerNote" xml:space="preserve">
     <value>NOTE </value>
   </data>
-  <data name="ToDoMarkerToDo" xml:space="preserve">
+  <data name="TodoMarkerTodo" xml:space="preserve">
     <value>TODO </value>
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
@@ -523,7 +523,7 @@
   <data name="TestExplorerWindow_Caption" xml:space="preserve">
     <value>テストエクスプローラー</value>
   </data>
-  <data name="ToDoExplorer_Caption" xml:space="preserve">
+  <data name="TodoExplorer_Caption" xml:space="preserve">
     <value>TODOエクスプローラー</value>
   </data>
   <data name="Warning" xml:space="preserve">
@@ -890,7 +890,7 @@
   <data name="RubberduckMenu_SourceControl" xml:space="preserve">
     <value>&amp;Sソース管理</value>
   </data>
-  <data name="RubberduckMenu_ToDoItems" xml:space="preserve">
+  <data name="RubberduckMenu_TodoItems" xml:space="preserve">
     <value>&amp;DTODO項目</value>
   </data>
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
@@ -1028,7 +1028,7 @@
   <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
     <value>選択したパラメーターをダブルクリックやボタン操作で削除か回復することが出来ます。</value>
   </data>
-  <data name="SettingsCaption_ToDoSettings" xml:space="preserve">
+  <data name="SettingsCaption_TodoSettings" xml:space="preserve">
     <value>TODO設定</value>
   </data>
   <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
@@ -1202,7 +1202,7 @@
   <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
     <value />
   </data>
-  <data name="Language_JP" xml:space="preserve">
+  <data name="Language_JA" xml:space="preserve">
     <value />
   </data>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">

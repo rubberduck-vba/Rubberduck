@@ -6,9 +6,29 @@ using System.IO;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Rubberduck.UI;
 
 namespace Rubberduck.UnitTesting
 {
+    public class TestResultToOutcomeTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var result = value as TestResult;
+            if (result != null)
+            {
+                return RubberduckUI.ResourceManager.GetString("TestOutcome_" + result.Outcome);
+            }
+
+            throw new ArgumentException("value is not a TestResult object.", "value");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class TestOutcomeImageSourceConverter : IValueConverter
     {
         private static readonly IDictionary<TestOutcome,ImageSource> Icons = 

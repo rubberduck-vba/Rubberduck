@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Rubberduck.Annotations;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Properties;
 
 namespace Rubberduck.UI.FindSymbol
 {

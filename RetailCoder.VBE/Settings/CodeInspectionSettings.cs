@@ -38,6 +38,20 @@ namespace Rubberduck.Settings
         public CodeInspectionSeverity Severity { get; set; }
 
         [XmlIgnore]
+        public string Meta {
+            get
+            {
+                return InspectionsUI.ResourceManager.GetString(Name + "Meta");
+            }
+        }
+
+        [XmlIgnore]
+        public string TypeLabel
+        {
+            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType); }
+        }
+
+        [XmlIgnore]
         public string SeverityLabel
         {
             get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, RubberduckUI.Culture); }

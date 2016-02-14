@@ -22,16 +22,16 @@ namespace Rubberduck.Inspections
         public ParameterNotUsedInspection(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
             : base(state)
         {
-            _vbe = vbe; // todo: remove this dependency
+            _vbe = vbe;
             _messageBox = messageBox;
             _wrapperFactory = new CodePaneWrapperFactory();
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.ParameterNotUsed_; } }
+        public override string Meta { get { return InspectionsUI.ParameterNotUsedInspectionName; }}
+        public override string Description { get { return InspectionsUI.ParameterNotUsedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var declarations = Declarations.ToList();
 

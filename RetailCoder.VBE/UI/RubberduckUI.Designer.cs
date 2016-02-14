@@ -1469,9 +1469,9 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to TODO.
         /// </summary>
-        public static string Inspections_UnassignedVariableToDo {
+        public static string Inspections_UnassignedVariableTodo {
             get {
-                return ResourceManager.GetString("Inspections_UnassignedVariableToDo", resourceCulture);
+                return ResourceManager.GetString("Inspections_UnassignedVariableTodo", resourceCulture);
             }
         }
         
@@ -1550,9 +1550,9 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to Japanese.
         /// </summary>
-        public static string Language_JP {
+        public static string Language_JA {
             get {
-                return ResourceManager.GetString("Language_JP", resourceCulture);
+                return ResourceManager.GetString("Language_JA", resourceCulture);
             }
         }
         
@@ -1638,7 +1638,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; has no references..
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not used anywhere..
         /// </summary>
         public static string MoveCloserToUsage_TargetHasNoReferences {
             get {
@@ -2004,7 +2004,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use &apos;{0}$&apos; instead of &apos;{0}&apos;..
+        ///   Looks up a localized string similar to Change &apos;{0}$&apos; to &apos;{0}&apos;.
         /// </summary>
         public static string QuickFixUseTypedFunction_ {
             get {
@@ -2554,15 +2554,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Regex search/replace....
-        /// </summary>
-        public static string RubberduckMenu_RegexSearchReplace {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_RegexSearchReplace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &amp;Source Control.
         /// </summary>
         public static string RubberduckMenu_SourceControl {
@@ -2574,9 +2565,9 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to To&amp;Do Items.
         /// </summary>
-        public static string RubberduckMenu_ToDoItems {
+        public static string RubberduckMenu_TodoItems {
             get {
-                return ResourceManager.GetString("RubberduckMenu_ToDoItems", resourceCulture);
+                return ResourceManager.GetString("RubberduckMenu_TodoItems", resourceCulture);
             }
         }
         
@@ -2662,20 +2653,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ToDo Settings.
+        ///   Looks up a localized string similar to Indenter Settings.
         /// </summary>
-        public static string SettingsCaption_ToDoSettings {
+        public static string SettingsCaption_IndenterSettings {
             get {
-                return ResourceManager.GetString("SettingsCaption_ToDoSettings", resourceCulture);
+                return ResourceManager.GetString("SettingsCaption_IndenterSettings", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure inspection severity. Use &quot;DoNotShow&quot; to disable an inspection..
+        ///   Looks up a localized string similar to Todo Settings.
         /// </summary>
-        public static string SettingsInstructions_CodeInspections {
+        public static string SettingsCaption_TodoSettings {
             get {
-                return ResourceManager.GetString("SettingsInstructions_CodeInspections", resourceCulture);
+                return ResourceManager.GetString("SettingsCaption_TodoSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unit Test Settings.
+        /// </summary>
+        public static string SettingsCaption_UnitTestSettings {
+            get {
+                return ResourceManager.GetString("SettingsCaption_UnitTestSettings", resourceCulture);
             }
         }
         
@@ -2689,11 +2689,38 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configure indenter settings..
+        /// </summary>
+        public static string SettingsInstructions_IndenterSettings {
+            get {
+                return ResourceManager.GetString("SettingsInstructions_IndenterSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure inspection severity. Use &quot;DoNotShow&quot; to disable an inspection..
+        /// </summary>
+        public static string SettingsInstructions_InspectionSettings {
+            get {
+                return ResourceManager.GetString("SettingsInstructions_InspectionSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Configure markers to be recognized in comments..
         /// </summary>
-        public static string SettingsInstructions_ToDoSettings {
+        public static string SettingsInstructions_TodoSettings {
             get {
-                return ResourceManager.GetString("SettingsInstructions_ToDoSettings", resourceCulture);
+                return ResourceManager.GetString("SettingsInstructions_TodoSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure the settings for new unit test modules and methods..
+        /// </summary>
+        public static string SettingsInstructions_UnitTestSettings {
+            get {
+                return ResourceManager.GetString("SettingsInstructions_UnitTestSettings", resourceCulture);
             }
         }
         
@@ -2703,6 +2730,15 @@ namespace Rubberduck.UI {
         public static string Severity {
             get {
                 return ResourceManager.GetString("Severity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Severity:.
+        /// </summary>
+        public static string SeverityLabelText {
+            get {
+                return ResourceManager.GetString("SeverityLabelText", resourceCulture);
             }
         }
         
@@ -3391,11 +3427,47 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ToDo Explorer.
+        ///   Looks up a localized string similar to Failed.
         /// </summary>
-        public static string ToDoExplorer_Caption {
+        public static string TestOutcome_Failed {
             get {
-                return ResourceManager.GetString("ToDoExplorer_Caption", resourceCulture);
+                return ResourceManager.GetString("TestOutcome_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inconclusive.
+        /// </summary>
+        public static string TestOutcome_Inconclusive {
+            get {
+                return ResourceManager.GetString("TestOutcome_Inconclusive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Succeeded.
+        /// </summary>
+        public static string TestOutcome_Succeeded {
+            get {
+                return ResourceManager.GetString("TestOutcome_Succeeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        public static string TestOutcome_Unknown {
+            get {
+                return ResourceManager.GetString("TestOutcome_Unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Todo Explorer.
+        /// </summary>
+        public static string TodoExplorer_Caption {
+            get {
+                return ResourceManager.GetString("TodoExplorer_Caption", resourceCulture);
             }
         }
         
@@ -3420,54 +3492,54 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to BUG .
         /// </summary>
-        public static string ToDoMarkerBug {
+        public static string TodoMarkerBug {
             get {
-                return ResourceManager.GetString("ToDoMarkerBug", resourceCulture);
+                return ResourceManager.GetString("TodoMarkerBug", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to NOTE .
         /// </summary>
-        public static string ToDoMarkerNote {
+        public static string TodoMarkerNote {
             get {
-                return ResourceManager.GetString("ToDoMarkerNote", resourceCulture);
+                return ResourceManager.GetString("TodoMarkerNote", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to TODO .
         /// </summary>
-        public static string ToDoMarkerToDo {
+        public static string TodoMarkerTodo {
             get {
-                return ResourceManager.GetString("ToDoMarkerToDo", resourceCulture);
+                return ResourceManager.GetString("TodoMarkerTodo", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to High.
         /// </summary>
-        public static string ToDoPriority_High {
+        public static string TodoPriority_High {
             get {
-                return ResourceManager.GetString("ToDoPriority_High", resourceCulture);
+                return ResourceManager.GetString("TodoPriority_High", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Low.
         /// </summary>
-        public static string ToDoPriority_Low {
+        public static string TodoPriority_Low {
             get {
-                return ResourceManager.GetString("ToDoPriority_Low", resourceCulture);
+                return ResourceManager.GetString("TodoPriority_Low", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Medium.
         /// </summary>
-        public static string ToDoPriority_Medium {
+        public static string TodoPriority_Medium {
             get {
-                return ResourceManager.GetString("ToDoPriority_Medium", resourceCulture);
+                return ResourceManager.GetString("TodoPriority_Medium", resourceCulture);
             }
         }
         
@@ -3549,6 +3621,96 @@ namespace Rubberduck.UI {
         public static string UnassignedVariableUsage_ {
             get {
                 return ResourceManager.GetString("UnassignedVariableUsage_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test method assert mode:.
+        /// </summary>
+        public static string UnitTestSettings_AssertMode {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_AssertMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test method binding mode:.
+        /// </summary>
+        public static string UnitTestSettings_BindingMode {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_BindingMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Early binding.
+        /// </summary>
+        public static string UnitTestSettings_EarlyBinding {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_EarlyBinding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include test method initialization/cleanup?.
+        /// </summary>
+        public static string UnitTestSettings_IncludeTestMethodInitCleanupPrompt {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_IncludeTestMethodInitCleanupPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include test method stub when creating a test module?.
+        /// </summary>
+        public static string UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include test module initialization/cleanup?.
+        /// </summary>
+        public static string UnitTestSettings_IncludeTestModuleInitCleanupPrompt {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_IncludeTestModuleInitCleanupPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Late binding.
+        /// </summary>
+        public static string UnitTestSettings_LateBinding {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_LateBinding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permissive assert.
+        /// </summary>
+        public static string UnitTestSettings_PermissiveAssert {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_PermissiveAssert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strict assert.
+        /// </summary>
+        public static string UnitTestSettings_StrictAssert {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_StrictAssert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test Module Template.
+        /// </summary>
+        public static string UnitTestSettings_TestModuleTemplateHeader {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_TestModuleTemplateHeader", resourceCulture);
             }
         }
         

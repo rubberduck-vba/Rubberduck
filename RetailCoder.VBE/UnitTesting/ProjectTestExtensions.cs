@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Reflection;
-using Rubberduck.Reflection;
 using Rubberduck.VBEditor.Extensions;
 using System.Reflection;
 using System.IO;

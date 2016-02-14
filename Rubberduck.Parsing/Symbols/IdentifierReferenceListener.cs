@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBA;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing.Symbols
 {
