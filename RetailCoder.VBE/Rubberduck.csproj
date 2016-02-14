@@ -302,6 +302,7 @@
       <DependentUpon>GroupingGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
+    <Compile Include="Inspections\CompositeCodeInspectionFix.cs" />
     <Compile Include="Inspections\ConvertToProcedureQuickFix.cs" />
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspection.cs" />
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionResult.cs" />

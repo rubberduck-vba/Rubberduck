@@ -355,7 +355,90 @@ End Sub";
         }
 
         [TestMethod]
-        public void FunctionReturnValueNotUsed_QuickFixWorks()
+        public void FunctionReturnValueNotUsed_DoesNotReturnResult_InterfaceImplementationMember()
+        {
+            const string interfaceCode =
+@"Public Function Test() As Integer
+End Function";
+
+            const string implementationCode =
+@"Implements IFoo
+Public Function IFoo_Test() As Integer
+    IFoo_Test = 42
+End Function";
+
+            const string callSiteCode =
+@"
+Public Sub Baz()
+    Dim testObj As IFoo
+    Set testObj = new Bar()
+    Dim result As Integer
+    result = testObj.Test()
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var projectBuilder = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none);
+            projectBuilder.AddComponent("IFoo", vbext_ComponentType.vbext_ct_ClassModule, interfaceCode);
+            projectBuilder.AddComponent("Bar", vbext_ComponentType.vbext_ct_ClassModule, implementationCode);
+            projectBuilder.AddComponent("TestModule", vbext_ComponentType.vbext_ct_StdModule, callSiteCode);
+            var vbe = projectBuilder.MockVbeBuilder().Build();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void FunctionReturnValueNotUsed_ReturnsResult_InterfaceMember()
+        {
+            const string interfaceCode =
+@"Public Function Test() As Integer
+End Function";
+
+            const string implementationCode =
+@"Implements IFoo
+Public Function IFoo_Test() As Integer
+    IFoo_Test = 42
+End Function";
+
+            const string callSiteCode =
+@"
+Public Sub Baz()
+    Dim testObj As IFoo
+    Set testObj = new Bar()
+    testObj.Test
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var projectBuilder = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none);
+            projectBuilder.AddComponent("IFoo", vbext_ComponentType.vbext_ct_ClassModule, interfaceCode);
+            projectBuilder.AddComponent("Bar", vbext_ComponentType.vbext_ct_ClassModule, implementationCode);
+            projectBuilder.AddComponent("TestModule", vbext_ComponentType.vbext_ct_StdModule, callSiteCode);
+            var vbe = projectBuilder.MockVbeBuilder().Build();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void FunctionReturnValueNotUsed_QuickFixWorks_NoInterface()
         {
             const string inputCode =
 @"Public Function Foo(ByVal bar As String) As Boolean
@@ -393,8 +476,80 @@ End Sub";
             inspectionResults.First().QuickFixes.First().Fix();
 
             string actual = module.Lines();
+            Assert.AreEqual(expectedCode, actual);
+        }
 
-            Assert.AreEqual(expectedCode, module.Lines());
+        [TestMethod]
+        public void FunctionReturnValueNotUsed_QuickFixWorks_Interface()
+        {
+            const string inputInterfaceCode =
+@"Public Function Test() As Integer
+End Function";
+
+            const string expectedInterfaceCode =
+@"Public Sub Test()
+End Sub";
+
+            const string inputImplementationCode1 =
+@"Implements IFoo
+Public Function IFoo_Test() As Integer
+    IFoo_Test = 42
+End Function";
+
+            const string expectedImplementationCode1 =
+@"Implements IFoo
+Public Sub IFoo_Test()
+End Sub";
+
+            const string inputImplementationCode2 =
+@"Implements IFoo
+Public Function IFoo_Test() As Integer
+    IFoo_Test = 42
+End Function";
+
+            const string expectedImplementationCode2 =
+@"Implements IFoo
+Public Sub IFoo_Test()
+End Sub";
+
+            const string callSiteCode =
+@"
+Public Function Baz()
+    Dim testObj As IFoo
+    Set testObj = new Bar()
+    testObj.Test
+End Function";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var projectBuilder = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none);
+            projectBuilder.AddComponent("IFoo", vbext_ComponentType.vbext_ct_ClassModule, inputInterfaceCode);
+            projectBuilder.AddComponent("Bar", vbext_ComponentType.vbext_ct_ClassModule, inputImplementationCode1);
+            projectBuilder.AddComponent("Bar2", vbext_ComponentType.vbext_ct_ClassModule, inputImplementationCode2);
+            projectBuilder.AddComponent("TestModule", vbext_ComponentType.vbext_ct_StdModule, callSiteCode);
+            var vbe = projectBuilder.MockVbeBuilder().Build();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new FunctionReturnValueNotUsedInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+
+            var project = vbe.Object.VBProjects.Item(0);
+            var interfaceModule = project.VBComponents.Item(0).CodeModule;
+            string actualInterface = interfaceModule.Lines();
+            Assert.AreEqual(expectedInterfaceCode, actualInterface);
+            var implementationModule1 = project.VBComponents.Item(1).CodeModule;
+            string actualImplementation1 = implementationModule1.Lines();
+            Assert.AreEqual(expectedImplementationCode1, actualImplementation1);
+            var implementationModule2 = project.VBComponents.Item(2).CodeModule;
+            string actualImplementation2 = implementationModule2.Lines();
+            Assert.AreEqual(expectedImplementationCode2, actualImplementation2);
         }
 
         [TestMethod]

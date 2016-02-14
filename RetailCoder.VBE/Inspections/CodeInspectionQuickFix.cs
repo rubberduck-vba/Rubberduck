@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections
         }
 
         public string Description { get { return _description; } }
-        protected ParserRuleContext Context { get { return _context; } }
+        public ParserRuleContext Context { get { return _context; } }
         public QualifiedSelection Selection { get { return _selection; } }
 
         public abstract void Fix();
