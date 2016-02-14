@@ -189,7 +189,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void ProcedureNotUsed_ReturnsResult_PublicModuleMember()
+        public void ProcedureNotUsed_NoResultForClassInitialize()
         {
             //Input
             const string inputCode =
@@ -198,8 +198,10 @@ End Sub";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none)
+                             .AddComponent("TestClass", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                             .MockVbeBuilder().Build();
+                             
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
