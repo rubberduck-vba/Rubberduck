@@ -111,10 +111,9 @@
             </StackPanel>
         </Border>
 
-        <controls:GroupingGrid Grid.Row="2" ItemsSource="{Binding Model.TestMethods}"
-                               AutoGenerateColumns="False"
+        <controls:GroupingGrid Grid.Row="2" 
+                               ItemsSource="{Binding Model.TestMethods}"
                                SelectedItem="{Binding SelectedTest}"
-                               IsExpanded="True"
                                ShowGroupingItemCount="True">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Outcome}">
