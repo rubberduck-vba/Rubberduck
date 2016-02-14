@@ -45,8 +45,8 @@ namespace Rubberduck
             IGeneralConfigService configService,
             IAppMenu appMenus,
             RubberduckCommandBar stateBar,
-            IIndenter indenter,
-            IRubberduckHooks hooks)
+            IIndenter indenter/*,
+            IRubberduckHooks hooks*/)
         {
             _vbe = vbe;
             _messageBox = messageBox;
