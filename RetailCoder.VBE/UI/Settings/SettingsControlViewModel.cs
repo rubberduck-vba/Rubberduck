@@ -101,14 +101,14 @@ namespace Rubberduck.UI.Settings
 
         private void SaveConfig()
         {
-            var oldLangCode = _config.UserSettings.LanguageSetting.Code;
+            var oldLangCode = _config.UserSettings.GeneralSettings.Language.Code;
 
             foreach (var vm in SettingsViews.Select(v => v.Control.ViewModel))
             {
                 vm.UpdateConfig(_config);
             }
 
-            _configService.SaveConfiguration(_config, _config.UserSettings.LanguageSetting.Code != oldLangCode);
+            _configService.SaveConfiguration(_config, _config.UserSettings.GeneralSettings.Language.Code != oldLangCode);
         }
 
         public event EventHandler OnOKButtonClicked;

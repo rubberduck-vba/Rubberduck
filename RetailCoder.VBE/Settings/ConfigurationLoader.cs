@@ -43,9 +43,9 @@ namespace Rubberduck.Settings
 
             var config = base.LoadConfiguration();
 
-            if (config.UserSettings.LanguageSetting == null)
+            if (config.UserSettings.GeneralSettings.Language == null)
             {
-                config.UserSettings.LanguageSetting = new DisplayLanguageSetting("en-US");
+                config.UserSettings.GeneralSettings.Language = new DisplayLanguageSetting("en-US");
             }
 
             if (config.UserSettings.ToDoListSettings == null)
@@ -61,6 +61,11 @@ namespace Rubberduck.Settings
             if (config.UserSettings.UnitTestSettings == null)
             {
                 config.UserSettings.UnitTestSettings = new UnitTestSettings();
+            }
+
+            if (config.UserSettings.IndenterSettings == null)
+            {
+                config.UserSettings.IndenterSettings = GetDefaultIndenterSettings();
             }
 
             var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
@@ -119,13 +124,22 @@ namespace Rubberduck.Settings
         public Configuration GetDefaultConfiguration()
         {
             var userSettings = new UserSettings(
-                                    new DisplayLanguageSetting("en-US"), 
+                                    GetDefaultGeneralSettings(), 
                                     new ToDoListSettings(GetDefaultTodoMarkers()),
                                     new CodeInspectionSettings(GetDefaultCodeInspections()),
                                     new UnitTestSettings(),
                                     GetDefaultIndenterSettings());
 
             return new Configuration(userSettings);
+        }
+
+        private GeneralSettings GetDefaultGeneralSettings()
+        {
+            return new GeneralSettings(new DisplayLanguageSetting("en-US"), new List<Hotkey>
+            {
+                new Hotkey{Name="Indent Module", IsEnabled=true, KeyDisplaySymbol="CTRL-M"},
+                new Hotkey{Name="Indent Procedure", IsEnabled=true, KeyDisplaySymbol="CTRL-P"}
+            });
         }
 
         public ToDoMarker[] GetDefaultTodoMarkers()

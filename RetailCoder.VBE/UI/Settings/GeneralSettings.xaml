@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
+             xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type settings:GeneralSettingsViewModel}, IsDesignTimeCreatable=False}">
@@ -20,7 +20,17 @@
                     </Style>
                 </Label.Style>
             </Label>
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings_LanguageLabel}" FontWeight="SemiBold" />
             <ComboBox Width="210" HorizontalAlignment="Left" Margin="5" SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" ItemsSource="{Binding Languages, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" />
+            <Label Content="Hotkeys:" FontWeight="SemiBold" />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <CheckBox Content="Enable Indent Procedure Hotkey" Margin="0,0,5,5" />
+                <TextBox Width="50" Text="CTRL-P" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <CheckBox Content="Enable Indent Module Hotkey" Margin="0,0,5,5" />
+                <TextBox Width="50" Text="CTRL-M" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

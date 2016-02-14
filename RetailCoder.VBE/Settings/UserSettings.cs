@@ -5,7 +5,7 @@ namespace Rubberduck.Settings
     [XmlType(AnonymousType = true)]
     public class UserSettings
     {
-        public DisplayLanguageSetting LanguageSetting { get; set; }
+        public GeneralSettings GeneralSettings { get; set; }
         public ToDoListSettings ToDoListSettings { get; set; }
         public CodeInspectionSettings CodeInspectionSettings { get; set; }
         public UnitTestSettings UnitTestSettings { get; set; }
@@ -16,13 +16,13 @@ namespace Rubberduck.Settings
             //default constructor required for serialization
         }
 
-        public UserSettings(DisplayLanguageSetting languageSetting,
+        public UserSettings(GeneralSettings generalSettings,
                             ToDoListSettings todoSettings, 
                             CodeInspectionSettings codeInspectionSettings,
                             UnitTestSettings unitTestSettings,
                             IndenterSettings indenterSettings)
         {
-            LanguageSetting = languageSetting;
+            GeneralSettings = generalSettings;
             ToDoListSettings = todoSettings;
             CodeInspectionSettings = codeInspectionSettings;
             UnitTestSettings = unitTestSettings;

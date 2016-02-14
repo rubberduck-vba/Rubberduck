@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Settings
                 new DisplayLanguageSetting("ja-JP")
             });
 
-            SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.LanguageSetting.Code);
+            SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
         }
 
         public ObservableCollection<DisplayLanguageSetting> Languages { get; set; } 
@@ -39,12 +39,12 @@ namespace Rubberduck.UI.Settings
 
         public void UpdateConfig(Configuration config)
         {
-            config.UserSettings.LanguageSetting = SelectedLanguage;
+            config.UserSettings.GeneralSettings.Language = SelectedLanguage;
         }
 
         public void SetToDefaults(Configuration config)
         {
-            SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.LanguageSetting.Code);
+            SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
         }
     }
 }

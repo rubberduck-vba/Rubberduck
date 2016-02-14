@@ -380,6 +380,8 @@
     <Compile Include="Root\CommandBarsModule.cs" />
     <Compile Include="Root\RubberduckModule.cs" />
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
+    <Compile Include="Settings\GeneralSettings.cs" />
+    <Compile Include="Settings\Hotkey.cs" />
     <Compile Include="Settings\IndenterSettings.cs" />
     <Compile Include="Settings\SourceControlConfiguration.cs" />
     <Compile Include="Settings\SourceControlConfigurationService.cs" />

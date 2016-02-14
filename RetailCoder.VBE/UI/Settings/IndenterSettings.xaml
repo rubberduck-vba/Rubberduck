@@ -7,7 +7,7 @@
              xmlns:numberPicker="clr-namespace:Rubberduck.Controls.NumberPicker"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="600"
+             d:DesignHeight="550" d:DesignWidth="500"
              d:DataContext="{d:DesignInstance {x:Type settings:IndenterSettingsViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <converters:EndOfLineCommentStyleToVisibilityConverter x:Key="EndOfLineCommentStyleToVisibility" />
@@ -37,13 +37,13 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel>
                         <Label Content="Alignment Options" FontWeight="SemiBold" />
-                        <CheckBox Content="Align Continuations" Margin="0,0,0,5" />
-                        <CheckBox Content="Align Dim" Margin="0,0,0,5" />
-                        <CheckBox Content="Align End Of Line" Margin="0,0,0,5" />
-                        <CheckBox Content="Align Ignore Ops" Margin="0,0,0,5" />
+                        <CheckBox Content="Align Continuations" IsChecked="{Binding AlignContinuations}" Margin="0,0,0,5" />
+                        <CheckBox Content="Align Dim" IsChecked="{Binding AlignDim}" Margin="0,0,0,5" />
+                        <CheckBox Content="Align End Of Line" IsChecked="{Binding AlignEndOfLine}" Margin="0,0,0,5" />
+                        <CheckBox Content="Align Ignore Ops" IsChecked="{Binding AlignIgnoreOps}" Margin="0,0,0,5" />
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Name="AlignDimColumn" Content="Align Dim Column" Margin="0,0,0,5" />
-                            <numberPicker:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}" NumValue="15" />
+                            <numberPicker:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}" NumValue="{Binding AlignDim}" />
                         </StackPanel>
 
                         <Label Content="Special Options" FontWeight="SemiBold" />
@@ -64,15 +64,6 @@
                         <CheckBox Content="Enable Undo" Margin="0,0,0,5" />
                     </StackPanel>
                 </Grid>
-                <Label Content="Hotkeys" FontWeight="SemiBold" />
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <CheckBox Content="Enable Indent Procedure Hotkey" Margin="0,0,5,5" />
-                    <TextBox Width="50" Text="+^P" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <CheckBox Content="Enable Indent Module Hotkey" Margin="0,0,5,5" />
-                    <TextBox Width="50" Text="+^M" />
-                </StackPanel>
                 <Label Content="End of Line Options" FontWeight="SemiBold" />
                 <CheckBox Content="End of Line Align Column" Margin="0,0,0,5" />
                 <Label Content="End of Line Comment Style:" />
