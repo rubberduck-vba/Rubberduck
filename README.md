@@ -2,8 +2,8 @@
 
 | Branch     | Build Status |
 |------------|--------------|
-| **master** | [![master branch build status][masterBuildStatus]] |
-| **next**   | [![next branch build status][nextBuildStatus]] |
+| **master** | ![master branch build status][masterBuildStatus] |
+| **next**   | ![next branch build status][nextBuildStatus] |
 
 [nextBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/next?svg=true
 [masterBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/master?svg=true
