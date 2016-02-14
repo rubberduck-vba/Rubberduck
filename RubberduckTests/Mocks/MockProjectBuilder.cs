@@ -27,8 +27,6 @@ namespace RubberduckTests.Mocks
             _getVbe = getVbe;
             _mockVbeBuilder = mockVbeBuilder;
 
-
-
             _project = CreateProjectMock(name, protection);
 
             _vbComponents = CreateComponentsMock();
