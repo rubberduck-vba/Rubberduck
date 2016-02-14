@@ -2554,15 +2554,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Regex search/replace....
-        /// </summary>
-        public static string RubberduckMenu_RegexSearchReplace {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_RegexSearchReplace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &amp;Source Control.
         /// </summary>
         public static string RubberduckMenu_SourceControl {
@@ -3598,7 +3589,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test method assert mode:.
+        ///   Looks up a localized string similar to Type safety:.
         /// </summary>
         public static string UnitTestSettings_AssertMode {
             get {
@@ -3607,7 +3598,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test method binding mode:.
+        ///   Looks up a localized string similar to Binding mode:.
         /// </summary>
         public static string UnitTestSettings_BindingMode {
             get {
@@ -3625,7 +3616,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Include test method initialization/cleanup?.
+        ///   Looks up a localized string similar to Test method initialization/cleanup.
         /// </summary>
         public static string UnitTestSettings_IncludeTestMethodInitCleanupPrompt {
             get {
@@ -3634,7 +3625,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Include test method stub when creating a test module?.
+        ///   Looks up a localized string similar to Insert test method stub.
         /// </summary>
         public static string UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt {
             get {
@@ -3643,7 +3634,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Include test module initialization/cleanup?.
+        ///   Looks up a localized string similar to Test module initialization/cleanup.
         /// </summary>
         public static string UnitTestSettings_IncludeTestModuleInitCleanupPrompt {
             get {
