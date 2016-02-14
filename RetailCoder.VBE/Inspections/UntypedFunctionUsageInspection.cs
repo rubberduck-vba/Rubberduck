@@ -3,19 +3,18 @@ using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
     public sealed class UntypedFunctionUsageInspection : InspectionBase
     {
         public UntypedFunctionUsageInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Hint)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.UntypedFunctionUsage_; } }
+        public override string Meta { get { return InspectionsUI.UntypedFunctionUsageInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.UntypedFunctionUsageInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
         private readonly string[] _tokens = {

@@ -5,19 +5,18 @@ using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
     public sealed class NonReturningFunctionInspection : InspectionBase
     {
         public NonReturningFunctionInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Error)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.NonReturningFunction_; } }
+        public override string Meta { get { return InspectionsUI.NonReturningFunctionInspectionMeta; }}
+        public override string Description { get { return InspectionsUI.NonReturningFunctionInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         private static readonly DeclarationType[] ReturningMemberTypes =

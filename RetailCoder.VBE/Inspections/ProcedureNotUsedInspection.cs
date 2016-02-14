@@ -15,9 +15,9 @@ namespace Rubberduck.Inspections
         public ProcedureNotUsedInspection(RubberduckParserState state)
             : base(state)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
+        public override string Meta { get { return InspectionsUI.ProcedureNotUsedInspectionMeta; } }
         public override string Description { get { return RubberduckUI.ProcedureNotUsed_; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 

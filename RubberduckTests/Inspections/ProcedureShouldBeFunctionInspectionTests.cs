@@ -31,7 +31,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -58,7 +58,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(2, inspectionResults.Count());
@@ -83,7 +83,7 @@ End Function";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -107,7 +107,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -131,7 +131,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -155,7 +155,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -189,7 +189,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -222,7 +222,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -253,7 +253,7 @@ End Function";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.First().Fix();
@@ -296,7 +296,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.First().Fix();
@@ -336,7 +336,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.First().Fix();
@@ -376,7 +376,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.First().Fix();
@@ -419,7 +419,7 @@ End Function";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.First().Fix();
@@ -462,7 +462,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureShouldBeFunctionInspection(parser.State);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.First().Fix();
@@ -473,7 +473,7 @@ End Sub";
         [TestMethod]
         public void InspectionType()
         {
-            var inspection = new ProcedureShouldBeFunctionInspection(null);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(null);
             Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
@@ -481,7 +481,7 @@ End Sub";
         public void InspectionName()
         {
             const string inspectionName = "ProcedureShouldBeFunctionInspection";
-            var inspection = new ProcedureShouldBeFunctionInspection(null);
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

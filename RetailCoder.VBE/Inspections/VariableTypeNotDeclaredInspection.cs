@@ -2,7 +2,6 @@
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -11,10 +10,10 @@ namespace Rubberduck.Inspections
         public VariableTypeNotDeclaredInspection(RubberduckParserState state)
             : base(state)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI._TypeNotDeclared_; } }
+        public override string Meta { get { return InspectionsUI.VariableTypeNotDeclaredInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.VariableTypeNotDeclaredInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()

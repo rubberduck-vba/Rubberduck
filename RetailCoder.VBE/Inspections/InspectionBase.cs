@@ -9,10 +9,19 @@ namespace Rubberduck.Inspections
     public abstract class InspectionBase : IInspection
     {
         protected readonly RubberduckParserState State;
-        protected InspectionBase(RubberduckParserState state)
+        private readonly CodeInspectionSeverity _defaultSeverity;
+
+        protected InspectionBase(RubberduckParserState state, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning)
         {
             State = state;
+            _defaultSeverity = defaultSeverity;
+            Severity = _defaultSeverity;
         }
+
+        /// <summary>
+        /// Gets a value the severity level to reset to, the "factory default" setting.
+        /// </summary>
+        public CodeInspectionSeverity DefaultSeverity { get { return _defaultSeverity; } }
 
         /// <summary>
         /// Gets a localized string representing a short name/description for the inspection.
@@ -38,7 +47,7 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Inspection severity level. Can control whether an inspection is enabled.
         /// </summary>
-        public virtual CodeInspectionSeverity Severity { get; set; }
+        public CodeInspectionSeverity Severity { get; set; }
 
         /// <summary>
         /// Meta-information about why an inspection exists.

@@ -8,15 +8,15 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public sealed class ProcedureShouldBeFunctionInspection : InspectionBase
+    public sealed class ProcedureCanBeWrittenAsFunctionInspection : InspectionBase
     {
-        public ProcedureShouldBeFunctionInspection(RubberduckParserState state)
-            : base(state)
+        public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return InspectionsUI.ProcedureShouldBeFunctionInspection; } }
+        public override string Meta { get { return InspectionsUI.ProcedureShouldBeFunctionInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ProcedureCanBeFunctionInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()

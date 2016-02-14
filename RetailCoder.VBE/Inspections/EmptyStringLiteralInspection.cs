@@ -11,9 +11,9 @@ namespace Rubberduck.Inspections
         public EmptyStringLiteralInspection(RubberduckParserState state)
             : base(state)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
+        public override string Meta { get { return InspectionsUI.EmptyStringLiteralInspectionMeta; } }
         public override string Description { get { return InspectionsUI.EmptyStringLiteralInspection; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 

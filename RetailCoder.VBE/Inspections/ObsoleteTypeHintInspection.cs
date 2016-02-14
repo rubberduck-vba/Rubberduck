@@ -9,12 +9,12 @@ namespace Rubberduck.Inspections
     public sealed class ObsoleteTypeHintInspection : InspectionBase
     {
         public ObsoleteTypeHintInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
-            Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public override string Description { get { return RubberduckUI._ObsoleteTypeHint_; } }
+        public override string Meta { get { return InspectionsUI.ObsoleteTypeHintInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ObsoleteTypeHintInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()

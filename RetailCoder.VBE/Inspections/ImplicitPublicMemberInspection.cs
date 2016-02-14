@@ -4,19 +4,18 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ImplicitPublicMemberInspection : InspectionBase
     {
         public ImplicitPublicMemberInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Hint)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.ImplicitPublicMember_; } }
+        public override string Meta { get { return InspectionsUI.ImplicitPublicMemberInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ImplicitPublicMemberInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         private static readonly DeclarationType[] ProcedureTypes = 

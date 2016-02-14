@@ -330,7 +330,7 @@
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspection.cs" />
     <Compile Include="Inspections\InspectionBase.cs" />
     <Compile Include="Inspections\MultipleFolderAnnotationsInspection.cs" />
-    <Compile Include="Inspections\ProcedureShouldBeFunctionInspection.cs" />
+    <Compile Include="Inspections\ProcedureCanBeWrittenAsFunctionInspection.cs" />
     <Compile Include="Inspections\ProcedureShouldBeFunctionInspectionResult.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspectionResult.cs" />
     <Compile Include="Inspections\UseMeaningfulNameInspection.cs" />

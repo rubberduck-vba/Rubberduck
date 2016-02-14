@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AssignedByValParameterInspectionMeta" xml:space="preserve">
-    <value>Parameter is passed by value, but is assigned a new value/reference. Consider making a local copy instead.</value>
+    <value>Parameter is passed by value, but is assigned a new value/reference. Consider making a local copy instead if the caller isn't supposed to know the new value. If the caller should see the new value, the parameter should be passed ByRef instead, and you have a bug.</value>
   </data>
   <data name="AssignedByValParameterInspectionName" xml:space="preserve">
     <value>ByVal parameter is assigned</value>
@@ -130,7 +130,7 @@
     <value>Constant value is declared but Rubberduck could not find any reference to it. Consider removing the unused declaration.</value>
   </data>
   <data name="ConstantNotUsedInspectionName" xml:space="preserve">
-    <value>Constant is not referred to</value>
+    <value>Constant is not used</value>
   </data>
   <data name="DefaultProjectNameInspectionMeta" xml:space="preserve">
     <value>Consider naming your VBA project.</value>
@@ -150,17 +150,17 @@
   <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
     <value>Replace empty string with the 'vbNullString' constant</value>
   </data>
-  <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
-    <value>Make field '{0}' a property</value>
+  <data name="EncapsulatePublicFieldInspectionResultFormat" xml:space="preserve">
+    <value>Public field '{0}' breaks encapsulation</value>
   </data>
   <data name="EncapsulatePublicFieldInspectionMeta" xml:space="preserve">
-    <value>Use properties rather than public fields.</value>
+    <value>Consider exposing a property instead.</value>
   </data>
   <data name="EncapsulatePublicFieldInspectionName" xml:space="preserve">
-    <value>Use properties rather than public fields.</value>
+    <value>Public field breaks encapsulation</value>
   </data>
   <data name="EncapsulatePublicFieldInspectionQuickFix" xml:space="preserve">
-    <value>Encapsulate field '{0}' with property</value>
+    <value>Encapsulate field '{0}' with a property</value>
   </data>
   <data name="IgnoreOnce" xml:space="preserve">
     <value>Ignore once</value>
@@ -193,19 +193,16 @@
     <value>Members with a return value implicitly return a 'Variant' unless specified otherwise. Consider returning an explicit 'Variant' when the return type isn't known, or specify it explicitly.</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspectionName" xml:space="preserve">
-    <value>Return type is implicitly 'Variant'</value>
-  </data>
-  <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
-    <value>Move field closer to usage</value>
+    <value>Member return type is implicitly 'Variant'</value>
   </data>
   <data name="MoveFieldCloserToUsageInspectionMeta" xml:space="preserve">
-    <value>A field that is only used in one method should be a local variable.</value>
+    <value>A module-level variable used only in one procedure should be declared in that procedure.</value>
   </data>
   <data name="MoveFieldCloserToUsageInspectionName" xml:space="preserve">
-    <value>Move field closer to usage</value>
+    <value>Scope of variable '{0}' is broader than it needs to be</value>
   </data>
-  <data name="MoveFieldCloserToUsageInspectionQuickFix" xml:space="preserve">
-    <value>Move field '{0}' closer to usage</value>
+  <data name="MoveFieldCloserToUsageInspectionResultFormat" xml:space="preserve">
+    <value>Move module-level variable '{0}' to a smaller scope.</value>
   </data>
   <data name="LanguageOpportunities" xml:space="preserve">
     <value>Language opportunities</value>
@@ -277,7 +274,7 @@
     <value>'Option Base 1' is specified</value>
   </data>
   <data name="OptionExplicitInspectionMeta" xml:space="preserve">
-    <value>Rubberduck works best when all used identifiers are declared. Allowing the usage of undeclared variables can cause easily avoidable bugs. Always specify Option Explicit.</value>
+    <value>Rubberduck cannot see variables that aren't declared. VBA will happily compile a typo and you'll soon be asking an embarassing question on Stack Overflow. Avoid problems, use 'Option Explicit'. </value>
   </data>
   <data name="OptionExplicitInspectionName" xml:space="preserve">
     <value>'Option Explicit' is not specified</value>
@@ -312,14 +309,14 @@
   <data name="UntypedFunctionUsageInspectionName" xml:space="preserve">
     <value>Use of variant-returning string function</value>
   </data>
-  <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
+  <data name="ProcedureCanBeFunctionInspectionResultFormat" xml:space="preserve">
     <value>Procedure '{0}' can be written as a function.</value>
     <comment>{0} Procedure name</comment>
   </data>
   <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
     <value>Implement as function and update usages.</value>
   </data>
-  <data name="UseMeaningfulNameInspection" xml:space="preserve">
+  <data name="UseMeaningfulNameInspectionResultFormat" xml:space="preserve">
     <value>Consider renaming {0} '{1}'</value>
   </data>
   <data name="UseMeaningfulNameInspectionMeta" xml:space="preserve">
@@ -332,7 +329,7 @@
     <value>A variable is declared, but never assigned a value/reference. If Rubberduck is correct, the variable could probably be safely removed.</value>
   </data>
   <data name="VariableNotAssignedInspectionName" xml:space="preserve">
-    <value>Unassigned variable</value>
+    <value>Variable is declared but never assigned</value>
   </data>
   <data name="VariableNotUsedInspectionMeta" xml:space="preserve">
     <value>A variable is declared and assigned a value/reference, but it's never referred to.</value>
@@ -358,23 +355,29 @@
   <data name="ProcedureShouldBeFunctionInspectionName" xml:space="preserve">
     <value>Procedure can be written as a function</value>
   </data>
-  <data name="WriteOnlyPropertyInspection" xml:space="preserve">
+  <data name="WriteOnlyPropertyInspectionResultFormat" xml:space="preserve">
     <value>Property '{0}' has no getter</value>
     <comment>{0} Property name</comment>
   </data>
-  <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
-    <value>Declaration '{0}' is self-assigned</value>
+  <data name="SelfAssignedDeclarationInspectionResultFormat" xml:space="preserve">
+    <value>Object reference '{0}' is self-assigned</value>
   </data>
   <data name="SelfAssignedDeclarationInspectionMeta" xml:space="preserve">
-    <value>A declaration should not be self-assigned.</value>
+    <value>A self-assigned object variable declaration at procedure scope changes how nulling the reference works, which can lead to unexpected behavior.</value>
   </data>
   <data name="SelfAssignedDeclarationInspectionName" xml:space="preserve">
-    <value>Self-assigned property</value>
+    <value>Object variable reference is self-assigned</value>
   </data>
   <data name="FunctionReturnValueNotUsedInspectionName" xml:space="preserve">
     <value>Function return value is never used.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+  <data name="FunctionReturnValueNotUsedInspectionResultFormat" xml:space="preserve">
     <value>Return value of function '{0}' is never used.</value>
+  </data>
+  <data name="AssignedByValParameterInspectionResultFormat" xml:space="preserve">
+    <value>Parameter '{0}' is passed ByVal and assigned a value</value>
+  </data>
+  <data name="FunctionReturnValueNotUsedInspectionMeta" xml:space="preserve">
+    <value>A member is written as a function, but used as a procedure. Consider converting the 'Function' into a 'Sub'.</value>
   </data>
 </root>

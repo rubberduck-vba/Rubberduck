@@ -11,12 +11,12 @@ namespace Rubberduck.Inspections
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public EncapsulatePublicFieldInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
             _wrapperFactory = new CodePaneWrapperFactory();
-            Severity = CodeInspectionSeverity.Suggestion;
         }
 
+        public override string Meta { get { return InspectionsUI.EncapsulatePublicFieldInspectionMeta; } }
         public override string Description { get { return InspectionsUI.EncapsulatePublicFieldInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 

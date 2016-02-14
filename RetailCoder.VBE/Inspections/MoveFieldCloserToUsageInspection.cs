@@ -12,12 +12,12 @@ namespace Rubberduck.Inspections
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public MoveFieldCloserToUsageInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
             _wrapperFactory = new CodePaneWrapperFactory();
-            Severity = CodeInspectionSeverity.Suggestion;
         }
 
+        public override string Meta { get { return InspectionsUI.MoveFieldCloserToUsageInspectionMeta; } }
         public override string Description { get { return InspectionsUI.MoveFieldCloserToUsageInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 

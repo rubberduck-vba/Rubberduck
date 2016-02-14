@@ -10,11 +10,11 @@ namespace Rubberduck.Inspections
     public sealed class OptionExplicitInspection : InspectionBase
     {
         public OptionExplicitInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Error)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
+        public override string Meta { get { return InspectionsUI.OptionExplicitInspectionMeta; } }
         public override string Description { get { return RubberduckUI.OptionExplicit; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 

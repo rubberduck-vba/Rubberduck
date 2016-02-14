@@ -8,11 +8,11 @@ namespace Rubberduck.Inspections
     public sealed class MultipleFolderAnnotationsInspection : InspectionBase
     {
         public MultipleFolderAnnotationsInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Error)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
+        public override string Meta { get { return InspectionsUI.MultipleFolderAnnotationsInspectionMeta; } }
         public override string Description { get { return InspectionsUI.MultipleFolderAnnotationsInspection; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 

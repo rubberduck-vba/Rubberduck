@@ -4,19 +4,18 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ParameterCanBeByValInspection : InspectionBase
     {
         public ParameterCanBeByValInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.ParameterCanBeByVal_; } }
+        public override string Meta { get { return InspectionsUI.ParameterCanBeByValInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ParameterCanBeByValInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         // if we don't want to suggest passing non-primitive types ByRef (i.e. object types and Variant), then we need this:

@@ -4,7 +4,6 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -13,10 +12,10 @@ namespace Rubberduck.Inspections
         public MultipleDeclarationsInspection(RubberduckParserState state)
             : base(state)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.MultipleDeclarations; } }
+        public override string Meta { get { return InspectionsUI.MultipleDeclarationsInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.MultipleDeclarationsInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()

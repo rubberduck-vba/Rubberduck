@@ -2,20 +2,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
     public sealed class UnassignedVariableUsageInspection : InspectionBase
     {
         public UnassignedVariableUsageInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Error)
         {
-            Severity = CodeInspectionSeverity.Error;
         }
 
+        public override string Meta { get { return InspectionsUI.UnassignedVariableUsageInspectionMeta; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public override string Description { get { return RubberduckUI.UnassignedVariableUsage_; } }
+        public override string Description { get { return InspectionsUI.UnassignedVariableUsageInspectionName; } }
 
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {

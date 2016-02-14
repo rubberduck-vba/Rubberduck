@@ -8,18 +8,22 @@ namespace Rubberduck.Inspections
     public sealed class SelfAssignedDeclarationInspection : InspectionBase
     {
         public SelfAssignedDeclarationInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Hint)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return InspectionsUI.SelfAssignedDeclarationInspection; } }
+        public override string Meta { get { return InspectionsUI.SelfAssignedDeclarationInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.SelfAssignedDeclarationInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
         {
             return UserDeclarations
-                .Where(declaration => declaration.IsSelfAssigned && declaration.DeclarationType == DeclarationType.Variable)
+                .Where(declaration => declaration.IsSelfAssigned 
+                    && declaration.DeclarationType == DeclarationType.Variable
+                    && declaration.ParentScope == declaration.QualifiedName.QualifiedModuleName.ToString()
+                    && declaration.ParentDeclaration != null
+                    && declaration.ParentDeclaration.DeclarationType == DeclarationType.Class)
                 .Select(issue => new SelfAssignedDeclarationInspectionResult(this, issue));
         }
     }

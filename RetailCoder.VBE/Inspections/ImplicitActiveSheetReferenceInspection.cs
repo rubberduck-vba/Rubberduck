@@ -4,7 +4,6 @@ using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
@@ -19,10 +18,10 @@ namespace Rubberduck.Inspections
             : base(state)
         {
             _hostApp = vbe.HostApplication;
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.ImplicitActiveSheetReference_; } }
+        public override string Meta { get { return InspectionsUI.ImplicitActiveSheetReferenceInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ImplicitActiveSheetReferenceInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         private static readonly string[] Targets = 

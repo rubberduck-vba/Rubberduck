@@ -2,19 +2,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
     public sealed class WriteOnlyPropertyInspection : InspectionBase
     {
         public WriteOnlyPropertyInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.WriteOnlyProperty_; } }
+        public override string Meta { get { return InspectionsUI.WriteOnlyPropertyInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.WriteOnlyPropertyInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()

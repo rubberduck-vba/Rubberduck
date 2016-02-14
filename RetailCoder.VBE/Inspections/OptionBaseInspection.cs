@@ -3,19 +3,18 @@ using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
     public sealed class OptionBaseInspection : InspectionBase
     {
         public OptionBaseInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Hint)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.OptionBase; } }
+        public override string Meta { get { return InspectionsUI.OptionBaseInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.OptionBaseInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
