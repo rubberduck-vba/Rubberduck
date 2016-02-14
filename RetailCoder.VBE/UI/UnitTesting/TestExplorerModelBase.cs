@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
 using Rubberduck.Parsing.Reflection;
-using Rubberduck.Reflection;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting

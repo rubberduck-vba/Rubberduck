@@ -7,7 +7,7 @@
              xmlns:unitTesting="clr-namespace:Rubberduck.UnitTesting"
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:controls="clr-namespace:Rubberduck.Controls"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              Language="{UICulture}"
              mc:Ignorable="d" 
              d:DesignHeight="255" d:DesignWidth="455"

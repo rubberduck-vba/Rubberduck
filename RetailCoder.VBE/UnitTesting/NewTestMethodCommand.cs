@@ -3,7 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
-using Rubberduck.Reflection;
+using Rubberduck.Parsing.Reflection;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 

@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.VBA.Nodes
+namespace Rubberduck.Parsing.VBA.Nodes
 {
     /// <summary>
     /// The base class for all nodes in a Rubberduck code tree. todo: delete this obsolete class.

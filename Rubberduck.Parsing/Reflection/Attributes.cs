@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Reflection
+﻿namespace Rubberduck.Parsing.Reflection
 {
     /// <summary>
     /// A base class for all member attributes.

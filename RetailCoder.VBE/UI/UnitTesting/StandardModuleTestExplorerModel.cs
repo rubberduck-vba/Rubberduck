@@ -1,7 +1,7 @@
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
-using Rubberduck.Reflection;
+using Rubberduck.Parsing.Reflection;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting

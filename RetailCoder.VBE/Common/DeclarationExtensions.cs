@@ -6,10 +6,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Annotations;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Properties;
 using Rubberduck.VBEditor;
 // ReSharper disable LocalizableElement
 

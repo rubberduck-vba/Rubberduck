@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
-             xmlns:controls="clr-namespace:Rubberduck.Controls"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="550" d:DesignWidth="500"
              d:DataContext="{d:DesignInstance {x:Type settings:IndenterSettingsViewModel}, IsDesignTimeCreatable=False}">
