@@ -207,6 +207,7 @@ namespace Rubberduck.Root
                 _kernel.Get<FindSymbolCommandMenuItem>(),
                 _kernel.Get<FindAllReferencesCommandMenuItem>(),
                 _kernel.Get<FindAllImplementationsCommandMenuItem>(),
+                _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
             };
             return new NavigateParentMenu(items);
         }

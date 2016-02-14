@@ -79,6 +79,10 @@
       <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="office">
+      <HintPath>..\libs\Office.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />

@@ -30,7 +30,7 @@ namespace Rubberduck
         private readonly AutoSave.AutoSave _autoSave;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
-        private readonly ParserStateCommandBar _stateBar;
+        private readonly RubberduckCommandBar _stateBar;
         private readonly IIndenter _indenter;
         private readonly IRubberduckHooks _hooks;
 
@@ -44,7 +44,7 @@ namespace Rubberduck
             IInspectorFactory inspectorFactory,
             IGeneralConfigService configService,
             IAppMenu appMenus,
-            ParserStateCommandBar stateBar,
+            RubberduckCommandBar stateBar,
             IIndenter indenter,
             IRubberduckHooks hooks)
         {

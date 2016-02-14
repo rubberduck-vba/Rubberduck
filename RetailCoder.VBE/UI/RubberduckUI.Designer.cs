@@ -2554,6 +2554,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Regex search/replace....
+        /// </summary>
+        public static string RubberduckMenu_RegexSearchReplace {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_RegexSearchReplace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Source Control.
         /// </summary>
         public static string RubberduckMenu_SourceControl {
