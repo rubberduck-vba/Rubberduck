@@ -402,7 +402,7 @@ namespace Rubberduck.Inspections
         /// <summary>
         ///   Looks up a localized string similar to Move field closer to usage.
         /// </summary>
-        internal static string MoveFieldCloseToUsageInspection
+        internal static string MoveFieldCloserToUsageInspection
         {
             get
             {
@@ -413,7 +413,7 @@ namespace Rubberduck.Inspections
         /// <summary>
         ///   Looks up a localized string similar to A field that is only used in one method should be a local variable..
         /// </summary>
-        internal static string MoveFieldCloseToUsageInspectionMeta
+        internal static string MoveFieldCloserToUsageInspectionMeta
         {
             get
             {
@@ -424,7 +424,7 @@ namespace Rubberduck.Inspections
         /// <summary>
         ///   Looks up a localized string similar to Move field closer to usage.
         /// </summary>
-        internal static string MoveFieldCloseToUsageInspectionName
+        internal static string MoveFieldCloserToUsageInspectionName
         {
             get
             {
@@ -435,7 +435,7 @@ namespace Rubberduck.Inspections
         /// <summary>
         ///   Looks up a localized string similar to Move field &apos;{0}&apos; closer to usage.
         /// </summary>
-        internal static string MoveFieldCloseToUsageInspectionQuickFix
+        internal static string MoveFieldCloserToUsageInspectionQuickFix
         {
             get
             {

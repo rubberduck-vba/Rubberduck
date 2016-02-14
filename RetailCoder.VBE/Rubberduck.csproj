@@ -311,13 +311,13 @@
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\IInspection.cs" />
     <Compile Include="Inspections\IInspectionModel.cs" />
-    <Compile Include="Inspections\SelfAssignedDeclarationInspection.cs" />
-    <Compile Include="Inspections\SelfAssignedDeclarationInspectionResult.cs" />
     <Compile Include="Inspections\InspectionsUI.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>InspectionsUI.resx</DependentUpon>
     </Compile>
+    <Compile Include="Inspections\SelfAssignedDeclarationInspection.cs" />
+    <Compile Include="Inspections\SelfAssignedDeclarationInspectionResult.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspection.cs" />
     <Compile Include="Inspections\EncapsulatePublicFieldInspection.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspectionResult.cs" />
@@ -860,7 +860,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Inspections\InspectionsUI.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionsUI1.Designer.cs</LastGenOutput>
+      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\AboutWindow.resx">

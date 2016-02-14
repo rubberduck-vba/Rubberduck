@@ -43,7 +43,7 @@
                         <CheckBox Content="Align Ignore Ops" IsChecked="{Binding AlignIgnoreOps}" Margin="0,0,0,5" />
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Name="AlignDimColumn" Content="Align Dim Column" Margin="0,0,0,5" />
-                            <numberPicker:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}" NumValue="{Binding AlignDim}" />
+                            <numberPicker:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}" NumValue="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AlignDimColumn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
 
                         <Label Content="Special Options" FontWeight="SemiBold" />

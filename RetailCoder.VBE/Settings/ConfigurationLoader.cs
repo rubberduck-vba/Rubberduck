@@ -43,9 +43,9 @@ namespace Rubberduck.Settings
 
             var config = base.LoadConfiguration();
 
-            if (config.UserSettings.GeneralSettings.Language == null)
+            if (config.UserSettings.GeneralSettings == null)
             {
-                config.UserSettings.GeneralSettings.Language = new DisplayLanguageSetting("en-US");
+                config.UserSettings.GeneralSettings = GetDefaultGeneralSettings();
             }
 
             if (config.UserSettings.ToDoListSettings == null)
@@ -135,11 +135,12 @@ namespace Rubberduck.Settings
 
         private GeneralSettings GetDefaultGeneralSettings()
         {
-            return new GeneralSettings(new DisplayLanguageSetting("en-US"), new List<Hotkey>
-            {
-                new Hotkey{Name="Indent Module", IsEnabled=true, KeyDisplaySymbol="CTRL-M"},
-                new Hotkey{Name="Indent Procedure", IsEnabled=true, KeyDisplaySymbol="CTRL-P"}
-            });
+            return new GeneralSettings(new DisplayLanguageSetting("en-US"),
+                new[]
+                {
+                    new Hotkey{Name="Indent Module", IsEnabled=true, KeyDisplaySymbol="CTRL-M"},
+                    new Hotkey{Name="Indent Procedure", IsEnabled=true, KeyDisplaySymbol="CTRL-P"}
+                });
         }
 
         public ToDoMarker[] GetDefaultTodoMarkers()

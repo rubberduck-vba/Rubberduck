@@ -9,22 +9,25 @@ namespace Rubberduck.Controls.NumberPicker
     /// </summary>
     public partial class NumberPicker
     {
-        private int _numValue = 0;
+        public static readonly DependencyProperty NumValueProperty =
+            DependencyProperty.Register("NumValue", typeof(int), typeof(NumberPicker), new UIPropertyMetadata(null));
 
         public int NumValue
         {
-            get { return _numValue; }
+            get
+            {
+                return (int)GetValue(NumValueProperty);
+            }
             set
             {
-                _numValue = value;
-                TxtNum.Text = value.ToString();
+                SetValue(NumValueProperty, value);
+                OnPropertyChanged(new DependencyPropertyChangedEventArgs(NumValueProperty, NumValue - 1, NumValue));
             }
         }
 
         public NumberPicker()
         {
             InitializeComponent();
-            TxtNum.Text = _numValue.ToString();
         }
 
         private void cmdUp_Click(object sender, RoutedEventArgs e)
@@ -35,17 +38,6 @@ namespace Rubberduck.Controls.NumberPicker
         private void cmdDown_Click(object sender, RoutedEventArgs e)
         {
             NumValue--;
-        }
-
-        private void txtNum_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (TxtNum == null)
-            {
-                return;
-            }
-
-            if (!int.TryParse(TxtNum.Text, out _numValue))
-                TxtNum.Text = _numValue.ToString();
         }
     }
 }
