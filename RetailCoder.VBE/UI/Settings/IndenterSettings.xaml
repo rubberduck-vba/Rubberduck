@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
-             xmlns:numberPicker="clr-namespace:Rubberduck.Controls.NumberPicker"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
+             xmlns:controls="clr-namespace:Rubberduck.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="550" d:DesignWidth="500"
              d:DataContext="{d:DesignInstance {x:Type settings:IndenterSettingsViewModel}, IsDesignTimeCreatable=False}">
@@ -43,7 +43,7 @@
                         <CheckBox Content="Align Ignore Ops" IsChecked="{Binding AlignIgnoreOps}" Margin="0,0,0,5" />
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Name="AlignDimColumn" Content="Align Dim Column" Margin="0,0,0,5" />
-                            <numberPicker:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}" NumValue="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AlignDimColumn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <controls:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}" NumValue="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AlignDimColumn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
 
                         <Label Content="Special Options" FontWeight="SemiBold" />
@@ -74,7 +74,7 @@
                         <TextBlock Text="Same Gap" />
                         <TextBlock Text="Standard Gap" />
                     </ComboBox>
-                    <numberPicker:NumberPicker Margin="0,-4,0,0" NumValue="50" Visibility="{Binding ElementName=EndOfLineCommentStyle, Path=SelectedIndex, Converter={StaticResource EndOfLineCommentStyleToVisibility}}" />
+                    <controls:NumberPicker Margin="0,-4,0,0" NumValue="50" Visibility="{Binding ElementName=EndOfLineCommentStyle, Path=SelectedIndex, Converter={StaticResource EndOfLineCommentStyleToVisibility}}" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

@@ -1,8 +1,7 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 
 // credit to http://stackoverflow.com/a/2752538
-namespace Rubberduck.Controls.NumberPicker
+namespace Rubberduck.Controls
 {
     /// <summary>
     /// Interaction logic for NumberPicker.xaml

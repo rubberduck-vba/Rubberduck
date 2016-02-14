@@ -7,10 +7,11 @@
              xmlns:unitTesting="clr-namespace:Rubberduck.UnitTesting"
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:controls="clr-namespace:Rubberduck.Controls"
              Language="{UICulture}"
              mc:Ignorable="d" 
-             d:DesignHeight="255" d:DesignWidth="255"
-             MinWidth="255" MinHeight="255" d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
+             d:DesignHeight="255" d:DesignWidth="455"
+             MinWidth="455" MinHeight="255" d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
     
     <UserControl.Resources>
 
@@ -197,7 +198,26 @@
             </StackPanel>
         </Border>
 
-        <TreeView Grid.Row="2"
+        <controls:GroupingGrid Grid.Row="2" ItemsSource="{Binding Model.Tests}"
+                               AutoGenerateColumns="False"
+                               SelectedItem="{Binding SelectedItem}"
+                               IsExpanded="True">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="{x:Static resx:RubberduckUI.Outcome}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="unitTesting:TestMethod">
+                            <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TestExplorer_QualifiedMemberName}" Binding="{Binding QualifiedMemberName.QualifiedModuleName}" />
+                <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TestExplorer_MethodName}" Binding="{Binding QualifiedMemberName.MemberName}" />
+                <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TestExplorer_Message}" Binding="{Binding Result.Output}" />
+                <DataGridTextColumn Header="{x:Static resx:RubberduckUI.TestExplorer_Duration}" Binding="{Binding Result.Duration}" />
+            </DataGrid.Columns>
+        </controls:GroupingGrid>
+        
+        <!--<TreeView Grid.Row="2"
                   MouseDoubleClick="TreeView_MouseDoubleClick"
                   ItemsSource="{Binding Source={StaticResource OutcomeGroupViewSource}, Path=Groups}"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
@@ -219,7 +239,7 @@
                     </MenuItem>
                 </ContextMenu>
             </TreeView.ContextMenu>
-        </TreeView>
+        </TreeView>-->
 
         <resx:BusyIndicator Grid.Row="2" Width="36" Height="36" Visibility="{Binding Model.IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
