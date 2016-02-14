@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
@@ -9,18 +8,23 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class MultipleDeclarationsInspectionResult : CodeInspectionResultBase
+    public class MultipleDeclarationsInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public MultipleDeclarationsInspectionResult(IInspection inspection, string result, QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
+        public MultipleDeclarationsInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new SplitMultipleDeclarationsQuickFix(Context, QualifiedSelection), 
                 new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
             };
+        }
+
+        public override string Description
+        {
+            get { return Inspection.Description; }
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get {return _quickFixes; } }

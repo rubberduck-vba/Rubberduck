@@ -87,7 +87,7 @@ namespace Rubberduck.Root
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new ToDoExplorerWindow { ViewModel = _kernel.Get<ToDoExplorerViewModel>() });
 
-            BindWindowsHooks();
+            //BindWindowsHooks();
             Debug.Print("completed RubberduckModule.Load()");
         }
 

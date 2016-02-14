@@ -60,7 +60,7 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            var selectedResult = ViewModel.SelectedItem as CodeInspectionResultBase;
+            var selectedResult = ViewModel.SelectedItem as InspectionResultBase;
             if (selectedResult == null)
             {
                 return;

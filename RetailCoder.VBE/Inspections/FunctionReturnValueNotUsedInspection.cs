@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Grammar;
 using Antlr4.Runtime;
-using Rubberduck.UI;
 using Rubberduck.Common;
 using Rubberduck.VBEditor;
 
@@ -16,13 +15,13 @@ namespace Rubberduck.Inspections
         public FunctionReturnValueNotUsedInspection(RubberduckParserState state)
             : base(state)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return InspectionsUI.FunctionReturnValueNotUsedInspection; } }
+        public override string Meta { get { return InspectionsUI.FunctionReturnValueNotUsedInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.FunctionReturnValueNotUsedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             // Note: This inspection does not find dictionary calls (e.g. foo!bar) since we do not know what the
             // default member is of a class.

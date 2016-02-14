@@ -3,11 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:Rubberduck.Controls"
              xmlns:core="clr-namespace:System;assembly=mscorlib"
              xmlns:inspections="clr-namespace:Rubberduck.Inspections"
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type settings:InspectionSettingsViewModel}, IsDesignTimeCreatable=False}">

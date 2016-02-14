@@ -299,10 +299,12 @@
     <Compile Include="Common\WinAPI\User32.cs" />
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
-    <Compile Include="Controls\GroupingGrid\GroupingGrid.xaml.cs">
+    <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
+    <Compile Include="Inspections\RemoveExplicitCallStatemntQuickFix.cs" />
+    <Compile Include="UI\Controls\GroupingGrid.xaml.cs">
       <DependentUpon>GroupingGrid.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\NumberPicker\NumberPicker.xaml.cs">
+    <Compile Include="UI\Controls\NumberPicker.xaml.cs">
       <DependentUpon>NumberPicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
@@ -330,7 +332,7 @@
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspection.cs" />
     <Compile Include="Inspections\InspectionBase.cs" />
     <Compile Include="Inspections\MultipleFolderAnnotationsInspection.cs" />
-    <Compile Include="Inspections\ProcedureShouldBeFunctionInspection.cs" />
+    <Compile Include="Inspections\ProcedureCanBeWrittenAsFunctionInspection.cs" />
     <Compile Include="Inspections\ProcedureShouldBeFunctionInspectionResult.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspectionResult.cs" />
     <Compile Include="Inspections\UseMeaningfulNameInspection.cs" />
@@ -745,12 +747,13 @@
     <Compile Include="UI\SourceControl\SourceControlPresenter.cs" />
     <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
     <Compile Include="UI\SourceControl\UnsyncedCommitsPresenter.cs" />
+    <Compile Include="UI\Controls\INavigateSelection.cs" />
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="Settings\IConfigurationService.cs" />
     <Compile Include="Settings\ConfigurationLoader.cs" />
     <Compile Include="Settings\UserSettings.cs" />
     <Compile Include="Settings\CodeInspectionSettings.cs" />
-    <Compile Include="Inspections\CodeInspectionResultBase.cs" />
+    <Compile Include="Inspections\InspectionResultBase.cs" />
     <Compile Include="Inspections\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\CodeInspectionType.cs" />
     <Compile Include="Inspections\ImplicitByRefParameterInspection.cs" />
@@ -1158,6 +1161,9 @@
     <None Include="Resources\document-outlook.png" />
     <None Include="Resources\document-powerpoint.png" />
     <None Include="Resources\document-excel.png" />
+    <Resource Include="Resources\folder--pencil.png" />
+    <Resource Include="Resources\folder--plus.png" />
+    <Resource Include="Resources\folder-rename.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
@@ -1358,11 +1364,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\GroupingGrid\GroupingGrid.xaml">
+    <Page Include="UI\Controls\GroupingGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\NumberPicker\NumberPicker.xaml">
+    <Page Include="UI\Controls\NumberPicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

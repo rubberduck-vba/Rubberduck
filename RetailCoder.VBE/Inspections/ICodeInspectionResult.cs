@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections
         IEnumerable<CodeInspectionQuickFix> QuickFixes { get; }
         CodeInspectionQuickFix DefaultQuickFix { get; }
         ParserRuleContext Context { get; }
-        string Name { get; }
+        string Description { get; }
         QualifiedSelection QualifiedSelection { get; }
         IInspection Inspection { get; }
         string ToCsvString();

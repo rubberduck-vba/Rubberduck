@@ -1179,7 +1179,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Use of untyped function '{0}'. String-returning version '{0}$' is available.</value>
   </data>
   <data name="QuickFixUseTypedFunction_" xml:space="preserve">
-    <value>Use '{0}$' instead of '{0}'.</value>
+    <value>Change '{0}$' to '{0}'</value>
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Disable this inspection</value>
@@ -1264,7 +1264,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Rubberduck - Move Closer To Usage</value>
   </data>
   <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
-    <value>'{0}' has no references.</value>
+    <value>'{0}' is not used anywhere.</value>
     <comment>{0}: Variable Name</comment>
   </data>
   <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
@@ -1358,5 +1358,17 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
     <value>Test Module Template</value>
+  </data>
+  <data name="TestOutcome_Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="TestOutcome_Inconclusive" xml:space="preserve">
+    <value>Inconclusive</value>
+  </data>
+  <data name="TestOutcome_Succeeded" xml:space="preserve">
+    <value>Succeeded</value>
+  </data>
+  <data name="TestOutcome_Unknown" xml:space="preserve">
+    <value>Unknown</value>
   </data>
 </root>

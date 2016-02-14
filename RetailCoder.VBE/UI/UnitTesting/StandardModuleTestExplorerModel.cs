@@ -1,7 +1,7 @@
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
-using Rubberduck.Reflection;
+using Rubberduck.Parsing.Reflection;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
@@ -31,11 +31,11 @@ namespace Rubberduck.UI.UnitTesting
                 .SelectMany(component => component.Members.Select(method =>
                     new TestMethod(method.QualifiedMemberName, _vbe)));
 
-            Tests.Clear();
+            ClearLastRun();
             ExecutedCount = 0;
             foreach (var test in tests)
             {                
-                Tests.Add(test);
+                AddExecutedTest(test);
             }
 
             OnPropertyChanged("Tests");

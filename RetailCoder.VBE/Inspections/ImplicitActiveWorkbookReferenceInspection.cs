@@ -17,10 +17,10 @@ namespace Rubberduck.Inspections
             : base(state)
         {
             _hostApp = new Lazy<IHostApplication>(vbe.HostApplication);
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.ImplicitActiveWorkbookReference_; } }
+        public override string Meta { get { return InspectionsUI.ImplicitActiveWorkbookReferenceInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ImplicitActiveWorkbookReferenceInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         private static readonly string[] Targets = 
@@ -28,11 +28,11 @@ namespace Rubberduck.Inspections
             "Worksheets", "Sheets", "Names", 
         };
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             if (!_hostApp.IsValueCreated || _hostApp.Value == null || _hostApp.Value.ApplicationName != "Excel")
             {
-                return new CodeInspectionResultBase[] {};
+                return new InspectionResultBase[] {};
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 

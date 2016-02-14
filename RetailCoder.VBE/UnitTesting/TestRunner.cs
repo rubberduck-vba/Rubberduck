@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Reflection;
 
 namespace Rubberduck.UnitTesting
 {

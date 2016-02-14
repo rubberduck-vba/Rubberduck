@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter is passed by value, but is assigned a new value/reference. Consider making a local copy instead..
+        ///   Looks up a localized string similar to Parameter is passed by value, but is assigned a new value/reference. Consider making a local copy instead if the caller isn&apos;t supposed to know the new value. If the caller should see the new value, the parameter should be passed ByRef instead, and you have a bug..
         /// </summary>
         internal static string AssignedByValParameterInspectionMeta {
             get {
@@ -75,6 +75,15 @@ namespace Rubberduck.Inspections {
         internal static string AssignedByValParameterInspectionName {
             get {
                 return ResourceManager.GetString("AssignedByValParameterInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is passed ByVal and assigned a value.
+        /// </summary>
+        internal static string AssignedByValParameterInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("AssignedByValParameterInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -97,7 +106,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Constant is not referred to.
+        ///   Looks up a localized string similar to Constant is not used.
         /// </summary>
         internal static string ConstantNotUsedInspectionName {
             get {
@@ -160,16 +169,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make field &apos;{0}&apos; a property.
-        /// </summary>
-        internal static string EncapsulatePublicFieldInspection {
-            get {
-                return ResourceManager.GetString("EncapsulatePublicFieldInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use properties rather than public fields..
+        ///   Looks up a localized string similar to Consider exposing a property instead..
         /// </summary>
         internal static string EncapsulatePublicFieldInspectionMeta {
             get {
@@ -178,7 +178,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use properties rather than public fields..
+        ///   Looks up a localized string similar to Public field breaks encapsulation.
         /// </summary>
         internal static string EncapsulatePublicFieldInspectionName {
             get {
@@ -187,7 +187,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Encapsulate field &apos;{0}&apos; with property.
+        ///   Looks up a localized string similar to Encapsulate field &apos;{0}&apos; with a property.
         /// </summary>
         internal static string EncapsulatePublicFieldInspectionQuickFix {
             get {
@@ -196,11 +196,20 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Return value of function &apos;{0}&apos; is never used..
+        ///   Looks up a localized string similar to Public field &apos;{0}&apos; breaks encapsulation.
         /// </summary>
-        internal static string FunctionReturnValueNotUsedInspection {
+        internal static string EncapsulatePublicFieldInspectionResultFormat {
             get {
-                return ResourceManager.GetString("FunctionReturnValueNotUsedInspection", resourceCulture);
+                return ResourceManager.GetString("EncapsulatePublicFieldInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A member is written as a function, but used as a procedure. Consider converting the &apos;Function&apos; into a &apos;Sub&apos;..
+        /// </summary>
+        internal static string FunctionReturnValueNotUsedInspectionMeta {
+            get {
+                return ResourceManager.GetString("FunctionReturnValueNotUsedInspectionMeta", resourceCulture);
             }
         }
         
@@ -210,6 +219,24 @@ namespace Rubberduck.Inspections {
         internal static string FunctionReturnValueNotUsedInspectionName {
             get {
                 return ResourceManager.GetString("FunctionReturnValueNotUsedInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Return value of function &apos;{0}&apos; is never used..
+        /// </summary>
+        internal static string FunctionReturnValueNotUsedInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("FunctionReturnValueNotUsedInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos; is not used.
+        /// </summary>
+        internal static string IdentifierNotUsedInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("IdentifierNotUsedInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -277,6 +304,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is implicitly passed by reference.
+        /// </summary>
+        internal static string ImplicitByRefParameterInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ImplicitByRefParameterInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Module members are public by default, which can be counter-intuitive. Consider specifying explicit access modifiers to avoid ambiguity..
         /// </summary>
         internal static string ImplicitPublicMemberInspectionMeta {
@@ -295,6 +331,24 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; is implicitly public.
+        /// </summary>
+        internal static string ImplicitPublicMemberInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ImplicitPublicMemberInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos; is implicitly Variant.
+        /// </summary>
+        internal static string ImplicitVariantDeclarationInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ImplicitVariantDeclarationInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Members with a return value implicitly return a &apos;Variant&apos; unless specified otherwise. Consider returning an explicit &apos;Variant&apos; when the return type isn&apos;t known, or specify it explicitly..
         /// </summary>
         internal static string ImplicitVariantReturnTypeInspectionMeta {
@@ -304,11 +358,20 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Return type is implicitly &apos;Variant&apos;.
+        ///   Looks up a localized string similar to Member return type is implicitly &apos;Variant&apos;.
         /// </summary>
         internal static string ImplicitVariantReturnTypeInspectionName {
             get {
                 return ResourceManager.GetString("ImplicitVariantReturnTypeInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Return type of member &apos;{0}&apos; is implicitly &apos;Variant&apos;.
+        /// </summary>
+        internal static string ImplicitVariantReturnTypeInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ImplicitVariantReturnTypeInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -331,16 +394,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Move field closer to usage.
-        /// </summary>
-        internal static string MoveFieldCloserToUsageInspection {
-            get {
-                return ResourceManager.GetString("MoveFieldCloserToUsageInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A field that is only used in one method should be a local variable..
+        ///   Looks up a localized string similar to A module-level variable used only in one procedure should be declared in that procedure..
         /// </summary>
         internal static string MoveFieldCloserToUsageInspectionMeta {
             get {
@@ -349,7 +403,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Move field closer to usage.
+        ///   Looks up a localized string similar to Scope of variable &apos;{0}&apos; is broader than it needs to be.
         /// </summary>
         internal static string MoveFieldCloserToUsageInspectionName {
             get {
@@ -358,11 +412,11 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Move field &apos;{0}&apos; closer to usage.
+        ///   Looks up a localized string similar to Move module-level variable &apos;{0}&apos; to a smaller scope..
         /// </summary>
-        internal static string MoveFieldCloserToUsageInspectionQuickFix {
+        internal static string MoveFieldCloserToUsageInspectionResultFormat {
             get {
-                return ResourceManager.GetString("MoveFieldCloserToUsageInspectionQuickFix", resourceCulture);
+                return ResourceManager.GetString("MoveFieldCloserToUsageInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -381,6 +435,15 @@ namespace Rubberduck.Inspections {
         internal static string MultilineParameterInspectionName {
             get {
                 return ResourceManager.GetString("MultilineParameterInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is specified on multiple lines.
+        /// </summary>
+        internal static string MultilineParameterInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("MultilineParameterInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -448,6 +511,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Return value for member &apos;{0}&apos; is never assigned.
+        /// </summary>
+        internal static string NonReturningFunctionInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("NonReturningFunctionInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The &apos;Call&apos; statement is no longer required to call procedures, and only exists in the language to support legacy code that required it; it can be safely rewritten to an implicit call..
         /// </summary>
         internal static string ObsoleteCallStatementInspectionMeta {
@@ -498,6 +570,15 @@ namespace Rubberduck.Inspections {
         internal static string ObsoleteGlobalInspectionName {
             get {
                 return ResourceManager.GetString("ObsoleteGlobalInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos; uses obsolete &apos;Global&apos; access modifier.
+        /// </summary>
+        internal static string ObsoleteGlobalInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ObsoleteGlobalInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -556,7 +637,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck works best when all used identifiers are declared. Allowing the usage of undeclared variables can cause easily avoidable bugs. Always specify Option Explicit..
+        ///   Looks up a localized string similar to Rubberduck cannot see variables that aren&apos;t declared. VBA will happily compile a typo and you&apos;ll soon be asking an embarassing question on Stack Overflow. Avoid problems, use &apos;Option Explicit&apos;. .
         /// </summary>
         internal static string OptionExplicitInspectionMeta {
             get {
@@ -592,6 +673,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; can be passed by value.
+        /// </summary>
+        internal static string ParameterCanBeByValInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ParameterCanBeByValInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A parameter is passed into a member that does not use it. Consider removing that parameter..
         /// </summary>
         internal static string ParameterNotUsedInspectionMeta {
@@ -610,6 +700,24 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is never used.
+        /// </summary>
+        internal static string ParameterNotUsedInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ParameterNotUsedInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Procedure &apos;{0}&apos; can be written as a function..
+        /// </summary>
+        internal static string ProcedureCanBeFunctionInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ProcedureCanBeFunctionInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck could not find any caller for a procedure. If the procedure is hooked to a macro-button, used as a user-defined function (UDF) or handles an application event that Rubberduck didn&apos;t know of you can safely ignore this inspection result; otherwise, consider removing it..
         /// </summary>
         internal static string ProcedureNotUsedInspectionMeta {
@@ -624,15 +732,6 @@ namespace Rubberduck.Inspections {
         internal static string ProcedureNotUsedInspectionName {
             get {
                 return ResourceManager.GetString("ProcedureNotUsedInspectionName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Procedure &apos;{0}&apos; can be written as a function..
-        /// </summary>
-        internal static string ProcedureShouldBeFunctionInspection {
-            get {
-                return ResourceManager.GetString("ProcedureShouldBeFunctionInspection", resourceCulture);
             }
         }
         
@@ -664,16 +763,16 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Declaration &apos;{0}&apos; is self-assigned.
+        ///   Looks up a localized string similar to Procedure &apos;{0}&apos; can be written as a function.
         /// </summary>
-        internal static string SelfAssignedDeclarationInspection {
+        internal static string ProcedureShouldBeFunctionInspectionResultFormat {
             get {
-                return ResourceManager.GetString("SelfAssignedDeclarationInspection", resourceCulture);
+                return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionResultFormat", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A declaration should not be self-assigned..
+        ///   Looks up a localized string similar to A self-assigned object variable declaration at procedure scope changes how nulling the reference works, which can lead to unexpected behavior..
         /// </summary>
         internal static string SelfAssignedDeclarationInspectionMeta {
             get {
@@ -682,11 +781,20 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Self-assigned property.
+        ///   Looks up a localized string similar to Object variable reference is self-assigned.
         /// </summary>
         internal static string SelfAssignedDeclarationInspectionName {
             get {
                 return ResourceManager.GetString("SelfAssignedDeclarationInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object reference &apos;{0}&apos; is self-assigned.
+        /// </summary>
+        internal static string SelfAssignedDeclarationInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("SelfAssignedDeclarationInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -709,6 +817,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is used but not assigned.
+        /// </summary>
+        internal static string UnassignedVariableUsageInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("UnassignedVariableUsageInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A string-returning equivalent function exists and should preferably be used to avoid implicit type conversions..
         /// </summary>
         internal static string UntypedFunctionUsageInspectionMeta {
@@ -723,15 +840,6 @@ namespace Rubberduck.Inspections {
         internal static string UntypedFunctionUsageInspectionName {
             get {
                 return ResourceManager.GetString("UntypedFunctionUsageInspectionName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Consider renaming {0} &apos;{1}&apos;.
-        /// </summary>
-        internal static string UseMeaningfulNameInspection {
-            get {
-                return ResourceManager.GetString("UseMeaningfulNameInspection", resourceCulture);
             }
         }
         
@@ -754,6 +862,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Consider renaming {0} &apos;{1}&apos;.
+        /// </summary>
+        internal static string UseMeaningfulNameInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("UseMeaningfulNameInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A variable is declared, but never assigned a value/reference. If Rubberduck is correct, the variable could probably be safely removed..
         /// </summary>
         internal static string VariableNotAssignedInspectionMeta {
@@ -763,7 +880,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unassigned variable.
+        ///   Looks up a localized string similar to Variable is declared but never assigned.
         /// </summary>
         internal static string VariableNotAssignedInspectionName {
             get {
@@ -808,15 +925,6 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Property &apos;{0}&apos; has no getter.
-        /// </summary>
-        internal static string WriteOnlyPropertyInspection {
-            get {
-                return ResourceManager.GetString("WriteOnlyPropertyInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A property that exposes a mutator but no accessor is a design smell and makes a confusing API. Consider exposing a getter, or converting the mutator to a method..
         /// </summary>
         internal static string WriteOnlyPropertyInspectionMeta {
@@ -831,6 +939,15 @@ namespace Rubberduck.Inspections {
         internal static string WriteOnlyPropertyInspectionName {
             get {
                 return ResourceManager.GetString("WriteOnlyPropertyInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property &apos;{0}&apos; has no getter.
+        /// </summary>
+        internal static string WriteOnlyPropertyInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("WriteOnlyPropertyInspectionResultFormat", resourceCulture);
             }
         }
     }

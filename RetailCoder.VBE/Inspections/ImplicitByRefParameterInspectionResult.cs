@@ -8,12 +8,12 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ImplicitByRefParameterInspectionResult : CodeInspectionResultBase
+    public class ImplicitByRefParameterInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public ImplicitByRefParameterInspectionResult(IInspection inspection, string result, QualifiedContext<VBAParser.ArgContext> qualifiedContext)
-            : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _quickFixes = new CodeInspectionQuickFix[]
                 {
@@ -23,6 +23,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return string.Format(InspectionsUI.ImplicitByRefParameterInspectionResultFormat, Target.IdentifierName); }
+        }
     }
 
     public class ImplicitByRefParameterQuickFix : CodeInspectionQuickFix

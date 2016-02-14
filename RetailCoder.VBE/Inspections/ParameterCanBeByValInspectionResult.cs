@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
@@ -7,12 +6,12 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ParameterCanBeByValInspectionResult : CodeInspectionResultBase
+    public class ParameterCanBeByValInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public ParameterCanBeByValInspectionResult(IInspection inspection, string result, ParserRuleContext context, QualifiedMemberName qualifiedName)
-            : base(inspection, result, qualifiedName.QualifiedModuleName, context)
+            : base(inspection, qualifiedName.QualifiedModuleName, context)
         {
             _quickFixes = new[]
             {
@@ -21,6 +20,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, Target.IdentifierName); }
+        }
     }
 
     public class PassParameterByValueQuickFix : CodeInspectionQuickFix

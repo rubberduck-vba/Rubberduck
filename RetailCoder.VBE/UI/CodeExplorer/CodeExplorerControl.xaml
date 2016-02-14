@@ -138,6 +138,39 @@
 
             <Button Command="{Binding RefreshCommand}" IsEnabled="{Binding CanRefresh}">
                 <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
+                <Button.ToolTip>
+                    <TextBlock Text="Refresh" />
+                </Button.ToolTip>
+            </Button>
+            
+            <Separator />
+
+            <Menu>
+                <MenuItem Header="Add">
+                    <MenuItem.Icon>
+                        <Image Height="16" Source="../../Resources/plus-circle.png" />
+                    </MenuItem.Icon>
+                    <MenuItem Header="Test Module"></MenuItem>
+                    <Separator />
+                    <MenuItem Header="Standard Module (.bas)"></MenuItem>
+                    <MenuItem Header="Class Module (.cls)"></MenuItem>
+                    <MenuItem Header="User Form (.frm)"></MenuItem>
+                </MenuItem>
+            </Menu>
+
+            <Separator />
+
+            <Button>
+                <Image Height="16" Source="../../Resources/folder--pencil.png" />
+                <Button.ToolTip>
+                    <TextBlock Text="Edit module folder" />
+                </Button.ToolTip>
+            </Button>
+            <Button>
+                <Image Height="16" Source="../../Resources/folder-rename.png" />
+                <Button.ToolTip>
+                    <TextBlock Text="Rename folder" />
+                </Button.ToolTip>
             </Button>
 
             <Separator />

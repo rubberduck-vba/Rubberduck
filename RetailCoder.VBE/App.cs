@@ -45,8 +45,8 @@ namespace Rubberduck
             IGeneralConfigService configService,
             IAppMenu appMenus,
             RubberduckCommandBar stateBar,
-            IIndenter indenter,
-            IRubberduckHooks hooks)
+            IIndenter indenter/*,
+            IRubberduckHooks hooks*/)
         {
             _vbe = vbe;
             _messageBox = messageBox;
@@ -58,10 +58,10 @@ namespace Rubberduck
             _appMenus = appMenus;
             _stateBar = stateBar;
             _indenter = indenter;
-            _hooks = hooks;
+            //_hooks = hooks;
             _logger = LogManager.GetCurrentClassLogger();
 
-            _hooks.MessageReceived += hooks_MessageReceived;
+            //_hooks.MessageReceived += hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _stateBar.Refresh += _stateBar_Refresh;
@@ -210,12 +210,12 @@ namespace Rubberduck
 
         public void Dispose()
         {
-            _hooks.MessageReceived -= hooks_MessageReceived;
+            //_hooks.MessageReceived -= hooks_MessageReceived;
             _configService.SettingsChanged -= _configService_SettingsChanged;
             _parser.State.StateChanged -= Parser_StateChanged;
             _autoSave.Dispose();
 
-            _hooks.Dispose();
+            //_hooks.Dispose();
         }
     }
 }

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.VBA.Nodes
+namespace Rubberduck.Parsing.VBA.Nodes
 {
     // todo: delete this obsolete interface
     public interface INode

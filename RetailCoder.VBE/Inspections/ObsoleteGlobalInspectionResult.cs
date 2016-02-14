@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.UI;
@@ -8,12 +8,12 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteGlobalInspectionResult : CodeInspectionResultBase
+    public class ObsoleteGlobalInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ObsoleteGlobalInspectionResult(IInspection inspection, string result, QualifiedContext<ParserRuleContext> context)
-            : base(inspection, result, context.ModuleName, context.Context)
+        public ObsoleteGlobalInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> context)
+            : base(inspection, context.ModuleName, context.Context)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
@@ -23,6 +23,14 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.ObsoleteGlobalInspectionResultFormat, Target.DeclarationType.ToLocalizedString(), Target.IdentifierName);
+            }
+        }
     }
 
     public class ReplaceGlobalModifierQuickFix : CodeInspectionQuickFix

@@ -1,23 +1,23 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
     public sealed class WriteOnlyPropertyInspection : InspectionBase
     {
         public WriteOnlyPropertyInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.WriteOnlyProperty_; } }
+        public override string Meta { get { return InspectionsUI.WriteOnlyPropertyInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.WriteOnlyPropertyInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var declarations = UserDeclarations.ToList();
             var setters = declarations
@@ -28,19 +28,25 @@ namespace Rubberduck.Inspections
                     && (item.DeclarationType == DeclarationType.PropertyLet ||
                         item.DeclarationType == DeclarationType.PropertySet)
                     && !declarations.Where(declaration => declaration.IdentifierName == item.IdentifierName)
-                        .Any(accessor => !accessor.IsBuiltIn && accessor.DeclarationType == DeclarationType.PropertyGet));
+                        .Any(accessor => !accessor.IsBuiltIn && accessor.DeclarationType == DeclarationType.PropertyGet))
+                .GroupBy(item => new {item.QualifiedName, item.DeclarationType})
+                .Select(grouping => grouping.First()); // don't get both Let and Set accessors
 
-            //note: if property has both Set and Let accessors, this generates 2 results.
             return setters.Select(setter =>
-                new WriteOnlyPropertyInspectionResult(this, string.Format(Description, setter.IdentifierName), setter));
+                new WriteOnlyPropertyInspectionResult(this, setter));
         }
     }
 
-    public class WriteOnlyPropertyInspectionResult : CodeInspectionResultBase
+    public class WriteOnlyPropertyInspectionResult : InspectionResultBase
     {
-        public WriteOnlyPropertyInspectionResult(IInspection inspection, string result, Declaration target) 
-            : base(inspection, result, target)
+        public WriteOnlyPropertyInspectionResult(IInspection inspection, Declaration target) 
+            : base(inspection, target)
         {
+        }
+
+        public override string Description
+        {
+            get { return string.Format(InspectionsUI.WriteOnlyPropertyInspectionResultFormat, Target.IdentifierName); }
         }
 
         // todo: override quickfixes

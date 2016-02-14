@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Media.Imaging;
-using Rubberduck.Annotations;
+using Rubberduck.Properties;
 
 namespace Rubberduck.UI
 {

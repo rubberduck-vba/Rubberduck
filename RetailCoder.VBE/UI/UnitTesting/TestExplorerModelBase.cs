@@ -1,19 +1,31 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Data;
 using System.Windows.Media;
 using Rubberduck.Parsing.Reflection;
-using Rubberduck.Reflection;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
     public abstract class TestExplorerModelBase : ViewModelBase
     {
+        protected TestExplorerModelBase()
+        {
+            _testMethods = new ListCollectionView(_tests);
+            if (_testMethods.GroupDescriptions != null)
+            {
+                _testMethods.GroupDescriptions.Add(new PropertyGroupDescription("Result", new TestResultToOutcomeTextConverter()));
+            }
+        }
+
         public abstract void Refresh();
 
         private readonly ObservableCollection<TestMethod> _tests = new ObservableCollection<TestMethod>();
         public ObservableCollection<TestMethod> Tests { get { return _tests; } }
+
+        private readonly ListCollectionView _testMethods;
+        public ListCollectionView TestMethods { get { return _testMethods;} }
 
         private static readonly string[] ReservedTestAttributeNames =
         {
@@ -29,11 +41,14 @@ namespace Rubberduck.UI.UnitTesting
         public void ClearLastRun()
         {
             _lastRun.Clear();
+            _testMethods.Refresh();
         }
 
         public void AddExecutedTest(TestMethod test)
         {
             _lastRun.Add(test);
+            _testMethods.Refresh();
+
             ExecutedCount = _tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
 
             ProgressBarColor = _tests.Any(t => t.Result.Outcome == TestOutcome.Failed)
@@ -79,6 +94,7 @@ namespace Rubberduck.UI.UnitTesting
         }
 
         private bool _isReady = true;
+
         public bool IsReady
         {
             get { return _isReady; }

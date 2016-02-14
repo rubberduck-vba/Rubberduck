@@ -13,17 +13,16 @@ namespace Rubberduck.Inspections
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public UseMeaningfulNameInspection(IMessageBox messageBox, RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
             _messageBox = messageBox;
             _wrapperFactory = new CodePaneWrapperFactory();
-            Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public override string Description { get { return InspectionsUI.UseMeaningfulNameInspection; } }
+        public override string Description { get { return InspectionsUI.UseMeaningfulNameInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = UserDeclarations
                             .Where(declaration => declaration.DeclarationType != DeclarationType.ModuleOption &&
