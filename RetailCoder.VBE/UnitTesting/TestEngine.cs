@@ -46,7 +46,7 @@ namespace Rubberduck.UnitTesting
         public void Run()
         {
             Refresh();
-            Run(_model.Tests);
+            Run(_model.LastRun);
         }
 
         public void Run(IEnumerable<TestMethod> tests)

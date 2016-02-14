@@ -27,39 +27,6 @@
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
 
-        <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
-            <Style.Resources>
-                <Style TargetType="{x:Type Border}">
-                    <Setter Property="CornerRadius" Value="2"/>
-                </Style>
-            </Style.Resources>
-            <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
-            <Setter Property="BorderThickness" Value="0,.5,0,0" />
-            <Setter Property="BorderBrush" Value="DarkGray" />
-            <Setter Property="Height" Value="22" />
-            <Setter Property="TextBlock.FontWeight" Value="Normal" />
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="BorderThickness" Value="1.5" />
-                </Trigger>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsSelected" Value="True" />
-                        <Condition Property="Selector.IsSelectionActive" Value="True" />
-                    </MultiTrigger.Conditions>
-                    <Setter Property="BorderBrush" Value="#adc6e5"/>
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                </MultiTrigger>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsSelected" Value="True" />
-                        <Condition Property="Selector.IsSelectionActive" Value="False" />
-                    </MultiTrigger.Conditions>
-                    <Setter Property="BorderBrush" Value="LightGray"/>
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
-                </MultiTrigger>
-            </Style.Triggers>
-        </Style>
         <SolidColorBrush x:Key="ToolBarHorizontalBackground" Color="#FFEEF5FD"/>
         <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackground" Color="#FFEEF5FD"/>
         <SolidColorBrush x:Key="ToolBarButtonHover" Color="#210080FF"/>
@@ -256,19 +223,8 @@
                 </Button>
             </ToolBar>
         </ToolBarTray>
-        <controls:GroupingGrid ItemsSource="{Binding ToDos}" AutoGenerateColumns="False"
-			SelectedItem="{Binding SelectedToDo}" IsExpanded="True"
-			CanUserReorderColumns="False" IsReadOnly="True"
-			HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
-			HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-			ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22">
-            <controls:GroupingGrid.CellStyle>
-                <Style TargetType="{x:Type DataGridCell}">
-                    <Setter Property="BorderThickness" Value="0" />
-                    <Setter Property="VerticalAlignment" Value="Center" />
-                    <Setter Property="Background" Value="Transparent" />
-                </Style>
-            </controls:GroupingGrid.CellStyle>
+        <controls:GroupingGrid ItemsSource="{Binding ToDos}"
+			                   SelectedItem="{Binding SelectedToDo}">
             <controls:GroupingGrid.Columns>
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Priority}" Binding="{Binding Priority}" />
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>

@@ -31,11 +31,11 @@ namespace Rubberduck.UI.UnitTesting
                 .SelectMany(component => component.Members.Select(method =>
                     new TestMethod(method.QualifiedMemberName, _vbe)));
 
-            Tests.Clear();
+            ClearLastRun();
             ExecutedCount = 0;
             foreach (var test in tests)
             {                
-                Tests.Add(test);
+                AddExecutedTest(test);
             }
 
             OnPropertyChanged("Tests");

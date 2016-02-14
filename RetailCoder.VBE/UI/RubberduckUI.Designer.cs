@@ -3427,6 +3427,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed.
+        /// </summary>
+        public static string TestOutcome_Failed {
+            get {
+                return ResourceManager.GetString("TestOutcome_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inconclusive.
+        /// </summary>
+        public static string TestOutcome_Inconclusive {
+            get {
+                return ResourceManager.GetString("TestOutcome_Inconclusive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Succeeded.
+        /// </summary>
+        public static string TestOutcome_Succeeded {
+            get {
+                return ResourceManager.GetString("TestOutcome_Succeeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        public static string TestOutcome_Unknown {
+            get {
+                return ResourceManager.GetString("TestOutcome_Unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Todo Explorer.
         /// </summary>
         public static string TodoExplorer_Caption {

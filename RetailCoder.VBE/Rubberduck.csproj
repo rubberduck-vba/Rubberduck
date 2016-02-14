@@ -747,6 +747,7 @@
     <Compile Include="UI\SourceControl\SourceControlPresenter.cs" />
     <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
     <Compile Include="UI\SourceControl\UnsyncedCommitsPresenter.cs" />
+    <Compile Include="UI\Controls\INavigateSelection.cs" />
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="Settings\IConfigurationService.cs" />
     <Compile Include="Settings\ConfigurationLoader.cs" />
