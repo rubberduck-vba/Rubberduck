@@ -1638,7 +1638,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; has no references..
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not used anywhere..
         /// </summary>
         public static string MoveCloserToUsage_TargetHasNoReferences {
             get {
@@ -2004,7 +2004,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use &apos;{0}$&apos; instead of &apos;{0}&apos;..
+        ///   Looks up a localized string similar to Change &apos;{0}$&apos; to &apos;{0}&apos;.
         /// </summary>
         public static string QuickFixUseTypedFunction_ {
             get {
@@ -2550,15 +2550,6 @@ namespace Rubberduck.UI {
         public static string RubberduckMenu_Refactor {
             get {
                 return ResourceManager.GetString("RubberduckMenu_Refactor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Regex search/replace....
-        /// </summary>
-        public static string RubberduckMenu_RegexSearchReplace {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_RegexSearchReplace", resourceCulture);
             }
         }
         

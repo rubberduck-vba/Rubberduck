@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public ParameterCanBeByValInspectionResult(IInspection inspection, string result, ParserRuleContext context, QualifiedMemberName qualifiedName)
-            : base(inspection, result, qualifiedName.QualifiedModuleName, context)
+            : base(inspection, qualifiedName.QualifiedModuleName, context)
         {
             _quickFixes = new[]
             {
@@ -20,6 +20,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, Target.IdentifierName); }
+        }
     }
 
     public class PassParameterByValueQuickFix : CodeInspectionQuickFix

@@ -10,14 +10,24 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public VariableTypeNotDeclaredInspectionResult(IInspection inspection, string result, ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, result, qualifiedName, context)
+        public VariableTypeNotDeclaredInspectionResult(IInspection inspection, ParserRuleContext context, QualifiedModuleName qualifiedName)
+            : base(inspection, qualifiedName, context)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new DeclareAsExplicitVariantQuickFix(Context, QualifiedSelection), 
                 new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
+        }
+
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.ImplicitVariantDeclarationInspectionResultFormat, 
+                    Target.DeclarationType,
+                    Target.IdentifierName);
+            }
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get {return _quickFixes; } }

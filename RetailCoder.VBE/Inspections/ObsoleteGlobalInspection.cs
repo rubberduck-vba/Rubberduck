@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections
         {
             var issues = from item in UserDeclarations
                          where item.Accessibility == Accessibility.Global && item.Context != null
-                         select new ObsoleteGlobalInspectionResult(this, Description, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context));
+                         select new ObsoleteGlobalInspectionResult(this, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context));
 
             return issues;
         }

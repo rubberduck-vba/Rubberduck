@@ -480,7 +480,7 @@ End Sub";
         [TestMethod]
         public void InspectionName()
         {
-            const string inspectionName = "ProcedureShouldBeFunctionInspection";
+            const string inspectionName = "ProcedureCanBeWrittenAsFunctionInspection";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);

@@ -10,6 +10,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 // ReSharper disable LocalizableElement
 
@@ -18,6 +19,11 @@ namespace Rubberduck.Common
     public static class DeclarationExtensions
     {
         private static readonly DeclarationIconCache Cache = new DeclarationIconCache();
+
+        public static string ToLocalizedString(this DeclarationType type)
+        {
+            return RubberduckUI.ResourceManager.GetString("DeclarationType_" + type);
+        }
 
         public static BitmapImage BitmapImage(this Declaration declaration)
         {

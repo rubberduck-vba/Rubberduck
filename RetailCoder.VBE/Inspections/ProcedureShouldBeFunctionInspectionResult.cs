@@ -14,7 +14,6 @@ namespace Rubberduck.Inspections
 
        public ProcedureShouldBeFunctionInspectionResult(IInspection inspection, RubberduckParserState state, QualifiedContext<VBAParser.ArgListContext> argListQualifiedContext, QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext)
            : base(inspection,
-                string.Format(inspection.Description, subStmtQualifiedContext.Context.ambiguousIdentifier().GetText()),
                 subStmtQualifiedContext.ModuleName,
                 subStmtQualifiedContext.Context.ambiguousIdentifier())
         {
@@ -25,6 +24,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return string.Format(InspectionsUI.ProcedureShouldBeFunctionInspectionResultFormat); }
+        }
     }
 
     public class ChangeProcedureToFunction : CodeInspectionQuickFix

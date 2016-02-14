@@ -380,4 +380,40 @@
   <data name="FunctionReturnValueNotUsedInspectionMeta" xml:space="preserve">
     <value>A member is written as a function, but used as a procedure. Consider converting the 'Function' into a 'Sub'.</value>
   </data>
+  <data name="IdentifierNotUsedInspectionResultFormat" xml:space="preserve">
+    <value>{0} '{1}' is not used</value>
+  </data>
+  <data name="ImplicitByRefParameterInspectionResultFormat" xml:space="preserve">
+    <value>Parameter '{0}' is implicitly passed by reference</value>
+  </data>
+  <data name="ImplicitPublicMemberInspectionResultFormat" xml:space="preserve">
+    <value>Member '{0}' is implicitly public</value>
+  </data>
+  <data name="ImplicitVariantDeclarationInspectionResultFormat" xml:space="preserve">
+    <value>{0} '{1}' is implicitly Variant</value>
+  </data>
+  <data name="ImplicitVariantReturnTypeInspectionResultFormat" xml:space="preserve">
+    <value>Return type of member '{0}' is implicitly 'Variant'</value>
+  </data>
+  <data name="MultilineParameterInspectionResultFormat" xml:space="preserve">
+    <value>Parameter '{0}' is specified on multiple lines</value>
+  </data>
+  <data name="NonReturningFunctionInspectionResultFormat" xml:space="preserve">
+    <value>Return value for member '{0}' is never assigned</value>
+  </data>
+  <data name="ObsoleteGlobalInspectionResultFormat" xml:space="preserve">
+    <value>{0} '{1}' uses obsolete 'Global' access modifier</value>
+  </data>
+  <data name="ParameterCanBeByValInspectionResultFormat" xml:space="preserve">
+    <value>Parameter '{0}' can be passed by value</value>
+  </data>
+  <data name="ParameterNotUsedInspectionResultFormat" xml:space="preserve">
+    <value>Parameter '{0}' is never used</value>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspectionResultFormat" xml:space="preserve">
+    <value>Procedure '{0}' can be written as a function</value>
+  </data>
+  <data name="UnassignedVariableUsageInspectionResultFormat" xml:space="preserve">
+    <value>Variable '{0}' is used but not assigned</value>
+  </data>
 </root>

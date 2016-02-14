@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -12,7 +13,7 @@ namespace Rubberduck.Inspections
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public ImplicitByRefParameterInspectionResult(IInspection inspection, string result, QualifiedContext<VBAParser.ArgContext> qualifiedContext)
-            : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _quickFixes = new CodeInspectionQuickFix[]
                 {
@@ -22,6 +23,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return string.Format(InspectionsUI.ImplicitByRefParameterInspectionResultFormat, Target.IdentifierName); }
+        }
     }
 
     public class ImplicitByRefParameterQuickFix : CodeInspectionQuickFix

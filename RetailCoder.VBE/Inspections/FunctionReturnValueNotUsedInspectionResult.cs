@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections
             QualifiedMemberName qualifiedName,
             IEnumerable<string> returnStatements,
             IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>> children)
-            : base(inspection, string.Format(inspection.Description, qualifiedName.MemberName), qualifiedName.QualifiedModuleName, context)
+            : base(inspection, qualifiedName.QualifiedModuleName, context)
         {
             var root = new ConvertToProcedureQuickFix(context, QualifiedSelection, returnStatements);
             var compositeFix = new CompositeCodeInspectionFix(root);
@@ -37,5 +37,13 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, Target.IdentifierName);
+            }
+        }
     }
 }

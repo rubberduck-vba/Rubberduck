@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
@@ -8,12 +9,14 @@ namespace Rubberduck.Inspections
 {
     public class IdentifierNotUsedInspectionResult : InspectionResultBase
     {
+        private readonly Declaration _target;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public IdentifierNotUsedInspectionResult(IInspection inspection, Declaration target,
             ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, string.Format(inspection.Description, target.IdentifierName), qualifiedName, context)
+            : base(inspection, qualifiedName, context)
         {
+            _target = target;
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new RemoveUnusedDeclarationQuickFix(context, QualifiedSelection), 
@@ -22,6 +25,14 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.IdentifierNotUsedInspectionResultFormat, _target.DeclarationType.ToLocalizedString(), _target.IdentifierName);
+            }
+        }
     }
 
     /// <summary>

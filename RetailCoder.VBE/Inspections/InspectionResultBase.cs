@@ -10,8 +10,8 @@ namespace Rubberduck.Inspections
 {
     public abstract class InspectionResultBase : ICodeInspectionResult
     {
-        protected InspectionResultBase(IInspection inspection, string result, Declaration target)
-            : this(inspection, result, target.QualifiedName.QualifiedModuleName, null)
+        protected InspectionResultBase(IInspection inspection, Declaration target)
+            : this(inspection, target.QualifiedName.QualifiedModuleName, null)
         {
             _target = target;
         }
@@ -19,17 +19,16 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Creates a comment inspection result.
         /// </summary>
-        protected InspectionResultBase(IInspection inspection, string result, CommentNode comment)
-            : this(inspection, result, comment.QualifiedSelection.QualifiedName, null, comment)
+        protected InspectionResultBase(IInspection inspection, CommentNode comment)
+            : this(inspection, comment.QualifiedSelection.QualifiedName, null, comment)
         { }
 
         /// <summary>
         /// Creates an inspection result.
         /// </summary>
-        protected InspectionResultBase(IInspection inspection, string result, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
+        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
         {
             _inspection = inspection;
-            _description = result;
             _qualifiedName = qualifiedName;
             _context = context;
             _comment = comment;
@@ -38,8 +37,7 @@ namespace Rubberduck.Inspections
         private readonly IInspection _inspection;
         public IInspection Inspection { get { return _inspection; } }
 
-        private readonly string _description;
-        public string Description { get { return _description; } }
+        public abstract string Description { get; }
 
         private readonly QualifiedModuleName _qualifiedName;
         protected QualifiedModuleName QualifiedName { get { return _qualifiedName; } }

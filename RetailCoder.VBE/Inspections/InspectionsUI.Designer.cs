@@ -232,6 +232,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos; is not used.
+        /// </summary>
+        internal static string IdentifierNotUsedInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("IdentifierNotUsedInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignore once.
         /// </summary>
         internal static string IgnoreOnce {
@@ -295,6 +304,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is implicitly passed by reference.
+        /// </summary>
+        internal static string ImplicitByRefParameterInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ImplicitByRefParameterInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Module members are public by default, which can be counter-intuitive. Consider specifying explicit access modifiers to avoid ambiguity..
         /// </summary>
         internal static string ImplicitPublicMemberInspectionMeta {
@@ -313,6 +331,24 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; is implicitly public.
+        /// </summary>
+        internal static string ImplicitPublicMemberInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ImplicitPublicMemberInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos; is implicitly Variant.
+        /// </summary>
+        internal static string ImplicitVariantDeclarationInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ImplicitVariantDeclarationInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Members with a return value implicitly return a &apos;Variant&apos; unless specified otherwise. Consider returning an explicit &apos;Variant&apos; when the return type isn&apos;t known, or specify it explicitly..
         /// </summary>
         internal static string ImplicitVariantReturnTypeInspectionMeta {
@@ -327,6 +363,15 @@ namespace Rubberduck.Inspections {
         internal static string ImplicitVariantReturnTypeInspectionName {
             get {
                 return ResourceManager.GetString("ImplicitVariantReturnTypeInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Return type of member &apos;{0}&apos; is implicitly &apos;Variant&apos;.
+        /// </summary>
+        internal static string ImplicitVariantReturnTypeInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ImplicitVariantReturnTypeInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -394,6 +439,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is specified on multiple lines.
+        /// </summary>
+        internal static string MultilineParameterInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("MultilineParameterInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Declaring multiple variables in the same instruction is legal, but should be used sparingly. Consider declaring variables closer to their usage, in a single instruction per declaration..
         /// </summary>
         internal static string MultipleDeclarationsInspectionMeta {
@@ -457,6 +511,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Return value for member &apos;{0}&apos; is never assigned.
+        /// </summary>
+        internal static string NonReturningFunctionInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("NonReturningFunctionInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The &apos;Call&apos; statement is no longer required to call procedures, and only exists in the language to support legacy code that required it; it can be safely rewritten to an implicit call..
         /// </summary>
         internal static string ObsoleteCallStatementInspectionMeta {
@@ -507,6 +570,15 @@ namespace Rubberduck.Inspections {
         internal static string ObsoleteGlobalInspectionName {
             get {
                 return ResourceManager.GetString("ObsoleteGlobalInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos; uses obsolete &apos;Global&apos; access modifier.
+        /// </summary>
+        internal static string ObsoleteGlobalInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ObsoleteGlobalInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -601,6 +673,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; can be passed by value.
+        /// </summary>
+        internal static string ParameterCanBeByValInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ParameterCanBeByValInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A parameter is passed into a member that does not use it. Consider removing that parameter..
         /// </summary>
         internal static string ParameterNotUsedInspectionMeta {
@@ -615,6 +696,15 @@ namespace Rubberduck.Inspections {
         internal static string ParameterNotUsedInspectionName {
             get {
                 return ResourceManager.GetString("ParameterNotUsedInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is never used.
+        /// </summary>
+        internal static string ParameterNotUsedInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ParameterNotUsedInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -673,6 +763,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Procedure &apos;{0}&apos; can be written as a function.
+        /// </summary>
+        internal static string ProcedureShouldBeFunctionInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A self-assigned object variable declaration at procedure scope changes how nulling the reference works, which can lead to unexpected behavior..
         /// </summary>
         internal static string SelfAssignedDeclarationInspectionMeta {
@@ -714,6 +813,15 @@ namespace Rubberduck.Inspections {
         internal static string UnassignedVariableUsageInspectionName {
             get {
                 return ResourceManager.GetString("UnassignedVariableUsageInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is used but not assigned.
+        /// </summary>
+        internal static string UnassignedVariableUsageInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("UnassignedVariableUsageInspectionResultFormat", resourceCulture);
             }
         }
         

@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
 
         public OptionExplicitInspectionResult(IInspection inspection, QualifiedModuleName qualifiedName) 
-            : base(inspection, string.Format(inspection.Description,qualifiedName.ComponentName), new CommentNode(string.Empty, new QualifiedSelection(qualifiedName, Selection.Home)))
+            : base(inspection, new CommentNode(string.Empty, new QualifiedSelection(qualifiedName, Selection.Home)))
         {
             _quickFixes = new[]
             {
@@ -22,6 +22,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return Inspection.Name; }
+        }
     }
 
     public class OptionExplicitQuickFix : CodeInspectionQuickFix

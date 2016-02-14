@@ -25,15 +25,20 @@ namespace Rubberduck.Inspections
                     annotation.StartsWith(Parsing.Grammar.Annotations.AnnotationMarker +
                                           Parsing.Grammar.Annotations.Folder)) > 1);
             return issues.Select(issue =>
-                new MultipleFolderAnnotationsInspectionResult(this, string.Format(Description, issue.ComponentName), issue));
+                new MultipleFolderAnnotationsInspectionResult(this, issue));
         }
     }
 
     public class MultipleFolderAnnotationsInspectionResult : InspectionResultBase
     {
-        public MultipleFolderAnnotationsInspectionResult(IInspection inspection, string result, Declaration target) 
-            : base(inspection, result, target)
+        public MultipleFolderAnnotationsInspectionResult(IInspection inspection, Declaration target) 
+            : base(inspection, target)
         {
+        }
+
+        public override string Description
+        {
+            get { return string.Format(Inspection.Description, Target.IdentifierName); }
         }
     }
 }

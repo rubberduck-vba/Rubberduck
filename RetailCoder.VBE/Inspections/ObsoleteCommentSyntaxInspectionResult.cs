@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public ObsoleteCommentSyntaxInspectionResult(IInspection inspection, CommentNode comment) 
-            : base(inspection, inspection.Description, comment)
+            : base(inspection, comment)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
@@ -24,6 +24,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return Inspection.Name; }
+        }
     }
 
     public class RemoveCommentQuickFix : CodeInspectionQuickFix

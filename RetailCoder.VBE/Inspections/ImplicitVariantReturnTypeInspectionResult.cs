@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public ImplicitVariantReturnTypeInspectionResult(IInspection inspection, string name, QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, name, qualifiedContext.ModuleName, qualifiedContext.Context)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
@@ -23,6 +23,15 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get {return _quickFixes; } }
+
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.ImplicitVariantReturnTypeInspectionResultFormat,
+                    Target.IdentifierName);
+            }
+        }
     }
 
     public class SetExplicitVariantReturnTypeQuickFix : CodeInspectionQuickFix

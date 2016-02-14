@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.VBA;
@@ -14,7 +15,7 @@ namespace Rubberduck.Inspections
         public ParameterNotUsedInspectionResult(IInspection inspection, string result,
             ParserRuleContext context, QualifiedMemberName qualifiedName, bool isInterfaceImplementation, 
             RemoveParametersRefactoring refactoring, RubberduckParserState parseResult)
-            : base(inspection, result, qualifiedName.QualifiedModuleName, context)
+            : base(inspection, qualifiedName.QualifiedModuleName, context)
         {
             _quickFixes = isInterfaceImplementation ? new CodeInspectionQuickFix[] {} : new CodeInspectionQuickFix[]
             {
@@ -24,6 +25,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return string.Format(InspectionsUI.ParameterNotUsedInspectionResultFormat, Target.IdentifierName); }
+        }
     }
 
     public class RemoveUnusedParameterQuickFix : CodeInspectionQuickFix

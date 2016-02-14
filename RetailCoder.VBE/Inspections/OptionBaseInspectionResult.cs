@@ -6,8 +6,13 @@ namespace Rubberduck.Inspections
     public class OptionBaseInspectionResult : InspectionResultBase
     {
         public OptionBaseInspectionResult(IInspection inspection, QualifiedModuleName qualifiedName)
-            : base(inspection, inspection.Description, new CommentNode(string.Empty, new QualifiedSelection(qualifiedName, Selection.Home)))
+            : base(inspection, new CommentNode(string.Empty, new QualifiedSelection(qualifiedName, Selection.Home)))
         {
+        }
+
+        public override string Description
+        {
+            get { return Inspection.Name; }
         }
     }
 }

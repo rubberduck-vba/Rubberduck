@@ -14,12 +14,20 @@ namespace Rubberduck.Inspections
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public MoveFieldCloserToUsageInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
-            : base(inspection, string.Format(inspection.Description, target.IdentifierName), target)
+            : base(inspection, target)
         {
             _quickFixes = new[]
             {
                 new MoveFieldCloserToUsageQuickFix(target.Context, target.QualifiedSelection, target, parseResult, wrapperFactory, messageBox),
             };
+        }
+
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.MoveFieldCloserToUsageInspectionResultFormat, Target.IdentifierName);
+            }
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }

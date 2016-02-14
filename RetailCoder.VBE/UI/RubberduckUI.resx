@@ -1179,7 +1179,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Use of untyped function '{0}'. String-returning version '{0}$' is available.</value>
   </data>
   <data name="QuickFixUseTypedFunction_" xml:space="preserve">
-    <value>Use '{0}$' instead of '{0}'.</value>
+    <value>Change '{0}$' to '{0}'</value>
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Disable this inspection</value>
@@ -1264,7 +1264,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Rubberduck - Move Closer To Usage</value>
   </data>
   <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
-    <value>'{0}' has no references.</value>
+    <value>'{0}' is not used anywhere.</value>
     <comment>{0}: Variable Name</comment>
   </data>
   <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">

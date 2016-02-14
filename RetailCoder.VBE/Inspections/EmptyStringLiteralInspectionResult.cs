@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public EmptyStringLiteralInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, inspection.Description, qualifiedContext.ModuleName, qualifiedContext.Context)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _quickFixes = new[]
             {
@@ -20,6 +20,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return Inspection.Name; }
+        }
     }
 
     public class RepaceEmptyStringLiteralStatementQuickFix : CodeInspectionQuickFix

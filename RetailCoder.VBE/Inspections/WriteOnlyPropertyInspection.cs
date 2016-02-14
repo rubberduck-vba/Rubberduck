@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
@@ -27,19 +28,25 @@ namespace Rubberduck.Inspections
                     && (item.DeclarationType == DeclarationType.PropertyLet ||
                         item.DeclarationType == DeclarationType.PropertySet)
                     && !declarations.Where(declaration => declaration.IdentifierName == item.IdentifierName)
-                        .Any(accessor => !accessor.IsBuiltIn && accessor.DeclarationType == DeclarationType.PropertyGet));
+                        .Any(accessor => !accessor.IsBuiltIn && accessor.DeclarationType == DeclarationType.PropertyGet))
+                .GroupBy(item => new {item.QualifiedName, item.DeclarationType})
+                .Select(grouping => grouping.First()); // don't get both Let and Set accessors
 
-            //note: if property has both Set and Let accessors, this generates 2 results.
             return setters.Select(setter =>
-                new WriteOnlyPropertyInspectionResult(this, string.Format(Description, setter.IdentifierName), setter));
+                new WriteOnlyPropertyInspectionResult(this, setter));
         }
     }
 
     public class WriteOnlyPropertyInspectionResult : InspectionResultBase
     {
-        public WriteOnlyPropertyInspectionResult(IInspection inspection, string result, Declaration target) 
-            : base(inspection, result, target)
+        public WriteOnlyPropertyInspectionResult(IInspection inspection, Declaration target) 
+            : base(inspection, target)
         {
+        }
+
+        public override string Description
+        {
+            get { return string.Format(InspectionsUI.WriteOnlyPropertyInspectionResultFormat, Target.IdentifierName); }
         }
 
         // todo: override quickfixes

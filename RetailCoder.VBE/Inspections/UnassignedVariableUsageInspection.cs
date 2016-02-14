@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections
 
             foreach (var issue in usages)
             {
-                yield return new UnassignedVariableUsageInspectionResult(this, string.Format(Description, issue.Context.GetText()), issue.Context, issue.QualifiedModuleName);
+                yield return new UnassignedVariableUsageInspectionResult(this, issue.Context, issue.QualifiedModuleName);
             }
         }
     }
