@@ -750,7 +750,7 @@
     <Compile Include="Settings\ConfigurationLoader.cs" />
     <Compile Include="Settings\UserSettings.cs" />
     <Compile Include="Settings\CodeInspectionSettings.cs" />
-    <Compile Include="Inspections\CodeInspectionResultBase.cs" />
+    <Compile Include="Inspections\InspectionResultBase.cs" />
     <Compile Include="Inspections\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\CodeInspectionType.cs" />
     <Compile Include="Inspections\ImplicitByRefParameterInspection.cs" />

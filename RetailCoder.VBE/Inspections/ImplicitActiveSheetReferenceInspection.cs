@@ -29,11 +29,11 @@ namespace Rubberduck.Inspections
             "Cells", "Range", "Columns", "Rows"
         };
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             if (_hostApp().ApplicationName != "Excel")
             {
-                return new CodeInspectionResultBase[] {};
+                return new InspectionResultBase[] {};
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 
@@ -48,7 +48,7 @@ namespace Rubberduck.Inspections
         }
     }
 
-    public class ImplicitActiveSheetReferenceInspectionResult : CodeInspectionResultBase
+    public class ImplicitActiveSheetReferenceInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 

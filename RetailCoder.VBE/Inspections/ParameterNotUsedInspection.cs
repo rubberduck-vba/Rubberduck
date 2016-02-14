@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.ParameterNotUsedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var declarations = Declarations.ToList();
 

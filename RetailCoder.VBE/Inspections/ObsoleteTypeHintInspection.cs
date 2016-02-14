@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.ObsoleteTypeHintInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var results = UserDeclarations.ToList();
 

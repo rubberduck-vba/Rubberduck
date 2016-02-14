@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.MultipleFolderAnnotationsInspection; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = UserDeclarations.Where(declaration =>
                  (declaration.DeclarationType == DeclarationType.Class
@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections
         }
     }
 
-    public class MultipleFolderAnnotationsInspectionResult : CodeInspectionResultBase
+    public class MultipleFolderAnnotationsInspectionResult : InspectionResultBase
     {
         public MultipleFolderAnnotationsInspectionResult(IInspection inspection, string result, Declaration target) 
             : base(inspection, result, target)

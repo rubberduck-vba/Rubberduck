@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections
             Tokens.StrPtr
         };
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var declarations = UserDeclarations.ToList();
 

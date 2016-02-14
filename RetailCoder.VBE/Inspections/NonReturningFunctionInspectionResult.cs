@@ -4,7 +4,7 @@ using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections
 {
-    public class NonReturningFunctionInspectionResult : CodeInspectionResultBase
+    public class NonReturningFunctionInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 

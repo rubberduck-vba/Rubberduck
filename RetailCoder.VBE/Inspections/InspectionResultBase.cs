@@ -8,9 +8,9 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public abstract class CodeInspectionResultBase : ICodeInspectionResult
+    public abstract class InspectionResultBase : ICodeInspectionResult
     {
-        protected CodeInspectionResultBase(IInspection inspection, string result, Declaration target)
+        protected InspectionResultBase(IInspection inspection, string result, Declaration target)
             : this(inspection, result, target.QualifiedName.QualifiedModuleName, null)
         {
             _target = target;
@@ -19,17 +19,17 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Creates a comment inspection result.
         /// </summary>
-        protected CodeInspectionResultBase(IInspection inspection, string result, CommentNode comment)
+        protected InspectionResultBase(IInspection inspection, string result, CommentNode comment)
             : this(inspection, result, comment.QualifiedSelection.QualifiedName, null, comment)
         { }
 
         /// <summary>
         /// Creates an inspection result.
         /// </summary>
-        protected CodeInspectionResultBase(IInspection inspection, string result, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
+        protected InspectionResultBase(IInspection inspection, string result, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
         {
             _inspection = inspection;
-            _name = result;
+            _description = result;
             _qualifiedName = qualifiedName;
             _context = context;
             _comment = comment;
@@ -38,11 +38,8 @@ namespace Rubberduck.Inspections
         private readonly IInspection _inspection;
         public IInspection Inspection { get { return _inspection; } }
 
-        private readonly string _name;
-        /// <summary>
-        /// Gets a string containing the name of the code inspection.
-        /// </summary>
-        public string Name { get { return _name; } }
+        private readonly string _description;
+        public string Description { get { return _description; } }
 
         private readonly QualifiedModuleName _qualifiedName;
         protected QualifiedModuleName QualifiedName { get { return _qualifiedName; } }
@@ -93,7 +90,7 @@ namespace Rubberduck.Inspections
             return string.Format(
                 "{0}: {1} - {2}.{3}, line {4}",
                 Inspection.Severity,
-                Name,
+                Description,
                 module.ProjectName,
                 module.ComponentName,
                 QualifiedSelection.Selection.StartLine);
@@ -110,7 +107,7 @@ namespace Rubberduck.Inspections
             return string.Format(
                 "{0}, {1}, {2}, {3}, {4}",
                 Inspection.Severity,
-                Name,
+                Description,
                 module.ProjectName,
                 module.ComponentName,
                 QualifiedSelection.Selection.StartLine);

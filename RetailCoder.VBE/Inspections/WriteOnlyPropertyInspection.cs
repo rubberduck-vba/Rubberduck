@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.WriteOnlyPropertyInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var declarations = UserDeclarations.ToList();
             var setters = declarations
@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections
         }
     }
 
-    public class WriteOnlyPropertyInspectionResult : CodeInspectionResultBase
+    public class WriteOnlyPropertyInspectionResult : InspectionResultBase
     {
         public WriteOnlyPropertyInspectionResult(IInspection inspection, string result, Declaration target) 
             : base(inspection, result, target)

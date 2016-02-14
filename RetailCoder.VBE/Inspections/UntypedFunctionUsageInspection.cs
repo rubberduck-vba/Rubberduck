@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections
             Tokens.UCase
         };
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var declarations = UserDeclarations
                 .Where(item => item.IsBuiltIn && item.Accessibility == Accessibility.Global && _tokens.Contains(item.IdentifierName));

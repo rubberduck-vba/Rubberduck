@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.EncapsulatePublicFieldInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = UserDeclarations
                             .Where(declaration => declaration.DeclarationType == DeclarationType.Variable

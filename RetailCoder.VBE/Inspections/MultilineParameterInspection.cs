@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.MultilineParameterInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var multilineParameters = from p in UserDeclarations
                 .Where(item => item.DeclarationType == DeclarationType.Parameter)

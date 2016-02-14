@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.AssignedByValParameterInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var assignedByValParameters = UserDeclarations.Where(declaration => 
                     declaration.DeclarationType == DeclarationType.Parameter

@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections
             DeclarationType.LibraryFunction
         };
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = from item in UserDeclarations
                                where !item.IsInspectionDisabled(AnnotationName)

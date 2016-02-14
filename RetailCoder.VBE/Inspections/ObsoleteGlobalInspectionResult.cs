@@ -7,7 +7,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteGlobalInspectionResult : CodeInspectionResultBase
+    public class ObsoleteGlobalInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 

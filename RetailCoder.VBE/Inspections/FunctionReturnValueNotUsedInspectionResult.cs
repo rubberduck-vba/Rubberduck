@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Rubberduck.Inspections
 {
-    public class FunctionReturnValueNotUsedInspectionResult : CodeInspectionResultBase
+    public class FunctionReturnValueNotUsedInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 

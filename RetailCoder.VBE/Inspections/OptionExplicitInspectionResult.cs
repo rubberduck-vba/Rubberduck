@@ -8,7 +8,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class OptionExplicitInspectionResult : CodeInspectionResultBase
+    public class OptionExplicitInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
 

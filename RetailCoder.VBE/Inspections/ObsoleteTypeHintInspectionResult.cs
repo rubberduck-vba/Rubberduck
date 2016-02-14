@@ -11,7 +11,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteTypeHintInspectionResult : CodeInspectionResultBase
+    public class ObsoleteTypeHintInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 

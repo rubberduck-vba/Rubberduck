@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections
         /// A method that inspects the parser state and returns all issues it can find.
         /// </summary>
         /// <returns></returns>
-        public abstract IEnumerable<CodeInspectionResultBase> GetInspectionResults();
+        public abstract IEnumerable<InspectionResultBase> GetInspectionResults();
 
         /// <summary>
         /// The inspection type name, obtained by reflection.

@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.ObsoleteGlobalInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = from item in UserDeclarations
                          where item.Accessibility == Accessibility.Global && item.Context != null

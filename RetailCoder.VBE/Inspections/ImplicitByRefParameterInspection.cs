@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.ImplicitByRefParameterInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var interfaceMembers = UserDeclarations.FindInterfaceImplementationMembers();
 

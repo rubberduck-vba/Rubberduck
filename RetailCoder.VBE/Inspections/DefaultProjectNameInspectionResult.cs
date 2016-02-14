@@ -10,7 +10,7 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    public class DefaultProjectNameInspectionResult : CodeInspectionResultBase
+    public class DefaultProjectNameInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
 

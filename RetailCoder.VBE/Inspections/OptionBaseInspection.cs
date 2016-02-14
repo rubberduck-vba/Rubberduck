@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.OptionBaseInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var options = UserDeclarations
                 .Where(declaration => declaration.DeclarationType == DeclarationType.ModuleOption
@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections
 
             if (!options.Any())
             {
-                return new List<CodeInspectionResultBase>();
+                return new List<InspectionResultBase>();
             }
 
             var issues = options.Where(option => ((VBAParser.OptionBaseStmtContext)option.Context).SHORTLITERAL().GetText() == "1")

@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.ProcedureCanBeFunctionInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var subStmts = State.ArgListsWithOneByRefParam
                 .Where(context => context.Context.Parent is VBAParser.SubStmtContext)

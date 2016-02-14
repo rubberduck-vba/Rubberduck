@@ -9,7 +9,7 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    public class MoveFieldCloserToUsageInspectionResult : CodeInspectionResultBase
+    public class MoveFieldCloserToUsageInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 

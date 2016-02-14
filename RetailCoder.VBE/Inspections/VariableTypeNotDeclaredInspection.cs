@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.VariableTypeNotDeclaredInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = from item in UserDeclarations
                          where (item.DeclarationType == DeclarationType.Variable

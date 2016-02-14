@@ -3,7 +3,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class OptionBaseInspectionResult : CodeInspectionResultBase
+    public class OptionBaseInspectionResult : InspectionResultBase
     {
         public OptionBaseInspectionResult(IInspection inspection, QualifiedModuleName qualifiedName)
             : base(inspection, inspection.Description, new CommentNode(string.Empty, new QualifiedSelection(qualifiedName, Selection.Home)))

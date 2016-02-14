@@ -8,7 +8,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteCommentSyntaxInspectionResult : CodeInspectionResultBase
+    public class ObsoleteCommentSyntaxInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 

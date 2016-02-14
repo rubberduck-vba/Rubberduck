@@ -28,11 +28,11 @@ namespace Rubberduck.Inspections
             "Worksheets", "Sheets", "Names", 
         };
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             if (!_hostApp.IsValueCreated || _hostApp.Value == null || _hostApp.Value.ApplicationName != "Excel")
             {
-                return new CodeInspectionResultBase[] {};
+                return new InspectionResultBase[] {};
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 

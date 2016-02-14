@@ -6,7 +6,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableTypeNotDeclaredInspectionResult : CodeInspectionResultBase
+    public class VariableTypeNotDeclaredInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 

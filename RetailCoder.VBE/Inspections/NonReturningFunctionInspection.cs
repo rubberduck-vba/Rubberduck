@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections
             DeclarationType.PropertyGet
         };
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var declarations = UserDeclarations.ToList();
 
