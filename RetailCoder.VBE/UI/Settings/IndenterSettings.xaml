@@ -66,7 +66,7 @@
                         <CheckBox Content="Indent case" Margin="5,0,0,5" />
                         <CheckBox Content="Indent compiler directives" Margin="5,0,0,5" />
                         <StackPanel Orientation="Horizontal">
-                            <CheckBox Name="IndentSpaces" Content="Align dims" Margin="5,0,0,5" />
+                            <TextBlock Name="IndentSpaces" Text="Indent spaces:" Margin="5,0,0,5" />
                             <controls:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=IndentSpaces, Path=IsChecked}" NumValue="4" />
                         </StackPanel>
                         <Label Content="Enable Options" FontWeight="SemiBold" />
