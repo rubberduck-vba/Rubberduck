@@ -172,7 +172,7 @@ namespace Rubberduck.Settings
                 IgnoreOperatorsInContinuations = true,
                 IndentCase = false,
                 ForceDebugStatementsInColumn1 = false,
-                ForceCompilerStuffInColumn1 = false,
+                ForceCompilerDirectivesInColumn1 = false,
                 IndentCompilerDirectives = true,
                 AlignDims = false,
                 AlignDimColumn = 15,

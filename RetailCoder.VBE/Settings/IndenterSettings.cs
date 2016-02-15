@@ -14,7 +14,7 @@ namespace Rubberduck.Settings
         public bool IgnoreOperatorsInContinuations { get; set; }
         public bool IndentCase { get; set; }
         public bool ForceDebugStatementsInColumn1 { get; set; }
-        public bool ForceCompilerStuffInColumn1 { get; set; }
+        public bool ForceCompilerDirectivesInColumn1 { get; set; }
         public bool IndentCompilerDirectives { get; set; }
         public bool AlignDims { get; set; }
         public int AlignDimColumn { get; set; }
