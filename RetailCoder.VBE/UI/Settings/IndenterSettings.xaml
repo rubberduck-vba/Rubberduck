@@ -46,7 +46,7 @@
                         </CheckBox>
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Name="AlignDimColumn" Content="Align dims" Margin="5,0,0,5" />
-                            <controls:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}" NumValue="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AlignDimColumn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <controls:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}" NumValue="15" />
                         </StackPanel>
 
                         <Label Content="Special Options" FontWeight="SemiBold" />
