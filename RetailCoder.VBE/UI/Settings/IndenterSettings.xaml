@@ -73,7 +73,7 @@
                         <CheckBox Content="Enable undo" Margin="5,0,0,5" />
                     </StackPanel>
                 </Grid>
-                <Label Content="End-of-Line Comment Style:" FontWeight="SemiBold" Margin="0,-20,0,0" />
+                <Label Content="End-of-Line Comment Style:" FontWeight="SemiBold" Margin="0,-18,0,0" />
                 <StackPanel Orientation="Horizontal">
                     <ComboBox Name="EndOfLineCommentStyle" Margin="5,0,0,5" SelectedIndex="1" Width="210" HorizontalAlignment="Left">
                         <TextBlock Text="Absolute" />
