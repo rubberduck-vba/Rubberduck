@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.UseMeaningfulNameInspectionResultFormat, Target.IdentifierName); }
+            get { return string.Format(InspectionsUI.UseMeaningfulNameInspectionResultFormat, RubberduckUI.ResourceManager.GetString("DeclarationType_" + Target.DeclarationType), Target.IdentifierName); }
         }
     }
 

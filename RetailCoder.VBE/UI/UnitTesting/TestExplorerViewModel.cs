@@ -116,7 +116,7 @@ namespace Rubberduck.UI.UnitTesting
         public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
 
         private readonly NavigateCommand _navigateCommand;
-        public NavigateCommand NavigateCommand { get { return _navigateCommand; } }
+        public INavigateCommand NavigateCommand { get { return _navigateCommand; } }
 
         private readonly ICommand _runSelectedTestCommand;
         public ICommand RunSelectedTestCommand { get { return _runSelectedTestCommand; } }

@@ -750,8 +750,8 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="ModuleName" xml:space="preserve">
     <value>Module Name</value>
   </data>
-  <data name="TestExplorer_QualifiedMemberName" xml:space="preserve">
-    <value>Qualified Member Name</value>
+  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
+    <value>Module</value>
   </data>
   <data name="TestExplorer_RunAllTests" xml:space="preserve">
     <value>All Tests</value>

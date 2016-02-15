@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections
                                && ProcedureTypes.Contains(item.DeclarationType)
                                && item.Accessibility == Accessibility.Implicit
                          let context = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)
-                               select new ImplicitPublicMemberInspectionResult(this, string.Format(Description, ((dynamic)context.Context).ambiguousIdentifier().GetText()), context);
+                               select new ImplicitPublicMemberInspectionResult(this, context, item);
             return issues;
         }
     }

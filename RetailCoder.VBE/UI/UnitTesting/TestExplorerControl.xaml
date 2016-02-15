@@ -120,14 +120,14 @@
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Outcome}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="unitTesting:TestMethod">
-                            <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" Height="16" />
+                                    <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" Height="16" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_QualifiedMemberName}" Binding="{Binding QualifiedMemberName.QualifiedModuleName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_MethodName}" Binding="{Binding QualifiedMemberName.MemberName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Message}" Binding="{Binding Result.Output}" Width="*" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
+                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding QualifiedMemberName.QualifiedModuleName}" />
+                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_MethodName}" Binding="{Binding QualifiedMemberName.MemberName}" />
+                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Message}" Binding="{Binding Result.Output}" Width="*" />
+                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
                     </DataGrid.Columns>
                 </controls:GroupingGrid>
             </ScrollViewer>

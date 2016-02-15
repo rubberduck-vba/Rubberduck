@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -11,8 +12,8 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ImplicitPublicMemberInspectionResult(IInspection inspection, string result, QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
+        public ImplicitPublicMemberInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration item)
+            : base(inspection, item)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {

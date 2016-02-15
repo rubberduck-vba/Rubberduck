@@ -3292,11 +3292,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Qualified Member Name.
+        ///   Looks up a localized string similar to Module.
         /// </summary>
-        public static string TestExplorer_QualifiedMemberName {
+        public static string TestExplorer_QualifiedModuleName {
             get {
-                return ResourceManager.GetString("TestExplorer_QualifiedMemberName", resourceCulture);
+                return ResourceManager.GetString("TestExplorer_QualifiedModuleName", resourceCulture);
             }
         }
         
