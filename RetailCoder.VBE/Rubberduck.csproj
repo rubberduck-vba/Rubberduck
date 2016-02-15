@@ -548,6 +548,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.sv.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Settings\Converters\ChildTextBoxSelectionToParentSelectionConverter.cs" />
     <Compile Include="UI\Settings\Converters\AssertModeToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\AssertModeValueToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\BindingModeValueToTextConverter.cs" />
