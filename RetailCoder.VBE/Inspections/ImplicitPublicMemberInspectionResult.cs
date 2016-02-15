@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
-                new SpecifyExplicitPublicModifierQuickFix(Context, QualifiedSelection), 
+                new SpecifyExplicitPublicModifierQuickFix(qualifiedContext.Context, QualifiedSelection), 
                 new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
@@ -45,14 +45,13 @@ namespace Rubberduck.Inspections
             var oldContent = Context.GetText();
             var newContent = Tokens.Public + ' ' + oldContent;
 
-            var selection = Selection.Selection;
+            var selection = Context.GetSelection();
 
             var module = Selection.QualifiedName.Component.CodeModule;
             var lines = module.get_Lines(selection.StartLine, selection.LineCount);
 
-            var result = lines.Replace(oldContent, newContent);
             module.DeleteLines(selection.StartLine, selection.LineCount);
-            module.InsertLines(selection.StartLine, result);
+            module.InsertLines(selection.StartLine, newContent);
         }
     }
 }
