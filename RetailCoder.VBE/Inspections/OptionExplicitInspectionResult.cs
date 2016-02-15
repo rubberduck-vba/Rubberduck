@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return Inspection.Name; }
+            get { return string.Format(RubberduckUI.OptionExplicit, QualifiedName.ComponentName); }
         }
     }
 

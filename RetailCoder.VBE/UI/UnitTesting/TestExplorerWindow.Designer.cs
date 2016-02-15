@@ -49,7 +49,6 @@ namespace Rubberduck.UI.UnitTesting
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.wpfHost);
-            this.MinimumSize = new System.Drawing.Size(255, 255);
             this.Name = "TestExplorerWindow";
             this.Size = new System.Drawing.Size(512, 255);
             this.ResumeLayout(false);

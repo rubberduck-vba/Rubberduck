@@ -750,8 +750,8 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="ModuleName" xml:space="preserve">
     <value>Module Name</value>
   </data>
-  <data name="TestExplorer_QualifiedMemberName" xml:space="preserve">
-    <value>Qualified Member Name</value>
+  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
+    <value>Module</value>
   </data>
   <data name="TestExplorer_RunAllTests" xml:space="preserve">
     <value>All Tests</value>
@@ -1330,22 +1330,22 @@ Are you sure you want to proceed with this rename?</value>
     <value>Configure the settings for new unit test modules and methods.</value>
   </data>
   <data name="UnitTestSettings_AssertMode" xml:space="preserve">
-    <value>Test method assert mode:</value>
+    <value>Type safety:</value>
   </data>
   <data name="UnitTestSettings_BindingMode" xml:space="preserve">
-    <value>Test method binding mode:</value>
+    <value>Binding mode:</value>
   </data>
   <data name="UnitTestSettings_EarlyBinding" xml:space="preserve">
     <value>Early binding</value>
   </data>
   <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
-    <value>Include test method initialization/cleanup?</value>
+    <value>Test method initialization/cleanup</value>
   </data>
   <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt" xml:space="preserve">
-    <value>Include test method stub when creating a test module?</value>
+    <value>Insert test method stub</value>
   </data>
   <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
-    <value>Include test module initialization/cleanup?</value>
+    <value>Test module initialization/cleanup</value>
   </data>
   <data name="UnitTestSettings_LateBinding" xml:space="preserve">
     <value>Late binding</value>

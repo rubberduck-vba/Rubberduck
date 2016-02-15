@@ -25,7 +25,7 @@
                     <Setter Property="CornerRadius" Value="2"/>
                 </Style>
             </Style.Resources>
-            <EventSetter Event="Control.MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
+            <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
             <Setter Property="BorderThickness" Value="0,.5,0,0" />
             <Setter Property="BorderBrush" Value="DarkGray" />
             <Setter Property="Height" Value="22" />
@@ -188,8 +188,9 @@
     <DataGrid.CellStyle>
         <Style TargetType="{x:Type DataGridCell}">
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
         </Style>
     </DataGrid.CellStyle>
 </DataGrid>

@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override string Meta { get { return InspectionsUI.ProcedureShouldBeFunctionInspectionMeta; } }
+        public override string Meta { get { return InspectionsUI.ProcedureCanBeFunctionInspectionMeta; } }
         public override string Description { get { return InspectionsUI.ProcedureCanBeFunctionInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 

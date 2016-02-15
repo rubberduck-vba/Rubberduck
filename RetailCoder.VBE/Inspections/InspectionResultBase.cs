@@ -1,14 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
+using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public abstract class InspectionResultBase : ICodeInspectionResult
+    public abstract class InspectionResultBase : ICodeInspectionResult, INavigateSource
     {
         protected InspectionResultBase(IInspection inspection, Declaration target)
             : this(inspection, target.QualifiedName.QualifiedModuleName, null)
@@ -92,6 +95,11 @@ namespace Rubberduck.Inspections
                 module.ProjectName,
                 module.ComponentName,
                 QualifiedSelection.Selection.StartLine);
+        }
+
+        public NavigateCodeEventArgs GetNavigationArgs()
+        {
+            return new NavigateCodeEventArgs(QualifiedSelection);
         }
 
         public int CompareTo(object obj)

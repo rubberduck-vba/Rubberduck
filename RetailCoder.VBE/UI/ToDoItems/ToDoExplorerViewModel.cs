@@ -107,7 +107,7 @@ namespace Rubberduck.UI.ToDoItems
         private NavigateCommand _navigateCommand;
         private readonly Dispatcher _uiDispatcher;
 
-        public NavigateCommand NavigateCommand
+        public INavigateCommand NavigateCommand
         {
             get
             {

@@ -44,13 +44,13 @@ namespace Rubberduck.UI.CodeInspections
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
             _isModuleTemplate = TreeViewStyleToggle.IsChecked.HasValue && TreeViewStyleToggle.IsChecked.Value;
-            InspectionResultsTreeView.ItemTemplate = _isModuleTemplate
-                ? _moduleGroupsTemplate
-                : _inspectionTypeGroupsTemplate;
+            //InspectionResultsTreeView.ItemTemplate = _isModuleTemplate
+            //    ? _moduleGroupsTemplate
+            //    : _inspectionTypeGroupsTemplate;
 
-            InspectionResultsTreeView.ItemsSource = _isModuleTemplate
-                ? _moduleGroupsViewSource.View.Groups
-                : _inspectionTypeGroupsViewSource.View.Groups;
+            //InspectionResultsTreeView.ItemsSource = _isModuleTemplate
+            //    ? _moduleGroupsViewSource.View.Groups
+            //    : _inspectionTypeGroupsViewSource.View.Groups;
         }
 
         private void InspectionResultsTreeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)

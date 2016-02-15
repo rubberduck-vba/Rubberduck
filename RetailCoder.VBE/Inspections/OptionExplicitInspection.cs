@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.OptionExplicitInspectionMeta; } }
-        public override string Description { get { return RubberduckUI.OptionExplicit; } }
+        public override string Description { get { return InspectionsUI.OptionExplicitInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         private static readonly DeclarationType[] ModuleTypes =

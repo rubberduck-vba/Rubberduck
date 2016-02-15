@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Controls
     public interface INavigateSelection
     {
         INavigateSource SelectedItem { get; set; }
-        NavigateCommand NavigateCommand { get; }
+        INavigateCommand NavigateCommand { get; }
     }
 
     /// <summary>

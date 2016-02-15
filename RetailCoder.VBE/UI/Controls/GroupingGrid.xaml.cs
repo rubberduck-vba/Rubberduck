@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Rubberduck.UI.Controls
@@ -21,6 +22,15 @@ namespace Rubberduck.UI.Controls
         {
             get { return (bool) GetValue(ShowGroupingItemCountProperty); }
             set { SetValue(ShowGroupingItemCountProperty, value); }
+        }
+
+        public static readonly DependencyProperty GroupedItemSourceProperty =
+            DependencyProperty.Register("GroupedItemSource", typeof (CollectionViewSource), typeof (GroupingGrid));
+
+        public CollectionViewSource GroupedItemSource
+        {
+            get { return (CollectionViewSource) GetValue(GroupedItemSourceProperty); }
+            set { SetValue(GroupedItemSourceProperty, value); }
         }
 
         public GroupingGrid()
