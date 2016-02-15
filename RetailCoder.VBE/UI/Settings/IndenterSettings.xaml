@@ -39,18 +39,15 @@
                     <StackPanel>
                         <Label Content="Alignment Options" FontWeight="SemiBold" />
                         <CheckBox Content="Align comments with code" Margin="5,0,0,5" />
-                        <CheckBox Name="AlignContinuationsCheckBox" Margin="5,0,0,5">
+                        <CheckBox Name="AlignContinuationsCheckBox" Content="Align continuations" Margin="5,0,0,5">
                             <CheckBox.IsChecked>
                                 <MultiBinding Converter="{StaticResource ChildToParent}">
                                     <Binding ElementName="AlignContinuationsCheckBox" Path="IsChecked" />
                                     <Binding ElementName="IgnoreOperatorsCheckBox" Path="IsChecked" />
                                 </MultiBinding>
                             </CheckBox.IsChecked>
-                            <StackPanel>
-                                <TextBlock Text="Align continuations" Margin="5,0,0,5" />
-                                <CheckBox Name="IgnoreOperatorsCheckBox" Content="Ignore operators" IsEnabled="{Binding ElementName=AlignContinuationsCheckBox, Path=IsChecked}" />
-                            </StackPanel>
                         </CheckBox>
+                        <CheckBox Name="IgnoreOperatorsCheckBox" Content="Ignore operators" IsEnabled="{Binding ElementName=AlignContinuationsCheckBox, Path=IsChecked}" Margin="25,0,0,5" />
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Name="AlignDimColumn" Content="Align dims" Margin="5,0,0,5" />
                             <controls:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}" NumValue="15" />
@@ -63,7 +60,7 @@
 
                     <StackPanel Grid.Column="1">
                         <Label Content="Indent Options" FontWeight="SemiBold" />
-                        <CheckBox Name="IndentProcedureCheckBox" Margin="5,0,0,5">
+                        <CheckBox Name="IndentProcedureCheckBox" Content="Indent entire procedure body" Margin="5,0,0,5">
                             <CheckBox.IsChecked>
                                 <MultiBinding Converter="{StaticResource ChildToParent}">
                                     <Binding ElementName="IndentProcedureCheckBox" Path="IsChecked" />
@@ -71,12 +68,9 @@
                                     <Binding ElementName="IndentFirstDeclarationCheckBox" Path="IsChecked" />
                                 </MultiBinding>
                             </CheckBox.IsChecked>
-                            <StackPanel>
-                                <TextBlock Text="Indent entire procedure body" Margin="5,0,0,5" />
-                                <CheckBox Name="IndentFirstCommentCheckBox" Content="Indent first comment block" IsEnabled="{Binding ElementName=IndentProcedureCheckBox, Path=IsChecked}" Margin="5,0,0,5" />
-                                <CheckBox Name="IndentFirstDeclarationCheckBox" Content="Indent first declaration block" IsEnabled="{Binding ElementName=IndentProcedureCheckBox, Path=IsChecked}" Margin="5,0,0,0" />
-                            </StackPanel>
                         </CheckBox>
+                        <CheckBox Name="IndentFirstCommentCheckBox" Content="Indent first comment block" IsEnabled="{Binding ElementName=IndentProcedureCheckBox, Path=IsChecked}" Margin="25,0,0,5" />
+                        <CheckBox Name="IndentFirstDeclarationCheckBox" Content="Indent first declaration block" IsEnabled="{Binding ElementName=IndentProcedureCheckBox, Path=IsChecked}" Margin="25,0,0,5" />
                         <CheckBox Content="Indent case" Margin="5,0,0,5" />
                         <CheckBox Content="Indent compiler directives" Margin="5,0,0,5" />
                         <StackPanel Orientation="Horizontal">
