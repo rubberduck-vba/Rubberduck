@@ -130,8 +130,8 @@
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
                     </DataGrid.Columns>
                 </controls:GroupingGrid>
-        
+            </ScrollViewer>
+        </Border>
         <resx:BusyIndicator Grid.Row="2" Width="36" Height="36" Visibility="{Binding Model.IsBusy, Converter={StaticResource BoolToVisibility}}" />
-
     </Grid>
 </UserControl>
