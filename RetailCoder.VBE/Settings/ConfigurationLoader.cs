@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Rubberduck.Inspections;
+using Rubberduck.SmartIndenter;
 using Rubberduck.ToDoItems;
 using Rubberduck.UI;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -163,24 +164,22 @@ namespace Rubberduck.Settings
         {
             return new IndenterSettings
             {
-                IndentProcedure = true,
-                IndentFirst = false,
-                IndentDim = true,
-                IndentComment = true,
-                IndentCase = false,
+                IndentEntireProcedureBody = true,
+                IndentFirstCommentBlock = true,
+                IndentFirstDeclarationBlock = true,
+                AlignCommentsWithCode = true,
                 AlignContinuations = true,
-                AlignIgnoreOps = true,
+                IgnoreOperatorsInContinuations = true,
+                IndentCase = false,
                 ForceDebugStatementsInColumn1 = false,
                 ForceCompilerStuffInColumn1 = false,
-                IndentCompilerStuff = true,
-                AlignDim = false,
+                IndentCompilerDirectives = true,
+                AlignDims = false,
                 AlignDimColumn = 15,
                 EnableUndo = true,
-                EnableIndentProcedureHotKey = true,
-                EnableIndentModuleHotKey = true,
-                EndOfLineAlignColumn = 55,
-                IndentSpaces = 4, // should read/write this value from VBE registry settings
-                AlignEndOfLine = false
+                EndOfLineCommentStyle = SmartIndenter.EndOfLineCommentStyle.AlignInColumn,
+                EndOfLineCommentColumnSpaceAlignment = 50,
+                IndentSpaces = 4
             };
         }
     }
