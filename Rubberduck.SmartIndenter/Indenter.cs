@@ -9,6 +9,7 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.SmartIndenter
 {
+    // TODO: Check that settings reference correct values
     public class Indenter : IIndenter
     {
         private readonly VBE _vbe;
@@ -79,7 +80,7 @@ namespace Rubberduck.SmartIndenter
             {
                 throw new InvalidOperationException("Project is protected.");
             }
-            
+
             var lineCount = 0; // to set progressbar max value
             if (project.VBComponents.Cast<VBComponent>().All(component => !HasCode(component.CodeModule, ref lineCount)))
             {
@@ -273,13 +274,13 @@ namespace Rubberduck.SmartIndenter
 
                         if (inOnContinuedLine && _settings.AlignContinuations)
                         {
-                            if (_settings.AlignIgnoreOps && currentLine.StartsWith(", "))
+                            if (_settings.IgnoreOperatorsInContinuations && currentLine.StartsWith(", "))
                             {
                                 parameterStart = functionStart - 2;
                             }
 
                             // todo: test this logic. VB6 logical operator precedence might not match that of C#.
-                            if (_settings.AlignIgnoreOps && !currentLine.StartsWith(", ")
+                            if (_settings.IgnoreOperatorsInContinuations && !currentLine.StartsWith(", ")
                                 && (currentLine.Substring(1, 1) == " " || currentLine.StartsWith(":=")))
                             {
                                 currentLine = new string(' ', parameterStart - 3) + currentLine;
@@ -344,7 +345,7 @@ namespace Rubberduck.SmartIndenter
 
                                 case " As ":
 
-                                    if (_settings.AlignDim)
+                                    if (_settings.AlignDims)
                                     {
                                         var align = noIndent;
                                         if (!align)
@@ -356,14 +357,14 @@ namespace Rubberduck.SmartIndenter
                                         {
                                             if (!currentLine.Substring(scan + 2).Contains(" As "))
                                             {
-                                                if (!noIndent && atFirstDim && _settings.IndentProcedure && _settings.IndentDim)
+                                                if (!noIndent && atFirstDim && _settings.IndentEntireProcedureBody && _settings.AlignDims)
                                                 {
                                                     gap = _settings.AlignDimColumn - currentLine.Substring(0, scan).TrimEnd().Length;
 
                                                     // adjust for a line number at the start of the line:
                                                     if (numberedLine > -1 && lineNumber.Length >= indents * _settings.IndentSpaces)
                                                     {
-                                                        gap -= lineNumber.Length - indents*_settings.IndentSpaces - 1;
+                                                        gap -= lineNumber.Length - indents * _settings.IndentSpaces - 1;
                                                     }
                                                 }
 
@@ -387,7 +388,7 @@ namespace Rubberduck.SmartIndenter
                                     else
                                     {
                                         // not aligning Dims; remove all whitespace
-                                        scan =  currentLine.Substring(0, scan).TrimEnd().Length;
+                                        scan = currentLine.Substring(0, scan).TrimEnd().Length;
                                         currentLine = currentLine.Substring(0, scan).TrimEnd() + " " + currentLine.Substring(scan).Trim();
                                         scan += 3;
                                     }
@@ -400,17 +401,17 @@ namespace Rubberduck.SmartIndenter
                                     if (scan == 1)
                                     {
                                         // new comment at start of line
-                                        if (!noIndent && atProcedureStart && !_settings.IndentFirst)
+                                        if (!noIndent && atProcedureStart && !_settings.IndentFirstDeclarationBlock)
                                         {
                                             // no indenting
                                         }
-                                        else if (noIndent || atProcedureStart || _settings.IndentComment)
+                                        else if (noIndent || atProcedureStart || _settings.IndentFirstCommentBlock)
                                         {
                                             // inside procedure: indent to align with code
-                                            currentLine = new string(' ', indents*_settings.IndentSpaces) + currentLine;
-                                            commentStart = scan + _settings.IndentSpaces*indents;
+                                            currentLine = new string(' ', indents * _settings.IndentSpaces) + currentLine;
+                                            commentStart = scan + _settings.IndentSpaces * indents;
                                         }
-                                        else if (!atProcedureStart && indents > 0 && _settings.IndentProcedure)
+                                        else if (!atProcedureStart && indents > 0 && _settings.IndentEntireProcedureBody)
                                         {
                                             // at the top of the procedure, so indent once if required
                                             currentLine = new string(' ', _settings.IndentSpaces) + currentLine;
@@ -419,7 +420,7 @@ namespace Rubberduck.SmartIndenter
                                     }
                                     else
                                     {
-                                        if (item == "Rem " && currentLine.Substring(scan - 1, 1) != " " 
+                                        if (item == "Rem " && currentLine.Substring(scan - 1, 1) != " "
                                                            && currentLine.Substring(scan - 1, 1) != ":")
                                         {
                                             break;
@@ -454,13 +455,13 @@ namespace Rubberduck.SmartIndenter
                                         }
                                         else
                                         {
-                                            if (atFirstDim && _settings.IndentProcedure && _settings.IndentDim)
+                                            if (atFirstDim && _settings.IndentEntireProcedureBody && _settings.AlignDims)
                                             {
                                                 currentLine = left;
                                             }
                                             else
                                             {
-                                                currentLine = new string(' ', indents*_settings.IndentSpaces) + left;
+                                                currentLine = new string(' ', indents * _settings.IndentSpaces) + left;
                                             }
                                         }
 
@@ -477,10 +478,10 @@ namespace Rubberduck.SmartIndenter
                                                 gap = scan - originalLine.Substring(0, scan - 1).TrimEnd().Length - 1;
                                                 break;
                                             case EndOfLineCommentStyle.StandardGap:
-                                                gap = _settings.IndentSpaces*2;
+                                                gap = _settings.IndentSpaces * 2;
                                                 break;
                                             case EndOfLineCommentStyle.AlignInColumn:
-                                                gap = _settings.EndOfLineAlignColumn - currentLine.Length - 1;
+                                                gap = _settings.EndOfLineCommentColumnSpaceAlignment - currentLine.Length - 1;
                                                 break;
                                             default:
                                                 throw new ArgumentOutOfRangeException();
@@ -489,9 +490,9 @@ namespace Rubberduck.SmartIndenter
                                         // adjust for a numbered line
                                         if (numberedLine > -1 && (_settings.EndOfLineCommentStyle == EndOfLineCommentStyle.Absolute ||
                                                                   _settings.EndOfLineCommentStyle == EndOfLineCommentStyle.AlignInColumn)
-                                            && lineNumber.Length >= indents*_settings.IndentSpaces)
+                                            && lineNumber.Length >= indents * _settings.IndentSpaces)
                                         {
-                                            gap -= lineNumber.Length - indents*_settings.IndentSpaces - 1;
+                                            gap -= lineNumber.Length - indents * _settings.IndentSpaces - 1;
                                         }
 
                                         if (gap < 2)
@@ -519,9 +520,9 @@ namespace Rubberduck.SmartIndenter
                                     commentStart -= 1;
 
                                     // adjust for a line number at the start of the line
-                                    if (numberedLine > -1 && lineNumber.Length >= indents*_settings.IndentSpaces)
+                                    if (numberedLine > -1 && lineNumber.Length >= indents * _settings.IndentSpaces)
                                     {
-                                        commentStart += lineNumber.Length - indents*_settings.IndentSpaces + 1;
+                                        commentStart += lineNumber.Length - indents * _settings.IndentSpaces + 1;
                                     }
 
                                     isInsideComment = currentLine.Trim().EndsWith(" _");
@@ -598,14 +599,14 @@ namespace Rubberduck.SmartIndenter
                         {
                             if (!_settings.AlignContinuations)
                             {
-                                currentLine = new string(' ', (indents + 2)*_settings.IndentSpaces) + currentLine;
+                                currentLine = new string(' ', (indents + 2) * _settings.IndentSpaces) + currentLine;
                             }
                         }
                         else
                         {
                             // check if we start with a declaration item
                             var align = false;
-                            if (_settings.IndentProcedure && atFirstDim && !_settings.IndentDim && !atProcedureStart)
+                            if (_settings.IndentEntireProcedureBody && atFirstDim && !_settings.AlignDims && !atProcedureStart)
                             {
                                 if (_declares.Any(declaration => currentLine.StartsWith(declaration + ' ')))
                                 {
@@ -620,7 +621,7 @@ namespace Rubberduck.SmartIndenter
                                         atFirstDim = true;
                                     }
 
-                                    currentLine = new string(' ', indents*_settings.IndentSpaces) + currentLine;
+                                    currentLine = new string(' ', indents * _settings.IndentSpaces) + currentLine;
                                 }
                             }
 
@@ -630,7 +631,7 @@ namespace Rubberduck.SmartIndenter
                         // anything there?
                     }
 
-                    PTR_REPLACE_LINE:
+                PTR_REPLACE_LINE:
                     // add the coe line number back in
                     if (numberedLine > -1)
                     {
@@ -670,7 +671,7 @@ namespace Rubberduck.SmartIndenter
                             //functionStart = FunctionAlign(currentLine, atFirstCont, parameterStart);
                             if (functionStart == 0)
                             {
-                                functionStart = (indents + 2)*_settings.IndentSpaces;
+                                functionStart = (indents + 2) * _settings.IndentSpaces;
                                 parameterStart = functionStart;
                             }
                         }
@@ -701,7 +702,7 @@ namespace Rubberduck.SmartIndenter
                     indentNext++;
                     noIndent = true;
                 }
-                else if (!noIndent && _settings.IndentProcedure)
+                else if (!noIndent && _settings.IndentEntireProcedureBody)
                 {
                     indentNext++;
                 }
