@@ -37,38 +37,45 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel>
                         <Label Content="Alignment Options" FontWeight="SemiBold" />
-                        <CheckBox Content="Align Continuations" IsChecked="{Binding AlignContinuations}" Margin="0,0,0,5" />
-                        <CheckBox Content="Align Dim" IsChecked="{Binding AlignDim}" Margin="0,0,0,5" />
-                        <CheckBox Content="Align End Of Line" IsChecked="{Binding AlignEndOfLine}" Margin="0,0,0,5" />
-                        <CheckBox Content="Align Ignore Ops" IsChecked="{Binding AlignIgnoreOps}" Margin="0,0,0,5" />
+                        <CheckBox Content="Align comments with code" IsChecked="{Binding AlignDim}" Margin="5,0,0,5" />
+                        <CheckBox IsChecked="{Binding AlignEndOfLine}" Margin="5,0,0,5">
+                            <StackPanel>
+                                <TextBlock Text="Align continuations" Margin="5,0,0,5" />
+                                <CheckBox Content="Ignore operators" IsChecked="{Binding AlignIgnoreOps}" />
+                            </StackPanel>
+                        </CheckBox>
                         <StackPanel Orientation="Horizontal">
-                            <CheckBox Name="AlignDimColumn" Content="Align Dim Column" Margin="0,0,0,5" />
+                            <CheckBox Name="AlignDimColumn" Content="Align dims" Margin="5,0,0,5" />
                             <controls:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}" NumValue="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AlignDimColumn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
 
                         <Label Content="Special Options" FontWeight="SemiBold" />
-                        <CheckBox Content="Force Compiler Directives to Column 1" Margin="0,0,0,5" />
-                        <CheckBox Content="Force Debug Directives to Column 1" Margin="0,0,0,5" />
+                        <CheckBox Content="Force Debug Directives to Column 1" Margin="5,0,0,5" />
+                        <CheckBox Content="Force Compiler Directives to Column 1" Margin="5,0,0,5" />
                     </StackPanel>
 
                     <StackPanel Grid.Column="1">
                         <Label Content="Indent Options" FontWeight="SemiBold" />
-                        <CheckBox Content="Indent Case" Margin="0,0,0,5" />
-                        <CheckBox Content="Indent Options" Margin="0,0,0,5" />
-                        <CheckBox Content="Indent Compiler Stuff" Margin="0,0,0,5" />
-                        <CheckBox Content="Indent Dim" Margin="0,0,0,5" />
-                        <CheckBox Content="Indent First" Margin="0,0,0,5" />
-                        <CheckBox Content="Indent Procedure" Margin="0,0,0,5" />
-                        <CheckBox Content="Indent Spaces" Margin="0,0,0,5" />
+                        <CheckBox Margin="5,0,0,5" IsThreeState="True">
+                            <StackPanel>
+                                <TextBlock Text="Indent entire procedure body" Margin="5,0,0,5" />
+                                <CheckBox Content="Indent first comment block" Margin="5,0,0,5" />
+                                <CheckBox Content="Indent first declaration block" Margin="5,0,0,0" />
+                            </StackPanel>
+                        </CheckBox>
+                        <CheckBox Content="Indent case" Margin="5,0,0,5" />
+                        <CheckBox Content="Indent compiler directives" Margin="5,0,0,5" />
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Name="IndentSpaces" Content="Align dims" Margin="5,0,0,5" />
+                            <controls:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=IndentSpaces, Path=IsChecked}" NumValue="4" />
+                        </StackPanel>
                         <Label Content="Enable Options" FontWeight="SemiBold" />
-                        <CheckBox Content="Enable Undo" Margin="0,0,0,5" />
+                        <CheckBox Content="Enable undo" Margin="5,0,0,5" />
                     </StackPanel>
                 </Grid>
-                <Label Content="End of Line Options" FontWeight="SemiBold" />
-                <CheckBox Content="End of Line Align Column" Margin="0,0,0,5" />
-                <Label Content="End of Line Comment Style:" />
+                <Label Content="End-of-Line Comment Style:" FontWeight="SemiBold" Margin="0,-20,0,0" />
                 <StackPanel Orientation="Horizontal">
-                    <ComboBox Name="EndOfLineCommentStyle" Margin="0,0,0,5" SelectedIndex="0" Width="210" HorizontalAlignment="Left">
+                    <ComboBox Name="EndOfLineCommentStyle" Margin="5,0,0,5" SelectedIndex="1" Width="210" HorizontalAlignment="Left">
                         <TextBlock Text="Absolute" />
                         <TextBlock Text="Align in Column" />
                         <TextBlock Text="Same Gap" />
