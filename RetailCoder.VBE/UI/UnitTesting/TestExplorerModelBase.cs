@@ -15,7 +15,8 @@ namespace Rubberduck.UI.UnitTesting
             _testMethods = new ListCollectionView(_tests);
             if (_testMethods.GroupDescriptions != null)
             {
-                _testMethods.GroupDescriptions.Add(new PropertyGroupDescription("Result", new TestResultToOutcomeTextConverter()));
+                var grouping = new PropertyGroupDescription("Result", new TestResultToOutcomeTextConverter());
+                _testMethods.GroupDescriptions.Add(grouping);
             }
         }
 
