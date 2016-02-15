@@ -403,7 +403,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scope of variable &apos;{0}&apos; is broader than it needs to be.
+        ///   Looks up a localized string similar to Scope of variable is broader than it needs to be.
         /// </summary>
         internal static string MoveFieldCloserToUsageInspectionName {
             get {
@@ -466,15 +466,6 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; has more than one &apos;@Folder&apos; annotation..
-        /// </summary>
-        internal static string MultipleFolderAnnotationsInspection {
-            get {
-                return ResourceManager.GetString("MultipleFolderAnnotationsInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Rubberduck only uses the first &apos;@Folder&apos; annotation in a code module; consider removing extraneous ones..
         /// </summary>
         internal static string MultipleFolderAnnotationsInspectionMeta {
@@ -484,11 +475,20 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; has more than one folder annotation..
+        ///   Looks up a localized string similar to Module has more than one folder annotation..
         /// </summary>
-        internal static string MultipleFolderAnnotationsInspectionName {
+        internal static string MultipleFolderAnnotationsInspectionNamer {
             get {
-                return ResourceManager.GetString("MultipleFolderAnnotationsInspectionName", resourceCulture);
+                return ResourceManager.GetString("MultipleFolderAnnotationsInspectionNamer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; has more than one &apos;@Folder&apos; annotation..
+        /// </summary>
+        internal static string MultipleFolderAnnotationsInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("MultipleFolderAnnotationsInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -709,6 +709,24 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A procedure that only has one parameter passed by reference that is assigned a new value/reference before the procedure exits, is using a ByRef parameter as a return value: consider making it a function instead..
+        /// </summary>
+        internal static string ProcedureCanBeFunctionInspectionMeta {
+            get {
+                return ResourceManager.GetString("ProcedureCanBeFunctionInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Procedure can be written as a function.
+        /// </summary>
+        internal static string ProcedureCanBeFunctionInspectionName {
+            get {
+                return ResourceManager.GetString("ProcedureCanBeFunctionInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Procedure &apos;{0}&apos; can be written as a function..
         /// </summary>
         internal static string ProcedureCanBeFunctionInspectionResultFormat {
@@ -732,24 +750,6 @@ namespace Rubberduck.Inspections {
         internal static string ProcedureNotUsedInspectionName {
             get {
                 return ResourceManager.GetString("ProcedureNotUsedInspectionName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A procedure that only has one parameter passed by reference that is assigned a new value/reference before the procedure exits, is using a ByRef parameter as a return value: consider making it a function instead..
-        /// </summary>
-        internal static string ProcedureShouldBeFunctionInspectionMeta {
-            get {
-                return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionMeta", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Procedure can be written as a function.
-        /// </summary>
-        internal static string ProcedureShouldBeFunctionInspectionName {
-            get {
-                return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionName", resourceCulture);
             }
         }
         

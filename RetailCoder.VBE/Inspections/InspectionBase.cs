@@ -42,7 +42,7 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// The inspection type name, obtained by reflection.
         /// </summary>
-        public virtual string Name { get { return GetType().Name; } }
+        public string Name { get { return GetType().Name; } }
 
         /// <summary>
         /// Inspection severity level. Can control whether an inspection is enabled.

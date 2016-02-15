@@ -16,7 +16,7 @@ namespace Rubberduck.UI.Controls
         }
 
         public static readonly DependencyProperty GroupedItemSourceProperty =
-            DependencyProperty.Register("GroupedItemSourceProperty", typeof (CollectionViewSource), typeof (GroupingGrid));
+            DependencyProperty.Register("GroupedItemSource", typeof (CollectionViewSource), typeof (GroupingGrid));
 
         public CollectionViewSource GroupedItemSource
         {
