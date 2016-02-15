@@ -10,7 +10,7 @@
              Language="{UICulture}"
              mc:Ignorable="d" 
              d:DesignHeight="255" d:DesignWidth="455"
-             MinWidth="455" MinHeight="255" d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
+             d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
     
     <UserControl.Resources>
         <unitTesting:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
@@ -21,7 +21,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="16"/>
-            <RowDefinition Height="*" MinHeight="64" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
          
         <Border Grid.Row="0" Grid.RowSpan="3" Background="#FFEEF5FD" />
