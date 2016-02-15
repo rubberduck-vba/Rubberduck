@@ -40,7 +40,7 @@ namespace Rubberduck.UI.UnitTesting
             this.wpfHost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.wpfHost.Location = new System.Drawing.Point(0, 0);
             this.wpfHost.Name = "wpfHost";
-            this.wpfHost.Size = new System.Drawing.Size(512, 255);
+            this.wpfHost.Size = new System.Drawing.Size(512, 192);
             this.wpfHost.TabIndex = 1;
             this.wpfHost.Child = this.wpfTestExplorerControl;
             // 
@@ -49,9 +49,9 @@ namespace Rubberduck.UI.UnitTesting
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.wpfHost);
-            this.MinimumSize = new System.Drawing.Size(255, 255);
+            this.MinimumSize = new System.Drawing.Size(512, 192);
             this.Name = "TestExplorerWindow";
-            this.Size = new System.Drawing.Size(512, 255);
+            this.Size = new System.Drawing.Size(512, 192);
             this.ResumeLayout(false);
 
         }

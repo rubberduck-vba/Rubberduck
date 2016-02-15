@@ -9,18 +9,19 @@
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              Language="{UICulture}"
              mc:Ignorable="d" 
-             d:DesignHeight="255" d:DesignWidth="455"
-             MinWidth="455" MinHeight="255" d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
+             d:DesignHeight="192" d:DesignWidth="512"
+             d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
     
     <UserControl.Resources>
         <unitTesting:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
+        <unitTesting:TestResultToOutcomeTextConverter x:Key="OutcomeTextConverter" />
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
     </UserControl.Resources>
     
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="16"/>
+            <RowDefinition Height="18"/>
             <RowDefinition Height="*" MinHeight="64" />
         </Grid.RowDefinitions>
          
@@ -111,25 +112,44 @@
             </StackPanel>
         </Border>
 
-        <controls:GroupingGrid Grid.Row="2" 
-                               ItemsSource="{Binding Model.TestMethods}"
-                               SelectedItem="{Binding SelectedTest}"
-                               ShowGroupingItemCount="True">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Outcome}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="unitTesting:TestMethod">
-                            <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" Height="16" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_QualifiedMemberName}" Binding="{Binding QualifiedMemberName.QualifiedModuleName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_MethodName}" Binding="{Binding QualifiedMemberName.MemberName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Message}" Binding="{Binding Result.Output}" Width="*" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
-            </DataGrid.Columns>
-        </controls:GroupingGrid>
-        
+        <Border Grid.Row="2" Padding="2">
+            <ScrollViewer VerticalScrollBarVisibility="Visible">
+                <controls:GroupingGrid GroupedItemSource="{DynamicResource TestMethodsViewSource}"
+                                       SelectedItem="{Binding SelectedTest}"
+                                       ShowGroupingItemCount="True">
+                    <DataGrid.Resources>
+                        <CollectionViewSource x:Key="TestMethodsViewSource" Source="{Binding Model.Tests}">
+                            <CollectionViewSource.GroupDescriptions>
+                                <PropertyGroupDescription PropertyName="Result" Converter="{StaticResource OutcomeTextConverter}" />
+                            </CollectionViewSource.GroupDescriptions>
+                        </CollectionViewSource>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Outcome}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate DataType="unitTesting:TestMethod">
+                                    <Image
+                                        Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}"
+                                        Height="16" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn
+                            Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_QualifiedMemberName}"
+                            Binding="{Binding QualifiedMemberName.QualifiedModuleName}" />
+                        <DataGridTextColumn
+                            Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_MethodName}"
+                            Binding="{Binding QualifiedMemberName.MemberName}" />
+                        <DataGridTextColumn
+                            Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Message}"
+                            Binding="{Binding Result.Output}" Width="*" />
+                        <DataGridTextColumn
+                            Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Duration}"
+                            Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
+                    </DataGrid.Columns>
+                </controls:GroupingGrid>
+            </ScrollViewer>
+            </Border>        
         <resx:BusyIndicator Grid.Row="2" Width="36" Height="36" Visibility="{Binding Model.IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
     </Grid>
