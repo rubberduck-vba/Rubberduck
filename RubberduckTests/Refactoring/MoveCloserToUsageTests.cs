@@ -756,7 +756,7 @@ End Sub";
             }
             catch (ArgumentException e)
             {
-                Assert.AreEqual("Invalid Argument. DeclarationType must be 'Variable'\r\nParametername: target", e.Message);
+                Assert.AreEqual("Invalid Argument. DeclarationType must be 'Variable'\r\nParameter name: target", e.Message);
                 Assert.AreEqual(inputCode, module.Lines());
                 messageBox.Verify(m =>
                     m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
