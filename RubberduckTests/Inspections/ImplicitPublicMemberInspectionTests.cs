@@ -145,10 +145,14 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo(ByVal arg1 as Integer)
+
+
 End Sub";
 
             const string expectedCode =
 @"Public Sub Foo(ByVal arg1 as Integer)
+
+
 End Sub";
 
             //Arrange
