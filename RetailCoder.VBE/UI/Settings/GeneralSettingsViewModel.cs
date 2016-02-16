@@ -21,6 +21,8 @@ namespace Rubberduck.UI.Settings
             });
 
             SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
+
+            Hotkeys = new ObservableCollection<Hotkey>(config.UserSettings.GeneralSettings.HotkeySettings);
         }
 
         public ObservableCollection<DisplayLanguageSetting> Languages { get; set; } 
@@ -56,11 +58,13 @@ namespace Rubberduck.UI.Settings
         public void UpdateConfig(Configuration config)
         {
             config.UserSettings.GeneralSettings.Language = SelectedLanguage;
+            config.UserSettings.GeneralSettings.HotkeySettings = Hotkeys.ToArray();
         }
 
         public void SetToDefaults(Configuration config)
         {
             SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
+            Hotkeys = new ObservableCollection<Hotkey>(config.UserSettings.GeneralSettings.HotkeySettings);
         }
     }
 }

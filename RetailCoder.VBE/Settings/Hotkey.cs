@@ -1,10 +1,18 @@
-﻿namespace Rubberduck.Settings
+﻿using System.Xml.Serialization;
+using Rubberduck.UI;
+
+namespace Rubberduck.Settings
 {
     public class Hotkey
     {
-        public bool IsEnabled { get; set; }
-        public string KeyDisplaySymbol { get; set; }
         public string Name { get; set; }
-        public string Prompt { get; set; }
+        public string KeyDisplaySymbol { get; set; }
+        public bool IsEnabled { get; set; }
+
+        [XmlIgnore]
+        public string Prompt
+        {
+            get { return RubberduckUI.ResourceManager.GetString(Name + "Hotkey_Description"); } 
+        }
     }
 }
