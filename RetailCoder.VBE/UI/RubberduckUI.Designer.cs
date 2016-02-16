@@ -2223,15 +2223,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Priority.
-        /// </summary>
-        public static string Priority {
-            get {
-                return ResourceManager.GetString("Priority", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Procedure &apos;{0}&apos; is never used.
         /// </summary>
         public static string ProcedureNotUsed_ {
@@ -3805,56 +3796,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to High.
-        /// </summary>
-        public static string TodoPriority_High {
-            get {
-                return ResourceManager.GetString("TodoPriority_High", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Low.
-        /// </summary>
-        public static string TodoPriority_Low {
-            get {
-                return ResourceManager.GetString("TodoPriority_Low", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Medium.
-        /// </summary>
-        public static string TodoPriority_Medium {
-            get {
-                return ResourceManager.GetString("TodoPriority_Medium", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to To-Do Explorer.
         /// </summary>
         public static string TodoSettings_Caption {
             get {
                 return ResourceManager.GetString("TodoSettings_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Priority.
-        /// </summary>
-        public static string TodoSettings_Priority {
-            get {
-                return ResourceManager.GetString("TodoSettings_Priority", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Priority:.
-        /// </summary>
-        public static string TodoSettings_PriorityLabel {
-            get {
-                return ResourceManager.GetString("TodoSettings_PriorityLabel", resourceCulture);
             }
         }
         

@@ -12,11 +12,6 @@ namespace Rubberduck.ToDoItems
     /// </summary>
     public class ToDoItem : INavigateSource
     {
-        private readonly TodoPriority _priority;
-        public TodoPriority Priority { get { return _priority; } }
-
-        public string PriorityLabel { get { return RubberduckUI.ResourceManager.GetString("ToDoPriority_" + Priority, RubberduckUI.Culture); } }
-
         private readonly string _description;
         public string Description { get { return _description; } }
 
@@ -35,14 +30,13 @@ namespace Rubberduck.ToDoItems
         private readonly QualifiedSelection _selection;
         public QualifiedSelection GetSelection() { return _selection; }
 
-        public ToDoItem(string markerText, TodoPriority priority, CommentNode comment)
-            : this(markerText, priority, comment.CommentText, comment.QualifiedSelection)
+        public ToDoItem(string markerText, CommentNode comment)
+            : this(markerText, comment.CommentText, comment.QualifiedSelection)
         {
         }
 
-        public ToDoItem(string markerText, TodoPriority priority, string description, QualifiedSelection qualifiedSelection)
+        public ToDoItem(string markerText, string description, QualifiedSelection qualifiedSelection)
         {
-            _priority = priority;
             _description = description;
             _selection = qualifiedSelection;
             _projectName = qualifiedSelection.QualifiedName.ProjectName;
