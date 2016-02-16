@@ -1341,6 +1341,168 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Align comments with code.
+        /// </summary>
+        public static string IndenterSettings_AlignCommentsWithCode {
+            get {
+                return ResourceManager.GetString("IndenterSettings_AlignCommentsWithCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Align continuations.
+        /// </summary>
+        public static string IndenterSettings_AlignContinuations {
+            get {
+                return ResourceManager.GetString("IndenterSettings_AlignContinuations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Align dims.
+        /// </summary>
+        public static string IndenterSettings_AlignDims {
+            get {
+                return ResourceManager.GetString("IndenterSettings_AlignDims", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alignment Options.
+        /// </summary>
+        public static string IndenterSettings_AlignmentOptionsLabel {
+            get {
+                return ResourceManager.GetString("IndenterSettings_AlignmentOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Options.
+        /// </summary>
+        public static string IndenterSettings_EnableOptionsLabel {
+            get {
+                return ResourceManager.GetString("IndenterSettings_EnableOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable undo.
+        /// </summary>
+        public static string IndenterSettings_EnableUndo {
+            get {
+                return ResourceManager.GetString("IndenterSettings_EnableUndo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End-of-line comment style:.
+        /// </summary>
+        public static string IndenterSettings_EndOfLineCommentStyle {
+            get {
+                return ResourceManager.GetString("IndenterSettings_EndOfLineCommentStyle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force compiler directives to column 1.
+        /// </summary>
+        public static string IndenterSettings_ForceCompilerDirectivesToColumn1 {
+            get {
+                return ResourceManager.GetString("IndenterSettings_ForceCompilerDirectivesToColumn1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force debug directives to column 1.
+        /// </summary>
+        public static string IndenterSettings_ForceDebugDirectivesToColumn1 {
+            get {
+                return ResourceManager.GetString("IndenterSettings_ForceDebugDirectivesToColumn1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore operators.
+        /// </summary>
+        public static string IndenterSettings_IgnoreOperators {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IgnoreOperators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent case.
+        /// </summary>
+        public static string IndenterSettings_IndentCase {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentCase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent compiler directives.
+        /// </summary>
+        public static string IndenterSettings_IndentCompilerDirectives {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentCompilerDirectives", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent entire procedure body.
+        /// </summary>
+        public static string IndenterSettings_IndentEntireProcedureBody {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentEntireProcedureBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent first comment block.
+        /// </summary>
+        public static string IndenterSettings_IndentFirstCommentBlock {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentFirstCommentBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent first declaration block.
+        /// </summary>
+        public static string IndenterSettings_IndentFirstDeclarationBlock {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentFirstDeclarationBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent Options.
+        /// </summary>
+        public static string IndenterSettings_IndentOptionsLabel {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent spaces:.
+        /// </summary>
+        public static string IndenterSettings_IndentSpaces {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentSpaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Special Options.
+        /// </summary>
+        public static string IndenterSettings_SpecialOptionsLabel {
+            get {
+                return ResourceManager.GetString("IndenterSettings_SpecialOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Indent Module Hotkey.
         /// </summary>
         public static string IndentModuleHotkey_Description {
