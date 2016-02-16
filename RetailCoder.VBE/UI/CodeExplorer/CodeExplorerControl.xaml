@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
              mc:Ignorable="d" 
@@ -187,11 +187,11 @@
                   MouseDoubleClick="TreeView_OnMouseDoubleClick"
                   Style="{StaticResource CodeExplorerTreeViewStyle}">
             <i:Interaction.Behaviors>
-                <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
+                <controls:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
         </TreeView>
 
-        <resx:BusyIndicator Grid.Row="1" Width="36" Height="36" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="1" Width="36" Height="36" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
         <GridSplitter Grid.Row="2" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 

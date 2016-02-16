@@ -1452,4 +1452,19 @@ Are you sure you want to proceed with this rename?</value>
   <data name="IndentProcedureHotkey_Description" xml:space="preserve">
     <value>Indent Procedure Hotkey</value>
   </data>
+  <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
+    <value>By module</value>
+  </data>
+  <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
+    <value>By inspection type</value>
+  </data>
+  <data name="CodeInspectionResults_Issue" xml:space="preserve">
+    <value>Issue</value>
+  </data>
+  <data name="CodeInspectionResults_Location" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="CodeInspectionResults_Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
 </root>
