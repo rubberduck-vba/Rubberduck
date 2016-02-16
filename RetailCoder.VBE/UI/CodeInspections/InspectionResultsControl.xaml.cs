@@ -11,24 +11,11 @@ namespace Rubberduck.UI.CodeInspections
     /// </summary>
     public partial class InspectionResultsControl : UserControl
     {
-        private readonly CollectionViewSource _inspectionTypeGroupsViewSource;
-        private readonly DataTemplate _inspectionTypeGroupsTemplate;
-
-        private readonly CollectionViewSource _moduleGroupsViewSource;
-        private readonly DataTemplate _moduleGroupsTemplate;
-
         private InspectionResultsViewModel ViewModel { get { return DataContext as InspectionResultsViewModel; } }
 
         public InspectionResultsControl()
         {
             InitializeComponent();
-
-            _inspectionTypeGroupsViewSource = (CollectionViewSource)FindResource("InspectionTypeGroupViewSource");
-            _inspectionTypeGroupsTemplate = (DataTemplate)FindResource("InspectionTypeGroupsTemplate");
-
-            _moduleGroupsViewSource = (CollectionViewSource)FindResource("CodeModuleGroupViewSource");
-            _moduleGroupsTemplate = (DataTemplate)FindResource("CodeModuleGroupsTemplate");
-
             Loaded += InspectionResultsControl_Loaded;
         }
 
@@ -38,36 +25,6 @@ namespace Rubberduck.UI.CodeInspections
             {
                 ViewModel.RefreshCommand.Execute(null);
             }
-        }
-
-        private bool _isModuleTemplate;
-        private void ToggleButton_Click(object sender, RoutedEventArgs e)
-        {
-            _isModuleTemplate = TreeViewStyleToggle.IsChecked.HasValue && TreeViewStyleToggle.IsChecked.Value;
-            //InspectionResultsTreeView.ItemTemplate = _isModuleTemplate
-            //    ? _moduleGroupsTemplate
-            //    : _inspectionTypeGroupsTemplate;
-
-            //InspectionResultsTreeView.ItemsSource = _isModuleTemplate
-            //    ? _moduleGroupsViewSource.View.Groups
-            //    : _inspectionTypeGroupsViewSource.View.Groups;
-        }
-
-        private void InspectionResultsTreeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (ViewModel == null || ViewModel.SelectedItem == null)
-            {
-                return;
-            }
-
-            var selectedResult = ViewModel.SelectedItem as InspectionResultBase;
-            if (selectedResult == null)
-            {
-                return;
-            }
-
-            var arg = selectedResult.QualifiedSelection.GetNavitationArgs();
-            ViewModel.NavigateCommand.Execute(arg);
         }
     }
 }

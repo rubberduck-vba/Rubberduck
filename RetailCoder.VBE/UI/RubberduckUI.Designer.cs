@@ -475,6 +475,51 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to By module.
+        /// </summary>
+        public static string CodeInspectionResults_GroupByModule {
+            get {
+                return ResourceManager.GetString("CodeInspectionResults_GroupByModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By inspection type.
+        /// </summary>
+        public static string CodeInspectionResults_GroupByType {
+            get {
+                return ResourceManager.GetString("CodeInspectionResults_GroupByType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Issue.
+        /// </summary>
+        public static string CodeInspectionResults_Issue {
+            get {
+                return ResourceManager.GetString("CodeInspectionResults_Issue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
+        public static string CodeInspectionResults_Location {
+            get {
+                return ResourceManager.GetString("CodeInspectionResults_Location", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string CodeInspectionResults_Type {
+            get {
+                return ResourceManager.GetString("CodeInspectionResults_Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Code Inspections.
         /// </summary>
         public static string CodeInspections {

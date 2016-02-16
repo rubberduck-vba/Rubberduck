@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Rubberduck.UI.UnitTesting"
              xmlns:unitTesting="clr-namespace:Rubberduck.UnitTesting"
-             xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              Language="{UICulture}"
              mc:Ignorable="d" 
@@ -132,6 +131,6 @@
                 </controls:GroupingGrid>
             </ScrollViewer>
         </Border>
-        <resx:BusyIndicator Grid.Row="2" Width="36" Height="36" Visibility="{Binding Model.IsBusy, Converter={StaticResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="2" Width="36" Height="36" Visibility="{Binding Model.IsBusy, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </UserControl>
