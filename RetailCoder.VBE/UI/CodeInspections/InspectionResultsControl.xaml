@@ -348,7 +348,7 @@
             </Menu>
 
             <Menu>
-                <MenuItem Header="Grouping">
+                <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingGrid_GroupingStyle}">
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/Microsoft/PNG/GroupBy_284_32.png" />
                     </MenuItem.Icon>
@@ -368,7 +368,7 @@
                         
         </ToolBar>
         
-        <controls:GroupingGrid Grid.Row="1" x:Name="ResultsByInspectionTypeGrid"
+        <controls:GroupingGrid Grid.Row="1"
                                ShowGroupingItemCount="True"
                                SelectedItem="{Binding SelectedItem}"
                                ItemsSource="{Binding Source={StaticResource ResultsByInspectionType}}"
@@ -386,7 +386,7 @@
             </DataGrid.Columns>
         </controls:GroupingGrid>
 
-        <controls:GroupingGrid Grid.Row="1" x:Name="ResultsByModuleGrid"
+        <controls:GroupingGrid Grid.Row="1"
                                ShowGroupingItemCount="True"
                                SelectedItem="{Binding SelectedItem}"
                                ItemsSource="{Binding Source={StaticResource ResultsByModule}}"
