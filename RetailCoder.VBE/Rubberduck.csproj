@@ -550,7 +550,6 @@
     </Compile>
     <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleValueTextToEnumValueConverter.cs" />
-    <Compile Include="UI\Settings\Converters\ChildTextBoxSelectionToParentSelectionConverter.cs" />
     <Compile Include="UI\Settings\Converters\AssertModeToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\AssertModeValueToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\BindingModeValueToTextConverter.cs" />

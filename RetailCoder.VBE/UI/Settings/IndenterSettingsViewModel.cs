@@ -1,5 +1,7 @@
-﻿using Rubberduck.Settings;
+﻿using System.Windows.Input;
+using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
 {
@@ -41,8 +43,8 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private bool? _alignContinuations;
-        public bool? AlignContinuations
+        private bool _alignContinuations;
+        public bool AlignContinuations
         {
             get { return _alignContinuations; }
             set 
@@ -194,8 +196,8 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private bool? _indentEntireProcedureBody;
-        public bool? IndentEntireProcedureBody
+        private bool _indentEntireProcedureBody;
+        public bool IndentEntireProcedureBody
         {
             get { return _indentEntireProcedureBody; }
             set
@@ -255,7 +257,7 @@ namespace Rubberduck.UI.Settings
         public void UpdateConfig(Configuration config)
         {
             config.UserSettings.IndenterSettings.AlignCommentsWithCode = AlignCommentsWithCode;
-            config.UserSettings.IndenterSettings.AlignContinuations = AlignContinuations != false;
+            config.UserSettings.IndenterSettings.AlignContinuations = AlignContinuations;
             config.UserSettings.IndenterSettings.AlignDimColumn = AlignDimColumn;
             config.UserSettings.IndenterSettings.AlignDims = AlignDims;
             config.UserSettings.IndenterSettings.EnableUndo = EnableUndo;
@@ -266,7 +268,7 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.IndenterSettings.IgnoreOperatorsInContinuations = IgnoreOperatorsInContinuations;
             config.UserSettings.IndenterSettings.IndentCase = IndentCase;
             config.UserSettings.IndenterSettings.IndentCompilerDirectives = IndentCompilerDirectives;
-            config.UserSettings.IndenterSettings.IndentEntireProcedureBody = IndentEntireProcedureBody != false;
+            config.UserSettings.IndenterSettings.IndentEntireProcedureBody = IndentEntireProcedureBody;
             config.UserSettings.IndenterSettings.IndentFirstCommentBlock = IndentFirstCommentBlock;
             config.UserSettings.IndenterSettings.IndentFirstDeclarationBlock = IndentFirstDeclarationBlock;
             config.UserSettings.IndenterSettings.IndentSpaces = IndentSpaces;
