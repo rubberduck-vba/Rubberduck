@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
 
-namespace Rubberduck.UI
+namespace Rubberduck.UI.Controls
 {
     /// <summary>
     /// http://stackoverflow.com/a/5118406/1188513
