@@ -1035,6 +1035,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Absolute.
+        /// </summary>
+        public static string EndOfLineCommentStyle_Absolute {
+            get {
+                return ResourceManager.GetString("EndOfLineCommentStyle_Absolute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Align In Column.
+        /// </summary>
+        public static string EndOfLineCommentStyle_AlignInColumn {
+            get {
+                return ResourceManager.GetString("EndOfLineCommentStyle_AlignInColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Same Gap.
+        /// </summary>
+        public static string EndOfLineCommentStyle_SameGap {
+            get {
+                return ResourceManager.GetString("EndOfLineCommentStyle_SameGap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Standard Gap.
+        /// </summary>
+        public static string EndOfLineCommentStyle_StandardGap {
+            get {
+                return ResourceManager.GetString("EndOfLineCommentStyle_StandardGap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Extract Interface.
         /// </summary>
         public static string ExtractInterface_Caption {
@@ -1197,6 +1233,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string GeneralSettings_HotkeyDescription {
+            get {
+                return ResourceManager.GetString("GeneralSettings_HotkeyDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabled.
+        /// </summary>
+        public static string GeneralSettings_HotkeyEnabled {
+            get {
+                return ResourceManager.GetString("GeneralSettings_HotkeyEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key Press.
+        /// </summary>
+        public static string GeneralSettings_HotkeyKeyPress {
+            get {
+                return ResourceManager.GetString("GeneralSettings_HotkeyKeyPress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display language:.
+        /// </summary>
+        public static string GeneralSettings_LanguageLabel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_LanguageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project &apos;{0}&apos; has generic name.
         /// </summary>
         public static string GenericProjectName_ {
@@ -1310,6 +1382,186 @@ namespace Rubberduck.UI {
         public static string IndentCurrentProject {
             get {
                 return ResourceManager.GetString("IndentCurrentProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Align comments with code.
+        /// </summary>
+        public static string IndenterSettings_AlignCommentsWithCode {
+            get {
+                return ResourceManager.GetString("IndenterSettings_AlignCommentsWithCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Align continuations.
+        /// </summary>
+        public static string IndenterSettings_AlignContinuations {
+            get {
+                return ResourceManager.GetString("IndenterSettings_AlignContinuations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Align dims.
+        /// </summary>
+        public static string IndenterSettings_AlignDims {
+            get {
+                return ResourceManager.GetString("IndenterSettings_AlignDims", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alignment Options.
+        /// </summary>
+        public static string IndenterSettings_AlignmentOptionsLabel {
+            get {
+                return ResourceManager.GetString("IndenterSettings_AlignmentOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Options.
+        /// </summary>
+        public static string IndenterSettings_EnableOptionsLabel {
+            get {
+                return ResourceManager.GetString("IndenterSettings_EnableOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable undo.
+        /// </summary>
+        public static string IndenterSettings_EnableUndo {
+            get {
+                return ResourceManager.GetString("IndenterSettings_EnableUndo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End-of-line comment style:.
+        /// </summary>
+        public static string IndenterSettings_EndOfLineCommentStyle {
+            get {
+                return ResourceManager.GetString("IndenterSettings_EndOfLineCommentStyle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force compiler directives to column 1.
+        /// </summary>
+        public static string IndenterSettings_ForceCompilerDirectivesToColumn1 {
+            get {
+                return ResourceManager.GetString("IndenterSettings_ForceCompilerDirectivesToColumn1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force debug directives to column 1.
+        /// </summary>
+        public static string IndenterSettings_ForceDebugDirectivesToColumn1 {
+            get {
+                return ResourceManager.GetString("IndenterSettings_ForceDebugDirectivesToColumn1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore operators.
+        /// </summary>
+        public static string IndenterSettings_IgnoreOperators {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IgnoreOperators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent case.
+        /// </summary>
+        public static string IndenterSettings_IndentCase {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentCase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent compiler directives.
+        /// </summary>
+        public static string IndenterSettings_IndentCompilerDirectives {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentCompilerDirectives", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent entire procedure body.
+        /// </summary>
+        public static string IndenterSettings_IndentEntireProcedureBody {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentEntireProcedureBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent first comment block.
+        /// </summary>
+        public static string IndenterSettings_IndentFirstCommentBlock {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentFirstCommentBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent first declaration block.
+        /// </summary>
+        public static string IndenterSettings_IndentFirstDeclarationBlock {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentFirstDeclarationBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent Options.
+        /// </summary>
+        public static string IndenterSettings_IndentOptionsLabel {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent spaces:.
+        /// </summary>
+        public static string IndenterSettings_IndentSpaces {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IndentSpaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Special Options.
+        /// </summary>
+        public static string IndenterSettings_SpecialOptionsLabel {
+            get {
+                return ResourceManager.GetString("IndenterSettings_SpecialOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent Module Hotkey.
+        /// </summary>
+        public static string IndentModuleHotkey_Description {
+            get {
+                return ResourceManager.GetString("IndentModuleHotkey_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent Procedure Hotkey.
+        /// </summary>
+        public static string IndentProcedureHotkey_Description {
+            get {
+                return ResourceManager.GetString("IndentProcedureHotkey_Description", resourceCulture);
             }
         }
         
@@ -2649,15 +2901,6 @@ namespace Rubberduck.UI {
         public static string Settings_Caption {
             get {
                 return ResourceManager.GetString("Settings_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Display language:.
-        /// </summary>
-        public static string Settings_LanguageLabel {
-            get {
-                return ResourceManager.GetString("Settings_LanguageLabel", resourceCulture);
             }
         }
         

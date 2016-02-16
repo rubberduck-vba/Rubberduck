@@ -546,7 +546,7 @@ namespace Rubberduck.SmartIndenter
                                 case "#Else ":
                                 case "#End If":
                                 case "#Const ":
-                                    if (start == 1 && scan == 1 && _settings.ForceCompilerStuffInColumn1)
+                                    if (start == 1 && scan == 1 && _settings.ForceCompilerDirectivesInColumn1)
                                     {
                                         // note: original code seems to subtract the length of originalLine implicitly converted to a string, and trimmed
                                         //  iLineAdjust = iLineAdjust - (Len(sOrigLine) - LTrim$(Len(sOrigLine)))

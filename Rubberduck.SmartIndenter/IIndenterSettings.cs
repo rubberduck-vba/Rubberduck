@@ -10,7 +10,7 @@
         bool IgnoreOperatorsInContinuations { get; set; }
         bool IndentCase { get; set; }
         bool ForceDebugStatementsInColumn1 { get; set; }
-        bool ForceCompilerStuffInColumn1 { get; set; }
+        bool ForceCompilerDirectivesInColumn1 { get; set; }
         bool IndentCompilerDirectives { get; set; }
         bool AlignDims { get; set; }
         int AlignDimColumn { get; set; }
