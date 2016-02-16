@@ -65,7 +65,7 @@
                     </Style>
                 </Label.Style>
             </Label>
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings_LanguageLabel}" FontWeight="SemiBold" />
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_LanguageLabel}" FontWeight="SemiBold" />
             <ComboBox Width="210" HorizontalAlignment="Left" Margin="5" SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" ItemsSource="{Binding Languages, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" />
             <Label Content="Hotkeys:" FontWeight="SemiBold" />
             <DataGrid ItemsSource="{Binding Hotkeys}" AutoGenerateColumns="False" CanUserDeleteRows="False"
@@ -81,9 +81,9 @@
                     </Style>
                 </DataGrid.CellStyle>
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="Enabled" Binding="{Binding IsEnabled}" />
-                    <DataGridTextColumn Header="Description" Binding="{Binding Prompt}" Width="*" IsReadOnly="True" />
-                    <DataGridTemplateColumn Header="Key Press" SortMemberPath="KeyDisplaySymbol">
+                    <DataGridCheckBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyEnabled}" Binding="{Binding IsEnabled}" />
+                    <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyDescription}" Binding="{Binding Prompt}" Width="*" IsReadOnly="True" />
+                    <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyKeyPress}" SortMemberPath="KeyDisplaySymbol">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding KeyDisplaySymbol, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

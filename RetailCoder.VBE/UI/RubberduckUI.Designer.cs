@@ -1188,6 +1188,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string GeneralSettings_HotkeyDescription {
+            get {
+                return ResourceManager.GetString("GeneralSettings_HotkeyDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabled.
+        /// </summary>
+        public static string GeneralSettings_HotkeyEnabled {
+            get {
+                return ResourceManager.GetString("GeneralSettings_HotkeyEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key Press.
+        /// </summary>
+        public static string GeneralSettings_HotkeyKeyPress {
+            get {
+                return ResourceManager.GetString("GeneralSettings_HotkeyKeyPress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display language:.
+        /// </summary>
+        public static string GeneralSettings_LanguageLabel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_LanguageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project &apos;{0}&apos; has generic name.
         /// </summary>
         public static string GenericProjectName_ {
@@ -2658,15 +2694,6 @@ namespace Rubberduck.UI {
         public static string Settings_Caption {
             get {
                 return ResourceManager.GetString("Settings_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Display language:.
-        /// </summary>
-        public static string Settings_LanguageLabel {
-            get {
-                return ResourceManager.GetString("Settings_LanguageLabel", resourceCulture);
             }
         }
         

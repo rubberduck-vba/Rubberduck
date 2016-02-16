@@ -621,7 +621,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Outcome" xml:space="preserve">
     <value>Outcome</value>
   </data>
-  <data name="Settings_LanguageLabel" xml:space="preserve">
+  <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
     <value>Display language:</value>
   </data>
   <data name="Language_EN" xml:space="preserve">
@@ -1382,6 +1382,15 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
     <value>Standard Gap</value>
+  </data>
+  <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="GeneralSettings_HotkeyKeyPress" xml:space="preserve">
+    <value>Key Press</value>
   </data>
   <data name="IndentModuleHotkey_Description" xml:space="preserve">
     <value>Indent Module Hotkey</value>
