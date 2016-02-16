@@ -38,24 +38,24 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel>
                         <Label Content="Alignment Options" FontWeight="SemiBold" />
-                        <CheckBox Content="Align comments with code" Margin="5,0,0,5" />
+                        <CheckBox Content="Align comments with code" IsChecked="{Binding AlignCommentsWithCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,0,5" />
                         <CheckBox Name="AlignContinuationsCheckBox" Content="Align continuations" Margin="5,0,0,5">
                             <CheckBox.IsChecked>
                                 <MultiBinding Converter="{StaticResource ChildToParent}">
-                                    <Binding ElementName="AlignContinuationsCheckBox" Path="IsChecked" />
+                                    <Binding Path="AlignContinuations" />
                                     <Binding ElementName="IgnoreOperatorsCheckBox" Path="IsChecked" />
                                 </MultiBinding>
                             </CheckBox.IsChecked>
                         </CheckBox>
-                        <CheckBox Name="IgnoreOperatorsCheckBox" Content="Ignore operators" IsEnabled="{Binding ElementName=AlignContinuationsCheckBox, Path=IsChecked}" Margin="25,0,0,5" />
+                        <CheckBox Name="IgnoreOperatorsCheckBox" Content="Ignore operators" IsEnabled="{Binding ElementName=AlignContinuationsCheckBox, Path=IsChecked}" IsChecked="{Binding IgnoreOperatorsInContinuations}" Margin="25,0,0,5" />
                         <StackPanel Orientation="Horizontal">
-                            <CheckBox Name="AlignDimColumn" Content="Align dims" Margin="5,0,0,5" />
-                            <controls:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}" NumValue="15" />
+                            <CheckBox Name="AlignDimColumn" Content="Align dims" Margin="5,0,0,5" IsChecked="{Binding AlignDims}" />
+                            <controls:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}" NumValue="{Binding AlignDimColumn}" />
                         </StackPanel>
 
                         <Label Content="Special Options" FontWeight="SemiBold" />
-                        <CheckBox Content="Force Debug Directives to Column 1" Margin="5,0,0,5" />
-                        <CheckBox Content="Force Compiler Directives to Column 1" Margin="5,0,0,5" />
+                        <CheckBox Content="Force Debug Directives to Column 1" IsChecked="{Binding ForceDebugStatementsInColumn1}" Margin="5,0,0,5" />
+                        <CheckBox Content="Force Compiler Directives to Column 1" IsChecked="{Binding ForceCompilerDirectivesInColumn1}" Margin="5,0,0,5" />
                     </StackPanel>
 
                     <StackPanel Grid.Column="1">
@@ -63,22 +63,22 @@
                         <CheckBox Name="IndentProcedureCheckBox" Content="Indent entire procedure body" Margin="5,0,0,5">
                             <CheckBox.IsChecked>
                                 <MultiBinding Converter="{StaticResource ChildToParent}">
-                                    <Binding ElementName="IndentProcedureCheckBox" Path="IsChecked" />
+                                    <Binding Path="IndentEntireProcedureBody" />
                                     <Binding ElementName="IndentFirstCommentCheckBox" Path="IsChecked" />
                                     <Binding ElementName="IndentFirstDeclarationCheckBox" Path="IsChecked" />
                                 </MultiBinding>
                             </CheckBox.IsChecked>
                         </CheckBox>
-                        <CheckBox Name="IndentFirstCommentCheckBox" Content="Indent first comment block" IsEnabled="{Binding ElementName=IndentProcedureCheckBox, Path=IsChecked}" Margin="25,0,0,5" />
-                        <CheckBox Name="IndentFirstDeclarationCheckBox" Content="Indent first declaration block" IsEnabled="{Binding ElementName=IndentProcedureCheckBox, Path=IsChecked}" Margin="25,0,0,5" />
-                        <CheckBox Content="Indent case" Margin="5,0,0,5" />
-                        <CheckBox Content="Indent compiler directives" Margin="5,0,0,5" />
+                        <CheckBox Name="IndentFirstCommentCheckBox" Content="Indent first comment block" IsEnabled="{Binding ElementName=IndentProcedureCheckBox, Path=IsChecked}" IsChecked="{Binding IndentFirstCommentBlock}" Margin="25,0,0,5" />
+                        <CheckBox Name="IndentFirstDeclarationCheckBox" Content="Indent first declaration block" IsEnabled="{Binding ElementName=IndentProcedureCheckBox, Path=IsChecked}" IsChecked="{Binding IndentFirstDeclarationBlock}" Margin="25,0,0,5" />
+                        <CheckBox Content="Indent case" IsChecked="{Binding IndentCase}" Margin="5,0,0,5" />
+                        <CheckBox Content="Indent compiler directives" IsChecked="{Binding IndentCompilerDirectives}" Margin="5,0,0,5" />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Indent spaces:" Margin="5,0,0,5" />
-                            <controls:NumberPicker Margin="0,-6,0,0" NumValue="4" />
+                            <controls:NumberPicker Margin="0,-6,0,0" NumValue="{Binding IndentSpaces}" />
                         </StackPanel>
                         <Label Content="Enable Options" FontWeight="SemiBold" />
-                        <CheckBox Content="Enable undo" Margin="5,0,0,5" />
+                        <CheckBox Content="Enable undo" IsChecked="{Binding EnableUndo}" Margin="5,0,0,5" />
                     </StackPanel>
                 </Grid>
                 <Label Content="End-of-Line Comment Style:" FontWeight="SemiBold" Margin="0,-18,0,0" />
@@ -89,7 +89,7 @@
                         <TextBlock Text="Same Gap" />
                         <TextBlock Text="Standard Gap" />
                     </ComboBox>
-                    <controls:NumberPicker Margin="0,-4,0,0" NumValue="50" Visibility="{Binding ElementName=EndOfLineCommentStyle, Path=SelectedIndex, Converter={StaticResource EndOfLineCommentStyleToVisibility}}" />
+                    <controls:NumberPicker Margin="0,-4,0,0" NumValue="{Binding EndOfLineCommentColumnSpaceAlignment}" Visibility="{Binding ElementName=EndOfLineCommentStyle, Path=SelectedIndex, Converter={StaticResource EndOfLineCommentStyleToVisibility}}" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
