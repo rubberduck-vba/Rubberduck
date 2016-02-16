@@ -24,12 +24,12 @@
             <ComboBox Width="210" HorizontalAlignment="Left" Margin="5" SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" ItemsSource="{Binding Languages, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" />
             <Label Content="Hotkeys:" FontWeight="SemiBold" />
             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                <CheckBox Content="Enable Indent Procedure Hotkey" Margin="5,0,5,5" />
-                <TextBox Width="50" Text="CTRL-P" />
+                <CheckBox Content="Enable Indent Procedure Hotkey" Margin="5,0,5,5" HorizontalAlignment="Left" />
+                <TextBox Width="50" Text="CTRL-P" HorizontalAlignment="Left" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5,0,0,5">
-                <CheckBox Content="Enable Indent Module Hotkey" Margin="0,0,5,5" />
-                <TextBox Width="50" Text="CTRL-M" />
+                <CheckBox Content="Enable Indent Module Hotkey" Margin="0,0,5,5" HorizontalAlignment="Left" />
+                <TextBox Width="50" Text="CTRL-M" HorizontalAlignment="Left" />
             </StackPanel>
         </StackPanel>
     </Grid>

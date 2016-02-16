@@ -1371,4 +1371,16 @@ Are you sure you want to proceed with this rename?</value>
   <data name="TestOutcome_Unknown" xml:space="preserve">
     <value>Unknown</value>
   </data>
+  <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
+    <value>Absolute</value>
+  </data>
+  <data name="EndOfLineCommentStyle_AlignInColumn" xml:space="preserve">
+    <value>Align In Column</value>
+  </data>
+  <data name="EndOfLineCommentStyle_SameGap" xml:space="preserve">
+    <value>Same Gap</value>
+  </data>
+  <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
+    <value>Standard Gap</value>
+  </data>
 </root>

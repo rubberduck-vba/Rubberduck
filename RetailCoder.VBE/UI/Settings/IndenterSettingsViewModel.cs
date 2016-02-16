@@ -41,8 +41,8 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private bool _alignContinuations;
-        public bool AlignContinuations
+        private bool? _alignContinuations;
+        public bool? AlignContinuations
         {
             get { return _alignContinuations; }
             set 
@@ -194,8 +194,8 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private bool _indentEntireProcedureBody;
-        public bool IndentEntireProcedureBody
+        private bool? _indentEntireProcedureBody;
+        public bool? IndentEntireProcedureBody
         {
             get { return _indentEntireProcedureBody; }
             set
@@ -252,7 +252,44 @@ namespace Rubberduck.UI.Settings
 
         #endregion
 
-        public void UpdateConfig(Configuration config) {}
-        public void SetToDefaults(Configuration config) {}
+        public void UpdateConfig(Configuration config)
+        {
+            config.UserSettings.IndenterSettings.AlignCommentsWithCode = AlignCommentsWithCode;
+            config.UserSettings.IndenterSettings.AlignContinuations = AlignContinuations != false;
+            config.UserSettings.IndenterSettings.AlignDimColumn = AlignDimColumn;
+            config.UserSettings.IndenterSettings.AlignDims = AlignDims;
+            config.UserSettings.IndenterSettings.EnableUndo = EnableUndo;
+            config.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment = EndOfLineCommentColumnSpaceAlignment;
+            config.UserSettings.IndenterSettings.EndOfLineCommentStyle = EndOfLineCommentStyle;
+            config.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1 = ForceCompilerDirectivesInColumn1;
+            config.UserSettings.IndenterSettings.ForceDebugStatementsInColumn1 = ForceDebugStatementsInColumn1;
+            config.UserSettings.IndenterSettings.IgnoreOperatorsInContinuations = IgnoreOperatorsInContinuations;
+            config.UserSettings.IndenterSettings.IndentCase = IndentCase;
+            config.UserSettings.IndenterSettings.IndentCompilerDirectives = IndentCompilerDirectives;
+            config.UserSettings.IndenterSettings.IndentEntireProcedureBody = IndentEntireProcedureBody != false;
+            config.UserSettings.IndenterSettings.IndentFirstCommentBlock = IndentFirstCommentBlock;
+            config.UserSettings.IndenterSettings.IndentFirstDeclarationBlock = IndentFirstDeclarationBlock;
+            config.UserSettings.IndenterSettings.IndentSpaces = IndentSpaces;
+        }
+
+        public void SetToDefaults(Configuration config)
+        {
+            AlignCommentsWithCode = config.UserSettings.IndenterSettings.AlignCommentsWithCode;
+            AlignContinuations = config.UserSettings.IndenterSettings.AlignContinuations;
+            AlignDimColumn = config.UserSettings.IndenterSettings.AlignDimColumn;
+            AlignDims = config.UserSettings.IndenterSettings.AlignDims;
+            EnableUndo = config.UserSettings.IndenterSettings.EnableUndo;
+            EndOfLineCommentColumnSpaceAlignment = config.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment;
+            EndOfLineCommentStyle = config.UserSettings.IndenterSettings.EndOfLineCommentStyle;
+            ForceCompilerDirectivesInColumn1 = config.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1;
+            ForceDebugStatementsInColumn1 = config.UserSettings.IndenterSettings.ForceDebugStatementsInColumn1;
+            IgnoreOperatorsInContinuations = config.UserSettings.IndenterSettings.IgnoreOperatorsInContinuations;
+            IndentCase = config.UserSettings.IndenterSettings.IndentCase;
+            IndentCompilerDirectives = config.UserSettings.IndenterSettings.IndentCompilerDirectives;
+            IndentEntireProcedureBody = config.UserSettings.IndenterSettings.IndentEntireProcedureBody;
+            IndentFirstCommentBlock = config.UserSettings.IndenterSettings.IndentFirstCommentBlock;
+            IndentFirstDeclarationBlock = config.UserSettings.IndenterSettings.IndentFirstDeclarationBlock;
+            IndentSpaces = config.UserSettings.IndenterSettings.IndentSpaces;
+        }
     }
 }

@@ -990,6 +990,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Absolute.
+        /// </summary>
+        public static string EndOfLineCommentStyle_Absolute {
+            get {
+                return ResourceManager.GetString("EndOfLineCommentStyle_Absolute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Align In Column.
+        /// </summary>
+        public static string EndOfLineCommentStyle_AlignInColumn {
+            get {
+                return ResourceManager.GetString("EndOfLineCommentStyle_AlignInColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Same Gap.
+        /// </summary>
+        public static string EndOfLineCommentStyle_SameGap {
+            get {
+                return ResourceManager.GetString("EndOfLineCommentStyle_SameGap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Standard Gap.
+        /// </summary>
+        public static string EndOfLineCommentStyle_StandardGap {
+            get {
+                return ResourceManager.GetString("EndOfLineCommentStyle_StandardGap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Extract Interface.
         /// </summary>
         public static string ExtractInterface_Caption {
