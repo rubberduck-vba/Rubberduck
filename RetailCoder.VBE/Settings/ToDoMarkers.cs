@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Xml.Serialization;
-using Rubberduck.ToDoItems;
-using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
@@ -17,6 +15,10 @@ namespace Rubberduck.Settings
         [XmlAttribute]
         public string Text { get; set; }
         
+        [Obsolete]
+        [XmlIgnore]
+        public TodoPriority Priority { get; set; }
+        
         /// <summary>   Default constructor is required for serialization. DO NOT USE. </summary>
         public ToDoMarker()
         {
@@ -26,6 +28,11 @@ namespace Rubberduck.Settings
         public ToDoMarker(string text)
         {
             Text = text;
+        }
+
+        [Obsolete]
+        public ToDoMarker(string text, TodoPriority priority) : this(text)
+        {
         }
 
         /// <summary>   Convert this object into a string representation. Over-riden for easy databinding.</summary>
@@ -48,5 +55,10 @@ namespace Rubberduck.Settings
         {
             return Text.GetHashCode();
         }
+    }
+
+    public enum TodoPriority
+    {
+        Low, Medium, High
     }
 }
