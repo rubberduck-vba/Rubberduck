@@ -7,6 +7,51 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type settings:GeneralSettingsViewModel}, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+        <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFD9F4FF" Offset="0"/>
+            <GradientStop Color="#FF9BDDFB" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFEEEDED" Offset="0"/>
+            <GradientStop Color="#FFDDDDDD" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+
+        <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
+            <Style.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="2"/>
+                </Style>
+            </Style.Resources>
+            <Setter Property="BorderThickness" Value="0,.5,0,0" />
+            <Setter Property="BorderBrush" Value="DarkGray" />
+            <Setter Property="Height" Value="26" />
+            <Setter Property="TextBlock.FontWeight" Value="Normal" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderThickness" Value="1.5" />
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True" />
+                        <Condition Property="Selector.IsSelectionActive" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="#adc6e5"/>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                </MultiTrigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True" />
+                        <Condition Property="Selector.IsSelectionActive" Value="False" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="LightGray"/>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <StackPanel Margin="5,5,5,0">
             <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" FontWeight="SemiBold" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_GeneralSettings}" Margin="0,0,0,3">
@@ -23,14 +68,30 @@
             <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings_LanguageLabel}" FontWeight="SemiBold" />
             <ComboBox Width="210" HorizontalAlignment="Left" Margin="5" SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" ItemsSource="{Binding Languages, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" />
             <Label Content="Hotkeys:" FontWeight="SemiBold" />
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                <CheckBox Content="Enable Indent Procedure Hotkey" Margin="5,0,5,5" HorizontalAlignment="Left" />
-                <TextBox Width="50" Text="CTRL-P" HorizontalAlignment="Left" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5,0,0,5">
-                <CheckBox Content="Enable Indent Module Hotkey" Margin="0,0,5,5" HorizontalAlignment="Left" />
-                <TextBox Width="50" Text="CTRL-M" HorizontalAlignment="Left" />
-            </StackPanel>
+            <DataGrid ItemsSource="{Binding Hotkeys}" AutoGenerateColumns="False" CanUserDeleteRows="False"
+			    CanUserReorderColumns="False" IsReadOnly="False" SelectionMode="Single" CanUserAddRows="False"
+			    HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
+			    HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+			    ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22" BorderThickness="0">
+                <DataGrid.CellStyle>
+                    <Style TargetType="{x:Type DataGridCell}">
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="Enabled" Binding="{Binding IsEnabled}" />
+                    <DataGridTextColumn Header="Description" Binding="{Binding Prompt}" Width="*" IsReadOnly="True" />
+                    <DataGridTemplateColumn Header="Key Press" SortMemberPath="KeyDisplaySymbol">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding KeyDisplaySymbol, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
         </StackPanel>
     </Grid>
 </UserControl>

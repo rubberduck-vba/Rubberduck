@@ -12,7 +12,7 @@ namespace Rubberduck.Settings
             var handler = SettingsChanged;
             if (handler != null)
             {
-                SettingsChanged(this, e);
+                handler(this, e);
             }
         }
 

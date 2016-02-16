@@ -139,8 +139,8 @@ namespace Rubberduck.Settings
             return new GeneralSettings(new DisplayLanguageSetting("en-US"),
                 new[]
                 {
-                    new Hotkey{Name="Indent Module", IsEnabled=true, KeyDisplaySymbol="CTRL-M", Prompt="Enable Indent Module Hotkey"},
-                    new Hotkey{Name="Indent Procedure", IsEnabled=true, KeyDisplaySymbol="CTRL-P", Prompt="Enable Indent Procedure Hotkey"}
+                    new Hotkey{Name="IndentModule", IsEnabled=true, KeyDisplaySymbol="CTRL-M",},
+                    new Hotkey{Name="IndentProcedure", IsEnabled=true, KeyDisplaySymbol="CTRL-P"}
                 });
         }
 

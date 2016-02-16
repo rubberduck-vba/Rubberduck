@@ -1305,6 +1305,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Indent Module Hotkey.
+        /// </summary>
+        public static string IndentModuleHotkey_Description {
+            get {
+                return ResourceManager.GetString("IndentModuleHotkey_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent Procedure Hotkey.
+        /// </summary>
+        public static string IndentProcedureHotkey_Description {
+            get {
+                return ResourceManager.GetString("IndentProcedureHotkey_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inspect.
         /// </summary>
         public static string Inspect {

@@ -1383,4 +1383,10 @@ Are you sure you want to proceed with this rename?</value>
   <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
     <value>Standard Gap</value>
   </data>
+  <data name="IndentModuleHotkey_Description" xml:space="preserve">
+    <value>Indent Module Hotkey</value>
+  </data>
+  <data name="IndentProcedureHotkey_Description" xml:space="preserve">
+    <value>Indent Procedure Hotkey</value>
+  </data>
 </root>
