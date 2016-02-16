@@ -42,16 +42,16 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            var oldContent = Context.GetText();
+            var selection = Context.GetSelection();
+            var module = Selection.QualifiedName.Component.CodeModule;
+
+            var signatureLine = selection.StartLine;
+
+            var oldContent = module.get_Lines(signatureLine, 1);
             var newContent = Tokens.Public + ' ' + oldContent;
 
-            var selection = Context.GetSelection();
-
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var lines = module.get_Lines(selection.StartLine, selection.LineCount);
-
-            module.DeleteLines(selection.StartLine, selection.LineCount);
-            module.InsertLines(selection.StartLine, newContent);
+            module.DeleteLines(signatureLine);
+            module.InsertLines(signatureLine, newContent);
         }
     }
 }

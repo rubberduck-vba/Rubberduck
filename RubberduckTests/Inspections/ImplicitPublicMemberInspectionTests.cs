@@ -145,13 +145,13 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo(ByVal arg1 as Integer)
-
+'Just an inoffensive little comment
 
 End Sub";
 
             const string expectedCode =
 @"Public Sub Foo(ByVal arg1 as Integer)
-
+'Just an inoffensive little comment
 
 End Sub";
 
