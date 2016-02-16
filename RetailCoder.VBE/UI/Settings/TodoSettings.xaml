@@ -5,8 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-             xmlns:core="clr-namespace:System;assembly=mscorlib"
-             xmlns:toDoItems="clr-namespace:Rubberduck.ToDoItems"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
@@ -28,12 +26,6 @@
 
         <BitmapImage x:Key="AddImage" UriSource="../../Resources/plus-circle.png" />
         <BitmapImage x:Key="DeleteImage" UriSource="../../Resources/cross-script.png" />
-
-        <ObjectDataProvider x:Key="Priorities" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type Type="toDoItems:TodoPriority"/>
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
 
         <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
             <Style.Resources>
@@ -297,7 +289,6 @@
                 </DataGrid.CellStyle>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoSettings_TextLabel}" Width="*" Binding="{Binding Text}" />
-                    <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoSettings_PriorityLabel}" Width="*" ItemsSource="{Binding Source={StaticResource Priorities}}" SelectedItemBinding="{Binding Priority}" />
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>

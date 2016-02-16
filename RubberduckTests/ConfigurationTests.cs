@@ -42,7 +42,7 @@ namespace RubberduckTests
         public void ToStringIsAsExpected()
         {
             var expected = "FixMe:";
-            var marker = new ToDoMarker(expected, TodoPriority.High);
+            var marker = new ToDoMarker(expected);
 
             Assert.AreEqual(expected, marker.ToString());
         }

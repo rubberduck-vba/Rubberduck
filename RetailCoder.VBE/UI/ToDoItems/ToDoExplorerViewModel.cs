@@ -125,17 +125,17 @@ namespace Rubberduck.UI.ToDoItems
             var t = _markers.Select(marker => marker.Text.ToLowerInvariant());
             var v = comment.Comment.ToLowerInvariant();
             var y = _markers.Where(marker => comment.Comment.ToLowerInvariant().Contains(marker.Text.ToLowerInvariant()));
-            var z = _markers.Select(marker => new ToDoItem(marker.Text, marker.Priority, comment)).ToList();
+            var z = _markers.Select(marker => new ToDoItem(marker.Text, comment)).ToList();
 
             return _markers.Where(marker => !string.IsNullOrEmpty(marker.Text)
                 && comment.Comment.ToLowerInvariant().Contains(marker.Text.ToLowerInvariant()))
-                .Select(marker => new ToDoItem(marker.Text, marker.Priority, comment)).ToList();
+                .Select(marker => new ToDoItem(marker.Text, comment)).ToList();
         }
 
         private async Task<IOrderedEnumerable<ToDoItem>> GetItems()
         {
             var markers = _state.AllComments.SelectMany(GetToDoMarkers).ToList();
-            var sortedItems = markers.OrderByDescending(item => item.Priority)
+            var sortedItems = markers.OrderByDescending(item => item.Type)
                                    .ThenBy(item => item.ProjectName)
                                    .ThenBy(item => item.ModuleName)
                                    .ThenBy(item => item.LineNumber);

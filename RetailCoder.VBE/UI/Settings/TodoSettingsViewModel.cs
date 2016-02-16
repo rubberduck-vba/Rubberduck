@@ -42,7 +42,7 @@ namespace Rubberduck.UI.Settings
                 }
                 return _addTodoCommand = new DelegateCommand(_ =>
                 {
-                    TodoSettings.Add(new ToDoMarker("PLACEHOLDER ", TodoPriority.Low));
+                    TodoSettings.Add(new ToDoMarker("PLACEHOLDER "));
                 });
             }
         }
@@ -56,9 +56,9 @@ namespace Rubberduck.UI.Settings
                 {
                     return _deleteTodoCommand;
                 }
-                return _deleteTodoCommand = new DelegateCommand(_ =>
+                return _deleteTodoCommand = new DelegateCommand(value =>
                 {
-                    TodoSettings.Remove(_ as ToDoMarker);
+                    TodoSettings.Remove(value as ToDoMarker);
 
                     // ReSharper disable once ExplicitCallerInfoArgument
                     OnPropertyChanged("TodoSettings");
