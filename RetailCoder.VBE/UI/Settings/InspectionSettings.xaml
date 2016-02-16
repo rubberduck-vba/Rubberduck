@@ -50,7 +50,7 @@
 			    HeadersVisibility="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
 			    ColumnHeaderHeight="22" BorderThickness="0">
                 <controls:GroupingGrid.Columns>
-                    <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}" Width="2.75*" IsReadOnly="True">
+                    <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}" Width="2.75*" IsReadOnly="True" SortMemberPath="{Binding Description}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Description}">

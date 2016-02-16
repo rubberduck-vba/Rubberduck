@@ -34,6 +34,9 @@ namespace Rubberduck.Settings
         [XmlIgnore]
         public string AnnotationName { get; set; }
 
+        [XmlIgnore]
+        public CodeInspectionSeverity DefaultSeverity { get; private set; }
+
         [XmlAttribute]
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -76,16 +79,17 @@ namespace Rubberduck.Settings
             //default constructor required for serialization
         }
 
-        public CodeInspectionSetting(string name, string description, CodeInspectionType type, CodeInspectionSeverity severity)
+        public CodeInspectionSetting(string name, string description, CodeInspectionType type, CodeInspectionSeverity defaultSeverity, CodeInspectionSeverity severity)
         {
             Name = name;
             Description = description;
             InspectionType = type;
             Severity = severity;
+            DefaultSeverity = defaultSeverity;
         }
 
         public CodeInspectionSetting(IInspectionModel inspection)
-            : this(inspection.Name, inspection.Description, inspection.InspectionType, inspection.Severity)
+            : this(inspection.Name, inspection.Description, inspection.InspectionType, inspection.DefaultSeverity, inspection.Severity)
         { }
     }
 }
