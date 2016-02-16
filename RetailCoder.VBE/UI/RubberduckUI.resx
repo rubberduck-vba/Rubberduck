@@ -1467,4 +1467,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="CodeInspectionResults_Type" xml:space="preserve">
     <value>Type</value>
   </data>
+  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
+    <value>Grouping</value>
+  </data>
 </root>
