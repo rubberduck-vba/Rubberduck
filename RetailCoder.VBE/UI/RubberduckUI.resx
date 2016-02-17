@@ -1470,4 +1470,13 @@ Are you sure you want to proceed with this rename?</value>
   <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
     <value>Grouping</value>
   </data>
+  <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
+    <value>By inspection type</value>
+  </data>
+  <data name="GroupingStyle_ByLocation" xml:space="preserve">
+    <value>By location</value>
+  </data>
+  <data name="GroupingStyle_ByOutcome" xml:space="preserve">
+    <value>By outcome</value>
+  </data>
 </root>
