@@ -122,6 +122,7 @@
     <Compile Include="Settings\CodeInspectionSettingsTests.cs" />
     <Compile Include="Settings\GeneralSettingsTests.cs" />
     <Compile Include="Settings\IndenterSettingsTests.cs" />
+    <Compile Include="Settings\SettingsControlTests.cs" />
     <Compile Include="Settings\TodoSettingsTests.cs" />
     <Compile Include="Settings\UnitTestSettingsTests.cs" />
     <Compile Include="SourceControlConfig.cs" />

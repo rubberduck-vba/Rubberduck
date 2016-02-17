@@ -190,7 +190,7 @@
   <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
     <value>General Settings</value>
   </data>
-  <data name="SettingsCaption_CodeInspections" xml:space="preserve">
+  <data name="SettingsCaption_InspectionSettings" xml:space="preserve">
     <value>Code Inspection Settings</value>
   </data>
   <data name="SettingsCaption_TodoSettings" xml:space="preserve">
