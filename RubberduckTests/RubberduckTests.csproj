@@ -107,6 +107,7 @@
     <Compile Include="Mocks\MockUserFormBuilder.cs" />
     <Compile Include="Mocks\MockVbeBuilder.cs" />
     <Compile Include="Mocks\MockWindowsCollection.cs" />
+    <Compile Include="MultiAssert.cs" />
     <Compile Include="Refactoring\EncapsulateFieldTests.cs" />
     <Compile Include="Refactoring\ExtractMethodTests.cs" />
     <Compile Include="Refactoring\IntroduceFieldTests.cs" />
@@ -116,6 +117,8 @@
     <Compile Include="Refactoring\RenameTests.cs" />
     <Compile Include="Refactoring\ReorderParametersTests.cs" />
     <Compile Include="RubberduckParserTests.cs" />
+    <Compile Include="Settings\TodoSettingsTests.cs" />
+    <Compile Include="Settings\UnitTestSettingsTests.cs" />
     <Compile Include="SourceControlConfig.cs" />
     <Compile Include="SourceControl\BranchesPresenterTests.cs" />
     <Compile Include="SourceControl\ChangesPresenterTests.cs" />
@@ -141,6 +144,10 @@
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
       <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
+      <Project>{b9c0bf22-4d8a-4bf4-89f9-e789c0063deb}</Project>
+      <Name>Rubberduck.SmartIndenter</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
       <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
