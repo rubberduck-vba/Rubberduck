@@ -41,14 +41,18 @@ namespace RubberduckTests.Settings
         [TestMethod]
         public void SaveConfigWorks()
         {
+            var customConfig = GetNondefaultConfig();
             var viewModel = new UnitTestSettingsViewModel(GetNondefaultConfig());
-            viewModel.UpdateConfig(GetNondefaultConfig());
 
-            Assert.AreEqual(BindingMode.EarlyBinding, viewModel.BindingMode);
-            Assert.AreEqual(AssertMode.PermissiveAssert, viewModel.AssertMode);
-            Assert.AreEqual(false, viewModel.ModuleInit);
-            Assert.AreEqual(false, viewModel.MethodInit);
-            Assert.AreEqual(true, viewModel.DefaultTestStubInNewModule);
+            var config = GetDefaultConfig();
+            viewModel.UpdateConfig(config);
+
+            MultiAssert.Aggregate(
+                () => Assert.AreEqual(customConfig.UserSettings.UnitTestSettings.BindingMode, viewModel.BindingMode),
+                () => Assert.AreEqual(customConfig.UserSettings.UnitTestSettings.AssertMode, viewModel.AssertMode),
+                () => Assert.AreEqual(customConfig.UserSettings.UnitTestSettings.ModuleInit, viewModel.ModuleInit),
+                () => Assert.AreEqual(customConfig.UserSettings.UnitTestSettings.MethodInit, viewModel.MethodInit),
+                () => Assert.AreEqual(customConfig.UserSettings.UnitTestSettings.DefaultTestStubInNewModule, viewModel.DefaultTestStubInNewModule));
         }
 
         [TestMethod]
@@ -56,53 +60,60 @@ namespace RubberduckTests.Settings
         {
             var viewModel = new UnitTestSettingsViewModel(GetNondefaultConfig());
 
-            viewModel.SetToDefaults(GetDefaultConfig());
+            var defaultConfig = GetDefaultConfig();
+            viewModel.SetToDefaults(defaultConfig);
 
-            Assert.AreEqual(BindingMode.LateBinding, viewModel.BindingMode);
-            Assert.AreEqual(AssertMode.StrictAssert, viewModel.AssertMode);
-            Assert.AreEqual(true, viewModel.ModuleInit);
-            Assert.AreEqual(true, viewModel.MethodInit);
-            Assert.AreEqual(false, viewModel.DefaultTestStubInNewModule);
+            MultiAssert.Aggregate(
+                () => Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.BindingMode, viewModel.BindingMode),
+                () => Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.AssertMode, viewModel.AssertMode),
+                () => Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.ModuleInit, viewModel.ModuleInit),
+                () => Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.MethodInit, viewModel.MethodInit),
+                () => Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.DefaultTestStubInNewModule, viewModel.DefaultTestStubInNewModule));
         }
 
         [TestMethod]
         public void BindingModeIsSetInCtor()
         {
-            var viewModel = new UnitTestSettingsViewModel(GetDefaultConfig());
+            var defaultConfig = GetDefaultConfig();
+            var viewModel = new UnitTestSettingsViewModel(defaultConfig);
 
-            Assert.AreEqual(BindingMode.LateBinding, viewModel.BindingMode);
+            Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.BindingMode, viewModel.BindingMode);
         }
 
         [TestMethod]
         public void AssertModeIsSetInCtor()
         {
-            var viewModel = new UnitTestSettingsViewModel(GetDefaultConfig());
+            var defaultConfig = GetDefaultConfig();
+            var viewModel = new UnitTestSettingsViewModel(defaultConfig);
 
-            Assert.AreEqual(AssertMode.StrictAssert, viewModel.AssertMode);
+            Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.AssertMode, viewModel.AssertMode);
         }
 
         [TestMethod]
         public void ModuleInitIsSetInCtor()
         {
-            var viewModel = new UnitTestSettingsViewModel(GetDefaultConfig());
+            var defaultConfig = GetDefaultConfig();
+            var viewModel = new UnitTestSettingsViewModel(defaultConfig);
 
-            Assert.AreEqual(true, viewModel.ModuleInit);
+            Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.ModuleInit, viewModel.ModuleInit);
         }
 
         [TestMethod]
         public void MethodInitIsSetInCtor()
         {
-            var viewModel = new UnitTestSettingsViewModel(GetDefaultConfig());
+            var defaultConfig = GetDefaultConfig();
+            var viewModel = new UnitTestSettingsViewModel(defaultConfig);
 
-            Assert.AreEqual(true, viewModel.MethodInit);
+            Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.MethodInit, viewModel.MethodInit);
         }
 
         [TestMethod]
         public void DefaultTestStubInNewModuleIsSetInCtor()
         {
-            var viewModel = new UnitTestSettingsViewModel(GetDefaultConfig());
+            var defaultConfig = GetDefaultConfig();
+            var viewModel = new UnitTestSettingsViewModel(defaultConfig);
 
-            Assert.AreEqual(false, viewModel.DefaultTestStubInNewModule);
+            Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.DefaultTestStubInNewModule, viewModel.DefaultTestStubInNewModule);
         }
     }
 }
