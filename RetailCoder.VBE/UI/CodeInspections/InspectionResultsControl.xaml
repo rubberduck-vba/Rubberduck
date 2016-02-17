@@ -353,9 +353,11 @@
                         <Image Height="16" Source="../../Resources/Microsoft/PNG/GroupBy_284_32.png" />
                     </MenuItem.Icon>
                     
-                    <MenuItem x:Name="GroupByInspectionType" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" Header="By inspection type" IsChecked="True" 
+                    <MenuItem x:Name="GroupByInspectionType" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
+                              Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByInspectionType}" IsChecked="True" 
                               IsCheckable="True" controls:MenuItemGroup.GroupName="GroupingStyle" />
-                    <MenuItem x:Name="GroupByModule" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" Header="By module" 
+                    <MenuItem x:Name="GroupByModule" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
+                              Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByLocation}" 
                               IsCheckable="True" controls:MenuItemGroup.GroupName="GroupingStyle" />
                 </MenuItem>
             </Menu>

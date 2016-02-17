@@ -54,7 +54,7 @@ namespace Rubberduck.UnitTesting
         public TestResult Result
         {
             get { return _result; } 
-            set { _result = value; OnPropertyChanged();}
+            set { _result = value; OnPropertyChanged(); }
         }
 
         void HandleAssertCompleted(object sender, AssertCompletedEventArgs e)
