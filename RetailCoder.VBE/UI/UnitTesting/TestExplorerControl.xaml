@@ -116,10 +116,10 @@
 
                     <MenuItem x:Name="GroupByOutcome" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
                               Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByOutcome}" IsChecked="True" 
-                              IsCheckable="True" controls:MenuItemGroup.GroupName="GroupingStyle" />
+                              IsCheckable="True" controls:MenuItemGroup.GroupName="TestExplorer_GroupingStyle" />
                     <MenuItem x:Name="GroupByModule" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
                               Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByLocation}" 
-                              IsCheckable="True" controls:MenuItemGroup.GroupName="GroupingStyle" />
+                              IsCheckable="True" controls:MenuItemGroup.GroupName="TestExplorer_GroupingStyle" />
                 </MenuItem>
             </Menu>
 

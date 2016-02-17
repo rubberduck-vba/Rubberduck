@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Rubberduck.Parsing.Nodes;
@@ -15,28 +14,19 @@ namespace Rubberduck.UI.ToDoItems
 {
     public class ToDoExplorerViewModel : ViewModelBase, INavigateSelection
     {
+        private readonly Dispatcher _dispatcher;
         private readonly RubberduckParserState _state;
-        private readonly IEnumerable<ToDoMarker> _markers;
-        private ListCollectionView _toDos; 
+        private readonly IGeneralConfigService _configService;
+
         public ToDoExplorerViewModel(RubberduckParserState state, IGeneralConfigService configService)
         {
+            _dispatcher = Dispatcher.CurrentDispatcher;
             _state = state;
-            _markers = configService.LoadConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
-
-            _uiDispatcher = Dispatcher.CurrentDispatcher;
+            _configService = configService;
         }
 
-        public ListCollectionView ToDos {
-            get
-            {
-                return _toDos;
-            }
-            set
-            {
-                _toDos = value;
-                OnPropertyChanged();
-            }
-        } 
+        private readonly ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
+        public ObservableCollection<ToDoItem> Items { get { return _items; } } 
 
         private ICommand _refreshCommand;
         public ICommand RefreshCommand
@@ -61,20 +51,27 @@ namespace Rubberduck.UI.ToDoItems
             {
                 return;
             }
-            var results = await GetItems();
-            
-            _uiDispatcher.Invoke(() =>
+            _dispatcher.Invoke(() =>
             {
-                ToDos = new ListCollectionView(results.ToList());
-                if (ToDos.GroupDescriptions != null)
+                Items.Clear();
+                foreach (var item in GetItems())
                 {
-                    ToDos.GroupDescriptions.Add(new PropertyGroupDescription("Type"));
+                    Items.Add(item);
                 }
             });
         }
 
-        public INavigateSource SelectedItem { get { return SelectedToDo; } set { SelectedToDo = value as ToDoItem; } }
-        public ToDoItem SelectedToDo { get; set; }
+        private ToDoItem _selectedItem;
+
+        public INavigateSource SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                _selectedItem = value as ToDoItem; 
+                OnPropertyChanged();
+            }
+        }
 
         private ICommand _clear;
         public ICommand Remove
@@ -87,17 +84,16 @@ namespace Rubberduck.UI.ToDoItems
                 }
                 return _clear = new DelegateCommand(_ =>
                 {
-                    if (SelectedToDo == null)
+                    if (_selectedItem == null)
                     {
                         return;
                     }
-                    var module = SelectedToDo.GetSelection().QualifiedName.Component.CodeModule;
+                    var module = _selectedItem.Selection.QualifiedName.Component.CodeModule;
 
-                    var oldContent = module.Lines[SelectedToDo.LineNumber, 1];
-                    var newContent =
-                        oldContent.Remove(SelectedToDo.GetSelection().Selection.StartColumn - 1);
+                    var oldContent = module.Lines[_selectedItem.Selection.Selection.StartLine, 1];
+                    var newContent = oldContent.Remove(_selectedItem.Selection.Selection.StartColumn - 1);
 
-                    module.ReplaceLine(SelectedToDo.LineNumber, newContent);
+                    module.ReplaceLine(_selectedItem.Selection.Selection.StartLine, newContent);
 
                     RefreshCommand.Execute(null);
                 });
@@ -105,7 +101,6 @@ namespace Rubberduck.UI.ToDoItems
         }
 
         private NavigateCommand _navigateCommand;
-        private readonly Dispatcher _uiDispatcher;
 
         public INavigateCommand NavigateCommand
         {
@@ -121,26 +116,15 @@ namespace Rubberduck.UI.ToDoItems
 
         private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)
         {
-            var c = _markers.Where(marker => !string.IsNullOrEmpty(marker.Text));
-            var t = _markers.Select(marker => marker.Text.ToLowerInvariant());
-            var v = comment.Comment.ToLowerInvariant();
-            var y = _markers.Where(marker => comment.Comment.ToLowerInvariant().Contains(marker.Text.ToLowerInvariant()));
-            var z = _markers.Select(marker => new ToDoItem(marker.Text, comment)).ToList();
-
-            return _markers.Where(marker => !string.IsNullOrEmpty(marker.Text)
-                && comment.Comment.ToLowerInvariant().Contains(marker.Text.ToLowerInvariant()))
-                .Select(marker => new ToDoItem(marker.Text, comment)).ToList();
+            var markers = _configService.LoadConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
+            return markers.Where(marker => !string.IsNullOrEmpty(marker.Text)
+                                         && comment.Comment.ToLowerInvariant().Contains(marker.Text.ToLowerInvariant()))
+                           .Select(marker => new ToDoItem(marker.Text, comment));
         }
 
-        private async Task<IOrderedEnumerable<ToDoItem>> GetItems()
+        private IEnumerable<ToDoItem> GetItems()
         {
-            var markers = _state.AllComments.SelectMany(GetToDoMarkers).ToList();
-            var sortedItems = markers.OrderByDescending(item => item.Type)
-                                   .ThenBy(item => item.ProjectName)
-                                   .ThenBy(item => item.ModuleName)
-                                   .ThenBy(item => item.LineNumber);
-
-            return sortedItems;
+            return _state.AllComments.SelectMany(GetToDoMarkers);
         }
     }
 }
