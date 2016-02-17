@@ -49,15 +49,8 @@
 			    HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
 			    HeadersVisibility="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
 			    ColumnHeaderHeight="22" BorderThickness="0">
-                <controls:GroupingGrid.CellStyle>
-                    <Style TargetType="{x:Type DataGridCell}">
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Background" Value="Transparent" />
-                    </Style>
-                </controls:GroupingGrid.CellStyle>
                 <controls:GroupingGrid.Columns>
-                    <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}" Width="2.75*" IsReadOnly="True">
+                    <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}" Width="2.75*" IsReadOnly="True" SortMemberPath="{Binding Description}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Description}">

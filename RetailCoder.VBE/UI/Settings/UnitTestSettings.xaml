@@ -29,7 +29,12 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel Margin="5,5,5,0">
-            <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" FontWeight="SemiBold" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_UnitTestSettings}" Margin="0,0,0,3">
+            <Label DockPanel.Dock="Top"
+                   Background="DarkGray"
+                   Foreground="White"
+                   FontWeight="SemiBold"
+                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_UnitTestSettings}"
+                   Margin="0,0,0,3">
                 <Label.Style>
                     <Style>
                         <Style.Resources>
@@ -41,16 +46,36 @@
                 </Label.Style>
             </Label>
 
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_BindingMode}" FontWeight="SemiBold" />
-            <ComboBox Margin="5,0,0,5" Width="210" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource BindingMode}, Converter={StaticResource BindingModeToText}, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding BindingMode, Converter={StaticResource BindingModeValueToText}}" />
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_BindingMode}"
+                   FontWeight="SemiBold" />
+            <ComboBox Margin="5,0,0,5"
+                      Width="210"
+                      HorizontalAlignment="Left"
+                      ItemsSource="{Binding Source={StaticResource BindingMode}, Converter={StaticResource BindingModeToText}, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedItem="{Binding BindingMode, Converter={StaticResource BindingModeValueToText}}" />
 
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_AssertMode}" FontWeight="SemiBold" />
-            <ComboBox Margin="5,0,0,5" Width="210" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource AssertMode}, Converter={StaticResource AssertModeToText}, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding AssertMode, Converter={StaticResource AssertModeValueToText}}" />
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_AssertMode}"
+                   FontWeight="SemiBold" />
+            <ComboBox Margin="5,0,0,5"
+                      Width="210"
+                      HorizontalAlignment="Left"
+                      ItemsSource="{Binding Source={StaticResource AssertMode}, Converter={StaticResource AssertModeToText}, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedItem="{Binding AssertMode, Converter={StaticResource AssertModeValueToText}}" />
 
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_TestModuleTemplateHeader}" FontWeight="SemiBold" />
-            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_IncludeTestModuleInitCleanupPrompt}" IsChecked="{Binding ModuleInit, Mode=TwoWay}" Margin="5,0,0,5" HorizontalAlignment="Left" />
-            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_IncludeTestMethodInitCleanupPrompt}" IsChecked="{Binding MethodInit, Mode=TwoWay}" Margin="5,0,0,5" HorizontalAlignment="Left" />
-            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt}" IsChecked="{Binding DefaultTestStubInNewModule, Mode=TwoWay}" Margin="5,0,0,0" HorizontalAlignment="Left" />
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_TestModuleTemplateHeader}"
+                   FontWeight="SemiBold" />
+            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_IncludeTestModuleInitCleanupPrompt}"
+                      IsChecked="{Binding ModuleInit, Mode=TwoWay}"
+                      Margin="5,0,0,5"
+                      HorizontalAlignment="Left" />
+            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_IncludeTestMethodInitCleanupPrompt}"
+                      IsChecked="{Binding MethodInit, Mode=TwoWay}"
+                      Margin="5,0,0,5"
+                      HorizontalAlignment="Left" />
+            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt}"
+                      IsChecked="{Binding DefaultTestStubInNewModule, Mode=TwoWay}"
+                      Margin="5,0,0,0"
+                      HorizontalAlignment="Left" />
         </StackPanel>
     </Grid>
 </UserControl>

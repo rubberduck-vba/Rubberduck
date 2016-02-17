@@ -70,8 +70,8 @@
             <DockPanel VerticalAlignment="Center" Height="40" Background="{x:Static SystemColors.ControlDarkBrush}">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings_ResetSettings}" MinWidth="75" Height="20"  HorizontalAlignment="Right" Margin="20,0" Command="{Binding RefreshButtonCommand}" />
-                    <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}" MinWidth="75" Height="20" HorizontalAlignment="Right" Margin="5, 0" Command="{Binding CancelButtonCommand}" />
-                    <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}" MinWidth="75" Height="20" HorizontalAlignment="Left" Margin="5, 0, 10, 0" Command="{Binding OKButtonCommand}" />
+                    <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}" MinWidth="75" Height="20" HorizontalAlignment="Left" Margin="5, 0" Command="{Binding OKButtonCommand}" />
+                    <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}" MinWidth="75" Height="20" HorizontalAlignment="Right" Margin="5, 0, 10, 0" Command="{Binding CancelButtonCommand}" />
                 </StackPanel>
             </DockPanel>
         </Border>

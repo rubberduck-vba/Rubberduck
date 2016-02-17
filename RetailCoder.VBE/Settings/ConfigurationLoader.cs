@@ -5,8 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Rubberduck.Inspections;
-using Rubberduck.SmartIndenter;
-using Rubberduck.ToDoItems;
 using Rubberduck.UI;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -146,9 +144,9 @@ namespace Rubberduck.Settings
 
         public ToDoMarker[] GetDefaultTodoMarkers()
         {
-            var note = new ToDoMarker(RubberduckUI.TodoMarkerNote, TodoPriority.Low);
-            var todo = new ToDoMarker(RubberduckUI.TodoMarkerTodo, TodoPriority.Medium);
-            var bug = new ToDoMarker(RubberduckUI.TodoMarkerBug, TodoPriority.High);
+            var note = new ToDoMarker(RubberduckUI.TodoMarkerNote);
+            var todo = new ToDoMarker(RubberduckUI.TodoMarkerTodo);
+            var bug = new ToDoMarker(RubberduckUI.TodoMarkerBug);
 
             return new[] { note, todo, bug };
         }
@@ -157,7 +155,9 @@ namespace Rubberduck.Settings
         /// <returns>   An array of Config.CodeInspection. </returns>
         public CodeInspectionSetting[] GetDefaultCodeInspections()
         {
-            return _inspections.Select(x => new CodeInspectionSetting(x)).ToArray();
+            return _inspections.Select(x =>
+                        new CodeInspectionSetting(x.Name, x.Description, x.InspectionType, x.DefaultSeverity,
+                            x.DefaultSeverity)).ToArray();
         }
 
         public IndenterSettings GetDefaultIndenterSettings()

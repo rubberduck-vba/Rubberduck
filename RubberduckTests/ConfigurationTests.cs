@@ -2,7 +2,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Settings;
-using Rubberduck.ToDoItems;
 
 namespace RubberduckTests
 {
@@ -24,9 +23,9 @@ namespace RubberduckTests
         public void DefaultCodeInspectionsIsAsSpecified()
         {
             var inspection = new Mock<IInspection>();
-            //inspection.SetupGet(m => m.Description).Returns("TestInspection");
-            //inspection.SetupGet(m => m.Name).Returns("TestInspection");
-            //inspection.SetupGet(m => m.Severity).Returns(CodeInspectionSeverity.DoNotShow);
+            inspection.SetupGet(m => m.Description).Returns("TestInspection");
+            inspection.SetupGet(m => m.Name).Returns("TestInspection");
+            inspection.SetupGet(m => m.Severity).Returns(CodeInspectionSeverity.DoNotShow);
 
             var expected = new[] { inspection.Object };
             var configService = new ConfigurationLoader(expected);
@@ -42,7 +41,7 @@ namespace RubberduckTests
         public void ToStringIsAsExpected()
         {
             var expected = "FixMe:";
-            var marker = new ToDoMarker(expected, TodoPriority.High);
+            var marker = new ToDoMarker(expected);
 
             Assert.AreEqual(expected, marker.ToString());
         }

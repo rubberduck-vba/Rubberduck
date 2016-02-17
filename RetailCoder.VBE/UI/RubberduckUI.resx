@@ -609,9 +609,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="_TypeNotDeclared_" xml:space="preserve">
     <value>{0} '{1}' is implicitly Variant</value>
   </data>
-  <data name="Priority" xml:space="preserve">
-    <value>Priority</value>
-  </data>
   <data name="Component" xml:space="preserve">
     <value>Component</value>
   </data>
@@ -800,9 +797,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="Settings_Caption" xml:space="preserve">
     <value>Rubberduck Settings</value>
-  </data>
-  <data name="TodoSettings_PriorityLabel" xml:space="preserve">
-    <value>Priority:</value>
   </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
     <value>Token Text:</value>
@@ -1072,15 +1066,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_NoRepoFound" xml:space="preserve">
     <value>No repository found.</value>
   </data>
-  <data name="TodoPriority_High" xml:space="preserve">
-    <value>High</value>
-  </data>
-  <data name="TodoPriority_Low" xml:space="preserve">
-    <value>Low</value>
-  </data>
-  <data name="TodoPriority_Medium" xml:space="preserve">
-    <value>Medium</value>
-  </data>
   <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
     <value>Successfully Merged {0} into {1}</value>
   </data>
@@ -1108,9 +1093,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="TodoSettings_TextLabel" xml:space="preserve">
     <value>Text:</value>
-  </data>
-  <data name="TodoSettings_Priority" xml:space="preserve">
-    <value>Priority</value>
   </data>
   <data name="TodoSettings_Text" xml:space="preserve">
     <value>Text</value>

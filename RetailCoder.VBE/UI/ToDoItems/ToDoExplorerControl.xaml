@@ -226,7 +226,6 @@
         <controls:GroupingGrid ItemsSource="{Binding ToDos}"
 			                   SelectedItem="{Binding SelectedToDo}">
             <controls:GroupingGrid.Columns>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Priority}" Binding="{Binding Priority}" />
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ProjectName}" Binding="{Binding ProjectName}" />
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ModuleName}" Binding="{Binding ModuleName}" />
