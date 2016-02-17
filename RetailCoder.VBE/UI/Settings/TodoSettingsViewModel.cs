@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows.Input;
 using Rubberduck.Settings;
-using Rubberduck.ToDoItems;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
