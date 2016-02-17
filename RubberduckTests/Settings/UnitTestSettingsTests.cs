@@ -42,17 +42,17 @@ namespace RubberduckTests.Settings
         public void SaveConfigWorks()
         {
             var customConfig = GetNondefaultConfig();
-            var viewModel = new UnitTestSettingsViewModel(GetNondefaultConfig());
+            var viewModel = new UnitTestSettingsViewModel(customConfig);
 
             var config = GetDefaultConfig();
             viewModel.UpdateConfig(config);
 
             MultiAssert.Aggregate(
-                () => Assert.AreEqual(customConfig.UserSettings.UnitTestSettings.BindingMode, viewModel.BindingMode),
-                () => Assert.AreEqual(customConfig.UserSettings.UnitTestSettings.AssertMode, viewModel.AssertMode),
-                () => Assert.AreEqual(customConfig.UserSettings.UnitTestSettings.ModuleInit, viewModel.ModuleInit),
-                () => Assert.AreEqual(customConfig.UserSettings.UnitTestSettings.MethodInit, viewModel.MethodInit),
-                () => Assert.AreEqual(customConfig.UserSettings.UnitTestSettings.DefaultTestStubInNewModule, viewModel.DefaultTestStubInNewModule));
+                () => Assert.AreEqual(config.UserSettings.UnitTestSettings.BindingMode, viewModel.BindingMode),
+                () => Assert.AreEqual(config.UserSettings.UnitTestSettings.AssertMode, viewModel.AssertMode),
+                () => Assert.AreEqual(config.UserSettings.UnitTestSettings.ModuleInit, viewModel.ModuleInit),
+                () => Assert.AreEqual(config.UserSettings.UnitTestSettings.MethodInit, viewModel.MethodInit),
+                () => Assert.AreEqual(config.UserSettings.UnitTestSettings.DefaultTestStubInNewModule, viewModel.DefaultTestStubInNewModule));
         }
 
         [TestMethod]

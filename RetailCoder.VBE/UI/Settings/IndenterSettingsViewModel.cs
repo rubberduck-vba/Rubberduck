@@ -1,7 +1,5 @@
-﻿using System.Windows.Input;
-using Rubberduck.Settings;
+﻿using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
-using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
 {

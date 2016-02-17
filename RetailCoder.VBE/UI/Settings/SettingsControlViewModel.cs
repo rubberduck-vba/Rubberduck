@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Settings
 {
     public class SettingsView
     {
-        public string Label { get; set; }
+        public string Label { get { return RubberduckUI.ResourceManager.GetString("SettingsCaption_" + View); } }
         public string Instructions
         { 
             get
@@ -35,31 +35,26 @@ namespace Rubberduck.UI.Settings
             {
                 new SettingsView
                 {
-                    Label = RubberduckUI.SettingsCaption_GeneralSettings,
                     Control = new GeneralSettings(new GeneralSettingsViewModel(_config)),
                     View = Settings.SettingsViews.GeneralSettings
                 },
                 new SettingsView
                 {
-                    Label = RubberduckUI.SettingsCaption_TodoSettings,
                     Control = new TodoSettings(new TodoSettingsViewModel(_config)),
                     View = Settings.SettingsViews.TodoSettings
                 },
                 new SettingsView
                 {
-                    Label = RubberduckUI.SettingsCaption_CodeInspections,
                     Control = new InspectionSettings(new InspectionSettingsViewModel(_config)),
                     View = Settings.SettingsViews.InspectionSettings
                 },
                 new SettingsView
                 {
-                    Label = RubberduckUI.SettingsCaption_UnitTestSettings,
                     Control = new UnitTestSettings(new UnitTestSettingsViewModel(_config)),
                     View = Settings.SettingsViews.UnitTestSettings
                 },
                 new SettingsView
                 {
-                    Label = RubberduckUI.SettingsCaption_IndenterSettings,
                     Control = new IndenterSettings(new IndenterSettingsViewModel(_config)),
                     View = Settings.SettingsViews.IndenterSettings
                 }

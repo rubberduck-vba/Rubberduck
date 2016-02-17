@@ -2950,15 +2950,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Code Inspection Settings.
-        /// </summary>
-        public static string SettingsCaption_CodeInspections {
-            get {
-                return ResourceManager.GetString("SettingsCaption_CodeInspections", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to General Settings.
         /// </summary>
         public static string SettingsCaption_GeneralSettings {
@@ -2973,6 +2964,15 @@ namespace Rubberduck.UI {
         public static string SettingsCaption_IndenterSettings {
             get {
                 return ResourceManager.GetString("SettingsCaption_IndenterSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code Inspection Settings.
+        /// </summary>
+        public static string SettingsCaption_InspectionSettings {
+            get {
+                return ResourceManager.GetString("SettingsCaption_InspectionSettings", resourceCulture);
             }
         }
         

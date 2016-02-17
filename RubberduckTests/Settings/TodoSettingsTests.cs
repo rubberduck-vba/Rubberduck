@@ -42,12 +42,12 @@ namespace RubberduckTests.Settings
         public void SaveConfigWorks()
         {
             var customConfig = GetNondefaultConfig();
-            var viewModel = new TodoSettingsViewModel(GetNondefaultConfig());
+            var viewModel = new TodoSettingsViewModel(customConfig);
 
             var config = GetDefaultConfig();
             viewModel.UpdateConfig(config);
 
-            Assert.IsTrue(customConfig.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(viewModel.TodoSettings));
+            Assert.IsTrue(config.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(viewModel.TodoSettings));
         }
 
         [TestMethod]
