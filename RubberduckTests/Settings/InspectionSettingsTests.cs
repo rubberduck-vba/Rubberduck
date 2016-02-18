@@ -7,7 +7,7 @@ using Rubberduck.UI.Settings;
 namespace RubberduckTests.Settings
 {
     [TestClass]
-    public class CodeInspectionSettingsTests
+    public class InspectionSettingsTests
     {
         private Configuration GetDefaultConfig()
         {

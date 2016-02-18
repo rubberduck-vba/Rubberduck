@@ -107,6 +107,7 @@
             <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
             <Setter Property="ItemContainerStyle" Value="{StaticResource PrettifyRow}" />
             <Setter Property="ColumnHeaderHeight" Value="22" />
+            <Setter Property="SelectionMode" Value="Single" />
         </Style>
     </DataGrid.Style>
     <DataGrid.CellStyle>

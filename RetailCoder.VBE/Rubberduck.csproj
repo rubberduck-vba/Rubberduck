@@ -582,6 +582,7 @@
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\SettingsControlViewModel.cs" />
+    <Compile Include="UI\Settings\SettingsView.cs" />
     <Compile Include="UI\Settings\SettingsViews.cs" />
     <Compile Include="UI\Settings\Converters\SettingsViewToPageConverter.cs" />
     <Compile Include="UI\Settings\TodoSettings.xaml.cs">
