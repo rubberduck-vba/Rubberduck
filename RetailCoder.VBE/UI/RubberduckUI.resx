@@ -471,26 +471,8 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
-  <data name="ByValParameterIsAssigned_" xml:space="preserve">
-    <value>ByVal parameter '{0}' is assigned</value>
-  </data>
-  <data name="ConstantNotUsed_" xml:space="preserve">
-    <value>Constant '{0}' is never used</value>
-  </data>
   <data name="EasterEgg_Continuator" xml:space="preserve">
     <value>You've earned the "Continuator" badge!</value>
-  </data>
-  <data name="FunctionNotUsed_" xml:space="preserve">
-    <value>Function '{0}' is never used</value>
-  </data>
-  <data name="ImplicitByRef_" xml:space="preserve">
-    <value>Parameter '{0}' is passed ByRef implicitly</value>
-  </data>
-  <data name="ImplicitPublicMember_" xml:space="preserve">
-    <value>Member '{0}' is implicitly Public</value>
-  </data>
-  <data name="ImplicitVariantReturnType_" xml:space="preserve">
-    <value>Function '{0}' returns an implicit Variant</value>
   </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Module options should be specified first</value>
@@ -1030,12 +1012,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Details</value>
-  </data>
-  <data name="ImplicitActiveSheetReference_" xml:space="preserve">
-    <value>'{0}' is an implicit reference to the active worksheet</value>
-  </data>
-  <data name="ImplicitActiveWorkbookReference_" xml:space="preserve">
-    <value>'{0}' is an implicit reference to the active workbook</value>
   </data>
   <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
     <value>Make ActiveSheet reference explicit</value>

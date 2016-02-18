@@ -250,15 +250,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ByVal parameter &apos;{0}&apos; is assigned.
-        /// </summary>
-        public static string ByValParameterIsAssigned_ {
-            get {
-                return ResourceManager.GetString("ByValParameterIsAssigned_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string CancelButtonText {
@@ -716,15 +707,6 @@ namespace Rubberduck.UI {
         public static string Component {
             get {
                 return ResourceManager.GetString("Component", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Constant &apos;{0}&apos; is never used.
-        /// </summary>
-        public static string ConstantNotUsed_ {
-            get {
-                return ResourceManager.GetString("ConstantNotUsed_", resourceCulture);
             }
         }
         
@@ -1206,15 +1188,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Function &apos;{0}&apos; is never used.
-        /// </summary>
-        public static string FunctionNotUsed_ {
-            get {
-                return ResourceManager.GetString("FunctionNotUsed_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Enable Auto Save.
         /// </summary>
         public static string GeneralSettings_AutoSaveEnabled {
@@ -1346,51 +1319,6 @@ namespace Rubberduck.UI {
         public static string ImplementInterface_InvalidSelectionMessage {
             get {
                 return ResourceManager.GetString("ImplementInterface_InvalidSelectionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is an implicit reference to the active worksheet.
-        /// </summary>
-        public static string ImplicitActiveSheetReference_ {
-            get {
-                return ResourceManager.GetString("ImplicitActiveSheetReference_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is an implicit reference to the active workbook.
-        /// </summary>
-        public static string ImplicitActiveWorkbookReference_ {
-            get {
-                return ResourceManager.GetString("ImplicitActiveWorkbookReference_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is passed ByRef implicitly.
-        /// </summary>
-        public static string ImplicitByRef_ {
-            get {
-                return ResourceManager.GetString("ImplicitByRef_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; is implicitly Public.
-        /// </summary>
-        public static string ImplicitPublicMember_ {
-            get {
-                return ResourceManager.GetString("ImplicitPublicMember_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Function &apos;{0}&apos; returns an implicit Variant.
-        /// </summary>
-        public static string ImplicitVariantReturnType_ {
-            get {
-                return ResourceManager.GetString("ImplicitVariantReturnType_", resourceCulture);
             }
         }
         
