@@ -1332,4 +1332,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="GeneralSettings_AutoSaveEnabled" xml:space="preserve">
     <value>Enable Auto Save</value>
   </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
 </root>
