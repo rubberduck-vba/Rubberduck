@@ -15,33 +15,16 @@ namespace Rubberduck.ToDoItems
         private readonly string _description;
         public string Description { get { return _description; } }
 
-        private readonly string _projectName;
-        public string ProjectName { get { return _projectName; } }
-
-        private readonly string _moduleName;
-        public string ModuleName { get { return _moduleName; } }
-
-        private readonly int _lineNumber;
-        public int LineNumber { get { return _lineNumber; } }
-
         private readonly string _type;
         public string Type { get { return _type; } }
 
         private readonly QualifiedSelection _selection;
-        public QualifiedSelection GetSelection() { return _selection; }
+        public QualifiedSelection Selection { get { return _selection; } }
 
         public ToDoItem(string markerText, CommentNode comment)
-            : this(markerText, comment.CommentText, comment.QualifiedSelection)
         {
-        }
-
-        public ToDoItem(string markerText, string description, QualifiedSelection qualifiedSelection)
-        {
-            _description = description;
-            _selection = qualifiedSelection;
-            _projectName = qualifiedSelection.QualifiedName.ProjectName;
-            _moduleName = qualifiedSelection.QualifiedName.ComponentName;
-            _lineNumber = qualifiedSelection.Selection.StartLine;
+            _description = comment.CommentText;
+            _selection = comment.QualifiedSelection;
             _type = markerText;
         }
 

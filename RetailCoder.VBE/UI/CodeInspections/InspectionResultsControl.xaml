@@ -304,7 +304,7 @@
 
         <CollectionViewSource x:Key="ResultsByModule" Source="{Binding Results}">
             <CollectionViewSource.SortDescriptions>
-                <componentModel:SortDescription PropertyName="QualifiedSelection.QualifiedName.ComponentName"/>
+                <componentModel:SortDescription PropertyName="QualifiedSelection.QualifiedName.Name"/>
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="QualifiedSelection.QualifiedName" />
@@ -348,15 +348,17 @@
             </Menu>
 
             <Menu>
-                <MenuItem Header="Grouping">
+                <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingGrid_GroupingStyle}">
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/Microsoft/PNG/GroupBy_284_32.png" />
                     </MenuItem.Icon>
                     
-                    <MenuItem x:Name="GroupByInspectionType" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" Header="By inspection type" IsChecked="True" 
-                              IsCheckable="True" controls:MenuItemGroup.GroupName="GroupingStyle" />
-                    <MenuItem x:Name="GroupByModule" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" Header="By module" 
-                              IsCheckable="True" controls:MenuItemGroup.GroupName="GroupingStyle" />
+                    <MenuItem x:Name="GroupByInspectionType" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
+                              Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByInspectionType}" IsChecked="True" 
+                              IsCheckable="True" controls:MenuItemGroup.GroupName="InspectionsResults_GroupingStyle" />
+                    <MenuItem x:Name="GroupByModule" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
+                              Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByLocation}" 
+                              IsCheckable="True" controls:MenuItemGroup.GroupName="InspectionsResults_GroupingStyle" />
                 </MenuItem>
             </Menu>
 
@@ -368,7 +370,7 @@
                         
         </ToolBar>
         
-        <controls:GroupingGrid Grid.Row="1" x:Name="ResultsByInspectionTypeGrid"
+        <controls:GroupingGrid Grid.Row="1"
                                ShowGroupingItemCount="True"
                                SelectedItem="{Binding SelectedItem}"
                                ItemsSource="{Binding Source={StaticResource ResultsByInspectionType}}"
@@ -386,7 +388,7 @@
             </DataGrid.Columns>
         </controls:GroupingGrid>
 
-        <controls:GroupingGrid Grid.Row="1" x:Name="ResultsByModuleGrid"
+        <controls:GroupingGrid Grid.Row="1"
                                ShowGroupingItemCount="True"
                                SelectedItem="{Binding SelectedItem}"
                                ItemsSource="{Binding Source={StaticResource ResultsByModule}}"

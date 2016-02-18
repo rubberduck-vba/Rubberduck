@@ -1,8 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
-using Rubberduck.Inspections;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -21,7 +18,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private void InspectionResultsControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (ViewModel.CanRefresh)
+            if (ViewModel != null && ViewModel.CanRefresh)
             {
                 ViewModel.RefreshCommand.Execute(null);
             }

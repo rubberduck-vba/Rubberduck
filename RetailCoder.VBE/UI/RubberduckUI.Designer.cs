@@ -1287,6 +1287,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Grouping.
+        /// </summary>
+        public static string GroupingGrid_GroupingStyle {
+            get {
+                return ResourceManager.GetString("GroupingGrid_GroupingStyle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By inspection type.
+        /// </summary>
+        public static string GroupingStyle_ByInspectionType {
+            get {
+                return ResourceManager.GetString("GroupingStyle_ByInspectionType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By location.
+        /// </summary>
+        public static string GroupingStyle_ByLocation {
+            get {
+                return ResourceManager.GetString("GroupingStyle_ByLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By outcome.
+        /// </summary>
+        public static string GroupingStyle_ByOutcome {
+            get {
+                return ResourceManager.GetString("GroupingStyle_ByOutcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
         public static string Home {

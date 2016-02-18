@@ -42,19 +42,6 @@ namespace Rubberduck.UI.CodeInspections
             _quickFixInModuleCommand = new DelegateCommand(ExecuteQuickFixInModuleCommand);
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
-
-            _inspectionResults = new ListCollectionView(_results);
-            if (_inspectionResults.GroupDescriptions != null)
-            {
-                _inspectionResults.GroupDescriptions.Add(new PropertyGroupDescription("Inspection", new InspectionTypeConverter()));
-            }
-        }
-
-        private readonly ListCollectionView _inspectionResults;
-
-        public ListCollectionView InspectionResults
-        {
-            get { return _inspectionResults; }
         }
 
         private readonly ObservableCollection<ICodeInspectionResult> _results = new ObservableCollection<ICodeInspectionResult>();
@@ -80,28 +67,12 @@ namespace Rubberduck.UI.CodeInspections
                 CanExecuteQuickFixInProject = false;
 
                 var inspectionResult = _selectedItem as InspectionResultBase;
-
                 if (inspectionResult != null)
                 {
                     SelectedInspection = inspectionResult.Inspection;
                     CanQuickFix = inspectionResult.HasQuickFixes;
                     _defaultFix = inspectionResult.DefaultQuickFix;
                     CanExecuteQuickFixInModule = _defaultFix != null && _defaultFix.CanFixInModule;
-                }
-                else
-                {
-                    var viewGroup = _selectedItem as CollectionViewGroup;
-                    if (viewGroup != null)
-                    {
-                        var grouping = viewGroup;
-                        var inspection = grouping.Name as IInspection;
-                        if (inspection != null)
-                        {
-                            SelectedInspection = inspection;
-                            var result = _results.FirstOrDefault(item => item.Inspection == inspection);
-                            _defaultFix = result == null ? null : result.DefaultQuickFix;
-                        }
-                    }
                 }
 
                 CanDisableInspection = SelectedInspection != null;

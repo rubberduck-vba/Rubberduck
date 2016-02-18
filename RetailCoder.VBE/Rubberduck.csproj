@@ -849,8 +849,9 @@
     <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="UnitTesting\TestMethod.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
-    <Compile Include="UnitTesting\TestOutcomeImageSourceConverter.cs" />
+    <Compile Include="UI\UnitTesting\TestOutcomeImageSourceConverter.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
+    <Compile Include="UI\UnitTesting\TestResultToOutcomeTextConverter.cs" />
     <Compile Include="UnitTesting\TestRunner.cs" />
     <Compile Include="UI\SourceControl\IUnSyncedCommitsView.cs" />
     <Compile Include="UI\SourceControl\UnSyncedCommitsControl.cs">

@@ -6,6 +6,7 @@
     xmlns:toDoItems="clr-namespace:Rubberduck.UI.ToDoItems"
     xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
     xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+    xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     x:Class="Rubberduck.UI.ToDoItems.ToDoExplorerControl"
              Language="{UICulture}"
              mc:Ignorable="d" 
@@ -210,9 +211,35 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+
+        <CollectionViewSource x:Key="ItemsByMarker" Source="{Binding Items}">
+            <CollectionViewSource.SortDescriptions>
+                <componentModel:SortDescription PropertyName="Type" />
+            </CollectionViewSource.SortDescriptions>
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Type" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+
+        <CollectionViewSource x:Key="ItemsByLocation" Source="{Binding Items}">
+            <CollectionViewSource.SortDescriptions>
+                <componentModel:SortDescription PropertyName="Selection.QualifiedName.Name" />
+            </CollectionViewSource.SortDescriptions>
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Selection.QualifiedName" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+
     </UserControl.Resources>
-    <DockPanel LastChildFill="True">
-        <ToolBarTray DockPanel.Dock="Top" IsLocked="True">
+    
+    <Grid>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <ToolBarTray Grid.Row="0" IsLocked="True">
             <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
                 <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}" Command="{Binding RefreshCommand, Mode=OneWay}" BorderThickness="0" Background="Transparent">
                     <Image Source="{StaticResource RefreshImage}" />
@@ -221,16 +248,45 @@
                 <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}" Command="{Binding Remove}" BorderThickness="0" Background="Transparent">
                     <Image Source="{StaticResource DeleteImage}" />
                 </Button>
+                <Menu>
+                    <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingGrid_GroupingStyle}">
+                        <MenuItem.Icon>
+                            <Image Height="16" Source="../../Resources/Microsoft/PNG/GroupBy_284_32.png" />
+                        </MenuItem.Icon>
+
+                        <MenuItem x:Name="GroupByMarker" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
+                              Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByMarker}" IsChecked="True" 
+                              IsCheckable="True" controls:MenuItemGroup.GroupName="ToDoExplorer_GroupingStyle" />
+                        <MenuItem x:Name="GroupByLocation" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
+                              Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByLocation}" 
+                              IsCheckable="True" controls:MenuItemGroup.GroupName="ToDoExplorer_GroupingStyle" />
+                    </MenuItem>
+                </Menu>
             </ToolBar>
         </ToolBarTray>
-        <controls:GroupingGrid ItemsSource="{Binding ToDos}"
-			                   SelectedItem="{Binding SelectedToDo}">
+
+        <controls:GroupingGrid Grid.Row="1" ShowGroupingItemCount="True"
+                               ItemsSource="{Binding Source={StaticResource ItemsByMarker}}"
+			                   SelectedItem="{Binding SelectedItem}"
+                               Visibility="{Binding Path=IsChecked, ElementName=GroupByMarker, Converter={StaticResource BoolToVisibility}}">
             <controls:GroupingGrid.Columns>
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ProjectName}" Binding="{Binding ProjectName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ModuleName}" Binding="{Binding ModuleName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_LineNumber}" Binding="{Binding LineNumber}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ProjectName}" Binding="{Binding Selection.QualifiedName.ProjectName}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ModuleName}" Binding="{Binding Selection.QualifiedName.ComponentName}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_LineNumber}" Binding="{Binding Selection.Selection.StartLine}" />
             </controls:GroupingGrid.Columns>
         </controls:GroupingGrid>
-    </DockPanel>
+        
+        <controls:GroupingGrid Grid.Row="1" ShowGroupingItemCount="True"
+                               ItemsSource="{Binding Source={StaticResource ItemsByLocation}}"
+			                   SelectedItem="{Binding SelectedItem}"
+                               Visibility="{Binding Path=IsChecked, ElementName=GroupByLocation, Converter={StaticResource BoolToVisibility}}">
+            <controls:GroupingGrid.Columns>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ProjectName}" Binding="{Binding Selection.QualifiedName.ProjectName}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ModuleName}" Binding="{Binding Selection.QualifiedName.ComponentName}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_LineNumber}" Binding="{Binding Selection.Selection.StartLine}" />
+            </controls:GroupingGrid.Columns>
+        </controls:GroupingGrid>
+    </Grid>
 </UserControl>
