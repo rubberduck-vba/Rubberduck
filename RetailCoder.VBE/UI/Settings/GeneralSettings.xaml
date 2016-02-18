@@ -55,7 +55,12 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel Margin="5,5,5,0">
-            <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" FontWeight="SemiBold" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_GeneralSettings}" Margin="0,0,0,3">
+            <Label DockPanel.Dock="Top"
+                   Background="DarkGray"
+                   Foreground="White"
+                   FontWeight="SemiBold"
+                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_GeneralSettings}"
+                   Margin="0,0,0,3">
                 <Label.Style>
                     <Style>
                         <Style.Resources>
@@ -66,21 +71,45 @@
                     </Style>
                 </Label.Style>
             </Label>
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_LanguageLabel}" FontWeight="SemiBold" />
-            <ComboBox Width="210" HorizontalAlignment="Left" Margin="5" SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" ItemsSource="{Binding Languages, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" />
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_LanguageLabel}"
+                   FontWeight="SemiBold" />
+            <ComboBox Width="210"
+                      HorizontalAlignment="Left"
+                      Margin="5"
+                      SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
+                      ItemsSource="{Binding Languages, UpdateSourceTrigger=PropertyChanged}"
+                      DisplayMemberPath="Name" />
 
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_AutoSaveLabel}" FontWeight="SemiBold" />
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_AutoSaveLabel}"
+                   FontWeight="SemiBold" />
             <StackPanel Orientation="Horizontal">
-                <CheckBox Name="AutoSaveButton" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_AutoSaveEnabled}" Margin="5,0,0,5" IsChecked="{Binding AutoSaveEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" />
-                <controls:NumberPicker Margin="0,-6,0,0" IsEnabled="{Binding ElementName=AutoSaveButton, Path=IsChecked}" NumValue="{Binding AutoSavePeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" />
+                <CheckBox Name="AutoSaveButton"
+                          Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_AutoSaveEnabled}"
+                          Margin="5,0,0,5"
+                          IsChecked="{Binding AutoSaveEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          HorizontalAlignment="Left" />
+                <controls:NumberPicker Margin="0,-6,0,0"
+                                       IsEnabled="{Binding ElementName=AutoSaveButton, Path=IsChecked}"
+                                       NumValue="{Binding AutoSavePeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       HorizontalAlignment="Left" />
             </StackPanel>
 
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}" FontWeight="SemiBold" />
-            <DataGrid ItemsSource="{Binding Hotkeys}" AutoGenerateColumns="False" CanUserDeleteRows="False"
-			    CanUserReorderColumns="False" IsReadOnly="False" SelectionMode="Single" CanUserAddRows="False"
-			    HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
-			    HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-			    ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22" BorderThickness="0">
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}"
+                   FontWeight="SemiBold" />
+            <DataGrid ItemsSource="{Binding Hotkeys}"
+                      AutoGenerateColumns="False"
+                      CanUserDeleteRows="False"
+                      CanUserReorderColumns="False"
+                      IsReadOnly="False"
+                      SelectionMode="Single"
+                      CanUserAddRows="False"
+                      HorizontalGridLinesBrush="Transparent"
+                      VerticalGridLinesBrush="Transparent"
+                      HeadersVisibility="Column"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ItemContainerStyle="{StaticResource PrettifyRow}"
+                      ColumnHeaderHeight="22"
+                      BorderThickness="0">
                 <DataGrid.CellStyle>
                     <Style TargetType="{x:Type DataGridCell}">
                         <Setter Property="BorderThickness" Value="0" />
@@ -89,9 +118,14 @@
                     </Style>
                 </DataGrid.CellStyle>
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyEnabled}" Binding="{Binding IsEnabled}" />
-                    <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyDescription}" Binding="{Binding Prompt}" Width="*" IsReadOnly="True" />
-                    <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyKeyPress}" SortMemberPath="KeyDisplaySymbol">
+                    <DataGridCheckBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyEnabled}"
+                                            Binding="{Binding IsEnabled}" />
+                    <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyDescription}"
+                                        Binding="{Binding Prompt}"
+                                        Width="*"
+                                        IsReadOnly="True" />
+                    <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyKeyPress}"
+                                            SortMemberPath="KeyDisplaySymbol">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding KeyDisplaySymbol, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
