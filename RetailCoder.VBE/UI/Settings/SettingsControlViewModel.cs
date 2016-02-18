@@ -7,60 +7,29 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
 {
-    public class SettingsView
-    {
-        public string Label { get { return RubberduckUI.ResourceManager.GetString("SettingsCaption_" + View); } }
-        public string Instructions
-        { 
-            get
-            {
-                return RubberduckUI.ResourceManager.GetString("SettingsInstructions_" + View);
-            } 
-        }
-        public ISettingsView Control { get; set; }
-        public SettingsViews View { get; set; }
-    }
-
     public class SettingsControlViewModel : ViewModelBase
     {
         private readonly IGeneralConfigService _configService;
         private readonly Configuration _config;
 
-        public SettingsControlViewModel(IGeneralConfigService configService, SettingsViews view = Settings.SettingsViews.GeneralSettings)
+        public SettingsControlViewModel(IGeneralConfigService configService,
+            Configuration config,
+            SettingsView generalSettings,
+            SettingsView todoSettings,
+            SettingsView inspectionSettings,
+            SettingsView unitTestSettings,
+            SettingsView indenterSettings,
+            SettingsViews activeView = Settings.SettingsViews.GeneralSettings)
         {
             _configService = configService;
-            _config = configService.LoadConfiguration();
+            _config = config;
 
             SettingsViews = new ObservableCollection<SettingsView>
             {
-                new SettingsView
-                {
-                    Control = new GeneralSettings(new GeneralSettingsViewModel(_config)),
-                    View = Settings.SettingsViews.GeneralSettings
-                },
-                new SettingsView
-                {
-                    Control = new TodoSettings(new TodoSettingsViewModel(_config)),
-                    View = Settings.SettingsViews.TodoSettings
-                },
-                new SettingsView
-                {
-                    Control = new InspectionSettings(new InspectionSettingsViewModel(_config)),
-                    View = Settings.SettingsViews.InspectionSettings
-                },
-                new SettingsView
-                {
-                    Control = new UnitTestSettings(new UnitTestSettingsViewModel(_config)),
-                    View = Settings.SettingsViews.UnitTestSettings
-                },
-                new SettingsView
-                {
-                    Control = new IndenterSettings(new IndenterSettingsViewModel(_config)),
-                    View = Settings.SettingsViews.IndenterSettings
-                }
+                generalSettings, todoSettings, inspectionSettings, unitTestSettings, indenterSettings
             };
 
-            SelectedSettingsView = SettingsViews.First(v => v.View == view);
+            SelectedSettingsView = SettingsViews.First(v => v.View == activeView);
         }
 
         private ObservableCollection<SettingsView> _settingsViews;
@@ -153,16 +122,16 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private ICommand _refreshButtonCommand;
-        public ICommand RefreshButtonCommand
+        private ICommand _resetButtonCommand;
+        public ICommand ResetButtonCommand
         {
             get
             {
-                if (_refreshButtonCommand != null)
+                if (_resetButtonCommand != null)
                 {
-                    return _refreshButtonCommand;
+                    return _resetButtonCommand;
                 }
-                return _refreshButtonCommand = new DelegateCommand(_ =>
+                return _resetButtonCommand = new DelegateCommand(_ =>
                 {
                     var defaultConfig = _configService.GetDefaultConfiguration();
                     foreach (var vm in SettingsViews.Select(v => v.Control.ViewModel))
