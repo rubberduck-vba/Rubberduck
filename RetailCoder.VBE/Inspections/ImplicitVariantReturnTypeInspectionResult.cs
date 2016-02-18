@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
-                new SetExplicitVariantReturnTypeQuickFix(Context, QualifiedSelection, RubberduckUI.Inspections_ReturnExplicitVariant), 
+                new SetExplicitVariantReturnTypeQuickFix(Context, QualifiedSelection, InspectionsUI.SetExplicitVariantReturnTypeQuickFix), 
                 new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }

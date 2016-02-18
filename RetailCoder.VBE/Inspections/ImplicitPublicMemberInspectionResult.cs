@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections
     public class SpecifyExplicitPublicModifierQuickFix : CodeInspectionQuickFix
     {
         public SpecifyExplicitPublicModifierQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_SpecifyPublicModifierExplicitly)
+            : base(context, selection, InspectionsUI.SpecifyExplicitPublicModifierQuickFix)
         {
         }
 

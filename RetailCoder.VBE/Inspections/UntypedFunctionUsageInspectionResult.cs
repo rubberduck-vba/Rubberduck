@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections
     public class UntypedFunctionUsageQuickFix : CodeInspectionQuickFix
     {
         public UntypedFunctionUsageQuickFix(ParserRuleContext context, QualifiedSelection selection) 
-            : base(context, selection, string.Format(RubberduckUI.QuickFixUseTypedFunction_, context.GetText()))
+            : base(context, selection, string.Format(InspectionsUI.QuickFixUseTypedFunction_, context.GetText()))
         {
         }
 

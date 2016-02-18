@@ -300,7 +300,7 @@
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
-    <Compile Include="Inspections\RemoveExplicitCallStatemntQuickFix.cs" />
+    <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
     <Compile Include="UI\Controls\MenuItemGroup.cs" />
     <Compile Include="UI\Controls\GroupingGrid.xaml.cs">
       <DependentUpon>GroupingGrid.xaml</DependentUpon>

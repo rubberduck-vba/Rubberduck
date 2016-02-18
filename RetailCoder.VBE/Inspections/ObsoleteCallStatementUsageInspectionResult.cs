@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
-                new RemoveExplicitCallStatemntQuickFix(Context, QualifiedSelection), 
+                new RemoveExplicitCallStatmentQuickFix(Context, QualifiedSelection), 
                 new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }

@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections
         {
             _quickFixes = new CodeInspectionQuickFix[]
                 {
-                    new ImplicitByRefParameterQuickFix(Context, QualifiedSelection, RubberduckUI.Inspections_PassParamByRefExplicitly, Tokens.ByRef), 
+                    new ImplicitByRefParameterQuickFix(Context, QualifiedSelection, InspectionsUI.ImplicitByRefParameterQuickFix, Tokens.ByRef), 
                     new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
                 };
         }

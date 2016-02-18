@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +18,7 @@ namespace Rubberduck.Inspections
         }
 
         public ConvertToProcedureQuickFix(ParserRuleContext context, QualifiedSelection selection, IEnumerable<string> returnStatements)
-            : base(context, selection, RubberduckUI.Inspections_ConvertFunctionToProcedure)
+            : base(context, selection, InspectionsUI.ConvertFunctionToProcedureQuickFix)
         {
             _returnStatements = returnStatements;
         }

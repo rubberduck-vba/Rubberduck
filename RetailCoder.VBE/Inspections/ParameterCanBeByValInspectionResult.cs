@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections
     public class PassParameterByValueQuickFix : CodeInspectionQuickFix
     {
         public PassParameterByValueQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_PassParamByValue)
+            : base(context, selection, InspectionsUI.PassParameterByValueQuickFix)
         {
         }
 

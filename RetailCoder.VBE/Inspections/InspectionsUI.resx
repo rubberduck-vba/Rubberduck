@@ -416,4 +416,82 @@
   <data name="UnassignedVariableUsageInspectionResultFormat" xml:space="preserve">
     <value>Variable '{0}' is used but not assigned</value>
   </data>
+  <data name="ConvertFunctionToProcedureQuickFix" xml:space="preserve">
+    <value>Convert function to procedure</value>
+  </data>
+  <data name="DeclareAsExplicitVariantQuickFix" xml:space="preserve">
+    <value>Declare as explicit Variant</value>
+  </data>
+  <data name="ImplicitByRefParameterQuickFix" xml:space="preserve">
+    <value>Pass parameter by reference explicitly</value>
+  </data>
+  <data name="Inspections_DeclarationOf" xml:space="preserve">
+    <value>declaration of </value>
+  </data>
+  <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
+    <value>TODO</value>
+  </data>
+  <data name="Inspections_UsageOf" xml:space="preserve">
+    <value>usage of </value>
+  </data>
+  <data name="MakeSingleLineParameterQuickFix" xml:space="preserve">
+    <value>Write variable on one line</value>
+  </data>
+  <data name="ObsoleteGlobalInspectionQuickFix" xml:space="preserve">
+    <value>Replace 'Global' access modifier with 'Public'</value>
+  </data>
+  <data name="OptionExplicitInspectionResultFormat" xml:space="preserve">
+    <value>Option Explicit is not specified in '{0}'</value>
+  </data>
+  <data name="OptionExplicitQuickFix" xml:space="preserve">
+    <value>Specify 'Option Explicit'</value>
+  </data>
+  <data name="PassParameterByReferenceQuickFix" xml:space="preserve">
+    <value>Pass parameter by reference</value>
+  </data>
+  <data name="PassParameterByValueQuickFix" xml:space="preserve">
+    <value>Pass parameter by value</value>
+  </data>
+  <data name="QuickFixUseTypedFunction_" xml:space="preserve">
+    <value>Change '{0}$' to '{0}'</value>
+  </data>
+  <data name="QuickFix_ThisModule" xml:space="preserve">
+    <value>Fix all occurrences in module</value>
+  </data>
+  <data name="QuickFix_ThisProject" xml:space="preserve">
+    <value>Fix all occurrences in project</value>
+  </data>
+  <data name="RemoveCommentQuickFix" xml:space="preserve">
+    <value>Remove comment</value>
+  </data>
+  <data name="RemoveObsoleteStatementQuickFix" xml:space="preserve">
+    <value>Remove obsolete statement</value>
+  </data>
+  <data name="RemoveTypeHintsQuickFix" xml:space="preserve">
+    <value>Remove type hints</value>
+  </data>
+  <data name="RemoveUnassignedIdentifierQuickFix" xml:space="preserve">
+    <value>Remove unassigned variable</value>
+  </data>
+  <data name="RemoveUnassignedVariableUsageQuickFix" xml:space="preserve">
+    <value>Remove usage (breaks code)</value>
+  </data>
+  <data name="RemoveUnusedDeclarationQuickFix" xml:space="preserve">
+    <value>Remove unused declaration</value>
+  </data>
+  <data name="RemoveUnusedParameterQuickFix" xml:space="preserve">
+    <value>Remove unused parameter</value>
+  </data>
+  <data name="ReplaceCommentMarkerQuickFix" xml:space="preserve">
+    <value>Replace 'Rem' usage with a single-quote comment marker</value>
+  </data>
+  <data name="SetExplicitVariantReturnTypeQuickFix" xml:space="preserve">
+    <value>Return explicit Variant</value>
+  </data>
+  <data name="SpecifyExplicitPublicModifierQuickFix" xml:space="preserve">
+    <value>Specify Public access modifier explicitly</value>
+  </data>
+  <data name="SplitMultipleDeclarationsQuickFix" xml:space="preserve">
+    <value>Separate multiple declarations into multiple instructions</value>
+  </data>
 </root>
