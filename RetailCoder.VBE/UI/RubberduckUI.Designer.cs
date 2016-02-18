@@ -2446,20 +2446,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Options.
-        /// </summary>
-        public static string RubberduckMenu_Options {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_Options", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &amp;Refactor.
         /// </summary>
         public static string RubberduckMenu_Refactor {
             get {
                 return ResourceManager.GetString("RubberduckMenu_Refactor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to S&amp;ettings.
+        /// </summary>
+        public static string RubberduckMenu_Settings {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_Settings", resourceCulture);
             }
         }
         

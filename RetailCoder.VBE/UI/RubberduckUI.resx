@@ -331,8 +331,8 @@
   <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
     <value>Code &amp;Inspections</value>
   </data>
-  <data name="RubberduckMenu_Options" xml:space="preserve">
-    <value>&amp;Options</value>
+  <data name="RubberduckMenu_Settings" xml:space="preserve">
+    <value>S&amp;ettings</value>
   </data>
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>&amp;Refactor</value>
