@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
@@ -238,6 +239,7 @@ namespace Rubberduck.Parsing.VBA
             var obsoleteLetListener = new ObsoleteLetStatementListener();
             var emptyStringLiteralListener = new EmptyStringLiteralListener();
             var argListsWithOneByRefParam = new ArgListWithOneByRefParamListener();
+            var commentListener = new CommentListener();
 
             var listeners = new IParseTreeListener[]
             {
@@ -245,6 +247,7 @@ namespace Rubberduck.Parsing.VBA
                 obsoleteLetListener,
                 emptyStringLiteralListener,
                 argListsWithOneByRefParam,
+                commentListener
             };
 
             token.ThrowIfCancellationRequested();
@@ -396,6 +399,25 @@ namespace Rubberduck.Parsing.VBA
                 {
                     _contexts.Add(context);
                 }
+            }
+        }
+
+        private class CommentListener : VBABaseListener
+        {
+            private readonly IList<VBAParser.RemCommentContext> _remComments = new List<VBAParser.RemCommentContext>();
+            public IEnumerable<VBAParser.RemCommentContext> RemComments { get { return _remComments; } }
+
+            private readonly IList<VBAParser.CommentContext> _comments = new List<VBAParser.CommentContext>();
+            public IEnumerable<VBAParser.CommentContext> Comments { get { return _comments; } }
+
+            public override void ExitRemComment([NotNull] VBAParser.RemCommentContext context)
+            {
+                _remComments.Add(context);
+            }
+
+            public override void ExitComment([NotNull] VBAParser.CommentContext context)
+            {
+                _comments.Add(context);
             }
         }
     }

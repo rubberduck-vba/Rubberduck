@@ -98,30 +98,30 @@ grammar VBA;
 startRule : module EOF;
 
 module : 
-	WS? NEWLINE*
-	(moduleHeader NEWLINE+)?
-	moduleConfig? NEWLINE*
-	moduleAttributes? NEWLINE*
-	moduleDeclarations? NEWLINE*
-	moduleBody? NEWLINE*
-	WS?
+	endOfLine*
+	(moduleHeader endOfLine*)?
+	moduleConfig? endOfLine*
+	moduleAttributes? endOfLine*
+	moduleDeclarations? endOfLine*
+	moduleBody? endOfLine*
+	endOfLine*
 ;
 
 moduleHeader : VERSION WS DOUBLELITERAL WS CLASS;
 
 moduleConfig :
-	BEGIN NEWLINE+ 
+	BEGIN endOfLine*
 	moduleConfigElement+
-	END NEWLINE+
+	END
 ;
 
 moduleConfigElement :
-	ambiguousIdentifier WS? EQ WS? literal NEWLINE
+	ambiguousIdentifier WS? EQ WS? literal endOfLine*
 ;
 
-moduleAttributes : (attributeStmt NEWLINE+)+;
+moduleAttributes : (attributeStmt endOfLine+)+;
 
-moduleDeclarations : moduleDeclarationsElement (NEWLINE+ moduleDeclarationsElement)*;
+moduleDeclarations : moduleDeclarationsElement (endOfLine+ moduleDeclarationsElement)*;
 
 moduleOption : 
 	OPTION_BASE WS? SHORTLITERAL 			# optionBaseStmt
@@ -131,7 +131,8 @@ moduleOption :
 ;
 
 moduleDeclarationsElement :
-	declareStmt
+	comment
+	| declareStmt
 	| enumerationStmt 
 	| eventStmt
 	| constStmt
@@ -144,7 +145,7 @@ moduleDeclarationsElement :
 ;
 
 moduleBody : 
-	moduleBodyElement (NEWLINE+ moduleBodyElement)*;
+	moduleBodyElement (endOfStatement moduleBodyElement)* endOfStatement;
 
 moduleBodyElement : 
 	functionStmt 
@@ -161,9 +162,10 @@ moduleBodyElement :
 
 attributeStmt : ATTRIBUTE WS implicitCallStmt_InStmt WS? EQ WS? literal (WS? ',' WS? literal)*;
 
-block : blockStmt WS* (NEWLINE* WS? blockStmt)* WS? NEWLINE*;
+block : blockStmt (endOfStatement blockStmt)* endOfStatement;
 
-blockStmt : lineLabel
+blockStmt :
+	lineLabel
     | appactivateStmt
 	| attributeStmt
 	| beepStmt
@@ -265,28 +267,28 @@ deftypeStmt :
 deleteSettingStmt : DELETESETTING WS valueStmt WS? ',' WS? valueStmt (WS? ',' WS? valueStmt)?;
 
 doLoopStmt :
-	DO NEWLINE+ 
-	(block NEWLINE+)? 
+	DO endOfStatement 
+	block?
 	LOOP
 	|
-	DO WS (WHILE | UNTIL) WS valueStmt NEWLINE+ 
-	(block NEWLINE+)? 
+	DO WS (WHILE | UNTIL) WS valueStmt endOfStatement
+	block?
 	LOOP
 	| 
-	DO NEWLINE+ 
-	(block NEWLINE+) 
+	DO endOfStatement
+	block
 	LOOP WS (WHILE | UNTIL) WS valueStmt
 ;
 
 endStmt : END;
 
 enumerationStmt: 
-	(visibility WS)? ENUM WS ambiguousIdentifier NEWLINE+ 
-	(enumerationStmt_Constant)* 
+	(visibility WS)? ENUM WS ambiguousIdentifier endOfStatement 
+	enumerationStmt_Constant* 
 	END_ENUM
 ;
 
-enumerationStmt_Constant : ambiguousIdentifier (WS? EQ WS? valueStmt)? NEWLINE+;
+enumerationStmt_Constant : ambiguousIdentifier (WS? EQ WS? valueStmt)? endOfStatement;
 
 eraseStmt : ERASE WS valueStmt;
 
@@ -299,20 +301,20 @@ exitStmt : EXIT_DO | EXIT_FOR | EXIT_FUNCTION | EXIT_PROPERTY | EXIT_SUB;
 filecopyStmt : FILECOPY WS valueStmt WS? ',' WS? valueStmt;
 
 forEachStmt : 
-	FOR WS EACH WS ambiguousIdentifier typeHint? WS IN WS valueStmt NEWLINE+ 
-	(block NEWLINE+)?
+	FOR WS EACH WS ambiguousIdentifier typeHint? WS IN WS valueStmt endOfStatement
+	block?
 	NEXT (WS ambiguousIdentifier)?
 ;
 
 forNextStmt : 
-	FOR WS ambiguousIdentifier typeHint? (WS asTypeClause)? WS? EQ WS? valueStmt WS TO WS valueStmt (WS STEP WS valueStmt)? NEWLINE+ 
-	(block NEWLINE+)? 
+	FOR WS ambiguousIdentifier typeHint? (WS asTypeClause)? WS? EQ WS? valueStmt WS TO WS valueStmt (WS STEP WS valueStmt)? endOfStatement 
+	block?
 	NEXT (WS ambiguousIdentifier)?
 ; 
 
 functionStmt :
-	(visibility WS)? (STATIC WS)? FUNCTION WS? ambiguousIdentifier typeHint? (WS? argList)? (WS? asTypeClause)? NEWLINE+
-	(block NEWLINE+)?
+	(visibility WS)? (STATIC WS)? FUNCTION WS? ambiguousIdentifier typeHint? (WS? argList)? (WS? asTypeClause)? endOfStatement
+	block?
 	END_FUNCTION
 ;
 
@@ -328,20 +330,20 @@ ifThenElseStmt :
 ;
 
 ifBlockStmt : 
-	IF WS ifConditionStmt WS THEN NEWLINE+ 
-	(block NEWLINE+)?
+	IF WS ifConditionStmt WS THEN endOfStatement 
+	block?
 ;
 
 ifConditionStmt : valueStmt;
 
 ifElseIfBlockStmt : 
-	ELSEIF WS ifConditionStmt WS THEN NEWLINE+ 
-	(block NEWLINE+)?
+	ELSEIF WS ifConditionStmt WS THEN endOfStatement
+	block?
 ;
 
 ifElseBlockStmt : 
-	ELSE NEWLINE+ 
-	(block NEWLINE+)?
+	ELSE endOfStatement 
+	block?
 ;
 
 implementsStmt : IMPLEMENTS WS ambiguousIdentifier;
@@ -365,18 +367,18 @@ macroConstStmt : MACRO_CONST WS? ambiguousIdentifier WS? EQ WS? valueStmt;
 macroIfThenElseStmt : macroIfBlockStmt macroElseIfBlockStmt* macroElseBlockStmt? MACRO_END_IF;
 
 macroIfBlockStmt : 
-	MACRO_IF WS? ifConditionStmt WS THEN NEWLINE*
-	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)*
+	MACRO_IF WS? ifConditionStmt WS THEN endOfStatement
+	((moduleDeclarationsElement | moduleBody | block) endOfStatement)*
 ;
 
 macroElseIfBlockStmt : 
-	MACRO_ELSEIF WS? ifConditionStmt WS THEN NEWLINE* 
-	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)*
+	MACRO_ELSEIF WS? ifConditionStmt WS THEN endOfStatement
+	((moduleDeclarationsElement | moduleBody | block) endOfStatement)*
 ;
 
 macroElseBlockStmt : 
-	MACRO_ELSE NEWLINE* 
-	((moduleDeclarationsElement | moduleBody | block) NEWLINE*)*
+	MACRO_ELSE endOfStatement
+	((moduleDeclarationsElement | moduleBody | block) endOfStatement)*
 ;
 
 midStmt : MID WS? LPAREN WS? argsCall WS? RPAREN;
@@ -412,20 +414,20 @@ outputList_Expression :
 printStmt : PRINT WS fileNumber WS? ',' (WS? outputList)?;
 
 propertyGetStmt : 
-	(visibility WS)? (STATIC WS)? PROPERTY_GET WS ambiguousIdentifier typeHint? (WS? argList)? (WS asTypeClause)? NEWLINE+ 
-	(block NEWLINE+)? 
+	(visibility WS)? (STATIC WS)? PROPERTY_GET WS ambiguousIdentifier typeHint? (WS? argList)? (WS asTypeClause)? endOfStatement 
+	block? 
 	END_PROPERTY
 ;
 
 propertySetStmt : 
-	(visibility WS)? (STATIC WS)? PROPERTY_SET WS ambiguousIdentifier (WS? argList)? NEWLINE+ 
-	(block NEWLINE+)? 
+	(visibility WS)? (STATIC WS)? PROPERTY_SET WS ambiguousIdentifier (WS? argList)? endOfStatement 
+	block? 
 	END_PROPERTY
 ;
 
 propertyLetStmt : 
-	(visibility WS)? (STATIC WS)? PROPERTY_LET WS ambiguousIdentifier (WS? argList)? NEWLINE+ 
-	(block NEWLINE+)? 
+	(visibility WS)? (STATIC WS)? PROPERTY_LET WS ambiguousIdentifier (WS? argList)? endOfStatement 
+	block? 
 	END_PROPERTY
 ;
 
@@ -456,20 +458,20 @@ saveSettingStmt : SAVESETTING WS valueStmt WS? ',' WS? valueStmt WS? ',' WS? val
 seekStmt : SEEK WS fileNumber WS? ',' WS? valueStmt;
 
 selectCaseStmt : 
-	SELECT WS CASE WS valueStmt NEWLINE+ 
+	SELECT WS CASE WS valueStmt endOfStatement 
 	sC_Case*
-	WS? END_SELECT
+	END_SELECT
 ;
 
 sC_Selection :
-    IS WS? comparisonOperator WS? valueStmt                         # caseCondIs
+    IS WS? comparisonOperator WS? valueStmt                       # caseCondIs
     | valueStmt WS TO WS valueStmt                                # caseCondTo
-    | valueStmt                                                     # caseCondValue
+    | valueStmt                                                   # caseCondValue
 ;
 
 sC_Case : 
-	CASE WS sC_Cond WS? (':'? NEWLINE*)
-	(block NEWLINE+)*
+	CASE WS sC_Cond endOfStatement
+	block?
 ;
 
 // ELSE first, so that it is not interpreted as a variable call
@@ -487,20 +489,20 @@ setStmt : SET WS implicitCallStmt_InStmt WS? EQ WS? valueStmt;
 stopStmt : STOP;
 
 subStmt : 
-	(visibility WS)? (STATIC WS)? SUB WS? ambiguousIdentifier (WS? argList)? NEWLINE+ 
-	(block NEWLINE+)? 
+	(visibility WS)? (STATIC WS)? SUB WS? ambiguousIdentifier (WS? argList)? endOfStatement
+	block? 
 	END_SUB
 ;
 
 timeStmt : TIME WS? EQ WS? valueStmt;
 
 typeStmt : 
-	(visibility WS)? TYPE WS ambiguousIdentifier NEWLINE+ 
-	(typeStmt_Element)*
+	(visibility WS)? TYPE WS ambiguousIdentifier endOfStatement
+	typeStmt_Element*
 	END_TYPE
 ;
 
-typeStmt_Element : ambiguousIdentifier (WS? LPAREN (WS? subscripts)? WS? RPAREN)? (WS asTypeClause)? NEWLINE+;
+typeStmt_Element : ambiguousIdentifier (WS? LPAREN (WS? subscripts)? WS? RPAREN)? (WS asTypeClause)? endOfStatement;
 
 typeOfStmt : TYPEOF WS valueStmt (WS IS WS type)?;
 
@@ -553,16 +555,16 @@ variableListStmt : variableSubStmt (WS? ',' WS? variableSubStmt)*;
 variableSubStmt : ambiguousIdentifier (WS? LPAREN WS? (subscripts WS?)? RPAREN WS?)? typeHint? (WS asTypeClause)?;
 
 whileWendStmt : 
-	WHILE WS valueStmt NEWLINE+ 
-	(block NEWLINE)* 
+	WHILE WS valueStmt endOfStatement 
+	block?
 	WEND
 ;
 
 widthStmt : WIDTH WS fileNumber WS? ',' WS? valueStmt;
 
 withStmt : 
-	WITH WS (implicitCallStmt_InStmt | (NEW WS type)) NEWLINE+ 
-	(block NEWLINE+)? 
+	WITH WS (implicitCallStmt_InStmt | (NEW WS type)) endOfStatement 
+	block? 
 	END_WITH
 ;
 
@@ -675,7 +677,6 @@ typeHint : '&' | '%' | '#' | '!' | '@' | '$';
 
 visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 
-
 // ambiguous keywords
 ambiguousKeyword : 
 	ACCESS | ADDRESSOF | ALIAS | AND | ATTRIBUTE | APPACTIVATE | APPEND | AS |
@@ -700,6 +701,14 @@ ambiguousKeyword :
 	WEND | WHILE | WIDTH | WITH | WITHEVENTS | WRITE |
 	XOR
 ;
+
+remComment : REMCOMMENT;
+
+comment : COMMENT;
+
+endOfLine : WS? (NEWLINE | comment | remComment) WS?;
+
+endOfStatement : (endOfLine | WS? COLON WS?)*;
 
 
 // lexer rules --------------------------------------------------------------------------------
@@ -928,9 +937,13 @@ fragment TIMESEPARATOR : WS? (':' | '.') WS?;
 fragment AMPM : WS? (A M | P M | A | P);
 
 // whitespace, line breaks, comments, ...
-LINE_CONTINUATION : [ \t]+ '_' '\r'? '\n' -> skip;
-NEWLINE : (':' WS?) | (WS? ('\r'? '\n') WS?);
-COMMENT : WS? ('\'' | ':'? REM WS) (LINE_CONTINUATION | ~('\n' | '\r'))* -> skip;
+LINE_CONTINUATION : [ \t]+ UNDERSCORE '\r'? '\n' -> skip;
+NEWLINE : [\r\n\u2028\u2029]+;
+REMCOMMENT : COLON? REM WS (LINE_CONTINUATION | ~[\r\n\u2028\u2029])*;
+COMMENT : SINGLEQUOTE (LINE_CONTINUATION | ~[\r\n\u2028\u2029])*;
+SINGLEQUOTE : '\'';
+COLON : ':';
+UNDERSCORE : '_';
 WS : ([ \t] | LINE_CONTINUATION)+;
 
 // identifier
