@@ -309,7 +309,7 @@
   <data name="UntypedFunctionUsageInspectionName" xml:space="preserve">
     <value>Use of variant-returning string function</value>
   </data>
-  <data name="ProcedureCanBeFunctionInspectionResultFormat" xml:space="preserve">
+  <data name="ProcedureCanBeWrittenAsFunctionInspectionResultFormat" xml:space="preserve">
     <value>Procedure '{0}' can be written as a function.</value>
     <comment>{0} Procedure name</comment>
   </data>
@@ -349,10 +349,10 @@
   <data name="WriteOnlyPropertyInspectionName" xml:space="preserve">
     <value>Write-only property</value>
   </data>
-  <data name="ProcedureCanBeFunctionInspectionMeta" xml:space="preserve">
+  <data name="ProcedureCanBeWrittenAsFunctionInspectionMeta" xml:space="preserve">
     <value>A procedure that only has one parameter passed by reference that is assigned a new value/reference before the procedure exits, is using a ByRef parameter as a return value: consider making it a function instead.</value>
   </data>
-  <data name="ProcedureCanBeFunctionInspectionName" xml:space="preserve">
+  <data name="ProcedureCanBeWrittenAsFunctionInspectionName" xml:space="preserve">
     <value>Procedure can be written as a function</value>
   </data>
   <data name="WriteOnlyPropertyInspectionResultFormat" xml:space="preserve">

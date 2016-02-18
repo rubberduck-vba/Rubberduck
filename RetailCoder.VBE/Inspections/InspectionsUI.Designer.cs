@@ -711,27 +711,27 @@ namespace Rubberduck.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A procedure that only has one parameter passed by reference that is assigned a new value/reference before the procedure exits, is using a ByRef parameter as a return value: consider making it a function instead..
         /// </summary>
-        internal static string ProcedureCanBeFunctionInspectionMeta {
+        internal static string ProcedureCanBeWrittenAsFunctionInspectionMeta {
             get {
-                return ResourceManager.GetString("ProcedureCanBeFunctionInspectionMeta", resourceCulture);
+                return ResourceManager.GetString("ProcedureCanBeWrittenAsFunctionInspectionMeta", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Procedure can be written as a function.
         /// </summary>
-        internal static string ProcedureCanBeFunctionInspectionName {
+        internal static string ProcedureCanBeWrittenAsFunctionInspectionName {
             get {
-                return ResourceManager.GetString("ProcedureCanBeFunctionInspectionName", resourceCulture);
+                return ResourceManager.GetString("ProcedureCanBeWrittenAsFunctionInspectionName", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Procedure &apos;{0}&apos; can be written as a function..
         /// </summary>
-        internal static string ProcedureCanBeFunctionInspectionResultFormat {
+        internal static string ProcedureCanBeWrittenAsFunctionInspectionResultFormat {
             get {
-                return ResourceManager.GetString("ProcedureCanBeFunctionInspectionResultFormat", resourceCulture);
+                return ResourceManager.GetString("ProcedureCanBeWrittenAsFunctionInspectionResultFormat", resourceCulture);
             }
         }
         
