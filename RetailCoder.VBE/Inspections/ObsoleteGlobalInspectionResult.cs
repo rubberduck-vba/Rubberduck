@@ -3,7 +3,6 @@ using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -36,7 +35,7 @@ namespace Rubberduck.Inspections
     public class ReplaceGlobalModifierQuickFix : CodeInspectionQuickFix
     {
         public ReplaceGlobalModifierQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_ChangeGlobalAccessModifierToPublic)
+            : base(context, selection, InspectionsUI.ObsoleteGlobalInspectionQuickFix)
         {
         }
 

@@ -8,7 +8,7 @@ namespace Rubberduck.Inspections
     public class MakeSingleLineParameterQuickFix : CodeInspectionQuickFix
     {
         public MakeSingleLineParameterQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_MultilineParameter)
+            : base(context, selection, InspectionsUI.MakeSingleLineParameterQuickFix)
         {
         }
 

@@ -35,8 +35,8 @@ namespace Rubberduck.Inspections
     /// </summary>
     public class PassParameterByReferenceQuickFix : CodeInspectionQuickFix
     {
-        public PassParameterByReferenceQuickFix(ParserRuleContext context, QualifiedSelection selection) 
-            : base(context, selection, RubberduckUI.Inspections_PassParamByReference)
+        public PassParameterByReferenceQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, InspectionsUI.PassParameterByReferenceQuickFix)
         {
         }
 

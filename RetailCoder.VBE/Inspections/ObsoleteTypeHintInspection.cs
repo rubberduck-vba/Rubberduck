@@ -23,11 +23,12 @@ namespace Rubberduck.Inspections
 
             var declarations = from item in results
                 where item.HasTypeHint()
-                select new ObsoleteTypeHintInspectionResult(this, string.Format(InspectionsUI.NonReturningFunctionInspectionResultFormat, RubberduckUI.Inspections_DeclarationOf + item.DeclarationType.ToString().ToLower(), item.IdentifierName), new QualifiedContext(item.QualifiedName, item.Context), item);
+                // bug: this inspection result only has one value.  Why are we passing two in?
+                select new ObsoleteTypeHintInspectionResult(this, string.Format(InspectionsUI.NonReturningFunctionInspectionResultFormat, InspectionsUI.Inspections_DeclarationOf + item.DeclarationType.ToString().ToLower(), item.IdentifierName), new QualifiedContext(item.QualifiedName, item.Context), item);
             // todo: localize this InspectionResultFormat properly
             var references = from item in results.SelectMany(d => d.References)
                 where item.HasTypeHint()
-                select new ObsoleteTypeHintInspectionResult(this, string.Format(InspectionsUI.NonReturningFunctionInspectionResultFormat, RubberduckUI.Inspections_UsageOf + item.Declaration.DeclarationType.ToString().ToLower(), item.IdentifierName), new QualifiedContext(item.QualifiedModuleName, item.Context), item.Declaration);
+                select new ObsoleteTypeHintInspectionResult(this, string.Format(InspectionsUI.NonReturningFunctionInspectionResultFormat, InspectionsUI.Inspections_UsageOf + item.Declaration.DeclarationType.ToString().ToLower(), item.IdentifierName), new QualifiedContext(item.QualifiedModuleName, item.Context), item.Declaration);
 
             return declarations.Union(references);
         }

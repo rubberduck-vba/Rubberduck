@@ -25,14 +25,14 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(RubberduckUI.OptionExplicit, QualifiedName.ComponentName); }
+            get { return string.Format(InspectionsUI.OptionExplicitInspectionResultFormat, QualifiedName.ComponentName); }
         }
     }
 
     public class OptionExplicitQuickFix : CodeInspectionQuickFix
     {
-        public OptionExplicitQuickFix(ParserRuleContext context, QualifiedSelection selection) 
-            : base(context, selection, RubberduckUI.Inspections_SpecifyOptionExplicit)
+        public OptionExplicitQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, InspectionsUI.OptionExplicitQuickFix)
         {
         }
 

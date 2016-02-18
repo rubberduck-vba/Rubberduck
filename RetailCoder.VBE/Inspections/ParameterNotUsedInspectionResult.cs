@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections
 
         public RemoveUnusedParameterQuickFix(ParserRuleContext context, QualifiedSelection selection, 
             RemoveParametersRefactoring quickFixRefactoring, RubberduckParserState parseResult)
-            : base(context, selection, RubberduckUI.Inspections_RemoveUnusedParameter)
+            : base(context, selection, InspectionsUI.RemoveUnusedParameterQuickFix)
         {
             _quickFixRefactoring = quickFixRefactoring;
             _parseResult = parseResult;

@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections
     public class RemoveExplicitLetStatementQuickFix : CodeInspectionQuickFix
     {
         public RemoveExplicitLetStatementQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_RemoveObsoleteStatement)
+            : base(context, selection, InspectionsUI.RemoveObsoleteStatementQuickFix)
         {
         }
 

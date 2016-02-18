@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections
     public class RemoveUnusedDeclarationQuickFix : CodeInspectionQuickFix
     {
         public RemoveUnusedDeclarationQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_RemoveUnusedDeclaration)
+            : base(context, selection, InspectionsUI.RemoveUnusedDeclarationQuickFix)
         {
         }
 

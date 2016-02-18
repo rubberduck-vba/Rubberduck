@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections
         private readonly CommentNode _comment;
 
         public RemoveCommentQuickFix(ParserRuleContext context, QualifiedSelection selection, CommentNode comment)
-            : base(context, selection, RubberduckUI.Inspections_RemoveComment)
+            : base(context, selection, InspectionsUI.RemoveCommentQuickFix)
         {
             _comment = comment;
         }
@@ -77,7 +77,7 @@ namespace Rubberduck.Inspections
         private readonly CommentNode _comment;
 
         public ReplaceCommentMarkerQuickFix(ParserRuleContext context, QualifiedSelection selection, CommentNode comment)
-            : base(context, selection, RubberduckUI.Inspections_ReplaceRemWithSingleQuoteMarker)
+            : base(context, selection, InspectionsUI.ReplaceCommentMarkerQuickFix)
         {
             _comment = comment;
         }

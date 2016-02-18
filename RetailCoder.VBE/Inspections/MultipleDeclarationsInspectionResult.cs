@@ -51,7 +51,7 @@ namespace Rubberduck.Inspections
     public class SplitMultipleDeclarationsQuickFix : CodeInspectionQuickFix
     {
         public SplitMultipleDeclarationsQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_SplitDeclarations)
+            : base(context, selection, InspectionsUI.SplitMultipleDeclarationsQuickFix)
         {
         }
 
