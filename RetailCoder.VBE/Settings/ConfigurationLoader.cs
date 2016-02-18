@@ -139,7 +139,8 @@ namespace Rubberduck.Settings
                 {
                     new Hotkey{Name="IndentProcedure", IsEnabled=true, KeyDisplaySymbol="CTRL-P"},
                     new Hotkey{Name="IndentModule", IsEnabled=true, KeyDisplaySymbol="CTRL-M"}
-                });
+                },
+                false, 10);
         }
 
         public ToDoMarker[] GetDefaultTodoMarkers()

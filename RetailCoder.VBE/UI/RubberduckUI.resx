@@ -660,9 +660,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
     <value>Selected Tests</value>
   </data>
-  <data name="GenericProjectName_" xml:space="preserve">
-    <value>Project '{0}' has generic name</value>
-  </data>
   <data name="Line" xml:space="preserve">
     <value>Line</value>
   </data>
@@ -1313,5 +1310,14 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="CodeInspectionResults_Type" xml:space="preserve">
     <value>Type</value>
+  </data>
+  <data name="GeneralSettings_AutoSaveLabel" xml:space="preserve">
+    <value>Auto Save:</value>
+  </data>
+  <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
+    <value>Hotkeys:</value>
+  </data>
+  <data name="GeneralSettings_AutoSaveEnabled" xml:space="preserve">
+    <value>Enable Auto Save</value>
   </data>
 </root>

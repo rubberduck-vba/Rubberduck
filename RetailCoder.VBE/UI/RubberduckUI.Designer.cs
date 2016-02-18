@@ -1215,6 +1215,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable Auto Save.
+        /// </summary>
+        public static string GeneralSettings_AutoSaveEnabled {
+            get {
+                return ResourceManager.GetString("GeneralSettings_AutoSaveEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto Save:.
+        /// </summary>
+        public static string GeneralSettings_AutoSaveLabel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_AutoSaveLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Description.
         /// </summary>
         public static string GeneralSettings_HotkeyDescription {
@@ -1242,20 +1260,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hotkeys:.
+        /// </summary>
+        public static string GeneralSettings_HotkeysLabel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_HotkeysLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display language:.
         /// </summary>
         public static string GeneralSettings_LanguageLabel {
             get {
                 return ResourceManager.GetString("GeneralSettings_LanguageLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Project &apos;{0}&apos; has generic name.
-        /// </summary>
-        public static string GenericProjectName_ {
-            get {
-                return ResourceManager.GetString("GenericProjectName_", resourceCulture);
             }
         }
         
