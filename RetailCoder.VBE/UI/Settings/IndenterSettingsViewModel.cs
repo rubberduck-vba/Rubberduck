@@ -23,6 +23,17 @@ namespace Rubberduck.UI.Settings
             IndentFirstCommentBlock = config.UserSettings.IndenterSettings.IndentFirstCommentBlock;
             IndentFirstDeclarationBlock = config.UserSettings.IndenterSettings.IndentFirstDeclarationBlock;
             IndentSpaces = config.UserSettings.IndenterSettings.IndentSpaces;
+
+            PropertyChanged += IndenterSettingsViewModel_PropertyChanged;
+        }
+
+        void IndenterSettingsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // ReSharper disable once ExplicitCallerInfoArgument
+            if (e.PropertyName != "IndenterData")
+            {
+                OnPropertyChanged("IndenterData");
+            }
         }
 
         #region Properties
@@ -248,6 +259,17 @@ namespace Rubberduck.UI.Settings
                     OnPropertyChanged();
                 }
             }
+        }
+
+        private readonly string _indenterData =
+@"Sub Foo()
+    ' Do something here
+    ' xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ' comment here
+End Sub";
+
+        public string IndenterData
+        {
+            get { return _indenterData; /* SmartIndenter.Indent(_indenterData); */ }
         }
 
         #endregion

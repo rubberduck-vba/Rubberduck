@@ -157,10 +157,7 @@
                    xml:space="preserve"
                    Margin="5,0"
                    FontFamily="Consolas"
-                   VerticalAlignment="Bottom">Sub Foo()
-    ' Do something here
-    ' xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ' comment here
-End Sub
-        </TextBlock>
+                   VerticalAlignment="Bottom"
+                   Text="{Binding IndenterData}"/>
     </Grid>
 </UserControl>
