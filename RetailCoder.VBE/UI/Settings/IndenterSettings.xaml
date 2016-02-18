@@ -158,6 +158,6 @@
                    Margin="5,0"
                    FontFamily="Consolas"
                    VerticalAlignment="Bottom"
-                   Text="{Binding IndenterData}"/>
+                   Text="{Binding PreviewSampleCode}"/>
     </Grid>
 </UserControl>

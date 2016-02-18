@@ -30,9 +30,9 @@ namespace Rubberduck.UI.Settings
         void IndenterSettingsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             // ReSharper disable once ExplicitCallerInfoArgument
-            if (e.PropertyName != "IndenterData")
+            if (e.PropertyName != "PreviewSampleCode")
             {
-                OnPropertyChanged("IndenterData");
+                OnPropertyChanged("PreviewSampleCode");
             }
         }
 
@@ -261,15 +261,15 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private readonly string _indenterData =
-@"Sub Foo()
+        // ReSharper disable once InconsistentNaming
+        private const string _previewSampleCode = @"Sub Foo()
     ' Do something here
     ' xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ' comment here
 End Sub";
 
-        public string IndenterData
+        public string PreviewSampleCode 
         {
-            get { return _indenterData; /* SmartIndenter.Indent(_indenterData); */ }
+            get { return _previewSampleCode; /* SmartIndenter.Indent(_indenterData); */ }
         }
 
         #endregion
