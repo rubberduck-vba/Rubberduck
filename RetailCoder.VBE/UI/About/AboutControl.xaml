@@ -7,14 +7,19 @@
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="499"
              d:DataContext="{d:DesignInstance {x:Type about:AboutControlViewModel}, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+        <BitmapImage x:Key="DuckImage" UriSource="../../Resources/RD-AboutWindow.png" />
+    </UserControl.Resources>
     <Grid Background="#F6F6F6F6">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="170" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <TextBlock Text="Image Placeholder" HorizontalAlignment="Center" Margin="0,50" />
+        <Image Source="{StaticResource DuckImage}"
+               Margin="0,10,0,0"
+               VerticalAlignment="Top" />
         <TextBlock Grid.Column="0"
-                   Margin="0,125,0,0"
+                   Margin="0,110,0,0"
                    VerticalAlignment="Top"
                    HorizontalAlignment="Center">
             <Hyperlink Name="WebpageHyperlink"
