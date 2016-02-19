@@ -118,7 +118,7 @@ namespace Rubberduck.UI.ToDoItems
         {
             var markers = _configService.LoadConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
             return markers.Where(marker => !string.IsNullOrEmpty(marker.Text)
-                                         && comment.Comment.ToLowerInvariant().Contains(marker.Text.ToLowerInvariant()))
+                                         && comment.CommentText.ToLowerInvariant().Contains(marker.Text.ToLowerInvariant()))
                            .Select(marker => new ToDoItem(marker.Text, comment));
         }
 
