@@ -61,146 +61,81 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All contributors to our GitHub repository.
+        ///   Looks up a localized string similar to Parsing powered by ANTLR
+        ///GitHub integration powered by LibGit2Sharp
+        ///Fugue icons by Yusuke Kamiyamane.
         /// </summary>
-        public static string About_AllContributors {
+        public static string AboutWindow_AttributionList {
             get {
-                return ResourceManager.GetString("About_AllContributors", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ...and anyone reading this!.
-        /// </summary>
-        public static string About_Anyone {
-            get {
-                return ResourceManager.GetString("About_Anyone", resourceCulture);
+                return ResourceManager.GetString("AboutWindow_AttributionList", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Attributions.
         /// </summary>
-        public static string About_Attributions {
+        public static string AboutWindow_AttributionsLabel {
             get {
-                return ResourceManager.GetString("About_Attributions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Blogs:.
-        /// </summary>
-        public static string About_Blogs {
-            get {
-                return ResourceManager.GetString("About_Blogs", resourceCulture);
+                return ResourceManager.GetString("AboutWindow_AttributionsLabel", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to About Rubberduck.
         /// </summary>
-        public static string About_Caption {
+        public static string AboutWindow_Caption {
             get {
-                return ResourceManager.GetString("About_Caption", resourceCulture);
+                return ResourceManager.GetString("AboutWindow_Caption", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Code Review Stack Exchange.
+        ///   Looks up a localized string similar to © Copyright 2014-2016 Mathieu Guindon &amp; Christopher McClellan.
         /// </summary>
-        public static string About_CodeReview {
+        public static string AboutWindow_Copyright {
             get {
-                return ResourceManager.GetString("About_CodeReview", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Community:.
-        /// </summary>
-        public static string About_Community {
-            get {
-                return ResourceManager.GetString("About_Community", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Contributors &amp; supporters:.
-        /// </summary>
-        public static string About_Contributors {
-            get {
-                return ResourceManager.GetString("About_Contributors", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to © Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan.
-        /// </summary>
-        public static string About_Copyright {
-            get {
-                return ResourceManager.GetString("About_Copyright", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Fugue icons by Yusuke Kamiyamane.
-        /// </summary>
-        public static string About_FugueIconCredit {
-            get {
-                return ResourceManager.GetString("About_FugueIconCredit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to JetBrains ReSharper Community Team.
-        /// </summary>
-        public static string About_JetBrains {
-            get {
-                return ResourceManager.GetString("About_JetBrains", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to GitHub integration powered by LibGit2Sharp.
-        /// </summary>
-        public static string About_LibGit2SharpCredit {
-            get {
-                return ResourceManager.GetString("About_LibGit2SharpCredit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Parsing powered by ANTLR.
-        /// </summary>
-        public static string About_ParsingCredit {
-            get {
-                return ResourceManager.GetString("About_ParsingCredit", resourceCulture);
+                return ResourceManager.GetString("AboutWindow_Copyright", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Special Thanks.
         /// </summary>
-        public static string About_SpecialThanks {
+        public static string AboutWindow_SpecialThanksLabel {
             get {
-                return ResourceManager.GetString("About_SpecialThanks", resourceCulture);
+                return ResourceManager.GetString("AboutWindow_SpecialThanksLabel", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stack Overflow.
+        ///   Looks up a localized string similar to Community:
+        ///Code Review Stack Exchange
+        ///JetBrains ReSharper Community Team
+        ///Stack Overflow
+        ///
+        ///Blogs:
+        ///Michal Krzych (vba4all.com)
+        ///Knjname developer blog (clockahead.blogspot.jp)
+        ///
+        ///Contributors &amp; supporters:
+        ///Abraham Hosch
+        ///Andrew Jackson
+        ///Andrin Meier
+        ///Bruno Costa
+        ///Carlos J. Quintero (MZ-Tools articles &amp; help with VBE API)
+        ///@daFreeMan
+        ///@Duga SE chat bot
+        ///Francis Veilleux-Gaboury
+        ///Frank Van Heeswijk
+        ///@Heslacher
+        ///Jeroen Vannevel dos Sànchez di Castello du Aragon de Pompidou
+        ///@mjolka
+        ///Philip Wales
+        ///Rob Bovey [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string About_StackOverflow {
+        public static string AboutWindow_SpecialThanksList {
             get {
-                return ResourceManager.GetString("About_StackOverflow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All our stargazers, likers &amp; followers, for the warm fuzzies.
-        /// </summary>
-        public static string About_Stargazers {
-            get {
-                return ResourceManager.GetString("About_Stargazers", resourceCulture);
+                return ResourceManager.GetString("AboutWindow_SpecialThanksList", resourceCulture);
             }
         }
         

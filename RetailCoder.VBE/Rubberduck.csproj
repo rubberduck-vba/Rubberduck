@@ -300,6 +300,16 @@
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
+    <Compile Include="UI\About\AboutControl.xaml.cs">
+      <DependentUpon>AboutControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\About\AboutControlViewModel.cs" />
+    <Compile Include="UI\About\AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\About\AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Controls\MenuItemGroup.cs" />
     <Compile Include="UI\Controls\GroupingGrid.xaml.cs">
       <DependentUpon>GroupingGrid.xaml</DependentUpon>
@@ -518,6 +528,9 @@
     <Compile Include="UI\Command\ToDoExplorerCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ToDoExplorerCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\UnitTestingParentMenu.cs" />
+    <Compile Include="UI\Controls\SearchView.xaml.cs">
+      <DependentUpon>SearchView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\FolderBrowser.cs" />
     <Compile Include="UI\IMessageBox.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
@@ -771,12 +784,6 @@
     <Compile Include="Inspections\OptionExplicitInspectionResult.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspection.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspectionResult.cs" />
-    <Compile Include="UI\AboutWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\AboutWindow.Designer.cs">
-      <DependentUpon>AboutWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="App.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerDockablePresenter.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerWindow.cs">
@@ -870,8 +877,8 @@
       <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\AboutWindow.resx">
-      <DependentUpon>AboutWindow.cs</DependentUpon>
+    <EmbeddedResource Include="UI\About\AboutDialog.resx">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\CodeExplorer\CodeExplorer.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -1367,6 +1374,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\About\AboutControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Controls\GroupingGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1384,6 +1395,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\CodeInspections\InspectionResultsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Controls\SearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
