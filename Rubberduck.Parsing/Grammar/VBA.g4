@@ -36,8 +36,8 @@
 *
 * Known limitations:
 *
-* 1. Preprocessor statements (#if, #else, ...) must not interfere with regular
-*    statements.
+* 1. Preprocessor statements (#if, #else, ...) must not interfere with regular statements.
+* 2. Preprocessor statements cannot be indented.
 *
 * Change log:
 *
@@ -72,7 +72,7 @@
 *   - optional parameters can be a valueStmt.
 *   - added support for Octal and Currency literals.
 *   - implemented proper specs for DATELITERAL.
-*   - added comments to parse tree (removes known limitation #2).
+*   - added comments to parse tree (formerly limitation #2).
 *   - macroConstStmt now allowed in blockStmt.
 *
 *======================================================================================
