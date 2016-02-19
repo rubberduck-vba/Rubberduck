@@ -258,6 +258,17 @@ namespace Rubberduck.Parsing.Grammar
         void ExitVsNew([NotNull] VBAParser.VsNewContext context);
 
         /// <summary>
+        /// Enter a parse tree produced by <see cref="VBAParser.remComment"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        void EnterRemComment([NotNull] VBAParser.RemCommentContext context);
+        /// <summary>
+        /// Exit a parse tree produced by <see cref="VBAParser.remComment"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        void ExitRemComment([NotNull] VBAParser.RemCommentContext context);
+
+        /// <summary>
         /// Enter a parse tree produced by <see cref="VBAParser.timeStmt"/>.
         /// </summary>
         /// <param name="context">The parse tree.</param>
@@ -679,6 +690,17 @@ namespace Rubberduck.Parsing.Grammar
         void ExitDateStmt([NotNull] VBAParser.DateStmtContext context);
 
         /// <summary>
+        /// Enter a parse tree produced by <see cref="VBAParser.endOfStatement"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        void EnterEndOfStatement([NotNull] VBAParser.EndOfStatementContext context);
+        /// <summary>
+        /// Exit a parse tree produced by <see cref="VBAParser.endOfStatement"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        void ExitEndOfStatement([NotNull] VBAParser.EndOfStatementContext context);
+
+        /// <summary>
         /// Enter a parse tree produced by the <c>optionCompareStmt</c>
         /// labeled alternative in <see cref="VBAParser.moduleOption"/>.
         /// </summary>
@@ -896,6 +918,17 @@ namespace Rubberduck.Parsing.Grammar
         /// </summary>
         /// <param name="context">The parse tree.</param>
         void ExitDeftypeStmt([NotNull] VBAParser.DeftypeStmtContext context);
+
+        /// <summary>
+        /// Enter a parse tree produced by <see cref="VBAParser.endOfLine"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        void EnterEndOfLine([NotNull] VBAParser.EndOfLineContext context);
+        /// <summary>
+        /// Exit a parse tree produced by <see cref="VBAParser.endOfLine"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        void ExitEndOfLine([NotNull] VBAParser.EndOfLineContext context);
 
         /// <summary>
         /// Enter a parse tree produced by <see cref="VBAParser.randomizeStmt"/>.
@@ -2059,6 +2092,17 @@ namespace Rubberduck.Parsing.Grammar
         /// </summary>
         /// <param name="context">The parse tree.</param>
         void ExitVsEqv([NotNull] VBAParser.VsEqvContext context);
+
+        /// <summary>
+        /// Enter a parse tree produced by <see cref="VBAParser.comment"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        void EnterComment([NotNull] VBAParser.CommentContext context);
+        /// <summary>
+        /// Exit a parse tree produced by <see cref="VBAParser.comment"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        void ExitComment([NotNull] VBAParser.CommentContext context);
 
         /// <summary>
         /// Enter a parse tree produced by <see cref="VBAParser.moduleBodyElement"/>.

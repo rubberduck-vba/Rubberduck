@@ -1,21 +1,16 @@
-using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
-using Rubberduck.VBEditor;
-using System.Text.RegularExpressions;
 
 namespace Rubberduck.Inspections
 {
-    public class NonReturningFunctionInspectionResult : CodeInspectionResultBase
+    public class NonReturningFunctionInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public NonReturningFunctionInspectionResult(IInspection inspection, string result, QualifiedContext<ParserRuleContext> qualifiedContext, 
+        public NonReturningFunctionInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, 
             bool isInterfaceImplementation)
-            : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _quickFixes = isInterfaceImplementation 
                 ? new CodeInspectionQuickFix[] { }
@@ -27,5 +22,13 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.NonReturningFunctionInspectionResultFormat, Target.IdentifierName);
+            }
+        }
     }
 }

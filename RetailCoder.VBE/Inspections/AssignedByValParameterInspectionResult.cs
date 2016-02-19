@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
@@ -7,17 +6,25 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class AssignedByValParameterInspectionResult : CodeInspectionResultBase
+    public class AssignedByValParameterInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public AssignedByValParameterInspectionResult(IInspection inspection, string result, ParserRuleContext context, QualifiedMemberName qualifiedName)
-            : base(inspection, result, qualifiedName.QualifiedModuleName, context)
+        public AssignedByValParameterInspectionResult(IInspection inspection, ParserRuleContext context, QualifiedMemberName qualifiedName)
+            : base(inspection, qualifiedName.QualifiedModuleName, context)
         {
             _quickFixes = new[]
             {
                 new PassParameterByReferenceQuickFix(context, QualifiedSelection),
             };
+        }
+
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.AssignedByValParameterInspectionResultFormat, Target.IdentifierName);
+            }
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
@@ -28,8 +35,8 @@ namespace Rubberduck.Inspections
     /// </summary>
     public class PassParameterByReferenceQuickFix : CodeInspectionQuickFix
     {
-        public PassParameterByReferenceQuickFix(ParserRuleContext context, QualifiedSelection selection) 
-            : base(context, selection, RubberduckUI.Inspections_PassParamByReference)
+        public PassParameterByReferenceQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, InspectionsUI.PassParameterByReferenceQuickFix)
         {
         }
 

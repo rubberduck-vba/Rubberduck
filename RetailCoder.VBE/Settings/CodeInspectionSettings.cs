@@ -34,8 +34,25 @@ namespace Rubberduck.Settings
         [XmlIgnore]
         public string AnnotationName { get; set; }
 
+        [XmlIgnore]
+        public CodeInspectionSeverity DefaultSeverity { get; private set; }
+
         [XmlAttribute]
         public CodeInspectionSeverity Severity { get; set; }
+
+        [XmlIgnore]
+        public string Meta {
+            get
+            {
+                return InspectionsUI.ResourceManager.GetString(Name + "Meta");
+            }
+        }
+
+        [XmlIgnore]
+        public string TypeLabel
+        {
+            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType); }
+        }
 
         [XmlIgnore]
         public string SeverityLabel
@@ -62,16 +79,38 @@ namespace Rubberduck.Settings
             //default constructor required for serialization
         }
 
-        public CodeInspectionSetting(string name, string description, CodeInspectionType type, CodeInspectionSeverity severity)
+        public CodeInspectionSetting(string name, string description, CodeInspectionType type, CodeInspectionSeverity defaultSeverity, CodeInspectionSeverity severity)
         {
             Name = name;
             Description = description;
             InspectionType = type;
             Severity = severity;
+            DefaultSeverity = defaultSeverity;
         }
 
         public CodeInspectionSetting(IInspectionModel inspection)
-            : this(inspection.Name, inspection.Description, inspection.InspectionType, inspection.Severity)
+            : this(inspection.Name, inspection.Description, inspection.InspectionType, inspection.DefaultSeverity, inspection.Severity)
         { }
+
+        public override bool Equals(object obj)
+        {
+            var inspectionSetting = obj as CodeInspectionSetting;
+
+            return inspectionSetting != null &&
+                   inspectionSetting.InspectionType == InspectionType &&
+                   inspectionSetting.Name == Name &&
+                   inspectionSetting.Severity == Severity;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (Name != null ? Name.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (int) Severity;
+                hashCode = (hashCode * 397) ^ (int) InspectionType;
+                return hashCode;
+            }
+        }
     }
 }

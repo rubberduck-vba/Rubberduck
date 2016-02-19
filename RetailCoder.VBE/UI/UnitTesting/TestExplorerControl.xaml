@@ -5,111 +5,46 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Rubberduck.UI.UnitTesting"
              xmlns:unitTesting="clr-namespace:Rubberduck.UnitTesting"
-             xmlns:resx="clr-namespace:Rubberduck.UI"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              Language="{UICulture}"
              mc:Ignorable="d" 
-             d:DesignHeight="255" d:DesignWidth="255"
-             MinWidth="255" MinHeight="255" d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
+             d:DesignHeight="255" d:DesignWidth="455"
+             d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
     
     <UserControl.Resources>
-
-        <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFD9F4FF" Offset="0"/>
-            <GradientStop Color="#FF9BDDFB" Offset="1"/>
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="{x:Static SystemColors.ControlBrushKey}" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFEEEDED" Offset="0"/>
-            <GradientStop Color="#FFDDDDDD" Offset="1"/>
-        </LinearGradientBrush>
-        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
-
-        <Style x:Key="ShinyTreeView" 
-               TargetType="{x:Type TreeViewItem}">
-            <Setter Property="BorderThickness" Value="1.5"/>
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="BorderBrush" Value="#adc6e5"/>
-                </Trigger>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsSelected" Value="True"/>
-                        <Condition Property="IsSelectionActive" Value="False"/>
-                    </MultiTrigger.Conditions>
-                    <Setter Property="BorderBrush" Value="LightGray"/>
-                </MultiTrigger>
-            </Style.Triggers>
-            <Style.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="2"/>
-                </Style>
-            </Style.Resources>
-        </Style>
-
-        <Style x:Key="IconStyle" TargetType="Image">
-            <Setter Property="Height" Value="16" />
-            <Setter Property="Width" Value="16" />
-            <Setter Property="Margin" Value="4" />
-        </Style>
+        <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
+        <local:TestResultToOutcomeTextConverter x:Key="OutcomeTextConverter" />
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         
-        <unitTesting:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
-        
-        <CollectionViewSource x:Key="OutcomeGroupViewSource" Source="{Binding Model.Tests}">
+        <CollectionViewSource x:Key="ResultsByModule" Source="{Binding Model.Tests}">
+            <CollectionViewSource.SortDescriptions>
+                <componentModel:SortDescription PropertyName="QualifiedMemberName.QualifiedModuleName.Name" />
+            </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="Result.Outcome" />
+                <PropertyGroupDescription PropertyName="QualifiedMemberName.QualifiedModuleName.Name" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
-        <DataTemplate x:Key="TestMethodTemplate" DataType="{x:Type unitTesting:TestMethod}">
-            <StackPanel Orientation="Horizontal">
-                <Image Style="{StaticResource IconStyle}" 
-                       Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}"
-                       VerticalAlignment="Center" />
-                <TextBlock Margin="4" 
-                           VerticalAlignment="Center" 
-                           Text="{Binding QualifiedMemberName}" 
-                           TextWrapping="NoWrap"/>
-                <TextBlock Margin="4" 
-                           VerticalAlignment="Center" 
-                           Text="{Binding Result.Duration, StringFormat=({0}ms)}" 
-                           Foreground="DimGray"
-                           TextWrapping="NoWrap"/>
-            </StackPanel>
-        </DataTemplate>
+        <CollectionViewSource x:Key="ResultsByOutcome" Source="{Binding Model.Tests}">
+            <CollectionViewSource.SortDescriptions>
+                <componentModel:SortDescription PropertyName="Result.Outcome" />
+            </CollectionViewSource.SortDescriptions>
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Result" Converter="{StaticResource OutcomeTextConverter}" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
         
-        <HierarchicalDataTemplate x:Key="OutcomeTemplate" 
-                                    DataType="{x:Type CollectionViewGroup}"
-                                    ItemsSource="{Binding Items}" 
-                                    ItemTemplate="{StaticResource TestMethodTemplate}">
-            
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="4" 
-                           VerticalAlignment="Center" 
-                           Text="{Binding Name}"
-                           FontWeight="Bold"
-                           TextWrapping="NoWrap"/>
-                <TextBlock Margin="4" 
-                           VerticalAlignment="Center" 
-                           Text="{Binding ItemCount, StringFormat=({0})}" 
-                           TextWrapping="NoWrap"/>
-            </StackPanel>
-        </HierarchicalDataTemplate>
-
-        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-
     </UserControl.Resources>
     
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="16"/>
-            <RowDefinition Height="*" MinHeight="64" />
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="Auto" MinHeight="48"/>
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
          
-        <Border Grid.Row="0" Grid.RowSpan="5" Background="#FFEEF5FD" />
+        <Border Grid.Row="0" Grid.RowSpan="3" Background="#FFEEF5FD" />
 
         <ToolBar Grid.Row="0" IsEnabled="{Binding Model.IsReady}">
 
@@ -118,9 +53,8 @@
             </Button>
 
             <Separator />
-
             <Menu>
-                <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RubberduckUI.Run}">
+                <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Run}">
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/control.png" />
                     </MenuItem.Icon>
@@ -174,6 +108,21 @@
             </Menu>
             <Separator />
 
+            <Menu>
+                <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingGrid_GroupingStyle}">
+                    <MenuItem.Icon>
+                        <Image Height="16" Source="../../Resources/Microsoft/PNG/GroupBy_284_32.png" />
+                    </MenuItem.Icon>
+
+                    <MenuItem x:Name="GroupByOutcome" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
+                              Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByOutcome}" IsChecked="True" 
+                              IsCheckable="True" controls:MenuItemGroup.GroupName="TestExplorer_GroupingStyle" />
+                    <MenuItem x:Name="GroupByModule" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
+                              Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByLocation}" 
+                              IsCheckable="True" controls:MenuItemGroup.GroupName="TestExplorer_GroupingStyle" />
+                </MenuItem>
+            </Menu>
+
             <Button Command="{Binding CopyResultsCommand}">
                 <Image Height="16" Source="../../Resources/document-copy.png" />
             </Button>
@@ -197,44 +146,49 @@
             </StackPanel>
         </Border>
 
-        <TreeView Grid.Row="2"
-                  MouseDoubleClick="TreeView_MouseDoubleClick"
-                  ItemsSource="{Binding Source={StaticResource OutcomeGroupViewSource}, Path=Groups}"
-                  ItemContainerStyle="{StaticResource ShinyTreeView}"
-                  ItemTemplate="{StaticResource OutcomeTemplate}"
-                  IsEnabled="{Binding Model.IsReady}">
-            
-            <i:Interaction.Behaviors>
-                <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
-            </i:Interaction.Behaviors>
-            <TreeView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem VerticalAlignment="Center" 
-                              Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Run}" 
-                              Command="{Binding RunSelectedTestCommand}"
-                              IsEnabled="{Binding Model.IsReady, Mode=OneWay}">
-                        <MenuItem.Icon>
-                            <Image Height="16" Source="../../Resources/control.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </TreeView.ContextMenu>
-        </TreeView>
-
-        <resx:BusyIndicator Grid.Row="2" Width="36" Height="36" Visibility="{Binding Model.IsBusy, Converter={StaticResource BoolToVisibility}}" />
-
-        <GridSplitter Grid.Row="3" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
-
-        <Border Grid.Row="4" BorderThickness="0,1,0,0" BorderBrush="DimGray">
-            
-            <StackPanel Orientation="Vertical" MinHeight="48" Background="Gainsboro">
-                <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center" 
-                           Source="{Binding SelectedItem.Result.Outcome, Converter={StaticResource OutcomeIconConverter}}"/>
-                    <TextBlock Margin="4" Text="{Binding SelectedItem.QualifiedMemberName}" FontWeight="Black" TextWrapping="Wrap"/>
-                </StackPanel>
-                <TextBlock Margin="36,0,0,0" Text="{Binding SelectedItem.Result.Output}" TextWrapping="Wrap" Foreground="DarkSlateGray"/>
-            </StackPanel>
+        <Border Grid.Row="2" Padding="2">
+            <ScrollViewer VerticalScrollBarVisibility="Visible">
+                <Grid>
+                    <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByOutcome}}"
+                                           SelectedItem="{Binding SelectedTest}"
+                                           ShowGroupingItemCount="True"
+                                           Visibility="{Binding IsChecked, ElementName=GroupByOutcome, Converter={StaticResource BoolToVisibility}}">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Outcome}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate DataType="unitTesting:TestMethod">
+                                        <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" Height="16" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding QualifiedMemberName.QualifiedModuleName}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_MethodName}" Binding="{Binding QualifiedMemberName.MemberName}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Message}" Binding="{Binding Result.Output}" Width="*" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
+                        </DataGrid.Columns>
+                    </controls:GroupingGrid>
+                    
+                    <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByModule}}"
+                                           SelectedItem="{Binding SelectedTest}"
+                                           ShowGroupingItemCount="True"
+                                           Visibility="{Binding IsChecked, ElementName=GroupByModule, Converter={StaticResource BoolToVisibility}}">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Outcome}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate DataType="unitTesting:TestMethod">
+                                        <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" Height="16" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding QualifiedMemberName.QualifiedModuleName}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_MethodName}" Binding="{Binding QualifiedMemberName.MemberName}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Message}" Binding="{Binding Result.Output}" Width="*" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
+                        </DataGrid.Columns>
+                    </controls:GroupingGrid>
+                </Grid>
+            </ScrollViewer>
         </Border>
+        <controls:BusyIndicator Grid.Row="2" Width="36" Height="36" Visibility="{Binding Model.IsBusy, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </UserControl>

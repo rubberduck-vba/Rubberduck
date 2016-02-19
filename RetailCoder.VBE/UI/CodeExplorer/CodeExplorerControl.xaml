@@ -3,12 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:props="clr-namespace:Rubberduck.Properties"
-             xmlns:symbols="clr-namespace:Rubberduck.Parsing.Symbols;assembly=Rubberduck.Parsing"
-             xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
              mc:Ignorable="d" 
@@ -141,6 +138,39 @@
 
             <Button Command="{Binding RefreshCommand}" IsEnabled="{Binding CanRefresh}">
                 <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
+                <Button.ToolTip>
+                    <TextBlock Text="Refresh" />
+                </Button.ToolTip>
+            </Button>
+            
+            <Separator />
+
+            <Menu>
+                <MenuItem Header="Add">
+                    <MenuItem.Icon>
+                        <Image Height="16" Source="../../Resources/plus-circle.png" />
+                    </MenuItem.Icon>
+                    <MenuItem Header="Test Module"></MenuItem>
+                    <Separator />
+                    <MenuItem Header="Standard Module (.bas)"></MenuItem>
+                    <MenuItem Header="Class Module (.cls)"></MenuItem>
+                    <MenuItem Header="User Form (.frm)"></MenuItem>
+                </MenuItem>
+            </Menu>
+
+            <Separator />
+
+            <Button>
+                <Image Height="16" Source="../../Resources/folder--pencil.png" />
+                <Button.ToolTip>
+                    <TextBlock Text="Edit module folder" />
+                </Button.ToolTip>
+            </Button>
+            <Button>
+                <Image Height="16" Source="../../Resources/folder-rename.png" />
+                <Button.ToolTip>
+                    <TextBlock Text="Rename folder" />
+                </Button.ToolTip>
             </Button>
 
             <Separator />
@@ -157,11 +187,11 @@
                   MouseDoubleClick="TreeView_OnMouseDoubleClick"
                   Style="{StaticResource CodeExplorerTreeViewStyle}">
             <i:Interaction.Behaviors>
-                <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
+                <controls:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
         </TreeView>
 
-        <resx:BusyIndicator Grid.Row="1" Width="36" Height="36" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="1" Width="36" Height="36" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
         <GridSplitter Grid.Row="2" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 

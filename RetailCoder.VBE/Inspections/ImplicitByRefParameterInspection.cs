@@ -12,15 +12,15 @@ namespace Rubberduck.Inspections
     public sealed class ImplicitByRefParameterInspection : InspectionBase
     {
         public ImplicitByRefParameterInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Hint)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.ImplicitByRef_; } }
+        public override string Meta { get { return InspectionsUI.ImplicitByRefParameterInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ImplicitByRefParameterInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var interfaceMembers = UserDeclarations.FindInterfaceImplementationMembers();
 

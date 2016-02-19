@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
@@ -7,12 +6,12 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableTypeNotDeclaredInspectionResult : CodeInspectionResultBase
+    public class VariableTypeNotDeclaredInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public VariableTypeNotDeclaredInspectionResult(IInspection inspection, string result, ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, result, qualifiedName, context)
+        public VariableTypeNotDeclaredInspectionResult(IInspection inspection, ParserRuleContext context, QualifiedModuleName qualifiedName)
+            : base(inspection, qualifiedName, context)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
@@ -21,13 +20,23 @@ namespace Rubberduck.Inspections
             };
         }
 
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.ImplicitVariantDeclarationInspectionResultFormat, 
+                    Target.DeclarationType,
+                    Target.IdentifierName);
+            }
+        }
+
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get {return _quickFixes; } }
     }
 
     public class DeclareAsExplicitVariantQuickFix : CodeInspectionQuickFix 
     {
         public DeclareAsExplicitVariantQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_DeclareAsExplicitVariant)
+            : base(context, selection, InspectionsUI.DeclareAsExplicitVariantQuickFix)
         {
         }
 

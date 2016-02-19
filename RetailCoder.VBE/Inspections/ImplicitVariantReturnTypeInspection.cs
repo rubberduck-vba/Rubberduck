@@ -4,19 +4,18 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ImplicitVariantReturnTypeInspection : InspectionBase
     {
         public ImplicitVariantReturnTypeInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Hint)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.ImplicitVariantReturnType_; } }
+        public override string Meta { get { return InspectionsUI.ImplicitVariantReturnTypeInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ImplicitVariantReturnTypeInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         private static readonly DeclarationType[] ProcedureTypes = 
@@ -26,7 +25,7 @@ namespace Rubberduck.Inspections
             DeclarationType.LibraryFunction
         };
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = from item in UserDeclarations
                                where !item.IsInspectionDisabled(AnnotationName)

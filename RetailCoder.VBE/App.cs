@@ -30,7 +30,7 @@ namespace Rubberduck
         private readonly AutoSave.AutoSave _autoSave;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
-        private readonly ParserStateCommandBar _stateBar;
+        private readonly RubberduckCommandBar _stateBar;
         private readonly IIndenter _indenter;
         private readonly IRubberduckHooks _hooks;
 
@@ -44,9 +44,9 @@ namespace Rubberduck
             IInspectorFactory inspectorFactory,
             IGeneralConfigService configService,
             IAppMenu appMenus,
-            ParserStateCommandBar stateBar,
-            IIndenter indenter,
-            IRubberduckHooks hooks)
+            RubberduckCommandBar stateBar,
+            IIndenter indenter/*,
+            IRubberduckHooks hooks*/)
         {
             _vbe = vbe;
             _messageBox = messageBox;
@@ -58,10 +58,10 @@ namespace Rubberduck
             _appMenus = appMenus;
             _stateBar = stateBar;
             _indenter = indenter;
-            _hooks = hooks;
+            //_hooks = hooks;
             _logger = LogManager.GetCurrentClassLogger();
 
-            _hooks.MessageReceived += hooks_MessageReceived;
+            //_hooks.MessageReceived += hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _stateBar.Refresh += _stateBar_Refresh;
@@ -190,14 +190,14 @@ namespace Rubberduck
             var currentCulture = RubberduckUI.Culture;
             try
             {
-                CultureManager.UICulture = CultureInfo.GetCultureInfo(_config.UserSettings.LanguageSetting.Code);
+                CultureManager.UICulture = CultureInfo.GetCultureInfo(_config.UserSettings.GeneralSettings.Language.Code);
                 _appMenus.Localize();
             }
             catch (CultureNotFoundException exception)
             {
                 _logger.Error(exception, "Error Setting Culture for RubberDuck");
                 _messageBox.Show(exception.Message, "Rubberduck", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                _config.UserSettings.LanguageSetting.Code = currentCulture.Name;
+                _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);
             }
         }
@@ -210,12 +210,12 @@ namespace Rubberduck
 
         public void Dispose()
         {
-            _hooks.MessageReceived -= hooks_MessageReceived;
+            //_hooks.MessageReceived -= hooks_MessageReceived;
             _configService.SettingsChanged -= _configService_SettingsChanged;
             _parser.State.StateChanged -= Parser_StateChanged;
             _autoSave.Dispose();
 
-            _hooks.Dispose();
+            //_hooks.Dispose();
         }
     }
 }

@@ -1100,31 +1100,25 @@ End Sub";
         [TestMethod]
         public void RenameRefactoring_RenameProject()
         {
-            const string newName = "RenameProject";
-
-            //Input
-            const string inputCode =
-@"Private Sub Foo(ByVal a As Integer, ByVal b As String)
-End Sub";
-
-            var selection = new Selection(1, 1, 1, 1);
+            const string oldName = "TestProject1";
+            const string newName = "Renamed";
 
             //Arrange
             var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects.Item(0);
+            var vbe = builder.ProjectBuilder(oldName, vbext_ProjectProtection.vbext_pp_none)
+                             .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, string.Empty)
+                             .MockVbeBuilder()
+                             .Build();
+            
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = newName };
+            var model = new RenameModel(vbe.Object, parser.State, default(QualifiedSelection), null) { NewName = newName };
             model.Target = model.Declarations.First(i => i.DeclarationType == DeclarationType.Project && !i.IsBuiltIn);
 
             //SetupFactory
@@ -1135,7 +1129,7 @@ End Sub";
             refactoring.Refactor(model.Target);
 
             //Assert
-            Assert.AreSame(newName, project.Name);
+            Assert.AreEqual(newName, vbe.Object.VBProjects.Item(0).Name);
         }
 
         [TestMethod]

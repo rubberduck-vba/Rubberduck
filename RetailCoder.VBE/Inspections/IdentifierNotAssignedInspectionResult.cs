@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
     public class RemoveUnassignedIdentifierQuickFix : CodeInspectionQuickFix
     {
         public RemoveUnassignedIdentifierQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_RemoveUnassignedVariable)
+            : base(context, selection, InspectionsUI.RemoveUnassignedIdentifierQuickFix)
         {
         }
 

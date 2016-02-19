@@ -176,6 +176,13 @@ namespace Rubberduck.Parsing.Grammar
         Result VisitVsNew([NotNull] VBAParser.VsNewContext context);
 
         /// <summary>
+        /// Visit a parse tree produced by <see cref="VBAParser.remComment"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        Result VisitRemComment([NotNull] VBAParser.RemCommentContext context);
+
+        /// <summary>
         /// Visit a parse tree produced by <see cref="VBAParser.timeStmt"/>.
         /// </summary>
         /// <param name="context">The parse tree.</param>
@@ -442,6 +449,13 @@ namespace Rubberduck.Parsing.Grammar
         Result VisitDateStmt([NotNull] VBAParser.DateStmtContext context);
 
         /// <summary>
+        /// Visit a parse tree produced by <see cref="VBAParser.endOfStatement"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        Result VisitEndOfStatement([NotNull] VBAParser.EndOfStatementContext context);
+
+        /// <summary>
         /// Visit a parse tree produced by the <c>optionCompareStmt</c>
         /// labeled alternative in <see cref="VBAParser.moduleOption"/>.
         /// </summary>
@@ -578,6 +592,13 @@ namespace Rubberduck.Parsing.Grammar
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
         Result VisitDeftypeStmt([NotNull] VBAParser.DeftypeStmtContext context);
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="VBAParser.endOfLine"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        Result VisitEndOfLine([NotNull] VBAParser.EndOfLineContext context);
 
         /// <summary>
         /// Visit a parse tree produced by <see cref="VBAParser.randomizeStmt"/>.
@@ -1311,6 +1332,13 @@ namespace Rubberduck.Parsing.Grammar
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
         Result VisitVsEqv([NotNull] VBAParser.VsEqvContext context);
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="VBAParser.comment"/>.
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        Result VisitComment([NotNull] VBAParser.CommentContext context);
 
         /// <summary>
         /// Visit a parse tree produced by <see cref="VBAParser.moduleBodyElement"/>.

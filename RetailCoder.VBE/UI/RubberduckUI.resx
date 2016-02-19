@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -190,19 +190,19 @@
   <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
     <value>General Settings</value>
   </data>
-  <data name="SettingsCaption_CodeInspections" xml:space="preserve">
+  <data name="SettingsCaption_InspectionSettings" xml:space="preserve">
     <value>Code Inspection Settings</value>
   </data>
-  <data name="SettingsCaption_ToDoSettings" xml:space="preserve">
-    <value>ToDo Settings</value>
+  <data name="SettingsCaption_TodoSettings" xml:space="preserve">
+    <value>Todo Settings</value>
   </data>
-  <data name="SettingsInstructions_CodeInspections" xml:space="preserve">
+  <data name="SettingsInstructions_InspectionSettings" xml:space="preserve">
     <value>Configure inspection severity. Use "DoNotShow" to disable an inspection.</value>
   </data>
   <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
     <value>Click [Ok] to close the window and apply changes, or [Cancel] to discard them.</value>
   </data>
-  <data name="SettingsInstructions_ToDoSettings" xml:space="preserve">
+  <data name="SettingsInstructions_TodoSettings" xml:space="preserve">
     <value>Configure markers to be recognized in comments.</value>
   </data>
   <data name="RenameDialog_ProjectRenameError" xml:space="preserve">
@@ -340,7 +340,7 @@
   <data name="RubberduckMenu_SourceControl" xml:space="preserve">
     <value>&amp;Source Control</value>
   </data>
-  <data name="RubberduckMenu_ToDoItems" xml:space="preserve">
+  <data name="RubberduckMenu_TodoItems" xml:space="preserve">
     <value>To&amp;Do Items</value>
   </data>
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
@@ -357,63 +357,6 @@
   </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
-  </data>
-  <data name="Inspections_ChangeGlobalAccessModifierToPublic" xml:space="preserve">
-    <value>Replace 'Global' access modifier with 'Public'</value>
-  </data>
-  <data name="Inspections_ConvertFunctionToProcedure" xml:space="preserve">
-    <value>Convert function to procedure</value>
-  </data>
-  <data name="Inspections_DeclareAsExplicitVariant" xml:space="preserve">
-    <value>Declare as explicit Variant</value>
-  </data>
-  <data name="Inspections_IntroduceLocalVariable" xml:space="preserve">
-    <value>Introduce local variable</value>
-  </data>
-  <data name="Inspections_PassParamByReference" xml:space="preserve">
-    <value>Pass parameter by reference</value>
-  </data>
-  <data name="Inspections_PassParamByRefExplicitly" xml:space="preserve">
-    <value>Pass parameter by reference explicitly</value>
-  </data>
-  <data name="Inspections_PassParamByValue" xml:space="preserve">
-    <value>Pass parameter by value</value>
-  </data>
-  <data name="Inspections_RemoveComment" xml:space="preserve">
-    <value>Remove comment</value>
-  </data>
-  <data name="Inspections_RemoveObsoleteStatement" xml:space="preserve">
-    <value>Remove obsolete statement</value>
-  </data>
-  <data name="Inspections_RemoveTypeHints" xml:space="preserve">
-    <value>Remove type hints</value>
-  </data>
-  <data name="Inspections_RemoveUnassignedVariable" xml:space="preserve">
-    <value>Remove unassigned variable</value>
-  </data>
-  <data name="Inspections_RemoveUnusedDeclaration" xml:space="preserve">
-    <value>Remove unused declaration</value>
-  </data>
-  <data name="Inspections_RemoveUnusedParameter" xml:space="preserve">
-    <value>Remove unused parameter</value>
-  </data>
-  <data name="Inspections_RemoveUsageBreaksCode" xml:space="preserve">
-    <value>Remove usage (breaks code)</value>
-  </data>
-  <data name="Inspections_ReplaceRemWithSingleQuoteMarker" xml:space="preserve">
-    <value>Replace 'Rem' usage with a single-quote comment marker</value>
-  </data>
-  <data name="Inspections_ReturnExplicitVariant" xml:space="preserve">
-    <value>Return explicit Variant</value>
-  </data>
-  <data name="Inspections_SpecifyPublicModifierExplicitly" xml:space="preserve">
-    <value>Specify Public access modifier explicitly</value>
-  </data>
-  <data name="Inspections_SplitDeclarations" xml:space="preserve">
-    <value>Separate multiple declarations into multiple instructions</value>
-  </data>
-  <data name="Inspections_UnassignedVariableToDo" xml:space="preserve">
-    <value>TODO</value>
   </data>
   <data name="LoadConfigError" xml:space="preserve">
     <value>Error Loading Rubberduck Configuration</value>
@@ -443,13 +386,13 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Build {0} ({1})</value>
     <comment>0: Version; 1: ProcessorArchitecture</comment>
   </data>
-  <data name="ToDoMarkerBug" xml:space="preserve">
+  <data name="TodoMarkerBug" xml:space="preserve">
     <value>BUG </value>
   </data>
-  <data name="ToDoMarkerNote" xml:space="preserve">
+  <data name="TodoMarkerNote" xml:space="preserve">
     <value>NOTE </value>
   </data>
-  <data name="ToDoMarkerToDo" xml:space="preserve">
+  <data name="TodoMarkerTodo" xml:space="preserve">
     <value>TODO </value>
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
@@ -516,20 +459,14 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Type" xml:space="preserve">
     <value>Type</value>
   </data>
-  <data name="Inspections_DeclarationOf" xml:space="preserve">
-    <value>declaration of </value>
-  </data>
-  <data name="Inspections_UsageOf" xml:space="preserve">
-    <value>usage of </value>
-  </data>
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
     <value>Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue.</value>
   </data>
   <data name="TestExplorerWindow_Caption" xml:space="preserve">
     <value>Test Explorer</value>
   </data>
-  <data name="ToDoExplorer_Caption" xml:space="preserve">
-    <value>ToDo Explorer</value>
+  <data name="TodoExplorer_Caption" xml:space="preserve">
+    <value>Todo Explorer</value>
   </data>
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
@@ -558,60 +495,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Module options should be specified first</value>
   </data>
-  <data name="MultilineParameter_" xml:space="preserve">
-    <value>Parameter '{0}' is declared on multiple lines</value>
-  </data>
-  <data name="MultipleDeclarations" xml:space="preserve">
-    <value>Instruction contains multiple declarations</value>
-  </data>
-  <data name="NonReturningFunction_" xml:space="preserve">
-    <value>Return value for member '{0}' is never assigned</value>
-  </data>
-  <data name="ObsoleteCall" xml:space="preserve">
-    <value>Use of obsolete Call statement</value>
-  </data>
-  <data name="ObsoleteComment" xml:space="preserve">
-    <value>Use of obsolete Rem comment syntax</value>
-  </data>
-  <data name="ObsoleteGlobal" xml:space="preserve">
-    <value>Use of obsolete Global access modifier</value>
-  </data>
-  <data name="ObsoleteLet" xml:space="preserve">
-    <value>Use of obsolete Let statement</value>
-  </data>
-  <data name="OptionBase" xml:space="preserve">
-    <value>Potentially confusing implicit array lower bound</value>
-  </data>
-  <data name="OptionExplicit" xml:space="preserve">
-    <value>Option Explicit is not specified in '{0}'</value>
-  </data>
-  <data name="ParameterCanBeByVal_" xml:space="preserve">
-    <value>Parameter '{0}' can be passed by value</value>
-  </data>
-  <data name="ParameterNotUsed_" xml:space="preserve">
-    <value>Parameter '{0}' is not used</value>
-  </data>
-  <data name="ProcedureNotUsed_" xml:space="preserve">
-    <value>Procedure '{0}' is never used</value>
-  </data>
-  <data name="UnassignedVariableUsage_" xml:space="preserve">
-    <value>Use of unassigned variable '{0}'</value>
-  </data>
-  <data name="VariableNotAssigned_" xml:space="preserve">
-    <value>Variable '{0}' is never assigned</value>
-  </data>
-  <data name="VariableNotUsed_" xml:space="preserve">
-    <value>Variable '{0}' is never used</value>
-  </data>
-  <data name="_ObsoleteTypeHint_" xml:space="preserve">
-    <value>Use of obsolete type hint in {0} '{1}'</value>
-  </data>
-  <data name="_TypeNotDeclared_" xml:space="preserve">
-    <value>{0} '{1}' is implicitly Variant</value>
-  </data>
-  <data name="Priority" xml:space="preserve">
-    <value>Priority</value>
-  </data>
   <data name="Component" xml:space="preserve">
     <value>Component</value>
   </data>
@@ -621,7 +504,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Outcome" xml:space="preserve">
     <value>Outcome</value>
   </data>
-  <data name="Settings_LanguageLabel" xml:space="preserve">
+  <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
     <value>Display language:</value>
   </data>
   <data name="Language_EN" xml:space="preserve">
@@ -630,7 +513,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Language_FR" xml:space="preserve">
     <value>French</value>
   </data>
-  <data name="Language_JP" xml:space="preserve">
+  <data name="Language_JA" xml:space="preserve">
     <value>Japanese</value>
   </data>
   <data name="RemoveParamsDialog_Caption" xml:space="preserve">
@@ -750,8 +633,8 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="ModuleName" xml:space="preserve">
     <value>Module Name</value>
   </data>
-  <data name="TestExplorer_QualifiedMemberName" xml:space="preserve">
-    <value>Qualified Member Name</value>
+  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
+    <value>Module</value>
   </data>
   <data name="TestExplorer_RunAllTests" xml:space="preserve">
     <value>All Tests</value>
@@ -800,9 +683,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="Settings_Caption" xml:space="preserve">
     <value>Rubberduck Settings</value>
-  </data>
-  <data name="TodoSettings_PriorityLabel" xml:space="preserve">
-    <value>Priority:</value>
   </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
     <value>Token Text:</value>
@@ -1072,15 +952,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_NoRepoFound" xml:space="preserve">
     <value>No repository found.</value>
   </data>
-  <data name="ToDoPriority_High" xml:space="preserve">
-    <value>High</value>
-  </data>
-  <data name="ToDoPriority_Low" xml:space="preserve">
-    <value>Low</value>
-  </data>
-  <data name="ToDoPriority_Medium" xml:space="preserve">
-    <value>Medium</value>
-  </data>
   <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
     <value>Successfully Merged {0} into {1}</value>
   </data>
@@ -1109,14 +980,8 @@ Are you sure you want to proceed with this rename?</value>
   <data name="TodoSettings_TextLabel" xml:space="preserve">
     <value>Text:</value>
   </data>
-  <data name="TodoSettings_Priority" xml:space="preserve">
-    <value>Priority</value>
-  </data>
   <data name="TodoSettings_Text" xml:space="preserve">
     <value>Text</value>
-  </data>
-  <data name="Inspections_MultilineParameter" xml:space="preserve">
-    <value>Write variable on one line</value>
   </data>
   <data name="Language_DE" xml:space="preserve">
     <value>German</value>
@@ -1162,24 +1027,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
     <value>Search:</value>
-  </data>
-  <data name="Inspections_SpecifyOptionExplicit" xml:space="preserve">
-    <value>Specify 'Option Explicit'</value>
-  </data>
-  <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value>Fix all occurrences in module</value>
-  </data>
-  <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value>Fix all occurrences in project</value>
-  </data>
-  <data name="WriteOnlyProperty_" xml:space="preserve">
-    <value>Property '{0}' has no getter.</value>
-  </data>
-  <data name="UntypedFunctionUsage_" xml:space="preserve">
-    <value>Use of untyped function '{0}'. String-returning version '{0}$' is available.</value>
-  </data>
-  <data name="QuickFixUseTypedFunction_" xml:space="preserve">
-    <value>Use '{0}$' instead of '{0}'.</value>
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Disable this inspection</value>
@@ -1264,7 +1111,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Rubberduck - Move Closer To Usage</value>
   </data>
   <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
-    <value>'{0}' has no references.</value>
+    <value>'{0}' is not used anywhere.</value>
     <comment>{0}: Variable Name</comment>
   </data>
   <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
@@ -1313,5 +1160,170 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
     <value>Members</value>
+  </data>
+  <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
+    <value>Unit Test Settings</value>
+  </data>
+  <data name="SeverityLabelText" xml:space="preserve">
+    <value>Severity:</value>
+  </data>
+  <data name="SettingsCaption_IndenterSettings" xml:space="preserve">
+    <value>Indenter Settings</value>
+  </data>
+  <data name="SettingsInstructions_IndenterSettings" xml:space="preserve">
+    <value>Configure indenter settings.</value>
+  </data>
+  <data name="SettingsInstructions_UnitTestSettings" xml:space="preserve">
+    <value>Configure the settings for new unit test modules and methods.</value>
+  </data>
+  <data name="UnitTestSettings_AssertMode" xml:space="preserve">
+    <value>Type safety:</value>
+  </data>
+  <data name="UnitTestSettings_BindingMode" xml:space="preserve">
+    <value>Binding mode:</value>
+  </data>
+  <data name="UnitTestSettings_EarlyBinding" xml:space="preserve">
+    <value>Early binding</value>
+  </data>
+  <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
+    <value>Test method initialization/cleanup</value>
+  </data>
+  <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt" xml:space="preserve">
+    <value>Insert test method stub</value>
+  </data>
+  <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
+    <value>Test module initialization/cleanup</value>
+  </data>
+  <data name="UnitTestSettings_LateBinding" xml:space="preserve">
+    <value>Late binding</value>
+  </data>
+  <data name="UnitTestSettings_PermissiveAssert" xml:space="preserve">
+    <value>Permissive assert</value>
+  </data>
+  <data name="UnitTestSettings_StrictAssert" xml:space="preserve">
+    <value>Strict assert</value>
+  </data>
+  <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
+    <value>Test Module Template</value>
+  </data>
+  <data name="TestOutcome_Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="TestOutcome_Inconclusive" xml:space="preserve">
+    <value>Inconclusive</value>
+  </data>
+  <data name="TestOutcome_Succeeded" xml:space="preserve">
+    <value>Succeeded</value>
+  </data>
+  <data name="TestOutcome_Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
+    <value>Absolute</value>
+  </data>
+  <data name="EndOfLineCommentStyle_AlignInColumn" xml:space="preserve">
+    <value>Align In Column</value>
+  </data>
+  <data name="EndOfLineCommentStyle_SameGap" xml:space="preserve">
+    <value>Same Gap</value>
+  </data>
+  <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
+    <value>Standard Gap</value>
+  </data>
+  <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="GeneralSettings_HotkeyKeyPress" xml:space="preserve">
+    <value>Key Press</value>
+  </data>
+  <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
+    <value>Align comments with code</value>
+  </data>
+  <data name="IndenterSettings_AlignContinuations" xml:space="preserve">
+    <value>Align continuations</value>
+  </data>
+  <data name="IndenterSettings_AlignDims" xml:space="preserve">
+    <value>Align dims</value>
+  </data>
+  <data name="IndenterSettings_AlignmentOptionsLabel" xml:space="preserve">
+    <value>Alignment Options</value>
+  </data>
+  <data name="IndenterSettings_EnableOptionsLabel" xml:space="preserve">
+    <value>Enable Options</value>
+  </data>
+  <data name="IndenterSettings_EnableUndo" xml:space="preserve">
+    <value>Enable undo</value>
+  </data>
+  <data name="IndenterSettings_EndOfLineCommentStyle" xml:space="preserve">
+    <value>End-of-line comment style:</value>
+  </data>
+  <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
+    <value>Force compiler directives to column 1</value>
+  </data>
+  <data name="IndenterSettings_ForceDebugDirectivesToColumn1" xml:space="preserve">
+    <value>Force debug directives to column 1</value>
+  </data>
+  <data name="IndenterSettings_IgnoreOperators" xml:space="preserve">
+    <value>Ignore operators</value>
+  </data>
+  <data name="IndenterSettings_IndentCase" xml:space="preserve">
+    <value>Indent case</value>
+  </data>
+  <data name="IndenterSettings_IndentCompilerDirectives" xml:space="preserve">
+    <value>Indent compiler directives</value>
+  </data>
+  <data name="IndenterSettings_IndentEntireProcedureBody" xml:space="preserve">
+    <value>Indent entire procedure body</value>
+  </data>
+  <data name="IndenterSettings_IndentFirstCommentBlock" xml:space="preserve">
+    <value>Indent first comment block</value>
+  </data>
+  <data name="IndenterSettings_IndentFirstDeclarationBlock" xml:space="preserve">
+    <value>Indent first declaration block</value>
+  </data>
+  <data name="IndenterSettings_IndentOptionsLabel" xml:space="preserve">
+    <value>Indent Options</value>
+  </data>
+  <data name="IndenterSettings_IndentSpaces" xml:space="preserve">
+    <value>Indent spaces:</value>
+  </data>
+  <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
+    <value>Special Options</value>
+  </data>
+  <data name="IndentModuleHotkey_Description" xml:space="preserve">
+    <value>Indent Module Hotkey</value>
+  </data>
+  <data name="IndentProcedureHotkey_Description" xml:space="preserve">
+    <value>Indent Procedure Hotkey</value>
+  </data>
+  <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
+    <value>By module</value>
+  </data>
+  <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
+    <value>By inspection type</value>
+  </data>
+  <data name="CodeInspectionResults_Issue" xml:space="preserve">
+    <value>Issue</value>
+  </data>
+  <data name="CodeInspectionResults_Location" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="CodeInspectionResults_Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
+    <value>Grouping</value>
+  </data>
+  <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
+    <value>By inspection type</value>
+  </data>
+  <data name="GroupingStyle_ByLocation" xml:space="preserve">
+    <value>By location</value>
+  </data>
+  <data name="GroupingStyle_ByOutcome" xml:space="preserve">
+    <value>By outcome</value>
   </data>
 </root>

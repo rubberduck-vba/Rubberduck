@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections
         /// Runs code inspection on specified parse trees.
         /// </summary>
         /// <returns>Returns inspection results, if any.</returns>
-        IEnumerable<CodeInspectionResultBase> GetInspectionResults();
+        IEnumerable<InspectionResultBase> GetInspectionResults();
 
         /// <summary>
         /// Gets a string that contains additional/meta information about an inspection.

@@ -11,13 +11,15 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteTypeHintInspectionResult : CodeInspectionResultBase
+    public class ObsoleteTypeHintInspectionResult : InspectionResultBase
     {
+        private readonly string _result;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public ObsoleteTypeHintInspectionResult(IInspection inspection, string result, QualifiedContext qualifiedContext, Declaration declaration)
-            : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
+            _result = result;
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new RemoveTypeHintsQuickFix(Context, QualifiedSelection, declaration), 
@@ -26,6 +28,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return _result; }
+        }
     }
 
     public class RemoveTypeHintsQuickFix : CodeInspectionQuickFix
@@ -33,7 +40,7 @@ namespace Rubberduck.Inspections
         private readonly Declaration _declaration;
 
         public RemoveTypeHintsQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration declaration)
-            : base(context, selection, RubberduckUI.Inspections_RemoveTypeHints)
+            : base(context, selection, InspectionsUI.RemoveTypeHintsQuickFix)
         {
             _declaration = declaration;
         }

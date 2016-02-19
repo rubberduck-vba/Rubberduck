@@ -6,24 +6,21 @@ namespace Rubberduck.Settings
     [XmlType(AnonymousType = true)]
     public class IndenterSettings : IIndenterSettings
     {
-        public bool IndentProcedure { get; set; }
-        public bool IndentComment { get; set; }
-        public bool IndentCase { get; set; }
-        public bool IndentDim { get; set; }
+        public bool IndentEntireProcedureBody { get; set; }
+        public bool IndentFirstCommentBlock { get; set; }
+        public bool IndentFirstDeclarationBlock { get; set; }
+        public bool AlignCommentsWithCode { get; set; }
         public bool AlignContinuations { get; set; }
-        public bool IndentFirst { get; set; }
-        public bool AlignEndOfLine { get; set; }
-        public bool AlignDim { get; set; }
+        public bool IgnoreOperatorsInContinuations { get; set; }
+        public bool IndentCase { get; set; }
         public bool ForceDebugStatementsInColumn1 { get; set; }
-        public bool EnableUndo { get; set; }
-        public int IndentSpaces { get; set; }
-        public int EndOfLineAlignColumn { get; set; }
+        public bool ForceCompilerDirectivesInColumn1 { get; set; }
+        public bool IndentCompilerDirectives { get; set; }
+        public bool AlignDims { get; set; }
         public int AlignDimColumn { get; set; }
-        public bool ForceCompilerStuffInColumn1 { get; set; }
-        public bool IndentCompilerStuff { get; set; }
-        public bool AlignIgnoreOps { get; set; }
-        public bool EnableIndentProcedureHotKey { get; set; }
-        public bool EnableIndentModuleHotKey { get; set; }
+        public bool EnableUndo { get; set; }
         public EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
+        public int EndOfLineCommentColumnSpaceAlignment { get; set; }
+        public int IndentSpaces { get; set; }
     }
 }

@@ -28,6 +28,7 @@
     <DocumentationFile>bin\Debug\Rubberduck.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -298,20 +299,29 @@
     <Compile Include="Common\WinAPI\User32.cs" />
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
-    <Compile Include="Controls\GroupingGrid\GroupingGrid.xaml.cs">
+    <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
+    <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
+    <Compile Include="UI\Controls\MenuItemGroup.cs" />
+    <Compile Include="UI\Controls\GroupingGrid.xaml.cs">
       <DependentUpon>GroupingGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Controls\NumberPicker.xaml.cs">
+      <DependentUpon>NumberPicker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
+    <Compile Include="Inspections\CompositeCodeInspectionFix.cs" />
     <Compile Include="Inspections\ConvertToProcedureQuickFix.cs" />
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspection.cs" />
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionResult.cs" />
-    <Compile Include="Inspections\SelfAssignedDeclarationInspection.cs" />
-    <Compile Include="Inspections\SelfAssignedDeclarationInspectionResult.cs" />
+    <Compile Include="Inspections\IInspection.cs" />
+    <Compile Include="Inspections\IInspectionModel.cs" />
     <Compile Include="Inspections\InspectionsUI.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>InspectionsUI.resx</DependentUpon>
     </Compile>
+    <Compile Include="Inspections\SelfAssignedDeclarationInspection.cs" />
+    <Compile Include="Inspections\SelfAssignedDeclarationInspectionResult.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspection.cs" />
     <Compile Include="Inspections\EncapsulatePublicFieldInspection.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspectionResult.cs" />
@@ -323,7 +333,7 @@
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspection.cs" />
     <Compile Include="Inspections\InspectionBase.cs" />
     <Compile Include="Inspections\MultipleFolderAnnotationsInspection.cs" />
-    <Compile Include="Inspections\ProcedureShouldBeFunctionInspection.cs" />
+    <Compile Include="Inspections\ProcedureCanBeWrittenAsFunctionInspection.cs" />
     <Compile Include="Inspections\ProcedureShouldBeFunctionInspectionResult.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspectionResult.cs" />
     <Compile Include="Inspections\UseMeaningfulNameInspection.cs" />
@@ -374,9 +384,12 @@
     <Compile Include="Root\CommandBarsModule.cs" />
     <Compile Include="Root\RubberduckModule.cs" />
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
+    <Compile Include="Settings\GeneralSettings.cs" />
+    <Compile Include="Settings\Hotkey.cs" />
     <Compile Include="Settings\IndenterSettings.cs" />
     <Compile Include="Settings\SourceControlConfiguration.cs" />
     <Compile Include="Settings\SourceControlConfigurationService.cs" />
+    <Compile Include="Settings\UnitTestSettings.cs" />
     <Compile Include="Settings\XmlConfigurationServiceBase.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspection.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionResult.cs" />
@@ -384,7 +397,6 @@
     <Compile Include="Inspections\DefaultProjectNameInspection.cs" />
     <Compile Include="Inspections\DefaultProjectNameInspectionResult.cs" />
     <Compile Include="Inspections\ICodeInspectionResult.cs" />
-    <Compile Include="Inspections\IInspectionModel.cs" />
     <Compile Include="Inspections\IInspector.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionResult.cs" />
@@ -413,7 +425,7 @@
     <Compile Include="Inspections\IdentifierNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
-    <Compile Include="UI\BusyIndicator.xaml.cs">
+    <Compile Include="UI\Controls\BusyIndicator.xaml.cs">
       <DependentUpon>BusyIndicator.xaml</DependentUpon>
     </Compile>
     <Compile Include="Navigation\CodeExplorer\CodeExplorerComponentViewModel.cs" />
@@ -466,7 +478,7 @@
     <Compile Include="UI\Command\MenuItems\ParentMenus\NavigateParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\NavigationMenuItemDisplayOrder.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\SmartIndenterParentMenu.cs" />
-    <Compile Include="UI\Command\MenuItems\ParserStateCommandBar.cs" />
+    <Compile Include="UI\Command\MenuItems\RubberduckCommandBar.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorEncapsulateFieldCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorImplementInterfaceCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorExtractInterfaceCommandMenuItem.cs" />
@@ -537,13 +549,50 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.sv.resx</DependentUpon>
     </Compile>
-    <Compile Include="UI\Settings\AddMarkerForm.cs">
+    <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleValueTextToEnumValueConverter.cs" />
+    <Compile Include="UI\Settings\Converters\AssertModeToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\AssertModeValueToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\BindingModeValueToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\BindingModeToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleToVisibilityConverter.cs" />
+    <Compile Include="UI\Settings\Converters\CodeInspectionSeverityEnumToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\SelectedItemToBooleanConverter.cs" />
+    <Compile Include="UI\Settings\GeneralSettings.xaml.cs">
+      <DependentUpon>GeneralSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\GeneralSettingsViewModel.cs" />
+    <Compile Include="UI\Settings\IndenterSettings.xaml.cs">
+      <DependentUpon>IndenterSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\IndenterSettingsViewModel.cs" />
+    <Compile Include="UI\Settings\InspectionSettings.xaml.cs">
+      <DependentUpon>InspectionSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\InspectionSettingsViewModel.cs" />
+    <Compile Include="UI\Settings\ISettingsView.cs" />
+    <Compile Include="UI\Settings\ISettingsViewModel.cs" />
+    <Compile Include="UI\Settings\SettingsControl.xaml.cs">
+      <DependentUpon>SettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Settings\AddMarkerForm.Designer.cs">
-      <DependentUpon>AddMarkerForm.cs</DependentUpon>
+    <Compile Include="UI\Settings\SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Settings\IAddTodoSettingsView.cs" />
+    <Compile Include="UI\Settings\SettingsControlViewModel.cs" />
+    <Compile Include="UI\Settings\SettingsView.cs" />
+    <Compile Include="UI\Settings\SettingsViews.cs" />
+    <Compile Include="UI\Settings\Converters\SettingsViewToPageConverter.cs" />
+    <Compile Include="UI\Settings\TodoSettings.xaml.cs">
+      <DependentUpon>TodoSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\UnitTestSettingsViewModel.cs" />
+    <Compile Include="UI\Settings\TodoSettingsViewModel.cs" />
+    <Compile Include="UI\Settings\UnitTestSettings.xaml.cs">
+      <DependentUpon>UnitTestSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\ActionFailedEventArgs.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -691,12 +740,6 @@
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Refactorings\Rename\RenamePresenter.cs" />
-    <Compile Include="UI\Settings\GeneralSettingsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Settings\GeneralSettingsControl.Designer.cs">
-      <DependentUpon>GeneralSettingsControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\SourceControl\SettingsPresenter.cs" />
     <Compile Include="UI\SourceControl\SourceControlBindings.cs" />
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
@@ -708,16 +751,15 @@
     <Compile Include="UI\SourceControl\SourceControlPresenter.cs" />
     <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
     <Compile Include="UI\SourceControl\UnsyncedCommitsPresenter.cs" />
+    <Compile Include="UI\Controls\INavigateSelection.cs" />
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="Settings\IConfigurationService.cs" />
-    <Compile Include="UI\Settings\ITodoSettingsView.cs" />
     <Compile Include="Settings\ConfigurationLoader.cs" />
     <Compile Include="Settings\UserSettings.cs" />
     <Compile Include="Settings\CodeInspectionSettings.cs" />
-    <Compile Include="Inspections\CodeInspectionResultBase.cs" />
+    <Compile Include="Inspections\InspectionResultBase.cs" />
     <Compile Include="Inspections\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\CodeInspectionType.cs" />
-    <Compile Include="Inspections\IInspection.cs" />
     <Compile Include="Inspections\ImplicitByRefParameterInspection.cs" />
     <Compile Include="Inspections\ImplicitByRefParameterInspectionResult.cs" />
     <Compile Include="Inspections\ImplicitVariantReturnTypeInspection.cs" />
@@ -730,7 +772,6 @@
     <Compile Include="Inspections\OptionExplicitInspectionResult.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspection.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspectionResult.cs" />
-    <Compile Include="ToDoItems\TodoPriority.cs" />
     <Compile Include="UI\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -759,38 +800,13 @@
     <Compile Include="Settings\ToDoListSettings.cs" />
     <Compile Include="Settings\ToDoMarkers.cs" />
     <Compile Include="UI\IDockableUserControl.cs" />
-    <Compile Include="UI\Settings\CodeInspectionSettingsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Settings\CodeInspectionSettingsControl.Designer.cs">
-      <DependentUpon>CodeInspectionSettingsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Settings\ConfigurationTreeView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Settings\ConfigurationTreeView.Designer.cs">
-      <DependentUpon>ConfigurationTreeView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Settings\SettingsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Settings\SettingsDialog.Designer.cs">
-      <DependentUpon>SettingsDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Settings\TodoListSettingsUserControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Settings\TodoListSettingsUserControl.Designer.cs">
-      <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Settings\TodoSettingPresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerControl.xaml.cs">
       <DependentUpon>ToDoExplorerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerViewModel.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
-    <Compile Include="UI\BindableSelectedItemBehavior.cs" />
+    <Compile Include="UI\Controls\BindableSelectedItemBehavior.cs" />
     <Compile Include="UI\UnitTesting\StandardModuleTestExplorerModel.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerControl.xaml.cs">
       <DependentUpon>TestExplorerControl.xaml</DependentUpon>
@@ -833,8 +849,9 @@
     <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="UnitTesting\TestMethod.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
-    <Compile Include="UnitTesting\TestOutcomeImageSourceConverter.cs" />
+    <Compile Include="UI\UnitTesting\TestOutcomeImageSourceConverter.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
+    <Compile Include="UI\UnitTesting\TestResultToOutcomeTextConverter.cs" />
     <Compile Include="UnitTesting\TestRunner.cs" />
     <Compile Include="UI\SourceControl\IUnSyncedCommitsView.cs" />
     <Compile Include="UI\SourceControl\UnSyncedCommitsControl.cs">
@@ -851,7 +868,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Inspections\InspectionsUI.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionsUI1.Designer.cs</LastGenOutput>
+      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\AboutWindow.resx">
@@ -896,8 +913,8 @@
       <LastGenOutput>RubberduckUI.sv.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\AddMarkerForm.resx">
-      <DependentUpon>AddMarkerForm.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Settings\SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SimpleListControl.resx">
       <DependentUpon>SimpleListControl.cs</DependentUpon>
@@ -923,21 +940,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\CodeInspectionSettingsControl.resx">
-      <DependentUpon>CodeInspectionSettingsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\ConfigurationTreeView.resx">
-      <DependentUpon>ConfigurationTreeView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\GeneralSettingsControl.resx">
-      <DependentUpon>GeneralSettingsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\SettingsDialog.resx">
-      <DependentUpon>SettingsDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\TodoListSettingsUserControl.resx">
-      <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\BranchesControl.resx">
       <DependentUpon>BranchesControl.cs</DependentUpon>
@@ -1163,6 +1165,9 @@
     <None Include="Resources\document-outlook.png" />
     <None Include="Resources\document-powerpoint.png" />
     <None Include="Resources\document-excel.png" />
+    <Resource Include="Resources\folder--pencil.png" />
+    <Resource Include="Resources\folder--plus.png" />
+    <Resource Include="Resources\folder-rename.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
@@ -1363,11 +1368,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\GroupingGrid\GroupingGrid.xaml">
+    <Page Include="UI\Controls\GroupingGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\BusyIndicator.xaml">
+    <Page Include="UI\Controls\NumberPicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Controls\BusyIndicator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1380,6 +1389,30 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\GeneralSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\IndenterSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\InspectionSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\SettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\TodoSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\UnitTestSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

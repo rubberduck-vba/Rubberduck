@@ -18,6 +18,8 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void InitVBAProjectIntitializesRepo()
         {
+            Assert.Inconclusive("This test accesses file system.");
+
             //arrange
             var component = new Mock<VBComponent>();
             component.Setup(c => c.Name).Returns("Module1");
@@ -48,6 +50,8 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CloneCreatesLocalRepo()
         {
+            Assert.Inconclusive("This test accesses file system.");
+
             //arrange
             var project = new Mock<VBProject>();
             var expected = new Repository("SourceControlTest",
@@ -69,6 +73,8 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranchTest()
         {
+            Assert.Inconclusive("This test accesses file system.");
+
             var project = new Mock<VBProject>();
             var repo = new Repository("SourceControlTest",
                                       Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SourceControlTest"),
@@ -82,18 +88,20 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual("NewBranch", git.CurrentBranch);
         }
 
-        [TestCleanup]
-        public void ForceDeleteDirectory()
-        {
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SourceControlTest");
-            var directory = new DirectoryInfo(path) { Attributes = FileAttributes.Normal };
+        //[TestCleanup]
+        //public void ForceDeleteDirectory()
+        //{
 
-            foreach (var info in directory.GetFileSystemInfos("*", SearchOption.AllDirectories))
-            {
-                info.Attributes = FileAttributes.Normal;
-            }
 
-            directory.Delete(true);
-        }
+        //    string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SourceControlTest");
+        //    var directory = new DirectoryInfo(path) { Attributes = FileAttributes.Normal };
+
+        //    foreach (var info in directory.GetFileSystemInfos("*", SearchOption.AllDirectories))
+        //    {
+        //        info.Attributes = FileAttributes.Normal;
+        //    }
+
+        //    directory.Delete(true);
+        //}
     }
 }

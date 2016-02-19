@@ -1,28 +1,49 @@
-﻿using System.Collections.Generic;
-using Antlr4.Runtime;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
+﻿using Antlr4.Runtime;
 using Rubberduck.VBEditor;
-using System.Text.RegularExpressions;
-using System.Linq;
 using System;
-using Rubberduck.Parsing;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.Inspections
 {
-    public class FunctionReturnValueNotUsedInspectionResult : CodeInspectionResultBase
+    public class FunctionReturnValueNotUsedInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public FunctionReturnValueNotUsedInspectionResult(IInspection inspection, ParserRuleContext context, QualifiedMemberName qualifiedName, IEnumerable<string> returnStatements)
-            : base(inspection, string.Format(inspection.Description, qualifiedName.MemberName), qualifiedName.QualifiedModuleName, context)
+        public FunctionReturnValueNotUsedInspectionResult(
+            IInspection inspection,
+            ParserRuleContext context,
+            QualifiedMemberName qualifiedName,
+            IEnumerable<string> returnStatements)
+            : this(inspection, context, qualifiedName, returnStatements, new List<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>>())
         {
+        }
+
+        public FunctionReturnValueNotUsedInspectionResult(
+            IInspection inspection,
+            ParserRuleContext context,
+            QualifiedMemberName qualifiedName,
+            IEnumerable<string> returnStatements,
+            IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>> children)
+            : base(inspection, qualifiedName.QualifiedModuleName, context)
+        {
+            var root = new ConvertToProcedureQuickFix(context, QualifiedSelection, returnStatements);
+            var compositeFix = new CompositeCodeInspectionFix(root);
+            children.ToList().ForEach(child => compositeFix.AddChild(new ConvertToProcedureQuickFix(child.Item1, child.Item2, child.Item3)));
             _quickFixes = new[]
             {
-                new ConvertToProcedureQuickFix(context, QualifiedSelection, returnStatements),
+                compositeFix
             };
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, Target.IdentifierName);
+            }
+        }
     }
 }

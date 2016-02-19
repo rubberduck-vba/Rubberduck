@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Rubberduck.Inspections;
-using Rubberduck.ToDoItems;
 using Rubberduck.UI;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -43,9 +42,9 @@ namespace Rubberduck.Settings
 
             var config = base.LoadConfiguration();
 
-            if (config.UserSettings.LanguageSetting == null)
+            if (config.UserSettings.GeneralSettings == null)
             {
-                config.UserSettings.LanguageSetting = new DisplayLanguageSetting("en-US");
+                config.UserSettings.GeneralSettings = GetDefaultGeneralSettings();
             }
 
             if (config.UserSettings.ToDoListSettings == null)
@@ -56,6 +55,16 @@ namespace Rubberduck.Settings
             if (config.UserSettings.CodeInspectionSettings == null)
             {
                 config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
+            }
+
+            if (config.UserSettings.UnitTestSettings == null)
+            {
+                config.UserSettings.UnitTestSettings = new UnitTestSettings();
+            }
+
+            if (config.UserSettings.IndenterSettings == null)
+            {
+                config.UserSettings.IndenterSettings = GetDefaultIndenterSettings();
             }
 
             var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
@@ -114,19 +123,30 @@ namespace Rubberduck.Settings
         public Configuration GetDefaultConfiguration()
         {
             var userSettings = new UserSettings(
-                                    new DisplayLanguageSetting("en-US"), 
+                                    GetDefaultGeneralSettings(), 
                                     new ToDoListSettings(GetDefaultTodoMarkers()),
-                                    new CodeInspectionSettings(GetDefaultCodeInspections()), 
+                                    new CodeInspectionSettings(GetDefaultCodeInspections()),
+                                    new UnitTestSettings(),
                                     GetDefaultIndenterSettings());
 
             return new Configuration(userSettings);
         }
 
+        private GeneralSettings GetDefaultGeneralSettings()
+        {
+            return new GeneralSettings(new DisplayLanguageSetting("en-US"),
+                new[]
+                {
+                    new Hotkey{Name="IndentProcedure", IsEnabled=true, KeyDisplaySymbol="CTRL-P"},
+                    new Hotkey{Name="IndentModule", IsEnabled=true, KeyDisplaySymbol="CTRL-M"}
+                });
+        }
+
         public ToDoMarker[] GetDefaultTodoMarkers()
         {
-            var note = new ToDoMarker(RubberduckUI.ToDoMarkerNote, TodoPriority.Low);
-            var todo = new ToDoMarker(RubberduckUI.ToDoMarkerToDo, TodoPriority.Medium);
-            var bug = new ToDoMarker(RubberduckUI.ToDoMarkerBug, TodoPriority.High);
+            var note = new ToDoMarker(RubberduckUI.TodoMarkerNote);
+            var todo = new ToDoMarker(RubberduckUI.TodoMarkerTodo);
+            var bug = new ToDoMarker(RubberduckUI.TodoMarkerBug);
 
             return new[] { note, todo, bug };
         }
@@ -135,31 +155,31 @@ namespace Rubberduck.Settings
         /// <returns>   An array of Config.CodeInspection. </returns>
         public CodeInspectionSetting[] GetDefaultCodeInspections()
         {
-            return _inspections.Select(x => new CodeInspectionSetting(x)).ToArray();
+            return _inspections.Select(x =>
+                        new CodeInspectionSetting(x.Name, x.Description, x.InspectionType, x.DefaultSeverity,
+                            x.DefaultSeverity)).ToArray();
         }
 
         public IndenterSettings GetDefaultIndenterSettings()
         {
             return new IndenterSettings
             {
-                IndentProcedure = true,
-                IndentFirst = false,
-                IndentDim = true,
-                IndentComment = true,
-                IndentCase = false,
+                IndentEntireProcedureBody = true,
+                IndentFirstCommentBlock = true,
+                IndentFirstDeclarationBlock = true,
+                AlignCommentsWithCode = true,
                 AlignContinuations = true,
-                AlignIgnoreOps = true,
+                IgnoreOperatorsInContinuations = true,
+                IndentCase = false,
                 ForceDebugStatementsInColumn1 = false,
-                ForceCompilerStuffInColumn1 = false,
-                IndentCompilerStuff = true,
-                AlignDim = false,
+                ForceCompilerDirectivesInColumn1 = false,
+                IndentCompilerDirectives = true,
+                AlignDims = false,
                 AlignDimColumn = 15,
                 EnableUndo = true,
-                EnableIndentProcedureHotKey = true,
-                EnableIndentModuleHotKey = true,
-                EndOfLineAlignColumn = 55,
-                IndentSpaces = 4, // should read/write this value from VBE registry settings
-                AlignEndOfLine = false
+                EndOfLineCommentStyle = SmartIndenter.EndOfLineCommentStyle.AlignInColumn,
+                EndOfLineCommentColumnSpaceAlignment = 50,
+                IndentSpaces = 4
             };
         }
     }

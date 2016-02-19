@@ -1,5 +1,4 @@
-﻿using System.Windows.Input;
-
+﻿
 namespace Rubberduck.UI.ToDoItems
 {
     /// <summary>
@@ -7,20 +6,19 @@ namespace Rubberduck.UI.ToDoItems
     /// </summary>
     public partial class ToDoExplorerControl
     {
+        private ToDoExplorerViewModel ViewModel { get { return DataContext as ToDoExplorerViewModel; } }
+
         public ToDoExplorerControl()
         {
             InitializeComponent();
+            Loaded += ToDoExplorerControl_Loaded;
         }
 
-        private void GroupingGridItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        void ToDoExplorerControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            var viewModel = DataContext as ToDoExplorerViewModel;
-
-            // this seems idiotic, but if you hold CTRL while you double-click an item
-            // it both unselected the item and triggers the double-click, resulting in an NRE here
-            if (viewModel != null && viewModel.SelectedToDo != null)
+            if (ViewModel != null && ViewModel.RefreshCommand.CanExecute(null))
             {
-                viewModel.NavigateToToDo.Execute(new NavigateCodeEventArgs(viewModel.SelectedToDo.GetSelection()));
+                ViewModel.RefreshCommand.Execute(null);
             }
         }
     }

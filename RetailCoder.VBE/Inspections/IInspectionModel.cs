@@ -23,6 +23,11 @@
         CodeInspectionType InspectionType { get; }
 
         /// <summary>
+        /// Gets a value indicating the default severity level of the code inspection.
+        /// </summary>
+        CodeInspectionSeverity DefaultSeverity { get; }
+
+        /// <summary>
         /// Gets a value indicating the severity level of the code inspection.
         /// </summary>
         CodeInspectionSeverity Severity { get; set; }

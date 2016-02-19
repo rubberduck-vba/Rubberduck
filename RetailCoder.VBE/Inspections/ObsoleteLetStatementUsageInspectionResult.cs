@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
@@ -8,12 +7,12 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteLetStatementUsageInspectionResult : CodeInspectionResultBase
+    public class ObsoleteLetStatementUsageInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public ObsoleteLetStatementUsageInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, inspection.Description, qualifiedContext.ModuleName, qualifiedContext.Context)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
@@ -22,13 +21,18 @@ namespace Rubberduck.Inspections
             };
         }
 
+        public override string Description
+        {
+            get { return Inspection.Name; }
+        }
+
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get {return _quickFixes; } }
     }
 
     public class RemoveExplicitLetStatementQuickFix : CodeInspectionQuickFix
     {
         public RemoveExplicitLetStatementQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_RemoveObsoleteStatement)
+            : base(context, selection, InspectionsUI.RemoveObsoleteStatementQuickFix)
         {
         }
 

@@ -8,13 +8,12 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ProcedureShouldBeFunctionInspectionResult : CodeInspectionResultBase
+    public class ProcedureShouldBeFunctionInspectionResult : InspectionResultBase
     {
        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
        public ProcedureShouldBeFunctionInspectionResult(IInspection inspection, RubberduckParserState state, QualifiedContext<VBAParser.ArgListContext> argListQualifiedContext, QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext)
            : base(inspection,
-                string.Format(inspection.Description, subStmtQualifiedContext.Context.ambiguousIdentifier().GetText()),
                 subStmtQualifiedContext.ModuleName,
                 subStmtQualifiedContext.Context.ambiguousIdentifier())
         {
@@ -25,6 +24,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionResultFormat; }
+        }
     }
 
     public class ChangeProcedureToFunction : CodeInspectionQuickFix

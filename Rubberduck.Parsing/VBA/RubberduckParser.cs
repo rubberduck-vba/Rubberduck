@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
@@ -181,48 +182,14 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private IEnumerable<CommentNode> ParseComments(QualifiedModuleName qualifiedName)
+        private IEnumerable<CommentNode> ParseComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)
         {
-            var result = new List<CommentNode>();
-
-            var code = qualifiedName.Component.CodeModule.GetSanitizedCode();
-            var commentBuilder = new StringBuilder();
-            var continuing = false;
-
-            var startLine = 0;
-            var startColumn = 0;
-
-            for (var i = 0; i < code.Length; i++)
-            {
-                var line = code[i];
-                var index = 0;
-
-                if (continuing || line.HasComment(out index))
-                {
-                    startLine = continuing ? startLine : i;
-                    startColumn = continuing ? startColumn : index;
-
-                    var commentLength = line.Length - index;
-
-                    continuing = line.EndsWith("_");
-                    if (!continuing)
-                    {
-                        commentBuilder.Append(line.Substring(index, commentLength).TrimStart());
-                        var selection = new Selection(startLine + 1, startColumn + 1, i + 1, line.Length + 1);
-
-                        var comment = new CommentNode(commentBuilder.ToString(), new QualifiedSelection(qualifiedName, selection));
-                        commentBuilder.Clear();
-                        result.Add(comment);
-                    }
-                    else
-                    {
-                        // ignore line continuations in comment text:
-                        commentBuilder.Append(line.Substring(index, commentLength).TrimStart());
-                    }
-                }
-            }
-
-            return result;
+            var commentNodes = comments
+                .Select(comment => new CommentNode(comment.GetComment(), Tokens.CommentMarker, new QualifiedSelection(qualifiedName, comment.GetSelection())));
+            var remCommentNodes = remComments
+                .Select(comment => new CommentNode(comment.GetComment(), Tokens.Rem, new QualifiedSelection(qualifiedName, comment.GetSelection())));
+            var allCommentNodes = commentNodes.Union(remCommentNodes);
+            return allCommentNodes;
         }
 
         private void ParseInternal(VBComponent vbComponent, string code, CancellationToken token)
@@ -231,13 +198,12 @@ namespace Rubberduck.Parsing.VBA
             State.SetModuleState(vbComponent, ParserState.Parsing);
 
             var qualifiedName = new QualifiedModuleName(vbComponent);
-            var comments = ParseComments(qualifiedName);
-            _state.SetModuleComments(vbComponent, comments);
 
             var obsoleteCallsListener = new ObsoleteCallStatementListener();
             var obsoleteLetListener = new ObsoleteLetStatementListener();
             var emptyStringLiteralListener = new EmptyStringLiteralListener();
             var argListsWithOneByRefParam = new ArgListWithOneByRefParamListener();
+            var commentListener = new CommentListener();
 
             var listeners = new IParseTreeListener[]
             {
@@ -245,6 +211,7 @@ namespace Rubberduck.Parsing.VBA
                 obsoleteLetListener,
                 emptyStringLiteralListener,
                 argListsWithOneByRefParam,
+                commentListener
             };
 
             token.ThrowIfCancellationRequested();
@@ -269,6 +236,9 @@ namespace Rubberduck.Parsing.VBA
             var walker = new ParseTreeWalker();
             walker.Walk(declarationsListener, tree);
             declarationsListener.NewDeclaration -= declarationsListener_NewDeclaration;
+
+            var comments = ParseComments(qualifiedName, commentListener.Comments, commentListener.RemComments);
+            _state.SetModuleComments(vbComponent, comments);
 
             _state.ObsoleteCallContexts = obsoleteCallsListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
             _state.ObsoleteLetContexts = obsoleteLetListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
@@ -396,6 +366,25 @@ namespace Rubberduck.Parsing.VBA
                 {
                     _contexts.Add(context);
                 }
+            }
+        }
+
+        private class CommentListener : VBABaseListener
+        {
+            private readonly IList<VBAParser.RemCommentContext> _remComments = new List<VBAParser.RemCommentContext>();
+            public IEnumerable<VBAParser.RemCommentContext> RemComments { get { return _remComments; } }
+
+            private readonly IList<VBAParser.CommentContext> _comments = new List<VBAParser.CommentContext>();
+            public IEnumerable<VBAParser.CommentContext> Comments { get { return _comments; } }
+
+            public override void ExitRemComment([NotNull] VBAParser.RemCommentContext context)
+            {
+                _remComments.Add(context);
+            }
+
+            public override void ExitComment([NotNull] VBAParser.CommentContext context)
+            {
+                _comments.Add(context);
             }
         }
     }

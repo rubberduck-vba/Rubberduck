@@ -2,7 +2,6 @@
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
@@ -12,16 +11,16 @@ namespace Rubberduck.Inspections
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public DefaultProjectNameInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
             _wrapperFactory = new CodePaneWrapperFactory();
-            Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public override string Description { get { return RubberduckUI.GenericProjectName_; } }
+        public override string Meta { get { return InspectionsUI.DefaultProjectNameInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.DefaultProjectNameInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = UserDeclarations
                             .Where(declaration => declaration.DeclarationType == DeclarationType.Project

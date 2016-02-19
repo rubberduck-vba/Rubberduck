@@ -1,30 +1,37 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA.Nodes;
 using Rubberduck.UI;
-using Rubberduck.VBA.Nodes;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ImplicitVariantReturnTypeInspectionResult : CodeInspectionResultBase
+    public class ImplicitVariantReturnTypeInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public ImplicitVariantReturnTypeInspectionResult(IInspection inspection, string name, QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, name, qualifiedContext.ModuleName, qualifiedContext.Context)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
-                new SetExplicitVariantReturnTypeQuickFix(Context, QualifiedSelection, RubberduckUI.Inspections_ReturnExplicitVariant), 
+                new SetExplicitVariantReturnTypeQuickFix(Context, QualifiedSelection, InspectionsUI.SetExplicitVariantReturnTypeQuickFix), 
                 new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get {return _quickFixes; } }
+
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.ImplicitVariantReturnTypeInspectionResultFormat,
+                    Target.IdentifierName);
+            }
+        }
     }
 
     public class SetExplicitVariantReturnTypeQuickFix : CodeInspectionQuickFix

@@ -89,7 +89,7 @@ namespace RubberduckTests.Mocks
         {
             var vbe = new Mock<VBE>();
             var windows = new MockWindowsCollection {VBE = vbe.Object};
-            vbe.Setup(m => m.Windows).Returns(windows);
+            vbe.Setup(m => m.Windows).Returns(() => windows);
             vbe.SetupProperty(m => m.ActiveCodePane);
             vbe.SetupProperty(m => m.ActiveVBProject);
             
@@ -99,7 +99,7 @@ namespace RubberduckTests.Mocks
             var mainWindow = new Mock<Window>();
             mainWindow.Setup(m => m.HWnd).Returns(0);
 
-            vbe.SetupGet(m => m.MainWindow).Returns(mainWindow.Object);
+            vbe.SetupGet(m => m.MainWindow).Returns(() => mainWindow.Object);
 
             _vbProjects = CreateProjectsMock();
             vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
@@ -114,11 +114,11 @@ namespace RubberduckTests.Mocks
         {
             var result = new Mock<VBProjects>();
 
-            result.Setup(m => m.GetEnumerator()).Returns(_projects.GetEnumerator());
-            result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(_projects.GetEnumerator());
+            result.Setup(m => m.GetEnumerator()).Returns(() => _projects.GetEnumerator());
+            result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _projects.GetEnumerator());
             
             result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(value => _projects.ElementAt(value));
-            result.SetupGet(m => m.Count).Returns(_projects.Count);
+            result.SetupGet(m => m.Count).Returns(() => _projects.Count);
 
 
             return result;
@@ -128,11 +128,11 @@ namespace RubberduckTests.Mocks
         {
             var result = new Mock<CodePanes>();
 
-            result.Setup(m => m.GetEnumerator()).Returns(_codePanes.GetEnumerator());
-            result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(_codePanes.GetEnumerator());
+            result.Setup(m => m.GetEnumerator()).Returns(() => _codePanes.GetEnumerator());
+            result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _codePanes.GetEnumerator());
             
             result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(value => _codePanes.ElementAt(value));
-            result.SetupGet(m => m.Count).Returns(_codePanes.Count);
+            result.SetupGet(m => m.Count).Returns(() => _codePanes.Count);
 
             return result;
         }

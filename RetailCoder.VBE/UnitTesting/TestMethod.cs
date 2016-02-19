@@ -5,13 +5,14 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.UI;
+using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.UnitTesting
 {
-    public class TestMethod : ViewModelBase, IEquatable<TestMethod>, IEditableObject
+    public class TestMethod : ViewModelBase, IEquatable<TestMethod>, IEditableObject, INavigateSource
     {
         private readonly ICollection<TestResult> _assertResults = new List<TestResult>();
         private readonly IHostApplication _hostApp;
@@ -53,7 +54,7 @@ namespace Rubberduck.UnitTesting
         public TestResult Result
         {
             get { return _result; } 
-            set { _result = value; OnPropertyChanged();}
+            set { _result = value; OnPropertyChanged(); }
         }
 
         void HandleAssertCompleted(object sender, AssertCompletedEventArgs e)

@@ -296,6 +296,19 @@ namespace Rubberduck.Parsing.Grammar
         public virtual void ExitVsNew([NotNull] VBAParser.VsNewContext context) { }
 
         /// <summary>
+        /// Enter a parse tree produced by <see cref="VBAParser.remComment"/>.
+        /// <para>The default implementation does nothing.</para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        public virtual void EnterRemComment([NotNull] VBAParser.RemCommentContext context) { }
+        /// <summary>
+        /// Exit a parse tree produced by <see cref="VBAParser.remComment"/>.
+        /// <para>The default implementation does nothing.</para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        public virtual void ExitRemComment([NotNull] VBAParser.RemCommentContext context) { }
+
+        /// <summary>
         /// Enter a parse tree produced by <see cref="VBAParser.timeStmt"/>.
         /// <para>The default implementation does nothing.</para>
         /// </summary>
@@ -777,6 +790,19 @@ namespace Rubberduck.Parsing.Grammar
         public virtual void ExitDateStmt([NotNull] VBAParser.DateStmtContext context) { }
 
         /// <summary>
+        /// Enter a parse tree produced by <see cref="VBAParser.endOfStatement"/>.
+        /// <para>The default implementation does nothing.</para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        public virtual void EnterEndOfStatement([NotNull] VBAParser.EndOfStatementContext context) { }
+        /// <summary>
+        /// Exit a parse tree produced by <see cref="VBAParser.endOfStatement"/>.
+        /// <para>The default implementation does nothing.</para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        public virtual void ExitEndOfStatement([NotNull] VBAParser.EndOfStatementContext context) { }
+
+        /// <summary>
         /// Enter a parse tree produced by <see cref="VBAParser.optionCompareStmt"/>.
         /// <para>The default implementation does nothing.</para>
         /// </summary>
@@ -1022,6 +1048,19 @@ namespace Rubberduck.Parsing.Grammar
         /// </summary>
         /// <param name="context">The parse tree.</param>
         public virtual void ExitDeftypeStmt([NotNull] VBAParser.DeftypeStmtContext context) { }
+
+        /// <summary>
+        /// Enter a parse tree produced by <see cref="VBAParser.endOfLine"/>.
+        /// <para>The default implementation does nothing.</para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        public virtual void EnterEndOfLine([NotNull] VBAParser.EndOfLineContext context) { }
+        /// <summary>
+        /// Exit a parse tree produced by <see cref="VBAParser.endOfLine"/>.
+        /// <para>The default implementation does nothing.</para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        public virtual void ExitEndOfLine([NotNull] VBAParser.EndOfLineContext context) { }
 
         /// <summary>
         /// Enter a parse tree produced by <see cref="VBAParser.randomizeStmt"/>.
@@ -2335,6 +2374,19 @@ namespace Rubberduck.Parsing.Grammar
         /// </summary>
         /// <param name="context">The parse tree.</param>
         public virtual void ExitVsEqv([NotNull] VBAParser.VsEqvContext context) { }
+
+        /// <summary>
+        /// Enter a parse tree produced by <see cref="VBAParser.comment"/>.
+        /// <para>The default implementation does nothing.</para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        public virtual void EnterComment([NotNull] VBAParser.CommentContext context) { }
+        /// <summary>
+        /// Exit a parse tree produced by <see cref="VBAParser.comment"/>.
+        /// <para>The default implementation does nothing.</para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        public virtual void ExitComment([NotNull] VBAParser.CommentContext context) { }
 
         /// <summary>
         /// Enter a parse tree produced by <see cref="VBAParser.moduleBodyElement"/>.
