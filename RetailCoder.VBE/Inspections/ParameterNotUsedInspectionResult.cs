@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -39,7 +37,7 @@ namespace Rubberduck.Inspections
 
         public RemoveUnusedParameterQuickFix(ParserRuleContext context, QualifiedSelection selection, 
             RemoveParametersRefactoring quickFixRefactoring, RubberduckParserState parseResult)
-            : base(context, selection, RubberduckUI.Inspections_RemoveUnusedParameter)
+            : base(context, selection, InspectionsUI.RemoveUnusedParameterQuickFix)
         {
             _quickFixRefactoring = quickFixRefactoring;
             _parseResult = parseResult;

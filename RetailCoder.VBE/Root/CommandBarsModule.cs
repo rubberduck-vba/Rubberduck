@@ -156,7 +156,7 @@ namespace Rubberduck.Root
             return new IMenuItem[]
             {
                 _kernel.Get<AboutCommandMenuItem>(),
-                _kernel.Get<OptionsCommandMenuItem>(),
+                _kernel.Get<SettingsCommandMenuItem>(),
                 _kernel.Get<RunCodeInspectionsCommandMenuItem>(),
                 _kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
                 GetUnitTestingParentMenu(),

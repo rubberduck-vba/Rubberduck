@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -35,8 +34,8 @@ namespace Rubberduck.Inspections
     /// </summary>
     public class PassParameterByReferenceQuickFix : CodeInspectionQuickFix
     {
-        public PassParameterByReferenceQuickFix(ParserRuleContext context, QualifiedSelection selection) 
-            : base(context, selection, RubberduckUI.Inspections_PassParamByReference)
+        public PassParameterByReferenceQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, InspectionsUI.PassParameterByReferenceQuickFix)
         {
         }
 

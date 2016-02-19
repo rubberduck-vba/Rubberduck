@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -28,7 +27,7 @@ namespace Rubberduck.Inspections
     public class RemoveUnassignedIdentifierQuickFix : CodeInspectionQuickFix
     {
         public RemoveUnassignedIdentifierQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_RemoveUnassignedVariable)
+            : base(context, selection, InspectionsUI.RemoveUnassignedIdentifierQuickFix)
         {
         }
 

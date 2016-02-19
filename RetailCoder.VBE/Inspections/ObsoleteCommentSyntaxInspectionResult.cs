@@ -3,7 +3,6 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -36,7 +35,7 @@ namespace Rubberduck.Inspections
         private readonly CommentNode _comment;
 
         public RemoveCommentQuickFix(ParserRuleContext context, QualifiedSelection selection, CommentNode comment)
-            : base(context, selection, RubberduckUI.Inspections_RemoveComment)
+            : base(context, selection, InspectionsUI.RemoveCommentQuickFix)
         {
             _comment = comment;
         }
@@ -77,7 +76,7 @@ namespace Rubberduck.Inspections
         private readonly CommentNode _comment;
 
         public ReplaceCommentMarkerQuickFix(ParserRuleContext context, QualifiedSelection selection, CommentNode comment)
-            : base(context, selection, RubberduckUI.Inspections_ReplaceRemWithSingleQuoteMarker)
+            : base(context, selection, InspectionsUI.ReplaceCommentMarkerQuickFix)
         {
             _comment = comment;
         }

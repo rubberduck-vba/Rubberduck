@@ -3,7 +3,6 @@ using System.Text;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -51,7 +50,7 @@ namespace Rubberduck.Inspections
     public class SplitMultipleDeclarationsQuickFix : CodeInspectionQuickFix
     {
         public SplitMultipleDeclarationsQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_SplitDeclarations)
+            : base(context, selection, InspectionsUI.SplitMultipleDeclarationsQuickFix)
         {
         }
 

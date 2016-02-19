@@ -91,5 +91,26 @@ namespace Rubberduck.Settings
         public CodeInspectionSetting(IInspectionModel inspection)
             : this(inspection.Name, inspection.Description, inspection.InspectionType, inspection.DefaultSeverity, inspection.Severity)
         { }
+
+        public override bool Equals(object obj)
+        {
+            var inspectionSetting = obj as CodeInspectionSetting;
+
+            return inspectionSetting != null &&
+                   inspectionSetting.InspectionType == InspectionType &&
+                   inspectionSetting.Name == Name &&
+                   inspectionSetting.Severity == Severity;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (Name != null ? Name.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (int) Severity;
+                hashCode = (hashCode * 397) ^ (int) InspectionType;
+                return hashCode;
+            }
+        }
     }
 }

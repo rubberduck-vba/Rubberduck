@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -17,7 +15,7 @@ namespace Rubberduck.Inspections
         {
             _quickFixes = new CodeInspectionQuickFix[]
                 {
-                    new ImplicitByRefParameterQuickFix(Context, QualifiedSelection, RubberduckUI.Inspections_PassParamByRefExplicitly, Tokens.ByRef), 
+                    new ImplicitByRefParameterQuickFix(Context, QualifiedSelection, InspectionsUI.ImplicitByRefParameterQuickFix, Tokens.ByRef), 
                     new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
                 };
         }

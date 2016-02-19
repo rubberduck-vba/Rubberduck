@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -41,7 +40,7 @@ namespace Rubberduck.Inspections
     public class RemoveUnusedDeclarationQuickFix : CodeInspectionQuickFix
     {
         public RemoveUnusedDeclarationQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_RemoveUnusedDeclaration)
+            : base(context, selection, InspectionsUI.RemoveUnusedDeclarationQuickFix)
         {
         }
 

@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
@@ -23,6 +21,8 @@ namespace Rubberduck.UI.Settings
             SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
 
             Hotkeys = new ObservableCollection<Hotkey>(config.UserSettings.GeneralSettings.HotkeySettings);
+            AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
+            AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
         }
 
         public ObservableCollection<DisplayLanguageSetting> Languages { get; set; } 
@@ -55,16 +55,48 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private bool _autoSaveEnabled;
+        public bool AutoSaveEnabled
+        {
+            get { return _autoSaveEnabled; }
+            set
+            {
+                if (_autoSaveEnabled != value)
+                {
+                    _autoSaveEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _autoSavePeriod;
+        public int AutoSavePeriod
+        {
+            get { return _autoSavePeriod; }
+            set
+            {
+                if (_autoSavePeriod != value)
+                {
+                    _autoSavePeriod = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public void UpdateConfig(Configuration config)
         {
             config.UserSettings.GeneralSettings.Language = SelectedLanguage;
             config.UserSettings.GeneralSettings.HotkeySettings = Hotkeys.ToArray();
+            config.UserSettings.GeneralSettings.AutoSaveEnabled = AutoSaveEnabled;
+            config.UserSettings.GeneralSettings.AutoSavePeriod = AutoSavePeriod;
         }
 
         public void SetToDefaults(Configuration config)
         {
             SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
             Hotkeys = new ObservableCollection<Hotkey>(config.UserSettings.GeneralSettings.HotkeySettings);
+            AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
+            AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
         }
     }
 }

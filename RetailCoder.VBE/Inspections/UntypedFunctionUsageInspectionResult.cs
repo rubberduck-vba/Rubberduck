@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -35,7 +34,7 @@ namespace Rubberduck.Inspections
     public class UntypedFunctionUsageQuickFix : CodeInspectionQuickFix
     {
         public UntypedFunctionUsageQuickFix(ParserRuleContext context, QualifiedSelection selection) 
-            : base(context, selection, string.Format(RubberduckUI.QuickFixUseTypedFunction_, context.GetText()))
+            : base(context, selection, string.Format(InspectionsUI.QuickFixUseTypedFunction_, context.GetText()))
         {
         }
 

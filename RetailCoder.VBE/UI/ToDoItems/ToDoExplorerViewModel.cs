@@ -9,6 +9,7 @@ using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
+using Rubberduck.UI.Settings;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -62,7 +63,6 @@ namespace Rubberduck.UI.ToDoItems
         }
 
         private ToDoItem _selectedItem;
-
         public INavigateSource SelectedItem
         {
             get { return _selectedItem; }
@@ -73,16 +73,16 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
-        private ICommand _clear;
-        public ICommand Remove
+        private ICommand _removeCommand;
+        public ICommand RemoveCommand
         {
             get
             {
-                if (_clear != null)
+                if (_removeCommand != null)
                 {
-                    return _clear;
+                    return _removeCommand;
                 }
-                return _clear = new DelegateCommand(_ =>
+                return _removeCommand = new DelegateCommand(_ =>
                 {
                     if (_selectedItem == null)
                     {
@@ -100,8 +100,26 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
-        private NavigateCommand _navigateCommand;
+        private ICommand _openTodoSettings;
+        public ICommand OpenTodoSettings
+        {
+            get
+            {
+                if (_openTodoSettings != null)
+                {
+                    return _openTodoSettings;
+                }
+                return _openTodoSettings = new DelegateCommand(_ =>
+                {
+                    using (var window = new SettingsForm(_configService, SettingsViews.TodoSettings))
+                    {
+                        window.ShowDialog();
+                    }
+                });
+            }
+        }
 
+        private NavigateCommand _navigateCommand;
         public INavigateCommand NavigateCommand
         {
             get

@@ -1,6 +1,5 @@
 using Antlr4.Runtime;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -8,7 +7,7 @@ namespace Rubberduck.Inspections
     public class MakeSingleLineParameterQuickFix : CodeInspectionQuickFix
     {
         public MakeSingleLineParameterQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_MultilineParameter)
+            : base(context, selection, InspectionsUI.MakeSingleLineParameterQuickFix)
         {
         }
 

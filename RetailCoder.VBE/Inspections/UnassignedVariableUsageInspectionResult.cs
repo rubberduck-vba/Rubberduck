@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -35,7 +34,7 @@ namespace Rubberduck.Inspections
     public class RemoveUnassignedVariableUsageQuickFix : CodeInspectionQuickFix
     {
         public RemoveUnassignedVariableUsageQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_RemoveUsageBreaksCode)
+            : base(context, selection, InspectionsUI.RemoveUnassignedVariableUsageQuickFix)
         {
         }
 
@@ -51,7 +50,7 @@ namespace Rubberduck.Inspections
             var originalInstruction = Context.GetText();
             module.DeleteLines(selection.StartLine, selection.LineCount);
 
-            var newInstruction = RubberduckUI.Inspections_UnassignedVariableTodo;
+            var newInstruction = InspectionsUI.Inspections_UnassignedVariableTodo;
             var newCodeLines = string.IsNullOrEmpty(newInstruction)
                 ? string.Empty
                 : originalCodeLines.Replace(originalInstruction, newInstruction);

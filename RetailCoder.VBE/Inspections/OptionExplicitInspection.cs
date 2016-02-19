@@ -3,7 +3,6 @@ using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {

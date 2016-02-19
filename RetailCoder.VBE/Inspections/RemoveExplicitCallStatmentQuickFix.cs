@@ -2,15 +2,14 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class RemoveExplicitCallStatemntQuickFix : CodeInspectionQuickFix
+    public class RemoveExplicitCallStatmentQuickFix : CodeInspectionQuickFix
     {
-        public RemoveExplicitCallStatemntQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_RemoveObsoleteStatement)
+        public RemoveExplicitCallStatmentQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, InspectionsUI.RemoveObsoleteStatementQuickFix)
         {
         }
 

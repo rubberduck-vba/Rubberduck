@@ -3,7 +3,6 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Nodes;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -17,7 +16,7 @@ namespace Rubberduck.Inspections
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
-                new SetExplicitVariantReturnTypeQuickFix(Context, QualifiedSelection, RubberduckUI.Inspections_ReturnExplicitVariant), 
+                new SetExplicitVariantReturnTypeQuickFix(Context, QualifiedSelection, InspectionsUI.SetExplicitVariantReturnTypeQuickFix), 
                 new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }

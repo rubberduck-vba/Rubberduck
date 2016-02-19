@@ -3,7 +3,6 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -36,7 +35,7 @@ namespace Rubberduck.Inspections
     public class SpecifyExplicitPublicModifierQuickFix : CodeInspectionQuickFix
     {
         public SpecifyExplicitPublicModifierQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_SpecifyPublicModifierExplicitly)
+            : base(context, selection, InspectionsUI.SpecifyExplicitPublicModifierQuickFix)
         {
         }
 

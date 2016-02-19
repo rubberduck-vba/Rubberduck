@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -36,7 +35,7 @@ namespace Rubberduck.Inspections
     public class DeclareAsExplicitVariantQuickFix : CodeInspectionQuickFix 
     {
         public DeclareAsExplicitVariantQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_DeclareAsExplicitVariant)
+            : base(context, selection, InspectionsUI.DeclareAsExplicitVariantQuickFix)
         {
         }
 

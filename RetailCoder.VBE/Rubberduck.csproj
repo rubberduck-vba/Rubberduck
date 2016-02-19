@@ -274,7 +274,6 @@
   <ItemGroup>
     <Compile Include="AppMenu.cs" />
     <Compile Include="AutoSave\AutoSave.cs" />
-    <Compile Include="AutoSave\AutoSaveSettings.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
     <Compile Include="Common\DeclarationExtensions.cs" />
     <Compile Include="Common\HookEventArgs.cs" />
@@ -300,7 +299,7 @@
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
-    <Compile Include="Inspections\RemoveExplicitCallStatemntQuickFix.cs" />
+    <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
     <Compile Include="UI\Controls\MenuItemGroup.cs" />
     <Compile Include="UI\Controls\GroupingGrid.xaml.cs">
       <DependentUpon>GroupingGrid.xaml</DependentUpon>
@@ -488,8 +487,8 @@
     <Compile Include="UI\Command\MenuItems\RegexSearchReplaceCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\UiDispatcher.cs" />
     <Compile Include="UI\Command\NavigateCommand.cs" />
-    <Compile Include="UI\Command\OptionsCommand.cs" />
-    <Compile Include="UI\Command\MenuItems\OptionsCommandMenuItem.cs" />
+    <Compile Include="UI\Command\SettingsCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\SettingsCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\ParentMenuItemBase.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\ProjectWindowContextParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorExtractMethodCommandMenuItem.cs" />
@@ -582,6 +581,7 @@
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\SettingsControlViewModel.cs" />
+    <Compile Include="UI\Settings\SettingsView.cs" />
     <Compile Include="UI\Settings\SettingsViews.cs" />
     <Compile Include="UI\Settings\Converters\SettingsViewToPageConverter.cs" />
     <Compile Include="UI\Settings\TodoSettings.xaml.cs">

@@ -6,7 +6,6 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -40,7 +39,7 @@ namespace Rubberduck.Inspections
         private readonly Declaration _declaration;
 
         public RemoveTypeHintsQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration declaration)
-            : base(context, selection, RubberduckUI.Inspections_RemoveTypeHints)
+            : base(context, selection, InspectionsUI.RemoveTypeHintsQuickFix)
         {
             _declaration = declaration;
         }

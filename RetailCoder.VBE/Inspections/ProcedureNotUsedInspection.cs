@@ -5,7 +5,6 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -18,7 +17,7 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.ProcedureNotUsedInspectionMeta; } }
-        public override string Description { get { return RubberduckUI.ProcedureNotUsed_; } }
+        public override string Description { get { return InspectionsUI.ProcedureNotUsedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()

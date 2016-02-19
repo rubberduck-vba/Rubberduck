@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.ProcedureShouldBeFunctionInspectionResultFormat); }
+            get { return InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionResultFormat; }
         }
     }
 
