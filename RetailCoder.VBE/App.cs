@@ -53,7 +53,7 @@ namespace Rubberduck
             _parserErrorsPresenterFactory = parserErrorsPresenterFactory;
             _parser = parser;
             _inspectorFactory = inspectorFactory;
-            _autoSave = new AutoSave.AutoSave(_vbe, new AutoSaveSettings());
+            _autoSave = new AutoSave.AutoSave(_vbe, _configService);
             _configService = configService;
             _appMenus = appMenus;
             _stateBar = stateBar;
