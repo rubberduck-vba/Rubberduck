@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Timers;
@@ -46,7 +45,7 @@ namespace Rubberduck.AutoSave
                 try
                 {
                     // note: VBProject.FileName getter throws IOException if unsaved
-                    _vbe.VBProjects.OfType<VBProject>().Select(p => p.FileName);
+                    _vbe.VBProjects.OfType<VBProject>().Select(p => p.FileName).ToList();
                 }
                 catch (DirectoryNotFoundException)
                 {
@@ -59,7 +58,7 @@ namespace Rubberduck.AutoSave
 
         public void Dispose()
         {
-            _configService.SettingsChanged -= ConfigServiceSettingsChanged;
+            _configService.LanguageChanged -= ConfigServiceSettingsChanged;
             _timer.Elapsed -= _timer_Elapsed;
 
             _timer.Dispose();
