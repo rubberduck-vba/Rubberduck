@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;

@@ -16,12 +16,16 @@
         <converters:AssertModeToTextConverter x:Key="AssertModeToText" />
         <converters:AssertModeValueToTextConverter x:Key="AssertModeValueToText" />
         
-        <ObjectDataProvider x:Key="BindingMode" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+        <ObjectDataProvider x:Key="BindingMode"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type core:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type Type="settingsConfig:BindingMode"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-        <ObjectDataProvider x:Key="AssertMode" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+        <ObjectDataProvider x:Key="AssertMode"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type core:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type Type="settingsConfig:AssertMode"/>
             </ObjectDataProvider.MethodParameters>

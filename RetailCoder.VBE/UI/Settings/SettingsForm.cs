@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        public SettingsForm(IGeneralConfigService configService) : this()
+        public SettingsForm(IGeneralConfigService configService, SettingsViews activeView = SettingsViews.GeneralSettings) : this()
         {
             var config = configService.LoadConfiguration();
 
@@ -40,7 +40,8 @@ namespace Rubberduck.UI.Settings
                 {
                     Control = new IndenterSettings(new IndenterSettingsViewModel(config)),
                     View = SettingsViews.IndenterSettings
-                });
+                },
+                activeView);
 
             ViewModel.OnOKButtonClicked += ViewModel_OnOKButtonClicked;
             ViewModel.OnCancelButtonClicked += ViewModel_OnCancelButtonClicked;
