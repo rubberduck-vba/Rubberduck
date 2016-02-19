@@ -12,21 +12,23 @@
     </UserControl.Resources>
     <Grid Background="#F6F6F6F6">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="170" />
+            <ColumnDefinition Width="180" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Image Source="{StaticResource DuckImage}"
-               Margin="0,10,0,0"
-               VerticalAlignment="Top" />
-        <TextBlock Grid.Column="0"
-                   Margin="0,110,0,0"
-                   VerticalAlignment="Top"
-                   HorizontalAlignment="Center">
+        <StackPanel HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="10,10,0,10">
+            <Image Source="{StaticResource DuckImage}"
+                   Margin="0,0,0,5"
+                   Width="170"
+                   HorizontalAlignment="Center" />
+            <TextBlock HorizontalAlignment="Center">
             <Hyperlink Name="WebpageHyperlink"
                        NavigateUri="http://rubberduckvba.com/"
                        Command="{Binding UriCommand}"
                        CommandParameter="{Binding ElementName=WebpageHyperlink, Path=NavigateUri}">http://rubberduckvba.com/</Hyperlink>
-        </TextBlock>
+            </TextBlock>
+        </StackPanel>
         <StackPanel Grid.Column="1"
                     Background="White"
                     Margin="10">
