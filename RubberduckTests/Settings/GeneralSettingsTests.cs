@@ -18,7 +18,9 @@ namespace RubberduckTests.Settings
                 {
                     new Hotkey{Name="IndentProcedure", IsEnabled=true, KeyDisplaySymbol="CTRL-P"},
                     new Hotkey{Name="IndentModule", IsEnabled=true, KeyDisplaySymbol="CTRL-M"}
-                }
+                },
+                AutoSaveEnabled = false,
+                AutoSavePeriod = 10
             };
 
             var userSettings = new UserSettings(generalSettings, null, null, null, null);
@@ -34,7 +36,9 @@ namespace RubberduckTests.Settings
                 {
                     new Hotkey{Name="IndentProcedure", IsEnabled=false, KeyDisplaySymbol="CTRL-C"},
                     new Hotkey{Name="IndentModule", IsEnabled=false, KeyDisplaySymbol="CTRL-X"}
-                }
+                },
+                AutoSaveEnabled = true,
+                AutoSavePeriod = 5
             };
 
             var userSettings = new UserSettings(generalSettings, null, null, null, null);
@@ -52,7 +56,9 @@ namespace RubberduckTests.Settings
 
             MultiAssert.Aggregate(
                 () => Assert.AreEqual(config.UserSettings.GeneralSettings.Language, viewModel.SelectedLanguage),
-                () => Assert.IsTrue(config.UserSettings.GeneralSettings.HotkeySettings.SequenceEqual(viewModel.Hotkeys)));
+                () => Assert.IsTrue(config.UserSettings.GeneralSettings.HotkeySettings.SequenceEqual(viewModel.Hotkeys)),
+                () => Assert.AreEqual(config.UserSettings.GeneralSettings.AutoSaveEnabled, viewModel.AutoSaveEnabled),
+                () => Assert.AreEqual(config.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod));
         }
 
         [TestMethod]
@@ -65,7 +71,9 @@ namespace RubberduckTests.Settings
 
             MultiAssert.Aggregate(
                 () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Language, viewModel.SelectedLanguage),
-                () => Assert.IsTrue(defaultConfig.UserSettings.GeneralSettings.HotkeySettings.SequenceEqual(viewModel.Hotkeys)));
+                () => Assert.IsTrue(defaultConfig.UserSettings.GeneralSettings.HotkeySettings.SequenceEqual(viewModel.Hotkeys)),
+                () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSaveEnabled, viewModel.AutoSaveEnabled),
+                () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod));
         }
 
         [TestMethod]
@@ -84,6 +92,24 @@ namespace RubberduckTests.Settings
             var viewModel = new GeneralSettingsViewModel(defaultConfig);
 
             Assert.IsTrue(defaultConfig.UserSettings.GeneralSettings.HotkeySettings.SequenceEqual(viewModel.Hotkeys));
+        }
+
+        [TestMethod]
+        public void AutoSaveEnabledIsSetInCtor()
+        {
+            var defaultConfig = GetDefaultConfig();
+            var viewModel = new GeneralSettingsViewModel(defaultConfig);
+
+            Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSaveEnabled, viewModel.AutoSaveEnabled);
+        }
+
+        [TestMethod]
+        public void AutoSavePeriodIsSetInCtor()
+        {
+            var defaultConfig = GetDefaultConfig();
+            var viewModel = new GeneralSettingsViewModel(defaultConfig);
+
+            Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod);
         }
     }
 }

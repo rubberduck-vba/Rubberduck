@@ -53,8 +53,8 @@ namespace Rubberduck
             _parserErrorsPresenterFactory = parserErrorsPresenterFactory;
             _parser = parser;
             _inspectorFactory = inspectorFactory;
-            _autoSave = new AutoSave.AutoSave(_vbe, new AutoSaveSettings());
             _configService = configService;
+            _autoSave = new AutoSave.AutoSave(_vbe, _configService);
             _appMenus = appMenus;
             _stateBar = stateBar;
             _indenter = indenter;
@@ -62,7 +62,7 @@ namespace Rubberduck
             _logger = LogManager.GetCurrentClassLogger();
 
             //_hooks.MessageReceived += hooks_MessageReceived;
-            _configService.SettingsChanged += _configService_SettingsChanged;
+            _configService.LanguageChanged += ConfigServiceLanguageChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _stateBar.Refresh += _stateBar_Refresh;
 
@@ -177,7 +177,7 @@ namespace Rubberduck
             Setup();
         }
 
-        private void _configService_SettingsChanged(object sender, EventArgs e)
+        private void ConfigServiceLanguageChanged(object sender, EventArgs e)
         {
             CleanReloadConfig();
         }
@@ -211,7 +211,7 @@ namespace Rubberduck
         public void Dispose()
         {
             //_hooks.MessageReceived -= hooks_MessageReceived;
-            _configService.SettingsChanged -= _configService_SettingsChanged;
+            _configService.LanguageChanged -= ConfigServiceLanguageChanged;
             _parser.State.StateChanged -= Parser_StateChanged;
             _autoSave.Dispose();
 

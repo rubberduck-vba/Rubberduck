@@ -144,10 +144,11 @@ namespace Rubberduck.Parsing.VBA
             try
             {
                 token.ThrowIfCancellationRequested();
-                
-                var code = rewriter == null 
+
+                var code = rewriter == null
                     ? string.Join(Environment.NewLine, vbComponent.CodeModule.GetSanitizedCode())
-                    : rewriter.GetText(); // note: removes everything ignored by the parser, e.g. line numbers and comments
+                    : rewriter.GetText();
+                    // note: removes everything ignored by the parser, e.g. line numbers and comments
 
                 ParseInternal(component, code, token);
             }
@@ -161,6 +162,10 @@ namespace Rubberduck.Parsing.VBA
             {
                 Debug.Print(exception.ToString());
                 State.SetModuleState(component, ParserState.Error, exception);
+            }
+            catch (OperationCanceledException)
+            {
+                // I'm sick of this crashing on me
             }
         }
 

@@ -245,7 +245,12 @@
     </UserControl.Resources>
     <Grid>
         <DockPanel Margin="5,5,5,0">
-            <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" FontWeight="SemiBold" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_TodoSettings}" Margin="0,0,0,3">
+            <Label DockPanel.Dock="Top"
+                   Background="DarkGray"
+                   Foreground="White"
+                   FontWeight="SemiBold"
+                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_TodoSettings}"
+                   Margin="0,0,0,3">
                 <Label.Style>
                     <Style>
                         <Style.Resources>
@@ -256,29 +261,53 @@
                     </Style>
                 </Label.Style>
             </Label>
-            <ToolBarTray DockPanel.Dock="Top" IsLocked="True" Background="Transparent">
-                <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}" Background="Transparent">
-                    <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}" Command="{Binding AddTodoCommand}" BorderThickness="0" Background="Transparent">
+            <ToolBarTray DockPanel.Dock="Top"
+                         IsLocked="True"
+                         Background="Transparent">
+                <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}"
+                         Background="Transparent">
+                    <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}"
+                            Command="{Binding AddTodoCommand}"
+                            BorderThickness="0"
+                            Background="Transparent">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource AddImage}" />
-                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}" Margin="2,0" />
+                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}"
+                                       Margin="2,0" />
                         </StackPanel>
                     </Button>
-                    <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}" Command="{Binding DeleteTodoCommand}" CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=CurrentItem}" BorderThickness="0" Background="Transparent" IsEnabled="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
+                    <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}"
+                            Command="{Binding DeleteTodoCommand}"
+                            CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=CurrentItem}"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            IsEnabled="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource DeleteImage}" />
-                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}" Margin="2,0" />
+                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}"
+                                       Margin="2,0" />
                         </StackPanel>
                     </Button>
                 </ToolBar>
             </ToolBarTray>
-            <DataGrid Name="TodoMarkerGrid" ItemsSource="{Binding TodoSettings}" AutoGenerateColumns="False"
-			    CanUserReorderColumns="False" IsReadOnly="False" SelectionMode="Single" CanUserAddRows="False"
-			    HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
-			    HeadersVisibility="Column" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-			    ItemContainerStyle="{StaticResource PrettifyRow}" ColumnHeaderHeight="22" BorderThickness="0">
+            <DataGrid Name="TodoMarkerGrid"
+                      ItemsSource="{Binding TodoSettings}"
+                      AutoGenerateColumns="False"
+                      CanUserReorderColumns="False"
+                      IsReadOnly="False"
+                      SelectionMode="Single"
+                      CanUserAddRows="False"
+                      HorizontalGridLinesBrush="Transparent"
+                      VerticalGridLinesBrush="Transparent"
+                      HeadersVisibility="Column"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ItemContainerStyle="{StaticResource PrettifyRow}"
+                      ColumnHeaderHeight="22"
+                      BorderThickness="0">
                 <DataGrid.InputBindings>
-                    <KeyBinding Key="Delete" Command="{Binding DeleteTodoCommand}" CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem}" />
+                    <KeyBinding Key="Delete"
+                                Command="{Binding DeleteTodoCommand}"
+                                CommandParameter="{Binding ElementName=TodoMarkerGrid, Path=SelectedItem}" />
                 </DataGrid.InputBindings>
                 <DataGrid.CellStyle>
                     <Style TargetType="{x:Type DataGridCell}">
@@ -288,7 +317,9 @@
                     </Style>
                 </DataGrid.CellStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoSettings_TextLabel}" Width="*" Binding="{Binding Text}" />
+                    <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoSettings_TextLabel}"
+                                        Width="*"
+                                        Binding="{Binding Text}" />
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>

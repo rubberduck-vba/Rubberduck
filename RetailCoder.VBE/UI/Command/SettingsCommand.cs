@@ -8,10 +8,10 @@ namespace Rubberduck.UI.Command
     /// A command that displays the Options dialog.
     /// </summary>
     [ComVisible(false)]
-    public class OptionsCommand : CommandBase
+    public class SettingsCommand : CommandBase
     {
         private readonly IGeneralConfigService _service;
-        public OptionsCommand(IGeneralConfigService service)
+        public SettingsCommand(IGeneralConfigService service)
         {
             _service = service;
         }
