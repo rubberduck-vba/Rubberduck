@@ -784,12 +784,6 @@
     <Compile Include="Inspections\OptionExplicitInspectionResult.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspection.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspectionResult.cs" />
-    <Compile Include="UI\AboutWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\AboutWindow.Designer.cs">
-      <DependentUpon>AboutWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="App.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerDockablePresenter.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerWindow.cs">
@@ -882,9 +876,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\AboutWindow.resx">
-      <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\About\AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
