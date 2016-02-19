@@ -28,7 +28,7 @@ namespace Rubberduck.UI
             var name = assembly.GetName();
 
             Text = RubberduckUI.About_Caption;
-            AttributionsLabel.Text = RubberduckUI.About_Attributions;
+            AttributionsLabel.Text = RubberduckUI.AboutWindow_AttributionsLabel;
             SpecialThanksLabel.Text = RubberduckUI.About_SpecialThanks;
             CopyrightLabel.Text = RubberduckUI.About_Copyright;
 

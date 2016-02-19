@@ -79,15 +79,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attributions.
-        /// </summary>
-        public static string About_Attributions {
-            get {
-                return ResourceManager.GetString("About_Attributions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Blogs:.
         /// </summary>
         public static string About_Blogs {
@@ -201,6 +192,26 @@ namespace Rubberduck.UI {
         public static string About_Stargazers {
             get {
                 return ResourceManager.GetString("About_Stargazers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parsing powered by ANTLR
+        ///GitHub integration powered by LibGit2Sharp
+        ///Fugue icons by Yusuke Kamiyamane.
+        /// </summary>
+        public static string AboutWindow_AttributionList {
+            get {
+                return ResourceManager.GetString("AboutWindow_AttributionList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attributions.
+        /// </summary>
+        public static string AboutWindow_AttributionsLabel {
+            get {
+                return ResourceManager.GetString("AboutWindow_AttributionsLabel", resourceCulture);
             }
         }
         
