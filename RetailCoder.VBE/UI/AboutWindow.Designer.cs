@@ -230,10 +230,6 @@ namespace Rubberduck.UI
             this.AttributionsList.ForeColor = System.Drawing.Color.DimGray;
             this.AttributionsList.FormattingEnabled = true;
             this.AttributionsList.ItemHeight = 16;
-            this.AttributionsList.Items.AddRange(new object[] {
-            global::Rubberduck.UI.RubberduckUI.About_ParsingCredit,
-            global::Rubberduck.UI.RubberduckUI.About_LibGit2SharpCredit,
-            global::Rubberduck.UI.RubberduckUI.About_FugueIconCredit});
             this.AttributionsList.Location = new System.Drawing.Point(249, 91);
             this.AttributionsList.Margin = new System.Windows.Forms.Padding(4);
             this.AttributionsList.Name = "AttributionsList";

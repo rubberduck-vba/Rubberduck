@@ -718,53 +718,17 @@ Are you sure you want to proceed with this rename?</value>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
   </data>
-  <data name="About_AllContributors" xml:space="preserve">
-    <value>All contributors to our GitHub repository</value>
-  </data>
-  <data name="About_Anyone" xml:space="preserve">
-    <value>...and anyone reading this!</value>
-  </data>
   <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
     <value>Attributions</value>
   </data>
-  <data name="About_Blogs" xml:space="preserve">
-    <value>Blogs:</value>
-  </data>
-  <data name="About_Caption" xml:space="preserve">
+  <data name="AboutWindow_Caption" xml:space="preserve">
     <value>About Rubberduck</value>
   </data>
-  <data name="About_CodeReview" xml:space="preserve">
-    <value>Code Review Stack Exchange</value>
+  <data name="AboutWindow_Copyright" xml:space="preserve">
+    <value>© Copyright 2014-2016 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
-  <data name="About_Community" xml:space="preserve">
-    <value>Community:</value>
-  </data>
-  <data name="About_Contributors" xml:space="preserve">
-    <value>Contributors &amp; supporters:</value>
-  </data>
-  <data name="About_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
-  </data>
-  <data name="About_FugueIconCredit" xml:space="preserve">
-    <value>Fugue icons by Yusuke Kamiyamane</value>
-  </data>
-  <data name="About_JetBrains" xml:space="preserve">
-    <value>JetBrains ReSharper Community Team</value>
-  </data>
-  <data name="About_LibGit2SharpCredit" xml:space="preserve">
-    <value>GitHub integration powered by LibGit2Sharp</value>
-  </data>
-  <data name="About_ParsingCredit" xml:space="preserve">
-    <value>Parsing powered by ANTLR</value>
-  </data>
-  <data name="About_SpecialThanks" xml:space="preserve">
+  <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
     <value>Special Thanks</value>
-  </data>
-  <data name="About_StackOverflow" xml:space="preserve">
-    <value>Stack Overflow</value>
-  </data>
-  <data name="About_Stargazers" xml:space="preserve">
-    <value>All our stargazers, likers &amp; followers, for the warm fuzzies</value>
   </data>
   <data name="SourceControlPanel_Caption" xml:space="preserve">
     <value>Source Control</value>
@@ -1315,5 +1279,39 @@ Are you sure you want to proceed with this rename?</value>
     <value>Parsing powered by ANTLR
 GitHub integration powered by LibGit2Sharp
 Fugue icons by Yusuke Kamiyamane</value>
+  </data>
+  <data name="AboutWindow_SpecialThanksList" xml:space="preserve">
+    <value>Community:
+Code Review Stack Exchange
+JetBrains ReSharper Community Team
+Stack Overflow
+
+Blogs:
+Michal Krzych (vba4all.com)
+Knjname developer blog (clockahead.blogspot.jp)
+
+Contributors &amp; supporters:
+Abraham Hosch
+Andrew Jackson
+Andrin Meier
+Bruno Costa
+Carlos J. Quintero (MZ-Tools articles &amp; help with VBE API)
+@daFreeMan
+@Duga SE chat bot
+Francis Veilleux-Gaboury
+Frank Van Heeswijk
+@Heslacher
+Jeroen Vannevel dos Sànchez di Castello du Aragon de Pompidou
+@mjolka
+Philip Wales
+Rob Bovey
+Ross McLean
+Ross Knudsen
+Simon Forsberg
+Stephen Bullen
+
+All contributors to our GitHub repository
+All our stargazers, likers &amp; followers, for the warm fuzzies
+...and anyone reading this!</value>
   </data>
 </root>

@@ -9,26 +9,51 @@
              d:DataContext="{d:DesignInstance {x:Type about:AboutControlViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <BitmapImage x:Key="DuckImage" UriSource="../../Resources/RD-AboutWindow.png" />
+        <BitmapImage x:Key="GitHubImage" UriSource="../../Resources/github_circle_black-128.png" />
+        <BitmapImage x:Key="FacebookImage" UriSource="../../Resources/facebook-circle-256.png" />
+        <BitmapImage x:Key="TwitterImage" UriSource="../../Resources/twitter_circle_black-512.png" />
+        <BitmapImage x:Key="GooglePlusImage" UriSource="../../Resources/google-circle-512.png" />
     </UserControl.Resources>
     <Grid Background="#F6F6F6F6">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="180" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <StackPanel HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Margin="10,10,0,10">
-            <Image Source="{StaticResource DuckImage}"
-                   Margin="0,0,0,5"
-                   Width="170"
-                   HorizontalAlignment="Center" />
-            <TextBlock HorizontalAlignment="Center">
-            <Hyperlink Name="WebpageHyperlink"
-                       NavigateUri="http://rubberduckvba.com/"
-                       Command="{Binding UriCommand}"
-                       CommandParameter="{Binding ElementName=WebpageHyperlink, Path=NavigateUri}">http://rubberduckvba.com/</Hyperlink>
-            </TextBlock>
-        </StackPanel>
+        <DockPanel>
+            <StackPanel HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Margin="10,10,0,10"
+                        DockPanel.Dock="Top">
+                <Image Source="{StaticResource DuckImage}"
+                       Margin="0,0,0,5"
+                       Width="170"
+                       HorizontalAlignment="Center" />
+                <TextBlock HorizontalAlignment="Center">
+                <Hyperlink Name="WebpageHyperlink"
+                           NavigateUri="http://rubberduckvba.com/"
+                           Command="{Binding UriCommand}"
+                           CommandParameter="{Binding ElementName=WebpageHyperlink, Path=NavigateUri}">http://rubberduckvba.com/</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Bottom"
+                        HorizontalAlignment="Left"
+                        DockPanel.Dock="Bottom"
+                        Margin="10"
+                        Orientation="Horizontal">
+                <Image Source="{StaticResource GitHubImage}"
+                       Margin="4"
+                       Width="43" />
+                <Image Source="{StaticResource TwitterImage}"
+                       Margin="4"
+                       Width="43" />
+                <Image Source="{StaticResource FacebookImage}"
+                       Margin="4"
+                       Width="40" />
+                <Image Source="{StaticResource GooglePlusImage}"
+                       Margin="4"
+                       Width="40" />
+            </StackPanel>
+        </DockPanel>
         <StackPanel Grid.Column="1"
                     Background="White"
                     Margin="10">
@@ -38,13 +63,29 @@
                        VerticalAlignment="Top"
                        HorizontalAlignment="Left"
                        FontSize="14" />
+            
             <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_AttributionsLabel}"
                    FontWeight="SemiBold"
                    FontSize="12"
                    Margin="5,0,0,0" />
-            <TextBlock Margin="15,0,0,0"
+            <TextBlock Margin="15,0,0,10"
                        Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_AttributionList}"
                        FontSize="10"/>
+            
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_SpecialThanksLabel}"
+                   FontWeight="SemiBold"
+                   FontSize="12"
+                   Margin="5,0,0,0" />
+            <ScrollViewer Margin="15,0,10,10"
+                          Height="150">
+                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_SpecialThanksList}"
+                           FontSize="10" />
+            </ScrollViewer>
+
+            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_Copyright}"
+                       FontSize="8"
+                       VerticalAlignment="Bottom"
+                       Margin="10,0,0,0"/>
         </StackPanel>
     </Grid>
 </UserControl>
