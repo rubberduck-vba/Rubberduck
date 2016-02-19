@@ -88,6 +88,7 @@
         <Style x:Key="TreeViewItemStyle" TargetType="TextBlock">
             <Setter Property="Text" Value="{Binding Name}" />
             <Setter Property="Margin" Value="2,0,2,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
         
         <Style x:Key="TreeViewIconStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">

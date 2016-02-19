@@ -724,7 +724,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="About_Anyone" xml:space="preserve">
     <value>...and anyone reading this!</value>
   </data>
-  <data name="About_Attributions" xml:space="preserve">
+  <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
     <value>Attributions</value>
   </data>
   <data name="About_Blogs" xml:space="preserve">
@@ -1310,5 +1310,10 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="AboutWindow_AttributionList" xml:space="preserve">
+    <value>Parsing powered by ANTLR
+GitHub integration powered by LibGit2Sharp
+Fugue icons by Yusuke Kamiyamane</value>
   </data>
 </root>

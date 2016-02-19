@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using System.Windows.Input;
+using Rubberduck.UI.About;
 
 namespace Rubberduck.UI.Command
 {
@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Command
     {
         public override void Execute(object parameter)
         {
-            using (var window = new AboutWindow())
+            using (var window = new AboutDialog())
             {
                 window.ShowDialog();
             }

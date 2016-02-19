@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="Rubberduck.UI.About.AboutControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:about="clr-namespace:Rubberduck.UI.About"
+             mc:Ignorable="d" 
+             d:DesignHeight="350" d:DesignWidth="499"
+             d:DataContext="{d:DesignInstance {x:Type about:AboutControlViewModel}, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+        <BitmapImage x:Key="DuckImage" UriSource="../../Resources/RD-AboutWindow.png" />
+    </UserControl.Resources>
+    <Grid Background="#F6F6F6F6">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <StackPanel HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="10,10,0,10">
+            <Image Source="{StaticResource DuckImage}"
+                   Margin="0,0,0,5"
+                   Width="170"
+                   HorizontalAlignment="Center" />
+            <TextBlock HorizontalAlignment="Center">
+            <Hyperlink Name="WebpageHyperlink"
+                       NavigateUri="http://rubberduckvba.com/"
+                       Command="{Binding UriCommand}"
+                       CommandParameter="{Binding ElementName=WebpageHyperlink, Path=NavigateUri}">http://rubberduckvba.com/</Hyperlink>
+            </TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Column="1"
+                    Background="White"
+                    Margin="10">
+            <TextBlock Margin="10"
+                       Text="{Binding Version}"
+                       FontWeight="Bold"
+                       VerticalAlignment="Top"
+                       HorizontalAlignment="Left"
+                       FontSize="14" />
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_AttributionsLabel}"
+                   FontWeight="SemiBold"
+                   FontSize="12"
+                   Margin="5,0,0,0" />
+            <TextBlock Margin="15,0,0,0"
+                       Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_AttributionList}"
+                       FontSize="10"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
