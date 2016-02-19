@@ -39,9 +39,6 @@
 * 1. Preprocessor statements (#if, #else, ...) must not interfere with regular
 *    statements.
 *
-* 2. Comments are skipped.
-*
-*
 * Change log:
 *
 * v1.4 Rubberduck
@@ -75,6 +72,8 @@
 *   - optional parameters can be a valueStmt.
 *   - added support for Octal and Currency literals.
 *   - implemented proper specs for DATELITERAL.
+*   - added comments to parse tree (removes known limitation #2).
+*   - macroConstStmt now allowed in blockStmt.
 *
 *======================================================================================
 *
@@ -138,23 +137,25 @@ moduleDeclarationsElement :
 	| constStmt
 	| implementsStmt
 	| variableStmt
-	| macroConstStmt
-	| macroIfThenElseStmt
 	| moduleOption
 	| typeStmt
+	| moduleDeclarationMacroStmt
 ;
+
+moduleDeclarationMacroStmt :
+	(macroConstStmt | macroIfThenElseStmt) moduleDeclarationsElement? endOfStatement;
 
 moduleBody : 
 	moduleBodyElement (endOfStatement moduleBodyElement)* endOfStatement;
 
 moduleBodyElement : 
 	functionStmt 
-	| macroIfThenElseStmt
-	| macroConstStmt
 	| propertyGetStmt 
 	| propertySetStmt 
 	| propertyLetStmt 
 	| subStmt 
+	| macroConstStmt
+	| macroIfThenElseStmt
 ;
 
 
@@ -197,6 +198,7 @@ blockStmt :
 	| loadStmt
 	| lockStmt
 	| lsetStmt
+	| macroConstStmt
 	| macroIfThenElseStmt
 	| midStmt
 	| mkdirStmt
@@ -362,23 +364,23 @@ lockStmt : LOCK WS valueStmt (WS? ',' WS? valueStmt (WS TO WS valueStmt)?)?;
 
 lsetStmt : LSET WS implicitCallStmt_InStmt WS? EQ WS? valueStmt;
 
-macroConstStmt : MACRO_CONST WS? ambiguousIdentifier WS? EQ WS? valueStmt;
+macroConstStmt : MACRO_CONST WS? ambiguousIdentifier WS? EQ WS? valueStmt endOfStatement?;
 
 macroIfThenElseStmt : macroIfBlockStmt macroElseIfBlockStmt* macroElseBlockStmt? MACRO_END_IF;
 
 macroIfBlockStmt : 
-	MACRO_IF WS? ifConditionStmt WS THEN endOfStatement
-	((moduleDeclarationsElement | moduleBody | block) endOfStatement)*
+	MACRO_IF WS? ifConditionStmt WS THEN endOfStatement?
+	(moduleDeclarations | moduleBody | block)*
 ;
 
 macroElseIfBlockStmt : 
-	MACRO_ELSEIF WS? ifConditionStmt WS THEN endOfStatement
-	((moduleDeclarationsElement | moduleBody | block) endOfStatement)*
+	MACRO_ELSEIF WS? ifConditionStmt WS THEN endOfStatement?
+	(moduleDeclarations | moduleBody | block)*
 ;
 
 macroElseBlockStmt : 
-	MACRO_ELSE endOfStatement
-	((moduleDeclarationsElement | moduleBody | block) endOfStatement)*
+	MACRO_ELSE endOfStatement?
+	(moduleDeclarations | moduleBody | block)*
 ;
 
 midStmt : MID WS? LPAREN WS? argsCall WS? RPAREN;
