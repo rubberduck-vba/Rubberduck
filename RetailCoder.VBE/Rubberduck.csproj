@@ -518,6 +518,9 @@
     <Compile Include="UI\Command\ToDoExplorerCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ToDoExplorerCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\UnitTestingParentMenu.cs" />
+    <Compile Include="UI\Controls\SearchView.xaml.cs">
+      <DependentUpon>SearchView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\FolderBrowser.cs" />
     <Compile Include="UI\IMessageBox.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
@@ -1384,6 +1387,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\CodeInspections\InspectionResultsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Controls\SearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
