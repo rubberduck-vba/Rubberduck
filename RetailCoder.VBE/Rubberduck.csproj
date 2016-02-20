@@ -534,9 +534,6 @@
     <Compile Include="UI\Controls\SearchResultsDockablePresenter.cs" />
     <Compile Include="UI\Controls\SearchResultsViewModel.cs" />
     <Compile Include="UI\Controls\SearchResultsWindowViewModel.cs" />
-    <Compile Include="UI\Controls\SearchResultTabControl.xaml.cs">
-      <DependentUpon>SearchResultTabControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Controls\SearchResultWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1414,10 +1411,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\CodeInspections\InspectionResultsControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Controls\SearchResultTabControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

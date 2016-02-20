@@ -1,24 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Data;
 using System.Windows.Input;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Controls
 {
-    public class SearchResultsViewModel : ViewModelBase
+    public class SearchResultsViewModel : ViewModelBase, INavigateSelection
     {
+        private readonly INavigateCommand _navigateCommand;
         private readonly string _header;
 
-        public SearchResultsViewModel(string header, IEnumerable<SearchResultItem> searchResults)
+        public SearchResultsViewModel(INavigateCommand navigateCommand, string header, IEnumerable<SearchResultItem> searchResults)
         {
+            _navigateCommand = navigateCommand;
             _header = header;
             _searchResults = new ObservableCollection<SearchResultItem>(searchResults);
+            _searchResultsSource = new CollectionViewSource();
+            _searchResultsSource.Source = _searchResults;
+            _searchResultsSource.GroupDescriptions.Add(new PropertyGroupDescription("QualifiedMemberName.QualifiedModuleName.Name"));
+            _searchResultsSource.SortDescriptions.Add(new SortDescription("QualifiedMemberName.QualifiedModuleName.Name", ListSortDirection.Ascending));
             _closeCommand = new DelegateCommand(ExecuteCloseCommand);
         }
 
         private readonly ObservableCollection<SearchResultItem> _searchResults;
         public ObservableCollection<SearchResultItem> SearchResults { get { return _searchResults; } }
+
+        private readonly CollectionViewSource _searchResultsSource;
+        public CollectionViewSource SearchResultsSource { get { return _searchResultsSource; } }
 
         public string Header { get { return _header; } }
 
@@ -39,6 +50,8 @@ namespace Rubberduck.UI.Controls
             }
         }
 
+        public INavigateCommand NavigateCommand { get {return _navigateCommand; } }
+
         private void ExecuteCloseCommand(object parameter)
         {
             OnClose();
@@ -53,5 +66,7 @@ namespace Rubberduck.UI.Controls
                 handler.Invoke(this, EventArgs.Empty);
             }
         }
+
+        INavigateSource INavigateSelection.SelectedItem { get { return SelectedItem; } }
     }
 }

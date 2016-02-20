@@ -16,13 +16,15 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class FindAllReferencesCommand : CommandBase
     {
+        private readonly INavigateCommand _navigateCommand;
         private readonly RubberduckParserState _state;
         private readonly IActiveCodePaneEditor _editor;
         private readonly ISearchResultsWindowViewModel _viewModel;
         private readonly SearchResultPresenterInstanceManager _presenterService;
 
-        public FindAllReferencesCommand(RubberduckParserState state, IActiveCodePaneEditor editor, ISearchResultsWindowViewModel viewModel, SearchResultPresenterInstanceManager presenterService)
+        public FindAllReferencesCommand(INavigateCommand navigateCommand, RubberduckParserState state, IActiveCodePaneEditor editor, ISearchResultsWindowViewModel viewModel, SearchResultPresenterInstanceManager presenterService)
         {
+            _navigateCommand = navigateCommand;
             _state = state;
             _editor = editor;
             _viewModel = viewModel;
@@ -65,7 +67,7 @@ namespace Rubberduck.UI.Command
                     reference.Selection,
                     reference.Context.GetText()));
             
-            var viewModel = new SearchResultsViewModel(
+            var viewModel = new SearchResultsViewModel(_navigateCommand,
                 string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, declaration.IdentifierName), results);
 
             return viewModel;
