@@ -148,7 +148,7 @@ macroStmt :
 	| macroIfThenElseStmt;
 
 moduleBody : 
-	moduleBodyElement (endOfLine+ moduleBodyElement)*;
+	moduleBodyElement (endOfLine+ moduleBodyElement)* endOfLine*;
 
 moduleBodyElement : 
 	functionStmt 
