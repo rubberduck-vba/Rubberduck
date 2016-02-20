@@ -128,10 +128,14 @@ namespace Rubberduck.UI {
         ///Francis Veilleux-Gaboury
         ///Frank Van Heeswijk
         ///@Heslacher
-        ///Jeroen Vannevel dos Sànchez di Castello du Aragon de Pompidou
+        ///Jeroen Vannevel
         ///@mjolka
         ///Philip Wales
-        ///Rob Bovey [rest of string was truncated]&quot;;.
+        ///Rob Bovey
+        ///Ross McLean
+        ///Ross Knudsen
+        ///Simon Forsberg
+        ///S [rest of string was truncated]&quot;;.
         /// </summary>
         public static string AboutWindow_SpecialThanksList {
             get {
