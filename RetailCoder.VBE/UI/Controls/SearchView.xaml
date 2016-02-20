@@ -2,15 +2,49 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="200" d:DesignWidth="550"
+             d:DataContext="{d:DesignInstance controls:SearchResultsWindowViewModel}">
     <UserControl.Resources>
-        <Style x:Key="PrettifyTab" TargetType="{x:Type TabItem}">
-            <Setter Property="Width" Value="75" />
-        </Style>
+        <CollectionViewSource x:Key="GroupedSearchResults" Source="{Binding SearchResults}">
+            <CollectionViewSource.SortDescriptions>
+                <componentModel:SortDescription PropertyName="QualifiedMemberName.QualifiedModuleName.Name" />
+            </CollectionViewSource.SortDescriptions>
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="QualifiedMemberName.QualifiedModuleName.Name" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
     </UserControl.Resources>
     <Grid>
-        <TabControl ItemContainerStyle="{StaticResource PrettifyTab}" />
+        <TabControl ItemsSource="{Binding Tabs}">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel MinWidth="75">
+                        <TextBlock Text="{Binding Header}" />
+                        <Button DockPanel.Dock="Right" Margin="5,0,0,0" 
+                                Background="Transparent"
+                                Command="{Binding CloseCommand}">
+                            <Image Source="../../Resources/cross-button.png" Height="16" />
+                        </Button>
+                    </DockPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate DataType="controls:SearchResultsViewModel">
+                    <controls:GroupingGrid ShowGroupingItemCount="True"
+                                           ItemsSource="{Binding Source={StaticResource GroupedSearchResults}}"
+                                           SelectedItem="{Binding SelectedItem}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_ModuleName}" Binding="{Binding QualifiedMemberName.QualifiedModuleName}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_MemberName}" Binding="{Binding QualifiedMemberName.MemberName}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_Location}" Binding="{Binding Selection}" Width="*" />
+                        </DataGrid.Columns>
+                    </controls:GroupingGrid>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
     </Grid>
 </UserControl>

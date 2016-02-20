@@ -57,6 +57,8 @@ namespace Rubberduck.UI.SourceControl
             get { return RubberduckUI.SourceControlPanel_Caption; }
         }
 
+        public ViewModelBase ViewModel { get; set; }
+
         public string Status 
         {
             get { return this.StatusMessage.Text; }

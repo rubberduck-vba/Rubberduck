@@ -14,6 +14,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.UI.Command.Refactorings;
+using Rubberduck.UI.Controls;
 
 namespace Rubberduck.Root
 {
@@ -123,7 +124,6 @@ namespace Rubberduck.Root
         private void BindCommandsToMenuItems()
         {
             _kernel.Bind<IDeclarationNavigator>().To<NavigateAllImplementations>().WhenTargetHas<FindImplementationsAttribute>();
-            _kernel.Bind<IDeclarationNavigator>().To<NavigateAllReferences>().WhenTargetHas<FindReferencesAttribute>();
 
             var types = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(type => type.IsClass && type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty))

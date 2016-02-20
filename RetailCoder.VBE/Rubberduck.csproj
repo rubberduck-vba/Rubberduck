@@ -310,6 +310,8 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Controls\SearchResultPresenterInstanceManager.cs" />
+    <Compile Include="UI\Controls\ISearchResultsWindowViewModel.cs" />
     <Compile Include="UI\Controls\MenuItemGroup.cs" />
     <Compile Include="UI\Controls\GroupingGrid.xaml.cs">
       <DependentUpon>GroupingGrid.xaml</DependentUpon>
@@ -528,6 +530,19 @@
     <Compile Include="UI\Command\ToDoExplorerCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ToDoExplorerCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\UnitTestingParentMenu.cs" />
+    <Compile Include="UI\Controls\SearchResultItem.cs" />
+    <Compile Include="UI\Controls\SearchResultsDockablePresenter.cs" />
+    <Compile Include="UI\Controls\SearchResultsViewModel.cs" />
+    <Compile Include="UI\Controls\SearchResultsWindowViewModel.cs" />
+    <Compile Include="UI\Controls\SearchResultTabControl.xaml.cs">
+      <DependentUpon>SearchResultTabControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\SearchResultWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\SearchResultWindow.Designer.cs">
+      <DependentUpon>SearchResultWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Controls\SearchView.xaml.cs">
       <DependentUpon>SearchView.xaml</DependentUpon>
     </Compile>
@@ -895,6 +910,9 @@
     <EmbeddedResource Include="UI\CodeInspections\CodeInspectionsWindow.resx">
       <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Controls\SearchResultWindow.resx">
+      <DependentUpon>SearchResultWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -1174,6 +1192,7 @@
     <Resource Include="Resources\folder--pencil.png" />
     <Resource Include="Resources\folder--plus.png" />
     <Resource Include="Resources\folder-rename.png" />
+    <Resource Include="Resources\cross-button.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
@@ -1395,6 +1414,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\CodeInspections\InspectionResultsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Controls\SearchResultTabControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
