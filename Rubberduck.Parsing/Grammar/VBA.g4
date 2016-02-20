@@ -36,8 +36,8 @@
 *
 * Known limitations:
 *
-* 1. Preprocessor statements (#if, #else, ...) must not interfere with regular statements.
-* 2. Preprocessor statements cannot be indented.
+* 1. Preprocessor statements (#if, #else, ...) must not interfere with regular
+*    statements.
 *
 * Change log:
 *
@@ -72,7 +72,7 @@
 *   - optional parameters can be a valueStmt.
 *   - added support for Octal and Currency literals.
 *   - implemented proper specs for DATELITERAL.
-*   - added comments to parse tree (formerly limitation #2).
+*   - added comments to parse tree (removes known limitation #2).
 *   - macroConstStmt now allowed in blockStmt.
 *
 *======================================================================================
@@ -97,13 +97,14 @@ grammar VBA;
 startRule : module EOF;
 
 module : 
+	WS?
 	endOfLine*
 	(moduleHeader endOfLine*)?
 	moduleConfig? endOfLine*
 	moduleAttributes? endOfLine*
 	moduleDeclarations? endOfLine*
 	moduleBody? endOfLine*
-	endOfLine*
+	WS?
 ;
 
 moduleHeader : VERSION WS DOUBLELITERAL WS CLASS;
@@ -123,10 +124,10 @@ moduleAttributes : (attributeStmt endOfLine+)+;
 moduleDeclarations : moduleDeclarationsElement (endOfLine+ moduleDeclarationsElement)*;
 
 moduleOption : 
-	OPTION_BASE WS? SHORTLITERAL 			# optionBaseStmt
-	| OPTION_COMPARE WS? (BINARY | TEXT | DATABASE) 	# optionCompareStmt
-	| OPTION_EXPLICIT 						# optionExplicitStmt
-	| OPTION_PRIVATE_MODULE 				# optionPrivateModuleStmt
+	OPTION_BASE WS SHORTLITERAL 					# optionBaseStmt
+	| OPTION_COMPARE WS (BINARY | TEXT | DATABASE) 	# optionCompareStmt
+	| OPTION_EXPLICIT 								# optionExplicitStmt
+	| OPTION_PRIVATE_MODULE 						# optionPrivateModuleStmt
 ;
 
 moduleDeclarationsElement :
@@ -139,14 +140,12 @@ moduleDeclarationsElement :
 	| variableStmt
 	| moduleOption
 	| typeStmt
-	| moduleDeclarationMacroStmt
+	| macroConstStmt
+	| macroIfThenElseStmt
 ;
 
-moduleDeclarationMacroStmt :
-	(macroConstStmt | macroIfThenElseStmt) moduleDeclarationsElement? endOfStatement;
-
 moduleBody : 
-	moduleBodyElement (endOfStatement moduleBodyElement)* endOfStatement;
+	moduleBodyElement (endOfLine+ moduleBodyElement)*;
 
 moduleBodyElement : 
 	functionStmt 
@@ -364,22 +363,22 @@ lockStmt : LOCK WS valueStmt (WS? ',' WS? valueStmt (WS TO WS valueStmt)?)?;
 
 lsetStmt : LSET WS implicitCallStmt_InStmt WS? EQ WS? valueStmt;
 
-macroConstStmt : MACRO_CONST WS? ambiguousIdentifier WS? EQ WS? valueStmt endOfStatement?;
+macroConstStmt : MACRO_CONST WS? ambiguousIdentifier WS? EQ WS? valueStmt;
 
 macroIfThenElseStmt : macroIfBlockStmt macroElseIfBlockStmt* macroElseBlockStmt? MACRO_END_IF;
 
 macroIfBlockStmt : 
-	MACRO_IF WS? ifConditionStmt WS THEN endOfStatement?
+	MACRO_IF WS? ifConditionStmt WS THEN endOfStatement
 	(moduleDeclarations | moduleBody | block)*
 ;
 
 macroElseIfBlockStmt : 
-	MACRO_ELSEIF WS? ifConditionStmt WS THEN endOfStatement?
+	MACRO_ELSEIF WS? ifConditionStmt WS THEN endOfStatement
 	(moduleDeclarations | moduleBody | block)*
 ;
 
 macroElseBlockStmt : 
-	MACRO_ELSE endOfStatement?
+	MACRO_ELSE endOfStatement
 	(moduleDeclarations | moduleBody | block)*
 ;
 
@@ -811,11 +810,11 @@ LOCK_READ : L O C K WS R E A D;
 LOCK_WRITE : L O C K WS W R I T E;
 LOCK_READ_WRITE : L O C K WS R E A D WS W R I T E;
 LSET : L S E T;
-MACRO_CONST : '#' C O N S T WS;
-MACRO_IF : '#' I F WS;
-MACRO_ELSEIF : '#' E L S E I F WS;
-MACRO_ELSE : '#' E L S E NEWLINE;
-MACRO_END_IF : '#' E N D WS I F NEWLINE;
+MACRO_CONST : '#' C O N S T;
+MACRO_IF : '#' I F;
+MACRO_ELSEIF : '#' E L S E I F;
+MACRO_ELSE : '#' E L S E;
+MACRO_END_IF : '#' E N D WS? I F;
 ME : M E;
 MID : M I D;
 MKDIR : M K D I R;
@@ -831,9 +830,9 @@ ON_ERROR : O N WS E R R O R;
 ON_LOCAL_ERROR : O N WS L O C A L WS E R R O R;
 OPEN : O P E N;
 OPTIONAL : O P T I O N A L;
-OPTION_BASE : O P T I O N WS B A S E WS;
+OPTION_BASE : O P T I O N WS B A S E;
 OPTION_EXPLICIT : O P T I O N WS E X P L I C I T;
-OPTION_COMPARE : O P T I O N WS C O M P A R E WS;
+OPTION_COMPARE : O P T I O N WS C O M P A R E;
 OPTION_PRIVATE_MODULE : O P T I O N WS P R I V A T E WS M O D U L E;
 OR : O R;
 OUTPUT : O U T P U T;

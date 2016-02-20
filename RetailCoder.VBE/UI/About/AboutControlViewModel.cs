@@ -6,7 +6,7 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.About
 {
-    public class AboutControlViewModel : ViewModelBase
+    public class AboutControlViewModel
     {
         public string Version
         {

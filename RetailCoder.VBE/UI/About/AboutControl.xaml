@@ -9,27 +9,37 @@
              d:DataContext="{d:DesignInstance {x:Type about:AboutControlViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <BitmapImage x:Key="DuckImage" UriSource="../../Resources/RD-AboutWindow.png" />
+        <BitmapImage x:Key="GitHubImage" UriSource="../../Resources/github_circle_black-128.png" />
+        <BitmapImage x:Key="TwitterImage" UriSource="../../Resources/twitter_circle_black-512.png" />
+        <BitmapImage x:Key="FacebookImage" UriSource="../../Resources/facebook-circle-256.png" />
+        <BitmapImage x:Key="GooglePlusImage" UriSource="../../Resources/google-circle-512.png" />
     </UserControl.Resources>
     <Grid Background="#F6F6F6F6">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="180" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="65" />
+        </Grid.RowDefinitions>
         <StackPanel HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    Margin="10,10,0,10">
+                    Margin="10,10,0,10"
+                    DockPanel.Dock="Top">
             <Image Source="{StaticResource DuckImage}"
-                   Margin="0,0,0,5"
-                   Width="170"
-                   HorizontalAlignment="Center" />
+                    Margin="0,0,0,5"
+                    Width="170"
+                    HorizontalAlignment="Center" />
             <TextBlock HorizontalAlignment="Center">
             <Hyperlink Name="WebpageHyperlink"
-                       NavigateUri="http://rubberduckvba.com/"
-                       Command="{Binding UriCommand}"
-                       CommandParameter="{Binding ElementName=WebpageHyperlink, Path=NavigateUri}">http://rubberduckvba.com/</Hyperlink>
+                        NavigateUri="http://rubberduckvba.com/"
+                        Command="{Binding UriCommand}"
+                        CommandParameter="{Binding ElementName=WebpageHyperlink, Path=NavigateUri}">http://rubberduckvba.com/</Hyperlink>
             </TextBlock>
         </StackPanel>
         <StackPanel Grid.Column="1"
+                    Grid.Row="0"
                     Background="White"
                     Margin="10">
             <TextBlock Margin="10"
@@ -38,13 +48,82 @@
                        VerticalAlignment="Top"
                        HorizontalAlignment="Left"
                        FontSize="14" />
+            
             <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_AttributionsLabel}"
                    FontWeight="SemiBold"
                    FontSize="12"
                    Margin="5,0,0,0" />
-            <TextBlock Margin="15,0,0,0"
+            <TextBlock Margin="15,0,0,10"
                        Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_AttributionList}"
                        FontSize="10"/>
+            
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_SpecialThanksLabel}"
+                   FontWeight="SemiBold"
+                   FontSize="12"
+                   Margin="5,0,0,0" />
+            <ScrollViewer Margin="15,0,10,10"
+                          Height="100">
+                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_SpecialThanksList}"
+                           FontSize="10" />
+            </ScrollViewer>
+        </StackPanel>
+
+        <StackPanel HorizontalAlignment="Left"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Margin="10"
+                    Orientation="Horizontal">
+            <TextBlock>
+                <Hyperlink Name="GitHubUrl"
+                           NavigateUri="http://www.rubberduck-vba.com"
+                           Command="{Binding UriCommand}"
+                           CommandParameter="{Binding ElementName=GitHubUrl, Path=NavigateUri}"
+                           TextDecorations="{x:Null}">
+                    <Image Source="{StaticResource GitHubImage}"
+                           Margin="4"
+                           Height="40"
+                           VerticalAlignment="Center" />
+                </Hyperlink>
+            </TextBlock>
+            <TextBlock>
+                <Hyperlink Name="TwitterUrl"
+                           NavigateUri="http://www.twitter.com/rubberduckvba"
+                           Command="{Binding UriCommand}"
+                           CommandParameter="{Binding ElementName=TwitterUrl, Path=NavigateUri}"
+                           TextDecorations="{x:Null}">
+                    <Image Source="{StaticResource TwitterImage}"
+                           Margin="4"
+                           Height="40"
+                           VerticalAlignment="Center" />
+                </Hyperlink>
+            </TextBlock>
+            <TextBlock>
+                <Hyperlink Name="FacebookUrl"
+                           NavigateUri="http://www.facebook.com/rubberduckvba"
+                           Command="{Binding UriCommand}"
+                           CommandParameter="{Binding ElementName=FacebookUrl, Path=NavigateUri}"
+                           TextDecorations="{x:Null}">
+                    <Image Source="{StaticResource FacebookImage}"
+                           Margin="4"
+                           VerticalAlignment="Center" />
+                </Hyperlink>
+            </TextBlock>
+            <TextBlock>
+                <Hyperlink Name="GooglePlusUrl"
+                           NavigateUri="http://plus.google.com/116859653258584466987"
+                           Command="{Binding UriCommand}"
+                           CommandParameter="{Binding ElementName=GooglePlusUrl, Path=NavigateUri}"
+                           TextDecorations="{x:Null}">
+                    <Image Source="{StaticResource GooglePlusImage}"
+                           Margin="4"
+                           VerticalAlignment="Center" />
+                </Hyperlink>
+            </TextBlock>
+            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_Copyright}"
+                       FontSize="8"
+                       VerticalAlignment="Center"
+                       Margin="10,0,0,0"/>
         </StackPanel>
     </Grid>
 </UserControl>
