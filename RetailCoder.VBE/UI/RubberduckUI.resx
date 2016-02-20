@@ -1314,4 +1314,31 @@ All contributors to our GitHub repository
 All our stargazers, likers &amp; followers, for the warm fuzzies
 ...and anyone reading this!</value>
   </data>
+  <data name="SearchResults_Caption" xml:space="preserve">
+    <value>Search Results</value>
+  </data>
+  <data name="SearchResults_Location" xml:space="preserve">
+    <value>Location</value>
+    <comment>The line and column in the code module, in L1C1 notation</comment>
+  </data>
+  <data name="SearchResults_MemberName" xml:space="preserve">
+    <value>Member</value>
+    <comment>The member name, e.g. "Method1"</comment>
+  </data>
+  <data name="SearchResults_ModuleName" xml:space="preserve">
+    <value>Module</value>
+    <comment>The qualified module name, e.g. "Project1.Module1"</comment>
+  </data>
+  <data name="SearchResults_Result" xml:space="preserve">
+    <value>Result</value>
+    <comment>A column to display the search result itself</comment>
+  </data>
+  <data name="SearchResults_AllImplementationsTabFormat" xml:space="preserve">
+    <value>All implementations: '{0}'</value>
+    <comment>0: declaration.identifiername</comment>
+  </data>
+  <data name="SearchResults_AllReferencesTabFormat" xml:space="preserve">
+    <value>All references: '{0}'</value>
+    <comment>0: declaration.identifiername</comment>
+  </data>
 </root>

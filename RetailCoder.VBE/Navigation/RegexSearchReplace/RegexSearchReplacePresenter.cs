@@ -30,6 +30,11 @@ namespace Rubberduck.Navigation.RegexSearchReplace
             _view.ShowDialog();
         }
 
+        public void Hide()
+        {
+            _view.Close();
+        }
+
         public event EventHandler<IEnumerable<RegexSearchResult>> FindButtonResults;
         protected virtual void OnFindButtonResults(IEnumerable<RegexSearchResult> results)
         {

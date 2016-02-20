@@ -2435,6 +2435,69 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All implementations: &apos;{0}&apos;.
+        /// </summary>
+        public static string SearchResults_AllImplementationsTabFormat {
+            get {
+                return ResourceManager.GetString("SearchResults_AllImplementationsTabFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All references: &apos;{0}&apos;.
+        /// </summary>
+        public static string SearchResults_AllReferencesTabFormat {
+            get {
+                return ResourceManager.GetString("SearchResults_AllReferencesTabFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search Results.
+        /// </summary>
+        public static string SearchResults_Caption {
+            get {
+                return ResourceManager.GetString("SearchResults_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
+        public static string SearchResults_Location {
+            get {
+                return ResourceManager.GetString("SearchResults_Location", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member.
+        /// </summary>
+        public static string SearchResults_MemberName {
+            get {
+                return ResourceManager.GetString("SearchResults_MemberName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module.
+        /// </summary>
+        public static string SearchResults_ModuleName {
+            get {
+                return ResourceManager.GetString("SearchResults_ModuleName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Result.
+        /// </summary>
+        public static string SearchResults_Result {
+            get {
+                return ResourceManager.GetString("SearchResults_Result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select All.
         /// </summary>
         public static string SelectAll_Button {
