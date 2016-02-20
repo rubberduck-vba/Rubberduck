@@ -24,15 +24,25 @@ namespace Rubberduck.UI.Controls
         {
             if (_presenter == null || _presenter.IsDisposed)
             {
-                _view = new SearchResultWindow() {ViewModel = viewModel};
+                if (_view.ViewModel == null)
+                {
+                    _view.ViewModel = viewModel;
+                    _view.ViewModel.LastTabClosed += viewModel_LastTabClosed;
+                }
                 _presenter = new SearchResultsDockablePresenter(_vbe, _addin, _view);
             }
 
             return _presenter;
         }
 
+        private void viewModel_LastTabClosed(object sender, EventArgs e)
+        {
+            _presenter.Hide();
+        }
+        
         public void Dispose()
         {
+            _view.ViewModel.LastTabClosed -= viewModel_LastTabClosed;
             _presenter.Dispose();
         }
     }

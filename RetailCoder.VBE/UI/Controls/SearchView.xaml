@@ -8,33 +8,46 @@
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="550"
              d:DataContext="{d:DesignInstance controls:SearchResultsWindowViewModel}">
+    
     <UserControl.Resources>
-        <CollectionViewSource x:Key="GroupedSearchResults" Source="{Binding SearchResults}">
-            <CollectionViewSource.SortDescriptions>
-                <componentModel:SortDescription PropertyName="QualifiedMemberName.QualifiedModuleName.Name" />
-            </CollectionViewSource.SortDescriptions>
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="QualifiedMemberName.QualifiedModuleName.Name" />
-            </CollectionViewSource.GroupDescriptions>
-        </CollectionViewSource>
+        <Style x:Key="CloseButton" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Margin" Value="5,0,0,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Image Source="../../Resources/cross-button.png" Height="16" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>            
+        </Style>
     </UserControl.Resources>
+    
     <Grid>
-        <TabControl ItemsSource="{Binding Tabs}">
+        <TabControl ItemsSource="{Binding Tabs}" SelectedItem="{Binding SelectedTab}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <DockPanel MinWidth="75">
-                        <TextBlock Text="{Binding Header}" />
-                        <Button DockPanel.Dock="Right" Margin="5,0,0,0" 
-                                Background="Transparent"
-                                Command="{Binding CloseCommand}">
-                            <Image Source="../../Resources/cross-button.png" Height="16" />
-                        </Button>
+                        <TextBlock Text="{Binding Header}" VerticalAlignment="Center" />
+                        <Button DockPanel.Dock="Right"
+                                Command="{Binding CloseCommand}"
+                                Style="{StaticResource CloseButton}" />
                     </DockPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>
                 <DataTemplate DataType="controls:SearchResultsViewModel">
-                    <controls:GroupingGrid ShowGroupingItemCount="True"
+                    <DataTemplate.Resources>
+                        <CollectionViewSource x:Name="ViewSource" x:Key="GroupedSearchResults" Source="{Binding SearchResults}">
+                            <CollectionViewSource.SortDescriptions>
+                                <componentModel:SortDescription PropertyName="QualifiedMemberName.QualifiedModuleName.Name" />
+                            </CollectionViewSource.SortDescriptions>
+                            <CollectionViewSource.GroupDescriptions>
+                                <PropertyGroupDescription PropertyName="QualifiedMemberName.QualifiedModuleName.Name" />
+                            </CollectionViewSource.GroupDescriptions>
+                        </CollectionViewSource>
+                    </DataTemplate.Resources>
+                    <controls:GroupingGrid ShowGroupingItemCount="True" x:Name="TabGrid"
                                            ItemsSource="{Binding Source={StaticResource GroupedSearchResults}}"
                                            SelectedItem="{Binding SelectedItem}">
                         <DataGrid.Columns>

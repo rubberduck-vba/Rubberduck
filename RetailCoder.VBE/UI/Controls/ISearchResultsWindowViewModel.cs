@@ -7,6 +7,7 @@ namespace Rubberduck.UI.Controls
     {
         void AddTab(SearchResultsViewModel viewModel);
         event EventHandler LastTabClosed;
-        IEnumerable<SearchResultsViewModel> Tabs { get; } 
+        IEnumerable<SearchResultsViewModel> Tabs { get; }
+        SearchResultsViewModel SelectedTab { get; set; }
     }
 }

@@ -10,6 +10,7 @@ namespace Rubberduck.UI
     public interface IPresenter
     {
         void Show();
+        void Hide();
     }
 
     public abstract class DockableToolwindowPresenter : IPresenter, IDisposable
@@ -92,6 +93,11 @@ namespace Rubberduck.UI
         public virtual void Show()
         {
             _window.Visible = true;
+        }
+
+        public void Hide()
+        {
+            _window.Visible = false;
         }
 
         private bool _disposed;

@@ -36,30 +36,15 @@ namespace Rubberduck.UI.Command
                 return;
             }
 
-            var declaration = parameter as Declaration;
+            var declaration = FindTarget(parameter);
             if (declaration == null)
             {
-                var selection = _editor.GetSelection();
-                if (selection != null)
-                {
-                    declaration = _state.AllUserDeclarations.SingleOrDefault(item =>
-                        item.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Value.Selection)
-                        || item.References.Any(reference => reference.Selection.ContainsFirstCharacter(selection.Value.Selection)));
-                }
-
-                if (declaration == null)
-                {
-                    return;
-                }
+                return;
             }
 
-            var results = declaration.References.Select(reference =>
-                new SearchResultItem(
-                    reference.QualifiedModuleName.QualifyMemberName(reference.ParentScope.Split('.').Last()),
-                    reference.Selection, 
-                    reference.Context.GetText()));
-            var viewModel = new SearchResultsViewModel(string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, declaration.IdentifierName), results);
+            var viewModel = CreateViewModel(declaration);
             _viewModel.AddTab(viewModel);
+            _viewModel.SelectedTab = viewModel;
 
             try
             {
@@ -70,6 +55,43 @@ namespace Rubberduck.UI.Command
             {
                 Console.WriteLine(e);
             }
+        }
+
+        private SearchResultsViewModel CreateViewModel(Declaration declaration)
+        {
+            var results = declaration.References.Select(reference =>
+                new SearchResultItem(
+                    reference.QualifiedModuleName.QualifyMemberName(reference.ParentScope.Split('.').Last()),
+                    reference.Selection,
+                    reference.Context.GetText()));
+            
+            var viewModel = new SearchResultsViewModel(
+                string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, declaration.IdentifierName), results);
+
+            return viewModel;
+        }
+
+        private Declaration FindTarget(object parameter)
+        {
+            var declaration = parameter as Declaration;
+            if (declaration == null)
+            {
+                var selection = _editor.GetSelection();
+                if (selection != null)
+                {
+                    declaration = _state.AllUserDeclarations
+                        .SingleOrDefault(item => item.QualifiedName.QualifiedModuleName == selection.Value.QualifiedName 
+                            && (item.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Value.Selection)
+                                || 
+                                item.References.Any(reference => reference.Selection.ContainsFirstCharacter(selection.Value.Selection))));
+                }
+
+                if (declaration == null)
+                {
+                    return null;
+                }
+            }
+            return declaration;
         }
     }
 }

@@ -9,5 +9,7 @@ namespace Rubberduck.UI.Controls
             : base(vbe, addin, view)
         {
         }
+
+        
     }
 }

@@ -23,6 +23,21 @@ namespace Rubberduck.UI.Controls
 
         public IEnumerable<SearchResultsViewModel> Tabs { get { return _tabs; } }
 
+        private SearchResultsViewModel _selectedTab;
+
+        public SearchResultsViewModel SelectedTab
+        {
+            get { return _selectedTab; }
+            set
+            {
+                if (_selectedTab != value)
+                {
+                    _selectedTab = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private void RemoveTab(SearchResultsViewModel viewModel)
         {
             if (viewModel != null)
