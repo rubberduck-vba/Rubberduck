@@ -1061,19 +1061,6 @@ public partial class VBABaseListener : IVBAListener {
 	public virtual void ExitEndOfLine([NotNull] VBAParser.EndOfLineContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.moduleDeclarationMacroStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterModuleDeclarationMacroStmt([NotNull] VBAParser.ModuleDeclarationMacroStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.moduleDeclarationMacroStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitModuleDeclarationMacroStmt([NotNull] VBAParser.ModuleDeclarationMacroStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.randomizeStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

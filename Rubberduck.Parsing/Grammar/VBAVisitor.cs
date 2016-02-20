@@ -599,13 +599,6 @@ public interface IVBAVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitEndOfLine([NotNull] VBAParser.EndOfLineContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.moduleDeclarationMacroStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitModuleDeclarationMacroStmt([NotNull] VBAParser.ModuleDeclarationMacroStmtContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.randomizeStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
