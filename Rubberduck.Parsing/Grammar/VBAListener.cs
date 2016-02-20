@@ -2114,6 +2114,17 @@ public interface IVBAListener : IParseTreeListener {
 	void ExitModuleBodyElement([NotNull] VBAParser.ModuleBodyElementContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.macroStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMacroStmt([NotNull] VBAParser.MacroStmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.macroStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMacroStmt([NotNull] VBAParser.MacroStmtContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>vsMid</c>
 	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
 	/// </summary>

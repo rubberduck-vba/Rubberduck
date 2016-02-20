@@ -121,7 +121,7 @@ moduleConfigElement :
 
 moduleAttributes : (attributeStmt endOfLine+)+;
 
-moduleDeclarations : moduleDeclarationsElement (endOfLine+ moduleDeclarationsElement)*;
+moduleDeclarations : moduleDeclarationsElement (endOfLine+ moduleDeclarationsElement)* endOfLine*;
 
 moduleOption : 
 	OPTION_BASE WS SHORTLITERAL 					# optionBaseStmt
@@ -140,9 +140,12 @@ moduleDeclarationsElement :
 	| variableStmt
 	| moduleOption
 	| typeStmt
-	| macroConstStmt
-	| macroIfThenElseStmt
+	| macroStmt
 ;
+
+macroStmt :
+	macroConstStmt
+	| macroIfThenElseStmt;
 
 moduleBody : 
 	moduleBodyElement (endOfLine+ moduleBodyElement)*;
@@ -153,8 +156,7 @@ moduleBodyElement :
 	| propertySetStmt 
 	| propertyLetStmt 
 	| subStmt 
-	| macroConstStmt
-	| macroIfThenElseStmt
+	| macroStmt
 ;
 
 
@@ -197,8 +199,7 @@ blockStmt :
 	| loadStmt
 	| lockStmt
 	| lsetStmt
-	| macroConstStmt
-	| macroIfThenElseStmt
+	| macroStmt
 	| midStmt
 	| mkdirStmt
 	| nameStmt

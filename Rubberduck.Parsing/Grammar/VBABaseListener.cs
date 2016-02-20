@@ -2400,6 +2400,19 @@ public partial class VBABaseListener : IVBAListener {
 	public virtual void ExitModuleBodyElement([NotNull] VBAParser.ModuleBodyElementContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.macroStmt"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMacroStmt([NotNull] VBAParser.MacroStmtContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.macroStmt"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMacroStmt([NotNull] VBAParser.MacroStmtContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.vsMid"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

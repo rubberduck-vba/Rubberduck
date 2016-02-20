@@ -1346,6 +1346,13 @@ public interface IVBAVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitModuleBodyElement([NotNull] VBAParser.ModuleBodyElementContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.macroStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMacroStmt([NotNull] VBAParser.MacroStmtContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by the <c>vsMid</c>
 	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
 	/// </summary>
