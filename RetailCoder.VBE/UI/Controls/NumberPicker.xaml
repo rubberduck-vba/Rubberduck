@@ -8,7 +8,7 @@
              Name="Root">
     <Grid>
         <StackPanel Orientation="Horizontal">
-            <TextBox Margin="5,5,0,5" Height="20" Width="50" Text="{Binding ElementName=Root, Path=NumValue, Mode=TwoWay, StringFormat=\{0:D\}, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+            <TextBox Margin="5,5,0,5" Height="20" Width="50" Text="{Binding ElementName=Root, Path=NumValue, Mode=TwoWay, StringFormat=\{0:D\}, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" VerticalAlignment="Top" VerticalContentAlignment="Center" />
             <StackPanel Margin="0,5" >
                 <Button Height="10" Width="20" Click="cmdUp_Click">
                     <TextBlock Text="˄" FontSize="10" Margin="0,-4,0,0"/>
