@@ -74,6 +74,7 @@
 *   - implemented proper specs for DATELITERAL.
 *   - added comments to parse tree (removes known limitation #2).
 *   - macroConstStmt now allowed in blockStmt.
+*   - allow type hints for parameter
 *
 *======================================================================================
 *
@@ -637,7 +638,7 @@ dictionaryCallStmt : '!' ambiguousIdentifier typeHint?;
 
 argList : LPAREN (WS? arg (WS? ',' WS? arg)*)? WS? RPAREN;
 
-arg : (OPTIONAL WS)? ((BYVAL | BYREF) WS)? (PARAMARRAY WS)? ambiguousIdentifier (WS? LPAREN WS? RPAREN)? (WS? asTypeClause)? (WS? argDefaultValue)?;
+arg : (OPTIONAL WS)? ((BYVAL | BYREF) WS)? (PARAMARRAY WS)? ambiguousIdentifier typeHint? (WS? LPAREN WS? RPAREN)? (WS? asTypeClause)? (WS? argDefaultValue)?;
 
 argDefaultValue : EQ WS? valueStmt;
 
