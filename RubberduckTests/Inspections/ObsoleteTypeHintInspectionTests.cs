@@ -276,7 +276,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_FieldsReturnMultipleResult()
+        public void ObsoleteCallStatement_FieldsReturnMultipleResults()
         {
             const string inputCode =
 @"Public Foo$
@@ -300,7 +300,7 @@ Public Bar$";
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_QuickFixWorks_FieldLongTypeHint()
+        public void ObsoleteCallStatement_QuickFixWorks_Field_LongTypeHint()
         {
             const string inputCode =
 @"Public Foo&";
@@ -333,7 +333,7 @@ Public Bar$";
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_QuickFixWorks_FieldIntegerTypeHint()
+        public void ObsoleteCallStatement_QuickFixWorks_Field_IntegerTypeHint()
         {
             const string inputCode =
 @"Public Foo%";
@@ -366,7 +366,7 @@ Public Bar$";
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_QuickFixWorks_FieldDoubleTypeHint()
+        public void ObsoleteCallStatement_QuickFixWorks_Field_DoubleTypeHint()
         {
             const string inputCode =
 @"Public Foo#";
@@ -399,7 +399,7 @@ Public Bar$";
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_QuickFixWorks_FieldSingleTypeHint()
+        public void ObsoleteCallStatement_QuickFixWorks_Field_SingleTypeHint()
         {
             const string inputCode =
 @"Public Foo!";
@@ -432,7 +432,7 @@ Public Bar$";
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_QuickFixWorks_FieldDecimalTypeHint()
+        public void ObsoleteCallStatement_QuickFixWorks_Field_DecimalTypeHint()
         {
             const string inputCode =
 @"Public Foo&";
@@ -465,7 +465,7 @@ Public Bar$";
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_QuickFixWorks_FieldStringTypeHint()
+        public void ObsoleteCallStatement_QuickFixWorks_Field_StringTypeHint()
         {
             const string inputCode =
 @"Public Foo$";
@@ -498,7 +498,7 @@ Public Bar$";
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_QuickFixWorks_FunctionStringTypeHint()
+        public void ObsoleteCallStatement_QuickFixWorks_Function_StringTypeHint()
         {
             const string inputCode =
 @"Public Function Foo$(ByVal fizz As Integer)
@@ -535,7 +535,7 @@ End Function";
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_QuickFixWorks_PropertyGetStringTypeHint()
+        public void ObsoleteCallStatement_QuickFixWorks_PropertyGet_StringTypeHint()
         {
             const string inputCode =
 @"Public Property Get Foo$(ByVal fizz As Integer)
@@ -572,7 +572,7 @@ End Property";
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_QuickFixWorks_ParameterStringTypeHint()
+        public void ObsoleteCallStatement_QuickFixWorks_Parameter_StringTypeHint()
         {
             const string inputCode =
 @"Public Sub Foo(ByVal fizz$)
@@ -609,7 +609,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void ObsoleteCallStatement_QuickFixWorks_VariableStringTypeHint()
+        public void ObsoleteCallStatement_QuickFixWorks_Variable_StringTypeHint()
         {
             const string inputCode =
 @"Public Sub Foo()
@@ -645,9 +645,8 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
-
         [TestMethod]
-        public void ObsoleteCallStatement_QuickFixWorks_FunctionReferencesAreUpdatedStringTypeHint()
+        public void ObsoleteCallStatement_QuickFixWorks_FunctionReferencesAreUpdated_StringTypeHint()
         {
             const string inputCode =
 @"Public Function Foo$(ByVal bar as Boolean)
@@ -657,6 +656,53 @@ End Function
 Public Sub Buzz()
     Dim bat As String
     bat = Foo$()
+End Sub";
+
+            const string expectedCode =
+@"Public Function Foo(ByVal bar as Boolean) As String
+    Foo = ""test""
+End Function
+
+Public Sub Buzz()
+    Dim bat As String
+    bat = Foo()
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ObsoleteTypeHintInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            foreach (var inspectionResult in inspectionResults)
+            {
+                inspectionResult.QuickFixes.First().Fix();
+            }
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void ObsoleteCallStatement_QuickFixWorks_FunctionReferencesAreUpdated_ParentIsNotChanged_StringTypeHint()
+        {
+            const string inputCode =
+@"Public Function Foo(ByVal bar as Boolean) As String
+    Foo$ = ""test""
+End Function
+
+Public Sub Buzz()
+    Dim bat As String
+    bat$ = Foo$()
 End Sub";
 
             const string expectedCode =
