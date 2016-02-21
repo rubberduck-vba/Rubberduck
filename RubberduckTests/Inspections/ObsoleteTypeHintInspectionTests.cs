@@ -435,10 +435,10 @@ Public Bar$";
         public void ObsoleteCallStatement_QuickFixWorks_Field_DecimalTypeHint()
         {
             const string inputCode =
-@"Public Foo&";
+@"Public Foo@";
 
             const string expectedCode =
-@"Public Foo As Decimal ' This doesn't compile, should it be float?";
+@"Public Foo As Decimal";
 
             //Arrange
             var builder = new MockVbeBuilder();
