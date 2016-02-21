@@ -50,8 +50,6 @@ namespace Rubberduck.UI.Controls
             }
         }
 
-        public INavigateCommand NavigateCommand { get {return _navigateCommand; } }
-
         private void ExecuteCloseCommand(object parameter)
         {
             OnClose();
@@ -67,6 +65,7 @@ namespace Rubberduck.UI.Controls
             }
         }
 
+        public INavigateCommand NavigateCommand { get { return _navigateCommand; } }
         INavigateSource INavigateSelection.SelectedItem { get { return SelectedItem; } }
     }
 }

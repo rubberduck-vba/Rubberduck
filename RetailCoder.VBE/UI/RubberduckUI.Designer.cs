@@ -2322,6 +2322,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck.
+        /// </summary>
+        public static string Rubberduck {
+            get {
+                return ResourceManager.GetString("Rubberduck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Build {0} ({1}).
         /// </summary>
         public static string Rubberduck_AboutBuild {
@@ -2466,6 +2475,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Context.
+        /// </summary>
+        public static string SearchResults_Context {
+            get {
+                return ResourceManager.GetString("SearchResults_Context", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
         public static string SearchResults_Location {
@@ -2489,15 +2507,6 @@ namespace Rubberduck.UI {
         public static string SearchResults_ModuleName {
             get {
                 return ResourceManager.GetString("SearchResults_ModuleName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Result.
-        /// </summary>
-        public static string SearchResults_Result {
-            get {
-                return ResourceManager.GetString("SearchResults_Result", resourceCulture);
             }
         }
         
