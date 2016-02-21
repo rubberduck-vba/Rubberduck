@@ -1317,9 +1317,8 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Search Results</value>
   </data>
-  <data name="SearchResults_Location" xml:space="preserve">
-    <value>Location</value>
-    <comment>The line and column in the code module, in L1C1 notation</comment>
+  <data name="SearchResults_Line" xml:space="preserve">
+    <value>Line</value>
   </data>
   <data name="SearchResults_MemberName" xml:space="preserve">
     <value>Member</value>
@@ -1329,8 +1328,8 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Module</value>
     <comment>The qualified module name, e.g. "Project1.Module1"</comment>
   </data>
-  <data name="SearchResults_Result" xml:space="preserve">
-    <value>Result</value>
+  <data name="SearchResults_Context" xml:space="preserve">
+    <value>Context</value>
     <comment>A column to display the search result itself</comment>
   </data>
   <data name="SearchResults_AllImplementationsTabFormat" xml:space="preserve">
@@ -1340,5 +1339,8 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SearchResults_AllReferencesTabFormat" xml:space="preserve">
     <value>All references: '{0}'</value>
     <comment>0: declaration.identifiername</comment>
+  </data>
+  <data name="Rubberduck" xml:space="preserve">
+    <value>Rubberduck</value>
   </data>
 </root>
