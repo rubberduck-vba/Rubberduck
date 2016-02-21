@@ -637,6 +637,8 @@ dictionaryCallStmt : '!' ambiguousIdentifier typeHint?;
 
 argList : LPAREN (WS? arg (WS? ',' WS? arg)*)? WS? RPAREN;
 
+// bug parameters should allow type hints - does this fix work?
+// arg : (OPTIONAL WS)? ((BYVAL | BYREF) WS)? (PARAMARRAY WS)? ambiguousIdentifier (typeHint)? (WS? LPAREN WS? RPAREN)? (WS? asTypeClause)? (WS? argDefaultValue)?;
 arg : (OPTIONAL WS)? ((BYVAL | BYREF) WS)? (PARAMARRAY WS)? ambiguousIdentifier (WS? LPAREN WS? RPAREN)? (WS? asTypeClause)? (WS? argDefaultValue)?;
 
 argDefaultValue : EQ WS? valueStmt;
