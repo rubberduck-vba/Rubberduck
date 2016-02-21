@@ -56,7 +56,7 @@ namespace Rubberduck.UI.Command
 
             if (viewModel.SearchResults.Count == 1)
             {
-                _navigateCommand.Execute(viewModel.SearchResults[0].GetNavigationArgs());
+                _navigateCommand.Execute(viewModel.SearchResults.Single().GetNavigationArgs());
                 return;
             }
 
