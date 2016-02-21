@@ -7,11 +7,13 @@ namespace Rubberduck.Inspections
 {
     public class ParameterCanBeByValInspectionResult : InspectionResultBase
     {
+        private readonly string _identifierName;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ParameterCanBeByValInspectionResult(IInspection inspection, string result, ParserRuleContext context, QualifiedMemberName qualifiedName)
+        public ParameterCanBeByValInspectionResult(IInspection inspection, string identifierName, ParserRuleContext context, QualifiedMemberName qualifiedName)
             : base(inspection, qualifiedName.QualifiedModuleName, context)
         {
+            _identifierName = identifierName;
             _quickFixes = new[]
             {
                 new PassParameterByValueQuickFix(Context, QualifiedSelection), 
@@ -22,7 +24,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, Target.IdentifierName); }
+            get { return string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, _identifierName); }
         }
     }
 

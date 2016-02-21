@@ -38,7 +38,7 @@ namespace Rubberduck.Inspections
 
             var issues = functions
                 .Where(declaration => declaration.References.All(r => !r.IsAssignment))
-                .Select(issue => new NonReturningFunctionInspectionResult(this, new QualifiedContext<ParserRuleContext>(issue.QualifiedName, issue.Context), interfaceImplementationMembers.Select(m => m.Scope).Contains(issue.Scope)));
+                .Select(issue => new NonReturningFunctionInspectionResult(this, new QualifiedContext<ParserRuleContext>(issue.QualifiedName, issue.Context), interfaceImplementationMembers.Select(m => m.Scope).Contains(issue.Scope), issue.IdentifierName));
 
             return issues;
         }

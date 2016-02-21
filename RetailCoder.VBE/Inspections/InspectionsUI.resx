@@ -494,4 +494,7 @@
   <data name="SplitMultipleDeclarationsQuickFix" xml:space="preserve">
     <value>Separate multiple declarations into multiple instructions</value>
   </data>
+  <data name="EmptyStringLiteralInspectionResultFormat" xml:space="preserve">
+    <value>'vbNullString' preferred to empty string literals</value>
+  </data>
 </root>

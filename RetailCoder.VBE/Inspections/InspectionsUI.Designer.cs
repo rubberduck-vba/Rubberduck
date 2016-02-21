@@ -187,6 +187,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;vbNullString&apos; preferred to empty string literals.
+        /// </summary>
+        internal static string EmptyStringLiteralInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyStringLiteralInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Consider exposing a property instead..
         /// </summary>
         internal static string EncapsulatePublicFieldInspectionMeta {

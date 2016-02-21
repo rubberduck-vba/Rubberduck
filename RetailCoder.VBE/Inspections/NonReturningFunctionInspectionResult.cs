@@ -6,12 +6,16 @@ namespace Rubberduck.Inspections
 {
     public class NonReturningFunctionInspectionResult : InspectionResultBase
     {
+        private readonly string _identifierName;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public NonReturningFunctionInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, 
-            bool isInterfaceImplementation)
+        public NonReturningFunctionInspectionResult(IInspection inspection,
+            QualifiedContext<ParserRuleContext> qualifiedContext, 
+            bool isInterfaceImplementation,
+            string identifierName)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
+            _identifierName = identifierName;
             _quickFixes = isInterfaceImplementation 
                 ? new CodeInspectionQuickFix[] { }
                 : new CodeInspectionQuickFix[]
@@ -27,8 +31,7 @@ namespace Rubberduck.Inspections
         {
             get
             {
-                // bug NullReferenceException thrown here - null Target
-                return string.Format(InspectionsUI.NonReturningFunctionInspectionResultFormat, Target.IdentifierName);
+                return string.Format(InspectionsUI.NonReturningFunctionInspectionResultFormat, _identifierName);
             }
         }
     }

@@ -8,14 +8,16 @@ namespace Rubberduck.Inspections
 {
     public class FunctionReturnValueNotUsedInspectionResult : InspectionResultBase
     {
+        private readonly string _identifierName;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public FunctionReturnValueNotUsedInspectionResult(
             IInspection inspection,
             ParserRuleContext context,
             QualifiedMemberName qualifiedName,
-            IEnumerable<string> returnStatements)
-            : this(inspection, context, qualifiedName, returnStatements, new List<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>>())
+            IEnumerable<string> returnStatements,
+            string identifierName)
+            : this(inspection, context, qualifiedName, returnStatements, new List<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>>(), identifierName)
         {
         }
 
@@ -24,9 +26,11 @@ namespace Rubberduck.Inspections
             ParserRuleContext context,
             QualifiedMemberName qualifiedName,
             IEnumerable<string> returnStatements,
-            IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>> children)
+            IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>> children,
+            string identifierName)
             : base(inspection, qualifiedName.QualifiedModuleName, context)
         {
+            _identifierName = identifierName;
             var root = new ConvertToProcedureQuickFix(context, QualifiedSelection, returnStatements);
             var compositeFix = new CompositeCodeInspectionFix(root);
             children.ToList().ForEach(child => compositeFix.AddChild(new ConvertToProcedureQuickFix(child.Item1, child.Item2, child.Item3)));
@@ -42,8 +46,7 @@ namespace Rubberduck.Inspections
         {
             get
             {
-                // bug NullReferenceException thrown here - null Target
-                return string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, Target.IdentifierName);
+                return string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, _identifierName);
             }
         }
     }
