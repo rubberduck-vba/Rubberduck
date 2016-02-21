@@ -2480,11 +2480,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Line.
+        ///   Looks up a localized string similar to Location.
         /// </summary>
-        public static string SearchResults_Line {
+        public static string SearchResults_Location {
             get {
-                return ResourceManager.GetString("SearchResults_Line", resourceCulture);
+                return ResourceManager.GetString("SearchResults_Location", resourceCulture);
             }
         }
         

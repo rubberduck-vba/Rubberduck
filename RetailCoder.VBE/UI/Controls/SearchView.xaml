@@ -42,7 +42,7 @@
                                            SelectedItem="{Binding SelectedItem}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_MemberName}" Binding="{Binding QualifiedMemberName.MemberName}" />
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_Line}" Binding="{Binding Selection.StartLine}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_Location}" Binding="{Binding Selection}" />
                             <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_Context}" Binding="{Binding ResultText}" Width="*" />
                         </DataGrid.Columns>
                     </controls:GroupingGrid>

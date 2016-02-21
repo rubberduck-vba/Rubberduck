@@ -1317,8 +1317,9 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Search Results</value>
   </data>
-  <data name="SearchResults_Line" xml:space="preserve">
-    <value>Line</value>
+  <data name="SearchResults_Location" xml:space="preserve">
+    <value>Location</value>
+    <comment>The applicable selection, in L1C1 notation</comment>
   </data>
   <data name="SearchResults_MemberName" xml:space="preserve">
     <value>Member</value>
