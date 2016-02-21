@@ -78,7 +78,8 @@
                             <controls:NumberPicker Margin="0,-6,0,0"
                                                    IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}"
                                                    NumValue="{Binding AlignDimColumn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                   HorizontalAlignment="Left" />
+                                                   HorizontalAlignment="Left"
+                                                   MinNumber="0"/>
                         </StackPanel>
                         <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_SpecialOptionsLabel}"
                                FontWeight="SemiBold" />
@@ -123,7 +124,8 @@
                                        Margin="5,0,0,5"
                                        HorizontalAlignment="Left" />
                             <controls:NumberPicker Margin="0,-6,0,0"
-                                                   NumValue="{Binding IndentSpaces, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                   NumValue="{Binding IndentSpaces, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                   MinNumber="0"/>
                         </StackPanel>
                         <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_EnableOptionsLabel}"
                                FontWeight="SemiBold" />
@@ -146,7 +148,8 @@
                     <controls:NumberPicker Margin="0,-4,0,0"
                                            NumValue="{Binding EndOfLineCommentColumnSpaceAlignment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                            Visibility="{Binding EndOfLineCommentStyle, Converter={StaticResource EndOfLineCommentStyleToVisibility}}"
-                                           HorizontalAlignment="Left" />
+                                           HorizontalAlignment="Left"
+                                           MinNumber="0" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

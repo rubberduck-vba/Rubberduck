@@ -42,6 +42,7 @@ namespace Rubberduck.Inspections
         {
             get
             {
+                // bug NullReferenceException thrown here - null Target
                 return string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, Target.IdentifierName);
             }
         }

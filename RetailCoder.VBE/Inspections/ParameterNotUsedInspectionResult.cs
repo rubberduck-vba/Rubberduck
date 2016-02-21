@@ -26,6 +26,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
+            // bug NullReferenceException thrown here - null Target
             get { return string.Format(InspectionsUI.ParameterNotUsedInspectionResultFormat, Target.IdentifierName); }
         }
     }
