@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections
     public abstract class InspectionResultBase : ICodeInspectionResult, INavigateSource
     {
         protected InspectionResultBase(IInspection inspection, Declaration target)
-            : this(inspection, target.QualifiedName.QualifiedModuleName, null)
+            : this(inspection, target.QualifiedName.QualifiedModuleName, target.Context)
         {
             _target = target;
         }

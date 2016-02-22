@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            var parameter = Context.Parent.GetText();
+            var parameter = Context.GetText();
             var newContent = string.Concat(Tokens.ByVal, " ", parameter.Replace(Tokens.ByRef, string.Empty).Trim());
             var selection = Selection.Selection;
 
