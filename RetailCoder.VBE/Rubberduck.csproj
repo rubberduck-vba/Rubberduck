@@ -706,6 +706,9 @@
       <DependentUpon>ChangesControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\ChangesPresenter.cs" />
+    <Compile Include="UI\SourceControl\ChangesView.xaml.cs">
+      <DependentUpon>ChangesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\CloneRepositoryForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1450,6 +1453,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Settings\UnitTestSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\ChangesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
