@@ -55,9 +55,7 @@ namespace Rubberduck.Inspections
                 !IsInterfaceMemberParameter(parameter, interfaceMemberScopes)
                 && !builtInHandlers.Contains(parameter.ParentDeclaration))
                 let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)
-                select new ParameterNotUsedInspectionResult(this, string.Format(Description, issue.IdentifierName),
-                        ((dynamic) issue.Context).ambiguousIdentifier(), issue.QualifiedName,
-                        isInterfaceImplementationMember, quickFixRefactoring, State);
+                select new ParameterNotUsedInspectionResult(this, issue, isInterfaceImplementationMember, quickFixRefactoring, State);
 
             return issues.ToList();
         }

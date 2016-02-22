@@ -291,7 +291,9 @@ namespace Rubberduck.Parsing.VBA
 
             if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))
             {
-                var resolver = new IdentifierReferenceResolver(new QualifiedModuleName(component), _state.AllDeclarations, _state.AllComments);
+                var qualifiedName = new QualifiedModuleName(component);
+                var declarations = _state.AllDeclarations.ToList();
+                var resolver = new IdentifierReferenceResolver(qualifiedName, declarations, _state.AllComments.ToList());
                 var listener = new IdentifierReferenceListener(resolver, token);
                 var walker = new ParseTreeWalker();
                 try

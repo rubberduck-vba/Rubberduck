@@ -91,6 +91,7 @@
                 <controls:NumberPicker Margin="0,-6,0,0"
                                        IsEnabled="{Binding ElementName=AutoSaveButton, Path=IsChecked}"
                                        NumValue="{Binding AutoSavePeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       MinNumber="1"
                                        HorizontalAlignment="Left" />
             </StackPanel>
 

@@ -24,9 +24,7 @@ namespace Rubberduck
     {
         private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
-        private readonly IParserErrorsPresenterFactory _parserErrorsPresenterFactory;
         private readonly IRubberduckParser _parser;
-        private readonly IInspectorFactory _inspectorFactory;
         private readonly AutoSave.AutoSave _autoSave;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
@@ -39,9 +37,7 @@ namespace Rubberduck
         private Configuration _config;
 
         public App(VBE vbe, IMessageBox messageBox,
-            IParserErrorsPresenterFactory parserErrorsPresenterFactory,
             IRubberduckParser parser,
-            IInspectorFactory inspectorFactory,
             IGeneralConfigService configService,
             IAppMenu appMenus,
             RubberduckCommandBar stateBar,
@@ -50,9 +46,7 @@ namespace Rubberduck
         {
             _vbe = vbe;
             _messageBox = messageBox;
-            _parserErrorsPresenterFactory = parserErrorsPresenterFactory;
             _parser = parser;
-            _inspectorFactory = inspectorFactory;
             _configService = configService;
             _autoSave = new AutoSave.AutoSave(_vbe, _configService);
             _appMenus = appMenus;
@@ -174,7 +168,6 @@ namespace Rubberduck
         private void CleanReloadConfig()
         {
             LoadConfig();
-            Setup();
         }
 
         private void ConfigServiceLanguageChanged(object sender, EventArgs e)
@@ -200,12 +193,6 @@ namespace Rubberduck
                 _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);
             }
-        }
-
-        private void Setup()
-        {
-            _inspectorFactory.Create();
-            _parserErrorsPresenterFactory.Create();
         }
 
         public void Dispose()

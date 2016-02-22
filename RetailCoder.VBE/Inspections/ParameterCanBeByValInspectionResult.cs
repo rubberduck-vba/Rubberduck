@@ -1,17 +1,20 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
     public class ParameterCanBeByValInspectionResult : InspectionResultBase
     {
+        private readonly Declaration _declaration;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ParameterCanBeByValInspectionResult(IInspection inspection, string result, ParserRuleContext context, QualifiedMemberName qualifiedName)
-            : base(inspection, qualifiedName.QualifiedModuleName, context)
+        public ParameterCanBeByValInspectionResult(IInspection inspection, Declaration declaration)
+            : base(inspection, declaration)
         {
+            _declaration = declaration;
             _quickFixes = new[]
             {
                 new PassParameterByValueQuickFix(Context, QualifiedSelection), 
@@ -19,6 +22,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        protected override Declaration Target
+        {
+            get { return _declaration; }
+        }
 
         public override string Description
         {
@@ -35,7 +43,7 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            var parameter = Context.Parent.GetText();
+            var parameter = Context.GetText();
             var newContent = string.Concat(Tokens.ByVal, " ", parameter.Replace(Tokens.ByRef, string.Empty).Trim());
             var selection = Selection.Selection;
 

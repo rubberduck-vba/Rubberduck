@@ -24,10 +24,14 @@ namespace Rubberduck.AutoSave
 
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
 
-            _timer.Enabled = _config.UserSettings.GeneralSettings.AutoSaveEnabled;
-            _timer.Interval = _config.UserSettings.GeneralSettings.AutoSavePeriod * 1000;
+            _timer.Enabled = _config.UserSettings.GeneralSettings.AutoSaveEnabled 
+                && _config.UserSettings.GeneralSettings.AutoSavePeriod != 0;
 
-            _timer.Elapsed += _timer_Elapsed;
+            if (_config.UserSettings.GeneralSettings.AutoSavePeriod != 0)
+            {
+                _timer.Interval = _config.UserSettings.GeneralSettings.AutoSavePeriod * 1000;
+                _timer.Elapsed += _timer_Elapsed;
+            }
         }
 
         void ConfigServiceSettingsChanged(object sender, EventArgs e)

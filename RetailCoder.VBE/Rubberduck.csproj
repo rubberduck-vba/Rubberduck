@@ -218,6 +218,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime.net45">
       <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
@@ -300,6 +303,19 @@
     <Compile Include="Common\WinAPI\WM.cs" />
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
+    <Compile Include="UI\About\AboutControl.xaml.cs">
+      <DependentUpon>AboutControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\About\AboutControlViewModel.cs" />
+    <Compile Include="UI\About\AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\About\AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\DeclarationTypeToStringConverter.cs" />
+    <Compile Include="UI\Controls\SearchResultPresenterInstanceManager.cs" />
+    <Compile Include="UI\Controls\ISearchResultsWindowViewModel.cs" />
     <Compile Include="UI\Controls\MenuItemGroup.cs" />
     <Compile Include="UI\Controls\GroupingGrid.xaml.cs">
       <DependentUpon>GroupingGrid.xaml</DependentUpon>
@@ -518,6 +534,19 @@
     <Compile Include="UI\Command\ToDoExplorerCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ToDoExplorerCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\UnitTestingParentMenu.cs" />
+    <Compile Include="UI\Controls\SearchResultItem.cs" />
+    <Compile Include="UI\Controls\SearchResultsDockablePresenter.cs" />
+    <Compile Include="UI\Controls\SearchResultsViewModel.cs" />
+    <Compile Include="UI\Controls\SearchResultsWindowViewModel.cs" />
+    <Compile Include="UI\Controls\SearchResultWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\SearchResultWindow.Designer.cs">
+      <DependentUpon>SearchResultWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\SearchView.xaml.cs">
+      <DependentUpon>SearchView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\FolderBrowser.cs" />
     <Compile Include="UI\IMessageBox.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
@@ -771,12 +800,6 @@
     <Compile Include="Inspections\OptionExplicitInspectionResult.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspection.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspectionResult.cs" />
-    <Compile Include="UI\AboutWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\AboutWindow.Designer.cs">
-      <DependentUpon>AboutWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="App.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerDockablePresenter.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerWindow.cs">
@@ -870,8 +893,8 @@
       <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\AboutWindow.resx">
-      <DependentUpon>AboutWindow.cs</DependentUpon>
+    <EmbeddedResource Include="UI\About\AboutDialog.resx">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\CodeExplorer\CodeExplorer.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -887,6 +910,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\CodeInspections\CodeInspectionsWindow.resx">
       <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Controls\SearchResultWindow.resx">
+      <DependentUpon>SearchResultWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
@@ -1167,6 +1193,7 @@
     <Resource Include="Resources\folder--pencil.png" />
     <Resource Include="Resources\folder--plus.png" />
     <Resource Include="Resources\folder-rename.png" />
+    <Resource Include="Resources\cross-button.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
@@ -1367,6 +1394,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\About\AboutControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Controls\GroupingGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1384,6 +1415,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\CodeInspections\InspectionResultsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Controls\SearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

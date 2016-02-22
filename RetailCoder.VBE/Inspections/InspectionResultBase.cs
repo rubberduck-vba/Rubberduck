@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections
     public abstract class InspectionResultBase : ICodeInspectionResult, INavigateSource
     {
         protected InspectionResultBase(IInspection inspection, Declaration target)
-            : this(inspection, target.QualifiedName.QualifiedModuleName, null)
+            : this(inspection, target.QualifiedName.QualifiedModuleName, target.Context)
         {
             _target = target;
         }
@@ -51,7 +51,7 @@ namespace Rubberduck.Inspections
         public CommentNode Comment { get { return _comment; } }
 
         private readonly Declaration _target;
-        protected Declaration Target { get { return _target; } }
+        protected virtual Declaration Target { get { return _target; } }
 
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
