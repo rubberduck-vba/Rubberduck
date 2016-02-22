@@ -16,7 +16,7 @@ namespace Rubberduck.UI.SourceControl
         public SourceControlPanel(IBranchesView branchesView, IChangesView changesView, IUnsyncedCommitsView commitsView, ISettingsView settingsView, IFailedMessageView failedActionView)
             :this()
         {
-            SecondaryPanelVisible = false;
+            /*SecondaryPanelVisible = false;
 
             ((Control)branchesView).Dock = DockStyle.Fill;
             ((Control)changesView).Dock = DockStyle.Fill;
@@ -32,19 +32,19 @@ namespace Rubberduck.UI.SourceControl
 
             this.MainContainer.Panel1.Controls.Add((Control)failedActionView);
 
-            SetText();
+            SetText();*/
         }
 
         private void SetText()
         {
-            RefreshButton.ToolTipText = RubberduckUI.SourceControl_RefreshButtonToolTip;
+            /*RefreshButton.ToolTipText = RubberduckUI.SourceControl_RefreshButtonToolTip;
             OpenWorkingFolderButton.ToolTipText = RubberduckUI.SourceControl_OpenWorkingFolderToolTip;
             InitRepoButton.ToolTipText = RubberduckUI.SourceControl_InitRepoButtonToolTip;
 
             ChangesTab.Text = RubberduckUI.SourceControl_Changes;
             BranchesTab.Text = RubberduckUI.SourceControl_Branches;
             UnsyncedCommitsTab.Text = RubberduckUI.SourceControl_UnsyncedCommits;
-            SettingsTab.Text = RubberduckUI.SourceControl_Settings;
+            SettingsTab.Text = RubberduckUI.SourceControl_Settings;*/
         }
 
         public string ClassId
@@ -61,29 +61,29 @@ namespace Rubberduck.UI.SourceControl
 
         public string Status 
         {
-            get { return this.StatusMessage.Text; }
-            set { this.StatusMessage.Text = value; }
+            get { return null; } //this.StatusMessage.Text; }
+            set { }//this.StatusMessage.Text = value; }
         }
 
         public bool SecondaryPanelVisible
         {
-            get { return !this.MainContainer.Panel1Collapsed; }
-            set { this.MainContainer.Panel1Collapsed = !value; }
+            get { return false; }// !this.MainContainer.Panel1Collapsed; }
+            set { /*this.MainContainer.Panel1Collapsed = !value;*/ }
         }
 
         public ISecondarySourceControlPanel SecondaryPanel
         {
             get
             {
-                return (ISecondarySourceControlPanel)this.MainContainer.Panel1.Controls[0];
+                return null; // (ISecondarySourceControlPanel)this.MainContainer.Panel1.Controls[0];
             }
 
             set
             {
-                this.MainContainer.Panel1.Controls.Clear();
+                /*this.MainContainer.Panel1.Controls.Clear();
 
                 ((Control)value).Dock = DockStyle.Fill;
-                this.MainContainer.Panel1.Controls.Add((Control)value);
+                this.MainContainer.Panel1.Controls.Add((Control)value);*/
             }
         }
 

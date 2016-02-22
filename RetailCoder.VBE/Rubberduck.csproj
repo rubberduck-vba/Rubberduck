@@ -775,6 +775,9 @@
     <Compile Include="UI\SourceControl\SourceControlPanel.Designer.cs">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\SourceControlPanel1.xaml.cs">
+      <DependentUpon>SourceControlPanel1.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\SourceControlPresenter.cs" />
     <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
     <Compile Include="UI\SourceControl\UnsyncedCommitsPresenter.cs" />
@@ -1193,6 +1196,7 @@
     <Resource Include="Resources\folder--plus.png" />
     <Resource Include="Resources\folder-rename.png" />
     <Resource Include="Resources\cross-button.png" />
+    <Resource Include="Resources\init-repo.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
@@ -1446,6 +1450,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Settings\UnitTestSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\SourceControlPanel1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

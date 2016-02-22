@@ -2700,6 +2700,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clone Repository.
+        /// </summary>
+        public static string SourceControl_CloneRepoButtonToolTip {
+            get {
+                return ResourceManager.GetString("SourceControl_CloneRepoButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Commit.
         /// </summary>
         public static string SourceControl_Commit {
@@ -2975,15 +2984,6 @@ namespace Rubberduck.UI {
         public static string SourceControl_OpenWorkingDirectory {
             get {
                 return ResourceManager.GetString("SourceControl_OpenWorkingDirectory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open Working Directory.
-        /// </summary>
-        public static string SourceControl_OpenWorkingFolderToolTip {
-            get {
-                return ResourceManager.GetString("SourceControl_OpenWorkingFolderToolTip", resourceCulture);
             }
         }
         

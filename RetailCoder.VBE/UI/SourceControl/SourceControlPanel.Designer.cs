@@ -31,7 +31,7 @@ namespace Rubberduck.UI.SourceControl
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SourceControlPanel));
+            /*System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SourceControlPanel));
             this.SourceControlToolbar = new System.Windows.Forms.ToolStrip();
             this.RefreshButton = new System.Windows.Forms.ToolStripButton();
             this.OpenWorkingFolderButton = new System.Windows.Forms.ToolStripButton();
@@ -219,13 +219,32 @@ namespace Rubberduck.UI.SourceControl
             ((System.ComponentModel.ISupportInitialize)(this.MainContainer)).EndInit();
             this.MainContainer.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
+            this.PerformLayout();*/
 
+            this.ElementHost = new System.Windows.Forms.Integration.ElementHost();
+            this.SourceControlPanelControl = new Rubberduck.UI.SourceControl.SourceControlPanel1();
+            this.SuspendLayout();
+            // 
+            // elementHost1
+            // 
+            this.ElementHost.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ElementHost.Location = new System.Drawing.Point(0, 0);
+            this.ElementHost.Name = "elementHost1";
+            this.ElementHost.Size = new System.Drawing.Size(150, 150);
+            this.ElementHost.TabIndex = 0;
+            this.ElementHost.Text = "elementHost1";
+            this.ElementHost.Child = this.SourceControlPanelControl;
+            // 
+            // SourceControlWindow
+            // 
+            this.Controls.Add(this.ElementHost);
+            this.Name = "SourceControlWindow";
+            this.ResumeLayout(false);
         }
 
         #endregion
 
-        private ToolStrip SourceControlToolbar;
+        /*private ToolStrip SourceControlToolbar;
         private ToolStripButton RefreshButton;
         private TabControl SourceControlTabs;
         private TabPage ChangesTab;
@@ -237,6 +256,9 @@ namespace Rubberduck.UI.SourceControl
         private ToolStripButton OpenWorkingFolderButton;
         private ToolStripButton InitRepoButton;
         private SplitContainer MainContainer;
-        private ToolStripButton CloneRepoButton;
+        private ToolStripButton CloneRepoButton;*/
+
+        private System.Windows.Forms.Integration.ElementHost ElementHost;
+        private SourceControlPanel1 SourceControlPanelControl;
     }
 }
