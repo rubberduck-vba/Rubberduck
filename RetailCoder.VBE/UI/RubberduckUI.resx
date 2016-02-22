@@ -1344,4 +1344,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="Rubberduck" xml:space="preserve">
     <value>Rubberduck</value>
   </data>
+  <data name="SearchResults_MemberType" xml:space="preserve">
+    <value>Type</value>
+  </data>
 </root>

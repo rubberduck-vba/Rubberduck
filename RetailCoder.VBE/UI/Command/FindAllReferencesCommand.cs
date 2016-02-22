@@ -78,12 +78,12 @@ namespace Rubberduck.UI.Command
         {
             var results = declaration.References.Select(reference =>
                 new SearchResultItem(
-                    reference.QualifiedModuleName.QualifyMemberName(reference.ParentScope.Split('.').Last()),
-                    reference.Selection,
-                    _editor.GetLines(reference.Selection)));
+                    reference.ParentNonScoping,
+                    new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection), 
+                    _editor.GetLines(reference.Selection).Trim()));
             
             var viewModel = new SearchResultsViewModel(_navigateCommand,
-                string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, declaration.IdentifierName), results);
+                string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, declaration.IdentifierName), declaration, results);
 
             return viewModel;
         }

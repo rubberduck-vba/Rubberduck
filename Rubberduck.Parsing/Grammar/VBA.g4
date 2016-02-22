@@ -74,7 +74,7 @@
 *   - implemented proper specs for DATELITERAL.
 *   - added comments to parse tree (removes known limitation #2).
 *   - macroConstStmt now allowed in blockStmt.
-*   - allow type hints for parameter
+*   - allow type hints for parameters.
 *
 *======================================================================================
 *

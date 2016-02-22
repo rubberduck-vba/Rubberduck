@@ -4,12 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
-             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="550"
              d:DataContext="{d:DesignInstance controls:SearchResultsWindowViewModel}">
     
     <UserControl.Resources>
+        <controls:DeclarationTypeToStringConverter x:Key="DeclarationTypeToString" />
         <Style x:Key="CloseButton" TargetType="Button">
             <Setter Property="OverridesDefaultStyle" Value="True" />
             <Setter Property="Margin" Value="5,0,0,0" />
@@ -41,7 +41,8 @@
                                            ItemsSource="{Binding SearchResultsSource.View}"
                                            SelectedItem="{Binding SelectedItem}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_MemberName}" Binding="{Binding QualifiedMemberName.MemberName}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_MemberName}" Binding="{Binding ParentScope.IdentifierName}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_MemberType}" Binding="{Binding ParentScope.DeclarationType, Converter={StaticResource DeclarationTypeToString}}" />
                             <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_Location}" Binding="{Binding Selection}" />
                             <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_Context}" Binding="{Binding ResultText}" Width="*" />
                         </DataGrid.Columns>
