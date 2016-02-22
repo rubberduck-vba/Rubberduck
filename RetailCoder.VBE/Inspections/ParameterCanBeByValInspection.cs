@@ -64,7 +64,7 @@ namespace Rubberduck.Inspections
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, string.Format(Description, issue.IdentifierName), ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName));
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue));
 
             return issues;
         }
@@ -77,7 +77,7 @@ namespace Rubberduck.Inspections
             var items = declarations as List<Declaration> ?? declarations.ToList();
 
             var procedureCalls = items.Where(item => item.DeclarationType.HasFlag(DeclarationType.Member))
-                .SelectMany(member => member.References.Where(reference => reference.ParentScope == parameter.ParentScope))
+                .SelectMany(member => member.References.Where(reference => reference.ParentScoping.Equals(parameter.ParentScopeDeclaration)))
                 .GroupBy(call => call.Declaration)
                 .ToList(); // only check a procedure once. its declaration doesn't change if it's called 20 times anyway.
 

@@ -9,11 +9,6 @@ using Rubberduck.Settings;
 
 namespace Rubberduck.Inspections
 {
-    public interface IInspectorFactory
-    {
-        IInspector Create();
-    }
-
     public class Inspector : IInspector, IDisposable
     {
         private readonly IGeneralConfigService _configService;

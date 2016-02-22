@@ -20,7 +20,7 @@ namespace Rubberduck.UI.CodeInspections
         {
             if (ViewModel != null && ViewModel.CanRefresh)
             {
-                ViewModel.RefreshCommand.Execute(null);
+                //ViewModel.RefreshCommand.Execute(null);
             }
         }
     }

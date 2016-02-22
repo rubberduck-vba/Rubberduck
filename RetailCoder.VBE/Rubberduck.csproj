@@ -313,6 +313,7 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Controls\DeclarationTypeToStringConverter.cs" />
     <Compile Include="UI\Controls\SearchResultPresenterInstanceManager.cs" />
     <Compile Include="UI\Controls\ISearchResultsWindowViewModel.cs" />
     <Compile Include="UI\Controls\MenuItemGroup.cs" />

@@ -98,7 +98,7 @@ namespace Rubberduck.Inspections
 
         private bool IsReturnStatement(Declaration function, IdentifierReference assignment)
         {
-            return assignment.ParentScope == function.Scope;
+            return assignment.ParentScoping.Equals(function);
         }
 
         private bool IsCallWithoutAssignment(IdentifierReference usage)
