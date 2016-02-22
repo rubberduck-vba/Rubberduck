@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections
                     var firstReference = declaration.References.FirstOrDefault();
 
                     if (firstReference == null ||
-                        declaration.References.Any(r => r.ParentScope != firstReference.ParentScope))
+                        declaration.References.Any(r => r.ParentScoping != firstReference.ParentScoping))
                     {
                         return false;
                     }
@@ -60,7 +60,7 @@ namespace Rubberduck.Inspections
             var declarationTypes = new[] {DeclarationType.Function, DeclarationType.Procedure, DeclarationType.Property};
 
             return UserDeclarations.SingleOrDefault(d =>
-                        d.Scope == reference.ParentScope && declarationTypes.Contains(d.DeclarationType) &&
+                        reference.ParentScoping.Equals(d) && declarationTypes.Contains(d.DeclarationType) &&
                         d.Project == reference.QualifiedModuleName.Project);
         }
     }

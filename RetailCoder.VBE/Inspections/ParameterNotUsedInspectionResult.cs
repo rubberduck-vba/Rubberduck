@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
@@ -10,10 +11,9 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ParameterNotUsedInspectionResult(IInspection inspection, string result,
-            ParserRuleContext context, QualifiedMemberName qualifiedName, bool isInterfaceImplementation, 
+        public ParameterNotUsedInspectionResult(IInspection inspection, Declaration declaration, bool isInterfaceImplementation, 
             RemoveParametersRefactoring refactoring, RubberduckParserState parseResult)
-            : base(inspection, qualifiedName.QualifiedModuleName, context)
+            : base(inspection, declaration)
         {
             _quickFixes = isInterfaceImplementation ? new CodeInspectionQuickFix[] {} : new CodeInspectionQuickFix[]
             {

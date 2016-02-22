@@ -2502,6 +2502,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string SearchResults_MemberType {
+            get {
+                return ResourceManager.GetString("SearchResults_MemberType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Module.
         /// </summary>
         public static string SearchResults_ModuleName {

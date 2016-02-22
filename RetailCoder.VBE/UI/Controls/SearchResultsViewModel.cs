@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Input;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Controls
@@ -12,16 +13,20 @@ namespace Rubberduck.UI.Controls
     {
         private readonly INavigateCommand _navigateCommand;
         private readonly string _header;
+        private readonly Declaration _target;
 
-        public SearchResultsViewModel(INavigateCommand navigateCommand, string header, IEnumerable<SearchResultItem> searchResults)
+        public SearchResultsViewModel(INavigateCommand navigateCommand, string header, Declaration target, IEnumerable<SearchResultItem> searchResults)
         {
             _navigateCommand = navigateCommand;
             _header = header;
+            _target = target;
             _searchResults = new ObservableCollection<SearchResultItem>(searchResults);
             _searchResultsSource = new CollectionViewSource();
             _searchResultsSource.Source = _searchResults;
-            _searchResultsSource.GroupDescriptions.Add(new PropertyGroupDescription("QualifiedMemberName.QualifiedModuleName.Name"));
-            _searchResultsSource.SortDescriptions.Add(new SortDescription("QualifiedMemberName.QualifiedModuleName.Name", ListSortDirection.Ascending));
+            _searchResultsSource.GroupDescriptions.Add(new PropertyGroupDescription("ParentScope.QualifiedName.QualifiedModuleName.Name"));
+            _searchResultsSource.SortDescriptions.Add(new SortDescription("ParentScope.QualifiedName.QualifiedModuleName.Name", ListSortDirection.Ascending));
+            _searchResultsSource.SortDescriptions.Add(new SortDescription("Selection.StartLine", ListSortDirection.Ascending));
+            _searchResultsSource.SortDescriptions.Add(new SortDescription("Selection.StartColumn", ListSortDirection.Ascending));
             _closeCommand = new DelegateCommand(ExecuteCloseCommand);
         }
 
@@ -35,6 +40,8 @@ namespace Rubberduck.UI.Controls
 
         private readonly ICommand _closeCommand;
         public ICommand CloseCommand { get { return _closeCommand; } }
+
+        public Declaration Target { get {return _target; } }
 
         private SearchResultItem _selectedItem;
         public SearchResultItem SelectedItem
