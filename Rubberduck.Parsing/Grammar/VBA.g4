@@ -74,6 +74,7 @@
 *   - implemented proper specs for DATELITERAL.
 *   - added comments to parse tree (removes known limitation #2).
 *   - macroConstStmt now allowed in blockStmt.
+*   - allow type hints for parameters.
 *   - fix operator precedence (in valueStmt)
 *   - remove PLUS_EQ and MINUS_EQ since that's not supported in VBA
 *   - remove PLUS valueStmt since that is not needed
