@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -17,6 +18,10 @@ namespace Rubberduck.Inspections
                 subStmtQualifiedContext.ModuleName,
                 subStmtQualifiedContext.Context.ambiguousIdentifier())
         {
+           _target = state.AllUserDeclarations.Single(declaration => 
+               declaration.DeclarationType == DeclarationType.Procedure
+               && declaration.Context == subStmtQualifiedContext.Context);
+
             _quickFixes = new[]
             {
                 new ChangeProcedureToFunction(state, argListQualifiedContext, subStmtQualifiedContext, QualifiedSelection), 
@@ -25,9 +30,10 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
 
+        private readonly Declaration _target;
         public override string Description
         {
-            get { return InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionResultFormat; }
+            get { return string.Format(InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionResultFormat, _target.IdentifierName); }
         }
     }
 
