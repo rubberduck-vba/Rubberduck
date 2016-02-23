@@ -815,7 +815,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Rubberduck - Merge</value>
   </data>
   <data name="SourceControl_NewBranch" xml:space="preserve">
-    <value>New Branch</value>
+    <value>New Branch yyyyyyyy</value>
   </data>
   <data name="SourceControl_OutgoingCommits" xml:space="preserve">
     <value>Outgoing commits</value>
@@ -1035,7 +1035,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value>Parameter Name:</value>
   </data>
-  <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
+  <data name="SourceControl_DeleteBranch" xml:space="preserve">
     <value>Delete branch</value>
   </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">

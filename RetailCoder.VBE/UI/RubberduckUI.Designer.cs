@@ -2810,9 +2810,9 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to Delete branch.
         /// </summary>
-        public static string SourceControl_DeleteBranchButton {
+        public static string SourceControl_DeleteBranch {
             get {
-                return ResourceManager.GetString("SourceControl_DeleteBranchButton", resourceCulture);
+                return ResourceManager.GetString("SourceControl_DeleteBranch", resourceCulture);
             }
         }
         
@@ -2961,7 +2961,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New Branch.
+        ///   Looks up a localized string similar to New Branch yyyyyyyy.
         /// </summary>
         public static string SourceControl_NewBranch {
             get {

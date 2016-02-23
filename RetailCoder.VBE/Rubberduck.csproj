@@ -699,6 +699,9 @@
       <DependentUpon>BranchesControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\BranchesPresenter.cs" />
+    <Compile Include="UI\SourceControl\BranchesView.xaml.cs">
+      <DependentUpon>BranchesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\ChangesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -715,6 +718,7 @@
     <Compile Include="UI\SourceControl\CloneRepositoryForm.Designer.cs">
       <DependentUpon>CloneRepositoryForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\Converters\EqualWidthConverter.cs" />
     <Compile Include="UI\SourceControl\CreateBranchForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1453,6 +1457,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Settings\UnitTestSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\BranchesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
