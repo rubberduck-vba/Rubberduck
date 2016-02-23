@@ -496,9 +496,12 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var reference = CreateReference(callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement);
-            callee.AddReference(reference);
-            _alreadyResolved.Add(reference.Context);
-            _alreadyResolved.Add(callSiteContext);
+            if (reference != null)
+            {
+                callee.AddReference(reference);
+                _alreadyResolved.Add(reference.Context);
+                _alreadyResolved.Add(callSiteContext);
+            }
 
             if (fieldCall != null)
             {
@@ -1004,7 +1007,8 @@ namespace Rubberduck.Parsing.Symbols
 
             var matches = _declarations.Where(d => d.IdentifierName == identifierName);
             var parent = matches.SingleOrDefault(item =>
-                item.ParentScopeDeclaration.Equals(localScope));
+                (item.DeclarationType == DeclarationType.Function || item.DeclarationType == DeclarationType.PropertyGet)
+                && item.Equals(localScope));
 
             return parent;
         }

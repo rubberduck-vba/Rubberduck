@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -142,6 +143,7 @@ namespace Rubberduck.UI.CodeInspections
             IsBusy = true;
 
             _state.StateChanged += _state_StateChanged;
+            Debug.WriteLine("InspectionResultsViewModel.ExecuteRefreshCommand - requesting reparse");
             _state.OnParseRequested();
         }
 
