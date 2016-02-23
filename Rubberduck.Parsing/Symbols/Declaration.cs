@@ -213,6 +213,7 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.PropertyLet, 
             DeclarationType.PropertyLet, 
             DeclarationType.UserDefinedType, 
+            DeclarationType.Constant,
         };
 
         public bool IsArray()

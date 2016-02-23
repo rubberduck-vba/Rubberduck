@@ -166,9 +166,6 @@ namespace Rubberduck.Parsing.VBA
 
         private IEnumerable<QualifiedContext> _emptyStringLiterals = new List<QualifiedContext>();
 
-        /// <summary>
-        /// Gets <see cref="ParserRuleContext"/> objects representing 'Call' statements in the parse tree.
-        /// </summary>
         public IEnumerable<QualifiedContext> EmptyStringLiterals
         {
             get { return _emptyStringLiterals; }
@@ -177,9 +174,6 @@ namespace Rubberduck.Parsing.VBA
 
         private IEnumerable<QualifiedContext> _argListsWithOneByRefParam = new List<QualifiedContext>();
 
-        /// <summary>
-        /// Gets <see cref="ParserRuleContext"/> objects representing 'Call' statements in the parse tree.
-        /// </summary>
         public IEnumerable<QualifiedContext> ArgListsWithOneByRefParam
         {
             get { return _argListsWithOneByRefParam; }
