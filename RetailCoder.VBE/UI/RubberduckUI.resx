@@ -815,7 +815,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Rubberduck - Merge</value>
   </data>
   <data name="SourceControl_NewBranch" xml:space="preserve">
-    <value>New Branch yyyyyyyy</value>
+    <value>New Branch</value>
   </data>
   <data name="SourceControl_OutgoingCommits" xml:space="preserve">
     <value>Outgoing commits</value>

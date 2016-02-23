@@ -2961,7 +2961,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New Branch yyyyyyyy.
+        ///   Looks up a localized string similar to New Branch.
         /// </summary>
         public static string SourceControl_NewBranch {
             get {
