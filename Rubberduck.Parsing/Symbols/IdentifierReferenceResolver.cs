@@ -529,7 +529,9 @@ namespace Rubberduck.Parsing.Symbols
             var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
             if (result != null && localScope != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
             {
-                localScope.AddMemberCall(CreateReference(context.ambiguousIdentifier(), result));
+                var reference = CreateReference(context.ambiguousIdentifier(), result, isAssignmentTarget);
+                result.AddReference(reference);
+                localScope.AddMemberCall(reference);
             }
 
             return result;
@@ -1002,7 +1004,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var matches = _declarations.Where(d => d.IdentifierName == identifierName);
             var parent = matches.SingleOrDefault(item =>
-                item.Scope == localScope.Scope);
+                item.ParentScopeDeclaration.Equals(localScope));
 
             return parent;
         }
@@ -1028,7 +1030,7 @@ namespace Rubberduck.Parsing.Symbols
                 && !_moduleTypes.Contains(item.DeclarationType))
                 .ToList();
 
-            if (results.Count > 1 && isAssignmentTarget
+            if (results.Count >= 1 && isAssignmentTarget
                 && _returningMemberTypes.Contains(localScope.DeclarationType)
                 && localScope.IdentifierName == identifierName
                 && parentContextIsVariableOrProcedureCall)

@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command
 {
@@ -20,16 +21,16 @@ namespace Rubberduck.UI.Command
         private readonly INavigateCommand _navigateCommand;
         private readonly IMessageBox _messageBox;
         private readonly RubberduckParserState _state;
-        private readonly IActiveCodePaneEditor _editor;
         private readonly ISearchResultsWindowViewModel _viewModel;
         private readonly SearchResultPresenterInstanceManager _presenterService;
+        private readonly VBE _vbe;
 
-        public FindAllReferencesCommand(INavigateCommand navigateCommand, IMessageBox messageBox, RubberduckParserState state, IActiveCodePaneEditor editor, ISearchResultsWindowViewModel viewModel, SearchResultPresenterInstanceManager presenterService)
+        public FindAllReferencesCommand(INavigateCommand navigateCommand, IMessageBox messageBox, RubberduckParserState state, VBE vbe, ISearchResultsWindowViewModel viewModel, SearchResultPresenterInstanceManager presenterService)
         {
             _navigateCommand = navigateCommand;
             _messageBox = messageBox;
             _state = state;
-            _editor = editor;
+            _vbe = vbe;
             _viewModel = viewModel;
             _presenterService = presenterService;
         }
@@ -80,7 +81,7 @@ namespace Rubberduck.UI.Command
                 new SearchResultItem(
                     reference.ParentNonScoping,
                     new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection), 
-                    _editor.GetLines(reference.Selection).Trim()));
+                    reference.QualifiedModuleName.Component.CodeModule.get_Lines(reference.Selection.StartLine, 1).Trim()));
             
             var viewModel = new SearchResultsViewModel(_navigateCommand,
                 string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, declaration.IdentifierName), declaration, results);
@@ -93,14 +94,14 @@ namespace Rubberduck.UI.Command
             var declaration = parameter as Declaration;
             if (declaration == null)
             {
-                var selection = _editor.GetSelection();
-                if (selection != null)
+                var selection = _vbe.ActiveCodePane.GetSelection();
+                if (!selection.Equals(default(QualifiedSelection)))
                 {
                     declaration = _state.AllUserDeclarations
-                        .SingleOrDefault(item => item.QualifiedName.QualifiedModuleName == selection.Value.QualifiedName 
-                            && (item.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Value.Selection)
+                        .SingleOrDefault(item => item.QualifiedName.QualifiedModuleName == selection.QualifiedName 
+                            && (item.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Selection)
                                 || 
-                                item.References.Any(reference => reference.Selection.ContainsFirstCharacter(selection.Value.Selection))));
+                                item.References.Any(reference => reference.Selection.ContainsFirstCharacter(selection.Selection))));
                 }
 
                 if (declaration == null)
