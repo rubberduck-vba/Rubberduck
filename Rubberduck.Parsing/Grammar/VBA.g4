@@ -75,6 +75,9 @@
 *   - added comments to parse tree (removes known limitation #2).
 *   - macroConstStmt now allowed in blockStmt.
 *   - allow type hints for parameters.
+*   - fix operator precedence (in valueStmt)
+*   - remove PLUS_EQ and MINUS_EQ since that's not supported in VBA
+*   - remove PLUS valueStmt since that is not needed
 *
 *======================================================================================
 *
@@ -355,7 +358,7 @@ inputStmt : INPUT WS fileNumber (WS? ',' WS? valueStmt)+;
 
 killStmt : KILL WS valueStmt;
 
-letStmt : (LET WS)? implicitCallStmt_InStmt WS? (EQ | PLUS_EQ | MINUS_EQ) WS? valueStmt;
+letStmt : (LET WS)? implicitCallStmt_InStmt WS? EQ WS? valueStmt;
 
 lineInputStmt : LINE_INPUT WS fileNumber WS? ',' WS? valueStmt;
 
@@ -513,42 +516,29 @@ unloadStmt : UNLOAD WS valueStmt;
 
 unlockStmt : UNLOCK WS fileNumber (WS? ',' WS? valueStmt (WS TO WS valueStmt)?)?;
 
-// operator precedence is represented by rule order
 valueStmt : 
-	literal 												# vsLiteral
-	| implicitCallStmt_InStmt 								# vsICS
-	| LPAREN WS? valueStmt (WS? ',' WS? valueStmt)* RPAREN 	# vsStruct
-	| NEW WS? valueStmt 										# vsNew
-	| typeOfStmt 											# vsTypeOf
-	| midStmt 												# vsMid
-	| ADDRESSOF WS? valueStmt 								# vsAddressOf
-	| implicitCallStmt_InStmt WS? ASSIGN WS? valueStmt 		# vsAssign
-	
-	| valueStmt WS? IS WS? valueStmt 							# vsIs
-	| valueStmt WS? LIKE WS? valueStmt 						# vsLike
-	| valueStmt WS? GEQ WS? valueStmt 						# vsGeq
-	| valueStmt WS? LEQ WS? valueStmt 						# vsLeq
-	| valueStmt WS? GT WS? valueStmt 						# vsGt
-	| valueStmt WS? LT WS? valueStmt 						# vsLt
-	| valueStmt WS? NEQ WS? valueStmt 						# vsNeq
-	| valueStmt WS? EQ WS? valueStmt 						# vsEq
-
-	| valueStmt WS? AMPERSAND WS? valueStmt 					# vsAmp
-	| MINUS WS? valueStmt 									# vsNegation
-	| PLUS WS? valueStmt 									# vsPlus
-	| valueStmt WS? PLUS WS? valueStmt 						# vsAdd
-	| valueStmt WS? MOD WS? valueStmt 						# vsMod
-	| valueStmt WS? DIV WS? valueStmt 						# vsDiv
-	| valueStmt WS? MULT WS? valueStmt 						# vsMult
-	| valueStmt WS? MINUS WS? valueStmt 					# vsMinus
-	| valueStmt WS? POW WS? valueStmt 						# vsPow
-
-	| valueStmt WS? IMP WS? valueStmt 						# vsImp
-	| valueStmt WS? EQV WS? valueStmt 						# vsEqv
-	| valueStmt WS? XOR WS? valueStmt 						# vsXor
-	| valueStmt WS? OR WS? valueStmt 						# vsOr
-	| valueStmt WS? AND WS? valueStmt 						# vsAnd
-	| NOT WS? valueStmt 										# vsNot
+	literal                                                                         # vsLiteral
+	| implicitCallStmt_InStmt                                                       # vsICS
+	| LPAREN WS? valueStmt (WS? ',' WS? valueStmt)* RPAREN                          # vsStruct
+	| NEW WS? valueStmt                                                             # vsNew
+	| typeOfStmt                                                                    # vsTypeOf
+	| midStmt                                                                       # vsMid
+	| ADDRESSOF WS? valueStmt                                                       # vsAddressOf
+	| implicitCallStmt_InStmt WS? ASSIGN WS? valueStmt                              # vsAssign
+	| valueStmt WS? POW WS? valueStmt                                               # vsPow
+	| MINUS WS? valueStmt                                                           # vsNegation
+	| valueStmt WS? (MULT | DIV) WS? valueStmt                                      # vsMult
+	| valueStmt WS? INTDIV WS? valueStmt                                            # vsIntDiv
+	| valueStmt WS? MOD WS? valueStmt                                               # vsMod
+	| valueStmt WS? (PLUS | MINUS) WS? valueStmt                                    # vsAdd
+	| valueStmt WS? AMPERSAND WS? valueStmt                                         # vsAmp
+	| valueStmt WS? (EQ | NEQ | LT | GT | LEQ | GEQ | LIKE | IS) WS? valueStmt      # vsRelational
+	| NOT WS? valueStmt                                                             # vsNot
+	| valueStmt WS? AND WS? valueStmt                                               # vsAnd
+	| valueStmt WS? OR WS? valueStmt                                                # vsOr
+	| valueStmt WS? XOR WS? valueStmt                                               # vsXor
+	| valueStmt WS? EQV WS? valueStmt                                               # vsEqv
+	| valueStmt WS? IMP WS? valueStmt                                               # vsImp
 ;
 
 variableStmt : (DIM | STATIC | visibility) WS (WITHEVENTS WS)? variableListStmt;
@@ -900,7 +890,8 @@ XOR : X O R;
 // symbols
 AMPERSAND : '&';
 ASSIGN : ':=';
-DIV : '\\' | '/';
+DIV : '/';
+INTDIV : '\\';
 EQ : '=';
 GEQ : '>=';
 GT : '>';
@@ -908,11 +899,9 @@ LEQ : '<=';
 LPAREN : '(';
 LT : '<';
 MINUS : '-';
-MINUS_EQ : '-=';
 MULT : '*';
 NEQ : '<>';
 PLUS : '+';
-PLUS_EQ : '+=';
 POW : '^';
 RPAREN : ')';
 L_SQUARE_BRACKET : '[';
