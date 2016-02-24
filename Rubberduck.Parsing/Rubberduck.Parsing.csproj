@@ -102,7 +102,6 @@
     <Compile Include="VBA\StringExtensions.cs" />
     <Compile Include="VBA\WalkerCancelledException.cs" />
     <Compile Include="VBComponentExtensions.cs" />
-    <Compile Include="VBProjectParseResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
