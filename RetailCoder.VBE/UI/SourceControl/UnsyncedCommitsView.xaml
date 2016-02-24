@@ -16,8 +16,12 @@
     </TabItem.Resources>
     <Grid>
         <StackPanel>
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CurrentBranchLabel}"
-                   FontWeight="SemiBold" />
+            <StackPanel Orientation="Horizontal">
+                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CurrentBranchLabel}" />
+                <TextBlock FontWeight="SemiBold"
+                           Padding="0,5,0,0"
+                           Text="CurrentBranch" />
+            </StackPanel>
 
             <WrapPanel Orientation="Horizontal"
                        Margin="5,-5,0,5">
@@ -34,7 +38,8 @@
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource FetchCommitsImage}"
                                Margin="5,0"
-                               Width="16" />
+                               Width="16"
+                               Height="16" />
                         <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FetchCommitsLabel}"
                                    Margin="0,0,5,0"
                                    VerticalAlignment="Center" />
@@ -52,8 +57,9 @@
                     </Button.MinWidth>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource PullCommitsImage}"
-                               Margin="5"
-                               Width="16" />
+                               Margin="5,0"
+                               Width="16"
+                               Height="16"  />
                         <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PullCommitsLabel}"
                                    Margin="0,0,5,0"
                                    VerticalAlignment="Center" />
@@ -72,7 +78,8 @@
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource PushCommitsImage}"
                                Margin="5,0"
-                               Width="16" />
+                               Width="16"
+                               Height="16"  />
                         <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PushCommitsLabel}"
                                    Margin="0,0,5,0"
                                    VerticalAlignment="Center" />
@@ -91,7 +98,8 @@
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource SyncCommitsImage}"
                                Margin="5,0"
-                               Width="16" />
+                               Width="16"
+                               Height="16"  />
                         <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_SyncCommitsLabel}"
                                    Margin="0,0,5,0"
                                    VerticalAlignment="Center" />
