@@ -43,6 +43,8 @@ namespace Rubberduck.UI.CodeInspections
             _quickFixInModuleCommand = new DelegateCommand(ExecuteQuickFixInModuleCommand);
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
+
+            _state.StateChanged += _state_StateChanged;
         }
 
         private readonly ObservableCollection<ICodeInspectionResult> _results = new ObservableCollection<ICodeInspectionResult>();
@@ -142,7 +144,6 @@ namespace Rubberduck.UI.CodeInspections
 
             IsBusy = true;
 
-            _state.StateChanged += _state_StateChanged;
             Debug.WriteLine("InspectionResultsViewModel.ExecuteRefreshCommand - requesting reparse");
             _state.OnParseRequested();
         }
@@ -171,8 +172,6 @@ namespace Rubberduck.UI.CodeInspections
                 IsBusy = false;
                 SelectedItem = null;
             });
-
-            _state.StateChanged -= _state_StateChanged;
         }
 
         private void ExecuteQuickFixes(IEnumerable<CodeInspectionQuickFix> quickFixes)
