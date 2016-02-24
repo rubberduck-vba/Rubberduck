@@ -233,6 +233,17 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public void ClearDeclarations(VBProject project)
+        {
+            var declarations = _declarations.Keys.Where(k =>
+                k.QualifiedName.QualifiedModuleName.Project == project);
+
+            foreach (var declaration in declarations)
+            {
+                RemoveDeclaration(declaration);
+            }
+        }
+
         public void ClearDeclarations(VBComponent component)
         {
             var declarations = _declarations.Keys.Where(k =>
