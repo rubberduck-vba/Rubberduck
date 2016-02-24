@@ -20,8 +20,7 @@
                 <ComboBox />
             </DockPanel>
             
-            <WrapPanel Name="ButtonsPanel"
-                       Orientation="Horizontal"
+            <WrapPanel Orientation="Horizontal"
                        Margin="5,-5,0,5">
                 <Button Name="NewBranchButton"
                         Margin="6"
