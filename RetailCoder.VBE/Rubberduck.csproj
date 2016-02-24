@@ -775,6 +775,9 @@
     </Compile>
     <Compile Include="Refactorings\Rename\RenamePresenter.cs" />
     <Compile Include="UI\SourceControl\SettingsPresenter.cs" />
+    <Compile Include="UI\SourceControl\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\SourceControlBindings.cs" />
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
@@ -1468,6 +1471,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\SourceControl\ChangesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
