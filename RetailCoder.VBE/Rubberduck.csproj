@@ -789,6 +789,9 @@
     <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
     <Compile Include="UI\SourceControl\UnsyncedCommitsPresenter.cs" />
     <Compile Include="UI\Controls\INavigateSelection.cs" />
+    <Compile Include="UI\SourceControl\UnsyncedCommitsView.xaml.cs">
+      <DependentUpon>UnsyncedCommitsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="Settings\IConfigurationService.cs" />
     <Compile Include="Settings\ConfigurationLoader.cs" />
@@ -1469,6 +1472,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\SourceControl\SourceControlPanel1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\UnsyncedCommitsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

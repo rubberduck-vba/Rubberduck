@@ -255,7 +255,7 @@
             <TabControl DockPanel.Dock="Bottom">
                 <sourceControl:ChangesView Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Changes}" />
                 <sourceControl:BranchesView Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Branches}" />
-                <TabItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UnsyncedCommits}" />
+                <sourceControl:UnsyncedCommitsView Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UnsyncedCommits}" />
                 <TabItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Settings}" />
             </TabControl>
         </DockPanel>
