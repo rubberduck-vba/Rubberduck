@@ -23,11 +23,6 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
 
-        protected override Declaration Target
-        {
-            get { return _declaration; }
-        }
-
         public override string Description
         {
             get { return string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, _identifierName); }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using Rubberduck.Parsing.Symbols;
+using Antlr4.Runtime;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections
 {

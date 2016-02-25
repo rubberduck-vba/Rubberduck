@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections
         public ParameterNotUsedInspectionResult(IInspection inspection, string identifierName,
             ParserRuleContext context, QualifiedMemberName qualifiedName, bool isInterfaceImplementation, 
             RemoveParametersRefactoring refactoring, RubberduckParserState parseResult)
-            : base(inspection, declaration)
+            : base(inspection, qualifiedName.QualifiedModuleName, context)
         {
             _identifierName = identifierName;
             _quickFixes = isInterfaceImplementation ? new CodeInspectionQuickFix[] {} : new CodeInspectionQuickFix[]

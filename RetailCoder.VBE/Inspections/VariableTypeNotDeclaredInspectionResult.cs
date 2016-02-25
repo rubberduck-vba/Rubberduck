@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Nodes;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -9,8 +11,8 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public VariableTypeNotDeclaredInspectionResult(IInspection inspection, ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, qualifiedName, context)
+        public VariableTypeNotDeclaredInspectionResult(IInspection inspection, ParserRuleContext context, QualifiedModuleName qualifiedName, Declaration target)
+            : base(inspection, qualifiedName, context, target)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
