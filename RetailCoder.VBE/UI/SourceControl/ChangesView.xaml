@@ -15,16 +15,16 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="5">
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CurrentBranchLabel}" />
+                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CurrentBranchLabel}"/>
                     <TextBlock Text="CurrentBranch"
-                       FontWeight="SemiBold"
-                       Margin="0,5,0,0" />
+                               FontWeight="SemiBold"
+                               Margin="0,5,0,0" />
                 </StackPanel>
 
                 <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CommitMessageLabel}" />
                 <TextBox Margin="5,0"
-                     Height="50"
-                     Text="{Binding CommitMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                         Height="50"
+                         Text="{Binding CommitMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <Grid HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
@@ -32,32 +32,32 @@
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
                     <ComboBox Margin="5,10"
-                          SelectedItem="{Binding CommitAction, Mode=OneWay}"/>
+                              SelectedItem="{Binding CommitAction, Mode=OneWay}"/>
                     <Button Margin="5,10"
-                        Grid.Column="1"
-                        Command="{Binding CommitCommand}">
+                            Grid.Column="1"
+                            Command="{Binding CommitCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource CheckImage}"
-                               Margin="5,0" />
+                                   Margin="5,0" />
                             <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CommitButtonLabel}"
-                                   Margin="0,0,5,0"
-                                   VerticalAlignment="Center"  />
+                                       Margin="0,0,5,0"
+                                       VerticalAlignment="Center"  />
                         </StackPanel>
                     </Button>
                 </Grid>
 
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_IncludedChanges}"
-                      Height="135"
-                      Margin="0,0,0,10">
+                          Height="135"
+                          Margin="0,0,0,10">
                     <ListBox ItemsSource="{Binding IncludedChanges, Mode=TwoWay}" />
                 </GroupBox>
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_ExcludedChanges}"
-                      Height="135"
-                      Margin="0,0,0,10">
+                          Height="135"
+                          Margin="0,0,0,10">
                     <ListBox ItemsSource="{Binding ExcludedChanges, Mode=TwoWay}" />
                 </GroupBox>
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UntrackedFiles}"
-                      Height="135">
+                          Height="135">
                     <ListBox ItemsSource="{Binding UntrackedFiles, Mode=TwoWay}" />
                 </GroupBox>
             </StackPanel>

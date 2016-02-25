@@ -15,14 +15,14 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="5">
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_GlobalSettings}"
-                      Margin="0,0,0,5">
+                          Margin="0,0,0,5">
                     <StackPanel>
                         <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UserNameLabel}" />
                         <TextBox Margin="5,0,5,5"
-                             Padding="2" />
+                                 Padding="2" />
                         <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_EmailAddressLabel}" />
                         <TextBox Margin="5,0,5,5"
-                             Padding="2" />
+                                 Padding="2" />
                         <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DefaultRepoLocationLabel}" />
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -30,18 +30,18 @@
                                 <ColumnDefinition Width="40" />
                             </Grid.ColumnDefinitions>
                             <TextBox Margin="5,0,0,0"
-                                 Padding="2" />
+                                     Padding="2" />
                             <Button Content="..."
-                                Margin="5,0"
-                                Grid.Column="1"/>
+                                    Margin="5,0"
+                                    Grid.Column="1"/>
                         </Grid>
                         <WrapPanel Orientation="Horizontal"
-                               Margin="0,5">
+                                   Margin="0,5">
                             <Button Name="CancelSettingsButton"
-                                Margin="6"
-                                Height="25"
-                                Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CancelGlobalSettings}"
-                                Padding="5,0">
+                                    Margin="6"
+                                    Height="25"
+                                    Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CancelGlobalSettings}"
+                                    Padding="5,0">
                                 <Button.MinWidth>
                                     <MultiBinding Converter="{StaticResource EqualWidthConverter}">
                                         <Binding ElementName="UpdateSettingsButton" Path="ActualWidth" />
@@ -52,10 +52,10 @@
                                 </Button.MinWidth>
                             </Button>
                             <Button Name="UpdateSettingsButton"
-                                Margin="6"
-                                Height="25"
-                                Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UpdateGlobalSettings}"
-                                Padding="5,0">
+                                    Margin="6"
+                                    Height="25"
+                                    Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UpdateGlobalSettings}"
+                                    Padding="5,0">
                                 <Button.MinWidth>
                                     <MultiBinding Converter="{StaticResource EqualWidthConverter}">
                                         <Binding ElementName="UpdateSettingsButton" Path="ActualWidth" />
