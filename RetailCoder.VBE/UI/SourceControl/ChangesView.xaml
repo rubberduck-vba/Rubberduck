@@ -1,10 +1,13 @@
 ﻿<TabItem x:Class="Rubberduck.UI.SourceControl.ChangesView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="300">
+         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+         xmlns:sourceControl="clr-namespace:Rubberduck.UI.SourceControl"
+         mc:Ignorable="d"
+         Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Changes}"
+         d:DesignHeight="450" d:DesignWidth="300"
+         d:DataContext="{d:DesignInstance {x:Type sourceControl:ChangesViewViewModel}, IsDesignTimeCreatable=False}">
     <TabItem.Resources>
         <BitmapImage x:Key="CheckImage" UriSource="../../Resources/tick.png" />
     </TabItem.Resources>
@@ -19,16 +22,19 @@
 
             <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CommitMessageLabel}" />
             <TextBox Margin="5,0"
-                     Height="50" />
+                     Height="50"
+                     Text="{Binding CommitMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Grid HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
-                <ComboBox Margin="5,10" />
+                <ComboBox Margin="5,10"
+                          SelectedItem="{Binding CommitAction, Mode=OneWay}"/>
                 <Button Margin="5,10"
-                        Grid.Column="1">
+                        Grid.Column="1"
+                        Command="{Binding CommitCommand}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource CheckImage}"
                                Margin="5,0" />
@@ -41,15 +47,15 @@
 
             <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_IncludedChanges}"
                       Height="100">
-                <ListBox />
+                <ListBox ItemsSource="{Binding IncludedChanges, Mode=TwoWay}" />
             </GroupBox>
             <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_ExcludedChanges}"
                       Height="100">
-                <ListBox />
+                <ListBox ItemsSource="{Binding ExcludedChanges, Mode=TwoWay}" />
             </GroupBox>
             <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UntrackedFiles}"
                       Height="100">
-                <ListBox />
+                <ListBox ItemsSource="{Binding UntrackedFiles, Mode=TwoWay}" />
             </GroupBox>
         </StackPanel>
     </Grid>

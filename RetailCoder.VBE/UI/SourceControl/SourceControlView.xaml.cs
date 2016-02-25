@@ -1,11 +1,11 @@
 ﻿namespace Rubberduck.UI.SourceControl
 {
     /// <summary>
-    /// Interaction logic for SourceControlPanel1.xaml
+    /// Interaction logic for SourceControlPanel.xaml
     /// </summary>
-    public partial class SourceControlPanel1
+    public partial class SourceControlView
     {
-        public SourceControlPanel1()
+        public SourceControlView()
         {
             InitializeComponent();
         }

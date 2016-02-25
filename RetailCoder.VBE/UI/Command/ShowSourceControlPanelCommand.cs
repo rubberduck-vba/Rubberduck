@@ -10,9 +10,9 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class ShowSourceControlPanelCommand : CommandBase
     {
-        public readonly SourceControlPresenter _presenter;
+        public readonly IPresenter _presenter;
 
-        public ShowSourceControlPanelCommand(SourceControlPresenter presenter)
+        public ShowSourceControlPanelCommand(IPresenter presenter)
         {
             _presenter = presenter;
         }

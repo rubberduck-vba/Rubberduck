@@ -7,7 +7,7 @@ namespace Rubberduck.UI.SourceControl
     /// <summary>
     /// Specifies what actions to take on Commit.
     /// </summary>
-    public enum CommitAction { Unset = -1, Commit, CommitAndPush, CommitAndSync }
+    public enum CommitAction { Commit, CommitAndPush, CommitAndSync }
 
     /// <summary>
     /// Defines a view of changes to be committed.

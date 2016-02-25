@@ -5,6 +5,7 @@
          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
          xmlns:converters="clr-namespace:Rubberduck.UI.SourceControl.Converters"
          mc:Ignorable="d" 
+         Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UnsyncedCommits}"
          d:DesignHeight="450" d:DesignWidth="300">
     <TabItem.Resources>
         <BitmapImage x:Key="FetchCommitsImage" UriSource="../../Resources/arrow-step.png" />

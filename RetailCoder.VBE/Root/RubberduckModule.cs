@@ -20,6 +20,7 @@ using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
+using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
@@ -89,6 +90,11 @@ namespace Rubberduck.Root
                 .WhenInjectedInto<ToDoExplorerCommand>()
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new ToDoExplorerWindow { ViewModel = _kernel.Get<ToDoExplorerViewModel>() });
+
+            Bind<IPresenter>().To<SourceControlDockablePresenter>()
+                .WhenInjectedInto<ShowSourceControlPanelCommand>()
+                .InSingletonScope()
+                .WithConstructorArgument<IDockableUserControl>(new SourceControlPanel { ViewModel = _kernel.Get<SourceControlViewViewModel>() });
 
             //BindWindowsHooks();
             Debug.Print("completed RubberduckModule.Load()");

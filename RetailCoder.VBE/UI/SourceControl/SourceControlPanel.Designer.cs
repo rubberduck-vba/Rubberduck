@@ -222,7 +222,7 @@ namespace Rubberduck.UI.SourceControl
             this.PerformLayout();*/
 
             this.ElementHost = new System.Windows.Forms.Integration.ElementHost();
-            this.SourceControlPanelControl = new Rubberduck.UI.SourceControl.SourceControlPanel1();
+            this.SourceControlPanelControl = new Rubberduck.UI.SourceControl.SourceControlView();
             this.SuspendLayout();
             // 
             // elementHost1
@@ -259,6 +259,6 @@ namespace Rubberduck.UI.SourceControl
         private ToolStripButton CloneRepoButton;*/
 
         private System.Windows.Forms.Integration.ElementHost ElementHost;
-        private SourceControlPanel1 SourceControlPanelControl;
+        private SourceControlView SourceControlPanelControl;
     }
 }
