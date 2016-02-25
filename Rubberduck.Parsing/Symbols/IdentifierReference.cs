@@ -7,10 +7,13 @@ namespace Rubberduck.Parsing.Symbols
 {
     public class IdentifierReference
     {
-        public IdentifierReference(QualifiedModuleName qualifiedName, string parentScope, string identifierName, Selection selection, ParserRuleContext context, Declaration declaration, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false, string annotations = null)
+        public IdentifierReference(QualifiedModuleName qualifiedName, Declaration parentScopingDeclaration, Declaration parentNonScopingDeclaration, string identifierName,
+            Selection selection, ParserRuleContext context, Declaration declaration, bool isAssignmentTarget = false,
+            bool hasExplicitLetStatement = false, string annotations = null)
         {
+            _parentScopingDeclaration = parentScopingDeclaration;
+            _parentNonScopingDeclaration = parentNonScopingDeclaration;
             _qualifiedName = qualifiedName;
-            _parentScope = parentScope;
             _identifierName = identifierName;
             _selection = selection;
             _context = context;
@@ -29,8 +32,19 @@ namespace Rubberduck.Parsing.Symbols
         private readonly Selection _selection;
         public Selection Selection { get { return _selection; } }
 
-        private readonly string _parentScope;
-        public string ParentScope { get { return _parentScope; } }
+        private readonly Declaration _parentScopingDeclaration;
+        /// <summary>
+        /// Gets the scoping <see cref="Declaration"/> that contains this identifier reference,
+        /// e.g. a module, procedure, function or property.
+        /// </summary>
+        public Declaration ParentScoping { get { return _parentScopingDeclaration; } }
+
+        private readonly Declaration _parentNonScopingDeclaration;
+        /// <summary>
+        /// Gets the non-scoping <see cref="Declaration"/> that contains this identifier reference,
+        /// e.g. a user-defined or enum type. Gets the <see cref="ParentScoping"/> if not applicable.
+        /// </summary>
+        public Declaration ParentNonScoping { get { return _parentNonScopingDeclaration; } }
 
         private readonly bool _isAssignmentTarget;
         public bool IsAssignment { get { return _isAssignmentTarget; } }

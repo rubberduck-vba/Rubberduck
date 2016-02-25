@@ -9,16 +9,23 @@ namespace Rubberduck.Inspections
     public class IdentifierNotAssignedInspectionResult : IdentifierNotUsedInspectionResult
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
+        private readonly Declaration _target;
 
         public IdentifierNotAssignedInspectionResult(IInspection inspection, Declaration target,
             ParserRuleContext context, QualifiedModuleName qualifiedName)
             : base(inspection, target, context, qualifiedName)
         {
+            _target = target;
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new RemoveUnassignedIdentifierQuickFix(Context, QualifiedSelection), 
                 new IgnoreOnceQuickFix(context, QualifiedSelection, Inspection.AnnotationName), 
             };
+        }
+
+        public override string Description
+        {
+            get { return string.Format(InspectionsUI.VariableNotAssignedInspectionResultFormat, _target.IdentifierName); }
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }

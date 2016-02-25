@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -9,12 +10,12 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public AssignedByValParameterInspectionResult(IInspection inspection, ParserRuleContext context, QualifiedMemberName qualifiedName)
-            : base(inspection, qualifiedName.QualifiedModuleName, context)
+        public AssignedByValParameterInspectionResult(IInspection inspection, Declaration target)
+            : base(inspection, target)
         {
             _quickFixes = new[]
             {
-                new PassParameterByReferenceQuickFix(context, QualifiedSelection),
+                new PassParameterByReferenceQuickFix(target.Context, QualifiedSelection),
             };
         }
 

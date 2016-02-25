@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using Antlr4.Runtime;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
-    public class NonReturningFunctionInspectionResult : InspectionResultBase
+    public sealed class NonReturningFunctionInspectionResult : InspectionResultBase
     {
         private readonly string _identifierName;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;

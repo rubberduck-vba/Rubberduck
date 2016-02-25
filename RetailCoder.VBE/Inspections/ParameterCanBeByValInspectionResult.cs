@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -22,6 +23,11 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
 
+        protected override Declaration Target
+        {
+            get { return _declaration; }
+        }
+
         public override string Description
         {
             get { return string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, _identifierName); }
@@ -37,7 +43,7 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            var parameter = Context.Parent.GetText();
+            var parameter = Context.GetText();
             var newContent = string.Concat(Tokens.ByVal, " ", parameter.Replace(Tokens.ByRef, string.Empty).Trim());
             var selection = Selection.Selection;
 

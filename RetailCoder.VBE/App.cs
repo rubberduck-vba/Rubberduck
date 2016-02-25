@@ -1,22 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using NLog;
-using Rubberduck.AutoSave;
 using Rubberduck.Common;
-using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
-using Rubberduck.UI.ParserErrors;
 using Rubberduck.VBEditor.Extensions;
 using Infralution.Localization.Wpf;
+using Rubberduck.Common.Dispatch;
 
 namespace Rubberduck
 {
@@ -24,9 +25,7 @@ namespace Rubberduck
     {
         private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
-        private readonly IParserErrorsPresenterFactory _parserErrorsPresenterFactory;
         private readonly IRubberduckParser _parser;
-        private readonly IInspectorFactory _inspectorFactory;
         private readonly AutoSave.AutoSave _autoSave;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
@@ -38,10 +37,14 @@ namespace Rubberduck
 
         private Configuration _config;
 
+        private readonly IConnectionPoint _projectsEventsConnectionPoint;
+        private readonly int _projectsEventsCookie;
+
+        private readonly IDictionary<VBComponents, Tuple<IConnectionPoint, int>>  _componentsEventsConnectionPoints = 
+            new Dictionary<VBComponents, Tuple<IConnectionPoint, int>>(); 
+
         public App(VBE vbe, IMessageBox messageBox,
-            IParserErrorsPresenterFactory parserErrorsPresenterFactory,
             IRubberduckParser parser,
-            IInspectorFactory inspectorFactory,
             IGeneralConfigService configService,
             IAppMenu appMenus,
             RubberduckCommandBar stateBar,
@@ -50,9 +53,7 @@ namespace Rubberduck
         {
             _vbe = vbe;
             _messageBox = messageBox;
-            _parserErrorsPresenterFactory = parserErrorsPresenterFactory;
             _parser = parser;
-            _inspectorFactory = inspectorFactory;
             _configService = configService;
             _autoSave = new AutoSave.AutoSave(_vbe, _configService);
             _appMenus = appMenus;
@@ -66,7 +67,97 @@ namespace Rubberduck
             _parser.State.StateChanged += Parser_StateChanged;
             _stateBar.Refresh += _stateBar_Refresh;
 
+            var sink = new VBProjectsEventsSink();
+            var connectionPointContainer = (IConnectionPointContainer)_vbe.VBProjects;
+            Guid interfaceId = typeof (_dispVBProjectsEvents).GUID;
+            connectionPointContainer.FindConnectionPoint(ref interfaceId, out _projectsEventsConnectionPoint);
+
+            sink.ProjectAdded += sink_ProjectAdded;
+            sink.ProjectRemoved += sink_ProjectRemoved;
+            sink.ProjectActivated += sink_ProjectActivated;
+            sink.ProjectRenamed += sink_ProjectRenamed;
+
+            _projectsEventsConnectionPoint.Advise(sink, out _projectsEventsCookie);
+
             UiDispatcher.Initialize();
+        }
+
+        void sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
+        {
+            Tuple<IConnectionPoint, int> value;
+            if (_componentsEventsConnectionPoints.TryGetValue(e.Item.VBComponents, out value))
+            {
+                value.Item1.Unadvise(value.Item2);
+                _componentsEventsConnectionPoints.Remove(e.Item.VBComponents);
+
+                _parser.State.ClearDeclarations(e.Item);
+            }
+        }
+
+        void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
+        {
+            var connectionPointContainer = (IConnectionPointContainer)e.Item.VBComponents;
+            Guid interfaceId = typeof(_dispVBComponentsEvents).GUID;
+            
+            IConnectionPoint connectionPoint;
+            connectionPointContainer.FindConnectionPoint(ref interfaceId, out connectionPoint);
+
+            var sink = new VBComponentsEventsSink();
+            sink.ComponentActivated += sink_ComponentActivated;
+            sink.ComponentAdded += sink_ComponentAdded;
+            sink.ComponentReloaded += sink_ComponentReloaded;
+            sink.ComponentRemoved += sink_ComponentRemoved;
+            sink.ComponentRenamed += sink_ComponentRenamed;
+            sink.ComponentSelected += sink_ComponentSelected;
+
+            int cookie;
+            connectionPoint.Advise(sink, out cookie);
+
+            _componentsEventsConnectionPoints.Add(e.Item.VBComponents, Tuple.Create(connectionPoint, cookie));
+            _parser.State.OnParseRequested();
+        }
+
+        void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
+        {
+            // do something?
+        }
+
+        void sink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<VBComponent> e)
+        {
+            _parser.State.ClearDeclarations(e.Item);
+            _parser.State.OnParseRequested(e.Item);
+        }
+
+        void sink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)
+        {
+            _parser.State.ClearDeclarations(e.Item);
+        }
+
+        void sink_ComponentReloaded(object sender, DispatcherEventArgs<VBComponent> e)
+        {
+            _parser.State.ClearDeclarations(e.Item);
+            _parser.State.OnParseRequested(e.Item);
+        }
+
+        void sink_ComponentAdded(object sender, DispatcherEventArgs<VBComponent> e)
+        {
+            _parser.State.OnParseRequested(e.Item);
+        }
+
+        void sink_ComponentActivated(object sender, DispatcherEventArgs<VBComponent> e)
+        {
+            // do something?
+        }
+
+        void sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<VBProject> e)
+        {
+            _parser.State.ClearDeclarations(e.Item);
+            _parser.State.OnParseRequested();
+        }
+
+        void sink_ProjectActivated(object sender, DispatcherEventArgs<VBProject> e)
+        {
+            // do something?
         }
 
         private Keys _firstStepHotKey;
@@ -162,7 +253,7 @@ namespace Rubberduck
             Task.Delay(1000).ContinueWith(t =>
             {
                 _parser.State.AddBuiltInDeclarations(_vbe.HostApplication());
-                _parser.State.OnParseRequested();
+                //_parser.State.OnParseRequested();
             });
 
             //_hooks.AddHook(new LowLevelKeyboardHook(_vbe));
@@ -174,7 +265,6 @@ namespace Rubberduck
         private void CleanReloadConfig()
         {
             LoadConfig();
-            Setup();
         }
 
         private void ConfigServiceLanguageChanged(object sender, EventArgs e)
@@ -202,19 +292,19 @@ namespace Rubberduck
             }
         }
 
-        private void Setup()
-        {
-            _inspectorFactory.Create();
-            _parserErrorsPresenterFactory.Create();
-        }
-
         public void Dispose()
         {
-            //_hooks.MessageReceived -= hooks_MessageReceived;
             _configService.LanguageChanged -= ConfigServiceLanguageChanged;
             _parser.State.StateChanged -= Parser_StateChanged;
             _autoSave.Dispose();
 
+            _projectsEventsConnectionPoint.Unadvise(_projectsEventsCookie);
+            foreach (var item in _componentsEventsConnectionPoints)
+            {
+                item.Value.Item1.Unadvise(item.Value.Item2);
+            }
+
+            //_hooks.MessageReceived -= hooks_MessageReceived;
             //_hooks.Dispose();
         }
     }

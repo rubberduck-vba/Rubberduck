@@ -279,6 +279,12 @@
     <Compile Include="AutoSave\AutoSave.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
     <Compile Include="Common\DeclarationExtensions.cs" />
+    <Compile Include="Common\Dispatch\DispatcherEventArgs.cs" />
+    <Compile Include="Common\Dispatch\DispatcherRenamedEventArgs.cs" />
+    <Compile Include="Common\Dispatch\ReferencesEventsSink.cs" />
+    <Compile Include="Common\Dispatch\VBComponentsEventsSink.cs" />
+    <Compile Include="Common\Dispatch\VBProjectsEventsSink.cs" />
+    <Compile Include="Common\Dispatch\VBProjectsEventsWrapper.cs" />
     <Compile Include="Common\HookEventArgs.cs" />
     <Compile Include="Common\HotKeyInfo.cs" />
     <Compile Include="Common\HotKey.cs" />
@@ -313,6 +319,7 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Controls\DeclarationTypeToStringConverter.cs" />
     <Compile Include="UI\Controls\SearchResultPresenterInstanceManager.cs" />
     <Compile Include="UI\Controls\ISearchResultsWindowViewModel.cs" />
     <Compile Include="UI\Controls\MenuItemGroup.cs" />

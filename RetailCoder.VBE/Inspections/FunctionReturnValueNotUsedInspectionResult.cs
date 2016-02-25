@@ -10,6 +10,7 @@ namespace Rubberduck.Inspections
     {
         private readonly string _identifierName;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
+        private QualifiedMemberName _memberName;
 
         public FunctionReturnValueNotUsedInspectionResult(
             IInspection inspection,

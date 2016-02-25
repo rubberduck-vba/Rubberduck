@@ -497,4 +497,7 @@
   <data name="EmptyStringLiteralInspectionResultFormat" xml:space="preserve">
     <value>'vbNullString' preferred to empty string literals</value>
   </data>
+  <data name="VariableNotAssignedInspectionResultFormat" xml:space="preserve">
+    <value>Variable '{0}' is never assigned</value>
+  </data>
 </root>

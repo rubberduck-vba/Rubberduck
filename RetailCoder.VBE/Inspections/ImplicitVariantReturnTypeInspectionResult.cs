@@ -2,12 +2,13 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Nodes;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ImplicitVariantReturnTypeInspectionResult : InspectionResultBase
+    public sealed class ImplicitVariantReturnTypeInspectionResult : InspectionResultBase
     {
         private readonly string _identifierName;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
@@ -19,7 +20,7 @@ namespace Rubberduck.Inspections
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new SetExplicitVariantReturnTypeQuickFix(Context, QualifiedSelection, InspectionsUI.SetExplicitVariantReturnTypeQuickFix), 
-                new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
+                new IgnoreOnceQuickFix(Target.Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 

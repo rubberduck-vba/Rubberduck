@@ -295,7 +295,11 @@
         
         <CollectionViewSource x:Key="ResultsByInspectionType" Source="{Binding Results}">
             <CollectionViewSource.SortDescriptions>
+                <componentModel:SortDescription PropertyName="Inspection.InspectionType"/>
                 <componentModel:SortDescription PropertyName="Inspection.Name"/>
+                <componentModel:SortDescription PropertyName="QualifiedSelection.QualifiedName.Name"/>
+                <componentModel:SortDescription PropertyName="QualifiedSelection.Selection.StartLine"/>
+                <componentModel:SortDescription PropertyName="QualifiedSelection.Selection.StartColumn"/>
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="Inspection" Converter="{StaticResource InspectionTypeConverter}" />
@@ -305,6 +309,9 @@
         <CollectionViewSource x:Key="ResultsByModule" Source="{Binding Results}">
             <CollectionViewSource.SortDescriptions>
                 <componentModel:SortDescription PropertyName="QualifiedSelection.QualifiedName.Name"/>
+                <componentModel:SortDescription PropertyName="Inspection.Name"/>
+                <componentModel:SortDescription PropertyName="QualifiedSelection.Selection.StartLine"/>
+                <componentModel:SortDescription PropertyName="QualifiedSelection.Selection.StartColumn"/>
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="QualifiedSelection.QualifiedName" />

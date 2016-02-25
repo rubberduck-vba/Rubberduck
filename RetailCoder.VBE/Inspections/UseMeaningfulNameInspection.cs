@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections
             _wrapperFactory = new CodePaneWrapperFactory();
         }
 
-        public override string Description { get { return InspectionsUI.UseMeaningfulNameInspectionResultFormat; } }
+        public override string Description { get { return InspectionsUI.UseMeaningfulNameInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()

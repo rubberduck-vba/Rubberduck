@@ -211,17 +211,6 @@ namespace Rubberduck.Parsing.Grammar
         public virtual Result VisitDeclareStmt([NotNull] VBAParser.DeclareStmtContext context) { return VisitChildren(context); }
 
         /// <summary>
-        /// Visit a parse tree produced by <see cref="VBAParser.vsLt"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public virtual Result VisitVsLt([NotNull] VBAParser.VsLtContext context) { return VisitChildren(context); }
-
-        /// <summary>
         /// Visit a parse tree produced by <see cref="VBAParser.implicitCallStmt_InBlock"/>.
         /// <para>
         /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -330,39 +319,6 @@ namespace Rubberduck.Parsing.Grammar
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
         public virtual Result VisitFieldLength([NotNull] VBAParser.FieldLengthContext context) { return VisitChildren(context); }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="VBAParser.vsLike"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public virtual Result VisitVsLike([NotNull] VBAParser.VsLikeContext context) { return VisitChildren(context); }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="VBAParser.vsDiv"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public virtual Result VisitVsDiv([NotNull] VBAParser.VsDivContext context) { return VisitChildren(context); }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="VBAParser.vsPlus"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public virtual Result VisitVsPlus([NotNull] VBAParser.VsPlusContext context) { return VisitChildren(context); }
 
         /// <summary>
         /// Visit a parse tree produced by <see cref="VBAParser.eCS_ProcedureCall"/>.
@@ -475,17 +431,6 @@ namespace Rubberduck.Parsing.Grammar
         public virtual Result VisitVsICS([NotNull] VBAParser.VsICSContext context) { return VisitChildren(context); }
 
         /// <summary>
-        /// Visit a parse tree produced by <see cref="VBAParser.vsNeq"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public virtual Result VisitVsNeq([NotNull] VBAParser.VsNeqContext context) { return VisitChildren(context); }
-
-        /// <summary>
         /// Visit a parse tree produced by <see cref="VBAParser.implicitCallStmt_InStmt"/>.
         /// <para>
         /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -572,6 +517,17 @@ namespace Rubberduck.Parsing.Grammar
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
         public virtual Result VisitSelectCaseStmt([NotNull] VBAParser.SelectCaseStmtContext context) { return VisitChildren(context); }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="VBAParser.vsIntDiv"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public virtual Result VisitVsIntDiv([NotNull] VBAParser.VsIntDivContext context) { return VisitChildren(context); }
 
         /// <summary>
         /// Visit a parse tree produced by <see cref="VBAParser.moduleBody"/>.
@@ -1025,17 +981,6 @@ namespace Rubberduck.Parsing.Grammar
         public virtual Result VisitCaseCondTo([NotNull] VBAParser.CaseCondToContext context) { return VisitChildren(context); }
 
         /// <summary>
-        /// Visit a parse tree produced by <see cref="VBAParser.vsMinus"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public virtual Result VisitVsMinus([NotNull] VBAParser.VsMinusContext context) { return VisitChildren(context); }
-
-        /// <summary>
         /// Visit a parse tree produced by <see cref="VBAParser.certainIdentifier"/>.
         /// <para>
         /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -1089,17 +1034,6 @@ namespace Rubberduck.Parsing.Grammar
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
         public virtual Result VisitMacroElseBlockStmt([NotNull] VBAParser.MacroElseBlockStmtContext context) { return VisitChildren(context); }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="VBAParser.vsEq"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public virtual Result VisitVsEq([NotNull] VBAParser.VsEqContext context) { return VisitChildren(context); }
 
         /// <summary>
         /// Visit a parse tree produced by <see cref="VBAParser.exitStmt"/>.
@@ -1199,6 +1133,17 @@ namespace Rubberduck.Parsing.Grammar
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
         public virtual Result VisitOptionBaseStmt([NotNull] VBAParser.OptionBaseStmtContext context) { return VisitChildren(context); }
+
+        /// <summary>
+        /// Visit a parse tree produced by <see cref="VBAParser.vsRelational"/>.
+        /// <para>
+        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+        /// on <paramref name="context"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="context">The parse tree.</param>
+        /// <return>The visitor result.</return>
+        public virtual Result VisitVsRelational([NotNull] VBAParser.VsRelationalContext context) { return VisitChildren(context); }
 
         /// <summary>
         /// Visit a parse tree produced by <see cref="VBAParser.chdirStmt"/>.
@@ -1487,17 +1432,6 @@ namespace Rubberduck.Parsing.Grammar
         public virtual Result VisitIfConditionStmt([NotNull] VBAParser.IfConditionStmtContext context) { return VisitChildren(context); }
 
         /// <summary>
-        /// Visit a parse tree produced by <see cref="VBAParser.vsLeq"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public virtual Result VisitVsLeq([NotNull] VBAParser.VsLeqContext context) { return VisitChildren(context); }
-
-        /// <summary>
         /// Visit a parse tree produced by <see cref="VBAParser.vsMod"/>.
         /// <para>
         /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -1595,17 +1529,6 @@ namespace Rubberduck.Parsing.Grammar
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
         public virtual Result VisitRaiseEventStmt([NotNull] VBAParser.RaiseEventStmtContext context) { return VisitChildren(context); }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="VBAParser.vsGt"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public virtual Result VisitVsGt([NotNull] VBAParser.VsGtContext context) { return VisitChildren(context); }
 
         /// <summary>
         /// Visit a parse tree produced by <see cref="VBAParser.lineLabel"/>.
@@ -1773,17 +1696,6 @@ namespace Rubberduck.Parsing.Grammar
         public virtual Result VisitStopStmt([NotNull] VBAParser.StopStmtContext context) { return VisitChildren(context); }
 
         /// <summary>
-        /// Visit a parse tree produced by <see cref="VBAParser.vsGeq"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public virtual Result VisitVsGeq([NotNull] VBAParser.VsGeqContext context) { return VisitChildren(context); }
-
-        /// <summary>
         /// Visit a parse tree produced by <see cref="VBAParser.sC_Case"/>.
         /// <para>
         /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -1892,17 +1804,6 @@ namespace Rubberduck.Parsing.Grammar
         /// <param name="context">The parse tree.</param>
         /// <return>The visitor result.</return>
         public virtual Result VisitVsPow([NotNull] VBAParser.VsPowContext context) { return VisitChildren(context); }
-
-        /// <summary>
-        /// Visit a parse tree produced by <see cref="VBAParser.vsIs"/>.
-        /// <para>
-        /// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-        /// on <paramref name="context"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="context">The parse tree.</param>
-        /// <return>The visitor result.</return>
-        public virtual Result VisitVsIs([NotNull] VBAParser.VsIsContext context) { return VisitChildren(context); }
 
         /// <summary>
         /// Visit a parse tree produced by <see cref="VBAParser.printStmt"/>.

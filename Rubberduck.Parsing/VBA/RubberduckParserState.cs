@@ -166,9 +166,6 @@ namespace Rubberduck.Parsing.VBA
 
         private IEnumerable<QualifiedContext> _emptyStringLiterals = new List<QualifiedContext>();
 
-        /// <summary>
-        /// Gets <see cref="ParserRuleContext"/> objects representing 'Call' statements in the parse tree.
-        /// </summary>
         public IEnumerable<QualifiedContext> EmptyStringLiterals
         {
             get { return _emptyStringLiterals; }
@@ -177,9 +174,6 @@ namespace Rubberduck.Parsing.VBA
 
         private IEnumerable<QualifiedContext> _argListsWithOneByRefParam = new List<QualifiedContext>();
 
-        /// <summary>
-        /// Gets <see cref="ParserRuleContext"/> objects representing 'Call' statements in the parse tree.
-        /// </summary>
         public IEnumerable<QualifiedContext> ArgListsWithOneByRefParam
         {
             get { return _argListsWithOneByRefParam; }
@@ -236,6 +230,17 @@ namespace Rubberduck.Parsing.VBA
             if (RemoveDeclaration(declaration))
             {
                 _declarations.TryAdd(declaration, ResolutionState.Unresolved);
+            }
+        }
+
+        public void ClearDeclarations(VBProject project)
+        {
+            var declarations = _declarations.Keys.Where(k =>
+                k.QualifiedName.QualifiedModuleName.Project == project);
+
+            foreach (var declaration in declarations)
+            {
+                RemoveDeclaration(declaration);
             }
         }
 

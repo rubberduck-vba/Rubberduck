@@ -1132,6 +1132,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is never assigned.
+        /// </summary>
+        internal static string VariableNotAssignedInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("VariableNotAssignedInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A variable is declared and assigned a value/reference, but it&apos;s never referred to..
         /// </summary>
         internal static string VariableNotUsedInspectionMeta {

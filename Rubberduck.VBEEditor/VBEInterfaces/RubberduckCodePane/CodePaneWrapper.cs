@@ -101,6 +101,31 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
 
     public static class CodePaneExtensions
     {
+        public static QualifiedSelection GetSelection(this CodePane pane)
+        {
+            int startLine;
+            int endLine;
+            int startColumn;
+            int endColumn;
+
+            if (pane == null)
+            {
+                return new QualifiedSelection();
+            }
+
+            pane.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+
+            if (endLine > startLine && endColumn == 1)
+            {
+                endLine--;
+                endColumn = pane.CodeModule.get_Lines(endLine, 1).Length;
+            }
+
+            var selection = new Selection(startLine, startColumn, endLine, endColumn);
+            var moduleName = new QualifiedModuleName(pane.CodeModule.Parent);
+            return new QualifiedSelection(moduleName, selection);
+        }
+
         public static void ForceFocus(this CodePane pane)
         {
             pane.Show();

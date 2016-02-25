@@ -17,13 +17,14 @@ namespace Rubberduck.Parsing.Symbols
             AssignReference
         }
 
-        private readonly IEnumerable<Declaration> _declarations;
-        private readonly IEnumerable<CommentNode> _comments;
+        private readonly IReadOnlyList<Declaration> _declarations;
+        private readonly IReadOnlyList<CommentNode> _comments;
 
         private readonly QualifiedModuleName _qualifiedModuleName;
 
         private readonly IReadOnlyList<DeclarationType> _moduleTypes;
-        private readonly IReadOnlyList<DeclarationType> _memberTypes;
+        private readonly IReadOnlyList<DeclarationType> _scopingTypes;
+        private readonly IReadOnlyList<DeclarationType> _parentTypes;
         private readonly IReadOnlyList<DeclarationType> _returningMemberTypes;
 
         private readonly IReadOnlyList<Accessibility> _projectScopePublicModifiers; 
@@ -31,7 +32,14 @@ namespace Rubberduck.Parsing.Symbols
         private readonly Stack<Declaration> _withBlockQualifiers;
         private readonly HashSet<RuleContext> _alreadyResolved;
 
-        public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, IEnumerable<Declaration> declarations, IEnumerable<CommentNode> comments)
+        private readonly Declaration _moduleDeclaration;
+        private readonly IReadOnlyList<Declaration> _scopingDeclarations;
+        private readonly IReadOnlyList<Declaration> _parentDeclarations;
+
+        private Declaration _currentScope;
+        private Declaration _currentParent;
+
+        public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, IReadOnlyList<Declaration> declarations, IReadOnlyList<CommentNode> comments)
         {
             _qualifiedModuleName = qualifiedModuleName;
             _declarations = declarations;
@@ -40,58 +48,78 @@ namespace Rubberduck.Parsing.Symbols
             _withBlockQualifiers = new Stack<Declaration>();
             _alreadyResolved = new HashSet<RuleContext>();
 
-            _moduleTypes = new List<DeclarationType>(new[]
+            _moduleTypes = new[]
             {
                 DeclarationType.Module, 
                 DeclarationType.Class,
-            });
+            };
 
-            _memberTypes = new List<DeclarationType>(new[]
+            _scopingTypes =new[]
             {
                 DeclarationType.Function, 
                 DeclarationType.Procedure, 
                 DeclarationType.PropertyGet, 
                 DeclarationType.PropertyLet, 
                 DeclarationType.PropertySet,
-            });
+            };
 
-            _returningMemberTypes = new List<DeclarationType>(new[]
+            _parentTypes = new[]
+            {
+                DeclarationType.Function, 
+                DeclarationType.Procedure, 
+                DeclarationType.PropertyGet, 
+                DeclarationType.PropertyLet, 
+                DeclarationType.PropertySet,
+                DeclarationType.Enumeration, 
+                DeclarationType.UserDefinedType, 
+            };
+
+            _returningMemberTypes = new[]
             {
                 DeclarationType.Function,
                 DeclarationType.PropertyGet, 
-            });
+            };
 
-            _projectScopePublicModifiers = new List<Accessibility>(new[]
+            _projectScopePublicModifiers = new[]
             {
                 Accessibility.Public, 
                 Accessibility.Global, 
                 Accessibility.Friend, 
                 Accessibility.Implicit, 
-            });
+            };
 
-            SetCurrentScope();
-        }
-
-        private Declaration _currentScope;
-
-        public void SetCurrentScope()
-        {
-            _currentScope = _declarations.SingleOrDefault(item => 
+            _moduleDeclaration = _declarations.SingleOrDefault(item =>
                 _moduleTypes.Contains(item.DeclarationType)
                 && item.Project == _qualifiedModuleName.Project
                 && item.ComponentName == _qualifiedModuleName.ComponentName);
 
+            _scopingDeclarations = _declarations.Where(item =>
+                _scopingTypes.Contains(item.DeclarationType)
+                && item.Project == _qualifiedModuleName.Project
+                && item.ComponentName == _qualifiedModuleName.ComponentName).ToList();
+
+            _parentDeclarations = _declarations.Where(item =>
+                _parentTypes.Contains(item.DeclarationType)
+                && item.Project == _qualifiedModuleName.Project
+                && item.ComponentName == _qualifiedModuleName.ComponentName).ToList();
+
+            SetCurrentScope();
+        }
+
+        public void SetCurrentScope()
+        {
+            _currentScope = _moduleDeclaration;
+            _currentParent = _moduleDeclaration;
             _alreadyResolved.Clear();
         }
 
-        public void SetCurrentScope(string memberName, DeclarationType? accessor = null)
+        public void SetCurrentScope(string memberName, DeclarationType type)
         {
-            _currentScope = _declarations.SingleOrDefault(item =>
-                _memberTypes.Contains(item.DeclarationType)
-                && (!accessor.HasValue || item.DeclarationType == accessor.Value)
-                && item.Project == _qualifiedModuleName.Project
-                && item.ComponentName == _qualifiedModuleName.ComponentName
-                && item.IdentifierName == memberName);
+            _currentParent = _parentDeclarations.SingleOrDefault(item =>
+                item.DeclarationType == type && item.IdentifierName == memberName);
+
+            _currentScope = _scopingDeclarations.SingleOrDefault(item =>
+                item.DeclarationType == type && item.IdentifierName == memberName) ?? _moduleDeclaration;
         }
 
         public void EnterWithBlock(VBAParser.WithStmtContext context)
@@ -150,7 +178,7 @@ namespace Rubberduck.Parsing.Symbols
             var name = callSiteContext.GetText();
             var selection = callSiteContext.GetSelection();
             var annotations = FindAnnotations(selection.StartLine);
-            return new IdentifierReference(_qualifiedModuleName, _currentScope.Scope, name, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement, annotations);
+            return new IdentifierReference(_qualifiedModuleName, _currentScope, _currentParent, name, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement, annotations);
         }
 
         private string FindAnnotations(int line)
@@ -191,7 +219,12 @@ namespace Rubberduck.Parsing.Symbols
             // if there's only 1 identifier, resolve to the tightest-scope match:
             if (identifiers.Count == 1)
             {
-                ResolveInScopeType(identifiers.Single().GetText(), _currentScope);
+                var type = ResolveInScopeType(identifiers.Single().GetText(), _currentScope);
+                if (type != null)
+                {
+                    type.AddReference(CreateReference(context, type));
+                    _alreadyResolved.Add(context);
+                }
                 return;
             }
 
@@ -319,12 +352,12 @@ namespace Rubberduck.Parsing.Symbols
                 .ToList();
         }
 
-        private void ResolveInScopeType(string identifier, Declaration scope)
+        private Declaration ResolveInScopeType(string identifier, Declaration scope)
         {
             var matches = FindMatchingTypes(identifier).ToList();
             if (matches.Count == 1)
             {
-                return;
+                return matches.Single();
             }
 
             // more than one matching identifiers found.
@@ -337,12 +370,12 @@ namespace Rubberduck.Parsing.Symbols
 
             if (sameScopeUdt.Count == 1)
             {
-                return;
+                return sameScopeUdt.Single();
             }
             
             // todo: try to resolve identifier using referenced projects
 
-            return;
+            return null;
         }
 
 
@@ -463,9 +496,12 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var reference = CreateReference(callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement);
-            callee.AddReference(reference);
-            _alreadyResolved.Add(reference.Context);
-            _alreadyResolved.Add(callSiteContext);
+            if (reference != null)
+            {
+                callee.AddReference(reference);
+                _alreadyResolved.Add(reference.Context);
+                _alreadyResolved.Add(callSiteContext);
+            }
 
             if (fieldCall != null)
             {
@@ -496,7 +532,9 @@ namespace Rubberduck.Parsing.Symbols
             var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
             if (result != null && localScope != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
             {
-                localScope.AddMemberCall(CreateReference(context.ambiguousIdentifier(), result));
+                var reference = CreateReference(context.ambiguousIdentifier(), result, isAssignmentTarget);
+                result.AddReference(reference);
+                localScope.AddMemberCall(reference);
             }
 
             return result;
@@ -911,8 +949,11 @@ namespace Rubberduck.Parsing.Symbols
             var assignmentReference = CreateReference(identifiers[0], identifier, true);
             identifier.AddReference(assignmentReference);
 
-            // each iteration also counts as a plain usage
-            var usageReference = CreateReference(identifiers[0], identifier);
+            // each iteration also counts as a plain usage - CreateReference will return null here, need to create it manually.
+            var name = identifiers[0].GetText();
+            var selection = identifiers[0].GetSelection();
+            var annotations = FindAnnotations(selection.StartLine);
+            var usageReference = new IdentifierReference(_qualifiedModuleName, _currentScope, _currentParent, name, selection, identifiers[0], identifier, false, false, annotations);
             identifier.AddReference(usageReference);
 
             if (identifiers.Count > 1)
@@ -966,7 +1007,8 @@ namespace Rubberduck.Parsing.Symbols
 
             var matches = _declarations.Where(d => d.IdentifierName == identifierName);
             var parent = matches.SingleOrDefault(item =>
-                item.Scope == localScope.Scope);
+                (item.DeclarationType == DeclarationType.Function || item.DeclarationType == DeclarationType.PropertyGet)
+                && item.Equals(localScope));
 
             return parent;
         }
@@ -992,7 +1034,7 @@ namespace Rubberduck.Parsing.Symbols
                 && !_moduleTypes.Contains(item.DeclarationType))
                 .ToList();
 
-            if (results.Count > 1 && isAssignmentTarget
+            if (results.Count >= 1 && isAssignmentTarget
                 && _returningMemberTypes.Contains(localScope.DeclarationType)
                 && localScope.IdentifierName == identifierName
                 && parentContextIsVariableOrProcedureCall)
