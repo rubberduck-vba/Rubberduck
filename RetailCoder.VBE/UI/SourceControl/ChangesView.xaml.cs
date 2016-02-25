@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.UI.SourceControl
+﻿using Ninject;
+
+namespace Rubberduck.UI.SourceControl
 {
     /// <summary>
     /// Interaction logic for ChangesView.xaml
@@ -8,6 +10,12 @@
         public ChangesView()
         {
             InitializeComponent();
+        }
+
+        [Inject]
+        public ChangesView(ChangesViewViewModel vm) : this()
+        {
+            DataContext = vm;
         }
     }
 }

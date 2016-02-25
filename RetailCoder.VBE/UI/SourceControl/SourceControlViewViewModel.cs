@@ -7,30 +7,16 @@ namespace Rubberduck.UI.SourceControl
 {
     public class SourceControlViewViewModel : ViewModelBase
     {
-        private readonly ChangesView _changesView;
-        private readonly BranchesView _branchesView;
-        private readonly UnsyncedCommitsView _unsyncedCommitsView;
-        private readonly SettingsView _settingsView;
-
         public SourceControlViewViewModel(ChangesView changesView, BranchesView branchesView, UnsyncedCommitsView unsyncedCommitsView, SettingsView settingsView)
         {
-            _changesView = changesView;
-            _branchesView = branchesView;
-            _unsyncedCommitsView = unsyncedCommitsView;
-            _settingsView = settingsView;
-
             _refreshCommand = new DelegateCommand(_ => Refresh());
+            _initRepoCommand = new DelegateCommand(_ => InitRepo());
+            _openRepoCommand = new DelegateCommand(_ => OpenRepo());
+            _cloneRepoCommand = new DelegateCommand(_ => CloneRepo());
 
-            SetDataContexts();
-
-            TabItems = new ObservableCollection<TabItem> {_changesView, _branchesView, _unsyncedCommitsView, _settingsView};
+            TabItems = new ObservableCollection<TabItem> {changesView, branchesView, unsyncedCommitsView, settingsView};
         }
-
-        private void SetDataContexts()
-        {
-            _changesView.DataContext = new ChangesViewViewModel();
-        }
-
+        
         private ObservableCollection<TabItem> _tabItems;
         public ObservableCollection<TabItem> TabItems
         {
@@ -45,45 +31,36 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private void Refresh()
-        {
+        private void Refresh() { }
 
-        }
+        private void InitRepo() { }
+
+        private void OpenRepo() { }
+
+        private void CloneRepo() { }
 
         private readonly ICommand _refreshCommand;
         public ICommand RefreshCommand
         {
-            get
-            {
-                return _refreshCommand;
-            }
+            get { return _refreshCommand; }
         }
 
         private readonly ICommand _initRepoCommand;
         public ICommand InitRepoCommand
         {
-            get
-            {
-                return _initRepoCommand;
-            }
+            get { return _initRepoCommand; }
         }
 
         private readonly ICommand _openRepoCommand;
         public ICommand OpenRepoCommand
         {
-            get
-            {
-                return _openRepoCommand;
-            }
+            get { return _openRepoCommand; }
         }
 
         private readonly ICommand _cloneRepoCommand;
         public ICommand CloneRepoCommand
         {
-            get
-            {
-                return _cloneRepoCommand;
-            }
+            get { return _cloneRepoCommand; }
         }
     }
 }
