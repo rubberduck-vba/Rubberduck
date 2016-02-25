@@ -9,15 +9,13 @@ namespace Rubberduck.Inspections
 {
     public class ParameterNotUsedInspectionResult : InspectionResultBase
     {
-        private readonly string _identifierName;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ParameterNotUsedInspectionResult(IInspection inspection, string identifierName,
+        public ParameterNotUsedInspectionResult(IInspection inspection, Declaration target,
             ParserRuleContext context, QualifiedMemberName qualifiedName, bool isInterfaceImplementation, 
             RemoveParametersRefactoring refactoring, RubberduckParserState parseResult)
-            : base(inspection, qualifiedName.QualifiedModuleName, context)
+            : base(inspection, qualifiedName.QualifiedModuleName, context, target)
         {
-            _identifierName = identifierName;
             _quickFixes = isInterfaceImplementation ? new CodeInspectionQuickFix[] {} : new CodeInspectionQuickFix[]
             {
                 new RemoveUnusedParameterQuickFix(Context, QualifiedSelection, refactoring, parseResult),
@@ -29,7 +27,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.ParameterNotUsedInspectionResultFormat, _identifierName); }
+            get { return string.Format(InspectionsUI.ParameterNotUsedInspectionResultFormat, Target.IdentifierName); }
         }
     }
 

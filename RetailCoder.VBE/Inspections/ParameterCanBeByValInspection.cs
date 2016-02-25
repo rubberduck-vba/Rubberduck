@@ -64,7 +64,7 @@ namespace Rubberduck.Inspections
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue.IdentifierName, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName));
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName));
 
             return issues;
         }

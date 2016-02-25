@@ -3,12 +3,12 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
     public class FunctionReturnValueNotUsedInspectionResult : InspectionResultBase
     {
-        private readonly string _identifierName;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
         private QualifiedMemberName _memberName;
 
@@ -17,8 +17,8 @@ namespace Rubberduck.Inspections
             ParserRuleContext context,
             QualifiedMemberName qualifiedName,
             IEnumerable<string> returnStatements,
-            string identifierName)
-            : this(inspection, context, qualifiedName, returnStatements, new List<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>>(), identifierName)
+            Declaration target)
+            : this(inspection, context, qualifiedName, returnStatements, new List<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>>(), target)
         {
         }
 
@@ -28,10 +28,9 @@ namespace Rubberduck.Inspections
             QualifiedMemberName qualifiedName,
             IEnumerable<string> returnStatements,
             IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>> children,
-            string identifierName)
-            : base(inspection, qualifiedName.QualifiedModuleName, context)
+            Declaration target)
+            : base(inspection, qualifiedName.QualifiedModuleName, context, target)
         {
-            _identifierName = identifierName;
             var root = new ConvertToProcedureQuickFix(context, QualifiedSelection, returnStatements);
             var compositeFix = new CompositeCodeInspectionFix(root);
             children.ToList().ForEach(child => compositeFix.AddChild(new ConvertToProcedureQuickFix(child.Item1, child.Item2, child.Item3)));
@@ -47,7 +46,7 @@ namespace Rubberduck.Inspections
         {
             get
             {
-                return string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, _identifierName);
+                return string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, Target.IdentifierName);
             }
         }
     }

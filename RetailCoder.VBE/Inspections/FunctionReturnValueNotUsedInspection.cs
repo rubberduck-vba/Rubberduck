@@ -51,7 +51,7 @@ namespace Rubberduck.Inspections
                    select
                        new FunctionReturnValueNotUsedInspectionResult(this, interfaceMember.Context,
                            interfaceMember.QualifiedName, GetReturnStatements(interfaceMember),
-                           implementationMemberIssues, interfaceMember.IdentifierName);
+                           implementationMemberIssues, interfaceMember);
         }
 
         private IEnumerable<FunctionReturnValueNotUsedInspectionResult> GetNonInterfaceIssues(IEnumerable<Declaration> nonInterfaceFunctions)
@@ -64,7 +64,7 @@ namespace Rubberduck.Inspections
                             function.Context,
                             function.QualifiedName,
                             GetReturnStatements(function),
-                            function.IdentifierName));
+                            function));
             return nonInterfaceIssues;
         }
 

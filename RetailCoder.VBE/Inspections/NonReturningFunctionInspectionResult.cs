@@ -1,21 +1,20 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
     public sealed class NonReturningFunctionInspectionResult : InspectionResultBase
     {
-        private readonly string _identifierName;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public NonReturningFunctionInspectionResult(IInspection inspection,
             QualifiedContext<ParserRuleContext> qualifiedContext, 
             bool isInterfaceImplementation,
-            string identifierName)
-            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
+            Declaration target)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context, target)
         {
-            _identifierName = identifierName;
             _quickFixes = isInterfaceImplementation 
                 ? new CodeInspectionQuickFix[] { }
                 : new CodeInspectionQuickFix[]
@@ -31,7 +30,7 @@ namespace Rubberduck.Inspections
         {
             get
             {
-                return string.Format(InspectionsUI.NonReturningFunctionInspectionResultFormat, _identifierName);
+                return string.Format(InspectionsUI.NonReturningFunctionInspectionResultFormat, Target.IdentifierName);
             }
         }
     }
