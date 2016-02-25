@@ -4,9 +4,11 @@
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
          xmlns:converters="clr-namespace:Rubberduck.UI.SourceControl.Converters"
+         xmlns:sourceControl="clr-namespace:Rubberduck.UI.SourceControl"
          mc:Ignorable="d"
          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Branches}"
-         d:DesignHeight="450" d:DesignWidth="300">
+         d:DesignHeight="450" d:DesignWidth="300"
+         d:DataContext="{d:DesignInstance {x:Type sourceControl:BranchesViewViewModel}, IsDesignTimeCreatable=False}">
     <TabItem.Resources>
         <BitmapImage x:Key="NewBranchImage" UriSource="../../Resources/arrow-branch-090.png" />
         <BitmapImage x:Key="MergeBranchImage" UriSource="../../Resources/arrow-merge-090.png" />
@@ -18,14 +20,15 @@
         <StackPanel>
             <DockPanel Margin="10">
                 <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CurrentBranchLabel}" />
-                <ComboBox />
+                <ComboBox ItemsSource="{Binding LocalBranches}" />
             </DockPanel>
             
             <WrapPanel Orientation="Horizontal"
                        Margin="5,-5,0,5">
                 <Button Name="NewBranchButton"
                         Margin="6"
-                        Height="25">
+                        Height="25"
+                        Command="{Binding NewBranchCommand}">
                     <Button.MinWidth>
                         <MultiBinding Converter="{StaticResource EqualWidthConverter}">
                             <Binding ElementName="MergeBranchButton" Path="ActualWidth" />
@@ -43,7 +46,8 @@
                 </Button>
                 <Button Name="MergeBranchButton"
                         Margin="6"
-                        Height="25">
+                        Height="25"
+                        Command="{Binding MergeBranchCommand}">
                     <Button.MinWidth>
                         <MultiBinding Converter="{StaticResource EqualWidthConverter}">
                             <Binding ElementName="NewBranchButton" Path="ActualWidth" />
@@ -61,7 +65,8 @@
                 </Button>
                 <Button Name="DeleteBranchButton"
                         Margin="6"
-                        Height="25">
+                        Height="25"
+                        Command="{Binding DeleteBranchCommand}">
                     <Button.MinWidth>
                         <MultiBinding Converter="{StaticResource EqualWidthConverter}">
                             <Binding ElementName="NewBranchButton" Path="ActualWidth" />
@@ -80,12 +85,13 @@
             </WrapPanel>
 
             <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PublishedBranchesLabel}"
-                      Height="100">
-                <ListBox />
+                      Height="200"
+                      Margin="0,0,0,10">
+                <ListBox ItemsSource="{Binding PublishedBranches}" />
             </GroupBox>
             <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UnpublishedBranchesLabel}"
-                      Height="100">
-                <ListBox />
+                      Height="200">
+                <ListBox ItemsSource="{Binding UnpublishedBranches}" />
             </GroupBox>
         </StackPanel>
     </Grid>

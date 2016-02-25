@@ -709,6 +709,7 @@
     <Compile Include="UI\SourceControl\BranchesView.xaml.cs">
       <DependentUpon>BranchesView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\BranchesViewViewModel.cs" />
     <Compile Include="UI\SourceControl\ChangesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

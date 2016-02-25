@@ -46,15 +46,17 @@
             </Grid>
 
             <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_IncludedChanges}"
-                      Height="100">
+                      Height="150"
+                      Margin="0,0,0,10">
                 <ListBox ItemsSource="{Binding IncludedChanges, Mode=TwoWay}" />
             </GroupBox>
             <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_ExcludedChanges}"
-                      Height="100">
+                      Height="150"
+                      Margin="0,0,0,10">
                 <ListBox ItemsSource="{Binding ExcludedChanges, Mode=TwoWay}" />
             </GroupBox>
             <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UntrackedFiles}"
-                      Height="100">
+                      Height="150">
                 <ListBox ItemsSource="{Binding UntrackedFiles, Mode=TwoWay}" />
             </GroupBox>
         </StackPanel>

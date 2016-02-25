@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.UI.SourceControl
+﻿using Ninject;
+
+namespace Rubberduck.UI.SourceControl
 {
     /// <summary>
     /// Interaction logic for BranchesView.xaml
@@ -8,6 +10,12 @@
         public BranchesView()
         {
             InitializeComponent();
+        }
+
+        [Inject]
+        public BranchesView(BranchesViewViewModel vm) : this()
+        {
+            DataContext = vm;
         }
     }
 }
