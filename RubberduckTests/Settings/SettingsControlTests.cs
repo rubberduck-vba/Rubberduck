@@ -400,7 +400,7 @@ namespace RubberduckTests.Settings
             var eventIsFired = false;
             var viewModel = GetDefaultViewModel(GetConfigLoader(GetDefaultConfig()));
 
-            viewModel.OnOKButtonClicked += (sender, args) => { eventIsFired = true; };
+            viewModel.OnWindowClosed += (sender, args) => { eventIsFired = true; };
 
             viewModel.OKButtonCommand.Execute(null);
 
@@ -413,7 +413,7 @@ namespace RubberduckTests.Settings
             var eventIsFired = false;
             var viewModel = GetDefaultViewModel(GetConfigLoader(GetDefaultConfig()));
 
-            viewModel.OnCancelButtonClicked += (sender, args) => { eventIsFired = true; };
+            viewModel.OnWindowClosed += (sender, args) => { eventIsFired = true; };
 
             viewModel.CancelButtonCommand.Execute(null);
 
