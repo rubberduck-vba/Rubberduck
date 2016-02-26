@@ -43,16 +43,10 @@ namespace Rubberduck.UI.Settings
                 },
                 activeView);
 
-            ViewModel.OnOKButtonClicked += ViewModel_OnOKButtonClicked;
-            ViewModel.OnCancelButtonClicked += ViewModel_OnCancelButtonClicked;
+            ViewModel.OnWindowClosed += ViewModel_OnWindowClosed;
         }
 
-        void ViewModel_OnOKButtonClicked(object sender, System.EventArgs e)
-        {
-            Close();
-        }
-
-        void ViewModel_OnCancelButtonClicked(object sender, System.EventArgs e)
+        void ViewModel_OnWindowClosed(object sender, System.EventArgs e)
         {
             Close();
         }

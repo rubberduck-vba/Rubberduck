@@ -5,10 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
+             xmlns:generalConverters="clr-namespace:Rubberduck.UI.GeneralConverters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600"
              d:DataContext="{d:DesignInstance {x:Type settings:SettingsControlViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
+        <generalConverters:EqualWidthConverter x:Key="EqualWidthConverter" />
+        
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
             <GradientStop Color="#FF9BDDFB" Offset="1"/>
@@ -95,24 +98,48 @@
                        Background="{x:Static SystemColors.ControlDarkBrush}">
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right">
-                    <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings_ResetSettings}"
-                            MinWidth="75"
+                    <Button Name="ResetButton"
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings_ResetSettings}"
                             Height="20"
                             HorizontalAlignment="Right"
                             Margin="20,0"
-                            Command="{Binding ResetButtonCommand}" />
-                    <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
-                            MinWidth="75"
+                            Padding="10,0"
+                            Command="{Binding ResetButtonCommand}">
+                        <Button.MinWidth>
+                            <MultiBinding Converter="{StaticResource EqualWidthConverter}">
+                                <Binding ElementName="OkButton" Path="ActualWidth" />
+                                <Binding ElementName="CancelButton" Path="ActualWidth" />
+                            </MultiBinding>
+                        </Button.MinWidth>
+                    </Button>
+                    <Button Name="OkButton"
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
                             Height="20"
                             HorizontalAlignment="Left"
                             Margin="5,0"
-                            Command="{Binding OKButtonCommand}" />
-                    <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
-                            MinWidth="75"
+                            Padding="10,0"
+                            Command="{Binding OKButtonCommand}">
+                        <Button.MinWidth>
+                            <MultiBinding Converter="{StaticResource EqualWidthConverter}">
+                                <Binding ElementName="CancelButton" Path="ActualWidth" />
+                                <Binding ElementName="ResetButton" Path="ActualWidth" />
+                            </MultiBinding>
+                        </Button.MinWidth>
+                    </Button>
+                    <Button Name="CancelButton"
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
                             Height="20"
                             HorizontalAlignment="Right"
-                            Margin="5,0,10,0"
-                            Command="{Binding CancelButtonCommand}" />
+                            Margin="5,0"
+                            Padding="10,0"
+                            Command="{Binding CancelButtonCommand}">
+                        <Button.MinWidth>
+                            <MultiBinding Converter="{StaticResource EqualWidthConverter}">
+                                <Binding ElementName="OkButton" Path="ActualWidth" />
+                                <Binding ElementName="ResetButton" Path="ActualWidth" />
+                            </MultiBinding>
+                        </Button.MinWidth>
+                    </Button>
                 </StackPanel>
             </DockPanel>
         </Border>
