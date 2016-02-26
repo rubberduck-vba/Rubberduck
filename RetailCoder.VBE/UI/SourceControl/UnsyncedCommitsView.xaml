@@ -116,11 +116,13 @@
                 </WrapPanel>
 
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_IncomingCommits}"
-                          Height="175">
-                    <ListBox ItemsSource="{Binding IncomingCommits}" />
+                          Height="175"
+                          Padding="5">
+                        <ListBox ItemsSource="{Binding IncomingCommits}" />
                 </GroupBox>
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_OutgoingCommits}"
-                          Height="175">
+                          Height="175"
+                          Padding="5">
                     <ListBox ItemsSource="{Binding OutgoingCommits}" />
                 </GroupBox>
             </StackPanel>

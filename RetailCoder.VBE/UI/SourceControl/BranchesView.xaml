@@ -87,11 +87,13 @@
 
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PublishedBranchesLabel}"
                           Height="175"
-                          Margin="0,0,0,10">
+                          Margin="0,0,0,10"
+                          Padding="5">
                     <ListBox ItemsSource="{Binding PublishedBranches}" />
                 </GroupBox>
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UnpublishedBranchesLabel}"
-                          Height="175">
+                          Height="175"
+                          Padding="5">
                     <ListBox ItemsSource="{Binding UnpublishedBranches}" />
                 </GroupBox>
             </StackPanel>

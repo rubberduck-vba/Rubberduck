@@ -31,9 +31,10 @@
                             </Grid.ColumnDefinitions>
                             <TextBox Margin="5,0,0,0"
                                      Padding="2" />
-                            <Button Content="..."
+                            <Button Content="&#8230;"
                                     Margin="5,0"
-                                    Grid.Column="1"/>
+                                    Grid.Column="1"
+                                    FontSize="15"/>
                         </Grid>
                         <WrapPanel Orientation="Horizontal"
                                    Margin="0,5">
