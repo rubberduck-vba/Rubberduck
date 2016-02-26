@@ -95,8 +95,14 @@ namespace Rubberduck.Parsing.Symbols
             return statement != null && statement.Symbol.Text == Tokens.Call;
         }
 
+        private bool? _hasTypeHint;
         public bool HasTypeHint()
         {
+            if (_hasTypeHint.HasValue)
+            {
+                return _hasTypeHint.Value;
+            }
+
             string token;
             return HasTypeHint(out token);
         }
@@ -106,18 +112,29 @@ namespace Rubberduck.Parsing.Symbols
             if (Context == null)
             {
                 token = null;
+                _hasTypeHint = false;
                 return false;
             }
 
             try
             {
+                var method = Context.Parent.GetType().GetMethod("typeHint");
+                if (method == null)
+                {
+                    token = null;
+                    _hasTypeHint = false;
+                    return false;
+                }
+
                 var hint = ((dynamic)Context.Parent).typeHint() as VBAParser.TypeHintContext;
                 token = hint == null ? null : hint.GetText();
-                return hint != null;
+                _hasTypeHint = hint != null;
+                return _hasTypeHint.Value;
             }
             catch (RuntimeBinderException)
             {
                 token = null;
+                _hasTypeHint = false;
                 return false;
             }
         }

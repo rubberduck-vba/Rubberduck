@@ -228,16 +228,10 @@ namespace Rubberduck.Parsing.Symbols
                 return _isArray.Value;
             }
 
-            var variableContext = Context as VBAParser.VariableSubStmtContext;
-            if (variableContext != null)
+            var rParenMethod = Context.GetType().GetMethod("RPAREN");
+            if (rParenMethod == null)
             {
-                return variableContext.LPAREN() != null && variableContext.RPAREN() != null;
-            }
-
-            var typeElementContext = Context as VBAParser.TypeStmt_ElementContext;
-            if (typeElementContext != null)
-            {
-                return typeElementContext.LPAREN() != null && typeElementContext.RPAREN() != null;
+                return false;
             }
 
             try
@@ -281,40 +275,10 @@ namespace Rubberduck.Parsing.Symbols
                 return _isTypeSpecified.Value;
             }
 
-            var variableContext = Context as VBAParser.VariableSubStmtContext;
-            if (variableContext != null)
+            var method = Context.GetType().GetMethod("asTypeClause");
+            if (method == null)
             {
-                return variableContext.asTypeClause() != null || HasTypeHint();
-            }
-
-            var argContext = Context as VBAParser.ArgContext;
-            if (argContext != null)
-            {
-                return argContext.asTypeClause() != null || HasTypeHint();
-            }
-
-            var constContext = Context as VBAParser.ConstSubStmtContext;
-            if (constContext != null)
-            {
-                return constContext.asTypeClause() != null || HasTypeHint();
-            }
-
-            var functionContext = Context as VBAParser.FunctionStmtContext;
-            if (functionContext != null)
-            {
-                return functionContext.asTypeClause() != null || HasTypeHint();
-            }
-
-            var getterContext = Context as VBAParser.PropertyGetStmtContext;
-            if (getterContext != null)
-            {
-                return getterContext.asTypeClause() != null || HasTypeHint();
-            }
-
-            var typeElementContext = Context as VBAParser.TypeStmt_ElementContext;
-            if (typeElementContext != null)
-            {
-                return typeElementContext.asTypeClause() != null || HasTypeHint();
+                return false;
             }
 
             try
@@ -366,50 +330,16 @@ namespace Rubberduck.Parsing.Symbols
                 return false;
             }
 
-            VBAParser.TypeHintContext hint;
-            var variableContext = Context as VBAParser.VariableSubStmtContext;
-            if (variableContext != null)
+            var method = Context.GetType().GetMethod("typeHint");
+            if (method == null)
             {
-                hint = variableContext.typeHint();
-                token = hint == null ? null : hint.GetText();
-                return hint != null;
-            }
-
-            var argContext = Context as VBAParser.ArgContext;
-            if (argContext != null)
-            {
-                hint = argContext.typeHint();
-                token = hint == null ? null : hint.GetText();
-                return hint != null;
-            }
-
-            var constContext = Context as VBAParser.ConstSubStmtContext;
-            if (constContext != null)
-            {
-                hint = constContext.typeHint();
-                token = hint == null ? null : hint.GetText();
-                return hint != null;
-            }
-
-            var functionContext = Context as VBAParser.FunctionStmtContext;
-            if (functionContext != null)
-            {
-                hint = functionContext.typeHint();
-                token = hint == null ? null : hint.GetText();
-                return hint != null;
-            }
-
-            var getterContext = Context as VBAParser.PropertyGetStmtContext;
-            if (getterContext != null)
-            {
-                hint = getterContext.typeHint();
-                token = hint == null ? null : hint.GetText();
-                return hint != null;
+                token = null;
+                return false;
             }
 
             try
             {
-                hint = ((dynamic)Context).typeHint() as VBAParser.TypeHintContext;
+                var hint = ((dynamic)Context).typeHint() as VBAParser.TypeHintContext;
                 token = hint == null ? null : hint.GetText();
                 return hint != null;
             }
