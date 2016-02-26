@@ -15,84 +15,7 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-/*
-* Visual Basic 6.0 Grammar for ANTLR4
-*
-* This is an approximate grammar for Visual Basic 6.0, derived 
-* from the Visual Basic 6.0 language reference 
-* http://msdn.microsoft.com/en-us/library/aa338033%28v=vs.60%29.aspx 
-* and tested against MSDN VB6 statement examples as well as several Visual 
-* Basic 6.0 code repositories.
-*
-* Characteristics:
-*
-* 1. This grammar is line-based and takes into account whitespace, so that
-*    member calls (e.g. "A.B") are distinguished from contextual object calls 
-*    in WITH statements (e.g. "A .B").
-*
-* 2. Keywords can be used as identifiers depending on the context, enabling
-*    e.g. "A.Type", but not "Type.B".
-*
-*
-* Known limitations:
-*
-* 1. Preprocessor statements (#if, #else, ...) must not interfere with regular
-*    statements.
-*
-* Change log:
-*
-* v1.4 Rubberduck
-*   - renamed to VBA; goal is to support VBA, and a shorter name is more practical.
-*   - added moduleDeclarations rule, moved moduleOptions there; options can now be
-*     located anywhere in declarations section, without breaking the parser.
-*   - added support for Option Compare Database.
-*   - added support for VBA 7.0 PtrSafe attribute for Declare statements.
-*   - implemented a fileNumber rule to locate identifier usages in file numbers.
-*   - added support for anonymous declarations in With blocks (With New Something)
-*   - blockStmt rules being sorted alphabetically was wrong. moved implicit call statement last.
-*   - '!' in dictionary call statement rule gets picked up as a type hint; changed member call
-*     to accept '!' as well as '.', but this complicates resolving the '!' shorthand syntax.
-*   - added a subscripts rule in procedure calls, to avoid breaking the parser with 
-*     a function call that returns an array that is immediately accessed.
-*   - added missing macroConstStmt (#CONST) rule.
-*   - amended selectCaseStmt rules to support all valid syntaxes.
-*   - blockStmt is now illegal in declarations section.
-*   - added ON_LOCAL_ERROR token, to support legacy ON LOCAL ERROR statements.
-*   - added additional typeHint? token to declareStmt, to support "Declare Function Foo$".
-*   - modified WS lexer rule to correctly account for line continuations;
-*   - modified multi-word lexer rules to use WS lexer token instead of ' '; this makes
-*     the grammar support "Option _\n Explicit" and other keywords being specified on multiple lines.
-*	- modified moduleOption rules to account for WS token in corresponding lexer rules.
-*   - modified NEWLINE lexer rule to properly support instructions separator (':').
-*   - tightened DATELITERAL lexer rule to the format enforced by the VBE, because "#fn: Close #" 
-*     in "Dim fn: fn = FreeFile: Open "filename" For Output As #fn: Close #fn" was picked up as a date literal.
-*   - redefined IDENTIFIER lexer rule to support non-Latin characters (e.g. Japanese)
-*   - made seekStmt, lockStmt, unlockStmt, getStmt and widthStmt accept a fileNumber (needed to support '#')
-*   - fixed precompiler directives, which can now be nested. they still can't interfere with other blocks though.
-*   - optional parameters can be a valueStmt.
-*   - added support for Octal and Currency literals.
-*   - implemented proper specs for DATELITERAL.
-*   - added comments to parse tree (removes known limitation #2).
-*   - macroConstStmt now allowed in blockStmt.
-*   - allow type hints for parameters.
-*   - fix operator precedence (in valueStmt)
-*   - remove PLUS_EQ and MINUS_EQ since that's not supported in VBA
-*   - remove PLUS valueStmt since that is not needed
-*
-*======================================================================================
-*
-* v1.3
-*	- call statement precedence
-*
-* v1.2
-*	- refined call statements
-*
-* v1.1 
-*	- precedence of operators and of ELSE in select statements
-*	- optimized member calls
-*
-* v1.0 Initial revision
-*/
+/* VBA grammar based on Microsoft's [MS-VBAL]: VBA Language Specification. */
 
 grammar VBA;
 
@@ -102,30 +25,30 @@ startRule : module EOF;
 
 module : 
 	WS?
-	endOfLine*
-	(moduleHeader endOfLine*)?
-	moduleConfig? endOfLine*
-	moduleAttributes? endOfLine*
-	moduleDeclarations? endOfLine*
-	moduleBody? endOfLine*
+	endOfStatement
+	(moduleHeader endOfStatement)?
+	moduleConfig? endOfStatement
+	moduleAttributes? endOfStatement
+	moduleDeclarations? endOfStatement
+	moduleBody? endOfStatement
 	WS?
 ;
 
 moduleHeader : VERSION WS DOUBLELITERAL WS CLASS;
 
 moduleConfig :
-	BEGIN endOfLine*
+	BEGIN endOfStatement
 	moduleConfigElement+
 	END
 ;
 
 moduleConfigElement :
-	ambiguousIdentifier WS? EQ WS? literal endOfLine*
+	ambiguousIdentifier WS? EQ WS? literal endOfStatement
 ;
 
-moduleAttributes : (attributeStmt endOfLine+)+;
+moduleAttributes : (attributeStmt endOfStatement)+;
 
-moduleDeclarations : moduleDeclarationsElement (endOfLine+ moduleDeclarationsElement)* endOfLine*;
+moduleDeclarations : moduleDeclarationsElement (endOfStatement moduleDeclarationsElement)* endOfStatement;
 
 moduleOption : 
 	OPTION_BASE WS SHORTLITERAL 					# optionBaseStmt
@@ -152,7 +75,7 @@ macroStmt :
 	| macroIfThenElseStmt;
 
 moduleBody : 
-	moduleBodyElement (endOfLine+ moduleBodyElement)* endOfLine*;
+	moduleBodyElement (endOfStatement moduleBodyElement)* endOfStatement;
 
 moduleBodyElement : 
 	functionStmt 
