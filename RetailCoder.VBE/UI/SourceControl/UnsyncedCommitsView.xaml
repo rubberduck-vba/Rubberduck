@@ -4,9 +4,11 @@
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
          xmlns:converters="clr-namespace:Rubberduck.UI.SourceControl.Converters"
-         mc:Ignorable="d" 
+         xmlns:sourceControl="clr-namespace:Rubberduck.UI.SourceControl"
+         mc:Ignorable="d"
          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UnsyncedCommits}"
-         d:DesignHeight="450" d:DesignWidth="300">
+         d:DesignHeight="450" d:DesignWidth="300"
+         d:DataContext="{d:DesignInstance {x:Type sourceControl:UnsyncedCommitsViewViewModel}, IsDesignTimeCreatable=false}">
     <TabItem.Resources>
         <BitmapImage x:Key="FetchCommitsImage" UriSource="../../Resources/arrow-step.png" />
         <BitmapImage x:Key="PullCommitsImage" UriSource="../../Resources/drive-download.png" />
@@ -29,7 +31,8 @@
                            Margin="5,-5,0,5">
                     <Button Name="FetchCommitsButton"
                             Margin="6"
-                            Height="25">
+                            Height="25"
+                            Command="{Binding FetchCommitsCommand}">
                         <Button.MinWidth>
                             <MultiBinding Converter="{StaticResource EqualWidthConverter}">
                                 <Binding ElementName="PullCommitsButton" Path="ActualWidth" />
@@ -48,8 +51,9 @@
                         </StackPanel>
                     </Button>
                     <Button Name="PullCommitsButton"
-                        Margin="6"
-                        Height="25">
+                            Margin="6"
+                            Height="25"
+                            Command="{Binding PullCommitsCommand}">
                         <Button.MinWidth>
                             <MultiBinding Converter="{StaticResource EqualWidthConverter}">
                                 <Binding ElementName="FetchCommitsButton" Path="ActualWidth" />
@@ -69,7 +73,8 @@
                     </Button>
                     <Button Name="PushCommitsButton"
                             Margin="6"
-                            Height="25">
+                            Height="25"
+                            Command="{Binding PushCommitsCommand}">
                         <Button.MinWidth>
                             <MultiBinding Converter="{StaticResource EqualWidthConverter}">
                                 <Binding ElementName="FetchCommitsButton" Path="ActualWidth" />
@@ -89,7 +94,8 @@
                     </Button>
                     <Button Name="SyncCommitsButton"
                             Margin="6"
-                            Height="25">
+                            Height="25"
+                            Command="{Binding SyncCommitsCommand}">
                         <Button.MinWidth>
                             <MultiBinding Converter="{StaticResource EqualWidthConverter}">
                                 <Binding ElementName="FetchCommitsButton" Path="ActualWidth" />
@@ -111,11 +117,11 @@
 
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_IncomingCommits}"
                           Height="175">
-                    <ListBox />
+                    <ListBox ItemsSource="{Binding IncomingCommits}" />
                 </GroupBox>
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_OutgoingCommits}"
                           Height="175">
-                    <ListBox />
+                    <ListBox ItemsSource="{Binding OutgoingCommits}" />
                 </GroupBox>
             </StackPanel>
         </ScrollViewer>

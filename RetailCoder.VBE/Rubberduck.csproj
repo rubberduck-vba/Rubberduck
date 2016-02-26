@@ -806,6 +806,7 @@
     <Compile Include="UI\SourceControl\UnsyncedCommitsView.xaml.cs">
       <DependentUpon>UnsyncedCommitsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\UnsyncedCommitsViewViewModel.cs" />
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="Settings\IConfigurationService.cs" />
     <Compile Include="Settings\ConfigurationLoader.cs" />
