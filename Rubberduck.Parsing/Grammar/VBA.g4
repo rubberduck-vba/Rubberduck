@@ -511,7 +511,7 @@ implicitCallStmt_InBlock :
 	| iCS_B_ProcedureCall
 ;
 
-iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS argsCall)? dictionaryCallStmt? (WS? LPAREN subscripts RPAREN)*;
+iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS argsCall)? (WS? dictionaryCallStmt)? (WS? LPAREN subscripts RPAREN)*;
 
 // parantheses are forbidden in case of args
 // variables cannot be called in blocks
@@ -527,15 +527,15 @@ implicitCallStmt_InStmt :
 	| iCS_S_DictionaryCall
 ;
 
-iCS_S_VariableOrProcedureCall : ambiguousIdentifier typeHint? dictionaryCallStmt? (WS? LPAREN subscripts RPAREN)*;
+iCS_S_VariableOrProcedureCall : ambiguousIdentifier typeHint? (WS? dictionaryCallStmt)? (WS? LPAREN subscripts RPAREN)*;
 
-iCS_S_ProcedureOrArrayCall : (ambiguousIdentifier | baseType) typeHint? WS? LPAREN WS? (argsCall WS?)? RPAREN dictionaryCallStmt? (WS? LPAREN subscripts RPAREN)*;
+iCS_S_ProcedureOrArrayCall : (ambiguousIdentifier | baseType) typeHint? WS? LPAREN WS? (argsCall WS?)? RPAREN (WS? dictionaryCallStmt)? (WS? LPAREN subscripts RPAREN)*;
 
-iCS_S_MembersCall : (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall)? (iCS_S_MemberCall WS?)+ dictionaryCallStmt? (WS? LPAREN subscripts RPAREN)*;
+iCS_S_MembersCall : (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall)? (iCS_S_MemberCall WS?)+ (WS? dictionaryCallStmt)? (WS? LPAREN subscripts RPAREN)*;
 
 iCS_S_MemberCall : ('.' | '!') (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall);
 
-iCS_S_DictionaryCall : dictionaryCallStmt;
+iCS_S_DictionaryCall : WS? dictionaryCallStmt;
 
 
 // atomic call statements ----------------------------------
@@ -544,7 +544,7 @@ argsCall : (argCall? WS? (',' | ';') WS?)* argCall (WS? (',' | ';') WS? argCall?
 
 argCall : LPAREN? ((BYVAL | BYREF | PARAMARRAY) WS)? RPAREN? valueStmt;
 
-dictionaryCallStmt : '!' ambiguousIdentifier typeHint?;
+dictionaryCallStmt : '!' WS? ambiguousIdentifier typeHint?;
 
 
 // atomic rules for statements

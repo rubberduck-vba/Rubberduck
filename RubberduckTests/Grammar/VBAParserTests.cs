@@ -34,7 +34,7 @@ namespace RubberduckTests.Grammar
             string expectedTree = @"
 (startRule
     (module endOfStatement
-        (moduleHeader VERSION   1.0   CLASS)
+        (moduleHeader VERSION 1.0 CLASS)
         endOfStatement
         endOfStatement
         endOfStatement
@@ -71,6 +71,54 @@ END";
         endOfStatement
         endOfStatement
         endOfStatement)
+<EOF>)";
+            assertTree(code, expectedTree);
+        }
+
+        [TestMethod]
+        public void TestDictionaryCallLineContinuation()
+        {
+            string code = @"
+Public Sub Test()
+    Set result = myObj _
+    ! _
+    call
+End Sub";
+            string expectedTree = @"
+(startRule
+    (module
+        (endOfStatement
+            (endOfLine \r\n))
+        endOfStatement
+        endOfStatement
+        endOfStatement
+        (moduleBody
+            (moduleBodyElement
+                (subStmt
+                    (visibility Public)
+                    Sub
+                    (ambiguousIdentifier Test)
+                    (argList ( ))
+                    (endOfStatement
+                        (endOfLine \r\n ))
+                    (block
+                        (blockStmt
+                            (setStmt
+                            Set
+                            (implicitCallStmt_InStmt
+                                (iCS_S_VariableOrProcedureCall
+                                    (ambiguousIdentifier result))) =
+                            (valueStmt 
+                                (implicitCallStmt_InStmt
+                                    (iCS_S_VariableOrProcedureCall
+                                        (ambiguousIdentifier myObj) _\r\n
+                                        (dictionaryCallStmt ! _\r\n
+                                            (ambiguousIdentifier
+                                            (ambiguousKeyword call))))))))
+                    (endOfStatement (endOfLine \r\n)))
+                    End Sub))
+                endOfStatement)
+            endOfStatement)
 <EOF>)";
             assertTree(code, expectedTree);
         }
