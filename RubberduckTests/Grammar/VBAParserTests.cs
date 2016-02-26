@@ -50,6 +50,19 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//dictionaryCallStmt");
         }
 
+        [TestMethod]
+        public void TestDMemberCallLineContinuation()
+        {
+            string code = @"
+Public Sub Test()
+    Debug.Print Foo.Bar _
+                   . _
+                    FooBar.Baz
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//iCS_S_MembersCall");
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);
@@ -58,6 +71,7 @@ End Sub";
             var parser = new VBAParser(tokens);
             parser.AddErrorListener(new ExceptionErrorListener());
             var root = parser.startRule();
+            var str = root.ToStringTree(parser);
             return Tuple.Create<VBAParser, ParserRuleContext>(parser, root);
         }
 

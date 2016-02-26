@@ -533,7 +533,7 @@ iCS_S_ProcedureOrArrayCall : (ambiguousIdentifier | baseType) typeHint? WS? LPAR
 
 iCS_S_MembersCall : (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall)? (iCS_S_MemberCall WS?)+ (WS? dictionaryCallStmt)? (WS? LPAREN subscripts RPAREN)*;
 
-iCS_S_MemberCall : ('.' | '!') (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall);
+iCS_S_MemberCall : ('.' | '!') WS? (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall);
 
 iCS_S_DictionaryCall : WS? dictionaryCallStmt;
 
