@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.UI.SourceControl
+﻿using Ninject;
+
+namespace Rubberduck.UI.SourceControl
 {
     /// <summary>
     /// Interaction logic for SettingsView.xaml
@@ -8,6 +10,12 @@
         public SettingsView()
         {
             InitializeComponent();
+        }
+
+        [Inject]
+        public SettingsView(SettingsViewViewModel vm) : this()
+        {
+            DataContext = vm;
         }
     }
 }

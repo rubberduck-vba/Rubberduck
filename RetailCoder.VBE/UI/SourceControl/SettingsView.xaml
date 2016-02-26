@@ -4,11 +4,12 @@
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
          xmlns:converters="clr-namespace:Rubberduck.UI.SourceControl.Converters"
-         mc:Ignorable="d" 
+         xmlns:sourceControl="clr-namespace:Rubberduck.UI.SourceControl"
+         mc:Ignorable="d"
          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Settings}"
-         d:DesignHeight="300" d:DesignWidth="300">
+         d:DesignHeight="300" d:DesignWidth="300"
+         d:DataContext="{d:DesignInstance {x:Type sourceControl:SettingsViewViewModel}, IsDesignTimeCreatable=False}">
     <TabItem.Resources>
-
         <converters:EqualWidthConverter x:Key="EqualWidthConverter" />
     </TabItem.Resources>
     <Grid>
@@ -19,10 +20,12 @@
                     <StackPanel>
                         <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UserNameLabel}" />
                         <TextBox Margin="5,0,5,5"
-                                 Padding="2" />
+                                 Padding="2"
+                                 Text="{Binding UserName, Mode=TwoWay}" />
                         <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_EmailAddressLabel}" />
                         <TextBox Margin="5,0,5,5"
-                                 Padding="2" />
+                                 Padding="2"
+                                 Text="{Binding EmailAddress, Mode=TwoWay}" />
                         <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DefaultRepoLocationLabel}" />
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -30,11 +33,13 @@
                                 <ColumnDefinition Width="40" />
                             </Grid.ColumnDefinitions>
                             <TextBox Margin="5,0,0,0"
-                                     Padding="2" />
+                                     Padding="2"
+                                     Text="{Binding DefaultRepoLocation, Mode=TwoWay}" />
                             <Button Content="&#8230;"
                                     Margin="5,0"
                                     Grid.Column="1"
-                                    FontSize="15"/>
+                                    FontSize="15"
+                                    Command="{Binding ShowFilePickerCommand}" />
                         </Grid>
                         <WrapPanel Orientation="Horizontal"
                                    Margin="0,5">
@@ -42,7 +47,8 @@
                                     Margin="6"
                                     Height="25"
                                     Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CancelGlobalSettings}"
-                                    Padding="5,0">
+                                    Padding="5,0"
+                                    Command="{Binding CancelSettingsChangesCommand}">
                                 <Button.MinWidth>
                                     <MultiBinding Converter="{StaticResource EqualWidthConverter}">
                                         <Binding ElementName="UpdateSettingsButton" Path="ActualWidth" />
@@ -56,7 +62,8 @@
                                     Margin="6"
                                     Height="25"
                                     Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UpdateGlobalSettings}"
-                                    Padding="5,0">
+                                    Padding="5,0"
+                                    Command="{Binding UpdateSettingsCommand}">
                                 <Button.MinWidth>
                                     <MultiBinding Converter="{StaticResource EqualWidthConverter}">
                                         <Binding ElementName="UpdateSettingsButton" Path="ActualWidth" />
@@ -76,7 +83,8 @@
                                 Margin="6"
                                 Height="25"
                                 Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_IgnoreFile}"
-                                Padding="5,0">
+                                Padding="5,0"
+                                Command="{Binding ShowGitIgnoreCommand}">
                             <Button.MinWidth>
                                 <MultiBinding Converter="{StaticResource EqualWidthConverter}">
                                     <Binding ElementName="UpdateSettingsButton" Path="ActualWidth" />
@@ -89,7 +97,8 @@
                                 Margin="6"
                                 Height="25"
                                 Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_AttributesFile}"
-                                Padding="5,0">
+                                Padding="5,0"
+                                Command="{Binding ShowGitAttributesCommand}">
                             <Button.MinWidth>
                                 <MultiBinding Converter="{StaticResource EqualWidthConverter}">
                                     <Binding ElementName="UpdateSettingsButton" Path="ActualWidth" />
