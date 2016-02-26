@@ -51,7 +51,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void TestDMemberCallLineContinuation()
+        public void TestMemberCallLineContinuation()
         {
             string code = @"
 Public Sub Test()
@@ -71,6 +71,7 @@ End Sub";
             var parser = new VBAParser(tokens);
             parser.AddErrorListener(new ExceptionErrorListener());
             var root = parser.startRule();
+            // Useful for figuring out what XPath to use for querying the parse tree.
             var str = root.ToStringTree(parser);
             return Tuple.Create<VBAParser, ParserRuleContext>(parser, root);
         }
