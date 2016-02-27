@@ -15,6 +15,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
+using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
@@ -48,6 +49,7 @@ namespace Rubberduck.Root
             _kernel.Bind<VBE>().ToConstant(_vbe);
             _kernel.Bind<AddIn>().ToConstant(_addin);
             _kernel.Bind<RubberduckParserState>().ToSelf().InSingletonScope();
+            _kernel.Bind<GitProvider>().ToSelf().InSingletonScope();
             
             BindCodeInspectionTypes();
 
@@ -90,6 +92,10 @@ namespace Rubberduck.Root
                 .WhenInjectedInto<ToDoExplorerCommand>()
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new ToDoExplorerWindow { ViewModel = _kernel.Get<ToDoExplorerViewModel>() });
+
+            Bind<ISourceControlProvider>().To<GitProvider>()
+                .WhenInjectedInto<SettingsViewViewModel>()
+                .WithConstructorArgument(_vbe.ActiveVBProject);
 
             Bind<IPresenter>().To<SourceControlDockablePresenter>()
                 .WhenInjectedInto<ShowSourceControlPanelCommand>()

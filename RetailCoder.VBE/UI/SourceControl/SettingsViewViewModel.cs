@@ -117,7 +117,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void OpenFileInExternalEditor(GitSettingsFile fileType)
         {
-            if (_provider == null)
+            if (_provider.CurrentRepository == null)
             {
                 return;
             }
