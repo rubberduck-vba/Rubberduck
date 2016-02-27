@@ -22,7 +22,6 @@ namespace Rubberduck.Common
         {
             this.AppendData(DataFormats.UnicodeText, text);
             this.Flush();
-            //Clipboard.SetText(text);
         }
 
         public void AppendData(string format, object data)

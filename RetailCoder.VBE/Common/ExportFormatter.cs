@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace Rubberduck.Common
     {
         public static string Csv(object[][] data, string Title)
         {
-            string s;
+            string s = "";
             string[] rows = new string[data.Length];
             for (var r = 0; r < data.Length; r++)
             {
@@ -53,8 +54,8 @@ namespace Rubberduck.Common
 
         public static string HtmlClipboardFragment(object[][] data, string Title)
         {
-            const string offsetFormat = "0000000000";
-            const string CfHtmlHeader = 
+            const string OffsetFormat = "0000000000";
+            const string CFHeaderTemplate = 
                 "Version:1.0\r\n" +
                 "StartHTML:{0}\r\n" +
                 "EndHTML:{1}\r\n" +
@@ -65,26 +66,26 @@ namespace Rubberduck.Common
                 "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n" + 
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n" +
                 "<body>\r\n" +
-                "<!--StartFragment-->";
+                "<!--StartFragment-->\r\n";
 
             const string HtmlFooter = 
                 "<!--EndFragment-->\r\n" +
                 "</body>\r\n" +
                 "</html>";
 
-            string html = Html(data,Title);
+            string html = ExportFormatter.HtmlTable(data,Title);
 
-            int startHTML = string.Format(CfHtmlHeader, offsetFormat, offsetFormat, offsetFormat, offsetFormat).Length;
-            int startFragment = HtmlHeader.Length;
+            int CFHeaderLength = string.Format(CFHeaderTemplate, OffsetFormat, OffsetFormat, OffsetFormat, OffsetFormat).Length;
+            int startFragment = CFHeaderLength + HtmlHeader.Length;
             int endFragment = startFragment + html.Length;
             int endHTML = endFragment + HtmlFooter.Length;
 
-            string CfHtml = string.Format(CfHtmlHeader, startHTML.ToString(offsetFormat), startHTML.ToString(offsetFormat), startHTML.ToString(offsetFormat), startHTML.ToString(offsetFormat));
+            string CfHtml = string.Format(CFHeaderTemplate, CFHeaderLength.ToString(OffsetFormat), endHTML.ToString(OffsetFormat), startFragment.ToString(OffsetFormat), endFragment.ToString(OffsetFormat));
 
             return CfHtml + HtmlHeader + html + HtmlFooter;
         }
 
-        public static string Html(object[][] data, string Title)
+        public static string HtmlTable(object[][] data, string Title)
         {            
             string[] rows = new string[data.Length];
             for (var r = 0; r < data.Length; r++)
@@ -94,43 +95,45 @@ namespace Rubberduck.Common
                 {
                     row[c] = HtmlCell(data[r][c], r == data.Length - 1, c == 0 ? 5: 10);
                 }
-                rows[r] = "  <tr>" + string.Join(Environment.NewLine, row) + "</tr>";
+                rows[r] = "  <tr>\r\n" + string.Join(Environment.NewLine, row) + "\r\n</tr>";
             }
-            return  "<table cellspacing=\"0\">" + string.Join(Environment.NewLine, rows) + "</table>";
+            return  "<table cellspacing=\"0\">\r\n" + string.Join(Environment.NewLine, rows) + "\r\n</table>\r\n";
         }
 
-        private static string HtmlCell(object value, bool BottomBorder = false, int LeftMargin = 10)
+        private static string HtmlCell(object value, bool BottomBorder = false, int LeftPadding = 10)
         {
-            //TODO do XHTML encoding
             const string td = "    <td style=\"{0}\"><div style=\"{1}\">{2}</div></td>";
             const string nbsp = "&#160;";
-            string s = "";
+
+            string CellContent = nbsp;
             bool AlignLeft = true;
             string Border = BottomBorder ? "0.5pt" : "";
-            if (value == null)
+            if (value != null)
             {
-                s = nbsp;
-            }
-            else
-            {
-                s = value.ToString();
+                CellContent = value.ToString().HtmlEncode();
                 AlignLeft = value is string;
             }
-            return string.Format(td, TdStyle(AlignLeft, Border), TdDivStyle(LeftMargin));
+            return string.Format(td, TdStyle(AlignLeft, Border), TdDivStyle(LeftPadding), CellContent);
         }
+
         private static string TdStyle(bool AlignLeft = true, string BorderBottom = "")
         {
-            const string tdstyle = "vertical-align:bottom;";
+            const string tdstyle = "vertical-align: bottom; ";
 
-            string sAlign = AlignLeft ? "text-align:left;" : "text-align:right";
-            string sBorder = BorderBottom.Length > 0 ? "border-bottom: 1px solid #000000;" : "";
+            string sAlign = AlignLeft ? "text-align: left; " : "text-align: right; ";
+            string sBorder = BorderBottom.Length > 0 ? "border-bottom: " + BorderBottom + " solid #000000; " : "";
 
             return tdstyle + sAlign + sBorder;
         }
 
-        private static string TdDivStyle(int LeftMargin)
+        private static string TdDivStyle(int LeftPadding)
         {
-            return "margin-left:" + LeftMargin + "px;";
+            return "vertical-align: bottom; padding-left: " + LeftPadding + "px; ";
+        }
+
+        private static string HtmlEncode(this string value)
+        {
+            return WebUtility.HtmlEncode(value.ToString());
         }
     }
 }

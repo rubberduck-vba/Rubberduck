@@ -293,39 +293,14 @@ namespace Rubberduck.UI.CodeInspections
 
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InstalledUICulture), _results.Count);
 
+            var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(aResults, title);
-
-//            //13 + 20 + 18 + 24 + 22   :    14 + 20    :   18 + 9 + 7
-//            string CfHtmlHeader = "Version:1.0\r\n" +
-//                               "StartHTML:0000000105\r\n" +
-//                               "EndHTML:{0}\r\n" +
-//                               "StartFragment:0000000301\r\n" +
-//                               "EndFragment:{1}\r\n" +
-//                               "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n" +
-//                               "<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n" + 
-//                               "" +
-//                               "<body>\r\n" +
-//                               "<!--StartFragment-->{2}<!--EndFragment-->\r\n" + 
-//                               "</body>\r\n" + 
-//                               "</html>";
-
-            var textResults = string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
-//            var csvResults = string.Join("", _results.Select(result => result.ToCsvString() + Environment.NewLine).ToArray());
-//            var htmlResults = string.Join("", _results.Select(result => result.ToHtmlString()).ToArray());
-//            var htmlHeader = _results.Select(result => result.ToHtmlHeaderString()).First();
-
-            var text = title + Environment.NewLine + textResults;
-            //var csv = "\"" + title + "\"" + Environment.NewLine + csvResults;
-//            string html = string.Format("<table cellspacing='0' style='border-bottom: 0.5pt solid #000000;'><tr><td colspan='5'>{0}</td></tr>{1}{2}</table>", title, htmlHeader, htmlResults);
-
-//            long fragmentEnd = 301 + html.Length;
-//            long htmlEnd = fragmentEnd + 35;
-//            string CfHtml = string.Format(CfHtmlHeader, htmlEnd.ToString("0000000000"), fragmentEnd.ToString("0000000000"), html);
+            var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title);
             
             //Add the formats from richest formatting to least formatting
-//            _clipboard.AppendData(DataFormats.Html, CfHtml);
+            _clipboard.AppendData(DataFormats.Html, htmlResults);
             _clipboard.AppendData(DataFormats.CommaSeparatedValue, csvResults);
-            _clipboard.AppendData(DataFormats.UnicodeText, text);
+            _clipboard.AppendData(DataFormats.UnicodeText, textResults);
 
             _clipboard.Flush();
         }
