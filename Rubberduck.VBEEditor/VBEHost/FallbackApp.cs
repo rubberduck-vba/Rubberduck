@@ -12,7 +12,7 @@ namespace Rubberduck.VBEditor.VBEHost
         private readonly CommandBarButton _runButton;
 
         private const int DebugCommandBarId = 4;
-        private const int RunMacroCommand = 5415;
+        private const int RunMacroCommand = 186;
 
         public FallbackApp(VBE vbe)
         {
@@ -23,7 +23,6 @@ namespace Rubberduck.VBEditor.VBEHost
 
         public void Run(QualifiedMemberName qualifiedMemberName)
         {
-
             var component = qualifiedMemberName.QualifiedModuleName.Component;
             var line = component.CodeModule.get_ProcBodyLine(qualifiedMemberName.MemberName, vbext_ProcKind.vbext_pk_Proc);
 
@@ -31,6 +30,7 @@ namespace Rubberduck.VBEditor.VBEHost
             component.CodeModule.CodePane.ForceFocus();
 
             _runButton.Execute();
+            // note: this can't work... because the .Execute() call isn't blocking, so method returns before test method actually runs.
         }
 
         public TimeSpan TimedMethodCall(QualifiedMemberName qualifiedMemberName)

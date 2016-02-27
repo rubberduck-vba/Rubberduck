@@ -67,7 +67,7 @@ namespace Rubberduck.VBEditor.Extensions
                     switch (host_app_control.Caption)
                     {
                         case "Microsoft Excel":
-                            /*return new FallbackApp(vbe);//*/return new ExcelApp();
+                            return new ExcelApp();
                         case "Microsoft Access":
                             return new AccessApp();
                         case "Microsoft Word":
@@ -84,7 +84,7 @@ namespace Rubberduck.VBEditor.Extensions
                             return new CorelDRAWApp();
                     }
                 }
-                return null; //new FallbackApp(vbe);
+                return null;// new FallbackApp(vbe);
             }
 
             foreach (var reference in vbe.ActiveVBProject.References.Cast<Reference>()
@@ -93,7 +93,7 @@ namespace Rubberduck.VBEditor.Extensions
                 switch (reference.Name)
                 {
                     case "Excel":
-                        /*return new FallbackApp(vbe);//*/return new ExcelApp(vbe);
+                        return new ExcelApp(vbe);
                     case "Access":
                         return new AccessApp();
                     case "Word":
