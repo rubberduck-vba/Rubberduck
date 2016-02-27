@@ -14,5 +14,6 @@ namespace Rubberduck.Inspections
         QualifiedSelection QualifiedSelection { get; }
         IInspection Inspection { get; }
         string ToCsvString();
+        object[] ToArray();
     }
 }
