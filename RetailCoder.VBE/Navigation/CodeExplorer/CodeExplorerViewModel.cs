@@ -90,7 +90,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 .ToList();
 
             Projects = new ObservableCollection<CodeExplorerProjectViewModel>(userDeclarations.Select(grouping =>
-                new CodeExplorerProjectViewModel(grouping.First(declaration => declaration.DeclarationType == DeclarationType.Project), grouping)));
+                new CodeExplorerProjectViewModel(grouping.Single(declaration => declaration.DeclarationType == DeclarationType.Project), grouping)));
         }
 
         private void ParserState_ModuleStateChanged(object sender, Parsing.ParseProgressEventArgs e)
