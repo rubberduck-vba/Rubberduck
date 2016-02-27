@@ -2700,6 +2700,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Branch Name:.
+        /// </summary>
+        public static string SourceControl_BranchName {
+            get {
+                return ResourceManager.GetString("SourceControl_BranchName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string SourceControl_CancelGlobalSettings {

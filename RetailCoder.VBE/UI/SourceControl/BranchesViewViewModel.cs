@@ -11,6 +11,8 @@ namespace Rubberduck.UI.SourceControl
             _newBranchCommand = new DelegateCommand(_ => CreateBranch());
             _mergeBranchCommand = new DelegateCommand(_ => MergeBranch());
             _deleteBranchCommand = new DelegateCommand(_ => DeleteBranch());
+            _createBranchOkButtonCommand = new DelegateCommand(_ => CreateBranchOk());
+            _createBranchCancelButtonCommand = new DelegateCommand(_ => CreateBranchCancel());
         }
 
         private ObservableCollection<string> _localBranches;
@@ -55,8 +57,38 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        private bool _displayNewBranchGrid;
+        public bool DisplayNewBranchGrid
+        {
+            get { return _displayNewBranchGrid; }
+            set
+            {
+                if (_displayNewBranchGrid != value)
+                {
+                    _displayNewBranchGrid = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _newBranchName;
+        public string NewBranchName
+        {
+            get { return _newBranchName; }
+            set
+            {
+                if (_newBranchName != value)
+                {
+                    _newBranchName = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private void CreateBranch()
         {
+            DisplayNewBranchGrid = true;
+            NewBranchName = string.Empty;
         }
 
         private void MergeBranch()
@@ -65,6 +97,18 @@ namespace Rubberduck.UI.SourceControl
 
         private void DeleteBranch()
         {
+        }
+
+        private void CreateBranchOk()
+        {
+            DisplayNewBranchGrid = false;
+            NewBranchName = string.Empty;
+        }
+
+        private void CreateBranchCancel()
+        {
+            DisplayNewBranchGrid = false;
+            NewBranchName = string.Empty;
         }
 
         private readonly ICommand _newBranchCommand;
@@ -91,6 +135,24 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return _deleteBranchCommand;
+            }
+        }
+
+        private readonly ICommand _createBranchOkButtonCommand;
+        public ICommand CreateBranchOkButtonCommand
+        {
+            get
+            {
+                return _createBranchOkButtonCommand;
+            }
+        }
+
+        private readonly ICommand _createBranchCancelButtonCommand;
+        public ICommand CreateBranchCancelButtonCommand
+        {
+            get
+            {
+                return _createBranchCancelButtonCommand;
             }
         }
     }
