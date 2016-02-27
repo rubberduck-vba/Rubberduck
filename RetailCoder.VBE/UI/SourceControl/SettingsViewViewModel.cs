@@ -1,12 +1,34 @@
-﻿using System.Windows.Input;
+﻿using System.Diagnostics;
+using System.IO;
+using System.Windows.Forms;
+using System.Windows.Input;
+using Rubberduck.Settings;
 using Rubberduck.UI.Command;
+using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
     public class SettingsViewViewModel : ViewModelBase
     {
-        public SettingsViewViewModel()
+        private readonly ISourceControlProvider _provider;
+        private readonly IConfigurationService<SourceControlConfiguration> _configService;
+        private readonly IFolderBrowserFactory _folderBrowserFactory;
+        private readonly SourceControlConfiguration _config;
+
+        public SettingsViewViewModel(
+            ISourceControlProvider provider,
+            IConfigurationService<SourceControlConfiguration> configService,
+            IFolderBrowserFactory folderBrowserFactory)
         {
+            _provider = provider;
+            _configService = configService;
+            _folderBrowserFactory = folderBrowserFactory;
+            _config = _configService.LoadConfiguration();
+
+            UserName = _config.UserName;
+            EmailAddress = _config.EmailAddress;
+            DefaultRepositoryLocation = _config.DefaultRepositoryLocation;
+
             _showFilePickerCommand = new DelegateCommand(_ => ShowFilePicker());
             _cancelSettingsChangesCommand = new DelegateCommand(_ => CancelSettingsChanges());
             _updateSettingsCommand = new DelegateCommand(_ => UpdateSettings());
@@ -42,15 +64,15 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private string _defaultRepoLocation;
-        public string DefaultRepoLocation
+        private string _defaultRepositoryLocation;
+        public string DefaultRepositoryLocation
         {
-            get { return _defaultRepoLocation; }
+            get { return _defaultRepositoryLocation; }
             set
             {
-                if (_defaultRepoLocation != value)
+                if (_defaultRepositoryLocation != value)
                 {
-                    _defaultRepoLocation = value;
+                    _defaultRepositoryLocation = value;
                     OnPropertyChanged();
                 }
             }
@@ -58,22 +80,71 @@ namespace Rubberduck.UI.SourceControl
 
         private void ShowFilePicker()
         {
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser("Default Repository Directory"))
+            {
+                if (folderPicker.ShowDialog() == DialogResult.OK)
+                {
+                    DefaultRepositoryLocation = folderPicker.SelectedPath;
+                }
+            }
         }
 
         private void CancelSettingsChanges()
         {
+            UserName = _config.UserName;
+            EmailAddress = _config.EmailAddress;
+            DefaultRepositoryLocation = _config.DefaultRepositoryLocation;
         }
 
         private void UpdateSettings()
         {
+            _config.UserName = UserName;
+            _config.EmailAddress = EmailAddress;
+            _config.DefaultRepositoryLocation = DefaultRepositoryLocation;
+
+            _configService.SaveConfiguration(_config);
         }
 
         private void ShowGitIgnore()
         {
+            OpenFileInExternalEditor(GitSettingsFile.Ignore);
         }
 
         private void ShowGitAttributes()
         {
+            OpenFileInExternalEditor(GitSettingsFile.Attributes);
+        }
+
+        private void OpenFileInExternalEditor(GitSettingsFile fileType)
+        {
+            if (_provider == null)
+            {
+                return;
+            }
+
+            var fileName = string.Empty;
+            var defaultContents = string.Empty;
+            switch (fileType)
+            {
+                case GitSettingsFile.Ignore:
+                    fileName = ".gitignore";
+                    defaultContents = DefaultSettings.GitIgnoreText();
+                    break;
+                case GitSettingsFile.Attributes:
+                    fileName = ".gitattributes";
+                    defaultContents = DefaultSettings.GitAttributesText();
+                    break;
+            }
+
+            var repo = _provider.CurrentRepository;
+            var filePath = Path.Combine(repo.LocalLocation, fileName);
+
+            if (!File.Exists(filePath))
+            {
+                File.WriteAllText(filePath, defaultContents);
+            }
+
+            Process.Start(filePath);
         }
 
         private readonly ICommand _showFilePickerCommand;

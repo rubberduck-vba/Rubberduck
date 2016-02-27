@@ -34,7 +34,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBox Margin="5,0,0,0"
                                      Padding="2"
-                                     Text="{Binding DefaultRepoLocation, Mode=TwoWay}" />
+                                     Text="{Binding DefaultRepositoryLocation, Mode=TwoWay}" />
                             <Button Content="&#8230;"
                                     Margin="5,0"
                                     Grid.Column="1"
