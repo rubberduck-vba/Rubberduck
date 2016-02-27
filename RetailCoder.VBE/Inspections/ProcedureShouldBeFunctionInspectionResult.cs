@@ -3,21 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ProcedureShouldBeFunctionInspectionResult : CodeInspectionResultBase
+    public class ProcedureShouldBeFunctionInspectionResult : InspectionResultBase
     {
        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
        public ProcedureShouldBeFunctionInspectionResult(IInspection inspection, RubberduckParserState state, QualifiedContext<VBAParser.ArgListContext> argListQualifiedContext, QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext)
            : base(inspection,
-                string.Format(inspection.Description, subStmtQualifiedContext.Context.ambiguousIdentifier().GetText()),
                 subStmtQualifiedContext.ModuleName,
                 subStmtQualifiedContext.Context.ambiguousIdentifier())
         {
+           _target = state.AllUserDeclarations.Single(declaration => 
+               declaration.DeclarationType == DeclarationType.Procedure
+               && declaration.Context == subStmtQualifiedContext.Context);
+
             _quickFixes = new[]
             {
                 new ChangeProcedureToFunction(state, argListQualifiedContext, subStmtQualifiedContext, QualifiedSelection), 
@@ -25,6 +29,12 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        private readonly Declaration _target;
+        public override string Description
+        {
+            get { return string.Format(InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionResultFormat, _target.IdentifierName); }
+        }
     }
 
     public class ChangeProcedureToFunction : CodeInspectionQuickFix

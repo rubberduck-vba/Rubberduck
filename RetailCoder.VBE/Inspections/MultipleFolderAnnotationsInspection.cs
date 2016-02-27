@@ -8,15 +8,15 @@ namespace Rubberduck.Inspections
     public sealed class MultipleFolderAnnotationsInspection : InspectionBase
     {
         public MultipleFolderAnnotationsInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Error)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return InspectionsUI.MultipleFolderAnnotationsInspection; } }
+        public override string Meta { get { return InspectionsUI.MultipleFolderAnnotationsInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.MultipleFolderAnnotationsInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = UserDeclarations.Where(declaration =>
                  (declaration.DeclarationType == DeclarationType.Class
@@ -25,15 +25,20 @@ namespace Rubberduck.Inspections
                     annotation.StartsWith(Parsing.Grammar.Annotations.AnnotationMarker +
                                           Parsing.Grammar.Annotations.Folder)) > 1);
             return issues.Select(issue =>
-                new MultipleFolderAnnotationsInspectionResult(this, string.Format(Description, issue.ComponentName), issue));
+                new MultipleFolderAnnotationsInspectionResult(this, issue));
         }
     }
 
-    public class MultipleFolderAnnotationsInspectionResult : CodeInspectionResultBase
+    public class MultipleFolderAnnotationsInspectionResult : InspectionResultBase
     {
-        public MultipleFolderAnnotationsInspectionResult(IInspection inspection, string result, Declaration target) 
-            : base(inspection, result, target)
+        public MultipleFolderAnnotationsInspectionResult(IInspection inspection, Declaration target) 
+            : base(inspection, target)
         {
+        }
+
+        public override string Description
+        {
+            get { return string.Format(Inspection.Description, Target.IdentifierName); }
         }
     }
 }

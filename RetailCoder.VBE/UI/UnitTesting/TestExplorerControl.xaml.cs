@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Input;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -17,50 +15,34 @@ namespace Rubberduck.UI.UnitTesting
             DataContextChanged += TestExplorerControl_DataContextChanged;
         }
 
-        private void TestExplorerControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        void TestExplorerControl_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
         {
-            var oldValue = e.OldValue as TestExplorerViewModel;
-            if (oldValue != null)
+            var oldContext = e.OldValue as TestExplorerViewModel;
+            if (oldContext != null)
             {
-                oldValue.TestCompleted -= ViewModel_TestCompleted;
+                oldContext.TestCompleted -= OnTestCompleted;
             }
 
-            var newValue = e.NewValue as TestExplorerViewModel;
-            if (newValue == null)
+            var context = e.NewValue as TestExplorerViewModel;
+            if (context != null)
             {
-                return;
+                context.TestCompleted += OnTestCompleted;
             }
-
-            newValue.TestCompleted += ViewModel_TestCompleted;
         }
 
-        private void ViewModel_TestCompleted(object sender, EventArgs e)
+        private void OnTestCompleted(object sender, EventArgs eventArgs)
         {
-            UpdateOutcomeViewSource();
-        }
-
-        private TestExplorerViewModel Context { get { return DataContext as TestExplorerViewModel; } }
-
-        private void UpdateOutcomeViewSource()
-        {
-            var view = ((CollectionViewSource)Resources["OutcomeGroupViewSource"]).View;
-            view.Refresh();
-        }
-
-        private void TreeView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (Context == null)
+            try
             {
-                return;
+                var resource = FindResource("ResultsByOutcome") as CollectionViewSource;
+                if (resource != null)
+                {
+                    resource.View.Refresh();
+                }
             }
-
-            var selection = Context.SelectedItem;
-            if (selection == null)
+            catch (Exception)
             {
-                return;
             }
-
-            Context.NavigateCommand.Execute(selection.GetNavigationArgs());
         }
     }
 }

@@ -4,7 +4,6 @@ using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
@@ -19,10 +18,10 @@ namespace Rubberduck.Inspections
             : base(state)
         {
             _hostApp = vbe.HostApplication;
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.ImplicitActiveSheetReference_; } }
+        public override string Meta { get { return InspectionsUI.ImplicitActiveSheetReferenceInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ImplicitActiveSheetReferenceInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         private static readonly string[] Targets = 
@@ -30,11 +29,11 @@ namespace Rubberduck.Inspections
             "Cells", "Range", "Columns", "Rows"
         };
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             if (_hostApp().ApplicationName != "Excel")
             {
-                return new CodeInspectionResultBase[] {};
+                return new InspectionResultBase[] {};
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 
@@ -49,13 +48,15 @@ namespace Rubberduck.Inspections
         }
     }
 
-    public class ImplicitActiveSheetReferenceInspectionResult : CodeInspectionResultBase
+    public class ImplicitActiveSheetReferenceInspectionResult : InspectionResultBase
     {
+        private readonly string _result;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public ImplicitActiveSheetReferenceInspectionResult(IInspection inspection, string result, ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, result, qualifiedName, context)
+            : base(inspection, qualifiedName, context)
         {
+            _result = result;
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new IgnoreOnceQuickFix(context, QualifiedSelection, Inspection.AnnotationName), 
@@ -63,5 +64,10 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return _result; }
+        }
     }
 }

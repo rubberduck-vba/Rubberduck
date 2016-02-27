@@ -1,23 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteTypeHintInspectionResult : CodeInspectionResultBase
+    public class ObsoleteTypeHintInspectionResult : InspectionResultBase
     {
+        private readonly string _result;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public ObsoleteTypeHintInspectionResult(IInspection inspection, string result, QualifiedContext qualifiedContext, Declaration declaration)
-            : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
+            _result = result;
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new RemoveTypeHintsQuickFix(Context, QualifiedSelection, declaration), 
@@ -26,6 +28,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return _result; }
+        }
     }
 
     public class RemoveTypeHintsQuickFix : CodeInspectionQuickFix
@@ -33,7 +40,7 @@ namespace Rubberduck.Inspections
         private readonly Declaration _declaration;
 
         public RemoveTypeHintsQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration declaration)
-            : base(context, selection, RubberduckUI.Inspections_RemoveTypeHints)
+            : base(context, selection, InspectionsUI.RemoveTypeHintsQuickFix)
         {
             _declaration = declaration;
         }
@@ -72,13 +79,30 @@ namespace Rubberduck.Inspections
 
         private void FixTypeHintUsage(string hint, CodeModule module, Selection selection, bool isDeclaration = false)
         {
-            var line = module.get_Lines(selection.StartLine, 1);
+            var line = module.Lines[selection.StartLine, 1];
 
             var asTypeClause = ' ' + Tokens.As + ' ' + TypeHints[hint];
-            var pattern = "\\b" + _declaration.IdentifierName + "\\" + hint;
-            var fix = Regex.Replace(line, pattern, _declaration.IdentifierName + (isDeclaration ? asTypeClause : String.Empty));
 
-            module.ReplaceLine(selection.StartLine, fix);
+            string fix;
+
+            if (isDeclaration && (Context is VBAParser.FunctionStmtContext || Context is VBAParser.PropertyGetStmtContext))
+            {
+                var typeHint = (ParserRuleContext)Context.children.First(c => c is VBAParser.TypeHintContext);
+                var argList = (ParserRuleContext) Context.children.First(c => c is VBAParser.ArgListContext);
+                var endLine = argList.Stop.Line;
+                var endColumn = argList.Stop.Column;
+
+                var oldLine = module.Lines[endLine, selection.LineCount];
+                fix = oldLine.Insert(endColumn + 1, asTypeClause).Remove(typeHint.Start.Column, 1);  // adjust for VBA 0-based indexing
+
+                module.ReplaceLine(endLine, fix);
+            }
+            else
+            {
+                var pattern = "\\b" + _declaration.IdentifierName + "\\" + hint;
+                fix = Regex.Replace(line, pattern, _declaration.IdentifierName + (isDeclaration ? asTypeClause : string.Empty));
+                module.ReplaceLine(selection.StartLine, fix);
+            }
         }
     }
 }

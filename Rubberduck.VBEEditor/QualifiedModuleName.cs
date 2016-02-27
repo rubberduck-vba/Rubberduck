@@ -77,6 +77,8 @@ namespace Rubberduck.VBEditor
         private readonly string _componentName;
         public string ComponentName { get { return _componentName; } }
 
+        public string Name { get { return ToString(); } }
+
         public override string ToString()
         {
             return _component == null && string.IsNullOrEmpty(_projectName) ? string.Empty : _projectName + "." + _componentName;

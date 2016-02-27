@@ -12,16 +12,16 @@ namespace Rubberduck.Inspections
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public MoveFieldCloserToUsageInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
             _wrapperFactory = new CodePaneWrapperFactory();
-            Severity = CodeInspectionSeverity.Suggestion;
         }
 
+        public override string Meta { get { return InspectionsUI.MoveFieldCloserToUsageInspectionMeta; } }
         public override string Description { get { return InspectionsUI.MoveFieldCloserToUsageInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             return UserDeclarations
                 .Where(declaration =>
@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections
                     var firstReference = declaration.References.FirstOrDefault();
 
                     if (firstReference == null ||
-                        declaration.References.Any(r => r.ParentScope != firstReference.ParentScope))
+                        declaration.References.Any(r => r.ParentScoping != firstReference.ParentScoping))
                     {
                         return false;
                     }
@@ -60,7 +60,7 @@ namespace Rubberduck.Inspections
             var declarationTypes = new[] {DeclarationType.Function, DeclarationType.Procedure, DeclarationType.Property};
 
             return UserDeclarations.SingleOrDefault(d =>
-                        d.Scope == reference.ParentScope && declarationTypes.Contains(d.DeclarationType) &&
+                        reference.ParentScoping.Equals(d) && declarationTypes.Contains(d.DeclarationType) &&
                         d.Project == reference.QualifiedModuleName.Project);
         }
     }

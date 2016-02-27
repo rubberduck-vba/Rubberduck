@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -100,6 +101,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ExecuteRefreshCommand(object param)
         {
+            Debug.WriteLine("CodeExplorerViewModel.ExecuteRefreshCommand - requesting reparse");
             _state.OnParseRequested();
         }
     }

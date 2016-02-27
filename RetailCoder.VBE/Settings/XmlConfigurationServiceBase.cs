@@ -6,13 +6,23 @@ namespace Rubberduck.Settings
 {
     public abstract class XmlConfigurationServiceBase<T> : IConfigurationService<T>
     {
+        public event EventHandler LanguageChanged;
+        protected virtual void OnLanguageChanged(EventArgs e)
+        {
+            var handler = LanguageChanged;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
         public event EventHandler SettingsChanged;
         protected virtual void OnSettingsChanged(EventArgs e)
         {
             var handler = SettingsChanged;
             if (handler != null)
             {
-                SettingsChanged(this, e);
+                handler(this, e);
             }
         }
 
@@ -37,8 +47,10 @@ namespace Rubberduck.Settings
 
             if (languageChanged)
             {
-                OnSettingsChanged(EventArgs.Empty);
+                OnLanguageChanged(EventArgs.Empty);
             }
+
+            OnSettingsChanged(EventArgs.Empty);
         }
 
         /// <summary>

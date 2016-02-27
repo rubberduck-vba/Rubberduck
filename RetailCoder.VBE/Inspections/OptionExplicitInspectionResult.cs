@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class OptionExplicitInspectionResult : CodeInspectionResultBase
+    public class OptionExplicitInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
 
         public OptionExplicitInspectionResult(IInspection inspection, QualifiedModuleName qualifiedName) 
-            : base(inspection, string.Format(inspection.Description,qualifiedName.ComponentName), new CommentNode(string.Empty, new QualifiedSelection(qualifiedName, Selection.Home)))
+            : base(inspection, new CommentNode(string.Empty, Tokens.CommentMarker, new QualifiedSelection(qualifiedName, Selection.Home)))
         {
             _quickFixes = new[]
             {
@@ -22,12 +21,17 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return string.Format(InspectionsUI.OptionExplicitInspectionResultFormat, QualifiedName.ComponentName); }
+        }
     }
 
     public class OptionExplicitQuickFix : CodeInspectionQuickFix
     {
-        public OptionExplicitQuickFix(ParserRuleContext context, QualifiedSelection selection) 
-            : base(context, selection, RubberduckUI.Inspections_SpecifyOptionExplicit)
+        public OptionExplicitQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, InspectionsUI.OptionExplicitQuickFix)
         {
         }
 

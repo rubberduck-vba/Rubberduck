@@ -1,20 +1,19 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ParameterNotUsedInspectionResult : CodeInspectionResultBase
+    public class ParameterNotUsedInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ParameterNotUsedInspectionResult(IInspection inspection, string result,
-            ParserRuleContext context, QualifiedMemberName qualifiedName, bool isInterfaceImplementation, 
+        public ParameterNotUsedInspectionResult(IInspection inspection, Declaration declaration, bool isInterfaceImplementation, 
             RemoveParametersRefactoring refactoring, RubberduckParserState parseResult)
-            : base(inspection, result, qualifiedName.QualifiedModuleName, context)
+            : base(inspection, declaration)
         {
             _quickFixes = isInterfaceImplementation ? new CodeInspectionQuickFix[] {} : new CodeInspectionQuickFix[]
             {
@@ -24,6 +23,12 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            // bug NullReferenceException thrown here - null Target
+            get { return string.Format(InspectionsUI.ParameterNotUsedInspectionResultFormat, Target.IdentifierName); }
+        }
     }
 
     public class RemoveUnusedParameterQuickFix : CodeInspectionQuickFix
@@ -33,7 +38,7 @@ namespace Rubberduck.Inspections
 
         public RemoveUnusedParameterQuickFix(ParserRuleContext context, QualifiedSelection selection, 
             RemoveParametersRefactoring quickFixRefactoring, RubberduckParserState parseResult)
-            : base(context, selection, RubberduckUI.Inspections_RemoveUnusedParameter)
+            : base(context, selection, InspectionsUI.RemoveUnusedParameterQuickFix)
         {
             _quickFixRefactoring = quickFixRefactoring;
             _parseResult = parseResult;

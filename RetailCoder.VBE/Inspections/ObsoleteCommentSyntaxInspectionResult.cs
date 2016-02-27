@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
-using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteCommentSyntaxInspectionResult : CodeInspectionResultBase
+    public class ObsoleteCommentSyntaxInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public ObsoleteCommentSyntaxInspectionResult(IInspection inspection, CommentNode comment) 
-            : base(inspection, inspection.Description, comment)
+            : base(inspection, comment)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
@@ -26,6 +23,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return Inspection.Name; }
+        }
     }
 
     public class RemoveCommentQuickFix : CodeInspectionQuickFix
@@ -33,7 +35,7 @@ namespace Rubberduck.Inspections
         private readonly CommentNode _comment;
 
         public RemoveCommentQuickFix(ParserRuleContext context, QualifiedSelection selection, CommentNode comment)
-            : base(context, selection, RubberduckUI.Inspections_RemoveComment)
+            : base(context, selection, InspectionsUI.RemoveCommentQuickFix)
         {
             _comment = comment;
         }
@@ -74,7 +76,7 @@ namespace Rubberduck.Inspections
         private readonly CommentNode _comment;
 
         public ReplaceCommentMarkerQuickFix(ParserRuleContext context, QualifiedSelection selection, CommentNode comment)
-            : base(context, selection, RubberduckUI.Inspections_ReplaceRemWithSingleQuoteMarker)
+            : base(context, selection, InspectionsUI.ReplaceCommentMarkerQuickFix)
         {
             _comment = comment;
         }

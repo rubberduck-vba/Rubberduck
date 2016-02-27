@@ -9,11 +9,6 @@ using Rubberduck.Settings;
 
 namespace Rubberduck.Inspections
 {
-    public interface IInspectorFactory
-    {
-        IInspector Create();
-    }
-
     public class Inspector : IInspector, IDisposable
     {
         private readonly IGeneralConfigService _configService;
@@ -24,11 +19,11 @@ namespace Rubberduck.Inspections
             _inspections = inspections;
 
             _configService = configService;
-            configService.SettingsChanged += ConfigServiceSettingsChanged;
+            configService.LanguageChanged += ConfigServiceLanguageChanged;
             UpdateInspectionSeverity();
         }
 
-        private void ConfigServiceSettingsChanged(object sender, EventArgs e)
+        private void ConfigServiceLanguageChanged(object sender, EventArgs e)
         {
             UpdateInspectionSeverity();
         }
@@ -69,7 +64,7 @@ namespace Rubberduck.Inspections
                     {
                         token.ThrowIfCancellationRequested();
                         var inspectionResults = inspection.GetInspectionResults();
-                        var results = inspectionResults as IList<CodeInspectionResultBase> ?? inspectionResults.ToList();
+                        var results = inspectionResults as IList<InspectionResultBase> ?? inspectionResults.ToList();
 
                         if (results.Any())
                         {
@@ -103,7 +98,7 @@ namespace Rubberduck.Inspections
 
             if (_configService != null)
             {
-                _configService.SettingsChanged -= ConfigServiceSettingsChanged;
+                _configService.LanguageChanged -= ConfigServiceLanguageChanged;
             }
         }
     }

@@ -86,6 +86,12 @@ LibGit2Sharp is the library that has allowed us to integrate Git right into the 
 
 Which basically means it's a reimplementation of Git in C. It also [happens to be the technology Microsoft uses for their own Git integration with Visual Studio](http://www.hanselman.com/blog/GitSupportForVisualStudioGitTFSAndVSPutIntoContext.aspx).
 
+###[WPF Localization Using RESX Files](http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files)
+
+This library makes localizing WPF applications at runtime using resx files a breeze. Thank you [Grant Frisken](http://www.codeproject.com/script/Membership/View.aspx?mid=1079060)!
+
+> Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx).
+
 ##Icons
 
 We didn't come up with these icons ourselves! Here's who did what:
@@ -108,9 +114,3 @@ For more information, please see the EULAs in the [./Resources/Microsoft/ direct
 
  * [Visual Studio 2013 Image Library EULA](https://github.com/retailcoder/Rubberduck/blob/master/RetailCoder.VBE/Resources/Microsoft/Visual%20Studio%202013%20Image%20Library%20EULA.rtf)
  * [Visual Studio 2012 Image Library EULA](https://github.com/retailcoder/Rubberduck/blob/master/RetailCoder.VBE/Resources/Microsoft/Visual%20Studio%202012%20Image%20Library%20EULA.rtf)
-
-###[WPF Localization Using RESX Files](http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files)
-
-This library makes localizing WPF applications at runtime using resx files a breeze. Thank you [Grant Frisken](http://www.codeproject.com/script/Membership/View.aspx?mid=1079060)!
-
-> Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx).

@@ -9,12 +9,12 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    public class EncapsulatePublicFieldInspectionResult : CodeInspectionResultBase
+    public class EncapsulatePublicFieldInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public EncapsulatePublicFieldInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
-            : base(inspection, string.Format(inspection.Description, target.IdentifierName), target)
+            : base(inspection, target)
         {
             _quickFixes = new[]
             {
@@ -23,6 +23,11 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return string.Format(InspectionsUI.EncapsulatePublicFieldInspectionResultFormat, Target.IdentifierName); }
+        }
     }
 
     /// <summary>

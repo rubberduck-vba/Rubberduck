@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Annotations;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Properties;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 // ReSharper disable LocalizableElement
 
@@ -17,6 +19,11 @@ namespace Rubberduck.Common
     public static class DeclarationExtensions
     {
         private static readonly DeclarationIconCache Cache = new DeclarationIconCache();
+
+        public static string ToLocalizedString(this DeclarationType type)
+        {
+            return RubberduckUI.ResourceManager.GetString("DeclarationType_" + type);
+        }
 
         public static BitmapImage BitmapImage(this Declaration declaration)
         {

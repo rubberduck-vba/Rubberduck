@@ -19,7 +19,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Command.MenuItems;
+using Rubberduck.UI.Controls;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
@@ -67,6 +67,9 @@ namespace Rubberduck.Root
             Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>().InSingletonScope();
             Rebind<IRubberduckParser>().To<RubberduckParser>().InSingletonScope();
 
+            _kernel.Rebind<ISearchResultsWindowViewModel>().To<SearchResultsWindowViewModel>().InSingletonScope();
+            _kernel.Bind<SearchResultPresenterInstanceManager>().ToSelf().InSingletonScope();
+
             Bind<IPresenter>().To<TestExplorerDockablePresenter>()
                 .WhenInjectedInto<TestExplorerCommand>()
                 .InSingletonScope()
@@ -87,7 +90,7 @@ namespace Rubberduck.Root
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new ToDoExplorerWindow { ViewModel = _kernel.Get<ToDoExplorerViewModel>() });
 
-            BindWindowsHooks();
+            //BindWindowsHooks();
             Debug.Print("completed RubberduckModule.Load()");
         }
 

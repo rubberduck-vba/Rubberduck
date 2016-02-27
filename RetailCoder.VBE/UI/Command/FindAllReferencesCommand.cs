@@ -1,7 +1,14 @@
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Navigation;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command
 {
@@ -11,28 +18,98 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class FindAllReferencesCommand : CommandBase
     {
-        private readonly IDeclarationNavigator _service;
+        private readonly INavigateCommand _navigateCommand;
+        private readonly IMessageBox _messageBox;
+        private readonly RubberduckParserState _state;
+        private readonly ISearchResultsWindowViewModel _viewModel;
+        private readonly SearchResultPresenterInstanceManager _presenterService;
+        private readonly VBE _vbe;
 
-        public FindAllReferencesCommand([FindReferences] IDeclarationNavigator service)
+        public FindAllReferencesCommand(INavigateCommand navigateCommand, IMessageBox messageBox, RubberduckParserState state, VBE vbe, ISearchResultsWindowViewModel viewModel, SearchResultPresenterInstanceManager presenterService)
         {
-            _service = service;
+            _navigateCommand = navigateCommand;
+            _messageBox = messageBox;
+            _state = state;
+            _vbe = vbe;
+            _viewModel = viewModel;
+            _presenterService = presenterService;
         }
 
         public override void Execute(object parameter)
         {
-            if (parameter == null)
+            if (_state.Status != ParserState.Ready)
             {
-                _service.Find();
                 return;
             }
 
-            var declaration = (Declaration)parameter;
-            _service.Find(declaration);
-        }
-    }
+            var declaration = FindTarget(parameter);
+            if (declaration == null)
+            {
+                return;
+            }
 
-    [AttributeUsage(AttributeTargets.Parameter)]
-    public class FindReferencesAttribute : Attribute
-    {
+            var viewModel = CreateViewModel(declaration);
+            if (!viewModel.SearchResults.Any())
+            {
+                _messageBox.Show(string.Format(RubberduckUI.AllReferences_NoneFound, declaration.IdentifierName), RubberduckUI.Rubberduck, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            if (viewModel.SearchResults.Count == 1)
+            {
+                _navigateCommand.Execute(viewModel.SearchResults.Single().GetNavigationArgs());
+                return;
+            }
+
+            _viewModel.AddTab(viewModel);
+            _viewModel.SelectedTab = viewModel;
+
+            try
+            {
+                var presenter = _presenterService.Presenter(_viewModel);
+                presenter.Show();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        private SearchResultsViewModel CreateViewModel(Declaration declaration)
+        {
+            var results = declaration.References.Select(reference =>
+                new SearchResultItem(
+                    reference.ParentNonScoping,
+                    new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection), 
+                    reference.QualifiedModuleName.Component.CodeModule.get_Lines(reference.Selection.StartLine, 1).Trim()));
+            
+            var viewModel = new SearchResultsViewModel(_navigateCommand,
+                string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, declaration.IdentifierName), declaration, results);
+
+            return viewModel;
+        }
+
+        private Declaration FindTarget(object parameter)
+        {
+            var declaration = parameter as Declaration;
+            if (declaration == null)
+            {
+                var selection = _vbe.ActiveCodePane.GetSelection();
+                if (!selection.Equals(default(QualifiedSelection)))
+                {
+                    declaration = _state.AllUserDeclarations
+                        .SingleOrDefault(item => item.QualifiedName.QualifiedModuleName == selection.QualifiedName 
+                            && (item.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Selection)
+                                || 
+                                item.References.Any(reference => reference.Selection.ContainsFirstCharacter(selection.Selection))));
+                }
+
+                if (declaration == null)
+                {
+                    return null;
+                }
+            }
+            return declaration;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -8,17 +9,19 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    public class InspectionResultsViewModel : ViewModelBase
+    public class InspectionResultsViewModel : ViewModelBase, INavigateSelection
     {
         private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
@@ -28,6 +31,8 @@ namespace Rubberduck.UI.CodeInspections
 
         public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, IGeneralConfigService configService)
         {
+            _dispatcher = Dispatcher.CurrentDispatcher;
+
             _state = state;
             _inspector = inspector;
             _vbe = vbe;
@@ -40,20 +45,20 @@ namespace Rubberduck.UI.CodeInspections
             _quickFixInModuleCommand = new DelegateCommand(ExecuteQuickFixInModuleCommand);
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
+
+            _state.StateChanged += _state_StateChanged;
         }
 
-        private ObservableCollection<ICodeInspectionResult> _results;
-
+        private readonly ObservableCollection<ICodeInspectionResult> _results = new ObservableCollection<ICodeInspectionResult>();
         public ObservableCollection<ICodeInspectionResult> Results
         {
             get { return _results; } 
-            set { _results = value; OnPropertyChanged(); }
         }
 
-        private object _selectedItem;
         private CodeInspectionQuickFix _defaultFix;
 
-        public object SelectedItem
+        private INavigateSource _selectedItem;
+        public INavigateSource SelectedItem
         {
             get { return _selectedItem; }
             set
@@ -66,29 +71,13 @@ namespace Rubberduck.UI.CodeInspections
                 CanExecuteQuickFixInModule = false;
                 CanExecuteQuickFixInProject = false;
 
-                var inspectionResult = _selectedItem as CodeInspectionResultBase;
-
+                var inspectionResult = _selectedItem as InspectionResultBase;
                 if (inspectionResult != null)
                 {
                     SelectedInspection = inspectionResult.Inspection;
                     CanQuickFix = inspectionResult.HasQuickFixes;
                     _defaultFix = inspectionResult.DefaultQuickFix;
                     CanExecuteQuickFixInModule = _defaultFix != null && _defaultFix.CanFixInModule;
-                }
-                else
-                {
-                    var viewGroup = _selectedItem as CollectionViewGroup;
-                    if (viewGroup != null)
-                    {
-                        var grouping = viewGroup;
-                        var inspection = grouping.Name as IInspection;
-                        if (inspection != null)
-                        {
-                            SelectedInspection = inspection;
-                            var result = _results.FirstOrDefault(item => item.Inspection == inspection);
-                            _defaultFix = result == null ? null : result.DefaultQuickFix;
-                        }
-                    }
                 }
 
                 CanDisableInspection = SelectedInspection != null;
@@ -109,7 +98,7 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private readonly INavigateCommand _navigateCommand;
-        public ICommand NavigateCommand { get { return _navigateCommand; } }
+        public INavigateCommand NavigateCommand { get { return _navigateCommand; } }
 
         private readonly ICommand _refreshCommand;
         public ICommand RefreshCommand { get { return _refreshCommand; } }
@@ -157,8 +146,8 @@ namespace Rubberduck.UI.CodeInspections
 
             IsBusy = true;
 
-            _state.StateChanged += _state_StateChanged;
-            //_state.OnParseRequested();
+            Debug.WriteLine("InspectionResultsViewModel.ExecuteRefreshCommand - requesting reparse");
+            _state.OnParseRequested();
         }
 
         private bool CanExecuteRefreshCommand(object parameter)
@@ -174,12 +163,17 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             var results = await _inspector.FindIssuesAsync(_state, CancellationToken.None);
-            Results = new ObservableCollection<ICodeInspectionResult>(results);
-            CanRefresh = true;
-            IsBusy = false;
-            SelectedItem = null;
-
-            _state.StateChanged -= _state_StateChanged;
+            _dispatcher.Invoke(() =>
+            {
+                Results.Clear();
+                foreach (var codeInspectionResult in results)
+                {
+                    Results.Add(codeInspectionResult);
+                }
+                CanRefresh = true;
+                IsBusy = false;
+                SelectedItem = null;
+            });
         }
 
         private void ExecuteQuickFixes(IEnumerable<CodeInspectionQuickFix> quickFixes)
@@ -223,7 +217,7 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            var selectedResult = SelectedItem as CodeInspectionResultBase;
+            var selectedResult = SelectedItem as InspectionResultBase;
             if (selectedResult == null)
             {
                 return;
@@ -261,6 +255,8 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private bool _canDisableInspection;
+        private readonly Dispatcher _dispatcher;
+
         public bool CanDisableInspection
         {
             get { return _canDisableInspection; }

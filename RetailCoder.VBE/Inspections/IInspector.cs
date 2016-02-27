@@ -13,10 +13,10 @@ namespace Rubberduck.Inspections
 
     public class InspectorIssuesFoundEventArg : EventArgs
     {
-        private readonly IList<CodeInspectionResultBase> _issues;
-        public IList<CodeInspectionResultBase> Issues { get { return _issues; } }
+        private readonly IList<InspectionResultBase> _issues;
+        public IList<InspectionResultBase> Issues { get { return _issues; } }
 
-        public InspectorIssuesFoundEventArg(IList<CodeInspectionResultBase> issues)
+        public InspectorIssuesFoundEventArg(IList<InspectionResultBase> issues)
         {
             _issues = issues;
         }

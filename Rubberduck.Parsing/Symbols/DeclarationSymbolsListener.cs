@@ -17,6 +17,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly Declaration _projectDeclaration;
 
         private string _currentScope;
+        private Declaration _currentScopeDeclaration;
         private Declaration _parentDeclaration;
 
         private readonly IEnumerable<CommentNode> _comments;
@@ -41,20 +42,18 @@ namespace Rubberduck.Parsing.Symbols
 
             _projectDeclaration = new Declaration(
                 projectQualifiedName.QualifyMemberName(project.Name),
-                null, null, project.Name, false, false, Accessibility.Implicit, DeclarationType.Project, false);
+                null, (Declaration)null, project.Name, false, false, Accessibility.Implicit, DeclarationType.Project, null, Selection.Home, false);
 
             _moduleDeclaration = new Declaration(
                 _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
                 _projectDeclaration,
-                _qualifiedName.Project.Name,
+                _projectDeclaration,
                 _qualifiedName.Component.Name,
                 false, 
                 false,
                 componentAccessibility,
                 declarationType,
-                null,
-                Selection.Home,
-                false, 
+                null, Selection.Home, false,
                 FindAnnotations());
 
             SetCurrentScope();
@@ -136,7 +135,7 @@ namespace Rubberduck.Parsing.Symbols
             // using dynamic typing here, because not only MSForms could have a Controls collection (e.g. MS-Access forms are 'document' modules).
             foreach (var control in ((dynamic)designer).Controls)
             {
-                var declaration = new Declaration(_qualifiedName.QualifyMemberName(control.Name), _parentDeclaration, _currentScope, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home);
+                var declaration = new Declaration(_qualifiedName.QualifyMemberName(control.Name), _parentDeclaration, _currentScopeDeclaration, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home);
                 OnNewDeclaration(declaration);
             }
         }
@@ -144,7 +143,7 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration CreateDeclaration(string identifierName, string asTypeName, Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool selfAssigned = false, bool withEvents = false)
         {
             var annotations = FindAnnotations(selection.StartLine);
-            var result = new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScope, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations);
+            var result = new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations);
 
             OnNewDeclaration(result);
             return result;
@@ -180,6 +179,7 @@ namespace Rubberduck.Parsing.Symbols
         private void SetCurrentScope()
         {
             _currentScope = _qualifiedName.ToString();
+            _currentScopeDeclaration = _moduleDeclaration;
             _parentDeclaration = _moduleDeclaration;
         }
 
@@ -191,6 +191,7 @@ namespace Rubberduck.Parsing.Symbols
         private void SetCurrentScope(Declaration procedureDeclaration, string name)
         {
             _currentScope = _qualifiedName + "." + name;
+            _currentScopeDeclaration = procedureDeclaration;
             _parentDeclaration = procedureDeclaration;
         }
 

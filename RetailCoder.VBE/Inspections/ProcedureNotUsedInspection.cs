@@ -5,7 +5,6 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -15,13 +14,13 @@ namespace Rubberduck.Inspections
         public ProcedureNotUsedInspection(RubberduckParserState state)
             : base(state)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.ProcedureNotUsed_; } }
+        public override string Meta { get { return InspectionsUI.ProcedureNotUsedInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ProcedureNotUsedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var declarations = UserDeclarations.ToList();
 
@@ -47,7 +46,7 @@ namespace Rubberduck.Inspections
                 .Where(item => !IsIgnoredDeclaration(declarations, item, handlers, classes, modules))
                 .Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
 
-            issues = DocumentNames.DocumentEventHandlerPrefixes.Aggregate(issues, (current, item) => current.Where(issue => !issue.Name.Contains("'" + item)));
+            issues = DocumentNames.DocumentEventHandlerPrefixes.Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains("'" + item)));
 
             return issues.ToList();
         }

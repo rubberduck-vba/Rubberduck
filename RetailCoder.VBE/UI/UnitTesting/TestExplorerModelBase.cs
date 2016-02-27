@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
 using Rubberduck.Parsing.Reflection;
-using Rubberduck.Reflection;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
@@ -41,6 +40,7 @@ namespace Rubberduck.UI.UnitTesting
                 : _tests.Any(t => t.Result.Outcome == TestOutcome.Inconclusive) 
                     ? Colors.Gold
                     : Colors.LimeGreen;
+            
         }
 
         private int _executedCount;
@@ -79,6 +79,7 @@ namespace Rubberduck.UI.UnitTesting
         }
 
         private bool _isReady = true;
+
         public bool IsReady
         {
             get { return _isReady; }

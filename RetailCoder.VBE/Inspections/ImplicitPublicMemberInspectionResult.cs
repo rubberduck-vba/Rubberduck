@@ -1,50 +1,56 @@
-using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ImplicitPublicMemberInspectionResult : CodeInspectionResultBase
+    public class ImplicitPublicMemberInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ImplicitPublicMemberInspectionResult(IInspection inspection, string result, QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
+        public ImplicitPublicMemberInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration item)
+            : base(inspection, item)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {
-                new SpecifyExplicitPublicModifierQuickFix(Context, QualifiedSelection), 
+                new SpecifyExplicitPublicModifierQuickFix(qualifiedContext.Context, QualifiedSelection), 
                 new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.ImplicitPublicMemberInspectionResultFormat, Target.IdentifierName);
+            }
+        }
     }
 
     public class SpecifyExplicitPublicModifierQuickFix : CodeInspectionQuickFix
     {
         public SpecifyExplicitPublicModifierQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, RubberduckUI.Inspections_SpecifyPublicModifierExplicitly)
+            : base(context, selection, InspectionsUI.SpecifyExplicitPublicModifierQuickFix)
         {
         }
 
         public override void Fix()
         {
-            var oldContent = Context.GetText();
+            var selection = Context.GetSelection();
+            var module = Selection.QualifiedName.Component.CodeModule;
+
+            var signatureLine = selection.StartLine;
+
+            var oldContent = module.get_Lines(signatureLine, 1);
             var newContent = Tokens.Public + ' ' + oldContent;
 
-            var selection = Selection.Selection;
-
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var lines = module.get_Lines(selection.StartLine, selection.LineCount);
-
-            var result = lines.Replace(oldContent, newContent);
-            module.DeleteLines(selection.StartLine, selection.LineCount);
-            module.InsertLines(selection.StartLine, result);
+            module.DeleteLines(signatureLine);
+            module.InsertLines(signatureLine, newContent);
         }
     }
 }

@@ -4,19 +4,18 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ParameterCanBeByValInspection : InspectionBase
     {
         public ParameterCanBeByValInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public override string Description { get { return RubberduckUI.ParameterCanBeByVal_; } }
+        public override string Meta { get { return InspectionsUI.ParameterCanBeByValInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ParameterCanBeByValInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         // if we don't want to suggest passing non-primitive types ByRef (i.e. object types and Variant), then we need this:
@@ -36,7 +35,7 @@ namespace Rubberduck.Inspections
             Tokens.StrPtr
         };
 
-        public override IEnumerable<CodeInspectionResultBase> GetInspectionResults()
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var declarations = UserDeclarations.ToList();
 
@@ -65,7 +64,7 @@ namespace Rubberduck.Inspections
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, string.Format(Description, issue.IdentifierName), ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName));
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue));
 
             return issues;
         }
@@ -78,7 +77,7 @@ namespace Rubberduck.Inspections
             var items = declarations as List<Declaration> ?? declarations.ToList();
 
             var procedureCalls = items.Where(item => item.DeclarationType.HasFlag(DeclarationType.Member))
-                .SelectMany(member => member.References.Where(reference => reference.ParentScope == parameter.ParentScope))
+                .SelectMany(member => member.References.Where(reference => reference.ParentScoping.Equals(parameter.ParentScopeDeclaration)))
                 .GroupBy(call => call.Declaration)
                 .ToList(); // only check a procedure once. its declaration doesn't change if it's called 20 times anyway.
 

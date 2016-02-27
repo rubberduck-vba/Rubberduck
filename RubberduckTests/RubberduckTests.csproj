@@ -27,6 +27,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -56,8 +57,12 @@
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -74,11 +79,13 @@
   <ItemGroup>
     <Compile Include="ComponentTypeExtensionTests.cs" />
     <Compile Include="ConfigurationTests.cs" />
+    <Compile Include="Grammar\VBAParserTests.cs" />
     <Compile Include="Inspections\EncapsulatePublicFieldInspectionTests.cs" />
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspectionTests.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionTests.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteTypeHintInspectionTests.cs" />
     <Compile Include="Inspections\OptionBaseInspectionTests.cs" />
     <Compile Include="Inspections\ProcedureShouldBeFunctionInspectionTests.cs" />
     <Compile Include="Inspections\UseMeaningfulNameInspectionTests.cs" />
@@ -106,6 +113,7 @@
     <Compile Include="Mocks\MockUserFormBuilder.cs" />
     <Compile Include="Mocks\MockVbeBuilder.cs" />
     <Compile Include="Mocks\MockWindowsCollection.cs" />
+    <Compile Include="MultiAssert.cs" />
     <Compile Include="Refactoring\EncapsulateFieldTests.cs" />
     <Compile Include="Refactoring\ExtractMethodTests.cs" />
     <Compile Include="Refactoring\IntroduceFieldTests.cs" />
@@ -115,6 +123,12 @@
     <Compile Include="Refactoring\RenameTests.cs" />
     <Compile Include="Refactoring\ReorderParametersTests.cs" />
     <Compile Include="RubberduckParserTests.cs" />
+    <Compile Include="Settings\InspectionSettingsTests.cs" />
+    <Compile Include="Settings\GeneralSettingsTests.cs" />
+    <Compile Include="Settings\IndenterSettingsTests.cs" />
+    <Compile Include="Settings\SettingsControlTests.cs" />
+    <Compile Include="Settings\TodoSettingsTests.cs" />
+    <Compile Include="Settings\UnitTestSettingsTests.cs" />
     <Compile Include="SourceControlConfig.cs" />
     <Compile Include="SourceControl\BranchesPresenterTests.cs" />
     <Compile Include="SourceControl\ChangesPresenterTests.cs" />
@@ -140,6 +154,10 @@
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
       <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
+      <Project>{b9c0bf22-4d8a-4bf4-89f9-e789c0063deb}</Project>
+      <Name>Rubberduck.SmartIndenter</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
       <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
