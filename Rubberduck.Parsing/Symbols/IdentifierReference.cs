@@ -116,27 +116,18 @@ namespace Rubberduck.Parsing.Symbols
                 return false;
             }
 
-            try
-            {
-                var method = Context.Parent.GetType().GetMethod("typeHint");
-                if (method == null)
-                {
-                    token = null;
-                    _hasTypeHint = false;
-                    return false;
-                }
-
-                var hint = ((dynamic)Context.Parent).typeHint() as VBAParser.TypeHintContext;
-                token = hint == null ? null : hint.GetText();
-                _hasTypeHint = hint != null;
-                return _hasTypeHint.Value;
-            }
-            catch (RuntimeBinderException)
+            var method = Context.Parent.GetType().GetMethod("typeHint");
+            if (method == null)
             {
                 token = null;
                 _hasTypeHint = false;
                 return false;
             }
+
+            var hint = ((dynamic)Context.Parent).typeHint() as VBAParser.TypeHintContext;
+            token = hint == null ? null : hint.GetText();
+            _hasTypeHint = hint != null;
+            return _hasTypeHint.Value;
         }
 
         public bool IsSelected(QualifiedSelection selection)

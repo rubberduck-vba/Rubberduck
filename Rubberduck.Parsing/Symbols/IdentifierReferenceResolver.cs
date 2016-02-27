@@ -728,7 +728,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var identifierContext = context.ambiguousIdentifier();
             var member = _declarations.Where(d => d.IdentifierName == identifierContext.GetText())
-                .SingleOrDefault(item => item.ComponentName == parentType.ComponentName);
+                .SingleOrDefault(item => item.QualifiedName.QualifiedModuleName == parentType.QualifiedName.QualifiedModuleName);
 
             if (member != null)
             {

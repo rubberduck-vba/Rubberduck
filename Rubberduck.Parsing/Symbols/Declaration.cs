@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
-using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
@@ -234,15 +233,8 @@ namespace Rubberduck.Parsing.Symbols
                 return false;
             }
 
-            try
-            {
-                var declaration = (dynamic)Context;
-                return declaration.LPAREN() != null && declaration.RPAREN() != null;
-            }
-            catch (RuntimeBinderException)
-            {
-                return false;
-            }
+            var declaration = (dynamic)Context;
+            return declaration.LPAREN() != null && declaration.RPAREN() != null;
         }
 
         private bool? _isTypeSpecified;
@@ -281,15 +273,12 @@ namespace Rubberduck.Parsing.Symbols
                 return false;
             }
 
-            try
+            if (HasTypeHint())
             {
-                var asType = ((dynamic)Context).asTypeClause() as VBAParser.AsTypeClauseContext;
-                return asType != null || HasTypeHint();
+                return true;
             }
-            catch (RuntimeBinderException)
-            {
-                return false;
-            }
+
+            return ((dynamic)Context).asTypeClause() is VBAParser.AsTypeClauseContext;
         }
 
         private bool? _hasTypeHint;
@@ -337,17 +326,9 @@ namespace Rubberduck.Parsing.Symbols
                 return false;
             }
 
-            try
-            {
-                var hint = ((dynamic)Context).typeHint() as VBAParser.TypeHintContext;
-                token = hint == null ? null : hint.GetText();
-                return hint != null;
-            }
-            catch (RuntimeBinderException)
-            {
-                token = null;
-                return false;
-            }
+            var hint = ((dynamic)Context).typeHint() as VBAParser.TypeHintContext;
+            token = hint == null ? null : hint.GetText();
+            return hint != null;
         }
 
         public bool IsSelected(QualifiedSelection selection)
