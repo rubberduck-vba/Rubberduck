@@ -30,6 +30,10 @@ namespace Rubberduck.UI.Settings
             };
 
             SelectedSettingsView = SettingsViews.First(v => v.View == activeView);
+
+            _okButtonCommand = new DelegateCommand(_ => SaveAndCloseWindow());
+            _cancelButtonCommand = new DelegateCommand(_ => CloseWindow());
+            _resetButtonCommand = new DelegateCommand(_ => ResetSettings());
         }
 
         private ObservableCollection<SettingsView> _settingsViews;
@@ -75,73 +79,51 @@ namespace Rubberduck.UI.Settings
             _configService.SaveConfiguration(_config, _config.UserSettings.GeneralSettings.Language.Code != oldLangCode);
         }
 
-        public event EventHandler OnOKButtonClicked;
-        public event EventHandler OnCancelButtonClicked;
+        private void CloseWindow()
+        {
+            var handler = OnWindowClosed;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
 
-        #region Commands
+        private void SaveAndCloseWindow()
+        {
+            SaveConfig();
+            CloseWindow();
+        }
 
-        private ICommand _okButtonCommand;
+        private void ResetSettings()
+        {
+            var defaultConfig = _configService.GetDefaultConfiguration();
+            foreach (var vm in SettingsViews.Select(v => v.Control.ViewModel))
+            {
+                vm.SetToDefaults(defaultConfig);
+            }
+        }
+
+        public event EventHandler OnWindowClosed;
+
+        private readonly ICommand _okButtonCommand;
         public ICommand OKButtonCommand
         {
             get
             {
-                if (_okButtonCommand != null)
-                {
-                    return _okButtonCommand;
-                }
-                return _okButtonCommand = new DelegateCommand(_ =>
-                {
-                    SaveConfig();
-
-                    var handler = OnOKButtonClicked;
-                    if (handler != null)
-                    {
-                        handler(this, EventArgs.Empty);
-                    }
-                });
+                return _okButtonCommand;
             }
         }
 
-        private ICommand _cancelButtonCommand;
+        private readonly ICommand _cancelButtonCommand;
         public ICommand CancelButtonCommand
         {
-            get
-            {
-                if (_cancelButtonCommand != null)
-                {
-                    return _cancelButtonCommand;
-                }
-                return _cancelButtonCommand = new DelegateCommand(_ =>
-                {
-                    var handler = OnCancelButtonClicked;
-                    if (handler != null)
-                    {
-                        handler(this, EventArgs.Empty);
-                    }
-                });
-            }
+            get { return _cancelButtonCommand; }
         }
 
-        private ICommand _resetButtonCommand;
+        private readonly ICommand _resetButtonCommand;
         public ICommand ResetButtonCommand
         {
-            get
-            {
-                if (_resetButtonCommand != null)
-                {
-                    return _resetButtonCommand;
-                }
-                return _resetButtonCommand = new DelegateCommand(_ =>
-                {
-                    var defaultConfig = _configService.GetDefaultConfiguration();
-                    foreach (var vm in SettingsViews.Select(v => v.Control.ViewModel))
-                    {
-                        vm.SetToDefaults(defaultConfig);
-                    }
-                });
-            }
+            get { return _resetButtonCommand; }
         }
-
-        #endregion
     }
 }
