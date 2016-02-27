@@ -112,7 +112,7 @@
                                     Command="{Binding CreateBranchOkButtonCommand}">
                                 <Button.MinWidth>
                                     <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                        <Binding ElementName="CreateBranchCancelButton" Path="ActualWidth"  />
+                                        <Binding ElementName="CreateBranchCancelButton" Path="ActualWidth" />
                                     </MultiBinding>
                                 </Button.MinWidth>
                             </Button>
@@ -124,7 +124,7 @@
                                     Command="{Binding CreateBranchCancelButtonCommand}">
                                 <Button.MinWidth>
                                     <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                        <Binding ElementName="CreateBranchOkButton" Path="ActualWidth"  />
+                                        <Binding ElementName="CreateBranchOkButton" Path="ActualWidth" />
                                     </MultiBinding>
                                 </Button.MinWidth>
                             </Button>
@@ -142,7 +142,8 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
                             <StackPanel>
-                                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_SourceLabel}" />
+                                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_SourceLabel}"
+                                       FontWeight="SemiBold" />
                                 <ComboBox ItemsSource="{Binding LocalBranches}"
                                           SelectedItem="{Binding SourceBranch, Mode=TwoWay}" />
                             </StackPanel>
@@ -152,7 +153,8 @@
                                    Grid.Column="1"
                                    VerticalAlignment="Bottom" />
                             <StackPanel Grid.Column="2">
-                                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DestinationLabel}" />
+                                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DestinationLabel}"
+                                       FontWeight="SemiBold" />
                                 <ComboBox ItemsSource="{Binding LocalBranches}"
                                           SelectedItem="{Binding DestinationBranch, Mode=TwoWay}" />
                             </StackPanel>
@@ -167,7 +169,6 @@
                                     Command="{Binding MergeBranchesOkButtonCommand}">
                                 <Button.MinWidth>
                                     <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                        <Binding ElementName="MergeBranchesOkButton" Path="ActualWidth" />
                                         <Binding ElementName="MergeBranchesCancelButton" Path="ActualWidth" />
                                     </MultiBinding>
                                 </Button.MinWidth>
@@ -181,7 +182,44 @@
                                 <Button.MinWidth>
                                     <MultiBinding Converter="{StaticResource EqualWidthConverter}">
                                         <Binding ElementName="MergeBranchesOkButton" Path="ActualWidth" />
-                                        <Binding ElementName="MergeBranchesCancelButton" Path="ActualWidth" />
+                                    </MultiBinding>
+                                </Button.MinWidth>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Visibility="{Binding DisplayDeleteBranchGrid, Converter={StaticResource BoolToVisibility}}">
+                    <StackPanel VerticalAlignment="Top"
+                                Margin="10,5">
+                        <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DeleteBranchTitleLable}"
+                               FontWeight="SemiBold" />
+                        <ComboBox ItemsSource="{Binding LocalBranches}"
+                                          SelectedItem="{Binding BranchToDelete, Mode=TwoWay}" />
+
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,10,0,0">
+                            <Button Name="DeleteBranchOkButton"
+                                    Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
+                                    HorizontalAlignment="Left"
+                                    Padding="5"
+                                    Command="{Binding DeleteBranchOkButtonCommand}">
+                                <Button.MinWidth>
+                                    <MultiBinding Converter="{StaticResource EqualWidthConverter}">
+                                        <Binding ElementName="DeleteBranchCancelButton" Path="ActualWidth" />
+                                    </MultiBinding>
+                                </Button.MinWidth>
+                            </Button>
+                            <Button Name="DeleteBranchCancelButton"
+                                    Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                                    HorizontalAlignment="Left"
+                                    Margin="10,0,0,0"
+                                    Padding="5"
+                                    Command="{Binding DeleteBranchCancelButtonCommand}">
+                                <Button.MinWidth>
+                                    <MultiBinding Converter="{StaticResource EqualWidthConverter}">
+                                        <Binding ElementName="DeleteBranchOkButton" Path="ActualWidth" />
                                     </MultiBinding>
                                 </Button.MinWidth>
                             </Button>

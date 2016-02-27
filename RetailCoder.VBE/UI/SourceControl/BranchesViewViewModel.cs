@@ -17,6 +17,9 @@ namespace Rubberduck.UI.SourceControl
 
             _mergeBranchesOkButtonCommand = new DelegateCommand(_ => MergeBranchOk());
             _mergeBranchesCancelButtonCommand = new DelegateCommand(_ => MergeBranchCancel());
+
+            _deleteBranchOkButtonCommand = new DelegateCommand(_ => DeleteBranchOk());
+            _deleteBranchCancelButtonCommand = new DelegateCommand(_ => DeleteBranchCancel());
         }
 
         private ObservableCollection<string> _localBranches;
@@ -131,9 +134,38 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        private bool _displayDeleteBranchGrid;
+        public bool DisplayDeleteBranchGrid
+        {
+            get { return _displayDeleteBranchGrid; }
+            set
+            {
+                if (_displayDeleteBranchGrid != value)
+                {
+                    _displayDeleteBranchGrid = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _branchToDelete;
+        public string BranchToDelete
+        {
+            get { return _branchToDelete; }
+            set
+            {
+                if (_branchToDelete != value)
+                {
+                    _branchToDelete = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private void CreateBranch()
         {
             DisplayMergeBranchesGrid = false;
+            DisplayDeleteBranchGrid = false;
 
             DisplayCreateBranchGrid = true;
             NewBranchName = string.Empty;
@@ -142,12 +174,17 @@ namespace Rubberduck.UI.SourceControl
         private void MergeBranch()
         {
             DisplayCreateBranchGrid = false;
+            DisplayDeleteBranchGrid = false;
 
             DisplayMergeBranchesGrid = true;
         }
 
         private void DeleteBranch()
         {
+            DisplayCreateBranchGrid = false;
+            DisplayMergeBranchesGrid = false;
+
+            DisplayDeleteBranchGrid = true;
         }
 
         private void CreateBranchOk()
@@ -170,6 +207,16 @@ namespace Rubberduck.UI.SourceControl
         private void MergeBranchCancel()
         {
             DisplayMergeBranchesGrid = false;
+        }
+
+        private void DeleteBranchOk()
+        {
+            DisplayDeleteBranchGrid = false;
+        }
+
+        private void DeleteBranchCancel()
+        {
+            DisplayDeleteBranchGrid = false;
         }
 
         private readonly ICommand _newBranchCommand;
@@ -232,6 +279,24 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return _mergeBranchesCancelButtonCommand;
+            }
+        }
+
+        private readonly ICommand _deleteBranchOkButtonCommand;
+        public ICommand DeleteBranchOkButtonCommand
+        {
+            get
+            {
+                return _deleteBranchOkButtonCommand;
+            }
+        }
+
+        private readonly ICommand _deleteBranchCancelButtonCommand;
+        public ICommand DeleteBranchCancelButtonCommand
+        {
+            get
+            {
+                return _deleteBranchCancelButtonCommand;
             }
         }
     }
