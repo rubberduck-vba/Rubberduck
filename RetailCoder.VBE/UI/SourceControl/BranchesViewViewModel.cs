@@ -11,8 +11,12 @@ namespace Rubberduck.UI.SourceControl
             _newBranchCommand = new DelegateCommand(_ => CreateBranch());
             _mergeBranchCommand = new DelegateCommand(_ => MergeBranch());
             _deleteBranchCommand = new DelegateCommand(_ => DeleteBranch());
+
             _createBranchOkButtonCommand = new DelegateCommand(_ => CreateBranchOk());
             _createBranchCancelButtonCommand = new DelegateCommand(_ => CreateBranchCancel());
+
+            _mergeBranchesOkButtonCommand = new DelegateCommand(_ => MergeBranchOk());
+            _mergeBranchesCancelButtonCommand = new DelegateCommand(_ => MergeBranchCancel());
         }
 
         private ObservableCollection<string> _localBranches;
@@ -57,15 +61,15 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private bool _displayNewBranchGrid;
-        public bool DisplayNewBranchGrid
+        private bool _displayCreateBranchGrid;
+        public bool DisplayCreateBranchGrid
         {
-            get { return _displayNewBranchGrid; }
+            get { return _displayCreateBranchGrid; }
             set
             {
-                if (_displayNewBranchGrid != value)
+                if (_displayCreateBranchGrid != value)
                 {
-                    _displayNewBranchGrid = value;
+                    _displayCreateBranchGrid = value;
                     OnPropertyChanged();
                 }
             }
@@ -85,14 +89,61 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        private bool _displayMergeBranchesGrid;
+        public bool DisplayMergeBranchesGrid
+        {
+            get { return _displayMergeBranchesGrid; }
+            set
+            {
+                if (_displayMergeBranchesGrid != value)
+                {
+                    _displayMergeBranchesGrid = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _sourceBranch;
+        public string SourceBranch
+        {
+            get { return _sourceBranch; }
+            set
+            {
+                if (_sourceBranch != value)
+                {
+                    _sourceBranch = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _destinationBranch;
+        public string DestinationBranch
+        {
+            get { return _destinationBranch; }
+            set
+            {
+                if (_destinationBranch != value)
+                {
+                    _destinationBranch = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private void CreateBranch()
         {
-            DisplayNewBranchGrid = true;
+            DisplayMergeBranchesGrid = false;
+
+            DisplayCreateBranchGrid = true;
             NewBranchName = string.Empty;
         }
 
         private void MergeBranch()
         {
+            DisplayCreateBranchGrid = false;
+
+            DisplayMergeBranchesGrid = true;
         }
 
         private void DeleteBranch()
@@ -101,14 +152,24 @@ namespace Rubberduck.UI.SourceControl
 
         private void CreateBranchOk()
         {
-            DisplayNewBranchGrid = false;
+            DisplayCreateBranchGrid = false;
             NewBranchName = string.Empty;
         }
 
         private void CreateBranchCancel()
         {
-            DisplayNewBranchGrid = false;
+            DisplayCreateBranchGrid = false;
             NewBranchName = string.Empty;
+        }
+
+        private void MergeBranchOk()
+        {
+            DisplayMergeBranchesGrid = false;
+        }
+
+        private void MergeBranchCancel()
+        {
+            DisplayMergeBranchesGrid = false;
         }
 
         private readonly ICommand _newBranchCommand;
@@ -153,6 +214,24 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return _createBranchCancelButtonCommand;
+            }
+        }
+
+        private readonly ICommand _mergeBranchesOkButtonCommand;
+        public ICommand MergeBranchesOkButtonCommand
+        {
+            get
+            {
+                return _mergeBranchesOkButtonCommand;
+            }
+        }
+
+        private readonly ICommand _mergeBranchesCancelButtonCommand;
+        public ICommand MergeBranchesCancelButtonCommand
+        {
+            get
+            {
+                return _mergeBranchesCancelButtonCommand;
             }
         }
     }
