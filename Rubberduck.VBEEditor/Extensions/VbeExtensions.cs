@@ -56,7 +56,7 @@ namespace Rubberduck.VBEditor.Extensions
             {
                 const int ctl_view_host = 106;
 
-                CommandBarControl host_app_control = vbe.CommandBars.FindControl(MsoControlType.msoControlButton, ctl_view_host);
+                var host_app_control = vbe.CommandBars.FindControl(MsoControlType.msoControlButton, ctl_view_host);
 
                 if (host_app_control == null)
                 {
@@ -67,7 +67,7 @@ namespace Rubberduck.VBEditor.Extensions
                     switch (host_app_control.Caption)
                     {
                         case "Microsoft Excel":
-                            return new ExcelApp();
+                            /*return new FallbackApp(vbe);//*/return new ExcelApp();
                         case "Microsoft Access":
                             return new AccessApp();
                         case "Microsoft Word":
@@ -79,12 +79,12 @@ namespace Rubberduck.VBEditor.Extensions
                         case "Microsoft Publisher":
                             return new PublisherApp();
                         case "AutoCAD":
-                            return null; //TODO - Confirm the button caption
+                            return new AutoCADApp();
                         case "CorelDRAW":
-                            return null;
+                            return new CorelDRAWApp();
                     }
                 }
-                return null;
+                return null; //new FallbackApp(vbe);
             }
 
             foreach (var reference in vbe.ActiveVBProject.References.Cast<Reference>()
@@ -93,7 +93,7 @@ namespace Rubberduck.VBEditor.Extensions
                 switch (reference.Name)
                 {
                     case "Excel":
-                        return new ExcelApp(vbe);
+                        /*return new FallbackApp(vbe);//*/return new ExcelApp(vbe);
                     case "Access":
                         return new AccessApp();
                     case "Word":
@@ -111,7 +111,7 @@ namespace Rubberduck.VBEditor.Extensions
                 }
             }
 
-            return null;
+            return null; //new FallbackApp(vbe);
         }
     }
 }
