@@ -116,7 +116,34 @@ namespace Rubberduck.UI.SourceControl
             _configService.SaveConfiguration(_config);
         }
 
-        private void OpenRepo() { }
+        private void OpenRepo()
+        {
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser(RubberduckUI.SourceControl_OpenWorkingDirectory, false))
+            {
+                if (folderPicker.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                var project = _vbe.ActiveVBProject;
+                var repo = new Repository(project.Name, folderPicker.SelectedPath, string.Empty);
+
+                try
+                {
+                    _provider = _providerFactory.CreateProvider(project, repo, _wrapperFactory);
+                }
+                catch (SourceControlException ex)
+                {
+                    //ShowSecondaryPanel(ex.Message, ex.InnerException.Message);
+                    return;
+                }
+
+                AddRepoToConfig(repo);
+
+                SetChildPresenterSourceControlProviders(_provider);
+                Status = RubberduckUI.Online;
+            }
+        }
 
         private void CloneRepo() { }
 

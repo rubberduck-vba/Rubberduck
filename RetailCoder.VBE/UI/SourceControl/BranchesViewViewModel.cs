@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Rubberduck.SourceControl;
@@ -28,7 +29,26 @@ namespace Rubberduck.UI.SourceControl
         public ISourceControlProvider Provider
         {
             get { return _provider; }
-            set { _provider = value; }
+            set
+            {
+                _provider = value;
+                LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
+                PublishedBranches = GetFriendlyBranchNames(RemoteBranches());
+                UnpublishedBranches =
+                    new ObservableCollection<string>(
+                        Provider.Branches.Where(b => !b.IsRemote && PublishedBranches.All(p => b.Name != p))
+                            .Select(b => b.Name));
+            }
+        }
+
+        private static ObservableCollection<string> GetFriendlyBranchNames(IEnumerable<IBranch> branches)
+        {
+            return new ObservableCollection<string>(branches.Select(b => b.Name.Split('/').Last()));
+        }
+
+        private IEnumerable<IBranch> RemoteBranches()
+        {
+            return Provider.Branches.Where(b => b.IsRemote && !b.Name.Contains("/HEAD"));
         }
 
         private ObservableCollection<string> _localBranches;
@@ -236,6 +256,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void CreateBranchOk()
         {
+            Provider.CreateBranch(NewBranchName);
+
             DisplayCreateBranchGrid = false;
             NewBranchName = string.Empty;
         }
