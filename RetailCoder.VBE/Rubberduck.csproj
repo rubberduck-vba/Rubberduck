@@ -554,7 +554,6 @@
       <DependentUpon>SearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\FolderBrowser.cs" />
-    <Compile Include="UI\GeneralConverters\EqualWidthConverter.cs" />
     <Compile Include="UI\IMessageBox.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
     <Compile Include="UI\Refactorings\EncapsulateFieldDialog.cs">
