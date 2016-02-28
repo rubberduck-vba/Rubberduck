@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
@@ -92,12 +91,7 @@ namespace Rubberduck.UI.SourceControl
                     return;
                 }
 
-                try
-                {
-                    _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
-                }
-                catch(Exception e)
-                { }
+                _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
                 var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
                 _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
 
