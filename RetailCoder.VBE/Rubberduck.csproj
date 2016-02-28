@@ -728,7 +728,6 @@
     <Compile Include="UI\SourceControl\CloneRepositoryForm.Designer.cs">
       <DependentUpon>CloneRepositoryForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\Converters\EqualWidthConverter.cs" />
     <Compile Include="UI\SourceControl\CreateBranchForm.cs">
       <SubType>Form</SubType>
     </Compile>

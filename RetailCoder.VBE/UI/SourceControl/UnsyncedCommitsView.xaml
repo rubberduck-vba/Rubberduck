@@ -3,7 +3,6 @@
          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-         xmlns:converters="clr-namespace:Rubberduck.UI.SourceControl.Converters"
          xmlns:sourceControl="clr-namespace:Rubberduck.UI.SourceControl"
          mc:Ignorable="d"
          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UnsyncedCommits}"
@@ -14,8 +13,6 @@
         <BitmapImage x:Key="PullCommitsImage" UriSource="../../Resources/drive-download.png" />
         <BitmapImage x:Key="PushCommitsImage" UriSource="../../Resources/drive-upload.png" />
         <BitmapImage x:Key="SyncCommitsImage" UriSource="../../Resources/arrow-circle-double.png" />
-
-        <converters:EqualWidthConverter x:Key="EqualWidthConverter" />
     </TabItem.Resources>
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -28,39 +25,33 @@
                 </StackPanel>
 
                 <WrapPanel Orientation="Horizontal"
-                           Margin="5,-5,0,5">
-                    <Button Name="FetchCommitsButton"
-                            Margin="6"
-                            Height="25"
-                            Command="{Binding FetchCommitsCommand}">
-                        <Button.MinWidth>
-                            <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                <Binding ElementName="PullCommitsButton" Path="ActualWidth" />
-                                <Binding ElementName="PushCommitsButton" Path="ActualWidth" />
-                                <Binding ElementName="SyncCommitsButton" Path="ActualWidth" />
-                            </MultiBinding>
-                        </Button.MinWidth>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{StaticResource FetchCommitsImage}"
-                                   Margin="5,0"
-                                   Width="16"
-                                   Height="16" />
-                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FetchCommitsLabel}"
-                                       Margin="0,0,5,0"
-                                       VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                    <Button Name="PullCommitsButton"
-                            Margin="6"
+                           Margin="5,-5,0,5"
+                           Grid.IsSharedSizeScope="True">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition SharedSizeGroup="UnsyncedCommitButtons" />
+                        </Grid.ColumnDefinitions>
+                        <Button Margin="6"
+                                Height="25"
+                                Command="{Binding FetchCommitsCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{StaticResource FetchCommitsImage}"
+                                       Margin="5,0"
+                                       Width="16"
+                                       Height="16" />
+                                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FetchCommitsLabel}"
+                                           Margin="0,0,5,0"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition SharedSizeGroup="UnsyncedCommitButtons" />
+                        </Grid.ColumnDefinitions>
+                    <Button Margin="6"
                             Height="25"
                             Command="{Binding PullCommitsCommand}">
-                        <Button.MinWidth>
-                            <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                <Binding ElementName="FetchCommitsButton" Path="ActualWidth" />
-                                <Binding ElementName="PushCommitsButton" Path="ActualWidth" />
-                                <Binding ElementName="SyncCommitsButton" Path="ActualWidth" />
-                            </MultiBinding>
-                        </Button.MinWidth>
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource PullCommitsImage}"
                                    Margin="5,0"
@@ -70,18 +61,15 @@
                                        Margin="0,0,5,0"
                                        VerticalAlignment="Center" />
                         </StackPanel>
-                    </Button>
-                    <Button Name="PushCommitsButton"
-                            Margin="6"
-                            Height="25"
-                            Command="{Binding PushCommitsCommand}">
-                        <Button.MinWidth>
-                            <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                <Binding ElementName="FetchCommitsButton" Path="ActualWidth" />
-                                <Binding ElementName="PullCommitsButton" Path="ActualWidth" />
-                                <Binding ElementName="SyncCommitsButton" Path="ActualWidth" />
-                            </MultiBinding>
-                        </Button.MinWidth>
+                        </Button>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition SharedSizeGroup="UnsyncedCommitButtons" />
+                        </Grid.ColumnDefinitions>
+                        <Button Margin="6"
+                                Height="25"
+                                Command="{Binding PushCommitsCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource PushCommitsImage}"
                                    Margin="5,0"
@@ -91,28 +79,26 @@
                                        Margin="0,0,5,0"
                                        VerticalAlignment="Center" />
                         </StackPanel>
-                    </Button>
-                    <Button Name="SyncCommitsButton"
-                            Margin="6"
-                            Height="25"
-                            Command="{Binding SyncCommitsCommand}">
-                        <Button.MinWidth>
-                            <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                <Binding ElementName="FetchCommitsButton" Path="ActualWidth" />
-                                <Binding ElementName="PullCommitsButton" Path="ActualWidth" />
-                                <Binding ElementName="PushCommitsButton" Path="ActualWidth" />
-                            </MultiBinding>
-                        </Button.MinWidth>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{StaticResource SyncCommitsImage}"
-                                   Margin="5,0"
-                                   Width="16"
-                                   Height="16"  />
-                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_SyncCommitsLabel}"
-                                       Margin="0,0,5,0"
-                                       VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
+                        </Button>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition SharedSizeGroup="UnsyncedCommitButtons" />
+                        </Grid.ColumnDefinitions>
+                        <Button Margin="6"
+                                Height="25"
+                                Command="{Binding SyncCommitsCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{StaticResource SyncCommitsImage}"
+                                       Margin="5,0"
+                                       Width="16"
+                                       Height="16"  />
+                                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_SyncCommitsLabel}"
+                                           Margin="0,0,5,0"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
                 </WrapPanel>
 
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_IncomingCommits}"
