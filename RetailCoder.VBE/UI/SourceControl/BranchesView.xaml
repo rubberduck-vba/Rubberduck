@@ -3,7 +3,6 @@
          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-         xmlns:converters="clr-namespace:Rubberduck.UI.SourceControl.Converters"
          xmlns:sourceControl="clr-namespace:Rubberduck.UI.SourceControl"
          mc:Ignorable="d"
          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Branches}"
@@ -16,7 +15,6 @@
         <BitmapImage x:Key="ErrorImage" UriSource="../../Resources/cross-circle.png" />
         <BitmapImage x:Key="MergeArrowImage" UriSource="../../Resources/arrow.png" />
 
-        <converters:EqualWidthConverter x:Key="EqualWidthConverter" />
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
     </TabItem.Resources>
     <Grid>
@@ -28,64 +26,59 @@
                 </DockPanel>
                 
                 <WrapPanel Orientation="Horizontal"
-                           Margin="5,-5,0,5">
-                    <Button Name="NewBranchButton"
-                            Margin="6"
-                            Height="25"
-                            Command="{Binding NewBranchCommand}">
-                        <Button.MinWidth>
-                            <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                <Binding ElementName="MergeBranchButton" Path="ActualWidth" />
-                                <Binding ElementName="DeleteBranchButton" Path="ActualWidth" />
-                            </MultiBinding>
-                        </Button.MinWidth>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{StaticResource NewBranchImage}"
-                                   Margin="5,0"
-                                   Width="16" />
-                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_NewBranch}"
-                                       Margin="0,0,5,0"
-                                       VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                    <Button Name="MergeBranchButton"
-                            Margin="6"
-                            Height="25"
-                            Command="{Binding MergeBranchCommand}">
-                        <Button.MinWidth>
-                            <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                <Binding ElementName="NewBranchButton" Path="ActualWidth" />
-                                <Binding ElementName="DeleteBranchButton" Path="ActualWidth" />
-                            </MultiBinding>
-                        </Button.MinWidth>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{StaticResource MergeBranchImage}"
-                                   Margin="5"
-                                   Width="16" />
-                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_MergeBranch}"
-                                       Margin="0,0,5,0"
-                                       VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                    <Button Name="DeleteBranchButton"
-                            Margin="6"
-                            Height="25"
-                            Command="{Binding DeleteBranchCommand}">
-                        <Button.MinWidth>
-                            <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                <Binding ElementName="NewBranchButton" Path="ActualWidth" />
-                                <Binding ElementName="MergeBranchButton" Path="ActualWidth" />
-                            </MultiBinding>
-                        </Button.MinWidth>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{StaticResource DeleteBranchImage}"
-                                   Margin="5,0"
-                                   Width="16" />
-                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DeleteBranch}"
-                                       Margin="0,0,5,0"
-                                       VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
+                           Margin="5,-5,0,5"
+                           Grid.IsSharedSizeScope="True">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition SharedSizeGroup="Buttons" />
+                        </Grid.ColumnDefinitions>
+                        <Button Margin="6"
+                                Height="25"
+                                Command="{Binding NewBranchCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{StaticResource NewBranchImage}"
+                                       Margin="5,0"
+                                       Width="16" />
+                                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_NewBranch}"
+                                           Margin="0,0,5,0"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition SharedSizeGroup="Buttons" />
+                        </Grid.ColumnDefinitions>
+                        <Button Margin="6"
+                                Height="25"
+                                Command="{Binding MergeBranchCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{StaticResource MergeBranchImage}"
+                                       Margin="5"
+                                       Width="16" />
+                                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_MergeBranch}"
+                                           Margin="0,0,5,0"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition SharedSizeGroup="Buttons" />
+                        </Grid.ColumnDefinitions>
+                        <Button Margin="6"
+                                Height="25"
+                                Command="{Binding DeleteBranchCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{StaticResource DeleteBranchImage}"
+                                       Margin="5,0"
+                                       Width="16" />
+                                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DeleteBranch}"
+                                           Margin="0,0,5,0"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
                 </WrapPanel>
 
                 <Grid Visibility="{Binding DisplayCreateBranchGrid, Converter={StaticResource BoolToVisibility}}">
@@ -103,32 +96,23 @@
                                Margin="0,-57,-7.8,0"
                                Width="16" />
 
-                        <StackPanel Orientation="Horizontal"
-                                    HorizontalAlignment="Right">
-                            <Button Name="CreateBranchOkButton"
-                                    Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
-                                    HorizontalAlignment="Left"
+                        <Grid Grid.IsSharedSizeScope="True"
+                              HorizontalAlignment="Right">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition SharedSizeGroup="CreateBranchButtons" />
+                                <ColumnDefinition SharedSizeGroup="CreateBranchButtons" />
+                            </Grid.ColumnDefinitions>
+                            <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
                                     Padding="5"
                                     Command="{Binding CreateBranchOkButtonCommand}">
-                                <Button.MinWidth>
-                                    <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                        <Binding ElementName="CreateBranchCancelButton" Path="ActualWidth" />
-                                    </MultiBinding>
-                                </Button.MinWidth>
                             </Button>
-                            <Button Name="CreateBranchCancelButton"
-                                    Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
-                                    HorizontalAlignment="Left"
+                            <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                                    Grid.Column="1"
                                     Margin="10,0,0,0"
                                     Padding="5"
                                     Command="{Binding CreateBranchCancelButtonCommand}">
-                                <Button.MinWidth>
-                                    <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                        <Binding ElementName="CreateBranchOkButton" Path="ActualWidth" />
-                                    </MultiBinding>
-                                </Button.MinWidth>
                             </Button>
-                        </StackPanel>
+                        </Grid>
                     </StackPanel>
                 </Grid>
                 
@@ -142,8 +126,9 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
                             <StackPanel>
-                                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_SourceLabel}"
-                                       FontWeight="SemiBold" />
+                                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_SourceLabel}"
+                                           FontWeight="SemiBold"
+                                           Margin="0,0,0,5" />
                                 <ComboBox ItemsSource="{Binding LocalBranches}"
                                           SelectedItem="{Binding SourceBranch, Mode=TwoWay}" />
                             </StackPanel>
@@ -153,77 +138,61 @@
                                    Grid.Column="1"
                                    VerticalAlignment="Bottom" />
                             <StackPanel Grid.Column="2">
-                                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DestinationLabel}"
-                                       FontWeight="SemiBold" />
+                                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DestinationLabel}"
+                                           FontWeight="SemiBold"
+                                           Margin="0,0,0,5" />
                                 <ComboBox ItemsSource="{Binding LocalBranches}"
                                           SelectedItem="{Binding DestinationBranch, Mode=TwoWay}" />
                             </StackPanel>
                         </Grid>
 
-                        <StackPanel Orientation="Horizontal"
-                                    HorizontalAlignment="Right">
-                            <Button Name="MergeBranchesOkButton"
-                                    Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
-                                    HorizontalAlignment="Left"
+                        <Grid Grid.IsSharedSizeScope="True"
+                              HorizontalAlignment="Right">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition SharedSizeGroup="MergeBranchButtons" />
+                                <ColumnDefinition SharedSizeGroup="MergeBranchButtons" />
+                            </Grid.ColumnDefinitions>
+                            <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
                                     Padding="5"
                                     Command="{Binding MergeBranchesOkButtonCommand}">
-                                <Button.MinWidth>
-                                    <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                        <Binding ElementName="MergeBranchesCancelButton" Path="ActualWidth" />
-                                    </MultiBinding>
-                                </Button.MinWidth>
                             </Button>
-                            <Button Name="MergeBranchesCancelButton"
-                                    Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
-                                    HorizontalAlignment="Left"
+                            <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                                    Grid.Column="1"
                                     Margin="10,0,0,0"
                                     Padding="5"
                                     Command="{Binding MergeBranchesCancelButtonCommand}">
-                                <Button.MinWidth>
-                                    <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                        <Binding ElementName="MergeBranchesOkButton" Path="ActualWidth" />
-                                    </MultiBinding>
-                                </Button.MinWidth>
                             </Button>
-                        </StackPanel>
+                        </Grid>
                     </StackPanel>
                 </Grid>
 
                 <Grid Visibility="{Binding DisplayDeleteBranchGrid, Converter={StaticResource BoolToVisibility}}">
                     <StackPanel VerticalAlignment="Top"
                                 Margin="10,5">
-                        <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DeleteBranchTitleLable}"
-                               FontWeight="SemiBold" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DeleteBranchTitleLable}"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,5" />
                         <ComboBox ItemsSource="{Binding LocalBranches}"
-                                          SelectedItem="{Binding BranchToDelete, Mode=TwoWay}" />
+                                  SelectedItem="{Binding BranchToDelete, Mode=TwoWay}"
+                                  Margin="0,0,0,10"/>
 
-                        <StackPanel Orientation="Horizontal"
-                                    HorizontalAlignment="Right"
-                                    Margin="0,10,0,0">
-                            <Button Name="DeleteBranchOkButton"
-                                    Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
-                                    HorizontalAlignment="Left"
+                        <Grid Grid.IsSharedSizeScope="True"
+                              HorizontalAlignment="Right">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition SharedSizeGroup="DeleteBranchButtons" />
+                                <ColumnDefinition SharedSizeGroup="DeleteBranchButtons" />
+                            </Grid.ColumnDefinitions>
+                            <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
                                     Padding="5"
                                     Command="{Binding DeleteBranchOkButtonCommand}">
-                                <Button.MinWidth>
-                                    <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                        <Binding ElementName="DeleteBranchCancelButton" Path="ActualWidth" />
-                                    </MultiBinding>
-                                </Button.MinWidth>
                             </Button>
-                            <Button Name="DeleteBranchCancelButton"
-                                    Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
-                                    HorizontalAlignment="Left"
+                            <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                                    Grid.Column="1"
                                     Margin="10,0,0,0"
                                     Padding="5"
                                     Command="{Binding DeleteBranchCancelButtonCommand}">
-                                <Button.MinWidth>
-                                    <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                        <Binding ElementName="DeleteBranchOkButton" Path="ActualWidth" />
-                                    </MultiBinding>
-                                </Button.MinWidth>
                             </Button>
-                        </StackPanel>
+                        </Grid>
                     </StackPanel>
                 </Grid>
 
