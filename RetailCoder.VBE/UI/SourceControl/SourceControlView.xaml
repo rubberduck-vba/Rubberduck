@@ -248,7 +248,7 @@
                     <Separator />
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource GitIcon}" Height="25" />
-                        <TextBlock Text="Offline"
+                        <TextBlock Text="{Binding Status}"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
                 </ToolBar>
