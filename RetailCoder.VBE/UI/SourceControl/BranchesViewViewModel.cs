@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using Rubberduck.UI.Command;
 
@@ -88,7 +89,45 @@ namespace Rubberduck.UI.SourceControl
                 {
                     _newBranchName = value;
                     OnPropertyChanged();
+                    OnPropertyChanged("IsValidBranchName");
                 }
+            }
+        }
+
+        public bool IsValidBranchName
+        {
+            get
+            {
+                // Rules taken from https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
+                var isValidName = !string.IsNullOrEmpty(NewBranchName) &&
+                                  !LocalBranches.Contains(NewBranchName) &&
+                                  !NewBranchName.Any(char.IsWhiteSpace) &&
+                                  !NewBranchName.Contains("..") &&
+                                  !NewBranchName.Contains("~") &&
+                                  !NewBranchName.Contains("^") &&
+                                  !NewBranchName.Contains(":") &&
+                                  !NewBranchName.Contains("?") &&
+                                  !NewBranchName.Contains("*") &&
+                                  !NewBranchName.Contains("[") &&
+                                  !NewBranchName.Contains("//") &&
+                                  NewBranchName.FirstOrDefault() != '/' &&
+                                  NewBranchName.LastOrDefault() != '/' &&
+                                  NewBranchName.LastOrDefault() != '.' &&
+                                  NewBranchName != "@" &&
+                                  !NewBranchName.Contains("@{") &&
+                                  !NewBranchName.Contains("\\");
+
+                if (!isValidName)
+                {
+                    return true;
+                }
+                foreach (var section in NewBranchName.Split('/'))
+                {
+                    isValidName = section.FirstOrDefault() != '.' &&
+                                  !section.EndsWith(".lock");
+                }
+
+                return !isValidName;
             }
         }
 

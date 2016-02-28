@@ -87,14 +87,15 @@
                         <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_BranchName}"
                                    FontWeight="SemiBold"
                                    Margin="0,0,0,5" />
-                        <TextBox Text="{Binding NewBranchName, Mode=TwoWay}"
+                        <TextBox Text="{Binding NewBranchName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  Margin="0,0,0,10"
                                  Height="18"
                                  VerticalContentAlignment="Center" />
                         <Image Source="{StaticResource ErrorImage}"
                                HorizontalAlignment="Right"
                                Margin="0,-57,-7.8,0"
-                               Width="16" />
+                               Width="16"
+                               Visibility="{Binding IsValidBranchName, Converter={StaticResource BoolToVisibility}}" />
 
                         <Grid Grid.IsSharedSizeScope="True"
                               HorizontalAlignment="Right">
