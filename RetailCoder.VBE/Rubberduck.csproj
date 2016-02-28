@@ -728,6 +728,8 @@
     <Compile Include="UI\SourceControl\CloneRepositoryForm.Designer.cs">
       <DependentUpon>CloneRepositoryForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\Converters\CommitActionsToTextConverter.cs" />
+    <Compile Include="UI\SourceControl\Converters\CommitActionTextToEnum.cs" />
     <Compile Include="UI\SourceControl\CreateBranchForm.cs">
       <SubType>Form</SubType>
     </Compile>

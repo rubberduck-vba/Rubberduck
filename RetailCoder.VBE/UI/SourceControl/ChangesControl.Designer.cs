@@ -148,8 +148,8 @@ namespace Rubberduck.UI.SourceControl
             this.CommitActionDropdown.FormattingEnabled = true;
             this.CommitActionDropdown.Items.AddRange(new object[] {
             RubberduckUI.SourceControl_Commit,
-            RubberduckUI.SourceControl_CommitPush,
-            RubberduckUI.SourceControl_CommitSync});
+            RubberduckUI.SourceControl_CommitAndPush,
+            RubberduckUI.SourceControl_CommitAndSync});
             this.CommitActionDropdown.Location = new System.Drawing.Point(12, 107);
             this.CommitActionDropdown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.CommitActionDropdown.MinimumSize = new System.Drawing.Size(160, 0);

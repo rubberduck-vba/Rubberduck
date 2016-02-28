@@ -1,6 +1,4 @@
-﻿using Ninject;
-
-namespace Rubberduck.UI.SourceControl
+﻿namespace Rubberduck.UI.SourceControl
 {
     /// <summary>
     /// Interaction logic for ChangesView.xaml
@@ -12,7 +10,6 @@ namespace Rubberduck.UI.SourceControl
             InitializeComponent();
         }
 
-        [Inject]
         public ChangesView(IControlViewModel vm) : this()
         {
             DataContext = vm;

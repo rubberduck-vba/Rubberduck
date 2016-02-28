@@ -4,12 +4,25 @@
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
          xmlns:sourceControl="clr-namespace:Rubberduck.UI.SourceControl"
+         xmlns:core="clr-namespace:System;assembly=mscorlib"
+         xmlns:converters="clr-namespace:Rubberduck.UI.SourceControl.Converters"
          mc:Ignorable="d"
          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Changes}"
          d:DesignHeight="450" d:DesignWidth="300"
          d:DataContext="{d:DesignInstance {x:Type sourceControl:ChangesViewViewModel}, IsDesignTimeCreatable=False}">
     <TabItem.Resources>
         <BitmapImage x:Key="CheckImage" UriSource="../../Resources/tick.png" />
+        
+        <converters:CommitActionsToTextConverter x:Key="CommitActionToText" />
+        <converters:CommitActionTextToEnum x:Key="CommitActionValueToEnum" />
+        
+        <ObjectDataProvider x:Key="CommitActions"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="sourceControl:CommitAction"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
     </TabItem.Resources>
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -32,7 +45,8 @@
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
                     <ComboBox Margin="5,10"
-                              SelectedItem="{Binding CommitAction, Mode=OneWay}"/>
+                              SelectedItem="{Binding CommitAction, Mode=OneWay, Converter={StaticResource CommitActionValueToEnum}}"
+                              ItemsSource="{Binding Source={StaticResource CommitActions}, Converter={StaticResource CommitActionToText}}" />
                     <Button Margin="5,10"
                             Grid.Column="1"
                             Command="{Binding CommitCommand}">

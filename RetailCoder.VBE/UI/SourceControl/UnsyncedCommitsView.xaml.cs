@@ -1,6 +1,4 @@
-﻿using Ninject;
-
-namespace Rubberduck.UI.SourceControl
+﻿namespace Rubberduck.UI.SourceControl
 {
     /// <summary>
     /// Interaction logic for UnsyncedCommitsView.xaml
@@ -12,7 +10,6 @@ namespace Rubberduck.UI.SourceControl
             InitializeComponent();
         }
 
-        [Inject]
         public UnsyncedCommitsView(IControlViewModel vm) : this()
         {
             DataContext = vm;

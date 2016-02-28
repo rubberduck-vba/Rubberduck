@@ -2745,6 +2745,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Commit and Push.
+        /// </summary>
+        public static string SourceControl_CommitAndPush {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitAndPush", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit and Sync.
+        /// </summary>
+        public static string SourceControl_CommitAndSync {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitAndSync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Go.
         /// </summary>
         public static string SourceControl_CommitButtonLabel {
@@ -2759,24 +2777,6 @@ namespace Rubberduck.UI {
         public static string SourceControl_CommitMessageLabel {
             get {
                 return ResourceManager.GetString("SourceControl_CommitMessageLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Commit and Push.
-        /// </summary>
-        public static string SourceControl_CommitPush {
-            get {
-                return ResourceManager.GetString("SourceControl_CommitPush", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Commit and Sync.
-        /// </summary>
-        public static string SourceControl_CommitSync {
-            get {
-                return ResourceManager.GetString("SourceControl_CommitSync", resourceCulture);
             }
         }
         
