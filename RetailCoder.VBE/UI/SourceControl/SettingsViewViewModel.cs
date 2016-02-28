@@ -8,19 +8,16 @@ using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class SettingsViewViewModel : ViewModelBase
+    public class SettingsViewViewModel : ViewModelBase, IControlViewModel
     {
-        private readonly ISourceControlProvider _provider;
         private readonly IConfigurationService<SourceControlConfiguration> _configService;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly SourceControlConfiguration _config;
 
         public SettingsViewViewModel(
-            ISourceControlProvider provider,
             IConfigurationService<SourceControlConfiguration> configService,
             IFolderBrowserFactory folderBrowserFactory)
         {
-            _provider = provider;
             _configService = configService;
             _folderBrowserFactory = folderBrowserFactory;
             _config = _configService.LoadConfiguration();
@@ -34,6 +31,13 @@ namespace Rubberduck.UI.SourceControl
             _updateSettingsCommand = new DelegateCommand(_ => UpdateSettings());
             _showGitIgnoreCommand = new DelegateCommand(_ => ShowGitIgnore());
             _showGitAttributesCommand = new DelegateCommand(_ => ShowGitAttributes());
+        }
+
+        private ISourceControlProvider _provider;
+        public ISourceControlProvider Provider
+        {
+            get { return _provider; }
+            set { _provider = value; }
         }
 
         private string _userName;

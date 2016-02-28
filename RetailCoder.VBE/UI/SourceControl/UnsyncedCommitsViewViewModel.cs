@@ -5,7 +5,7 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class UnsyncedCommitsViewViewModel : ViewModelBase
+    public class UnsyncedCommitsViewViewModel : ViewModelBase, IControlViewModel
     {
         public UnsyncedCommitsViewViewModel()
         {
@@ -13,6 +13,13 @@ namespace Rubberduck.UI.SourceControl
             _pullCommitsCommand = new DelegateCommand(_ => PullCommits());
             _pushCommitsCommand = new DelegateCommand(_ => PushCommits());
             _syncCommitsCommand = new DelegateCommand(_ => SyncCommits());
+        }
+
+        private ISourceControlProvider _provider;
+        public ISourceControlProvider Provider
+        {
+            get { return _provider; }
+            set { _provider = value; }
         }
 
         private ObservableCollection<ICommit> _incomingCommits;

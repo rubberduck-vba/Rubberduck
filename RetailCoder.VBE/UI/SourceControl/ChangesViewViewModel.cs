@@ -5,16 +5,11 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class ChangesViewViewModel : ViewModelBase
+    public class ChangesViewViewModel : ViewModelBase, IControlViewModel
     {
         public ChangesViewViewModel()
         {
             _commitCommand = new DelegateCommand(_ => Commit());
-
-            /*IncludedChanges = new ObservableCollection<IFileStatusEntry>
-            {
-                new FileStatusEntry("test", FileStatus.Staged)
-            };*/
         }
 
         private string _commitMessage;
@@ -29,6 +24,13 @@ namespace Rubberduck.UI.SourceControl
                     OnPropertyChanged();
                 }
             }
+        }
+
+        private ISourceControlProvider _provider;
+        public ISourceControlProvider Provider
+        {
+            get { return _provider; }
+            set { _provider = value; }
         }
 
         public CommitAction CommitAction { get; set; }

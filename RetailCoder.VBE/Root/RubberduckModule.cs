@@ -93,9 +93,22 @@ namespace Rubberduck.Root
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new ToDoExplorerWindow { ViewModel = _kernel.Get<ToDoExplorerViewModel>() });
 
-            Bind<ISourceControlProvider>().To<GitProvider>()
-                .WhenInjectedInto<SettingsViewViewModel>()
-                .WithConstructorArgument(_vbe.ActiveVBProject);
+            Bind<IControlView>().To<ChangesView>().Named("changesView");
+            Bind<IControlView>().To<BranchesView>().Named("branchesView");
+            Bind<IControlView>().To<UnsyncedCommitsView>().Named("unsyncedCommitsView");
+            Bind<IControlView>().To<SettingsView>().Named("settingsView");
+
+            Bind<IControlViewModel>().To<ChangesViewViewModel>()
+                .WhenInjectedInto<ChangesView>();
+            Bind<IControlViewModel>().To<BranchesViewViewModel>()
+                .WhenInjectedInto<BranchesView>();
+            Bind<IControlViewModel>().To<UnsyncedCommitsViewViewModel>()
+                .WhenInjectedInto<UnsyncedCommitsView>();
+            Bind<IControlViewModel>().To<SettingsViewViewModel>()
+                .WhenInjectedInto<SettingsView>();
+
+            Bind<ISourceControlProviderFactory>().To<SourceControlProviderFactory>()
+                .WhenInjectedInto<SourceControlViewViewModel>();
 
             Bind<IPresenter>().To<SourceControlDockablePresenter>()
                 .WhenInjectedInto<ShowSourceControlPanelCommand>()

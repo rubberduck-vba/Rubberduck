@@ -5,7 +5,7 @@ namespace Rubberduck.UI.SourceControl
     /// <summary>
     /// Interaction logic for SettingsView.xaml
     /// </summary>
-    public partial class SettingsView
+    public partial class SettingsView : IControlView
     {
         public SettingsView()
         {
@@ -13,9 +13,11 @@ namespace Rubberduck.UI.SourceControl
         }
 
         [Inject]
-        public SettingsView(SettingsViewViewModel vm) : this()
+        public SettingsView(IControlViewModel vm) : this()
         {
             DataContext = vm;
         }
+
+        public IControlViewModel ViewModel { get { return (IControlViewModel)DataContext; } }
     }
 }

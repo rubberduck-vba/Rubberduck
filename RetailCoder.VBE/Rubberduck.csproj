@@ -750,6 +750,8 @@
     <Compile Include="UI\SourceControl\IBranchesView.cs" />
     <Compile Include="UI\SourceControl\IChangesView.cs" />
     <Compile Include="UI\SourceControl\ICloneRepositoryView.cs" />
+    <Compile Include="UI\SourceControl\IControlView.cs" />
+    <Compile Include="UI\SourceControl\IControlViewModel.cs" />
     <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
     <Compile Include="UI\SourceControl\IDeleteBranchView.cs" />
     <Compile Include="UI\SourceControl\IMergeView.cs" />

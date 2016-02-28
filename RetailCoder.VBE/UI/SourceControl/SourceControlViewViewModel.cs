@@ -1,9 +1,9 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Windows.Controls;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
+using Ninject;
 using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
@@ -25,16 +25,16 @@ namespace Rubberduck.UI.SourceControl
 
         private ISourceControlProvider _provider;
 
-        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
         public SourceControlViewViewModel(
             VBE vbe,
             ISourceControlProviderFactory providerFactory,
             IFolderBrowserFactory folderBrowserFactory,
             IConfigurationService<SourceControlConfiguration> configService,
-            ChangesView changesView,
-            BranchesView branchesView,
-            UnsyncedCommitsView unsyncedCommitsView,
-            SettingsView settingsView, ICodePaneWrapperFactory wrapperFactory)
+            [Named("changesView")] IControlView changesView,
+            [Named("branchesView")] IControlView branchesView,
+            [Named("unsyncedCommitsView")] IControlView unsyncedCommitsView,
+            [Named("settingsView")] IControlView settingsView,
+            ICodePaneWrapperFactory wrapperFactory)
         {
             _vbe = vbe;
             _providerFactory = providerFactory;
@@ -49,12 +49,12 @@ namespace Rubberduck.UI.SourceControl
             _openRepoCommand = new DelegateCommand(_ => OpenRepo());
             _cloneRepoCommand = new DelegateCommand(_ => CloneRepo());
 
-            TabItems = new ObservableCollection<TabItem> {changesView, branchesView, unsyncedCommitsView, settingsView};
+            TabItems = new ObservableCollection<IControlView> {changesView, branchesView, unsyncedCommitsView, settingsView};
             Status = RubberduckUI.Offline;
         }
-        
-        private ObservableCollection<TabItem> _tabItems;
-        public ObservableCollection<TabItem> TabItems
+
+        private ObservableCollection<IControlView> _tabItems;
+        public ObservableCollection<IControlView> TabItems
         {
             get { return _tabItems; }
             set
@@ -91,8 +91,13 @@ namespace Rubberduck.UI.SourceControl
                 {
                     return;
                 }
-                
-                _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
+
+                try
+                {
+                    _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
+                }
+                catch(Exception e)
+                { }
                 var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
                 _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
 
@@ -105,12 +110,10 @@ namespace Rubberduck.UI.SourceControl
 
         private void SetChildPresenterSourceControlProviders(ISourceControlProvider provider)
         {
-            /*_branchesPresenter.Provider = provider;
-            _changesPresenter.Provider = provider;
-            _settingsPresenter.Provider = provider;
-            _unsyncedPresenter.Provider = provider;*/
-            // Purposely not refreshing settingsPresenter.
-            //  Settings it's provider doesn't affect it's view.
+            foreach (var tab in TabItems)
+            {
+                tab.ViewModel.Provider = provider;
+            }
         }
 
         private void AddRepoToConfig(Repository repo)

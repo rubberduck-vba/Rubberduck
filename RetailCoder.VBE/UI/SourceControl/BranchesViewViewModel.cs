@@ -1,11 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class BranchesViewViewModel : ViewModelBase
+    public class BranchesViewViewModel : ViewModelBase, IControlViewModel
     {
         public BranchesViewViewModel()
         {
@@ -21,6 +22,13 @@ namespace Rubberduck.UI.SourceControl
 
             _deleteBranchOkButtonCommand = new DelegateCommand(_ => DeleteBranchOk());
             _deleteBranchCancelButtonCommand = new DelegateCommand(_ => DeleteBranchCancel());
+        }
+
+        private ISourceControlProvider _provider;
+        public ISourceControlProvider Provider
+        {
+            get { return _provider; }
+            set { _provider = value; }
         }
 
         private ObservableCollection<string> _localBranches;
