@@ -56,7 +56,7 @@ namespace Rubberduck.VBEditor.Extensions
             {
                 const int ctl_view_host = 106;
 
-                CommandBarControl host_app_control = vbe.CommandBars.FindControl(MsoControlType.msoControlButton, ctl_view_host);
+                var host_app_control = vbe.CommandBars.FindControl(MsoControlType.msoControlButton, ctl_view_host);
 
                 if (host_app_control == null)
                 {
@@ -79,12 +79,12 @@ namespace Rubberduck.VBEditor.Extensions
                         case "Microsoft Publisher":
                             return new PublisherApp();
                         case "AutoCAD":
-                            return null; //TODO - Confirm the button caption
+                            return new AutoCADApp();
                         case "CorelDRAW":
-                            return null;
+                            return new CorelDRAWApp();
                     }
                 }
-                return null;
+                return null;// new FallbackApp(vbe);
             }
 
             foreach (var reference in vbe.ActiveVBProject.References.Cast<Reference>()
@@ -111,7 +111,7 @@ namespace Rubberduck.VBEditor.Extensions
                 }
             }
 
-            return null;
+            return null; //new FallbackApp(vbe);
         }
     }
 }

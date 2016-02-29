@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
@@ -79,6 +80,34 @@ namespace Rubberduck.UI.SourceControl
 
         private void Commit()
         {
+            var changes = IncludedChanges.Select(c => c.FilePath).ToList();
+            if (!changes.Any())
+            {
+                return;
+            }
+
+            try
+            {
+                Provider.Stage(changes);
+                Provider.Commit(CommitMessage);
+
+                if (CommitAction == CommitAction.CommitAndSync)
+                {
+                    Provider.Pull();
+                    Provider.Push();
+                }
+
+                if (CommitAction == CommitAction.CommitAndPush)
+                {
+                    Provider.Push();
+                }
+
+                CommitMessage = string.Empty;
+            }
+            catch (SourceControlException ex)
+            {
+                //RaiseActionFailedEvent(ex);
+            }
         }
 
         private readonly ICommand _commitCommand;
