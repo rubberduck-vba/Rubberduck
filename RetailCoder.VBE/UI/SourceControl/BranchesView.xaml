@@ -23,7 +23,8 @@
                 <DockPanel Margin="10">
                     <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CurrentBranchLabel}" />
                     <ComboBox ItemsSource="{Binding LocalBranches}"
-                              SelectedItem="{Binding CurrentBranch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                              SelectedItem="{Binding CurrentBranch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              VerticalContentAlignment="Center" />
                 </DockPanel>
                 
                 <WrapPanel Orientation="Horizontal"

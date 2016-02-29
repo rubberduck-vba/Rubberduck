@@ -59,6 +59,8 @@ namespace Rubberduck.SourceControl
             return CurrentRepository;
         }
 
+        public virtual event EventHandler<EventArgs> BranchChanged;
+
         public virtual void Pull()
         {
             Refresh();
@@ -82,6 +84,12 @@ namespace Rubberduck.SourceControl
         public virtual void Checkout(string branch)
         {
             Refresh();
+
+            var handler = BranchChanged;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         public virtual void Undo(string filePath)

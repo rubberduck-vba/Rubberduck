@@ -105,6 +105,15 @@ namespace Rubberduck.UI.SourceControl
                 {
                     _currentBranch = value;
                     OnPropertyChanged();
+
+                    try
+                    {
+                        Provider.Checkout(_currentBranch);
+                    }
+                    catch (SourceControlException ex)
+                    {
+                        //RaiseActionFailedEvent(ex);
+                    }
                 }
             }
         }
@@ -133,7 +142,7 @@ namespace Rubberduck.UI.SourceControl
                 {
                     _newBranchName = value;
                     OnPropertyChanged();
-                    OnPropertyChanged("IsValidBranchName");
+                    OnPropertyChanged("IsNotValidBranchName");
                 }
             }
         }

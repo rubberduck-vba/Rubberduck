@@ -35,6 +35,8 @@ namespace Rubberduck.UI.SourceControl
             {
                 _provider = value;
 
+                _provider.BranchChanged += Provider_BranchChanged;
+
                 CurrentBranch = Provider.CurrentBranch.Name;
 
                 var fileStats = Provider.Status().ToList();
@@ -42,6 +44,11 @@ namespace Rubberduck.UI.SourceControl
                 IncludedChanges = new ObservableCollection<IFileStatusEntry>(fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Modified)));
                 UntrackedFiles = new ObservableCollection<IFileStatusEntry>(fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)));
             }
+        }
+
+        private void Provider_BranchChanged(object sender, System.EventArgs e)
+        {
+            CurrentBranch = Provider.CurrentBranch.Name;
         }
 
         private string _currentBranch;
