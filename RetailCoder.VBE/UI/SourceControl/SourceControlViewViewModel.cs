@@ -48,6 +48,7 @@ namespace Rubberduck.UI.SourceControl
             _initRepoCommand = new DelegateCommand(_ => InitRepo());
             _openRepoCommand = new DelegateCommand(_ => OpenRepo());
             _cloneRepoCommand = new DelegateCommand(_ => ShowCloneRepoGrid());
+            _refreshCommand = new DelegateCommand(_ => Refresh());
 
             _cloneRepoOkButtonCommand = new DelegateCommand(_ => CloneRepo(), _ => !IsNotValidRemotePath);
             _cloneRepoCancelButtonCommand = new DelegateCommand(_ => CloseCloneRepoGrid());
@@ -233,6 +234,50 @@ namespace Rubberduck.UI.SourceControl
             RemotePath = string.Empty;
 
             DisplayCloneRepoGrid = false;
+        }
+
+        private void Refresh()
+        {
+            if (!ValidRepoExists())
+            {
+                //_view.Status = RubberduckUI.Offline;
+                return;
+            }
+
+            try
+            {
+                _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject,
+                    _config.Repositories.First(repo => repo.Name == _vbe.ActiveVBProject.Name), _wrapperFactory);
+
+                SetChildPresenterSourceControlProviders(_provider);
+                Status = RubberduckUI.Online;
+            }
+            catch (SourceControlException ex)
+            {
+                //todo: report failure to user and prompt to create or browse
+            }
+        }
+
+        private bool ValidRepoExists()
+        {
+            if (_config.Repositories == null)
+            {
+                return false;
+            }
+
+            var possibleRepos = _config.Repositories.Where(repo => repo.Name == _vbe.ActiveVBProject.Name);
+
+            var possibleCount = possibleRepos.Count();
+
+            //todo: if none are found, prompt user to create one
+            //todo: more than one are found, prompt for correct one
+            return possibleCount != 0 && possibleCount <= 1;
+        }
+
+        private readonly ICommand _refreshCommand;
+        public ICommand RefreshCommand
+        {
+            get { return _refreshCommand; }
         }
 
         private readonly ICommand _initRepoCommand;

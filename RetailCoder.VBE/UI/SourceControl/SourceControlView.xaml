@@ -9,6 +9,7 @@
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type sourceControl:SourceControlViewViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
+        <BitmapImage x:Key="RefreshImage" UriSource="../../Resources/arrow-circle-double.png" />
         <BitmapImage x:Key="OpenRepoImage" UriSource="../../Resources/folder-horizontal-open.png" />
         <BitmapImage x:Key="CreateRepoImage" UriSource="../../Resources/init-repo.png" />
         <BitmapImage x:Key="CloneRepoImage" UriSource="../../Resources/drive-download.png" />
@@ -214,10 +215,17 @@
 
     </UserControl.Resources>
     <Grid>
-        <StackPanel>
+        <DockPanel>
             <ToolBarTray DockPanel.Dock="Top"
                          IsLocked="True">
                 <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
+                    <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}"
+                            Command="{Binding RefreshCommand, Mode=OneWay}"
+                            BorderThickness="0"
+                            Background="Transparent">
+                        <Image Source="{StaticResource RefreshImage}" />
+                    </Button>
+                    <Separator />
                     <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_OpenWorkingDirectory}"
                             Command="{Binding OpenRepoCommand, Mode=OneWay}"
                             BorderThickness="0"
@@ -246,7 +254,8 @@
                     </StackPanel>
                 </ToolBar>
             </ToolBarTray>
-            <Grid Visibility="{Binding DisplayCloneRepoGrid, Converter={StaticResource BoolToVisibility}}">
+            <Grid Visibility="{Binding DisplayCloneRepoGrid, Converter={StaticResource BoolToVisibility}}"
+                  DockPanel.Dock="Top">
                 <StackPanel VerticalAlignment="Top"
                                 Margin="10,5">
                     <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_RemotePathLabel}"
@@ -290,6 +299,6 @@
                 </StackPanel>
             </Grid>
             <TabControl DockPanel.Dock="Bottom" ItemsSource="{Binding TabItems}" />
-        </StackPanel>
+        </DockPanel>
     </Grid>
 </UserControl>
