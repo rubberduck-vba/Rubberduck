@@ -69,6 +69,39 @@
     <Compile Include="Grammar\VBAVisitor.cs" />
     <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IRubberduckParser.cs" />
+    <Compile Include="Preprocessing\BoolLetCoercion.cs" />
+    <Compile Include="Preprocessing\ByteLetCoercion.cs" />
+    <Compile Include="Preprocessing\DateLetCoercion.cs" />
+    <Compile Include="Preprocessing\DecimalLetCoercion.cs" />
+    <Compile Include="Preprocessing\EmptyLetCoercion.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationBaseListener.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationBaseVisitor.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationLexer.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationListener.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParser.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationVisitor.cs" />
+    <Compile Include="Preprocessing\VBAPreprocessorException.cs" />
+    <Compile Include="Preprocessing\VBADateConstants.cs" />
+    <Compile Include="Preprocessing\VBAEmptyValue.cs" />
+    <Compile Include="Preprocessing\ILetCoercion.cs" />
+    <Compile Include="Preprocessing\StringLetCoercion.cs" />
+    <Compile Include="Preprocessing\SymbolTable.cs" />
+    <Compile Include="Preprocessing\VBADateBaseListener.cs" />
+    <Compile Include="Preprocessing\VBADateBaseVisitor.cs" />
+    <Compile Include="Preprocessing\VBADateLexer.cs" />
+    <Compile Include="Preprocessing\VBADateListener.cs" />
+    <Compile Include="Preprocessing\VBADateParser.cs" />
+    <Compile Include="Preprocessing\VBADateVisitor.cs" />
+    <Compile Include="Preprocessing\VBAExpressionEvaluator.cs" />
+    <Compile Include="Preprocessing\VBALikeBaseListener.cs" />
+    <Compile Include="Preprocessing\VBALikeBaseVisitor.cs" />
+    <Compile Include="Preprocessing\VBALikeLexer.cs" />
+    <Compile Include="Preprocessing\VBALikeListener.cs" />
+    <Compile Include="Preprocessing\VBALikeParser.cs" />
+    <Compile Include="Preprocessing\VBALikeVisitor.cs" />
+    <Compile Include="Preprocessing\VBAPredefinedCompilationConstants.cs" />
+    <Compile Include="Preprocessing\VBAPreprocessor.cs" />
+    <Compile Include="Preprocessing\VBAPreprocessorVisitor.cs" />
     <Compile Include="Symbols\AdodbObjectModel.cs" />
     <Compile Include="Symbols\CommentExtensions.cs" />
     <Compile Include="Symbols\DeclarationEventArgs.cs" />
@@ -110,6 +143,9 @@
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Preprocessing\VBAConditionalCompilation.g4" />
+    <None Include="Preprocessing\VBADate.g4" />
+    <None Include="Preprocessing\VBALike.g4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">

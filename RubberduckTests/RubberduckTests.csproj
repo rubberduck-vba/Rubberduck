@@ -114,6 +114,7 @@
     <Compile Include="Mocks\MockVbeBuilder.cs" />
     <Compile Include="Mocks\MockWindowsCollection.cs" />
     <Compile Include="MultiAssert.cs" />
+    <Compile Include="Preprocessing\VBAPreprocessorVisitorTests.cs" />
     <Compile Include="Refactoring\EncapsulateFieldTests.cs" />
     <Compile Include="Refactoring\ExtractMethodTests.cs" />
     <Compile Include="Refactoring\IntroduceFieldTests.cs" />

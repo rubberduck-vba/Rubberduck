@@ -16,6 +16,7 @@ using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.Parsing.Preprocessing;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -148,7 +149,7 @@ namespace Rubberduck.Parsing.VBA
                 var code = rewriter == null
                     ? string.Join(Environment.NewLine, vbComponent.CodeModule.GetSanitizedCode())
                     : rewriter.GetText();
-                    // note: removes everything ignored by the parser, e.g. line numbers and comments
+                // note: removes everything ignored by the parser, e.g. line numbers and comments
 
                 ParseInternal(component, code, token);
             }
@@ -221,8 +222,18 @@ namespace Rubberduck.Parsing.VBA
 
             token.ThrowIfCancellationRequested();
 
+            var preprocessor = new VBAPreprocessor(_vbe.Version);
+            string preprocessedModuleBody = code;
+            try
+            {
+                preprocessedModuleBody = preprocessor.Process(code);
+            }
+            catch (VBAPreprocessorException ex)
+            {
+                // Fall back to not doing any preprocessing at all.
+            }
             ITokenStream stream;
-            var tree = ParseInternal(code, listeners, out stream);
+            var tree = ParseInternal(preprocessedModuleBody, listeners, out stream);
             _state.AddTokenStream(vbComponent, stream);
             _state.AddParseTree(vbComponent, tree);
 
@@ -277,7 +288,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void declarationsListener_NewDeclaration(object sender, DeclarationEventArgs e)
         {
-             _state.AddDeclaration(e.Declaration);
+            _state.AddDeclaration(e.Declaration);
         }
 
         private void ResolveReferences(VBComponent component, IParseTree tree, CancellationToken token)
