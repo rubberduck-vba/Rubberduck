@@ -15,7 +15,7 @@ namespace Rubberduck.UI.SourceControl
             _mergeBranchCommand = new DelegateCommand(_ => MergeBranch(), _ => Provider != null);
             _deleteBranchCommand = new DelegateCommand(_ => DeleteBranch(), _ => Provider != null);
 
-            _createBranchOkButtonCommand = new DelegateCommand(_ => CreateBranchOk(), _ => !IsValidBranchName);
+            _createBranchOkButtonCommand = new DelegateCommand(_ => CreateBranchOk(), _ => !IsNotValidBranchName);
             _createBranchCancelButtonCommand = new DelegateCommand(_ => CreateBranchCancel());
 
             _mergeBranchesOkButtonCommand = new DelegateCommand(_ => MergeBranchOk(), _ => SourceBranch != DestinationBranch);
@@ -138,7 +138,7 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        public bool IsValidBranchName
+        public bool IsNotValidBranchName
         {
             get
             {

@@ -2952,6 +2952,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Local Directory:.
+        /// </summary>
+        public static string SourceControl_LocalDirectoryLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_LocalDirectoryLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merge.
         /// </summary>
         public static string SourceControl_MergeBranch {
@@ -3056,6 +3065,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_RefreshButtonToolTip {
             get {
                 return ResourceManager.GetString("SourceControl_RefreshButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote Path:.
+        /// </summary>
+        public static string SourceControl_RemotePathLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_RemotePathLabel", resourceCulture);
             }
         }
         

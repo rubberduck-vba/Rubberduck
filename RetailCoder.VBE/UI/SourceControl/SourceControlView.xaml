@@ -9,11 +9,11 @@
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type sourceControl:SourceControlViewViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
-        <BitmapImage x:Key="RefreshImage" UriSource="../../Resources/arrow-circle-double.png" />
         <BitmapImage x:Key="OpenRepoImage" UriSource="../../Resources/folder-horizontal-open.png" />
         <BitmapImage x:Key="CreateRepoImage" UriSource="../../Resources/init-repo.png" />
         <BitmapImage x:Key="CloneRepoImage" UriSource="../../Resources/drive-download.png" />
         <BitmapImage x:Key="GitIcon" UriSource="../../Resources/icon-github.png" />
+        <BitmapImage x:Key="ErrorImage" UriSource="../../Resources/cross-circle.png" />
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
@@ -214,7 +214,7 @@
 
     </UserControl.Resources>
     <Grid>
-        <DockPanel>
+        <StackPanel>
             <ToolBarTray DockPanel.Dock="Top"
                          IsLocked="True">
                 <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
@@ -246,7 +246,50 @@
                     </StackPanel>
                 </ToolBar>
             </ToolBarTray>
+            <Grid Visibility="{Binding DisplayCloneRepoGrid, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel VerticalAlignment="Top"
+                                Margin="10,5">
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_RemotePathLabel}"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,5" />
+                    <TextBox Text="{Binding RemotePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="0,0,0,10"
+                                 Height="18"
+                                 VerticalContentAlignment="Center" />
+                    <Image Source="{StaticResource ErrorImage}"
+                               HorizontalAlignment="Right"
+                               Margin="0,-57,-7.8,0"
+                               Width="16"
+                               Visibility="{Binding IsNotValidRemotePath, Converter={StaticResource BoolToVisibility}}" />
+                    
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_LocalDirectoryLabel}"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,5" />
+                    <TextBox Text="{Binding LocalDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="0,0,0,10"
+                                 Height="18"
+                                 VerticalContentAlignment="Center" />
+
+                    <Grid Grid.IsSharedSizeScope="True"
+                              HorizontalAlignment="Right">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition SharedSizeGroup="CloneRepoButtons" />
+                            <ColumnDefinition SharedSizeGroup="CloneRepoButtons" />
+                        </Grid.ColumnDefinitions>
+                        <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
+                                    Padding="5"
+                                    Command="{Binding CloneRepoOkButtonCommand}">
+                        </Button>
+                        <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    Padding="5"
+                                    Command="{Binding CloneRepoCancelButtonCommand}">
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Grid>
             <TabControl DockPanel.Dock="Bottom" ItemsSource="{Binding TabItems}" />
-        </DockPanel>
+        </StackPanel>
     </Grid>
 </UserControl>

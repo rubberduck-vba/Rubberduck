@@ -96,7 +96,7 @@
                                HorizontalAlignment="Right"
                                Margin="0,-57,-7.8,0"
                                Width="16"
-                               Visibility="{Binding IsValidBranchName, Converter={StaticResource BoolToVisibility}}" />
+                               Visibility="{Binding IsNotValidBranchName, Converter={StaticResource BoolToVisibility}}" />
 
                         <Grid Grid.IsSharedSizeScope="True"
                               HorizontalAlignment="Right">

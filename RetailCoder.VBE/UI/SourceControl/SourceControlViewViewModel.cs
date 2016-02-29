@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
@@ -45,7 +47,10 @@ namespace Rubberduck.UI.SourceControl
 
             _initRepoCommand = new DelegateCommand(_ => InitRepo());
             _openRepoCommand = new DelegateCommand(_ => OpenRepo());
-            _cloneRepoCommand = new DelegateCommand(_ => CloneRepo());
+            _cloneRepoCommand = new DelegateCommand(_ => ShowCloneRepoGrid());
+
+            _cloneRepoOkButtonCommand = new DelegateCommand(_ => CloneRepo(), _ => !IsNotValidRemotePath);
+            _cloneRepoCancelButtonCommand = new DelegateCommand(_ => CancelCloneRepo());
 
             TabItems = new ObservableCollection<IControlView> {changesView, branchesView, unsyncedCommitsView, settingsView};
             Status = RubberduckUI.Offline;
@@ -76,6 +81,63 @@ namespace Rubberduck.UI.SourceControl
                     _status = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        private bool _displayCloneRepoGrid;
+        public bool DisplayCloneRepoGrid
+        {
+            get { return _displayCloneRepoGrid; }
+            set
+            {
+                if (_displayCloneRepoGrid != value)
+                {
+                    _displayCloneRepoGrid = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _remotePath;
+        public string RemotePath
+        {
+            get { return _remotePath; }
+            set
+            {
+                if (_remotePath != value)
+                {
+                    _remotePath = value;
+                    LocalDirectory =
+                        _config.DefaultRepositoryLocation +
+                        (_config.DefaultRepositoryLocation.EndsWith("\\") ? "\\" : string.Empty) +
+                        _remotePath.Split('/').Last().Replace(".git", string.Empty);
+
+                    OnPropertyChanged();
+                    OnPropertyChanged("IsValidRemotePath");
+                }
+            }
+        }
+
+        private string _localDirectory;
+        public string LocalDirectory
+        {
+            get { return _localDirectory; }
+            set
+            {
+                if (_localDirectory != value)
+                {
+                    _localDirectory = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool IsNotValidRemotePath
+        {
+            get
+            {
+                Uri uri;
+                return Uri.TryCreate(RemotePath, UriKind.Absolute, out uri);
             }
         }
 
@@ -142,7 +204,34 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private void CloneRepo() { }
+        private void CloneRepo()
+        {
+            IRepository repo;
+            try
+            {
+                _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
+                repo = _provider.Clone(RemotePath, LocalDirectory);
+            }
+            catch (SourceControlException ex)
+            {
+                //ShowSecondaryPanel(ex.Message, ex.InnerException.Message);
+                return;
+            }
+
+            AddRepoToConfig((Repository)repo);
+        }
+
+        private void ShowCloneRepoGrid()
+        {
+            DisplayCloneRepoGrid = true;
+        }
+
+        private void CancelCloneRepo()
+        {
+            RemotePath = string.Empty;
+
+            DisplayCloneRepoGrid = false;
+        }
 
         private readonly ICommand _initRepoCommand;
         public ICommand InitRepoCommand
@@ -160,6 +249,24 @@ namespace Rubberduck.UI.SourceControl
         public ICommand CloneRepoCommand
         {
             get { return _cloneRepoCommand; }
+        }
+
+        private readonly ICommand _cloneRepoOkButtonCommand;
+        public ICommand CloneRepoOkButtonCommand
+        {
+            get
+            {
+                return _cloneRepoOkButtonCommand;
+            }
+        }
+
+        private readonly ICommand _cloneRepoCancelButtonCommand;
+        public ICommand CloneRepoCancelButtonCommand
+        {
+            get
+            {
+                return _cloneRepoCancelButtonCommand;
+            }
         }
     }
 }
