@@ -92,28 +92,33 @@
                 BorderThickness="0, 1, 0, 0">
             <DockPanel VerticalAlignment="Center"
                        Height="40"
-                       Background="{x:Static SystemColors.ControlDarkBrush}">
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Right">
+                       Background="{x:Static SystemColors.ControlDarkBrush}"
+                       Grid.IsSharedSizeScope="True">
+                <Grid HorizontalAlignment="Right"
+                      Margin="5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                        <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                        <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                    </Grid.ColumnDefinitions>
                     <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings_ResetSettings}"
-                            MinWidth="75"
                             Height="20"
-                            HorizontalAlignment="Right"
-                            Margin="20,0"
+                            Margin="10,0"
+                            Padding="5,0"
                             Command="{Binding ResetButtonCommand}" />
                     <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
-                            MinWidth="75"
+                            Grid.Column="1"
                             Height="20"
-                            HorizontalAlignment="Left"
                             Margin="5,0"
+                            Padding="10,0"
                             Command="{Binding OKButtonCommand}" />
                     <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
-                            MinWidth="75"
+                            Grid.Column="2"
                             Height="20"
-                            HorizontalAlignment="Right"
-                            Margin="5,0,10,0"
+                            Margin="5,0"
+                            Padding="10,0"
                             Command="{Binding CancelButtonCommand}" />
-                </StackPanel>
+                </Grid>
             </DockPanel>
         </Border>
     </Grid>

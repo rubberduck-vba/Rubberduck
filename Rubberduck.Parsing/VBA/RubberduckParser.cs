@@ -29,9 +29,13 @@ namespace Rubberduck.Parsing.VBA
             state.ParseRequest += ReparseRequested;
         }
 
-        private void ReparseRequested(object sender, EventArgs e)
+        private async void ReparseRequested(object sender, EventArgs e)
         {
-            Task.Run(() => ParseParallel());
+            if (!_state.ParseTrees.Any())
+            {
+                _state.AddBuiltInDeclarations(_vbe.HostApplication());
+            }
+            await ParseParallel();
         }
 
         private readonly VBE _vbe;
@@ -102,7 +106,7 @@ namespace Rubberduck.Parsing.VBA
             return tokenSource;
         }
 
-        private void ParseParallel()
+        private async Task ParseParallel()
         {
             try
             {
@@ -114,7 +118,7 @@ namespace Rubberduck.Parsing.VBA
                 SetComponentsState(components, ParserState.Pending);
 
                 var parseTasks = components.Select(vbComponent => Task.Run(() => ParseComponent(vbComponent, false))).ToArray();
-                Task.WhenAll(parseTasks)
+                await Task.WhenAll(parseTasks)
                     .ContinueWith(t =>
                     {
                         using (var tokenSource = new CancellationTokenSource())
@@ -148,7 +152,7 @@ namespace Rubberduck.Parsing.VBA
                 var code = rewriter == null
                     ? string.Join(Environment.NewLine, vbComponent.CodeModule.GetSanitizedCode())
                     : rewriter.GetText();
-                    // note: removes everything ignored by the parser, e.g. line numbers and comments
+                    // note: removes everything ignored by the parser, e.g. line numbers
 
                 ParseInternal(component, code, token);
             }
@@ -287,6 +291,7 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
+            _state.SetModuleState(component, ParserState.Resolving);
             Debug.Print("Resolving '{0}'...", component.Name);
 
             if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))

@@ -69,9 +69,9 @@ namespace Rubberduck
 
             var sink = new VBProjectsEventsSink();
             var connectionPointContainer = (IConnectionPointContainer)_vbe.VBProjects;
-            Guid interfaceId = typeof (_dispVBProjectsEvents).GUID;
+            var interfaceId = typeof (_dispVBProjectsEvents).GUID;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out _projectsEventsConnectionPoint);
-
+            
             sink.ProjectAdded += sink_ProjectAdded;
             sink.ProjectRemoved += sink_ProjectRemoved;
             sink.ProjectActivated += sink_ProjectActivated;
@@ -82,8 +82,9 @@ namespace Rubberduck
             UiDispatcher.Initialize();
         }
 
-        void sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
+        async void sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
+            Debug.WriteLine(string.Format("Project '{0}' was removed.", e.Item.Name));
             Tuple<IConnectionPoint, int> value;
             if (_componentsEventsConnectionPoints.TryGetValue(e.Item.VBComponents, out value))
             {
@@ -94,8 +95,9 @@ namespace Rubberduck
             }
         }
 
-        void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
+        async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
+            Debug.WriteLine(string.Format("Project '{0}' was added.", e.Item.Name));
             var connectionPointContainer = (IConnectionPointContainer)e.Item.VBComponents;
             Guid interfaceId = typeof(_dispVBComponentsEvents).GUID;
             
@@ -117,46 +119,54 @@ namespace Rubberduck
             _parser.State.OnParseRequested();
         }
 
-        void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
+        async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            Debug.WriteLine(string.Format("Component '{0}' was selected.", e.Item.Name));
             // do something?
         }
 
-        void sink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<VBComponent> e)
+        async void sink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<VBComponent> e)
         {
+            Debug.WriteLine(string.Format("Component '{0}' was renamed.", e.Item.Name));
             _parser.State.ClearDeclarations(e.Item);
             _parser.State.OnParseRequested(e.Item);
         }
 
-        void sink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)
+        async void sink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            Debug.WriteLine(string.Format("Component '{0}' was removed.", e.Item.Name));
             _parser.State.ClearDeclarations(e.Item);
         }
 
-        void sink_ComponentReloaded(object sender, DispatcherEventArgs<VBComponent> e)
+        async void sink_ComponentReloaded(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            Debug.WriteLine(string.Format("Component '{0}' was reloaded.", e.Item.Name));
             _parser.State.ClearDeclarations(e.Item);
             _parser.State.OnParseRequested(e.Item);
         }
 
-        void sink_ComponentAdded(object sender, DispatcherEventArgs<VBComponent> e)
+        async void sink_ComponentAdded(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            Debug.WriteLine(string.Format("Component '{0}' was added.", e.Item.Name));
             _parser.State.OnParseRequested(e.Item);
         }
 
-        void sink_ComponentActivated(object sender, DispatcherEventArgs<VBComponent> e)
+        async void sink_ComponentActivated(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            Debug.WriteLine(string.Format("Component '{0}' was activated.", e.Item.Name));
             // do something?
         }
 
-        void sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<VBProject> e)
+        async void sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<VBProject> e)
         {
+            Debug.WriteLine(string.Format("Project '{0}' was renamed.", e.Item.Name));
             _parser.State.ClearDeclarations(e.Item);
             _parser.State.OnParseRequested();
         }
 
-        void sink_ProjectActivated(object sender, DispatcherEventArgs<VBProject> e)
+        async void sink_ProjectActivated(object sender, DispatcherEventArgs<VBProject> e)
         {
+            Debug.WriteLine(string.Format("Project '{0}' was activated.", e.Item.Name));
             // do something?
         }
 
@@ -248,13 +258,6 @@ namespace Rubberduck
 
             _appMenus.Initialize();
             _appMenus.Localize();
-
-            // delay to allow the VBE to properly load. HostApplication is null until then.
-            Task.Delay(1000).ContinueWith(t =>
-            {
-                _parser.State.AddBuiltInDeclarations(_vbe.HostApplication());
-                //_parser.State.OnParseRequested();
-            });
 
             //_hooks.AddHook(new LowLevelKeyboardHook(_vbe));
             //_hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^R", Keys.R));
