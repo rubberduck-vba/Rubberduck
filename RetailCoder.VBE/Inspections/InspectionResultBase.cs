@@ -106,11 +106,17 @@ namespace Rubberduck.Inspections
             return CompareTo(obj as ICodeInspectionResult);
         }
 
+        public object[] ToArray()
+        {
+            var module = QualifiedSelection.QualifiedName;
+            return new object[] {Inspection.Severity.ToString(), Description, module.ProjectName, module.ComponentName, QualifiedSelection.Selection.StartLine };
+        }
+
         public string ToCsvString()
         {
             var module = QualifiedSelection.QualifiedName;
             return string.Format(
-                "{0}, {1}, {2}, {3}, {4}",
+                "\"{0}\",\"{1}\",\"{2}\",\"{3}\",{4}",
                 Inspection.Severity,
                 Description,
                 module.ProjectName,

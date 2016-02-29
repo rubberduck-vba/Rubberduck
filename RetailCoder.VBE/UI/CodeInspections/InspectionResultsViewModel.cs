@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -283,14 +285,24 @@ namespace Rubberduck.UI.CodeInspections
             {
                 return;
             }
+            var aResults = _results.Select(result => result.ToArray()).ToArray();
 
-            var results = string.Join("\n", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
             var resource = _results.Count == 1
                 ? RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
-            var text = string.Format(resource, DateTime.Now, _results.Count) + Environment.NewLine + results;
 
-            _clipboard.Write(text);
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InstalledUICulture), _results.Count);
+
+            var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
+            var csvResults = ExportFormatter.Csv(aResults, title);
+            var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title);
+            
+            //Add the formats from richest formatting to least formatting
+            _clipboard.AppendData(DataFormats.Html, htmlResults);
+            _clipboard.AppendData(DataFormats.CommaSeparatedValue, csvResults);
+            _clipboard.AppendData(DataFormats.UnicodeText, textResults);
+
+            _clipboard.Flush();
         }
 
         private bool CanExecuteCopyResultsCommand(object parameter)

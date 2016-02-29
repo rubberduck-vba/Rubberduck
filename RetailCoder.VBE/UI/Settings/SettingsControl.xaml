@@ -5,13 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
-             xmlns:generalConverters="clr-namespace:Rubberduck.UI.GeneralConverters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600"
              d:DataContext="{d:DesignInstance {x:Type settings:SettingsControlViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
-        <generalConverters:EqualWidthConverter x:Key="EqualWidthConverter" />
-        
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
             <GradientStop Color="#FF9BDDFB" Offset="1"/>
@@ -95,52 +92,33 @@
                 BorderThickness="0, 1, 0, 0">
             <DockPanel VerticalAlignment="Center"
                        Height="40"
-                       Background="{x:Static SystemColors.ControlDarkBrush}">
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Right">
-                    <Button Name="ResetButton"
-                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings_ResetSettings}"
+                       Background="{x:Static SystemColors.ControlDarkBrush}"
+                       Grid.IsSharedSizeScope="True">
+                <Grid HorizontalAlignment="Right"
+                      Margin="5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                        <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                        <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings_ResetSettings}"
                             Height="20"
-                            HorizontalAlignment="Right"
-                            Margin="20,0"
-                            Padding="10,0"
-                            Command="{Binding ResetButtonCommand}">
-                        <Button.MinWidth>
-                            <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                <Binding ElementName="OkButton" Path="ActualWidth" />
-                                <Binding ElementName="CancelButton" Path="ActualWidth" />
-                            </MultiBinding>
-                        </Button.MinWidth>
-                    </Button>
-                    <Button Name="OkButton"
-                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
+                            Margin="10,0"
+                            Padding="5,0"
+                            Command="{Binding ResetButtonCommand}" />
+                    <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
+                            Grid.Column="1"
                             Height="20"
-                            HorizontalAlignment="Left"
                             Margin="5,0"
                             Padding="10,0"
-                            Command="{Binding OKButtonCommand}">
-                        <Button.MinWidth>
-                            <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                <Binding ElementName="CancelButton" Path="ActualWidth" />
-                                <Binding ElementName="ResetButton" Path="ActualWidth" />
-                            </MultiBinding>
-                        </Button.MinWidth>
-                    </Button>
-                    <Button Name="CancelButton"
-                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                            Command="{Binding OKButtonCommand}" />
+                    <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                            Grid.Column="2"
                             Height="20"
-                            HorizontalAlignment="Right"
                             Margin="5,0"
                             Padding="10,0"
-                            Command="{Binding CancelButtonCommand}">
-                        <Button.MinWidth>
-                            <MultiBinding Converter="{StaticResource EqualWidthConverter}">
-                                <Binding ElementName="OkButton" Path="ActualWidth" />
-                                <Binding ElementName="ResetButton" Path="ActualWidth" />
-                            </MultiBinding>
-                        </Button.MinWidth>
-                    </Button>
-                </StackPanel>
+                            Command="{Binding CancelButtonCommand}" />
+                </Grid>
             </DockPanel>
         </Border>
     </Grid>
