@@ -31,7 +31,30 @@ namespace Rubberduck.UI.SourceControl
         public ISourceControlProvider Provider
         {
             get { return _provider; }
-            set { _provider = value; }
+            set
+            {
+                _provider = value;
+
+                CurrentBranch = Provider.CurrentBranch.Name;
+
+                var fileStats = Provider.Status().ToList();
+
+                IncludedChanges = new ObservableCollection<IFileStatusEntry>(fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Modified)));
+                UntrackedFiles = new ObservableCollection<IFileStatusEntry>(fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)));
+            }
+        }
+
+        private string _currentBranch;
+        public string CurrentBranch
+        {
+            get { return _currentBranch; }
+            set {
+                if (_currentBranch != value)
+                {
+                    _currentBranch = value;
+                    OnPropertyChanged();
+                } 
+            }
         }
 
         public CommitAction CommitAction { get; set; }

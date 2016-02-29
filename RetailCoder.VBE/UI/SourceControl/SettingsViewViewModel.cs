@@ -121,11 +121,6 @@ namespace Rubberduck.UI.SourceControl
 
         private void OpenFileInExternalEditor(GitSettingsFile fileType)
         {
-            if (_provider.CurrentRepository == null)
-            {
-                return;
-            }
-
             var fileName = string.Empty;
             var defaultContents = string.Empty;
             switch (fileType)
@@ -140,7 +135,7 @@ namespace Rubberduck.UI.SourceControl
                     break;
             }
 
-            var repo = _provider.CurrentRepository;
+            var repo = Provider.CurrentRepository;
             var filePath = Path.Combine(repo.LocalLocation, fileName);
 
             if (!File.Exists(filePath))

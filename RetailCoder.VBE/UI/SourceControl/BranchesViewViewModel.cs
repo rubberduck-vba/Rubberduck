@@ -38,6 +38,8 @@ namespace Rubberduck.UI.SourceControl
                     new ObservableCollection<string>(
                         Provider.Branches.Where(b => !b.IsRemote && PublishedBranches.All(p => b.Name != p))
                             .Select(b => b.Name));
+
+                CurrentBranch = _provider.CurrentBranch.Name;
             }
         }
 
@@ -88,6 +90,20 @@ namespace Rubberduck.UI.SourceControl
                 if (_unpublishedBranches != value)
                 {
                     _unpublishedBranches = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _currentBranch;
+        public string CurrentBranch
+        {
+            get { return _currentBranch; }
+            set
+            {
+                if (_currentBranch != value)
+                {
+                    _currentBranch = value;
                     OnPropertyChanged();
                 }
             }

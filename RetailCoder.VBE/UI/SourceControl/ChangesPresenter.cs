@@ -41,7 +41,7 @@ namespace Rubberduck.UI.SourceControl
 
         private bool ShouldEnableCommit()
         {
-            return !string.IsNullOrEmpty(_view.CommitMessage);// && _view.CommitAction != CommitAction.Unset;
+            return !string.IsNullOrEmpty(_view.CommitMessage);
         }
 
         public void RefreshView()

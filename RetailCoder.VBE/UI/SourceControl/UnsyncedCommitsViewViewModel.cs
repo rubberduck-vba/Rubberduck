@@ -15,12 +15,7 @@ namespace Rubberduck.UI.SourceControl
             _syncCommitsCommand = new DelegateCommand(_ => SyncCommits());
         }
 
-        private ISourceControlProvider _provider;
-        public ISourceControlProvider Provider
-        {
-            get { return _provider; }
-            set { _provider = value; }
-        }
+        public ISourceControlProvider Provider { get; set; }
 
         private ObservableCollection<ICommit> _incomingCommits;
         public ObservableCollection<ICommit> IncomingCommits
@@ -52,18 +47,54 @@ namespace Rubberduck.UI.SourceControl
 
         private void FetchCommits()
         {
+            try
+            {
+                Provider.Push();
+
+                IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
+                OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
+            }
+            catch (SourceControlException ex)
+            {
+                //RaiseActionFailedEvent(ex);
+            }
         }
 
         private void PullCommits()
         {
+            try
+            {
+                Provider.Pull();
+            }
+            catch (SourceControlException ex)
+            {
+                //RaiseActionFailedEvent(ex);
+            }
         }
 
         private void PushCommits()
         {
+            try
+            {
+                Provider.Push();
+            }
+            catch (SourceControlException ex)
+            {
+                //RaiseActionFailedEvent(ex);
+            }
         }
 
         private void SyncCommits()
         {
+            try
+            {
+                Provider.Pull();
+                Provider.Push();
+            }
+            catch (SourceControlException ex)
+            {
+                //RaiseActionFailedEvent(ex);
+            }
         }
 
         private readonly ICommand _fetchCommitsCommand;
