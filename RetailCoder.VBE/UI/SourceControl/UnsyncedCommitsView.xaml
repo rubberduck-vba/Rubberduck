@@ -13,6 +13,40 @@
         <BitmapImage x:Key="PullCommitsImage" UriSource="../../Resources/drive-download.png" />
         <BitmapImage x:Key="PushCommitsImage" UriSource="../../Resources/drive-upload.png" />
         <BitmapImage x:Key="SyncCommitsImage" UriSource="../../Resources/arrow-circle-double.png" />
+
+        <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
+            <Style.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="2"/>
+                </Style>
+            </Style.Resources>
+            <Setter Property="BorderThickness" Value="0,.5,0,0" />
+            <Setter Property="BorderBrush" Value="DarkGray" />
+            <Setter Property="Height" Value="26" />
+            <Setter Property="TextBlock.FontWeight" Value="Normal" />
+            <Setter Property="Padding" Value="20,0,0,0" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderThickness" Value="1.5" />
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True" />
+                        <Condition Property="Selector.IsSelectionActive" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="#adc6e5"/>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                </MultiTrigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True" />
+                        <Condition Property="Selector.IsSelectionActive" Value="False" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="LightGray"/>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
     </TabItem.Resources>
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -104,12 +138,62 @@
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_IncomingCommits}"
                           Height="175"
                           Padding="5">
-                        <ListBox ItemsSource="{Binding IncomingCommits}" />
+                    <DataGrid ItemsSource="{Binding IncomingCommits}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="False"
+                              IsReadOnly="True"
+                              SelectionMode="Single"
+                              CanUserAddRows="False"
+                              HorizontalGridLinesBrush="Transparent"
+                              VerticalGridLinesBrush="Transparent"
+                              HeadersVisibility="Column"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ItemContainerStyle="{StaticResource PrettifyRow}"
+                              ColumnHeaderHeight="22"
+                              BorderThickness="0">
+                        <DataGrid.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Message}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Message}" Width="*" />
+                            <DataGridTextColumn Binding="{Binding Author}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Author}" />
+                            <DataGridTextColumn Binding="{Binding Id}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Id}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </GroupBox>
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_OutgoingCommits}"
                           Height="175"
                           Padding="5">
-                    <ListBox ItemsSource="{Binding OutgoingCommits}" />
+                    <DataGrid ItemsSource="{Binding OutgoingCommits}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="False"
+                              IsReadOnly="True"
+                              SelectionMode="Single"
+                              CanUserAddRows="False"
+                              HorizontalGridLinesBrush="Transparent"
+                              VerticalGridLinesBrush="Transparent"
+                              HeadersVisibility="Column"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ItemContainerStyle="{StaticResource PrettifyRow}"
+                              ColumnHeaderHeight="22"
+                              BorderThickness="0">
+                        <DataGrid.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Message}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Message}" Width="*" />
+                            <DataGridTextColumn Binding="{Binding Author}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Author}" />
+                            <DataGridTextColumn Binding="{Binding Id}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Id}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </GroupBox>
             </StackPanel>
         </ScrollViewer>

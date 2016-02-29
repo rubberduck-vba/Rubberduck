@@ -23,6 +23,40 @@
                 <x:Type Type="sourceControl:CommitAction"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+
+        <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
+            <Style.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="2"/>
+                </Style>
+            </Style.Resources>
+            <Setter Property="BorderThickness" Value="0,.5,0,0" />
+            <Setter Property="BorderBrush" Value="DarkGray" />
+            <Setter Property="Height" Value="26" />
+            <Setter Property="TextBlock.FontWeight" Value="Normal" />
+            <Setter Property="Padding" Value="20,0,0,0" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderThickness" Value="1.5" />
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True" />
+                        <Condition Property="Selector.IsSelectionActive" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="#adc6e5"/>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                </MultiTrigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True" />
+                        <Condition Property="Selector.IsSelectionActive" Value="False" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="LightGray"/>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
     </TabItem.Resources>
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -46,7 +80,8 @@
                     </Grid.ColumnDefinitions>
                     <ComboBox Margin="5,10"
                               SelectedItem="{Binding CommitAction, Mode=OneWay, Converter={StaticResource CommitActionValueToEnum}}"
-                              ItemsSource="{Binding Source={StaticResource CommitActions}, Converter={StaticResource CommitActionToText}}" />
+                              ItemsSource="{Binding Source={StaticResource CommitActions}, Converter={StaticResource CommitActionToText}}"
+                              VerticalContentAlignment="Center" />
                     <Button Margin="5,10"
                             Grid.Column="1"
                             Command="{Binding CommitCommand}">
@@ -64,18 +99,90 @@
                           Height="135"
                           Margin="0,0,0,10"
                           Padding="5">
-                    <ListBox ItemsSource="{Binding IncludedChanges, Mode=TwoWay}" />
+                    <DataGrid ItemsSource="{Binding IncludedChanges}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="False"
+                              IsReadOnly="True"
+                              SelectionMode="Single"
+                              CanUserAddRows="False"
+                              HorizontalGridLinesBrush="Transparent"
+                              VerticalGridLinesBrush="Transparent"
+                              HeadersVisibility="Column"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ItemContainerStyle="{StaticResource PrettifyRow}"
+                              ColumnHeaderHeight="22"
+                              BorderThickness="0">
+                        <DataGrid.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding FilePath}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FilePath}" Width="*" />
+                            <DataGridTextColumn Binding="{Binding FileStatus}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FileStatus}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </GroupBox>
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_ExcludedChanges}"
                           Height="135"
                           Margin="0,0,0,10"
                           Padding="5">
-                    <ListBox ItemsSource="{Binding ExcludedChanges, Mode=TwoWay}" />
+                    <DataGrid ItemsSource="{Binding ExcludedChanges}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="False"
+                              IsReadOnly="True"
+                              SelectionMode="Single"
+                              CanUserAddRows="False"
+                              HorizontalGridLinesBrush="Transparent"
+                              VerticalGridLinesBrush="Transparent"
+                              HeadersVisibility="Column"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ItemContainerStyle="{StaticResource PrettifyRow}"
+                              ColumnHeaderHeight="22"
+                              BorderThickness="0">
+                        <DataGrid.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding FilePath}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FilePath}" Width="*" />
+                            <DataGridTextColumn Binding="{Binding FileStatus}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FileStatus}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </GroupBox>
                 <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UntrackedFiles}"
                           Height="135"
                           Padding="5">
-                    <ListBox ItemsSource="{Binding UntrackedFiles, Mode=TwoWay}" />
+                    <DataGrid ItemsSource="{Binding UntrackedFiles}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="False"
+                              IsReadOnly="True"
+                              SelectionMode="Single"
+                              CanUserAddRows="False"
+                              HorizontalGridLinesBrush="Transparent"
+                              VerticalGridLinesBrush="Transparent"
+                              HeadersVisibility="Column"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ItemContainerStyle="{StaticResource PrettifyRow}"
+                              ColumnHeaderHeight="22"
+                              BorderThickness="0">
+                        <DataGrid.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding FilePath}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FilePath}" Width="*" />
+                            <DataGridTextColumn Binding="{Binding FileStatus}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_FileStatus}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </GroupBox>
             </StackPanel>
         </ScrollViewer>
