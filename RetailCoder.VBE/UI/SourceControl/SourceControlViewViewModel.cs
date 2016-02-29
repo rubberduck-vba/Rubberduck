@@ -50,7 +50,7 @@ namespace Rubberduck.UI.SourceControl
             _cloneRepoCommand = new DelegateCommand(_ => ShowCloneRepoGrid());
 
             _cloneRepoOkButtonCommand = new DelegateCommand(_ => CloneRepo(), _ => !IsNotValidRemotePath);
-            _cloneRepoCancelButtonCommand = new DelegateCommand(_ => CancelCloneRepo());
+            _cloneRepoCancelButtonCommand = new DelegateCommand(_ => CloseCloneRepoGrid());
 
             TabItems = new ObservableCollection<IControlView> {changesView, branchesView, unsyncedCommitsView, settingsView};
             Status = RubberduckUI.Offline;
@@ -109,11 +109,11 @@ namespace Rubberduck.UI.SourceControl
                     _remotePath = value;
                     LocalDirectory =
                         _config.DefaultRepositoryLocation +
-                        (_config.DefaultRepositoryLocation.EndsWith("\\") ? "\\" : string.Empty) +
+                        (_config.DefaultRepositoryLocation.EndsWith("\\") ? string.Empty : "\\") +
                         _remotePath.Split('/').Last().Replace(".git", string.Empty);
 
                     OnPropertyChanged();
-                    OnPropertyChanged("IsValidRemotePath");
+                    OnPropertyChanged("IsNotValidRemotePath");
                 }
             }
         }
@@ -137,7 +137,7 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 Uri uri;
-                return Uri.TryCreate(RemotePath, UriKind.Absolute, out uri);
+                return !Uri.TryCreate(RemotePath, UriKind.Absolute, out uri);
             }
         }
 
@@ -219,6 +219,8 @@ namespace Rubberduck.UI.SourceControl
             }
 
             AddRepoToConfig((Repository)repo);
+
+            CloseCloneRepoGrid();
         }
 
         private void ShowCloneRepoGrid()
@@ -226,7 +228,7 @@ namespace Rubberduck.UI.SourceControl
             DisplayCloneRepoGrid = true;
         }
 
-        private void CancelCloneRepo()
+        private void CloseCloneRepoGrid()
         {
             RemotePath = string.Empty;
 
