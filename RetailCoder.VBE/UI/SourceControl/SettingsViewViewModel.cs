@@ -29,16 +29,11 @@ namespace Rubberduck.UI.SourceControl
             _showFilePickerCommand = new DelegateCommand(_ => ShowFilePicker());
             _cancelSettingsChangesCommand = new DelegateCommand(_ => CancelSettingsChanges());
             _updateSettingsCommand = new DelegateCommand(_ => UpdateSettings());
-            _showGitIgnoreCommand = new DelegateCommand(_ => ShowGitIgnore());
-            _showGitAttributesCommand = new DelegateCommand(_ => ShowGitAttributes());
+            _showGitIgnoreCommand = new DelegateCommand(_ => ShowGitIgnore(), _ => Provider != null);
+            _showGitAttributesCommand = new DelegateCommand(_ => ShowGitAttributes(), _ => Provider != null);
         }
 
-        private ISourceControlProvider _provider;
-        public ISourceControlProvider Provider
-        {
-            get { return _provider; }
-            set { _provider = value; }
-        }
+        public ISourceControlProvider Provider { get; set; }
 
         private string _userName;
         public string UserName

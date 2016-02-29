@@ -11,17 +11,17 @@ namespace Rubberduck.UI.SourceControl
     {
         public BranchesViewViewModel()
         {
-            _newBranchCommand = new DelegateCommand(_ => CreateBranch());
-            _mergeBranchCommand = new DelegateCommand(_ => MergeBranch());
-            _deleteBranchCommand = new DelegateCommand(_ => DeleteBranch());
+            _newBranchCommand = new DelegateCommand(_ => CreateBranch(), _ => Provider != null);
+            _mergeBranchCommand = new DelegateCommand(_ => MergeBranch(), _ => Provider != null);
+            _deleteBranchCommand = new DelegateCommand(_ => DeleteBranch(), _ => Provider != null);
 
-            _createBranchOkButtonCommand = new DelegateCommand(_ => CreateBranchOk());
+            _createBranchOkButtonCommand = new DelegateCommand(_ => CreateBranchOk(), _ => !IsValidBranchName);
             _createBranchCancelButtonCommand = new DelegateCommand(_ => CreateBranchCancel());
 
-            _mergeBranchesOkButtonCommand = new DelegateCommand(_ => MergeBranchOk());
+            _mergeBranchesOkButtonCommand = new DelegateCommand(_ => MergeBranchOk(), _ => SourceBranch != DestinationBranch);
             _mergeBranchesCancelButtonCommand = new DelegateCommand(_ => MergeBranchCancel());
 
-            _deleteBranchOkButtonCommand = new DelegateCommand(_ => DeleteBranchOk());
+            _deleteBranchOkButtonCommand = new DelegateCommand(_ => DeleteBranchOk(), _ => Provider != null && Provider.CurrentBranch.Name != BranchToDelete);
             _deleteBranchCancelButtonCommand = new DelegateCommand(_ => DeleteBranchCancel());
         }
 

@@ -9,10 +9,10 @@ namespace Rubberduck.UI.SourceControl
     {
         public UnsyncedCommitsViewViewModel()
         {
-            _fetchCommitsCommand = new DelegateCommand(_ => FetchCommits());
-            _pullCommitsCommand = new DelegateCommand(_ => PullCommits());
-            _pushCommitsCommand = new DelegateCommand(_ => PushCommits());
-            _syncCommitsCommand = new DelegateCommand(_ => SyncCommits());
+            _fetchCommitsCommand = new DelegateCommand(_ => FetchCommits(), _ => Provider != null);
+            _pullCommitsCommand = new DelegateCommand(_ => PullCommits(), _ => Provider != null);
+            _pushCommitsCommand = new DelegateCommand(_ => PushCommits(), _ => Provider != null);
+            _syncCommitsCommand = new DelegateCommand(_ => SyncCommits(), _ => Provider != null);
         }
 
         public ISourceControlProvider Provider { get; set; }
