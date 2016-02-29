@@ -218,13 +218,6 @@
             <ToolBarTray DockPanel.Dock="Top"
                          IsLocked="True">
                 <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
-                    <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}"
-                            Command="{Binding RefreshCommand, Mode=OneWay}"
-                            BorderThickness="0"
-                            Background="Transparent">
-                        <Image Source="{StaticResource RefreshImage}" />
-                    </Button>
-                    <Separator />
                     <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_OpenWorkingDirectory}"
                             Command="{Binding OpenRepoCommand, Mode=OneWay}"
                             BorderThickness="0"

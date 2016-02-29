@@ -43,7 +43,6 @@ namespace Rubberduck.UI.SourceControl
             _config = _configService.LoadConfiguration();
             _wrapperFactory = wrapperFactory;
 
-            _refreshCommand = new DelegateCommand(_ => Refresh());
             _initRepoCommand = new DelegateCommand(_ => InitRepo());
             _openRepoCommand = new DelegateCommand(_ => OpenRepo());
             _cloneRepoCommand = new DelegateCommand(_ => CloneRepo());
@@ -79,8 +78,6 @@ namespace Rubberduck.UI.SourceControl
                 }
             }
         }
-
-        private void Refresh() { }
 
         private void InitRepo()
         {
@@ -146,12 +143,6 @@ namespace Rubberduck.UI.SourceControl
         }
 
         private void CloneRepo() { }
-
-        private readonly ICommand _refreshCommand;
-        public ICommand RefreshCommand
-        {
-            get { return _refreshCommand; }
-        }
 
         private readonly ICommand _initRepoCommand;
         public ICommand InitRepoCommand
