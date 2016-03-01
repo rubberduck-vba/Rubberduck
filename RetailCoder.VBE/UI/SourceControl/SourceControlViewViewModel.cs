@@ -250,7 +250,7 @@ namespace Rubberduck.UI.SourceControl
                 }
                 catch (SourceControlException ex)
                 {
-                    //ShowSecondaryPanel(ex.Message, ex.InnerException.Message);
+                    ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message));
                     return;
                 }
 
@@ -271,7 +271,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                //ShowSecondaryPanel(ex.Message, ex.InnerException.Message);
+                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message));
                 return;
             }
 
@@ -296,7 +296,6 @@ namespace Rubberduck.UI.SourceControl
         {
             if (!ValidRepoExists())
             {
-                //_view.Status = RubberduckUI.Offline;
                 return;
             }
 
@@ -310,7 +309,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                //todo: report failure to user and prompt to create or browse
+                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message));
             }
         }
 

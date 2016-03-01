@@ -16,7 +16,18 @@ namespace Rubberduck.UI.SourceControl
             _syncCommitsCommand = new DelegateCommand(_ => SyncCommits(), _ => Provider != null);
         }
 
-        public ISourceControlProvider Provider { get; set; }
+        private ISourceControlProvider _provider;
+        public ISourceControlProvider Provider
+        {
+            get { return _provider; }
+            set
+            {
+                _provider = value;
+
+                IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
+                OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
+            }
+        }
 
         private ObservableCollection<ICommit> _incomingCommits;
         public ObservableCollection<ICommit> IncomingCommits
