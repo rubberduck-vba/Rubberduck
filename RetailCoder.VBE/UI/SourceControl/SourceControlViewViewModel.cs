@@ -310,6 +310,7 @@ namespace Rubberduck.UI.SourceControl
             catch (SourceControlException ex)
             {
                 ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message));
+                Status = RubberduckUI.Offline;
             }
         }
 

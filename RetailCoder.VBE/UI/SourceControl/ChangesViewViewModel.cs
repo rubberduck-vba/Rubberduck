@@ -11,7 +11,7 @@ namespace Rubberduck.UI.SourceControl
     {
         public ChangesViewViewModel()
         {
-            _commitCommand = new DelegateCommand(_ => Commit());
+            _commitCommand = new DelegateCommand(_ => Commit(), _ => !string.IsNullOrEmpty(CommitMessage) && IncludedChanges != null && IncludedChanges.Any());
         }
 
         private string _commitMessage;
@@ -47,7 +47,7 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private void Provider_BranchChanged(object sender, System.EventArgs e)
+        private void Provider_BranchChanged(object sender, EventArgs e)
         {
             CurrentBranch = Provider.CurrentBranch.Name;
         }
@@ -56,7 +56,8 @@ namespace Rubberduck.UI.SourceControl
         public string CurrentBranch
         {
             get { return _currentBranch; }
-            set {
+            set
+            {
                 if (_currentBranch != value)
                 {
                     _currentBranch = value;
