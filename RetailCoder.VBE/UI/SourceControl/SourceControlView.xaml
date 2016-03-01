@@ -254,6 +254,19 @@
                     </StackPanel>
                 </ToolBar>
             </ToolBarTray>
+
+            <Grid Visibility="{Binding DisplayErrorMessageGrid, Converter={StaticResource BoolToVisibility}}"
+                  DockPanel.Dock="Top">
+                <StackPanel Background="LightYellow">
+                    <TextBlock Text="{Binding ErrorMessage, UpdateSourceTrigger=PropertyChanged}"
+                               Margin="5" />
+                    <Button HorizontalAlignment="Right"
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Dismiss}"
+                            Padding="5"
+                            Command="{Binding DismissErrorMessageCommand}" />
+                </StackPanel>
+            </Grid>
+            
             <Grid Visibility="{Binding DisplayCloneRepoGrid, Converter={StaticResource BoolToVisibility}}"
                   DockPanel.Dock="Top">
                 <StackPanel VerticalAlignment="Top"

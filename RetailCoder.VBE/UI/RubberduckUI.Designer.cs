@@ -2889,6 +2889,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dismiss.
+        /// </summary>
+        public static string SourceControl_Dismiss {
+            get {
+                return ResourceManager.GetString("SourceControl_Dismiss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email Address.
         /// </summary>
         public static string SourceControl_EmailAddressLabel {

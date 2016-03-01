@@ -49,12 +49,21 @@ namespace Rubberduck.UI.SourceControl
             _openRepoCommand = new DelegateCommand(_ => OpenRepo());
             _cloneRepoCommand = new DelegateCommand(_ => ShowCloneRepoGrid());
             _refreshCommand = new DelegateCommand(_ => Refresh());
+            _dismissErrorMessageCommand = new DelegateCommand(_ => DismissErrorMessage());
 
             _cloneRepoOkButtonCommand = new DelegateCommand(_ => CloneRepo(), _ => !IsNotValidRemotePath);
             _cloneRepoCancelButtonCommand = new DelegateCommand(_ => CloseCloneRepoGrid());
 
-            TabItems = new ObservableCollection<IControlView> {changesView, branchesView, unsyncedCommitsView, settingsView};
+            TabItems = new ObservableCollection<IControlView>
+            {
+                changesView,
+                branchesView,
+                unsyncedCommitsView,
+                settingsView
+            };
             Status = RubberduckUI.Offline;
+
+            ListenForErrors();
         }
 
         private ObservableCollection<IControlView> _tabItems;
@@ -133,6 +142,34 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        private bool _displayErrorMessageGrid;
+        public bool DisplayErrorMessageGrid
+        {
+            get { return _displayErrorMessageGrid; }
+            set
+            {
+                if (_displayErrorMessageGrid != value)
+                {
+                    _displayErrorMessageGrid = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _errorMessage;
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                if (_errorMessage != value)
+                {
+                    _errorMessage = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public bool IsNotValidRemotePath
         {
             get
@@ -140,6 +177,25 @@ namespace Rubberduck.UI.SourceControl
                 Uri uri;
                 return !Uri.TryCreate(RemotePath, UriKind.Absolute, out uri);
             }
+        }
+
+        private void ListenForErrors()
+        {
+            foreach (var tab in TabItems)
+            {
+                tab.ViewModel.ErrorThrown += ViewModel_ErrorThrown;
+            }
+        }
+
+        private void ViewModel_ErrorThrown(object sender, ErrorEventArgs e)
+        {
+            ErrorMessage = e.Message;
+            DisplayErrorMessageGrid = true;
+        }
+
+        private void DismissErrorMessage()
+        {
+            DisplayErrorMessageGrid = false;
         }
 
         private void InitRepo()
@@ -313,6 +369,15 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return _cloneRepoCancelButtonCommand;
+            }
+        }
+
+        private readonly ICommand _dismissErrorMessageCommand;
+        public ICommand DismissErrorMessageCommand
+        {
+            get
+            {
+                return _dismissErrorMessageCommand;
             }
         }
     }

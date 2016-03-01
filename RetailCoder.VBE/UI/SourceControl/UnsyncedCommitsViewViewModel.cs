@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
@@ -56,7 +57,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                //RaiseActionFailedEvent(ex);
+                RaiseErrorEvent(ex.Message);
             }
         }
 
@@ -68,7 +69,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                //RaiseActionFailedEvent(ex);
+                RaiseErrorEvent(ex.Message);
             }
         }
 
@@ -80,7 +81,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                //RaiseActionFailedEvent(ex);
+                RaiseErrorEvent(ex.Message);
             }
         }
 
@@ -93,7 +94,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                //RaiseActionFailedEvent(ex);
+                RaiseErrorEvent(ex.Message);
             }
         }
 
@@ -130,6 +131,16 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return _syncCommitsCommand;
+            }
+        }
+
+        public event EventHandler<ErrorEventArgs> ErrorThrown;
+        private void RaiseErrorEvent(string message)
+        {
+            var handler = ErrorThrown;
+            if (handler != null)
+            {
+                handler(this, new ErrorEventArgs(message));
             }
         }
     }

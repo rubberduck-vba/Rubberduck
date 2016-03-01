@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -112,7 +113,7 @@ namespace Rubberduck.UI.SourceControl
                     }
                     catch (SourceControlException ex)
                     {
-                        //RaiseActionFailedEvent(ex);
+                        RaiseErrorEvent(ex.Message);
                     }
                 }
             }
@@ -391,6 +392,16 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return _deleteBranchCancelButtonCommand;
+            }
+        }
+
+        public event EventHandler<ErrorEventArgs> ErrorThrown;
+        private void RaiseErrorEvent(string message)
+        {
+            var handler = ErrorThrown;
+            if (handler != null)
+            {
+                handler(this, new ErrorEventArgs(message));
             }
         }
     }

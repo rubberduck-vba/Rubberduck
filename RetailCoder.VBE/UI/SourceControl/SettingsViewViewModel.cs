@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -183,6 +184,16 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return _showGitAttributesCommand;
+            }
+        }
+
+        public event EventHandler<ErrorEventArgs> ErrorThrown;
+        private void RaiseErrorEvent(string message)
+        {
+            var handler = ErrorThrown;
+            if (handler != null)
+            {
+                handler(this, new ErrorEventArgs(message));
             }
         }
     }
