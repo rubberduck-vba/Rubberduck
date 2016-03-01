@@ -62,8 +62,6 @@ namespace Rubberduck.UI.SourceControl
             Status = RubberduckUI.Offline;
 
             ListenForErrors();
-
-            DisplayLoginGrid = true;
         }
 
         private ISourceControlProvider _provider;
