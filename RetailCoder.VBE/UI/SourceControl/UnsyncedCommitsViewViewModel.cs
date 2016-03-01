@@ -50,7 +50,7 @@ namespace Rubberduck.UI.SourceControl
         {
             try
             {
-                Provider.Push();
+                Provider.Fetch();
 
                 IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
                 OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
