@@ -131,7 +131,7 @@ namespace Rubberduck.SourceControl
             //Because refreshing removes all components, we need to store the current selection,
             // so we can correctly reset it once the files are imported from the repository.
 
-            var codePane = Project.VBE.ActiveCodePane ?? Project.VBE.SelectedVBComponent.CodeModule.CodePane;
+            var codePane = Project.VBE.ActiveCodePane;
 
             if (codePane != null)
             {
