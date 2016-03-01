@@ -267,6 +267,47 @@
                 </StackPanel>
             </Grid>
 
+            <Grid Visibility="{Binding DisplayLoginGrid, Converter={StaticResource BoolToVisibility}}"
+                  DockPanel.Dock="Top">
+                <StackPanel VerticalAlignment="Top"
+                            Margin="10,5">
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UserNameLabel}"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,5" />
+                    <TextBox Name="UserNameBox"
+                             Margin="0,0,0,10"
+                             Height="18"
+                             VerticalContentAlignment="Center" />
+
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PasswordLabel}"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,5" />
+                    <PasswordBox Name="PasswordBox"
+                                 Margin="0,0,0,10"
+                                 Height="18"
+                                 VerticalContentAlignment="Center" />
+
+                    <Grid Grid.IsSharedSizeScope="True"
+                          HorizontalAlignment="Right">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition SharedSizeGroup="LoginButtons" />
+                            <ColumnDefinition SharedSizeGroup="LoginButtons" />
+                        </Grid.ColumnDefinitions>
+                        <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
+                                Padding="5"
+                                Click="Login_Click"
+                                Command="{Binding CloseLoginGridCommand}">
+                        </Button>
+                        <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Padding="5"
+                                Command="{Binding CloseLoginGridCommand}">
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+
             <Grid Visibility="{Binding DisplayCloneRepoGrid, Converter={StaticResource BoolToVisibility}}"
                   DockPanel.Dock="Top">
                 <StackPanel VerticalAlignment="Top"

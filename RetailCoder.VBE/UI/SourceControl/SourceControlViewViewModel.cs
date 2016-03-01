@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
@@ -14,17 +15,13 @@ namespace Rubberduck.UI.SourceControl
 {
     public class SourceControlViewViewModel : ViewModelBase
     {
-        private readonly VBE _vbe;
+        public readonly VBE VBE;
+        public readonly ISourceControlProviderFactory ProviderFactory;
+        public readonly ICodePaneWrapperFactory WrapperFactory;
 
-        private readonly ISourceControlProviderFactory _providerFactory;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
-
         private readonly IConfigurationService<SourceControlConfiguration> _configService;
         private readonly SourceControlConfiguration _config;
-
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
-
-        private ISourceControlProvider _provider;
 
         public SourceControlViewViewModel(
             VBE vbe,
@@ -37,13 +34,13 @@ namespace Rubberduck.UI.SourceControl
             [Named("settingsView")] IControlView settingsView,
             ICodePaneWrapperFactory wrapperFactory)
         {
-            _vbe = vbe;
-            _providerFactory = providerFactory;
+            VBE = vbe;
+            ProviderFactory = providerFactory;
             _folderBrowserFactory = folderBrowserFactory;
 
             _configService = configService;
             _config = _configService.LoadConfiguration();
-            _wrapperFactory = wrapperFactory;
+            WrapperFactory = wrapperFactory;
 
             _initRepoCommand = new DelegateCommand(_ => InitRepo());
             _openRepoCommand = new DelegateCommand(_ => OpenRepo());
@@ -51,6 +48,7 @@ namespace Rubberduck.UI.SourceControl
             _refreshCommand = new DelegateCommand(_ => Refresh());
             _dismissErrorMessageCommand = new DelegateCommand(_ => DismissErrorMessage());
             _showFilePickerCommand = new DelegateCommand(_ => ShowFilePicker());
+            _closeLoginGridCommand = new DelegateCommand(_ => CloseLoginGrid());
 
             _cloneRepoOkButtonCommand = new DelegateCommand(_ => CloneRepo(), _ => !IsNotValidRemotePath);
             _cloneRepoCancelButtonCommand = new DelegateCommand(_ => CloseCloneRepoGrid());
@@ -65,6 +63,19 @@ namespace Rubberduck.UI.SourceControl
             Status = RubberduckUI.Offline;
 
             ListenForErrors();
+
+            DisplayLoginGrid = true;
+        }
+
+        private ISourceControlProvider _provider;
+        public ISourceControlProvider Provider
+        {
+            get { return _provider; }
+            set
+            {
+                _provider = value;
+                SetChildPresenterSourceControlProviders(_provider);
+            }
         }
 
         private ObservableCollection<IControlView> _tabItems;
@@ -180,6 +191,20 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        private bool _displayLoginGrid;
+        public bool DisplayLoginGrid
+        {
+            get { return _displayLoginGrid; }
+            set
+            {
+                if (_displayLoginGrid != value)
+                {
+                    _displayLoginGrid = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private void ListenForErrors()
         {
             foreach (var tab in TabItems)
@@ -208,13 +233,11 @@ namespace Rubberduck.UI.SourceControl
                     return;
                 }
 
-                _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
+                _provider = ProviderFactory.CreateProvider(VBE.ActiveVBProject);
                 var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
-                _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
+                Provider = ProviderFactory.CreateProvider(VBE.ActiveVBProject, repo, WrapperFactory);
 
                 AddRepoToConfig((Repository)repo);
-
-                SetChildPresenterSourceControlProviders(_provider);
                 Status = RubberduckUI.Online;
             }
         }
@@ -242,12 +265,12 @@ namespace Rubberduck.UI.SourceControl
                     return;
                 }
 
-                var project = _vbe.ActiveVBProject;
+                var project = VBE.ActiveVBProject;
                 var repo = new Repository(project.Name, folderPicker.SelectedPath, string.Empty);
 
                 try
                 {
-                    _provider = _providerFactory.CreateProvider(project, repo, _wrapperFactory);
+                    Provider = ProviderFactory.CreateProvider(project, repo, WrapperFactory);
                 }
                 catch (SourceControlException ex)
                 {
@@ -257,7 +280,6 @@ namespace Rubberduck.UI.SourceControl
 
                 AddRepoToConfig(repo);
 
-                SetChildPresenterSourceControlProviders(_provider);
                 Status = RubberduckUI.Online;
             }
         }
@@ -267,7 +289,7 @@ namespace Rubberduck.UI.SourceControl
             IRepository repo;
             try
             {
-                _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
+                Provider = ProviderFactory.CreateProvider(VBE.ActiveVBProject);
                 repo = _provider.Clone(RemotePath, LocalDirectory);
             }
             catch (SourceControlException ex)
@@ -279,7 +301,6 @@ namespace Rubberduck.UI.SourceControl
             CloseCloneRepoGrid();
 
             AddRepoToConfig((Repository)repo);
-            SetChildPresenterSourceControlProviders(_provider);
         }
 
         private void ShowCloneRepoGrid()
@@ -303,10 +324,8 @@ namespace Rubberduck.UI.SourceControl
 
             try
             {
-                _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject,
-                    _config.Repositories.First(repo => repo.Name == _vbe.ActiveVBProject.Name), _wrapperFactory);
-
-                SetChildPresenterSourceControlProviders(_provider);
+                Provider = ProviderFactory.CreateProvider(VBE.ActiveVBProject,
+                    _config.Repositories.First(repo => repo.Name == VBE.ActiveVBProject.Name), WrapperFactory);
                 Status = RubberduckUI.Online;
             }
             catch (SourceControlException ex)
@@ -323,7 +342,7 @@ namespace Rubberduck.UI.SourceControl
                 return false;
             }
 
-            var possibleRepos = _config.Repositories.Where(repo => repo.Name == _vbe.ActiveVBProject.Name);
+            var possibleRepos = _config.Repositories.Where(repo => repo.Name == VBE.ActiveVBProject.Name);
 
             var possibleCount = possibleRepos.Count();
 
@@ -341,6 +360,11 @@ namespace Rubberduck.UI.SourceControl
                     LocalDirectory = folderPicker.SelectedPath;
                 }
             }
+        }
+
+        private void CloseLoginGrid()
+        {
+            DisplayLoginGrid = false;
         }
 
         private readonly ICommand _refreshCommand;
@@ -400,6 +424,15 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return _dismissErrorMessageCommand;
+            }
+        }
+
+        private readonly ICommand _closeLoginGridCommand;
+        public ICommand CloseLoginGridCommand
+        {
+            get
+            {
+                return _closeLoginGridCommand;
             }
         }
     }

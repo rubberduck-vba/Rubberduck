@@ -3087,6 +3087,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password:.
+        /// </summary>
+        public static string SourceControl_PasswordLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_PasswordLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Published Branches.
         /// </summary>
         public static string SourceControl_PublishedBranchesLabel {
@@ -3213,7 +3222,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User Name.
+        ///   Looks up a localized string similar to User Name:.
         /// </summary>
         public static string SourceControl_UserNameLabel {
             get {
