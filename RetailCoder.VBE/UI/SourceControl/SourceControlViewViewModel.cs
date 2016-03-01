@@ -276,9 +276,10 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
-            AddRepoToConfig((Repository)repo);
-
             CloseCloneRepoGrid();
+
+            AddRepoToConfig((Repository)repo);
+            SetChildPresenterSourceControlProviders(_provider);
         }
 
         private void ShowCloneRepoGrid()
