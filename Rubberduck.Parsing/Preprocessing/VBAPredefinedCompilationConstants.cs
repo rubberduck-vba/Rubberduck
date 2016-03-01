@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Parsing.Preprocessing
 {
     public sealed class VBAPredefinedCompilationConstants
     {
-        private readonly string _vbVersion;
+        private readonly double _vbVersion;
 
-        public VBAPredefinedCompilationConstants(string vbVersion)
+        public VBAPredefinedCompilationConstants(double vbVersion)
         {
             _vbVersion = vbVersion;
         }
@@ -22,19 +18,19 @@ namespace Rubberduck.Parsing.Preprocessing
         public const string WIN16_NAME = "Win16";
         public const string MAC_NAME = "Mac";
 
-        public bool VBA6
-        {
-            get
-            {
-                return _vbVersion.StartsWith("6.");
-            }
-        }
-
         public bool VBA7
         {
             get
             {
-                return _vbVersion.StartsWith("7.");
+                return _vbVersion < 8;
+            }
+        }
+
+        public bool VBA6
+        {
+            get
+            {
+                return _vbVersion < 7;
             }
         }
 

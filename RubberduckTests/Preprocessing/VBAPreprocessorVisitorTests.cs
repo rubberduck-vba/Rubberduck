@@ -91,6 +91,8 @@ namespace RubberduckTests.Preprocessing
 #Const c = False - True - True
 #Const d = Nothing
 #Const e = ""3"" - ""1""
+#Const f = #1/1/2351# - 2
+#Const g = #1/1/2400# - #1/1/1800# - #1/1/1800#
 ";
             var result = Preprocess(code);
             Assert.AreEqual(2m, result.Item1.Get("a"));
@@ -98,6 +100,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(2m, result.Item1.Get("c"));
             Assert.AreEqual(null, result.Item1.Get("d"));
             Assert.AreEqual(2m, result.Item1.Get("e"));
+            Assert.AreEqual(new DateTime(2350, 12, 30), result.Item1.Get("f"));
+            Assert.AreEqual(new DateTime(2599, 12, 27), result.Item1.Get("g"));
         }
 
         [TestMethod]
@@ -965,8 +969,8 @@ namespace RubberduckTests.Preprocessing
         public void TestNumberLiteral()
         {
             string code = @"
-#Const a = &HAF$ 175
-#Const b = &O423# 275
+#Const a = &HAF$
+#Const b = &O423#
 #Const c = -50.323e5
 ";
             var result = Preprocess(code);
@@ -1007,6 +1011,30 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(null, result.Item1.Get("c"));
             Assert.AreEqual(null, result.Item1.Get("d"));
             Assert.AreEqual(VBAEmptyValue.Value, result.Item1.Get("e"));
+        }
+
+        [TestMethod]
+        public void TestComplexExpressions()
+        {
+            string code = @"
+#Const a = 23
+#Const b = 500
+#Const c = a >= b Or True ^ #1/1/1900#
+#Const d = True + #1/1/1800# - (4 * Empty Mod (Abs(-5)))
+";
+            var result = Preprocess(code);
+            Assert.AreEqual(1m, result.Item1.Get("c"));
+            Assert.AreEqual(new DateTime(1799, 12, 31), result.Item1.Get("d"));
+        }
+
+        [TestMethod]
+        public void TestOperatorPrecedence()
+        {
+            string code = @"
+#Const a = 2 ^ 3 + -5 * 40 / 2 \ 4 Mod 2 + 3 - (2 * 4) Xor 4 Eqv 5 Imp 6 Or 2 And True
+";
+            var result = Preprocess(code);
+            Assert.AreEqual(7m, result.Item1.Get("a"));
         }
 
         [TestMethod]
@@ -1081,7 +1109,7 @@ End Sub
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAConditionalCompilationParser(tokens);
             parser.AddErrorListener(new ExceptionErrorListener());
-            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants("7.01"));
+            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01));
             var tree = parser.compilationUnit();
             return Tuple.Create(symbolTable, evaluator.Visit(tree));
         }

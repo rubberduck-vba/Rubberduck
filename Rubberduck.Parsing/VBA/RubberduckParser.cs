@@ -225,8 +225,8 @@ namespace Rubberduck.Parsing.VBA
 
             token.ThrowIfCancellationRequested();
 
-            var preprocessor = new VBAPreprocessor(_vbe.Version);
-            string preprocessedModuleBody = code;
+            var preprocessor = new VBAPreprocessor(double.Parse(_vbe.Version));
+            string preprocessedModuleBody;
             try
             {
                 preprocessedModuleBody = preprocessor.Process(code);
@@ -234,6 +234,7 @@ namespace Rubberduck.Parsing.VBA
             catch (VBAPreprocessorException ex)
             {
                 // Fall back to not doing any preprocessing at all.
+                preprocessedModuleBody = code;
             }
             ITokenStream stream;
             var tree = ParseInternal(preprocessedModuleBody, listeners, out stream);

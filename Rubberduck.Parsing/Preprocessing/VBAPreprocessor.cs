@@ -6,9 +6,9 @@ namespace Rubberduck.Parsing.Preprocessing
 {
     public sealed class VBAPreprocessor
     {
-        private readonly string _vbaVersion;
+        private readonly double _vbaVersion;
 
-        public VBAPreprocessor(string vbaVersion)
+        public VBAPreprocessor(double vbaVersion)
         {
             _vbaVersion = vbaVersion;
         }

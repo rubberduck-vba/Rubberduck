@@ -126,7 +126,7 @@ namespace Rubberduck.Parsing.Preprocessing
             {
                 return (string)left + (string)right;
             }
-            else if (left is DateTime)
+            else if (left is DateTime || right is DateTime)
             {
                 decimal leftValue = _letCoercions[left.GetType()].ToDecimal(left);
                 decimal rightValue = _letCoercions[right.GetType()].ToDecimal(right);
@@ -156,22 +156,28 @@ namespace Rubberduck.Parsing.Preprocessing
             {
                 return null;
             }
-            if (left is DateTime)
+            else if (left is DateTime && right is DateTime)
+            {
+                // 5.6.9.3.3 - Effective value type exception.
+                // If left + right are both Date then effective value type is double.
+                decimal leftValue = _letCoercions[left.GetType()].ToDecimal(left);
+                decimal rightValue = _letCoercions[right.GetType()].ToDecimal(right);
+                decimal difference = leftValue - rightValue;
+                return difference;
+            }
+            else if (left is DateTime || right is DateTime)
             {
                 decimal leftValue = _letCoercions[left.GetType()].ToDecimal(left);
                 decimal rightValue = _letCoercions[right.GetType()].ToDecimal(right);
                 decimal difference = leftValue - rightValue;
-                // 5.6.9.3.3 Should actually return date if no overflow.
-                // At least Excel always seems to return the double value (instead of date)
-                return difference;
-                //try
-                //{
-                //    return _letCoercions[typeof(decimal)].ToDate(difference);
-                //}
-                //catch
-                //{
-                //    return difference;
-                //}
+                try
+                {
+                    return _letCoercions[typeof(decimal)].ToDate(difference);
+                }
+                catch
+                {
+                    return difference;
+                }
             }
             else
             {
@@ -1182,8 +1188,6 @@ namespace Rubberduck.Parsing.Preprocessing
                     hours = 0;
                 }
             }
-
-            var text = dateLiteral.GetText();
             var date = new DateTime(year, month, day, hours, mins, seconds);
             return date;
         }
