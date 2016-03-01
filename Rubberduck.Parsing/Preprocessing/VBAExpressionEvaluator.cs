@@ -947,6 +947,9 @@ namespace Rubberduck.Parsing.Preprocessing
             return decimal.Parse(literal.Replace("#", "").Replace("&", "").Replace("@", ""), NumberStyles.Float);
         }
 
+        /// <summary>
+        /// Interprets date tokens as defined in 3.3.3 Date Tokens of the VBA specification.
+        /// </summary>
         private object VisitDateLiteral(VBAConditionalCompilationParser.LiteralContext context)
         {
             string literal = context.DATELITERAL().GetText();
@@ -1004,6 +1007,7 @@ namespace Rubberduck.Parsing.Preprocessing
             else
             {
                 var dateValue = dateOrTime.dateValue();
+                var txt = dateOrTime.GetText();
                 var L = dateValue.dateValuePart()[0];
                 var M = dateValue.dateValuePart()[1];
                 VBADateParser.DateValuePartContext R = null;
@@ -1011,7 +1015,8 @@ namespace Rubberduck.Parsing.Preprocessing
                 {
                     R = dateValue.dateValuePart()[2];
                 }
-                if (L.DIGIT() != null && M.DIGIT() != null && R == null)
+                // "If L and M are numbers and R is not present:"
+                if (L.dateValueNumber() != null && M.dateValueNumber() != null && R == null)
                 {
                     var LNumber = int.Parse(L.GetText());
                     var MNumber = int.Parse(M.GetText());
@@ -1044,7 +1049,8 @@ namespace Rubberduck.Parsing.Preprocessing
                         throw new Exception("Invalid date: " + dateLiteral.GetText());
                     }
                 }
-                else if ((L.DIGIT() != null && M.DIGIT() != null && R != null) && R.DIGIT() != null)
+                // "If L, M, and R are numbers:"
+                else if (L.dateValueNumber() != null && M.dateValueNumber() != null && R != null && R.dateValueNumber() != null)
                 {
                     var LNumber = int.Parse(L.GetText());
                     var MNumber = int.Parse(M.GetText());
@@ -1072,11 +1078,12 @@ namespace Rubberduck.Parsing.Preprocessing
                         throw new Exception("Invalid date: " + dateLiteral.GetText());
                     }
                 }
-                else if ((L.DIGIT() == null || M.DIGIT() == null) && R == null)
+                // "If either L or M is not a number and R is not present:"
+                else if ((L.dateValueNumber() == null || M.dateValueNumber() == null) && R == null)
                 {
                     int N;
                     string monthName;
-                    if (L.DIGIT() != null)
+                    if (L.dateValueNumber() != null)
                     {
                         N = int.Parse(L.GetText());
                         monthName = M.GetText();
@@ -1105,21 +1112,22 @@ namespace Rubberduck.Parsing.Preprocessing
                     {
                         month = monthNameNumber;
                         day = 1;
-                        year = CY;
+                        year = N;
                     }
                 }
+                // "Otherwise, R is present and one of L, M, and R is not a number:"
                 else
                 {
                     int N1;
                     int N2;
                     string monthName;
-                    if (L.DIGIT() == null)
+                    if (L.dateValueNumber() == null)
                     {
                         monthName = L.GetText();
                         N1 = int.Parse(M.GetText());
                         N2 = int.Parse(R.GetText());
                     }
-                    else if (M.DIGIT() == null)
+                    else if (M.dateValueNumber() == null)
                     {
                         monthName = M.GetText();
                         N1 = int.Parse(L.GetText());

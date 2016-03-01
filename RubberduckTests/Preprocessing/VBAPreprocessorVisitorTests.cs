@@ -993,12 +993,33 @@ namespace RubberduckTests.Preprocessing
 #Const b = #12-30-1900#
 #Const c = #12-30#
 #Const d = #12:00#
+#Const e = #mar-1999#
+#Const f = #2pm#
+#Const g = #12-1999#
+#Const h = #1999-11#
+#Const i = #2010-may#
+#Const j = #2010-july-15#
+#Const k = #15:14:13#
+#Const l = #15:14:13am#
+#Const m = #12am#
+#Const n = #12:13#
 ";
             var result = Preprocess(code);
             Assert.AreEqual(new DateTime(1900, 12, 30), result.Item1.Get("a"));
             Assert.AreEqual(new DateTime(1900, 12, 30), result.Item1.Get("b"));
             Assert.AreEqual(new DateTime(DateTime.Now.Year, 12, 30), result.Item1.Get("c"));
             Assert.AreEqual(new DateTime(1899, 12, 30, 12, 0, 0), result.Item1.Get("d"));
+            Assert.AreEqual(new DateTime(1999, 3, 1), result.Item1.Get("e"));
+            Assert.AreEqual(new DateTime(1899, 12, 30, 14, 0, 0), result.Item1.Get("f"));
+            Assert.AreEqual(new DateTime(1999, 12, 1, 0, 0, 0), result.Item1.Get("g"));
+            Assert.AreEqual(new DateTime(1999, 11, 1, 0, 0, 0), result.Item1.Get("h"));
+            Assert.AreEqual(new DateTime(2010, 5, 1, 0, 0, 0), result.Item1.Get("i"));
+            Assert.AreEqual(new DateTime(2010, 7, 15, 0, 0, 0), result.Item1.Get("j"));
+            Assert.AreEqual(new DateTime(1899, 12, 30, 15, 14, 13), result.Item1.Get("k"));
+            // "A <ampm> element has no significance if the <hour-value> is greater than 12."
+            Assert.AreEqual(new DateTime(1899, 12, 30, 15, 14, 13), result.Item1.Get("l"));
+            Assert.AreEqual(new DateTime(1899, 12, 30, 0, 0, 0), result.Item1.Get("m"));
+            Assert.AreEqual(new DateTime(1899, 12, 30, 12, 13, 0), result.Item1.Get("n"));
         }
 
         [TestMethod]

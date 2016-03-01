@@ -17,1269 +17,1213 @@
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace Rubberduck.Parsing.Date {
-using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using System.Collections.Generic;
-using DFA = Antlr4.Runtime.Dfa.DFA;
+namespace Rubberduck.Parsing.Date
+{
+    using Antlr4.Runtime;
+    using Antlr4.Runtime.Atn;
+    using Antlr4.Runtime.Misc;
+    using Antlr4.Runtime.Tree;
+    using System.Collections.Generic;
+    using DFA = Antlr4.Runtime.Dfa.DFA;
 
-[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
-[System.CLSCompliant(false)]
-public partial class VBADateParser : Parser {
-	public const int
-		AMPM=1, AM=2, PM=3, HASH=4, COMMA=5, DASH=6, SLASH=7, COLON=8, DOT=9, 
-		WS=10, DIGIT=11, J=12, A=13, N=14, U=15, R=16, Y=17, F=18, E=19, B=20, 
-		M=21, C=22, H=23, P=24, I=25, L=26, G=27, S=28, T=29, O=30, V=31, D=32;
-	public static readonly string[] tokenNames = {
-		"<INVALID>", "AMPM", "AM", "PM", "'#'", "','", "'-'", "'/'", "':'", "'.'", 
-		"WS", "DIGIT", "J", "A", "N", "U", "R", "Y", "F", "E", "B", "M", "C", 
-		"H", "P", "I", "L", "G", "S", "T", "O", "V", "D"
-	};
-	public const int
-		RULE_compilationUnit = 0, RULE_dateLiteral = 1, RULE_dateOrTime = 2, RULE_dateValue = 3, 
-		RULE_dateValuePart = 4, RULE_dateSeparator = 5, RULE_monthName = 6, RULE_englishMonthName = 7, 
-		RULE_englishMonthAbbreviation = 8, RULE_timeValue = 9, RULE_timeValuePart = 10, 
-		RULE_timeSeparator = 11;
-	public static readonly string[] ruleNames = {
-		"compilationUnit", "dateLiteral", "dateOrTime", "dateValue", "dateValuePart", 
-		"dateSeparator", "monthName", "englishMonthName", "englishMonthAbbreviation", 
-		"timeValue", "timeValuePart", "timeSeparator"
-	};
+    [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
+    [System.CLSCompliant(false)]
+    public partial class VBADateParser : Parser
+    {
+        public const int
+            AMPM = 1, JANUARY = 2, FEBRUARY = 3, MARCH = 4, APRIL = 5, MAY = 6, JUNE = 7, JULY = 8,
+            AUGUST = 9, SEPTEMBER = 10, OCTOBER = 11, NOVEMBER = 12, DECEMBER = 13, JAN = 14,
+            FEB = 15, MAR = 16, APR = 17, JUN = 18, JUL = 19, AUG = 20, SEP = 21, OCT = 22, NOV = 23,
+            DEC = 24, AM = 25, PM = 26, HASH = 27, COMMA = 28, DASH = 29, SLASH = 30, COLON = 31,
+            DOT = 32, WS = 33, DIGIT = 34;
+        public static readonly string[] tokenNames = {
+        "<INVALID>", "AMPM", "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
+        "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER", "JAN",
+        "FEB", "MAR", "APR", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC",
+        "AM", "PM", "'#'", "','", "'-'", "'/'", "':'", "'.'", "WS", "DIGIT"
+    };
+        public const int
+            RULE_compilationUnit = 0, RULE_dateLiteral = 1, RULE_dateOrTime = 2, RULE_dateValue = 3,
+            RULE_dateValuePart = 4, RULE_dateValueNumber = 5, RULE_dateSeparator = 6,
+            RULE_monthName = 7, RULE_englishMonthName = 8, RULE_englishMonthAbbreviation = 9,
+            RULE_timeValue = 10, RULE_timeValuePart = 11, RULE_timeSeparator = 12;
+        public static readonly string[] ruleNames = {
+        "compilationUnit", "dateLiteral", "dateOrTime", "dateValue", "dateValuePart",
+        "dateValueNumber", "dateSeparator", "monthName", "englishMonthName", "englishMonthAbbreviation",
+        "timeValue", "timeValuePart", "timeSeparator"
+    };
 
-	public override string GrammarFileName { get { return "VBADate.g4"; } }
+        public override string GrammarFileName { get { return "VBADate.g4"; } }
 
-	public override string[] TokenNames { get { return tokenNames; } }
+        public override string[] TokenNames { get { return tokenNames; } }
 
-	public override string[] RuleNames { get { return ruleNames; } }
+        public override string[] RuleNames { get { return ruleNames; } }
 
-	public override string SerializedAtn { get { return _serializedATN; } }
+        public override string SerializedAtn { get { return _serializedATN; } }
 
-	public VBADateParser(ITokenStream input)
-		: base(input)
-	{
-		_interp = new ParserATNSimulator(this,_ATN);
-	}
-	public partial class CompilationUnitContext : ParserRuleContext {
-		public ITerminalNode Eof() { return GetToken(VBADateParser.Eof, 0); }
-		public DateLiteralContext dateLiteral() {
-			return GetRuleContext<DateLiteralContext>(0);
-		}
-		public CompilationUnitContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_compilationUnit; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.EnterCompilationUnit(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.ExitCompilationUnit(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitCompilationUnit(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
+        public VBADateParser(ITokenStream input)
+            : base(input)
+        {
+            _interp = new ParserATNSimulator(this, _ATN);
+        }
+        public partial class CompilationUnitContext : ParserRuleContext
+        {
+            public ITerminalNode Eof() { return GetToken(VBADateParser.Eof, 0); }
+            public DateLiteralContext dateLiteral()
+            {
+                return GetRuleContext<DateLiteralContext>(0);
+            }
+            public CompilationUnitContext(ParserRuleContext parent, int invokingState)
+                : base(parent, invokingState)
+            {
+            }
+            public override int RuleIndex { get { return RULE_compilationUnit; } }
+            public override void EnterRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.EnterCompilationUnit(this);
+            }
+            public override void ExitRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.ExitCompilationUnit(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitCompilationUnit(this);
+                else return visitor.VisitChildren(this);
+            }
+        }
 
-	[RuleVersion(0)]
-	public CompilationUnitContext compilationUnit() {
-		CompilationUnitContext _localctx = new CompilationUnitContext(_ctx, State);
-		EnterRule(_localctx, 0, RULE_compilationUnit);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 24; dateLiteral();
-			State = 25; Match(Eof);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.ReportError(this, re);
-			_errHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
+        [RuleVersion(0)]
+        public CompilationUnitContext compilationUnit()
+        {
+            CompilationUnitContext _localctx = new CompilationUnitContext(_ctx, State);
+            EnterRule(_localctx, 0, RULE_compilationUnit);
+            try
+            {
+                EnterOuterAlt(_localctx, 1);
+                {
+                    State = 26; dateLiteral();
+                    State = 27; Match(Eof);
+                }
+            }
+            catch (RecognitionException re)
+            {
+                _localctx.exception = re;
+                _errHandler.ReportError(this, re);
+                _errHandler.Recover(this, re);
+            }
+            finally
+            {
+                ExitRule();
+            }
+            return _localctx;
+        }
 
-	public partial class DateLiteralContext : ParserRuleContext {
-		public DateOrTimeContext dateOrTime() {
-			return GetRuleContext<DateOrTimeContext>(0);
-		}
-		public ITerminalNode HASH(int i) {
-			return GetToken(VBADateParser.HASH, i);
-		}
-		public IReadOnlyList<ITerminalNode> HASH() { return GetTokens(VBADateParser.HASH); }
-		public DateLiteralContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_dateLiteral; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.EnterDateLiteral(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.ExitDateLiteral(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitDateLiteral(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
+        public partial class DateLiteralContext : ParserRuleContext
+        {
+            public DateOrTimeContext dateOrTime()
+            {
+                return GetRuleContext<DateOrTimeContext>(0);
+            }
+            public ITerminalNode HASH(int i)
+            {
+                return GetToken(VBADateParser.HASH, i);
+            }
+            public IReadOnlyList<ITerminalNode> HASH() { return GetTokens(VBADateParser.HASH); }
+            public DateLiteralContext(ParserRuleContext parent, int invokingState)
+                : base(parent, invokingState)
+            {
+            }
+            public override int RuleIndex { get { return RULE_dateLiteral; } }
+            public override void EnterRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.EnterDateLiteral(this);
+            }
+            public override void ExitRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.ExitDateLiteral(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDateLiteral(this);
+                else return visitor.VisitChildren(this);
+            }
+        }
 
-	[RuleVersion(0)]
-	public DateLiteralContext dateLiteral() {
-		DateLiteralContext _localctx = new DateLiteralContext(_ctx, State);
-		EnterRule(_localctx, 2, RULE_dateLiteral);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 27; Match(HASH);
-			State = 28; dateOrTime();
-			State = 29; Match(HASH);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.ReportError(this, re);
-			_errHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
+        [RuleVersion(0)]
+        public DateLiteralContext dateLiteral()
+        {
+            DateLiteralContext _localctx = new DateLiteralContext(_ctx, State);
+            EnterRule(_localctx, 2, RULE_dateLiteral);
+            try
+            {
+                EnterOuterAlt(_localctx, 1);
+                {
+                    State = 29; Match(HASH);
+                    State = 30; dateOrTime();
+                    State = 31; Match(HASH);
+                }
+            }
+            catch (RecognitionException re)
+            {
+                _localctx.exception = re;
+                _errHandler.ReportError(this, re);
+                _errHandler.Recover(this, re);
+            }
+            finally
+            {
+                ExitRule();
+            }
+            return _localctx;
+        }
 
-	public partial class DateOrTimeContext : ParserRuleContext {
-		public DateValueContext dateValue() {
-			return GetRuleContext<DateValueContext>(0);
-		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBADateParser.WS, i);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBADateParser.WS); }
-		public TimeValueContext timeValue() {
-			return GetRuleContext<TimeValueContext>(0);
-		}
-		public DateOrTimeContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_dateOrTime; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.EnterDateOrTime(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.ExitDateOrTime(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitDateOrTime(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
+        public partial class DateOrTimeContext : ParserRuleContext
+        {
+            public DateValueContext dateValue()
+            {
+                return GetRuleContext<DateValueContext>(0);
+            }
+            public ITerminalNode WS(int i)
+            {
+                return GetToken(VBADateParser.WS, i);
+            }
+            public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBADateParser.WS); }
+            public TimeValueContext timeValue()
+            {
+                return GetRuleContext<TimeValueContext>(0);
+            }
+            public DateOrTimeContext(ParserRuleContext parent, int invokingState)
+                : base(parent, invokingState)
+            {
+            }
+            public override int RuleIndex { get { return RULE_dateOrTime; } }
+            public override void EnterRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.EnterDateOrTime(this);
+            }
+            public override void ExitRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.ExitDateOrTime(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDateOrTime(this);
+                else return visitor.VisitChildren(this);
+            }
+        }
 
-	[RuleVersion(0)]
-	public DateOrTimeContext dateOrTime() {
-		DateOrTimeContext _localctx = new DateOrTimeContext(_ctx, State);
-		EnterRule(_localctx, 4, RULE_dateOrTime);
-		int _la;
-		try {
-			State = 41;
-			switch ( Interpreter.AdaptivePredict(_input,1,_ctx) ) {
-			case 1:
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 31; dateValue();
-				}
-				break;
+        [RuleVersion(0)]
+        public DateOrTimeContext dateOrTime()
+        {
+            DateOrTimeContext _localctx = new DateOrTimeContext(_ctx, State);
+            EnterRule(_localctx, 4, RULE_dateOrTime);
+            int _la;
+            try
+            {
+                State = 43;
+                switch (Interpreter.AdaptivePredict(_input, 1, _ctx))
+                {
+                    case 1:
+                        EnterOuterAlt(_localctx, 1);
+                        {
+                            State = 33; dateValue();
+                        }
+                        break;
 
-			case 2:
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 32; timeValue();
-				}
-				break;
+                    case 2:
+                        EnterOuterAlt(_localctx, 2);
+                        {
+                            State = 34; timeValue();
+                        }
+                        break;
 
-			case 3:
-				EnterOuterAlt(_localctx, 3);
-				{
-				State = 33; dateValue();
-				State = 35;
-				_errHandler.Sync(this);
-				_la = _input.La(1);
-				do {
-					{
-					{
-					State = 34; Match(WS);
-					}
-					}
-					State = 37;
-					_errHandler.Sync(this);
-					_la = _input.La(1);
-				} while ( _la==WS );
-				State = 39; timeValue();
-				}
-				break;
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.ReportError(this, re);
-			_errHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
+                    case 3:
+                        EnterOuterAlt(_localctx, 3);
+                        {
+                            State = 35; dateValue();
+                            State = 37;
+                            _errHandler.Sync(this);
+                            _la = _input.La(1);
+                            do
+                            {
+                                {
+                                    {
+                                        State = 36; Match(WS);
+                                    }
+                                }
+                                State = 39;
+                                _errHandler.Sync(this);
+                                _la = _input.La(1);
+                            } while (_la == WS);
+                            State = 41; timeValue();
+                        }
+                        break;
+                }
+            }
+            catch (RecognitionException re)
+            {
+                _localctx.exception = re;
+                _errHandler.ReportError(this, re);
+                _errHandler.Recover(this, re);
+            }
+            finally
+            {
+                ExitRule();
+            }
+            return _localctx;
+        }
 
-	public partial class DateValueContext : ParserRuleContext {
-		public IReadOnlyList<DateSeparatorContext> dateSeparator() {
-			return GetRuleContexts<DateSeparatorContext>();
-		}
-		public IReadOnlyList<DateValuePartContext> dateValuePart() {
-			return GetRuleContexts<DateValuePartContext>();
-		}
-		public DateSeparatorContext dateSeparator(int i) {
-			return GetRuleContext<DateSeparatorContext>(i);
-		}
-		public DateValuePartContext dateValuePart(int i) {
-			return GetRuleContext<DateValuePartContext>(i);
-		}
-		public DateValueContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_dateValue; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.EnterDateValue(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.ExitDateValue(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitDateValue(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
+        public partial class DateValueContext : ParserRuleContext
+        {
+            public IReadOnlyList<DateSeparatorContext> dateSeparator()
+            {
+                return GetRuleContexts<DateSeparatorContext>();
+            }
+            public IReadOnlyList<DateValuePartContext> dateValuePart()
+            {
+                return GetRuleContexts<DateValuePartContext>();
+            }
+            public DateSeparatorContext dateSeparator(int i)
+            {
+                return GetRuleContext<DateSeparatorContext>(i);
+            }
+            public DateValuePartContext dateValuePart(int i)
+            {
+                return GetRuleContext<DateValuePartContext>(i);
+            }
+            public DateValueContext(ParserRuleContext parent, int invokingState)
+                : base(parent, invokingState)
+            {
+            }
+            public override int RuleIndex { get { return RULE_dateValue; } }
+            public override void EnterRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.EnterDateValue(this);
+            }
+            public override void ExitRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.ExitDateValue(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDateValue(this);
+                else return visitor.VisitChildren(this);
+            }
+        }
 
-	[RuleVersion(0)]
-	public DateValueContext dateValue() {
-		DateValueContext _localctx = new DateValueContext(_ctx, State);
-		EnterRule(_localctx, 6, RULE_dateValue);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 43; dateValuePart();
-			State = 44; dateSeparator();
-			State = 45; dateValuePart();
-			State = 49;
-			switch ( Interpreter.AdaptivePredict(_input,2,_ctx) ) {
-			case 1:
-				{
-				State = 46; dateSeparator();
-				State = 47; dateValuePart();
-				}
-				break;
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.ReportError(this, re);
-			_errHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
+        [RuleVersion(0)]
+        public DateValueContext dateValue()
+        {
+            DateValueContext _localctx = new DateValueContext(_ctx, State);
+            EnterRule(_localctx, 6, RULE_dateValue);
+            try
+            {
+                EnterOuterAlt(_localctx, 1);
+                {
+                    State = 45; dateValuePart();
+                    State = 46; dateSeparator();
+                    State = 47; dateValuePart();
+                    State = 51;
+                    switch (Interpreter.AdaptivePredict(_input, 2, _ctx))
+                    {
+                        case 1:
+                            {
+                                State = 48; dateSeparator();
+                                State = 49; dateValuePart();
+                            }
+                            break;
+                    }
+                }
+            }
+            catch (RecognitionException re)
+            {
+                _localctx.exception = re;
+                _errHandler.ReportError(this, re);
+                _errHandler.Recover(this, re);
+            }
+            finally
+            {
+                ExitRule();
+            }
+            return _localctx;
+        }
 
-	public partial class DateValuePartContext : ParserRuleContext {
-		public ITerminalNode DIGIT(int i) {
-			return GetToken(VBADateParser.DIGIT, i);
-		}
-		public IReadOnlyList<ITerminalNode> DIGIT() { return GetTokens(VBADateParser.DIGIT); }
-		public MonthNameContext monthName() {
-			return GetRuleContext<MonthNameContext>(0);
-		}
-		public DateValuePartContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_dateValuePart; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.EnterDateValuePart(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.ExitDateValuePart(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitDateValuePart(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
+        public partial class DateValuePartContext : ParserRuleContext
+        {
+            public DateValueNumberContext dateValueNumber()
+            {
+                return GetRuleContext<DateValueNumberContext>(0);
+            }
+            public MonthNameContext monthName()
+            {
+                return GetRuleContext<MonthNameContext>(0);
+            }
+            public DateValuePartContext(ParserRuleContext parent, int invokingState)
+                : base(parent, invokingState)
+            {
+            }
+            public override int RuleIndex { get { return RULE_dateValuePart; } }
+            public override void EnterRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.EnterDateValuePart(this);
+            }
+            public override void ExitRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.ExitDateValuePart(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDateValuePart(this);
+                else return visitor.VisitChildren(this);
+            }
+        }
 
-	[RuleVersion(0)]
-	public DateValuePartContext dateValuePart() {
-		DateValuePartContext _localctx = new DateValuePartContext(_ctx, State);
-		EnterRule(_localctx, 8, RULE_dateValuePart);
-		int _la;
-		try {
-			State = 57;
-			switch (_input.La(1)) {
-			case DIGIT:
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 52;
-				_errHandler.Sync(this);
-				_la = _input.La(1);
-				do {
-					{
-					{
-					State = 51; Match(DIGIT);
-					}
-					}
-					State = 54;
-					_errHandler.Sync(this);
-					_la = _input.La(1);
-				} while ( _la==DIGIT );
-				}
-				break;
-			case J:
-			case A:
-			case N:
-			case F:
-			case M:
-			case S:
-			case O:
-			case D:
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 56; monthName();
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.ReportError(this, re);
-			_errHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
+        [RuleVersion(0)]
+        public DateValuePartContext dateValuePart()
+        {
+            DateValuePartContext _localctx = new DateValuePartContext(_ctx, State);
+            EnterRule(_localctx, 8, RULE_dateValuePart);
+            try
+            {
+                State = 55;
+                switch (_input.La(1))
+                {
+                    case DIGIT:
+                        EnterOuterAlt(_localctx, 1);
+                        {
+                            State = 53; dateValueNumber();
+                        }
+                        break;
+                    case JANUARY:
+                    case FEBRUARY:
+                    case MARCH:
+                    case APRIL:
+                    case MAY:
+                    case JUNE:
+                    case JULY:
+                    case AUGUST:
+                    case SEPTEMBER:
+                    case OCTOBER:
+                    case NOVEMBER:
+                    case DECEMBER:
+                    case JAN:
+                    case FEB:
+                    case MAR:
+                    case APR:
+                    case JUN:
+                    case JUL:
+                    case AUG:
+                    case SEP:
+                    case OCT:
+                    case NOV:
+                    case DEC:
+                        EnterOuterAlt(_localctx, 2);
+                        {
+                            State = 54; monthName();
+                        }
+                        break;
+                    default:
+                        throw new NoViableAltException(this);
+                }
+            }
+            catch (RecognitionException re)
+            {
+                _localctx.exception = re;
+                _errHandler.ReportError(this, re);
+                _errHandler.Recover(this, re);
+            }
+            finally
+            {
+                ExitRule();
+            }
+            return _localctx;
+        }
 
-	public partial class DateSeparatorContext : ParserRuleContext {
-		public ITerminalNode WS(int i) {
-			return GetToken(VBADateParser.WS, i);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBADateParser.WS); }
-		public ITerminalNode SLASH() { return GetToken(VBADateParser.SLASH, 0); }
-		public ITerminalNode COMMA() { return GetToken(VBADateParser.COMMA, 0); }
-		public ITerminalNode DASH() { return GetToken(VBADateParser.DASH, 0); }
-		public DateSeparatorContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_dateSeparator; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.EnterDateSeparator(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.ExitDateSeparator(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitDateSeparator(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
+        public partial class DateValueNumberContext : ParserRuleContext
+        {
+            public ITerminalNode DIGIT(int i)
+            {
+                return GetToken(VBADateParser.DIGIT, i);
+            }
+            public IReadOnlyList<ITerminalNode> DIGIT() { return GetTokens(VBADateParser.DIGIT); }
+            public DateValueNumberContext(ParserRuleContext parent, int invokingState)
+                : base(parent, invokingState)
+            {
+            }
+            public override int RuleIndex { get { return RULE_dateValueNumber; } }
+            public override void EnterRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.EnterDateValueNumber(this);
+            }
+            public override void ExitRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.ExitDateValueNumber(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDateValueNumber(this);
+                else return visitor.VisitChildren(this);
+            }
+        }
 
-	[RuleVersion(0)]
-	public DateSeparatorContext dateSeparator() {
-		DateSeparatorContext _localctx = new DateSeparatorContext(_ctx, State);
-		EnterRule(_localctx, 10, RULE_dateSeparator);
-		int _la;
-		try {
-			State = 77;
-			switch ( Interpreter.AdaptivePredict(_input,8,_ctx) ) {
-			case 1:
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 60;
-				_errHandler.Sync(this);
-				_la = _input.La(1);
-				do {
-					{
-					{
-					State = 59; Match(WS);
-					}
-					}
-					State = 62;
-					_errHandler.Sync(this);
-					_la = _input.La(1);
-				} while ( _la==WS );
-				}
-				break;
+        [RuleVersion(0)]
+        public DateValueNumberContext dateValueNumber()
+        {
+            DateValueNumberContext _localctx = new DateValueNumberContext(_ctx, State);
+            EnterRule(_localctx, 10, RULE_dateValueNumber);
+            int _la;
+            try
+            {
+                EnterOuterAlt(_localctx, 1);
+                {
+                    State = 58;
+                    _errHandler.Sync(this);
+                    _la = _input.La(1);
+                    do
+                    {
+                        {
+                            {
+                                State = 57; Match(DIGIT);
+                            }
+                        }
+                        State = 60;
+                        _errHandler.Sync(this);
+                        _la = _input.La(1);
+                    } while (_la == DIGIT);
+                }
+            }
+            catch (RecognitionException re)
+            {
+                _localctx.exception = re;
+                _errHandler.ReportError(this, re);
+                _errHandler.Recover(this, re);
+            }
+            finally
+            {
+                ExitRule();
+            }
+            return _localctx;
+        }
 
-			case 2:
-				EnterOuterAlt(_localctx, 2);
-				{
-				{
-				State = 67;
-				_errHandler.Sync(this);
-				_la = _input.La(1);
-				while (_la==WS) {
-					{
-					{
-					State = 64; Match(WS);
-					}
-					}
-					State = 69;
-					_errHandler.Sync(this);
-					_la = _input.La(1);
-				}
-				State = 70;
-				_la = _input.La(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << COMMA) | (1L << DASH) | (1L << SLASH))) != 0)) ) {
-				_errHandler.RecoverInline(this);
-				}
-				Consume();
-				State = 74;
-				_errHandler.Sync(this);
-				_la = _input.La(1);
-				while (_la==WS) {
-					{
-					{
-					State = 71; Match(WS);
-					}
-					}
-					State = 76;
-					_errHandler.Sync(this);
-					_la = _input.La(1);
-				}
-				}
-				}
-				break;
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.ReportError(this, re);
-			_errHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
+        public partial class DateSeparatorContext : ParserRuleContext
+        {
+            public ITerminalNode WS(int i)
+            {
+                return GetToken(VBADateParser.WS, i);
+            }
+            public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBADateParser.WS); }
+            public ITerminalNode SLASH() { return GetToken(VBADateParser.SLASH, 0); }
+            public ITerminalNode COMMA() { return GetToken(VBADateParser.COMMA, 0); }
+            public ITerminalNode DASH() { return GetToken(VBADateParser.DASH, 0); }
+            public DateSeparatorContext(ParserRuleContext parent, int invokingState)
+                : base(parent, invokingState)
+            {
+            }
+            public override int RuleIndex { get { return RULE_dateSeparator; } }
+            public override void EnterRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.EnterDateSeparator(this);
+            }
+            public override void ExitRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.ExitDateSeparator(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDateSeparator(this);
+                else return visitor.VisitChildren(this);
+            }
+        }
 
-	public partial class MonthNameContext : ParserRuleContext {
-		public EnglishMonthAbbreviationContext englishMonthAbbreviation() {
-			return GetRuleContext<EnglishMonthAbbreviationContext>(0);
-		}
-		public EnglishMonthNameContext englishMonthName() {
-			return GetRuleContext<EnglishMonthNameContext>(0);
-		}
-		public MonthNameContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_monthName; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.EnterMonthName(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.ExitMonthName(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitMonthName(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
+        [RuleVersion(0)]
+        public DateSeparatorContext dateSeparator()
+        {
+            DateSeparatorContext _localctx = new DateSeparatorContext(_ctx, State);
+            EnterRule(_localctx, 12, RULE_dateSeparator);
+            int _la;
+            try
+            {
+                State = 80;
+                switch (Interpreter.AdaptivePredict(_input, 8, _ctx))
+                {
+                    case 1:
+                        EnterOuterAlt(_localctx, 1);
+                        {
+                            State = 63;
+                            _errHandler.Sync(this);
+                            _la = _input.La(1);
+                            do
+                            {
+                                {
+                                    {
+                                        State = 62; Match(WS);
+                                    }
+                                }
+                                State = 65;
+                                _errHandler.Sync(this);
+                                _la = _input.La(1);
+                            } while (_la == WS);
+                        }
+                        break;
 
-	[RuleVersion(0)]
-	public MonthNameContext monthName() {
-		MonthNameContext _localctx = new MonthNameContext(_ctx, State);
-		EnterRule(_localctx, 12, RULE_monthName);
-		try {
-			State = 81;
-			switch ( Interpreter.AdaptivePredict(_input,9,_ctx) ) {
-			case 1:
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 79; englishMonthName();
-				}
-				break;
+                    case 2:
+                        EnterOuterAlt(_localctx, 2);
+                        {
+                            {
+                                State = 70;
+                                _errHandler.Sync(this);
+                                _la = _input.La(1);
+                                while (_la == WS)
+                                {
+                                    {
+                                        {
+                                            State = 67; Match(WS);
+                                        }
+                                    }
+                                    State = 72;
+                                    _errHandler.Sync(this);
+                                    _la = _input.La(1);
+                                }
+                                State = 73;
+                                _la = _input.La(1);
+                                if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << COMMA) | (1L << DASH) | (1L << SLASH))) != 0)))
+                                {
+                                    _errHandler.RecoverInline(this);
+                                }
+                                Consume();
+                                State = 77;
+                                _errHandler.Sync(this);
+                                _la = _input.La(1);
+                                while (_la == WS)
+                                {
+                                    {
+                                        {
+                                            State = 74; Match(WS);
+                                        }
+                                    }
+                                    State = 79;
+                                    _errHandler.Sync(this);
+                                    _la = _input.La(1);
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
+            catch (RecognitionException re)
+            {
+                _localctx.exception = re;
+                _errHandler.ReportError(this, re);
+                _errHandler.Recover(this, re);
+            }
+            finally
+            {
+                ExitRule();
+            }
+            return _localctx;
+        }
 
-			case 2:
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 80; englishMonthAbbreviation();
-				}
-				break;
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.ReportError(this, re);
-			_errHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
+        public partial class MonthNameContext : ParserRuleContext
+        {
+            public EnglishMonthAbbreviationContext englishMonthAbbreviation()
+            {
+                return GetRuleContext<EnglishMonthAbbreviationContext>(0);
+            }
+            public EnglishMonthNameContext englishMonthName()
+            {
+                return GetRuleContext<EnglishMonthNameContext>(0);
+            }
+            public MonthNameContext(ParserRuleContext parent, int invokingState)
+                : base(parent, invokingState)
+            {
+            }
+            public override int RuleIndex { get { return RULE_monthName; } }
+            public override void EnterRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.EnterMonthName(this);
+            }
+            public override void ExitRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.ExitMonthName(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitMonthName(this);
+                else return visitor.VisitChildren(this);
+            }
+        }
 
-	public partial class EnglishMonthNameContext : ParserRuleContext {
-		public ITerminalNode T() { return GetToken(VBADateParser.T, 0); }
-		public IReadOnlyList<ITerminalNode> U() { return GetTokens(VBADateParser.U); }
-		public ITerminalNode J() { return GetToken(VBADateParser.J, 0); }
-		public ITerminalNode G() { return GetToken(VBADateParser.G, 0); }
-		public ITerminalNode S() { return GetToken(VBADateParser.S, 0); }
-		public IReadOnlyList<ITerminalNode> O() { return GetTokens(VBADateParser.O); }
-		public ITerminalNode I() { return GetToken(VBADateParser.I, 0); }
-		public IReadOnlyList<ITerminalNode> A() { return GetTokens(VBADateParser.A); }
-		public ITerminalNode P() { return GetToken(VBADateParser.P, 0); }
-		public ITerminalNode E(int i) {
-			return GetToken(VBADateParser.E, i);
-		}
-		public ITerminalNode U(int i) {
-			return GetToken(VBADateParser.U, i);
-		}
-		public ITerminalNode Y() { return GetToken(VBADateParser.Y, 0); }
-		public ITerminalNode H() { return GetToken(VBADateParser.H, 0); }
-		public ITerminalNode M() { return GetToken(VBADateParser.M, 0); }
-		public ITerminalNode V() { return GetToken(VBADateParser.V, 0); }
-		public ITerminalNode F() { return GetToken(VBADateParser.F, 0); }
-		public IReadOnlyList<ITerminalNode> E() { return GetTokens(VBADateParser.E); }
-		public ITerminalNode D() { return GetToken(VBADateParser.D, 0); }
-		public IReadOnlyList<ITerminalNode> R() { return GetTokens(VBADateParser.R); }
-		public ITerminalNode O(int i) {
-			return GetToken(VBADateParser.O, i);
-		}
-		public ITerminalNode N() { return GetToken(VBADateParser.N, 0); }
-		public ITerminalNode R(int i) {
-			return GetToken(VBADateParser.R, i);
-		}
-		public ITerminalNode A(int i) {
-			return GetToken(VBADateParser.A, i);
-		}
-		public ITerminalNode B() { return GetToken(VBADateParser.B, 0); }
-		public ITerminalNode C() { return GetToken(VBADateParser.C, 0); }
-		public ITerminalNode L() { return GetToken(VBADateParser.L, 0); }
-		public EnglishMonthNameContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_englishMonthName; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.EnterEnglishMonthName(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.ExitEnglishMonthName(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitEnglishMonthName(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
+        [RuleVersion(0)]
+        public MonthNameContext monthName()
+        {
+            MonthNameContext _localctx = new MonthNameContext(_ctx, State);
+            EnterRule(_localctx, 14, RULE_monthName);
+            try
+            {
+                State = 84;
+                switch (_input.La(1))
+                {
+                    case JANUARY:
+                    case FEBRUARY:
+                    case MARCH:
+                    case APRIL:
+                    case MAY:
+                    case JUNE:
+                    case JULY:
+                    case AUGUST:
+                    case SEPTEMBER:
+                    case OCTOBER:
+                    case NOVEMBER:
+                    case DECEMBER:
+                        EnterOuterAlt(_localctx, 1);
+                        {
+                            State = 82; englishMonthName();
+                        }
+                        break;
+                    case JAN:
+                    case FEB:
+                    case MAR:
+                    case APR:
+                    case JUN:
+                    case JUL:
+                    case AUG:
+                    case SEP:
+                    case OCT:
+                    case NOV:
+                    case DEC:
+                        EnterOuterAlt(_localctx, 2);
+                        {
+                            State = 83; englishMonthAbbreviation();
+                        }
+                        break;
+                    default:
+                        throw new NoViableAltException(this);
+                }
+            }
+            catch (RecognitionException re)
+            {
+                _localctx.exception = re;
+                _errHandler.ReportError(this, re);
+                _errHandler.Recover(this, re);
+            }
+            finally
+            {
+                ExitRule();
+            }
+            return _localctx;
+        }
 
-	[RuleVersion(0)]
-	public EnglishMonthNameContext englishMonthName() {
-		EnglishMonthNameContext _localctx = new EnglishMonthNameContext(_ctx, State);
-		EnterRule(_localctx, 14, RULE_englishMonthName);
-		try {
-			State = 153;
-			switch ( Interpreter.AdaptivePredict(_input,10,_ctx) ) {
-			case 1:
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 83; Match(J);
-				State = 84; Match(A);
-				State = 85; Match(N);
-				State = 86; Match(U);
-				State = 87; Match(A);
-				State = 88; Match(R);
-				State = 89; Match(Y);
-				}
-				break;
+        public partial class EnglishMonthNameContext : ParserRuleContext
+        {
+            public ITerminalNode DECEMBER() { return GetToken(VBADateParser.DECEMBER, 0); }
+            public ITerminalNode MARCH() { return GetToken(VBADateParser.MARCH, 0); }
+            public ITerminalNode FEBRUARY() { return GetToken(VBADateParser.FEBRUARY, 0); }
+            public ITerminalNode AUGUST() { return GetToken(VBADateParser.AUGUST, 0); }
+            public ITerminalNode JULY() { return GetToken(VBADateParser.JULY, 0); }
+            public ITerminalNode NOVEMBER() { return GetToken(VBADateParser.NOVEMBER, 0); }
+            public ITerminalNode JUNE() { return GetToken(VBADateParser.JUNE, 0); }
+            public ITerminalNode SEPTEMBER() { return GetToken(VBADateParser.SEPTEMBER, 0); }
+            public ITerminalNode APRIL() { return GetToken(VBADateParser.APRIL, 0); }
+            public ITerminalNode MAY() { return GetToken(VBADateParser.MAY, 0); }
+            public ITerminalNode JANUARY() { return GetToken(VBADateParser.JANUARY, 0); }
+            public ITerminalNode OCTOBER() { return GetToken(VBADateParser.OCTOBER, 0); }
+            public EnglishMonthNameContext(ParserRuleContext parent, int invokingState)
+                : base(parent, invokingState)
+            {
+            }
+            public override int RuleIndex { get { return RULE_englishMonthName; } }
+            public override void EnterRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.EnterEnglishMonthName(this);
+            }
+            public override void ExitRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.ExitEnglishMonthName(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitEnglishMonthName(this);
+                else return visitor.VisitChildren(this);
+            }
+        }
 
-			case 2:
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 90; Match(F);
-				State = 91; Match(E);
-				State = 92; Match(B);
-				State = 93; Match(R);
-				State = 94; Match(U);
-				State = 95; Match(A);
-				State = 96; Match(R);
-				State = 97; Match(Y);
-				}
-				break;
+        [RuleVersion(0)]
+        public EnglishMonthNameContext englishMonthName()
+        {
+            EnglishMonthNameContext _localctx = new EnglishMonthNameContext(_ctx, State);
+            EnterRule(_localctx, 16, RULE_englishMonthName);
+            int _la;
+            try
+            {
+                EnterOuterAlt(_localctx, 1);
+                {
+                    State = 86;
+                    _la = _input.La(1);
+                    if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << JANUARY) | (1L << FEBRUARY) | (1L << MARCH) | (1L << APRIL) | (1L << MAY) | (1L << JUNE) | (1L << JULY) | (1L << AUGUST) | (1L << SEPTEMBER) | (1L << OCTOBER) | (1L << NOVEMBER) | (1L << DECEMBER))) != 0)))
+                    {
+                        _errHandler.RecoverInline(this);
+                    }
+                    Consume();
+                }
+            }
+            catch (RecognitionException re)
+            {
+                _localctx.exception = re;
+                _errHandler.ReportError(this, re);
+                _errHandler.Recover(this, re);
+            }
+            finally
+            {
+                ExitRule();
+            }
+            return _localctx;
+        }
 
-			case 3:
-				EnterOuterAlt(_localctx, 3);
-				{
-				State = 98; Match(M);
-				State = 99; Match(A);
-				State = 100; Match(R);
-				State = 101; Match(C);
-				State = 102; Match(H);
-				}
-				break;
+        public partial class EnglishMonthAbbreviationContext : ParserRuleContext
+        {
+            public ITerminalNode NOV() { return GetToken(VBADateParser.NOV, 0); }
+            public ITerminalNode DEC() { return GetToken(VBADateParser.DEC, 0); }
+            public ITerminalNode AUG() { return GetToken(VBADateParser.AUG, 0); }
+            public ITerminalNode APR() { return GetToken(VBADateParser.APR, 0); }
+            public ITerminalNode MAR() { return GetToken(VBADateParser.MAR, 0); }
+            public ITerminalNode SEP() { return GetToken(VBADateParser.SEP, 0); }
+            public ITerminalNode JUN() { return GetToken(VBADateParser.JUN, 0); }
+            public ITerminalNode JAN() { return GetToken(VBADateParser.JAN, 0); }
+            public ITerminalNode JUL() { return GetToken(VBADateParser.JUL, 0); }
+            public ITerminalNode FEB() { return GetToken(VBADateParser.FEB, 0); }
+            public ITerminalNode OCT() { return GetToken(VBADateParser.OCT, 0); }
+            public EnglishMonthAbbreviationContext(ParserRuleContext parent, int invokingState)
+                : base(parent, invokingState)
+            {
+            }
+            public override int RuleIndex { get { return RULE_englishMonthAbbreviation; } }
+            public override void EnterRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.EnterEnglishMonthAbbreviation(this);
+            }
+            public override void ExitRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.ExitEnglishMonthAbbreviation(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitEnglishMonthAbbreviation(this);
+                else return visitor.VisitChildren(this);
+            }
+        }
 
-			case 4:
-				EnterOuterAlt(_localctx, 4);
-				{
-				State = 103; Match(A);
-				State = 104; Match(P);
-				State = 105; Match(R);
-				State = 106; Match(I);
-				State = 107; Match(L);
-				}
-				break;
+        [RuleVersion(0)]
+        public EnglishMonthAbbreviationContext englishMonthAbbreviation()
+        {
+            EnglishMonthAbbreviationContext _localctx = new EnglishMonthAbbreviationContext(_ctx, State);
+            EnterRule(_localctx, 18, RULE_englishMonthAbbreviation);
+            int _la;
+            try
+            {
+                EnterOuterAlt(_localctx, 1);
+                {
+                    State = 88;
+                    _la = _input.La(1);
+                    if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << JAN) | (1L << FEB) | (1L << MAR) | (1L << APR) | (1L << JUN) | (1L << JUL) | (1L << AUG) | (1L << SEP) | (1L << OCT) | (1L << NOV) | (1L << DEC))) != 0)))
+                    {
+                        _errHandler.RecoverInline(this);
+                    }
+                    Consume();
+                }
+            }
+            catch (RecognitionException re)
+            {
+                _localctx.exception = re;
+                _errHandler.ReportError(this, re);
+                _errHandler.Recover(this, re);
+            }
+            finally
+            {
+                ExitRule();
+            }
+            return _localctx;
+        }
 
-			case 5:
-				EnterOuterAlt(_localctx, 5);
-				{
-				State = 108; Match(M);
-				State = 109; Match(A);
-				State = 110; Match(Y);
-				}
-				break;
+        public partial class TimeValueContext : ParserRuleContext
+        {
+            public ITerminalNode WS(int i)
+            {
+                return GetToken(VBADateParser.WS, i);
+            }
+            public IReadOnlyList<TimeValuePartContext> timeValuePart()
+            {
+                return GetRuleContexts<TimeValuePartContext>();
+            }
+            public ITerminalNode AMPM() { return GetToken(VBADateParser.AMPM, 0); }
+            public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBADateParser.WS); }
+            public IReadOnlyList<TimeSeparatorContext> timeSeparator()
+            {
+                return GetRuleContexts<TimeSeparatorContext>();
+            }
+            public TimeValuePartContext timeValuePart(int i)
+            {
+                return GetRuleContext<TimeValuePartContext>(i);
+            }
+            public TimeSeparatorContext timeSeparator(int i)
+            {
+                return GetRuleContext<TimeSeparatorContext>(i);
+            }
+            public TimeValueContext(ParserRuleContext parent, int invokingState)
+                : base(parent, invokingState)
+            {
+            }
+            public override int RuleIndex { get { return RULE_timeValue; } }
+            public override void EnterRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.EnterTimeValue(this);
+            }
+            public override void ExitRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.ExitTimeValue(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitTimeValue(this);
+                else return visitor.VisitChildren(this);
+            }
+        }
 
-			case 6:
-				EnterOuterAlt(_localctx, 6);
-				{
-				State = 111; Match(J);
-				State = 112; Match(U);
-				State = 113; Match(N);
-				State = 114; Match(E);
-				}
-				break;
+        [RuleVersion(0)]
+        public TimeValueContext timeValue()
+        {
+            TimeValueContext _localctx = new TimeValueContext(_ctx, State);
+            EnterRule(_localctx, 20, RULE_timeValue);
+            int _la;
+            try
+            {
+                State = 116;
+                switch (Interpreter.AdaptivePredict(_input, 14, _ctx))
+                {
+                    case 1:
+                        EnterOuterAlt(_localctx, 1);
+                        {
+                            {
+                                State = 90; timeValuePart();
+                                State = 94;
+                                _errHandler.Sync(this);
+                                _la = _input.La(1);
+                                while (_la == WS)
+                                {
+                                    {
+                                        {
+                                            State = 91; Match(WS);
+                                        }
+                                    }
+                                    State = 96;
+                                    _errHandler.Sync(this);
+                                    _la = _input.La(1);
+                                }
+                                State = 97; Match(AMPM);
+                            }
+                        }
+                        break;
 
-			case 7:
-				EnterOuterAlt(_localctx, 7);
-				{
-				State = 115; Match(A);
-				State = 116; Match(U);
-				State = 117; Match(G);
-				State = 118; Match(U);
-				State = 119; Match(S);
-				State = 120; Match(T);
-				}
-				break;
+                    case 2:
+                        EnterOuterAlt(_localctx, 2);
+                        {
+                            {
+                                State = 99; timeValuePart();
+                                State = 100; timeSeparator();
+                                State = 101; timeValuePart();
+                                State = 105;
+                                switch (Interpreter.AdaptivePredict(_input, 11, _ctx))
+                                {
+                                    case 1:
+                                        {
+                                            State = 102; timeSeparator();
+                                            State = 103; timeValuePart();
+                                        }
+                                        break;
+                                }
+                                State = 114;
+                                _la = _input.La(1);
+                                if (_la == AMPM || _la == WS)
+                                {
+                                    {
+                                        State = 110;
+                                        _errHandler.Sync(this);
+                                        _la = _input.La(1);
+                                        while (_la == WS)
+                                        {
+                                            {
+                                                {
+                                                    State = 107; Match(WS);
+                                                }
+                                            }
+                                            State = 112;
+                                            _errHandler.Sync(this);
+                                            _la = _input.La(1);
+                                        }
+                                        State = 113; Match(AMPM);
+                                    }
+                                }
 
-			case 8:
-				EnterOuterAlt(_localctx, 8);
-				{
-				State = 121; Match(S);
-				State = 122; Match(E);
-				State = 123; Match(P);
-				State = 124; Match(T);
-				State = 125; Match(E);
-				State = 126; Match(M);
-				State = 127; Match(B);
-				State = 128; Match(E);
-				State = 129; Match(R);
-				}
-				break;
+                            }
+                        }
+                        break;
+                }
+            }
+            catch (RecognitionException re)
+            {
+                _localctx.exception = re;
+                _errHandler.ReportError(this, re);
+                _errHandler.Recover(this, re);
+            }
+            finally
+            {
+                ExitRule();
+            }
+            return _localctx;
+        }
 
-			case 9:
-				EnterOuterAlt(_localctx, 9);
-				{
-				State = 130; Match(O);
-				State = 131; Match(C);
-				State = 132; Match(T);
-				State = 133; Match(O);
-				State = 134; Match(B);
-				State = 135; Match(E);
-				State = 136; Match(R);
-				}
-				break;
+        public partial class TimeValuePartContext : ParserRuleContext
+        {
+            public ITerminalNode DIGIT(int i)
+            {
+                return GetToken(VBADateParser.DIGIT, i);
+            }
+            public IReadOnlyList<ITerminalNode> DIGIT() { return GetTokens(VBADateParser.DIGIT); }
+            public TimeValuePartContext(ParserRuleContext parent, int invokingState)
+                : base(parent, invokingState)
+            {
+            }
+            public override int RuleIndex { get { return RULE_timeValuePart; } }
+            public override void EnterRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.EnterTimeValuePart(this);
+            }
+            public override void ExitRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.ExitTimeValuePart(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitTimeValuePart(this);
+                else return visitor.VisitChildren(this);
+            }
+        }
 
-			case 10:
-				EnterOuterAlt(_localctx, 10);
-				{
-				State = 137; Match(N);
-				State = 138; Match(O);
-				State = 139; Match(V);
-				State = 140; Match(E);
-				State = 141; Match(M);
-				State = 142; Match(B);
-				State = 143; Match(E);
-				State = 144; Match(R);
-				}
-				break;
+        [RuleVersion(0)]
+        public TimeValuePartContext timeValuePart()
+        {
+            TimeValuePartContext _localctx = new TimeValuePartContext(_ctx, State);
+            EnterRule(_localctx, 22, RULE_timeValuePart);
+            int _la;
+            try
+            {
+                EnterOuterAlt(_localctx, 1);
+                {
+                    State = 119;
+                    _errHandler.Sync(this);
+                    _la = _input.La(1);
+                    do
+                    {
+                        {
+                            {
+                                State = 118; Match(DIGIT);
+                            }
+                        }
+                        State = 121;
+                        _errHandler.Sync(this);
+                        _la = _input.La(1);
+                    } while (_la == DIGIT);
+                }
+            }
+            catch (RecognitionException re)
+            {
+                _localctx.exception = re;
+                _errHandler.ReportError(this, re);
+                _errHandler.Recover(this, re);
+            }
+            finally
+            {
+                ExitRule();
+            }
+            return _localctx;
+        }
 
-			case 11:
-				EnterOuterAlt(_localctx, 11);
-				{
-				State = 145; Match(D);
-				State = 146; Match(E);
-				State = 147; Match(C);
-				State = 148; Match(E);
-				State = 149; Match(M);
-				State = 150; Match(B);
-				State = 151; Match(E);
-				State = 152; Match(R);
-				}
-				break;
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.ReportError(this, re);
-			_errHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
+        public partial class TimeSeparatorContext : ParserRuleContext
+        {
+            public ITerminalNode DOT() { return GetToken(VBADateParser.DOT, 0); }
+            public ITerminalNode WS(int i)
+            {
+                return GetToken(VBADateParser.WS, i);
+            }
+            public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBADateParser.WS); }
+            public ITerminalNode COLON() { return GetToken(VBADateParser.COLON, 0); }
+            public TimeSeparatorContext(ParserRuleContext parent, int invokingState)
+                : base(parent, invokingState)
+            {
+            }
+            public override int RuleIndex { get { return RULE_timeSeparator; } }
+            public override void EnterRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.EnterTimeSeparator(this);
+            }
+            public override void ExitRule(IParseTreeListener listener)
+            {
+                IVBADateListener typedListener = listener as IVBADateListener;
+                if (typedListener != null) typedListener.ExitTimeSeparator(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitTimeSeparator(this);
+                else return visitor.VisitChildren(this);
+            }
+        }
 
-	public partial class EnglishMonthAbbreviationContext : ParserRuleContext {
-		public ITerminalNode T() { return GetToken(VBADateParser.T, 0); }
-		public ITerminalNode M() { return GetToken(VBADateParser.M, 0); }
-		public ITerminalNode V() { return GetToken(VBADateParser.V, 0); }
-		public ITerminalNode F() { return GetToken(VBADateParser.F, 0); }
-		public ITerminalNode E() { return GetToken(VBADateParser.E, 0); }
-		public ITerminalNode D() { return GetToken(VBADateParser.D, 0); }
-		public ITerminalNode U() { return GetToken(VBADateParser.U, 0); }
-		public ITerminalNode R() { return GetToken(VBADateParser.R, 0); }
-		public ITerminalNode J() { return GetToken(VBADateParser.J, 0); }
-		public ITerminalNode G() { return GetToken(VBADateParser.G, 0); }
-		public ITerminalNode N() { return GetToken(VBADateParser.N, 0); }
-		public ITerminalNode S() { return GetToken(VBADateParser.S, 0); }
-		public ITerminalNode O() { return GetToken(VBADateParser.O, 0); }
-		public ITerminalNode B() { return GetToken(VBADateParser.B, 0); }
-		public ITerminalNode C() { return GetToken(VBADateParser.C, 0); }
-		public ITerminalNode A() { return GetToken(VBADateParser.A, 0); }
-		public ITerminalNode P() { return GetToken(VBADateParser.P, 0); }
-		public ITerminalNode L() { return GetToken(VBADateParser.L, 0); }
-		public EnglishMonthAbbreviationContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_englishMonthAbbreviation; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.EnterEnglishMonthAbbreviation(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.ExitEnglishMonthAbbreviation(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitEnglishMonthAbbreviation(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
+        [RuleVersion(0)]
+        public TimeSeparatorContext timeSeparator()
+        {
+            TimeSeparatorContext _localctx = new TimeSeparatorContext(_ctx, State);
+            EnterRule(_localctx, 24, RULE_timeSeparator);
+            int _la;
+            try
+            {
+                EnterOuterAlt(_localctx, 1);
+                {
+                    State = 126;
+                    _errHandler.Sync(this);
+                    _la = _input.La(1);
+                    while (_la == WS)
+                    {
+                        {
+                            {
+                                State = 123; Match(WS);
+                            }
+                        }
+                        State = 128;
+                        _errHandler.Sync(this);
+                        _la = _input.La(1);
+                    }
+                    State = 129;
+                    _la = _input.La(1);
+                    if (!(_la == COLON || _la == DOT))
+                    {
+                        _errHandler.RecoverInline(this);
+                    }
+                    Consume();
+                    State = 133;
+                    _errHandler.Sync(this);
+                    _la = _input.La(1);
+                    while (_la == WS)
+                    {
+                        {
+                            {
+                                State = 130; Match(WS);
+                            }
+                        }
+                        State = 135;
+                        _errHandler.Sync(this);
+                        _la = _input.La(1);
+                    }
+                }
+            }
+            catch (RecognitionException re)
+            {
+                _localctx.exception = re;
+                _errHandler.ReportError(this, re);
+                _errHandler.Recover(this, re);
+            }
+            finally
+            {
+                ExitRule();
+            }
+            return _localctx;
+        }
 
-	[RuleVersion(0)]
-	public EnglishMonthAbbreviationContext englishMonthAbbreviation() {
-		EnglishMonthAbbreviationContext _localctx = new EnglishMonthAbbreviationContext(_ctx, State);
-		EnterRule(_localctx, 16, RULE_englishMonthAbbreviation);
-		try {
-			State = 188;
-			switch ( Interpreter.AdaptivePredict(_input,11,_ctx) ) {
-			case 1:
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 155; Match(J);
-				State = 156; Match(A);
-				State = 157; Match(N);
-				}
-				break;
-
-			case 2:
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 158; Match(F);
-				State = 159; Match(E);
-				State = 160; Match(B);
-				}
-				break;
-
-			case 3:
-				EnterOuterAlt(_localctx, 3);
-				{
-				State = 161; Match(M);
-				State = 162; Match(A);
-				State = 163; Match(R);
-				}
-				break;
-
-			case 4:
-				EnterOuterAlt(_localctx, 4);
-				{
-				State = 164; Match(A);
-				State = 165; Match(P);
-				State = 166; Match(R);
-				}
-				break;
-
-			case 5:
-				EnterOuterAlt(_localctx, 5);
-				{
-				State = 167; Match(J);
-				State = 168; Match(U);
-				State = 169; Match(N);
-				}
-				break;
-
-			case 6:
-				EnterOuterAlt(_localctx, 6);
-				{
-				State = 170; Match(J);
-				State = 171; Match(U);
-				State = 172; Match(L);
-				}
-				break;
-
-			case 7:
-				EnterOuterAlt(_localctx, 7);
-				{
-				State = 173; Match(A);
-				State = 174; Match(U);
-				State = 175; Match(G);
-				}
-				break;
-
-			case 8:
-				EnterOuterAlt(_localctx, 8);
-				{
-				State = 176; Match(S);
-				State = 177; Match(E);
-				State = 178; Match(P);
-				}
-				break;
-
-			case 9:
-				EnterOuterAlt(_localctx, 9);
-				{
-				State = 179; Match(O);
-				State = 180; Match(C);
-				State = 181; Match(T);
-				}
-				break;
-
-			case 10:
-				EnterOuterAlt(_localctx, 10);
-				{
-				State = 182; Match(N);
-				State = 183; Match(O);
-				State = 184; Match(V);
-				}
-				break;
-
-			case 11:
-				EnterOuterAlt(_localctx, 11);
-				{
-				State = 185; Match(D);
-				State = 186; Match(E);
-				State = 187; Match(C);
-				}
-				break;
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.ReportError(this, re);
-			_errHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class TimeValueContext : ParserRuleContext {
-		public ITerminalNode WS(int i) {
-			return GetToken(VBADateParser.WS, i);
-		}
-		public IReadOnlyList<TimeValuePartContext> timeValuePart() {
-			return GetRuleContexts<TimeValuePartContext>();
-		}
-		public ITerminalNode AMPM() { return GetToken(VBADateParser.AMPM, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBADateParser.WS); }
-		public IReadOnlyList<TimeSeparatorContext> timeSeparator() {
-			return GetRuleContexts<TimeSeparatorContext>();
-		}
-		public TimeValuePartContext timeValuePart(int i) {
-			return GetRuleContext<TimeValuePartContext>(i);
-		}
-		public TimeSeparatorContext timeSeparator(int i) {
-			return GetRuleContext<TimeSeparatorContext>(i);
-		}
-		public TimeValueContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_timeValue; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.EnterTimeValue(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.ExitTimeValue(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitTimeValue(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public TimeValueContext timeValue() {
-		TimeValueContext _localctx = new TimeValueContext(_ctx, State);
-		EnterRule(_localctx, 18, RULE_timeValue);
-		int _la;
-		try {
-			State = 216;
-			switch ( Interpreter.AdaptivePredict(_input,16,_ctx) ) {
-			case 1:
-				EnterOuterAlt(_localctx, 1);
-				{
-				{
-				State = 190; timeValuePart();
-				State = 194;
-				_errHandler.Sync(this);
-				_la = _input.La(1);
-				while (_la==WS) {
-					{
-					{
-					State = 191; Match(WS);
-					}
-					}
-					State = 196;
-					_errHandler.Sync(this);
-					_la = _input.La(1);
-				}
-				State = 197; Match(AMPM);
-				}
-				}
-				break;
-
-			case 2:
-				EnterOuterAlt(_localctx, 2);
-				{
-				{
-				State = 199; timeValuePart();
-				State = 200; timeSeparator();
-				State = 201; timeValuePart();
-				State = 205;
-				switch ( Interpreter.AdaptivePredict(_input,13,_ctx) ) {
-				case 1:
-					{
-					State = 202; timeSeparator();
-					State = 203; timeValuePart();
-					}
-					break;
-				}
-				State = 214;
-				_la = _input.La(1);
-				if (_la==AMPM || _la==WS) {
-					{
-					State = 210;
-					_errHandler.Sync(this);
-					_la = _input.La(1);
-					while (_la==WS) {
-						{
-						{
-						State = 207; Match(WS);
-						}
-						}
-						State = 212;
-						_errHandler.Sync(this);
-						_la = _input.La(1);
-					}
-					State = 213; Match(AMPM);
-					}
-				}
-
-				}
-				}
-				break;
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.ReportError(this, re);
-			_errHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class TimeValuePartContext : ParserRuleContext {
-		public ITerminalNode DIGIT(int i) {
-			return GetToken(VBADateParser.DIGIT, i);
-		}
-		public IReadOnlyList<ITerminalNode> DIGIT() { return GetTokens(VBADateParser.DIGIT); }
-		public TimeValuePartContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_timeValuePart; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.EnterTimeValuePart(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.ExitTimeValuePart(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitTimeValuePart(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public TimeValuePartContext timeValuePart() {
-		TimeValuePartContext _localctx = new TimeValuePartContext(_ctx, State);
-		EnterRule(_localctx, 20, RULE_timeValuePart);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 219;
-			_errHandler.Sync(this);
-			_la = _input.La(1);
-			do {
-				{
-				{
-				State = 218; Match(DIGIT);
-				}
-				}
-				State = 221;
-				_errHandler.Sync(this);
-				_la = _input.La(1);
-			} while ( _la==DIGIT );
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.ReportError(this, re);
-			_errHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class TimeSeparatorContext : ParserRuleContext {
-		public ITerminalNode DOT() { return GetToken(VBADateParser.DOT, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBADateParser.WS, i);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBADateParser.WS); }
-		public ITerminalNode COLON() { return GetToken(VBADateParser.COLON, 0); }
-		public TimeSeparatorContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_timeSeparator; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.EnterTimeSeparator(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBADateListener typedListener = listener as IVBADateListener;
-			if (typedListener != null) typedListener.ExitTimeSeparator(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBADateVisitor<TResult> typedVisitor = visitor as IVBADateVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitTimeSeparator(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public TimeSeparatorContext timeSeparator() {
-		TimeSeparatorContext _localctx = new TimeSeparatorContext(_ctx, State);
-		EnterRule(_localctx, 22, RULE_timeSeparator);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 226;
-			_errHandler.Sync(this);
-			_la = _input.La(1);
-			while (_la==WS) {
-				{
-				{
-				State = 223; Match(WS);
-				}
-				}
-				State = 228;
-				_errHandler.Sync(this);
-				_la = _input.La(1);
-			}
-			State = 229;
-			_la = _input.La(1);
-			if ( !(_la==COLON || _la==DOT) ) {
-			_errHandler.RecoverInline(this);
-			}
-			Consume();
-			State = 233;
-			_errHandler.Sync(this);
-			_la = _input.La(1);
-			while (_la==WS) {
-				{
-				{
-				State = 230; Match(WS);
-				}
-				}
-				State = 235;
-				_errHandler.Sync(this);
-				_la = _input.La(1);
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.ReportError(this, re);
-			_errHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\"\xEF\x4\x2\t\x2"+
-		"\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4\t\t"+
-		"\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x3\x2\x3\x2\x3\x2\x3\x3\x3\x3\x3"+
-		"\x3\x3\x3\x3\x4\x3\x4\x3\x4\x3\x4\x6\x4&\n\x4\r\x4\xE\x4\'\x3\x4\x3\x4"+
-		"\x5\x4,\n\x4\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\x5\x5\x34\n\x5\x3\x6"+
-		"\x6\x6\x37\n\x6\r\x6\xE\x6\x38\x3\x6\x5\x6<\n\x6\x3\a\x6\a?\n\a\r\a\xE"+
-		"\a@\x3\a\a\a\x44\n\a\f\a\xE\aG\v\a\x3\a\x3\a\a\aK\n\a\f\a\xE\aN\v\a\x5"+
-		"\aP\n\a\x3\b\x3\b\x5\bT\n\b\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3"+
-		"\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3"+
-		"\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3"+
-		"\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3"+
-		"\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3\t\x3"+
-		"\t\x3\t\x3\t\x3\t\x3\t\x3\t\x5\t\x9C\n\t\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n"+
-		"\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n"+
-		"\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x3\n\x5\n"+
-		"\xBF\n\n\x3\v\x3\v\a\v\xC3\n\v\f\v\xE\v\xC6\v\v\x3\v\x3\v\x3\v\x3\v\x3"+
-		"\v\x3\v\x3\v\x3\v\x5\v\xD0\n\v\x3\v\a\v\xD3\n\v\f\v\xE\v\xD6\v\v\x3\v"+
-		"\x5\v\xD9\n\v\x5\v\xDB\n\v\x3\f\x6\f\xDE\n\f\r\f\xE\f\xDF\x3\r\a\r\xE3"+
-		"\n\r\f\r\xE\r\xE6\v\r\x3\r\x3\r\a\r\xEA\n\r\f\r\xE\r\xED\v\r\x3\r\x2\x2"+
-		"\x2\xE\x2\x2\x4\x2\x6\x2\b\x2\n\x2\f\x2\xE\x2\x10\x2\x12\x2\x14\x2\x16"+
-		"\x2\x18\x2\x2\x4\x3\x2\a\t\x3\x2\n\v\x109\x2\x1A\x3\x2\x2\x2\x4\x1D\x3"+
-		"\x2\x2\x2\x6+\x3\x2\x2\x2\b-\x3\x2\x2\x2\n;\x3\x2\x2\x2\fO\x3\x2\x2\x2"+
-		"\xES\x3\x2\x2\x2\x10\x9B\x3\x2\x2\x2\x12\xBE\x3\x2\x2\x2\x14\xDA\x3\x2"+
-		"\x2\x2\x16\xDD\x3\x2\x2\x2\x18\xE4\x3\x2\x2\x2\x1A\x1B\x5\x4\x3\x2\x1B"+
-		"\x1C\a\x2\x2\x3\x1C\x3\x3\x2\x2\x2\x1D\x1E\a\x6\x2\x2\x1E\x1F\x5\x6\x4"+
-		"\x2\x1F \a\x6\x2\x2 \x5\x3\x2\x2\x2!,\x5\b\x5\x2\",\x5\x14\v\x2#%\x5\b"+
-		"\x5\x2$&\a\f\x2\x2%$\x3\x2\x2\x2&\'\x3\x2\x2\x2\'%\x3\x2\x2\x2\'(\x3\x2"+
-		"\x2\x2()\x3\x2\x2\x2)*\x5\x14\v\x2*,\x3\x2\x2\x2+!\x3\x2\x2\x2+\"\x3\x2"+
-		"\x2\x2+#\x3\x2\x2\x2,\a\x3\x2\x2\x2-.\x5\n\x6\x2./\x5\f\a\x2/\x33\x5\n"+
-		"\x6\x2\x30\x31\x5\f\a\x2\x31\x32\x5\n\x6\x2\x32\x34\x3\x2\x2\x2\x33\x30"+
-		"\x3\x2\x2\x2\x33\x34\x3\x2\x2\x2\x34\t\x3\x2\x2\x2\x35\x37\a\r\x2\x2\x36"+
-		"\x35\x3\x2\x2\x2\x37\x38\x3\x2\x2\x2\x38\x36\x3\x2\x2\x2\x38\x39\x3\x2"+
-		"\x2\x2\x39<\x3\x2\x2\x2:<\x5\xE\b\x2;\x36\x3\x2\x2\x2;:\x3\x2\x2\x2<\v"+
-		"\x3\x2\x2\x2=?\a\f\x2\x2>=\x3\x2\x2\x2?@\x3\x2\x2\x2@>\x3\x2\x2\x2@\x41"+
-		"\x3\x2\x2\x2\x41P\x3\x2\x2\x2\x42\x44\a\f\x2\x2\x43\x42\x3\x2\x2\x2\x44"+
-		"G\x3\x2\x2\x2\x45\x43\x3\x2\x2\x2\x45\x46\x3\x2\x2\x2\x46H\x3\x2\x2\x2"+
-		"G\x45\x3\x2\x2\x2HL\t\x2\x2\x2IK\a\f\x2\x2JI\x3\x2\x2\x2KN\x3\x2\x2\x2"+
-		"LJ\x3\x2\x2\x2LM\x3\x2\x2\x2MP\x3\x2\x2\x2NL\x3\x2\x2\x2O>\x3\x2\x2\x2"+
-		"O\x45\x3\x2\x2\x2P\r\x3\x2\x2\x2QT\x5\x10\t\x2RT\x5\x12\n\x2SQ\x3\x2\x2"+
-		"\x2SR\x3\x2\x2\x2T\xF\x3\x2\x2\x2UV\a\xE\x2\x2VW\a\xF\x2\x2WX\a\x10\x2"+
-		"\x2XY\a\x11\x2\x2YZ\a\xF\x2\x2Z[\a\x12\x2\x2[\x9C\a\x13\x2\x2\\]\a\x14"+
-		"\x2\x2]^\a\x15\x2\x2^_\a\x16\x2\x2_`\a\x12\x2\x2`\x61\a\x11\x2\x2\x61"+
-		"\x62\a\xF\x2\x2\x62\x63\a\x12\x2\x2\x63\x9C\a\x13\x2\x2\x64\x65\a\x17"+
-		"\x2\x2\x65\x66\a\xF\x2\x2\x66g\a\x12\x2\x2gh\a\x18\x2\x2h\x9C\a\x19\x2"+
-		"\x2ij\a\xF\x2\x2jk\a\x1A\x2\x2kl\a\x12\x2\x2lm\a\x1B\x2\x2m\x9C\a\x1C"+
-		"\x2\x2no\a\x17\x2\x2op\a\xF\x2\x2p\x9C\a\x13\x2\x2qr\a\xE\x2\x2rs\a\x11"+
-		"\x2\x2st\a\x10\x2\x2t\x9C\a\x15\x2\x2uv\a\xF\x2\x2vw\a\x11\x2\x2wx\a\x1D"+
-		"\x2\x2xy\a\x11\x2\x2yz\a\x1E\x2\x2z\x9C\a\x1F\x2\x2{|\a\x1E\x2\x2|}\a"+
-		"\x15\x2\x2}~\a\x1A\x2\x2~\x7F\a\x1F\x2\x2\x7F\x80\a\x15\x2\x2\x80\x81"+
-		"\a\x17\x2\x2\x81\x82\a\x16\x2\x2\x82\x83\a\x15\x2\x2\x83\x9C\a\x12\x2"+
-		"\x2\x84\x85\a \x2\x2\x85\x86\a\x18\x2\x2\x86\x87\a\x1F\x2\x2\x87\x88\a"+
-		" \x2\x2\x88\x89\a\x16\x2\x2\x89\x8A\a\x15\x2\x2\x8A\x9C\a\x12\x2\x2\x8B"+
-		"\x8C\a\x10\x2\x2\x8C\x8D\a \x2\x2\x8D\x8E\a!\x2\x2\x8E\x8F\a\x15\x2\x2"+
-		"\x8F\x90\a\x17\x2\x2\x90\x91\a\x16\x2\x2\x91\x92\a\x15\x2\x2\x92\x9C\a"+
-		"\x12\x2\x2\x93\x94\a\"\x2\x2\x94\x95\a\x15\x2\x2\x95\x96\a\x18\x2\x2\x96"+
-		"\x97\a\x15\x2\x2\x97\x98\a\x17\x2\x2\x98\x99\a\x16\x2\x2\x99\x9A\a\x15"+
-		"\x2\x2\x9A\x9C\a\x12\x2\x2\x9BU\x3\x2\x2\x2\x9B\\\x3\x2\x2\x2\x9B\x64"+
-		"\x3\x2\x2\x2\x9Bi\x3\x2\x2\x2\x9Bn\x3\x2\x2\x2\x9Bq\x3\x2\x2\x2\x9Bu\x3"+
-		"\x2\x2\x2\x9B{\x3\x2\x2\x2\x9B\x84\x3\x2\x2\x2\x9B\x8B\x3\x2\x2\x2\x9B"+
-		"\x93\x3\x2\x2\x2\x9C\x11\x3\x2\x2\x2\x9D\x9E\a\xE\x2\x2\x9E\x9F\a\xF\x2"+
-		"\x2\x9F\xBF\a\x10\x2\x2\xA0\xA1\a\x14\x2\x2\xA1\xA2\a\x15\x2\x2\xA2\xBF"+
-		"\a\x16\x2\x2\xA3\xA4\a\x17\x2\x2\xA4\xA5\a\xF\x2\x2\xA5\xBF\a\x12\x2\x2"+
-		"\xA6\xA7\a\xF\x2\x2\xA7\xA8\a\x1A\x2\x2\xA8\xBF\a\x12\x2\x2\xA9\xAA\a"+
-		"\xE\x2\x2\xAA\xAB\a\x11\x2\x2\xAB\xBF\a\x10\x2\x2\xAC\xAD\a\xE\x2\x2\xAD"+
-		"\xAE\a\x11\x2\x2\xAE\xBF\a\x1C\x2\x2\xAF\xB0\a\xF\x2\x2\xB0\xB1\a\x11"+
-		"\x2\x2\xB1\xBF\a\x1D\x2\x2\xB2\xB3\a\x1E\x2\x2\xB3\xB4\a\x15\x2\x2\xB4"+
-		"\xBF\a\x1A\x2\x2\xB5\xB6\a \x2\x2\xB6\xB7\a\x18\x2\x2\xB7\xBF\a\x1F\x2"+
-		"\x2\xB8\xB9\a\x10\x2\x2\xB9\xBA\a \x2\x2\xBA\xBF\a!\x2\x2\xBB\xBC\a\""+
-		"\x2\x2\xBC\xBD\a\x15\x2\x2\xBD\xBF\a\x18\x2\x2\xBE\x9D\x3\x2\x2\x2\xBE"+
-		"\xA0\x3\x2\x2\x2\xBE\xA3\x3\x2\x2\x2\xBE\xA6\x3\x2\x2\x2\xBE\xA9\x3\x2"+
-		"\x2\x2\xBE\xAC\x3\x2\x2\x2\xBE\xAF\x3\x2\x2\x2\xBE\xB2\x3\x2\x2\x2\xBE"+
-		"\xB5\x3\x2\x2\x2\xBE\xB8\x3\x2\x2\x2\xBE\xBB\x3\x2\x2\x2\xBF\x13\x3\x2"+
-		"\x2\x2\xC0\xC4\x5\x16\f\x2\xC1\xC3\a\f\x2\x2\xC2\xC1\x3\x2\x2\x2\xC3\xC6"+
-		"\x3\x2\x2\x2\xC4\xC2\x3\x2\x2\x2\xC4\xC5\x3\x2\x2\x2\xC5\xC7\x3\x2\x2"+
-		"\x2\xC6\xC4\x3\x2\x2\x2\xC7\xC8\a\x3\x2\x2\xC8\xDB\x3\x2\x2\x2\xC9\xCA"+
-		"\x5\x16\f\x2\xCA\xCB\x5\x18\r\x2\xCB\xCF\x5\x16\f\x2\xCC\xCD\x5\x18\r"+
-		"\x2\xCD\xCE\x5\x16\f\x2\xCE\xD0\x3\x2\x2\x2\xCF\xCC\x3\x2\x2\x2\xCF\xD0"+
-		"\x3\x2\x2\x2\xD0\xD8\x3\x2\x2\x2\xD1\xD3\a\f\x2\x2\xD2\xD1\x3\x2\x2\x2"+
-		"\xD3\xD6\x3\x2\x2\x2\xD4\xD2\x3\x2\x2\x2\xD4\xD5\x3\x2\x2\x2\xD5\xD7\x3"+
-		"\x2\x2\x2\xD6\xD4\x3\x2\x2\x2\xD7\xD9\a\x3\x2\x2\xD8\xD4\x3\x2\x2\x2\xD8"+
-		"\xD9\x3\x2\x2\x2\xD9\xDB\x3\x2\x2\x2\xDA\xC0\x3\x2\x2\x2\xDA\xC9\x3\x2"+
-		"\x2\x2\xDB\x15\x3\x2\x2\x2\xDC\xDE\a\r\x2\x2\xDD\xDC\x3\x2\x2\x2\xDE\xDF"+
-		"\x3\x2\x2\x2\xDF\xDD\x3\x2\x2\x2\xDF\xE0\x3\x2\x2\x2\xE0\x17\x3\x2\x2"+
-		"\x2\xE1\xE3\a\f\x2\x2\xE2\xE1\x3\x2\x2\x2\xE3\xE6\x3\x2\x2\x2\xE4\xE2"+
-		"\x3\x2\x2\x2\xE4\xE5\x3\x2\x2\x2\xE5\xE7\x3\x2\x2\x2\xE6\xE4\x3\x2\x2"+
-		"\x2\xE7\xEB\t\x3\x2\x2\xE8\xEA\a\f\x2\x2\xE9\xE8\x3\x2\x2\x2\xEA\xED\x3"+
-		"\x2\x2\x2\xEB\xE9\x3\x2\x2\x2\xEB\xEC\x3\x2\x2\x2\xEC\x19\x3\x2\x2\x2"+
-		"\xED\xEB\x3\x2\x2\x2\x16\'+\x33\x38;@\x45LOS\x9B\xBE\xC4\xCF\xD4\xD8\xDA"+
-		"\xDF\xE4\xEB";
-	public static readonly ATN _ATN =
-		new ATNDeserializer().Deserialize(_serializedATN.ToCharArray());
-}
+        public static readonly string _serializedATN =
+            "\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3$\x8B\x4\x2\t\x2" +
+            "\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4\t\t" +
+            "\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x3\x2\x3\x2\x3\x2\x3" +
+            "\x3\x3\x3\x3\x3\x3\x3\x3\x4\x3\x4\x3\x4\x3\x4\x6\x4(\n\x4\r\x4\xE\x4)" +
+            "\x3\x4\x3\x4\x5\x4.\n\x4\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\x5\x5\x36" +
+            "\n\x5\x3\x6\x3\x6\x5\x6:\n\x6\x3\a\x6\a=\n\a\r\a\xE\a>\x3\b\x6\b\x42\n" +
+            "\b\r\b\xE\b\x43\x3\b\a\bG\n\b\f\b\xE\bJ\v\b\x3\b\x3\b\a\bN\n\b\f\b\xE" +
+            "\bQ\v\b\x5\bS\n\b\x3\t\x3\t\x5\tW\n\t\x3\n\x3\n\x3\v\x3\v\x3\f\x3\f\a" +
+            "\f_\n\f\f\f\xE\f\x62\v\f\x3\f\x3\f\x3\f\x3\f\x3\f\x3\f\x3\f\x3\f\x5\f" +
+            "l\n\f\x3\f\a\fo\n\f\f\f\xE\fr\v\f\x3\f\x5\fu\n\f\x5\fw\n\f\x3\r\x6\rz" +
+            "\n\r\r\r\xE\r{\x3\xE\a\xE\x7F\n\xE\f\xE\xE\xE\x82\v\xE\x3\xE\x3\xE\a\xE" +
+            "\x86\n\xE\f\xE\xE\xE\x89\v\xE\x3\xE\x2\x2\x2\xF\x2\x2\x4\x2\x6\x2\b\x2" +
+            "\n\x2\f\x2\xE\x2\x10\x2\x12\x2\x14\x2\x16\x2\x18\x2\x1A\x2\x2\x6\x3\x2" +
+            "\x1E \x3\x2\x4\xF\x3\x2\x10\x1A\x3\x2!\"\x90\x2\x1C\x3\x2\x2\x2\x4\x1F" +
+            "\x3\x2\x2\x2\x6-\x3\x2\x2\x2\b/\x3\x2\x2\x2\n\x39\x3\x2\x2\x2\f<\x3\x2" +
+            "\x2\x2\xER\x3\x2\x2\x2\x10V\x3\x2\x2\x2\x12X\x3\x2\x2\x2\x14Z\x3\x2\x2" +
+            "\x2\x16v\x3\x2\x2\x2\x18y\x3\x2\x2\x2\x1A\x80\x3\x2\x2\x2\x1C\x1D\x5\x4" +
+            "\x3\x2\x1D\x1E\a\x2\x2\x3\x1E\x3\x3\x2\x2\x2\x1F \a\x1D\x2\x2 !\x5\x6" +
+            "\x4\x2!\"\a\x1D\x2\x2\"\x5\x3\x2\x2\x2#.\x5\b\x5\x2$.\x5\x16\f\x2%\'\x5" +
+            "\b\x5\x2&(\a#\x2\x2\'&\x3\x2\x2\x2()\x3\x2\x2\x2)\'\x3\x2\x2\x2)*\x3\x2" +
+            "\x2\x2*+\x3\x2\x2\x2+,\x5\x16\f\x2,.\x3\x2\x2\x2-#\x3\x2\x2\x2-$\x3\x2" +
+            "\x2\x2-%\x3\x2\x2\x2.\a\x3\x2\x2\x2/\x30\x5\n\x6\x2\x30\x31\x5\xE\b\x2" +
+            "\x31\x35\x5\n\x6\x2\x32\x33\x5\xE\b\x2\x33\x34\x5\n\x6\x2\x34\x36\x3\x2" +
+            "\x2\x2\x35\x32\x3\x2\x2\x2\x35\x36\x3\x2\x2\x2\x36\t\x3\x2\x2\x2\x37:" +
+            "\x5\f\a\x2\x38:\x5\x10\t\x2\x39\x37\x3\x2\x2\x2\x39\x38\x3\x2\x2\x2:\v" +
+            "\x3\x2\x2\x2;=\a$\x2\x2<;\x3\x2\x2\x2=>\x3\x2\x2\x2><\x3\x2\x2\x2>?\x3" +
+            "\x2\x2\x2?\r\x3\x2\x2\x2@\x42\a#\x2\x2\x41@\x3\x2\x2\x2\x42\x43\x3\x2" +
+            "\x2\x2\x43\x41\x3\x2\x2\x2\x43\x44\x3\x2\x2\x2\x44S\x3\x2\x2\x2\x45G\a" +
+            "#\x2\x2\x46\x45\x3\x2\x2\x2GJ\x3\x2\x2\x2H\x46\x3\x2\x2\x2HI\x3\x2\x2" +
+            "\x2IK\x3\x2\x2\x2JH\x3\x2\x2\x2KO\t\x2\x2\x2LN\a#\x2\x2ML\x3\x2\x2\x2" +
+            "NQ\x3\x2\x2\x2OM\x3\x2\x2\x2OP\x3\x2\x2\x2PS\x3\x2\x2\x2QO\x3\x2\x2\x2" +
+            "R\x41\x3\x2\x2\x2RH\x3\x2\x2\x2S\xF\x3\x2\x2\x2TW\x5\x12\n\x2UW\x5\x14" +
+            "\v\x2VT\x3\x2\x2\x2VU\x3\x2\x2\x2W\x11\x3\x2\x2\x2XY\t\x3\x2\x2Y\x13\x3" +
+            "\x2\x2\x2Z[\t\x4\x2\x2[\x15\x3\x2\x2\x2\\`\x5\x18\r\x2]_\a#\x2\x2^]\x3" +
+            "\x2\x2\x2_\x62\x3\x2\x2\x2`^\x3\x2\x2\x2`\x61\x3\x2\x2\x2\x61\x63\x3\x2" +
+            "\x2\x2\x62`\x3\x2\x2\x2\x63\x64\a\x3\x2\x2\x64w\x3\x2\x2\x2\x65\x66\x5" +
+            "\x18\r\x2\x66g\x5\x1A\xE\x2gk\x5\x18\r\x2hi\x5\x1A\xE\x2ij\x5\x18\r\x2" +
+            "jl\x3\x2\x2\x2kh\x3\x2\x2\x2kl\x3\x2\x2\x2lt\x3\x2\x2\x2mo\a#\x2\x2nm" +
+            "\x3\x2\x2\x2or\x3\x2\x2\x2pn\x3\x2\x2\x2pq\x3\x2\x2\x2qs\x3\x2\x2\x2r" +
+            "p\x3\x2\x2\x2su\a\x3\x2\x2tp\x3\x2\x2\x2tu\x3\x2\x2\x2uw\x3\x2\x2\x2v" +
+            "\\\x3\x2\x2\x2v\x65\x3\x2\x2\x2w\x17\x3\x2\x2\x2xz\a$\x2\x2yx\x3\x2\x2" +
+            "\x2z{\x3\x2\x2\x2{y\x3\x2\x2\x2{|\x3\x2\x2\x2|\x19\x3\x2\x2\x2}\x7F\a" +
+            "#\x2\x2~}\x3\x2\x2\x2\x7F\x82\x3\x2\x2\x2\x80~\x3\x2\x2\x2\x80\x81\x3" +
+            "\x2\x2\x2\x81\x83\x3\x2\x2\x2\x82\x80\x3\x2\x2\x2\x83\x87\t\x5\x2\x2\x84" +
+            "\x86\a#\x2\x2\x85\x84\x3\x2\x2\x2\x86\x89\x3\x2\x2\x2\x87\x85\x3\x2\x2" +
+            "\x2\x87\x88\x3\x2\x2\x2\x88\x1B\x3\x2\x2\x2\x89\x87\x3\x2\x2\x2\x14)-" +
+            "\x35\x39>\x43HORV`kptv{\x80\x87";
+        public static readonly ATN _ATN =
+            new ATNDeserializer().Deserialize(_serializedATN.ToCharArray());
+    }
 } // namespace Rubberduck.Parsing.Date

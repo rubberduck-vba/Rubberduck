@@ -8,16 +8,41 @@ dateOrTime :
     | timeValue
     | dateValue WS+ timeValue;
 dateValue : dateValuePart dateSeparator dateValuePart (dateSeparator dateValuePart)?;
-dateValuePart : DIGIT+ | monthName;
+dateValuePart : dateValueNumber | monthName;
+dateValueNumber : DIGIT+;
 dateSeparator : WS+ | (WS* (SLASH | COMMA | DASH) WS*);
 monthName : englishMonthName | englishMonthAbbreviation;
-englishMonthName : J A N U A R Y | F E B R U A R Y | M A R C H | A P R I L | M A Y | J U N E  | A U G U S T | S E P T E M B E R | O C T O B E R | N O V E M B E R | D E C E M B E R;
-englishMonthAbbreviation : J A N | F E B | M A R | A P R | J U N | J U L | A U G | S E P |  O C T | N O V | D E C;
+englishMonthName : JANUARY | FEBRUARY | MARCH | APRIL | MAY | JUNE | JULY | AUGUST | SEPTEMBER | OCTOBER | NOVEMBER | DECEMBER;
+// MAY is missing because abbreviation = full  name and it doesn't matter which one gets matched.
+englishMonthAbbreviation : JAN | FEB | MAR | APR | JUN | JUL | AUG | SEP | OCT | NOV | DEC;
 timeValue : (timeValuePart WS* AMPM) | (timeValuePart timeSeparator timeValuePart (timeSeparator timeValuePart)? (WS* AMPM)?);
 timeValuePart : DIGIT+;
 timeSeparator : WS* (COLON | DOT) WS*;
 AMPM : AM | PM | A | P;
 
+JANUARY : J A N U A R Y;
+FEBRUARY : F E B R U A R Y;
+MARCH : M A R C H;
+APRIL : A P R I L;
+MAY : M A Y;
+JUNE : J U N E;
+JULY : J U L Y;
+AUGUST : A U G U S T;
+SEPTEMBER : S E P T E M B E R;
+OCTOBER : O C T O B E R;
+NOVEMBER : N O V E M B E R;
+DECEMBER : D E C E M B E R;
+JAN : J A N;
+FEB : F E B;
+MAR: M A R;
+APR : A P R;
+JUN : J U N;
+JUL: J U L;
+AUG : A U G;
+SEP : S E P;
+OCT : O C T;
+NOV : N O V;
+DEC : D E C;
 AM : A M;
 PM : P M;
 HASH : '#';
