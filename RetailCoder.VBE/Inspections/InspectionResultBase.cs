@@ -109,7 +109,15 @@ namespace Rubberduck.Inspections
         public object[] ToArray()
         {
             var module = QualifiedSelection.QualifiedName;
-            return new object[] {Inspection.Severity.ToString(), Description, module.ProjectName, module.ComponentName, QualifiedSelection.Selection.StartLine };
+            string FileName = "";
+            try
+            {
+                FileName = module.Project.FileName;
+            }
+            catch
+            {
+            }
+            return new object[] {Inspection.Severity.ToString(), Description, FileName, module.ProjectName, module.ComponentName, QualifiedSelection.Selection.StartLine };
         }
 
         public string ToCsvString()

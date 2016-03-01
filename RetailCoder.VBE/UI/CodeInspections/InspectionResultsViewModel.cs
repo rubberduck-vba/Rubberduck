@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -281,6 +282,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private void ExecuteCopyResultsCommand(object parameter)
         {
+            const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";
             if (_results == null)
             {
                 return;
@@ -296,8 +298,15 @@ namespace Rubberduck.UI.CodeInspections
             var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(aResults, title);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title);
-            
+            var rtfResults = ExportFormatter.RTF(aResults, title);
+            var XmlSpreadsheetResults = ExportFormatter.XmlSpreadsheet(aResults, title);
+
+            byte[] blob = System.Text.Encoding.Default.GetBytes(XmlSpreadsheetResults.ToCharArray());
+            MemoryStream strm = new MemoryStream(blob);
+
             //Add the formats from richest formatting to least formatting
+            _clipboard.AppendData(DataFormats.GetDataFormat(XML_SPREADSHEET_DATA_FORMAT).Name, strm);
+            _clipboard.AppendData(DataFormats.Rtf, rtfResults);
             _clipboard.AppendData(DataFormats.Html, htmlResults);
             _clipboard.AppendData(DataFormats.CommaSeparatedValue, csvResults);
             _clipboard.AppendData(DataFormats.UnicodeText, textResults);
