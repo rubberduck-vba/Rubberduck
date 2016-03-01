@@ -1,4 +1,7 @@
-﻿namespace Rubberduck.UI.SourceControl
+﻿using System.Windows;
+using System.Windows.Controls;
+
+namespace Rubberduck.UI.SourceControl
 {
     /// <summary>
     /// Interaction logic for BranchesView.xaml
