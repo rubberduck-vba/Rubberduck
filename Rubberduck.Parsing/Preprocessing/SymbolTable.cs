@@ -16,6 +16,11 @@ namespace Rubberduck.Parsing.Preprocessing
             _table[name] = value;
         }
 
+        public bool HasSymbol(string name)
+        {
+            return _table.ContainsKey(name);            
+        }
+
         public object Get(string name)
         {
             if (_table.ContainsKey(name))

@@ -53,8 +53,8 @@ namespace Rubberduck.Parsing.Preprocessing
         public override object VisitCcConst([NotNull] VBAConditionalCompilationParser.CcConstContext context)
         {
             // 3.4.1: If <cc-var-lhs> is a <TYPED-NAME> with a <type-suffix>, the <type-suffix> is ignored.
-            var name = context.ccVarLhs().GetText();
-            _evaluator.EvaluateConstant(name, context.ccExpression());
+            var identifier = context.ccVarLhs().name().IDENTIFIER().GetText();
+            _evaluator.EvaluateConstant(identifier, context.ccExpression());
             return MarkLineAsDead(context.GetText());
         }
 

@@ -15,9 +15,15 @@ namespace RubberduckTests.Preprocessing
             string code = @"
 #Const a = 5
 #Const b = a
+#Const c = doesNotExist
+#Const d& = 1
+#Const e = d%
 ";
             var result = Preprocess(code);
             Assert.AreEqual(result.Item1.Get("b"), result.Item1.Get("a"));
+            Assert.AreEqual(VBAEmptyValue.Value, result.Item1.Get("c"));
+            Assert.AreEqual(1m, result.Item1.Get("d"));
+            Assert.AreEqual(1m, result.Item1.Get("e"));
         }
 
         [TestMethod]
