@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Security;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
@@ -67,7 +66,7 @@ namespace Rubberduck.UI.SourceControl
         }
 
         private ISourceControlProvider _provider;
-        public ISourceControlProvider Provider
+        private ISourceControlProvider Provider
         {
             get { return _provider; }
             set

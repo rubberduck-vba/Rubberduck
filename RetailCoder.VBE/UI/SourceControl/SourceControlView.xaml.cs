@@ -1,5 +1,4 @@
-﻿using System.Security;
-using Rubberduck.SourceControl;
+﻿using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -15,14 +14,10 @@ namespace Rubberduck.UI.SourceControl
 
         private void Login_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            var pwd = new SecureString();
-            foreach (var c in PasswordBox.Password)
-            {
-                pwd.AppendChar(c);
-            }
-
             var vm = (SourceControlViewViewModel)DataContext;
-            vm.CreateProviderWithCredentials(new SecureCredentials(UserNameBox.Text, pwd));
+            vm.CreateProviderWithCredentials(new SecureCredentials(UserNameBox.Text, PasswordBox.SecurePassword));
+
+            PasswordBox.Password = string.Empty;
         }
     }
 }
