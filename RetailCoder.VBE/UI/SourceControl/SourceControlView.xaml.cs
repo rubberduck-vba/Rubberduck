@@ -15,16 +15,14 @@ namespace Rubberduck.UI.SourceControl
 
         private void Login_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            var vm = (SourceControlViewViewModel) DataContext;
-
             var pwd = new SecureString();
             foreach (var c in PasswordBox.Password)
             {
                 pwd.AppendChar(c);
             }
 
-            vm.Provider = vm.ProviderFactory.CreateProvider(vm.VBE.ActiveVBProject, vm.Provider.CurrentRepository,
-                new SecureCredentials(UserNameBox.Text, pwd), vm.WrapperFactory);
+            var vm = (SourceControlViewViewModel)DataContext;
+            vm.CreateProviderWithCredentials(new SecureCredentials(UserNameBox.Text, pwd));
         }
     }
 }

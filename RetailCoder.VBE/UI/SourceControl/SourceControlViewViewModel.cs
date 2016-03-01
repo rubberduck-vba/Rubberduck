@@ -15,13 +15,12 @@ namespace Rubberduck.UI.SourceControl
 {
     public class SourceControlViewViewModel : ViewModelBase
     {
-        public readonly VBE VBE;
-        public readonly ISourceControlProviderFactory ProviderFactory;
-        public readonly ICodePaneWrapperFactory WrapperFactory;
-
+        private readonly VBE _vbe;
+        private readonly ISourceControlProviderFactory _providerFactory;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly IConfigurationService<SourceControlConfiguration> _configService;
         private readonly SourceControlConfiguration _config;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public SourceControlViewViewModel(
             VBE vbe,
@@ -34,13 +33,13 @@ namespace Rubberduck.UI.SourceControl
             [Named("settingsView")] IControlView settingsView,
             ICodePaneWrapperFactory wrapperFactory)
         {
-            VBE = vbe;
-            ProviderFactory = providerFactory;
+            _vbe = vbe;
+            _providerFactory = providerFactory;
             _folderBrowserFactory = folderBrowserFactory;
 
             _configService = configService;
             _config = _configService.LoadConfiguration();
-            WrapperFactory = wrapperFactory;
+            _wrapperFactory = wrapperFactory;
 
             _initRepoCommand = new DelegateCommand(_ => InitRepo());
             _openRepoCommand = new DelegateCommand(_ => OpenRepo());
@@ -224,6 +223,11 @@ namespace Rubberduck.UI.SourceControl
             DisplayErrorMessageGrid = false;
         }
 
+        public void CreateProviderWithCredentials(SecureCredentials credentials)
+        {
+            Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, Provider.CurrentRepository, credentials, _wrapperFactory);
+        }
+
         private void InitRepo()
         {
             using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser((RubberduckUI.SourceControl_CreateNewRepo)))
@@ -233,9 +237,9 @@ namespace Rubberduck.UI.SourceControl
                     return;
                 }
 
-                _provider = ProviderFactory.CreateProvider(VBE.ActiveVBProject);
+                _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
                 var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
-                Provider = ProviderFactory.CreateProvider(VBE.ActiveVBProject, repo, WrapperFactory);
+                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
 
                 AddRepoToConfig((Repository)repo);
                 Status = RubberduckUI.Online;
@@ -265,12 +269,12 @@ namespace Rubberduck.UI.SourceControl
                     return;
                 }
 
-                var project = VBE.ActiveVBProject;
+                var project = _vbe.ActiveVBProject;
                 var repo = new Repository(project.Name, folderPicker.SelectedPath, string.Empty);
 
                 try
                 {
-                    Provider = ProviderFactory.CreateProvider(project, repo, WrapperFactory);
+                    Provider = _providerFactory.CreateProvider(project, repo, _wrapperFactory);
                 }
                 catch (SourceControlException ex)
                 {
@@ -289,7 +293,7 @@ namespace Rubberduck.UI.SourceControl
             IRepository repo;
             try
             {
-                Provider = ProviderFactory.CreateProvider(VBE.ActiveVBProject);
+                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
                 repo = _provider.Clone(RemotePath, LocalDirectory);
             }
             catch (SourceControlException ex)
@@ -324,8 +328,8 @@ namespace Rubberduck.UI.SourceControl
 
             try
             {
-                Provider = ProviderFactory.CreateProvider(VBE.ActiveVBProject,
-                    _config.Repositories.First(repo => repo.Name == VBE.ActiveVBProject.Name), WrapperFactory);
+                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject,
+                    _config.Repositories.First(repo => repo.Name == _vbe.ActiveVBProject.Name), _wrapperFactory);
                 Status = RubberduckUI.Online;
             }
             catch (SourceControlException ex)
@@ -342,7 +346,7 @@ namespace Rubberduck.UI.SourceControl
                 return false;
             }
 
-            var possibleRepos = _config.Repositories.Where(repo => repo.Name == VBE.ActiveVBProject.Name);
+            var possibleRepos = _config.Repositories.Where(repo => repo.Name == _vbe.ActiveVBProject.Name);
 
             var possibleCount = possibleRepos.Count();
 
