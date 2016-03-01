@@ -431,7 +431,12 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration ResolveInternal(ParserRuleContext callSiteContext, Declaration localScope, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, VBAParser.DictionaryCallStmtContext fieldCall = null, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
         {
-            if (callSiteContext == null || _alreadyResolved.Contains(callSiteContext))
+            if (callSiteContext == null)
+            {
+                return null;
+            }
+
+            if (_alreadyResolved.Contains(callSiteContext))
             {
                 return null;
             }
@@ -487,7 +492,7 @@ namespace Rubberduck.Parsing.Symbols
                 callee = FindLocalScopeDeclaration(identifierName, localScope, parentContext is VBAParser.ICS_S_VariableOrProcedureCallContext, isAssignmentTarget)
                       ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
                       ?? FindModuleScopeDeclaration(identifierName, localScope)
-                      ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, hasStringQualifier);
+                      ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, accessorType, hasStringQualifier);
             }
 
             if (callee == null)
@@ -516,7 +521,7 @@ namespace Rubberduck.Parsing.Symbols
             return FindLocalScopeDeclaration(identifierName, localScope, parentContextIsVariableOrProcedureCall, isAssignmentTarget)
                 ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
                 ?? FindModuleScopeDeclaration(identifierName, localScope)
-                ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, hasStringQualifier);
+                ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, accessorType, hasStringQualifier);
         }
 
         private Declaration ResolveInternal(VBAParser.ICS_S_VariableOrProcedureCallContext context, Declaration localScope, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
@@ -728,7 +733,8 @@ namespace Rubberduck.Parsing.Symbols
 
             var identifierContext = context.ambiguousIdentifier();
             var member = _declarations.Where(d => d.IdentifierName == identifierContext.GetText())
-                .SingleOrDefault(item => item.QualifiedName.QualifiedModuleName == parentType.QualifiedName.QualifiedModuleName);
+                .SingleOrDefault(item => item.QualifiedName.QualifiedModuleName == parentType.QualifiedName.QualifiedModuleName
+                && item.DeclarationType != DeclarationType.Event);
 
             if (member != null)
             {
@@ -793,6 +799,11 @@ namespace Rubberduck.Parsing.Symbols
                     parent.AddReference(parentReference);
                     _alreadyResolved.Add(parentReference.Context);
                 }
+            }
+
+            if (parent == null)
+            {
+                return;
             }
 
             var chainedCalls = context.iCS_S_MemberCall();
@@ -1098,7 +1109,7 @@ namespace Rubberduck.Parsing.Symbols
             return result.Count == 1 ? result.SingleOrDefault() : null;
         }
 
-        private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, bool hasStringQualifier = false)
+        private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasStringQualifier = false)
         {
             // the "$" in e.g. "UCase$" isn't picked up as part of the identifierName, so we need to add it manually:
             var matches = _declarations.Where(item => !item.IsBuiltIn && item.IdentifierName == identifierName
@@ -1124,6 +1135,11 @@ namespace Rubberduck.Parsing.Symbols
             if (result.Count == 1)
             {
                 return result.SingleOrDefault();
+            }
+            else
+            {
+                return result.SingleOrDefault(item => !_moduleTypes.Contains(item.DeclarationType)
+                    && item.DeclarationType == (accessorType == ContextAccessorType.GetValueOrReference ? DeclarationType.PropertyGet : item.DeclarationType));
             }
 
             return null;
@@ -1155,8 +1171,10 @@ namespace Rubberduck.Parsing.Symbols
             var isBuiltInGlobal = localScope == null && item.Accessibility == Accessibility.Global;
 
             // if localScope is not null, we can resolve to any public or global in that scope:
-            var isInLocalScope = localScope != null && IsPublicOrGlobal(item)
-                && localScope.IdentifierName == item.ParentDeclaration.IdentifierName;
+            var isInLocalScope = (localScope != null && item.Accessibility == Accessibility.Global
+                && localScope.IdentifierName == item.ParentDeclaration.IdentifierName)
+                || (localScope != null && localScope.QualifiedName.QualifiedModuleName.Component.Type == Microsoft.Vbe.Interop.vbext_ComponentType.vbext_ct_Document
+                 && item.Accessibility == Accessibility.Public && item.ParentDeclaration.DeclarationType == localScope.DeclarationType);
 
             return isBuiltInNonEvent && (isBuiltInGlobal || isInLocalScope);
         }

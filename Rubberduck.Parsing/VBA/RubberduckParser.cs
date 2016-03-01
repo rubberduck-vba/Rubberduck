@@ -110,6 +110,8 @@ namespace Rubberduck.Parsing.VBA
         {
             try
             {
+                _state.ResetBuiltInDeclarationReferences();
+
                 var components = _vbe.VBProjects.Cast<VBProject>()
                     .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
                     .SelectMany(project => project.VBComponents.Cast<VBComponent>())
