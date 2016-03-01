@@ -50,6 +50,7 @@ namespace Rubberduck.UI.SourceControl
             _cloneRepoCommand = new DelegateCommand(_ => ShowCloneRepoGrid());
             _refreshCommand = new DelegateCommand(_ => Refresh());
             _dismissErrorMessageCommand = new DelegateCommand(_ => DismissErrorMessage());
+            _showFilePickerCommand = new DelegateCommand(_ => ShowFilePicker());
 
             _cloneRepoOkButtonCommand = new DelegateCommand(_ => CloneRepo(), _ => !IsNotValidRemotePath);
             _cloneRepoCancelButtonCommand = new DelegateCommand(_ => CloseCloneRepoGrid());
@@ -330,6 +331,17 @@ namespace Rubberduck.UI.SourceControl
             return possibleCount != 0 && possibleCount <= 1;
         }
 
+        private void ShowFilePicker()
+        {
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser("Default Repository Directory"))
+            {
+                if (folderPicker.ShowDialog() == DialogResult.OK)
+                {
+                    LocalDirectory = folderPicker.SelectedPath;
+                }
+            }
+        }
+
         private readonly ICommand _refreshCommand;
         public ICommand RefreshCommand
         {
@@ -352,6 +364,15 @@ namespace Rubberduck.UI.SourceControl
         public ICommand CloneRepoCommand
         {
             get { return _cloneRepoCommand; }
+        }
+        
+        private readonly ICommand _showFilePickerCommand;
+        public ICommand ShowFilePickerCommand
+        {
+            get
+            {
+                return _showFilePickerCommand;
+            }
         }
 
         private readonly ICommand _cloneRepoOkButtonCommand;
