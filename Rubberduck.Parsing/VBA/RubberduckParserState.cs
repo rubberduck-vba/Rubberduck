@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
@@ -180,8 +181,8 @@ namespace Rubberduck.Parsing.VBA
             internal set { _argListsWithOneByRefParam = value; }
         }
 
-        private readonly ConcurrentDictionary<VBComponent, IEnumerable<CommentNode>> _comments =
-            new ConcurrentDictionary<VBComponent, IEnumerable<CommentNode>>();
+        private readonly ConcurrentDictionary<VBComponent, IList<CommentNode>> _comments =
+            new ConcurrentDictionary<VBComponent, IList<CommentNode>>();
 
         public IEnumerable<CommentNode> AllComments
         {
@@ -193,7 +194,7 @@ namespace Rubberduck.Parsing.VBA
 
         public IEnumerable<CommentNode> GetModuleComments(VBComponent component)
         {
-            IEnumerable<CommentNode> result;
+            IList<CommentNode> result;
             if (_comments.TryGetValue(component, out result))
             {
                 return result;
@@ -204,7 +205,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleComments(VBComponent component, IEnumerable<CommentNode> comments)
         {
-            _comments[component] = comments;
+            _comments[component] = comments.ToList();
         }
 
         /// <summary>
@@ -235,12 +236,16 @@ namespace Rubberduck.Parsing.VBA
 
         public void ClearDeclarations(VBProject project)
         {
-            var declarations = _declarations.Keys.Where(k =>
-                k.QualifiedName.QualifiedModuleName.Project == project);
-
-            foreach (var declaration in declarations)
+            try
             {
-                RemoveDeclaration(declaration);
+                foreach (var component in project.VBComponents.Cast<VBComponent>())
+                {
+                    ClearDeclarations(component);
+                }
+            }
+            catch (COMException)
+            {
+                _declarations.Clear();
             }
         }
 
@@ -253,6 +258,16 @@ namespace Rubberduck.Parsing.VBA
             foreach (var declaration in declarations)
             {
                 RemoveDeclaration(declaration);
+            }
+
+            var components = _comments.Keys.Where(k =>
+                k.Collection.Parent == component.Collection.Parent
+                && k.Name == component.Name);
+
+            foreach (var commentKey in components)
+            {
+                IList<CommentNode> nodes;
+                _comments.TryRemove(commentKey, out nodes);
             }
         }
 
@@ -306,6 +321,14 @@ namespace Rubberduck.Parsing.VBA
             foreach (var declaration in builtInDeclarations)
             {
                 AddDeclaration(declaration);
+            }
+        }
+
+        public void ResetBuiltInDeclarationReferences()
+        {
+            foreach (var item in _declarations.Keys.Where(declaration => declaration.IsBuiltIn))
+            {
+                item.ClearReferences();
             }
         }
 

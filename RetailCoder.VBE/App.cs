@@ -15,7 +15,6 @@ using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
-using Rubberduck.VBEditor.Extensions;
 using Infralution.Localization.Wpf;
 using Rubberduck.Common.Dispatch;
 
@@ -99,7 +98,7 @@ namespace Rubberduck
         {
             Debug.WriteLine(string.Format("Project '{0}' was added.", e.Item.Name));
             var connectionPointContainer = (IConnectionPointContainer)e.Item.VBComponents;
-            Guid interfaceId = typeof(_dispVBComponentsEvents).GUID;
+            var interfaceId = typeof(_dispVBComponentsEvents).GUID;
             
             IConnectionPoint connectionPoint;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out connectionPoint);
@@ -128,6 +127,7 @@ namespace Rubberduck
         async void sink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<VBComponent> e)
         {
             Debug.WriteLine(string.Format("Component '{0}' was renamed.", e.Item.Name));
+
             _parser.State.ClearDeclarations(e.Item);
             _parser.State.OnParseRequested(e.Item);
         }
