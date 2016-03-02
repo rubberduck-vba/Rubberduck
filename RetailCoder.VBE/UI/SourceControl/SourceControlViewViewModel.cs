@@ -219,7 +219,7 @@ namespace Rubberduck.UI.SourceControl
             }
             else
             {
-                ErrorMessage = e.Message + ": " + e.InnerMessage;
+                ErrorMessage = e.Message + ":" + Environment.NewLine + e.InnerMessage;
                 DisplayErrorMessageGrid = true;
             }
         }
@@ -300,8 +300,13 @@ namespace Rubberduck.UI.SourceControl
             {
                 _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
                 var repo = _provider.Clone(RemotePath, LocalDirectory);
-                AddRepoToConfig((Repository) repo);
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
+                AddRepoToConfig(new Repository
+                {
+                    Name = _vbe.ActiveVBProject.Name,
+                    LocalLocation = repo.LocalLocation,
+                    RemoteLocation = repo.RemoteLocation
+                });
             }
             catch (SourceControlException ex)
             {
@@ -310,6 +315,9 @@ namespace Rubberduck.UI.SourceControl
             }
 
             CloseCloneRepoGrid();
+
+            SetChildPresenterSourceControlProviders(_provider);
+            Status = RubberduckUI.Online;
         }
 
         private void ShowCloneRepoGrid()
