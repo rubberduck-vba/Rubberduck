@@ -97,16 +97,9 @@ namespace Rubberduck.UI.Command
                 var selection = _vbe.ActiveCodePane.GetSelection();
                 if (!selection.Equals(default(QualifiedSelection)))
                 {
-                    declaration = _state.AllUserDeclarations
-                        .SingleOrDefault(item => item.QualifiedName.QualifiedModuleName == selection.QualifiedName 
-                            && (item.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Selection)
-                                || 
-                                item.References.Any(reference => reference.Selection.ContainsFirstCharacter(selection.Selection))));
-                }
-
-                if (declaration == null)
-                {
-                    return null;
+                    declaration = _state.AllDeclarations
+                        .SingleOrDefault(item => item.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Selection)
+                            || item.References.Any(reference => reference.Selection.ContainsFirstCharacter(selection.Selection)));
                 }
             }
             return declaration;
