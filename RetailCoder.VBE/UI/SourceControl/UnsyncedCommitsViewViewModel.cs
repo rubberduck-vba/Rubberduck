@@ -99,6 +99,9 @@ namespace Rubberduck.UI.SourceControl
             try
             {
                 Provider.Pull();
+
+                IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
+                OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
             }
             catch (SourceControlException ex)
             {
@@ -111,6 +114,9 @@ namespace Rubberduck.UI.SourceControl
             try
             {
                 Provider.Push();
+
+                IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
+                OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
             }
             catch (SourceControlException ex)
             {
@@ -124,6 +130,9 @@ namespace Rubberduck.UI.SourceControl
             {
                 Provider.Pull();
                 Provider.Push();
+
+                IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
+                OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
             }
             catch (SourceControlException ex)
             {
