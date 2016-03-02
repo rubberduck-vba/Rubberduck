@@ -491,9 +491,9 @@ namespace Rubberduck.Parsing.Preprocessing
             StringBuilder regexStr = new StringBuilder();
             foreach (var element in likePattern.likePatternElement())
             {
-                if (element.NORMALCHAR() != null)
+                if (element.likePatternChar() != null)
                 {
-                    regexStr.Append(element.NORMALCHAR().GetText());
+                    regexStr.Append(element.likePatternChar().GetText());
                 }
                 else if (element.QUESTIONMARK() != null)
                 {
@@ -510,8 +510,11 @@ namespace Rubberduck.Parsing.Preprocessing
                 else
                 {
                     var charlist = element.likePatternCharlist().GetText();
-                    var cleaned = charlist.Replace("[!", "[^");
-                    regexStr.Append(cleaned);
+                    if (charlist.StartsWith("[!"))
+                    {
+                        charlist = "[^" + charlist.Substring(2);
+                    }
+                    regexStr.Append(charlist);
                 }
             }
             // Full string match, e.g. "abcd" should NOT match "a.c"

@@ -60,6 +60,19 @@ public partial class VBALikeBaseListener : IVBALikeListener {
 	public virtual void ExitCompilationUnit([NotNull] VBALikeParser.CompilationUnitContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBALikeParser.likePatternCharlistChar"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLikePatternCharlistChar([NotNull] VBALikeParser.LikePatternCharlistCharContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBALikeParser.likePatternCharlistChar"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLikePatternCharlistChar([NotNull] VBALikeParser.LikePatternCharlistCharContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBALikeParser.likePatternCharlist"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -84,6 +97,19 @@ public partial class VBALikeBaseListener : IVBALikeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitLikePatternElement([NotNull] VBALikeParser.LikePatternElementContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBALikeParser.likePatternChar"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLikePatternChar([NotNull] VBALikeParser.LikePatternCharContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBALikeParser.likePatternChar"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLikePatternChar([NotNull] VBALikeParser.LikePatternCharContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBALikeParser.likePatternCharlistElement"/>.

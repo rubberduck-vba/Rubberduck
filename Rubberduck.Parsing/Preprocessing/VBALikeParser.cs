@@ -30,16 +30,18 @@ using DFA = Antlr4.Runtime.Dfa.DFA;
 public partial class VBALikeParser : Parser {
 	public const int
 		QUESTIONMARK=1, HASH=2, STAR=3, L_SQUARE_BRACKET=4, R_SQUARE_BRACKET=5, 
-		DASH=6, EXCLAMATION=7, NORMALCHAR=8;
+		DASH=6, EXCLAMATION=7, ANYCHAR=8;
 	public static readonly string[] tokenNames = {
-		"<INVALID>", "'?'", "'#'", "'*'", "'['", "']'", "'-'", "'!'", "NORMALCHAR"
+		"<INVALID>", "'?'", "'#'", "'*'", "'['", "']'", "'-'", "'!'", "ANYCHAR"
 	};
 	public const int
 		RULE_compilationUnit = 0, RULE_likePatternString = 1, RULE_likePatternElement = 2, 
-		RULE_likePatternCharlist = 3, RULE_likePatternCharlistElement = 4, RULE_likePatternCharlistRange = 5;
+		RULE_likePatternChar = 3, RULE_likePatternCharlist = 4, RULE_likePatternCharlistElement = 5, 
+		RULE_likePatternCharlistRange = 6, RULE_likePatternCharlistChar = 7;
 	public static readonly string[] ruleNames = {
-		"compilationUnit", "likePatternString", "likePatternElement", "likePatternCharlist", 
-		"likePatternCharlistElement", "likePatternCharlistRange"
+		"compilationUnit", "likePatternString", "likePatternElement", "likePatternChar", 
+		"likePatternCharlist", "likePatternCharlistElement", "likePatternCharlistRange", 
+		"likePatternCharlistChar"
 	};
 
 	public override string GrammarFileName { get { return "VBALike.g4"; } }
@@ -87,8 +89,8 @@ public partial class VBALikeParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 12; likePatternString();
-			State = 13; Match(Eof);
+			State = 16; likePatternString();
+			State = 17; Match(Eof);
 			}
 		}
 		catch (RecognitionException re) {
@@ -137,16 +139,16 @@ public partial class VBALikeParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 18;
+			State = 22;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << QUESTIONMARK) | (1L << HASH) | (1L << STAR) | (1L << L_SQUARE_BRACKET) | (1L << NORMALCHAR))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << QUESTIONMARK) | (1L << HASH) | (1L << STAR) | (1L << L_SQUARE_BRACKET) | (1L << R_SQUARE_BRACKET) | (1L << DASH) | (1L << EXCLAMATION) | (1L << ANYCHAR))) != 0)) {
 				{
 				{
-				State = 15; likePatternElement();
+				State = 19; likePatternElement();
 				}
 				}
-				State = 20;
+				State = 24;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
 			}
@@ -165,7 +167,9 @@ public partial class VBALikeParser : Parser {
 
 	public partial class LikePatternElementContext : ParserRuleContext {
 		public ITerminalNode QUESTIONMARK() { return GetToken(VBALikeParser.QUESTIONMARK, 0); }
-		public ITerminalNode NORMALCHAR() { return GetToken(VBALikeParser.NORMALCHAR, 0); }
+		public LikePatternCharContext likePatternChar() {
+			return GetRuleContext<LikePatternCharContext>(0);
+		}
 		public ITerminalNode STAR() { return GetToken(VBALikeParser.STAR, 0); }
 		public LikePatternCharlistContext likePatternCharlist() {
 			return GetRuleContext<LikePatternCharlistContext>(0);
@@ -196,40 +200,95 @@ public partial class VBALikeParser : Parser {
 		LikePatternElementContext _localctx = new LikePatternElementContext(_ctx, State);
 		EnterRule(_localctx, 4, RULE_likePatternElement);
 		try {
-			State = 26;
+			State = 30;
 			switch (_input.La(1)) {
-			case NORMALCHAR:
+			case R_SQUARE_BRACKET:
+			case DASH:
+			case EXCLAMATION:
+			case ANYCHAR:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 21; Match(NORMALCHAR);
+				State = 25; likePatternChar();
 				}
 				break;
 			case QUESTIONMARK:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 22; Match(QUESTIONMARK);
+				State = 26; Match(QUESTIONMARK);
 				}
 				break;
 			case HASH:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 23; Match(HASH);
+				State = 27; Match(HASH);
 				}
 				break;
 			case STAR:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 24; Match(STAR);
+				State = 28; Match(STAR);
 				}
 				break;
 			case L_SQUARE_BRACKET:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 25; likePatternCharlist();
+				State = 29; likePatternCharlist();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.ReportError(this, re);
+			_errHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class LikePatternCharContext : ParserRuleContext {
+		public ITerminalNode QUESTIONMARK() { return GetToken(VBALikeParser.QUESTIONMARK, 0); }
+		public ITerminalNode STAR() { return GetToken(VBALikeParser.STAR, 0); }
+		public ITerminalNode L_SQUARE_BRACKET() { return GetToken(VBALikeParser.L_SQUARE_BRACKET, 0); }
+		public ITerminalNode HASH() { return GetToken(VBALikeParser.HASH, 0); }
+		public LikePatternCharContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_likePatternChar; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBALikeListener typedListener = listener as IVBALikeListener;
+			if (typedListener != null) typedListener.EnterLikePatternChar(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBALikeListener typedListener = listener as IVBALikeListener;
+			if (typedListener != null) typedListener.ExitLikePatternChar(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBALikeVisitor<TResult> typedVisitor = visitor as IVBALikeVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitLikePatternChar(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public LikePatternCharContext likePatternChar() {
+		LikePatternCharContext _localctx = new LikePatternCharContext(_ctx, State);
+		EnterRule(_localctx, 6, RULE_likePatternChar);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 32;
+			_la = _input.La(1);
+			if ( _la <= 0 || ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << QUESTIONMARK) | (1L << HASH) | (1L << STAR) | (1L << L_SQUARE_BRACKET))) != 0)) ) {
+			_errHandler.RecoverInline(this);
+			}
+			Consume();
 			}
 		}
 		catch (RecognitionException re) {
@@ -280,50 +339,50 @@ public partial class VBALikeParser : Parser {
 	[RuleVersion(0)]
 	public LikePatternCharlistContext likePatternCharlist() {
 		LikePatternCharlistContext _localctx = new LikePatternCharlistContext(_ctx, State);
-		EnterRule(_localctx, 6, RULE_likePatternCharlist);
+		EnterRule(_localctx, 8, RULE_likePatternCharlist);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 28; Match(L_SQUARE_BRACKET);
-			State = 30;
-			_la = _input.La(1);
-			if (_la==EXCLAMATION) {
-				{
-				State = 29; Match(EXCLAMATION);
-				}
-			}
-
-			State = 33;
-			switch ( Interpreter.AdaptivePredict(_input,3,_ctx) ) {
+			State = 34; Match(L_SQUARE_BRACKET);
+			State = 36;
+			switch ( Interpreter.AdaptivePredict(_input,2,_ctx) ) {
 			case 1:
 				{
-				State = 32; Match(DASH);
+				State = 35; Match(EXCLAMATION);
 				}
 				break;
 			}
-			State = 38;
+			State = 39;
+			switch ( Interpreter.AdaptivePredict(_input,3,_ctx) ) {
+			case 1:
+				{
+				State = 38; Match(DASH);
+				}
+				break;
+			}
+			State = 44;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
-			while (_la==NORMALCHAR) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << QUESTIONMARK) | (1L << HASH) | (1L << STAR) | (1L << L_SQUARE_BRACKET) | (1L << EXCLAMATION) | (1L << ANYCHAR))) != 0)) {
 				{
 				{
-				State = 35; likePatternCharlistElement();
+				State = 41; likePatternCharlistElement();
 				}
 				}
-				State = 40;
+				State = 46;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
 			}
-			State = 42;
+			State = 48;
 			_la = _input.La(1);
 			if (_la==DASH) {
 				{
-				State = 41; Match(DASH);
+				State = 47; Match(DASH);
 				}
 			}
 
-			State = 44; Match(R_SQUARE_BRACKET);
+			State = 50; Match(R_SQUARE_BRACKET);
 			}
 		}
 		catch (RecognitionException re) {
@@ -338,7 +397,9 @@ public partial class VBALikeParser : Parser {
 	}
 
 	public partial class LikePatternCharlistElementContext : ParserRuleContext {
-		public ITerminalNode NORMALCHAR() { return GetToken(VBALikeParser.NORMALCHAR, 0); }
+		public LikePatternCharlistCharContext likePatternCharlistChar() {
+			return GetRuleContext<LikePatternCharlistCharContext>(0);
+		}
 		public LikePatternCharlistRangeContext likePatternCharlistRange() {
 			return GetRuleContext<LikePatternCharlistRangeContext>(0);
 		}
@@ -365,21 +426,21 @@ public partial class VBALikeParser : Parser {
 	[RuleVersion(0)]
 	public LikePatternCharlistElementContext likePatternCharlistElement() {
 		LikePatternCharlistElementContext _localctx = new LikePatternCharlistElementContext(_ctx, State);
-		EnterRule(_localctx, 8, RULE_likePatternCharlistElement);
+		EnterRule(_localctx, 10, RULE_likePatternCharlistElement);
 		try {
-			State = 48;
+			State = 54;
 			switch ( Interpreter.AdaptivePredict(_input,6,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 46; Match(NORMALCHAR);
+				State = 52; likePatternCharlistChar();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 47; likePatternCharlistRange();
+				State = 53; likePatternCharlistRange();
 				}
 				break;
 			}
@@ -396,10 +457,12 @@ public partial class VBALikeParser : Parser {
 	}
 
 	public partial class LikePatternCharlistRangeContext : ParserRuleContext {
-		public ITerminalNode NORMALCHAR(int i) {
-			return GetToken(VBALikeParser.NORMALCHAR, i);
+		public LikePatternCharlistCharContext likePatternCharlistChar(int i) {
+			return GetRuleContext<LikePatternCharlistCharContext>(i);
 		}
-		public IReadOnlyList<ITerminalNode> NORMALCHAR() { return GetTokens(VBALikeParser.NORMALCHAR); }
+		public IReadOnlyList<LikePatternCharlistCharContext> likePatternCharlistChar() {
+			return GetRuleContexts<LikePatternCharlistCharContext>();
+		}
 		public ITerminalNode DASH() { return GetToken(VBALikeParser.DASH, 0); }
 		public LikePatternCharlistRangeContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -424,13 +487,63 @@ public partial class VBALikeParser : Parser {
 	[RuleVersion(0)]
 	public LikePatternCharlistRangeContext likePatternCharlistRange() {
 		LikePatternCharlistRangeContext _localctx = new LikePatternCharlistRangeContext(_ctx, State);
-		EnterRule(_localctx, 10, RULE_likePatternCharlistRange);
+		EnterRule(_localctx, 12, RULE_likePatternCharlistRange);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 50; Match(NORMALCHAR);
-			State = 51; Match(DASH);
-			State = 52; Match(NORMALCHAR);
+			State = 56; likePatternCharlistChar();
+			State = 57; Match(DASH);
+			State = 58; likePatternCharlistChar();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.ReportError(this, re);
+			_errHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class LikePatternCharlistCharContext : ParserRuleContext {
+		public ITerminalNode DASH() { return GetToken(VBALikeParser.DASH, 0); }
+		public ITerminalNode R_SQUARE_BRACKET() { return GetToken(VBALikeParser.R_SQUARE_BRACKET, 0); }
+		public LikePatternCharlistCharContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_likePatternCharlistChar; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBALikeListener typedListener = listener as IVBALikeListener;
+			if (typedListener != null) typedListener.EnterLikePatternCharlistChar(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBALikeListener typedListener = listener as IVBALikeListener;
+			if (typedListener != null) typedListener.ExitLikePatternCharlistChar(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBALikeVisitor<TResult> typedVisitor = visitor as IVBALikeVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitLikePatternCharlistChar(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public LikePatternCharlistCharContext likePatternCharlistChar() {
+		LikePatternCharlistCharContext _localctx = new LikePatternCharlistCharContext(_ctx, State);
+		EnterRule(_localctx, 14, RULE_likePatternCharlistChar);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 60;
+			_la = _input.La(1);
+			if ( _la <= 0 || (_la==R_SQUARE_BRACKET || _la==DASH) ) {
+			_errHandler.RecoverInline(this);
+			}
+			Consume();
 			}
 		}
 		catch (RecognitionException re) {
@@ -445,27 +558,29 @@ public partial class VBALikeParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\n\x39\x4\x2\t\x2"+
-		"\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x3\x2\x3\x2\x3\x2"+
-		"\x3\x3\a\x3\x13\n\x3\f\x3\xE\x3\x16\v\x3\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4"+
-		"\x5\x4\x1D\n\x4\x3\x5\x3\x5\x5\x5!\n\x5\x3\x5\x5\x5$\n\x5\x3\x5\a\x5\'"+
-		"\n\x5\f\x5\xE\x5*\v\x5\x3\x5\x5\x5-\n\x5\x3\x5\x3\x5\x3\x6\x3\x6\x5\x6"+
-		"\x33\n\x6\x3\a\x3\a\x3\a\x3\a\x3\a\x2\x2\x2\b\x2\x2\x4\x2\x6\x2\b\x2\n"+
-		"\x2\f\x2\x2\x2<\x2\xE\x3\x2\x2\x2\x4\x14\x3\x2\x2\x2\x6\x1C\x3\x2\x2\x2"+
-		"\b\x1E\x3\x2\x2\x2\n\x32\x3\x2\x2\x2\f\x34\x3\x2\x2\x2\xE\xF\x5\x4\x3"+
-		"\x2\xF\x10\a\x2\x2\x3\x10\x3\x3\x2\x2\x2\x11\x13\x5\x6\x4\x2\x12\x11\x3"+
-		"\x2\x2\x2\x13\x16\x3\x2\x2\x2\x14\x12\x3\x2\x2\x2\x14\x15\x3\x2\x2\x2"+
-		"\x15\x5\x3\x2\x2\x2\x16\x14\x3\x2\x2\x2\x17\x1D\a\n\x2\x2\x18\x1D\a\x3"+
-		"\x2\x2\x19\x1D\a\x4\x2\x2\x1A\x1D\a\x5\x2\x2\x1B\x1D\x5\b\x5\x2\x1C\x17"+
-		"\x3\x2\x2\x2\x1C\x18\x3\x2\x2\x2\x1C\x19\x3\x2\x2\x2\x1C\x1A\x3\x2\x2"+
-		"\x2\x1C\x1B\x3\x2\x2\x2\x1D\a\x3\x2\x2\x2\x1E \a\x6\x2\x2\x1F!\a\t\x2"+
-		"\x2 \x1F\x3\x2\x2\x2 !\x3\x2\x2\x2!#\x3\x2\x2\x2\"$\a\b\x2\x2#\"\x3\x2"+
-		"\x2\x2#$\x3\x2\x2\x2$(\x3\x2\x2\x2%\'\x5\n\x6\x2&%\x3\x2\x2\x2\'*\x3\x2"+
-		"\x2\x2(&\x3\x2\x2\x2()\x3\x2\x2\x2),\x3\x2\x2\x2*(\x3\x2\x2\x2+-\a\b\x2"+
-		"\x2,+\x3\x2\x2\x2,-\x3\x2\x2\x2-.\x3\x2\x2\x2./\a\a\x2\x2/\t\x3\x2\x2"+
-		"\x2\x30\x33\a\n\x2\x2\x31\x33\x5\f\a\x2\x32\x30\x3\x2\x2\x2\x32\x31\x3"+
-		"\x2\x2\x2\x33\v\x3\x2\x2\x2\x34\x35\a\n\x2\x2\x35\x36\a\b\x2\x2\x36\x37"+
-		"\a\n\x2\x2\x37\r\x3\x2\x2\x2\t\x14\x1C #(,\x32";
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\n\x41\x4\x2\t\x2"+
+		"\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4\t\t"+
+		"\t\x3\x2\x3\x2\x3\x2\x3\x3\a\x3\x17\n\x3\f\x3\xE\x3\x1A\v\x3\x3\x4\x3"+
+		"\x4\x3\x4\x3\x4\x3\x4\x5\x4!\n\x4\x3\x5\x3\x5\x3\x6\x3\x6\x5\x6\'\n\x6"+
+		"\x3\x6\x5\x6*\n\x6\x3\x6\a\x6-\n\x6\f\x6\xE\x6\x30\v\x6\x3\x6\x5\x6\x33"+
+		"\n\x6\x3\x6\x3\x6\x3\a\x3\a\x5\a\x39\n\a\x3\b\x3\b\x3\b\x3\b\x3\t\x3\t"+
+		"\x3\t\x2\x2\x2\n\x2\x2\x4\x2\x6\x2\b\x2\n\x2\f\x2\xE\x2\x10\x2\x2\x4\x3"+
+		"\x2\x3\x6\x3\x2\a\b\x42\x2\x12\x3\x2\x2\x2\x4\x18\x3\x2\x2\x2\x6 \x3\x2"+
+		"\x2\x2\b\"\x3\x2\x2\x2\n$\x3\x2\x2\x2\f\x38\x3\x2\x2\x2\xE:\x3\x2\x2\x2"+
+		"\x10>\x3\x2\x2\x2\x12\x13\x5\x4\x3\x2\x13\x14\a\x2\x2\x3\x14\x3\x3\x2"+
+		"\x2\x2\x15\x17\x5\x6\x4\x2\x16\x15\x3\x2\x2\x2\x17\x1A\x3\x2\x2\x2\x18"+
+		"\x16\x3\x2\x2\x2\x18\x19\x3\x2\x2\x2\x19\x5\x3\x2\x2\x2\x1A\x18\x3\x2"+
+		"\x2\x2\x1B!\x5\b\x5\x2\x1C!\a\x3\x2\x2\x1D!\a\x4\x2\x2\x1E!\a\x5\x2\x2"+
+		"\x1F!\x5\n\x6\x2 \x1B\x3\x2\x2\x2 \x1C\x3\x2\x2\x2 \x1D\x3\x2\x2\x2 \x1E"+
+		"\x3\x2\x2\x2 \x1F\x3\x2\x2\x2!\a\x3\x2\x2\x2\"#\n\x2\x2\x2#\t\x3\x2\x2"+
+		"\x2$&\a\x6\x2\x2%\'\a\t\x2\x2&%\x3\x2\x2\x2&\'\x3\x2\x2\x2\')\x3\x2\x2"+
+		"\x2(*\a\b\x2\x2)(\x3\x2\x2\x2)*\x3\x2\x2\x2*.\x3\x2\x2\x2+-\x5\f\a\x2"+
+		",+\x3\x2\x2\x2-\x30\x3\x2\x2\x2.,\x3\x2\x2\x2./\x3\x2\x2\x2/\x32\x3\x2"+
+		"\x2\x2\x30.\x3\x2\x2\x2\x31\x33\a\b\x2\x2\x32\x31\x3\x2\x2\x2\x32\x33"+
+		"\x3\x2\x2\x2\x33\x34\x3\x2\x2\x2\x34\x35\a\a\x2\x2\x35\v\x3\x2\x2\x2\x36"+
+		"\x39\x5\x10\t\x2\x37\x39\x5\xE\b\x2\x38\x36\x3\x2\x2\x2\x38\x37\x3\x2"+
+		"\x2\x2\x39\r\x3\x2\x2\x2:;\x5\x10\t\x2;<\a\b\x2\x2<=\x5\x10\t\x2=\xF\x3"+
+		"\x2\x2\x2>?\n\x3\x2\x2?\x11\x3\x2\x2\x2\t\x18 &).\x32\x38";
 	public static readonly ATN _ATN =
 		new ATNDeserializer().Deserialize(_serializedATN.ToCharArray());
 }

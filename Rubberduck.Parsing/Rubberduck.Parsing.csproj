@@ -80,6 +80,12 @@
     <Compile Include="Preprocessing\VBAConditionalCompilationListener.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationParser.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationVisitor.cs" />
+    <Compile Include="Preprocessing\VBALikeBaseListener.cs" />
+    <Compile Include="Preprocessing\VBALikeBaseVisitor.cs" />
+    <Compile Include="Preprocessing\VBALikeLexer.cs" />
+    <Compile Include="Preprocessing\VBALikeListener.cs" />
+    <Compile Include="Preprocessing\VBALikeParser.cs" />
+    <Compile Include="Preprocessing\VBALikeVisitor.cs" />
     <Compile Include="Preprocessing\VBAPreprocessorException.cs" />
     <Compile Include="Preprocessing\VBADateConstants.cs" />
     <Compile Include="Preprocessing\VBAEmptyValue.cs" />
@@ -93,12 +99,6 @@
     <Compile Include="Preprocessing\VBADateParser.cs" />
     <Compile Include="Preprocessing\VBADateVisitor.cs" />
     <Compile Include="Preprocessing\VBAExpressionEvaluator.cs" />
-    <Compile Include="Preprocessing\VBALikeBaseListener.cs" />
-    <Compile Include="Preprocessing\VBALikeBaseVisitor.cs" />
-    <Compile Include="Preprocessing\VBALikeLexer.cs" />
-    <Compile Include="Preprocessing\VBALikeListener.cs" />
-    <Compile Include="Preprocessing\VBALikeParser.cs" />
-    <Compile Include="Preprocessing\VBALikeVisitor.cs" />
     <Compile Include="Preprocessing\VBAPredefinedCompilationConstants.cs" />
     <Compile Include="Preprocessing\VBAPreprocessor.cs" />
     <Compile Include="Preprocessing\VBAPreprocessorVisitor.cs" />

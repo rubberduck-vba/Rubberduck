@@ -52,6 +52,17 @@ public interface IVBALikeListener : IParseTreeListener {
 	void ExitCompilationUnit([NotNull] VBALikeParser.CompilationUnitContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBALikeParser.likePatternCharlistChar"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLikePatternCharlistChar([NotNull] VBALikeParser.LikePatternCharlistCharContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBALikeParser.likePatternCharlistChar"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLikePatternCharlistChar([NotNull] VBALikeParser.LikePatternCharlistCharContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBALikeParser.likePatternCharlist"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -72,6 +83,17 @@ public interface IVBALikeListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitLikePatternElement([NotNull] VBALikeParser.LikePatternElementContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBALikeParser.likePatternChar"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLikePatternChar([NotNull] VBALikeParser.LikePatternCharContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBALikeParser.likePatternChar"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLikePatternChar([NotNull] VBALikeParser.LikePatternCharContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBALikeParser.likePatternCharlistElement"/>.

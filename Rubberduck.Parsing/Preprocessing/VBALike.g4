@@ -3,10 +3,12 @@ grammar VBALike;
 compilationUnit : likePatternString EOF;
 
 likePatternString : likePatternElement*;
-likePatternElement : NORMALCHAR | QUESTIONMARK | HASH | STAR | likePatternCharlist;
+likePatternElement : likePatternChar | QUESTIONMARK | HASH | STAR | likePatternCharlist;
+likePatternChar : ~(QUESTIONMARK | HASH | STAR | L_SQUARE_BRACKET);
 likePatternCharlist : L_SQUARE_BRACKET EXCLAMATION? DASH? likePatternCharlistElement* DASH? R_SQUARE_BRACKET;
-likePatternCharlistElement : NORMALCHAR | likePatternCharlistRange;
-likePatternCharlistRange : NORMALCHAR DASH NORMALCHAR;
+likePatternCharlistElement : likePatternCharlistChar | likePatternCharlistRange;
+likePatternCharlistRange : likePatternCharlistChar DASH likePatternCharlistChar;
+likePatternCharlistChar : ~(DASH | R_SQUARE_BRACKET);
 
 QUESTIONMARK : '?';
 HASH : '#';
@@ -15,4 +17,4 @@ L_SQUARE_BRACKET : '[';
 R_SQUARE_BRACKET : ']';
 DASH : '-';
 EXCLAMATION : '!';
-NORMALCHAR : ~[?#*[\]-!];
+ANYCHAR : .;

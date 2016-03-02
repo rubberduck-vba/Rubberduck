@@ -409,6 +409,7 @@ namespace RubberduckTests.Preprocessing
 #Const j = ""a"" Like ""[0-9]""
 #Const k = Empty Like """"
 #Const l = Nothing Like """"
+#Const m = ""]*!"" Like ""][*a[!][a[!]""
 ";
             var result = Preprocess(code);
             Assert.AreEqual(true, result.Item1.Get("a"));
@@ -423,6 +424,7 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(false, result.Item1.Get("j"));
             Assert.AreEqual(true, result.Item1.Get("k"));
             Assert.AreEqual(null, result.Item1.Get("l"));
+            Assert.AreEqual(true, result.Item1.Get("m"));
         }
 
         [TestMethod]

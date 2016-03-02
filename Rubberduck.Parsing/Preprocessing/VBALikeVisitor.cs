@@ -45,6 +45,13 @@ public interface IVBALikeVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitCompilationUnit([NotNull] VBALikeParser.CompilationUnitContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBALikeParser.likePatternCharlistChar"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLikePatternCharlistChar([NotNull] VBALikeParser.LikePatternCharlistCharContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBALikeParser.likePatternCharlist"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -57,6 +64,13 @@ public interface IVBALikeVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitLikePatternElement([NotNull] VBALikeParser.LikePatternElementContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBALikeParser.likePatternChar"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLikePatternChar([NotNull] VBALikeParser.LikePatternCharContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBALikeParser.likePatternCharlistElement"/>.
