@@ -420,7 +420,8 @@ namespace Rubberduck.Parsing.Symbols
                 .ToList();
             }
 
-            return result.Count == 1 ? result.SingleOrDefault() : null;
+            return result.Count == 1 ? result.SingleOrDefault() : 
+                matches.Count == 1 ? matches.First() : null;
         }
 
         private static readonly Type[] IdentifierContexts =
@@ -803,6 +804,8 @@ namespace Rubberduck.Parsing.Symbols
 
             if (parent == null)
             {
+                
+
                 return;
             }
 
@@ -826,7 +829,7 @@ namespace Rubberduck.Parsing.Symbols
                     return;
                 }
 
-                member.AddMemberCall(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
+                member.AddReference(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
                 parent = ResolveType(member);
             }
 
@@ -1173,7 +1176,8 @@ namespace Rubberduck.Parsing.Symbols
             // if localScope is not null, we can resolve to any public or global in that scope:
             var isInLocalScope = (localScope != null && item.Accessibility == Accessibility.Global
                 && localScope.IdentifierName == item.ParentDeclaration.IdentifierName)
-                || (localScope != null && localScope.QualifiedName.QualifiedModuleName.Component.Type == Microsoft.Vbe.Interop.vbext_ComponentType.vbext_ct_Document
+                || (localScope != null && localScope.QualifiedName.QualifiedModuleName.Component != null 
+                    && localScope.QualifiedName.QualifiedModuleName.Component.Type == Microsoft.Vbe.Interop.vbext_ComponentType.vbext_ct_Document
                  && item.Accessibility == Accessibility.Public && item.ParentDeclaration.DeclarationType == localScope.DeclarationType);
 
             return isBuiltInNonEvent && (isBuiltInGlobal || isInLocalScope);

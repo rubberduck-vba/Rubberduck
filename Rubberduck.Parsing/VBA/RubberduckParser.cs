@@ -179,13 +179,11 @@ namespace Rubberduck.Parsing.VBA
         {
             try
             {
-                var resolverTasks = _state.ParseTrees.Select(kvp => Task.Run(() =>
+                Parallel.ForEach(_state.ParseTrees, kvp =>
                 {
                     token.ThrowIfCancellationRequested();
                     ResolveReferences(kvp.Key, kvp.Value, token);
-                }, token)).ToArray();
-
-                Task.WaitAll(resolverTasks);
+                });
             }
             catch (OperationCanceledException)
             {
