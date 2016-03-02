@@ -3,12 +3,27 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Preprocessing;
 using Rubberduck.Parsing.Symbols;
 using System;
+using System.Globalization;
 
 namespace RubberduckTests.Preprocessing
 {
     [TestClass]
     public class VBAPreprocessorVisitorTests
     {
+        private CultureInfo _cultureInfo;
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            _cultureInfo = System.Threading.Thread.CurrentThread.CurrentCulture;
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            System.Threading.Thread.CurrentThread.CurrentCulture = _cultureInfo;
+        }
+
         [TestMethod]
         public void TestName()
         {
@@ -1064,6 +1079,17 @@ namespace RubberduckTests.Preprocessing
 ";
             var result = Preprocess(code);
             Assert.AreEqual(7m, result.Item1.Get("a"));
+        }
+
+        [TestMethod]
+        public void TestLocale()
+        {
+            string code = @"
+#Const a = CDate(""3/2/2016"")
+";
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("en-us");
+            var result = Preprocess(code);
+            Assert.AreEqual(new DateTime(2016, 3, 2), result.Item1.Get("a"));
         }
 
         [TestMethod]
