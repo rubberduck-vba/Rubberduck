@@ -79,7 +79,7 @@
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
                     <ComboBox Margin="5,10"
-                              SelectedItem="{Binding CommitAction, Mode=OneWay, Converter={StaticResource CommitActionValueToEnum}}"
+                              SelectedItem="{Binding CommitAction, Mode=TwoWay, Converter={StaticResource CommitActionValueToEnum}, UpdateSourceTrigger=PropertyChanged}"
                               ItemsSource="{Binding Source={StaticResource CommitActions}, Converter={StaticResource CommitActionToText}}"
                               VerticalContentAlignment="Center" />
                     <Button Margin="5,10"
