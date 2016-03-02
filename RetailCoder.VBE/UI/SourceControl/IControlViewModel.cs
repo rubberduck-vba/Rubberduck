@@ -6,10 +6,12 @@ namespace Rubberduck.UI.SourceControl
     public class ErrorEventArgs
     {
         public readonly string Message;
+        public readonly string InnerMessage;
 
-        public ErrorEventArgs(string message)
+        public ErrorEventArgs(string message,string innerMessage)
         {
             Message = message;
+            InnerMessage = innerMessage;
         }
     }
 

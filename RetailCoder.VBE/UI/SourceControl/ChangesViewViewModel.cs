@@ -35,7 +35,6 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _provider = value;
-
                 _provider.BranchChanged += Provider_BranchChanged;
 
                 CurrentBranch = Provider.CurrentBranch.Name;
@@ -138,7 +137,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                RaiseErrorEvent(ex.Message);
+                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
             }
         }
 
@@ -152,12 +151,12 @@ namespace Rubberduck.UI.SourceControl
         }
 
         public event EventHandler<ErrorEventArgs> ErrorThrown;
-        private void RaiseErrorEvent(string message)
+        private void RaiseErrorEvent(string message, string innerMessage)
         {
             var handler = ErrorThrown;
             if (handler != null)
             {
-                handler(this, new ErrorEventArgs(message));
+                handler(this, new ErrorEventArgs(message, innerMessage));
             }
         }
     }

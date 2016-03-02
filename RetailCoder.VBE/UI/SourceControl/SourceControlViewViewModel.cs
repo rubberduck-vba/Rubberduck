@@ -211,8 +211,17 @@ namespace Rubberduck.UI.SourceControl
 
         private void ViewModel_ErrorThrown(object sender, ErrorEventArgs e)
         {
-            ErrorMessage = e.Message;
-            DisplayErrorMessageGrid = true;
+            const string unauthorizedMessage = "Request failed with status code: 401";
+
+            if (e.InnerMessage == unauthorizedMessage)
+            {
+                DisplayLoginGrid = true;
+            }
+            else
+            {
+                ErrorMessage = e.Message + ": " + e.InnerMessage;
+                DisplayErrorMessageGrid = true;
+            }
         }
 
         private void DismissErrorMessage()
@@ -275,7 +284,7 @@ namespace Rubberduck.UI.SourceControl
                 }
                 catch (SourceControlException ex)
                 {
-                    ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message));
+                    ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message));
                     return;
                 }
 
@@ -287,21 +296,20 @@ namespace Rubberduck.UI.SourceControl
 
         private void CloneRepo()
         {
-            IRepository repo;
             try
             {
-                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
-                repo = _provider.Clone(RemotePath, LocalDirectory);
+                _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
+                var repo = _provider.Clone(RemotePath, LocalDirectory);
+                AddRepoToConfig((Repository) repo);
+                Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
             }
             catch (SourceControlException ex)
             {
-                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message));
+                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message));
                 return;
             }
 
             CloseCloneRepoGrid();
-
-            AddRepoToConfig((Repository)repo);
         }
 
         private void ShowCloneRepoGrid()
@@ -331,7 +339,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message));
+                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message));
                 Status = RubberduckUI.Offline;
             }
         }
