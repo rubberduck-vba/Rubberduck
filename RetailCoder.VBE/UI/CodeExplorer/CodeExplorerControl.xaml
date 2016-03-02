@@ -120,7 +120,7 @@
 
         <Style x:Key="CodeExplorerTreeViewStyle" TargetType="TreeView">
             <Setter Property="ItemTemplate" Value="{StaticResource CodeExplorerTemplate}" />
-            <Setter Property="ItemsSource" Value="{Binding Projects}" />
+            <Setter Property="ItemsSource" Value="{Binding Projects, UpdateSourceTrigger=PropertyChanged}" />
         </Style>
 
     </UserControl.Resources>

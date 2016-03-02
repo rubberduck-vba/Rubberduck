@@ -166,13 +166,13 @@
     <value>Ignore once</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspectionMeta" xml:space="preserve">
-    <value>Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they're intended, and prefer working off object references.</value>
+    <value>Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they're intended, and prefer working off object references. Ignore if the member call is referring to a type Rubberduck can't resolve.</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspectionName" xml:space="preserve">
     <value>Implicit reference to ActiveSheet</value>
   </data>
   <data name="ImplicitActiveWorkbookReferenceInspectionMeta" xml:space="preserve">
-    <value>Implicit references to the active workbook make the code frail and harder to debug. Consider making these references explicit when they're intended, and prefer working off object references.</value>
+    <value>Implicit references to the active workbook make the code frail and harder to debug. Consider making these references explicit when they're intended, and prefer working off object references. Ignore if the member call is referring to a type Rubberduck can't resolve.</value>
   </data>
   <data name="ImplicitActiveWorkbookReferenceInspectionName" xml:space="preserve">
     <value>Implicit reference to ActiveWorkbook</value>
@@ -274,7 +274,7 @@
     <value>'Option Base 1' is specified</value>
   </data>
   <data name="OptionExplicitInspectionMeta" xml:space="preserve">
-    <value>Rubberduck cannot see variables that aren't declared. VBA will happily compile a typo and you'll soon be asking an embarassing question on Stack Overflow. Avoid problems, use 'Option Explicit'. </value>
+    <value>Rubberduck cannot see variables that aren't declared. VBA will happily compile a typo: use 'Option Explicit' to prevent successfully compiling an erroneous program.</value>
   </data>
   <data name="OptionExplicitInspectionName" xml:space="preserve">
     <value>'Option Explicit' is not specified</value>
@@ -496,5 +496,8 @@
   </data>
   <data name="VariableNotAssignedInspectionResultFormat" xml:space="preserve">
     <value>Variable '{0}' is never assigned</value>
+  </data>
+  <data name="DisableThisInspection" xml:space="preserve">
+    <value>Disable this inspection</value>
   </data>
 </root>

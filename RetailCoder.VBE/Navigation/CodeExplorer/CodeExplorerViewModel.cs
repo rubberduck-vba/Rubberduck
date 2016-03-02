@@ -2,10 +2,8 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Properties;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
 
@@ -80,7 +78,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
         {
             IsBusy = e.State == ParserState.Parsing;
-            if (e.State != ParserState.Parsed) 
+            if (e.State < ParserState.Parsed) 
             {
                 return;
             }
