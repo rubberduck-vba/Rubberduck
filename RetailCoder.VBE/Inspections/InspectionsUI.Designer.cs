@@ -151,6 +151,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disable this inspection.
+        /// </summary>
+        internal static string DisableThisInspection {
+            get {
+                return ResourceManager.GetString("DisableThisInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Prefer &apos;vbNullString&apos; to an empty string literal.
         /// </summary>
         internal static string EmptyStringLiteralInspection {

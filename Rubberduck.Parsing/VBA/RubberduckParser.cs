@@ -234,6 +234,10 @@ namespace Rubberduck.Parsing.VBA
 
             token.ThrowIfCancellationRequested();
 
+            // comments must be in the parser state before we start walking for declarations:
+            var comments = ParseComments(qualifiedName, commentListener.Comments, commentListener.RemComments);
+            _state.SetModuleComments(vbComponent, comments);
+
             // cannot locate declarations in one pass *the way it's currently implemented*,
             // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
             // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
@@ -247,9 +251,6 @@ namespace Rubberduck.Parsing.VBA
             var walker = new ParseTreeWalker();
             walker.Walk(declarationsListener, tree);
             declarationsListener.NewDeclaration -= declarationsListener_NewDeclaration;
-
-            var comments = ParseComments(qualifiedName, commentListener.Comments, commentListener.RemComments);
-            _state.SetModuleComments(vbComponent, comments);
 
             _state.ObsoleteCallContexts = obsoleteCallsListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
             _state.ObsoleteLetContexts = obsoleteLetListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));

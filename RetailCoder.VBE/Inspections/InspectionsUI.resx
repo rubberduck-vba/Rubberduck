@@ -497,4 +497,7 @@
   <data name="VariableNotAssignedInspectionResultFormat" xml:space="preserve">
     <value>Variable '{0}' is never assigned</value>
   </data>
+  <data name="DisableThisInspection" xml:space="preserve">
+    <value>Disable this inspection</value>
+  </data>
 </root>

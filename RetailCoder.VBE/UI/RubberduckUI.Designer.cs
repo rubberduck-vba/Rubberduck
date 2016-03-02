@@ -857,15 +857,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disable this inspection.
-        /// </summary>
-        public static string DisableThisInspection {
-            get {
-                return ResourceManager.GetString("DisableThisInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to You&apos;ve earned the &quot;Continuator&quot; badge!.
         /// </summary>
         public static string EasterEgg_Continuator {
