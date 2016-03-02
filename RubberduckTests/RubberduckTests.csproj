@@ -130,12 +130,6 @@
     <Compile Include="Settings\TodoSettingsTests.cs" />
     <Compile Include="Settings\UnitTestSettingsTests.cs" />
     <Compile Include="SourceControlConfig.cs" />
-    <Compile Include="SourceControl\BranchesPresenterTests.cs" />
-    <Compile Include="SourceControl\ChangesPresenterTests.cs" />
-    <Compile Include="SourceControl\SCPresenterTests.cs" />
-    <Compile Include="SourceControl\SettingsPresenterTests.cs" />
-    <Compile Include="SourceControl\SourceControlTests.cs" />
-    <Compile Include="SourceControl\UnsyncedCommitsPresenterTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="TodoControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -167,6 +161,9 @@
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SourceControl\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

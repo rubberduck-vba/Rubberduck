@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Rubberduck.UI.SourceControl
 {
     [ExcludeFromCodeCoverage]
-    public partial class SourceControlPanel : UserControl, ISourceControlView
+    public partial class SourceControlPanel : UserControl, IDockableUserControl
     {
         public SourceControlPanel()
         {
