@@ -6,8 +6,13 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.SourceControl
 {
+    public enum CurrentAction { None, Push, Sync }
+
     public class UnsyncedCommitsViewViewModel : ViewModelBase, IControlViewModel
     {
+        private const string UnauthorizedMessage = "Request failed with status code: 401";
+        private CurrentAction _action;   // use to continue push/sync after login
+
         public UnsyncedCommitsViewViewModel()
         {
             _fetchCommitsCommand = new DelegateCommand(_ => FetchCommits(), _ => Provider != null);
@@ -29,6 +34,18 @@ namespace Rubberduck.UI.SourceControl
 
                 IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
                 OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
+
+                switch (_action)
+                {
+                    case CurrentAction.Push:
+                        PushCommits();
+                        break;
+                    case CurrentAction.Sync:
+                        SyncCommits();
+                        break;
+                }
+
+                _action = CurrentAction.None;
             }
         }
 
@@ -120,6 +137,11 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
+                if (ex.InnerException.Message == UnauthorizedMessage)
+                {
+                    _action = CurrentAction.Push;
+                }
+
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message);
             }
         }
@@ -136,6 +158,11 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
+                if (ex.InnerException.Message == UnauthorizedMessage)
+                {
+                    _action = CurrentAction.Sync;
+                }
+
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message);
             }
         }
