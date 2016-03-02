@@ -432,5 +432,15 @@ namespace Rubberduck.Parsing.Symbols
                 return hash;
             }
         }
+
+        public void ClearReferences()
+        {
+            var references = _references.ToList();
+            for (var i = 0; i < references.Count; i++)
+            {
+                IdentifierReference reference;
+                _references.TryTake(out reference);
+            }
+        }
     }
 }

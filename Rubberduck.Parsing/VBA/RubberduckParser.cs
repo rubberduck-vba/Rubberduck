@@ -110,6 +110,8 @@ namespace Rubberduck.Parsing.VBA
         {
             try
             {
+                _state.ResetBuiltInDeclarationReferences();
+
                 var components = _vbe.VBProjects.Cast<VBProject>()
                     .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
                     .SelectMany(project => project.VBComponents.Cast<VBComponent>())
@@ -232,6 +234,10 @@ namespace Rubberduck.Parsing.VBA
 
             token.ThrowIfCancellationRequested();
 
+            // comments must be in the parser state before we start walking for declarations:
+            var comments = ParseComments(qualifiedName, commentListener.Comments, commentListener.RemComments);
+            _state.SetModuleComments(vbComponent, comments);
+
             // cannot locate declarations in one pass *the way it's currently implemented*,
             // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
             // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
@@ -245,9 +251,6 @@ namespace Rubberduck.Parsing.VBA
             var walker = new ParseTreeWalker();
             walker.Walk(declarationsListener, tree);
             declarationsListener.NewDeclaration -= declarationsListener_NewDeclaration;
-
-            var comments = ParseComments(qualifiedName, commentListener.Comments, commentListener.RemComments);
-            _state.SetModuleComments(vbComponent, comments);
 
             _state.ObsoleteCallContexts = obsoleteCallsListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
             _state.ObsoleteLetContexts = obsoleteLetListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
@@ -284,6 +287,9 @@ namespace Rubberduck.Parsing.VBA
              _state.AddDeclaration(e.Declaration);
         }
 
+        // todo: remove once performance is acceptable
+        private readonly IDictionary<VBComponent, Stopwatch> _resolverTimer = new ConcurrentDictionary<VBComponent, Stopwatch>(); 
+
         private void ResolveReferences(VBComponent component, IParseTree tree, CancellationToken token)
         {
             if (_state.GetModuleState(component) != ParserState.Parsed)
@@ -292,6 +298,8 @@ namespace Rubberduck.Parsing.VBA
             }
 
             _state.SetModuleState(component, ParserState.Resolving);
+            _resolverTimer[component] = Stopwatch.StartNew();
+
             Debug.Print("Resolving '{0}'...", component.Name);
 
             if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))
@@ -311,7 +319,9 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
             _state.SetModuleState(component, ParserState.Ready);
-            Debug.Print("'{0}' is {1}.", component.Name, _state.GetModuleState(component));
+            _resolverTimer[component].Stop();
+
+            Debug.Print("'{0}' is {1}. Resolver took {2}ms to complete.", component.Name, _state.GetModuleState(component), _resolverTimer[component].ElapsedMilliseconds);
         }
 
         private class ObsoleteCallStatementListener : VBABaseListener

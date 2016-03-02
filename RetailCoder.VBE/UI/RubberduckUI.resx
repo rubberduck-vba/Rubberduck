@@ -968,9 +968,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
     <value>Search:</value>
   </data>
-  <data name="DisableThisInspection" xml:space="preserve">
-    <value>Disable this inspection</value>
-  </data>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Details</value>
   </data>
