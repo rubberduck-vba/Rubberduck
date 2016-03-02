@@ -67,12 +67,7 @@ moduleDeclarationsElement :
 	| variableStmt
 	| moduleOption
 	| typeStmt
-	| macroStmt
 ;
-
-macroStmt :
-	macroConstStmt
-	| macroIfThenElseStmt;
 
 moduleBody : 
 	moduleBodyElement (endOfStatement moduleBodyElement)* endOfStatement;
@@ -83,7 +78,6 @@ moduleBodyElement :
 	| propertySetStmt 
 	| propertyLetStmt 
 	| subStmt 
-	| macroStmt
 ;
 
 
@@ -126,7 +120,6 @@ blockStmt :
 	| loadStmt
 	| lockStmt
 	| lsetStmt
-	| macroStmt
 	| midStmt
 	| mkdirStmt
 	| nameStmt
@@ -290,25 +283,6 @@ loadStmt : LOAD WS valueStmt;
 lockStmt : LOCK WS valueStmt (WS? ',' WS? valueStmt (WS TO WS valueStmt)?)?;
 
 lsetStmt : LSET WS implicitCallStmt_InStmt WS? EQ WS? valueStmt;
-
-macroConstStmt : MACRO_CONST WS? ambiguousIdentifier WS? EQ WS? valueStmt;
-
-macroIfThenElseStmt : macroIfBlockStmt macroElseIfBlockStmt* macroElseBlockStmt? MACRO_END_IF;
-
-macroIfBlockStmt : 
-	MACRO_IF WS? ifConditionStmt WS THEN endOfStatement
-	(moduleDeclarations | moduleBody | block)*
-;
-
-macroElseIfBlockStmt : 
-	MACRO_ELSEIF WS? ifConditionStmt WS THEN endOfStatement
-	(moduleDeclarations | moduleBody | block)*
-;
-
-macroElseBlockStmt : 
-	MACRO_ELSE endOfStatement
-	(moduleDeclarations | moduleBody | block)*
-;
 
 midStmt : MID WS? LPAREN WS? argsCall WS? RPAREN;
 
@@ -725,11 +699,6 @@ LOCK_READ : L O C K WS R E A D;
 LOCK_WRITE : L O C K WS W R I T E;
 LOCK_READ_WRITE : L O C K WS R E A D WS W R I T E;
 LSET : L S E T;
-MACRO_CONST : '#' C O N S T;
-MACRO_IF : '#' I F;
-MACRO_ELSEIF : '#' E L S E I F;
-MACRO_ELSE : '#' E L S E;
-MACRO_END_IF : '#' E N D WS? I F;
 ME : M E;
 MID : M I D;
 MKDIR : M K D I R;
