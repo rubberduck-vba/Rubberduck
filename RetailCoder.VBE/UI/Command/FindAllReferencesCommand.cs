@@ -92,17 +92,32 @@ namespace Rubberduck.UI.Command
         private Declaration FindTarget(object parameter)
         {
             var declaration = parameter as Declaration;
-            if (declaration == null)
+            if (declaration != null)
             {
-                var selection = _vbe.ActiveCodePane.GetSelection();
-                if (!selection.Equals(default(QualifiedSelection)))
-                {
-                    declaration = _state.AllDeclarations
-                        .SingleOrDefault(item => item.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Selection)
-                            || item.References.Any(reference => reference.Selection.ContainsFirstCharacter(selection.Selection)));
-                }
+                return declaration;
+            }
+
+            var selection = _vbe.ActiveCodePane.GetSelection();
+            if (!selection.Equals(default(QualifiedSelection)))
+            {
+                declaration = _state.AllDeclarations
+                    .SingleOrDefault(item =>
+                        IsSelectedDeclaration(selection, item) ||
+                        item.References.Any(reference => IsSelectedReference(selection, reference)));
             }
             return declaration;
+        }
+
+        private static bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
+        {
+            return declaration.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName)
+                   && declaration.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Selection);
+        }
+
+        private static bool IsSelectedReference(QualifiedSelection selection, IdentifierReference reference)
+        {
+            return reference.QualifiedModuleName.Equals(selection.QualifiedName)
+                   && reference.Selection.ContainsFirstCharacter(selection.Selection);
         }
     }
 }
