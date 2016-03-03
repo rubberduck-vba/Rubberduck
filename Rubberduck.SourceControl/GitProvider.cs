@@ -413,14 +413,31 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        public override void DeleteBranch(string branch)
+        public override void DeleteBranch(string branchName)
         {
             try
             {
-                if (_repo.Branches.Any(b => 
-                    b.FriendlyName == branch && !b.IsRemote))
+                var branch = _repo.Branches.FirstOrDefault(b => b.FriendlyName == branchName);
+                if (branch != null)
                 {
-                    _repo.Branches.Remove(branch);
+                    if (branch.IsRemote)
+                    {
+                        PushOptions options = null;
+                        if (_credentials != null)
+                        {
+                            options = new PushOptions
+                            {
+                                CredentialsProvider = _credentialsHandler
+                            };
+                        }
+
+                        _repo.Network.Push(branch.Remote, ":refs/heads/" + branchName.Split('/').Last(),
+                            options);
+                    }
+                    else
+                    {
+                        _repo.Branches.Remove(branch);
+                    }
                 }
             }
             catch(LibGit2SharpException ex)

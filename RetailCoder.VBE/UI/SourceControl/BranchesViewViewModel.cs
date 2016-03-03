@@ -24,6 +24,8 @@ namespace Rubberduck.UI.SourceControl
 
             _deleteBranchOkButtonCommand = new DelegateCommand(_ => DeleteBranchOk(), _ => Provider != null && Provider.CurrentBranch.Name != BranchToDelete);
             _deleteBranchCancelButtonCommand = new DelegateCommand(_ => DeleteBranchCancel());
+
+            _deleteBranchToolbarButtonCommand = new DelegateCommand(branch => DeleteRemoteBranch((string)branch));
         }
 
         private ISourceControlProvider _provider;
@@ -34,19 +36,10 @@ namespace Rubberduck.UI.SourceControl
             {
                 _provider = value;
                 LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
-                PublishedBranches = GetFriendlyBranchNames(RemoteBranches());
-                UnpublishedBranches =
-                    new ObservableCollection<string>(
-                        Provider.Branches.Where(b => !b.IsRemote && PublishedBranches.All(p => b.Name != p))
-                            .Select(b => b.Name));
+                Branches = new ObservableCollection<string>(RemoteBranches().Select(b => b.Name));
 
                 CurrentBranch = _provider.CurrentBranch.Name;
             }
-        }
-
-        private static ObservableCollection<string> GetFriendlyBranchNames(IEnumerable<IBranch> branches)
-        {
-            return new ObservableCollection<string>(branches.Select(b => b.Name.Split('/').Last()));
         }
 
         private IEnumerable<IBranch> RemoteBranches()
@@ -68,29 +61,15 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private ObservableCollection<string> _publishedBranches;
-        public ObservableCollection<string> PublishedBranches
+        private ObservableCollection<string> _branches;
+        public ObservableCollection<string> Branches
         {
-            get { return _publishedBranches; }
+            get { return _branches; }
             set
             {
-                if (_publishedBranches != value)
+                if (_branches != value)
                 {
-                    _publishedBranches = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private ObservableCollection<string> _unpublishedBranches;
-        public ObservableCollection<string> UnpublishedBranches
-        {
-            get { return _unpublishedBranches; }
-            set
-            {
-                if (_unpublishedBranches != value)
-                {
-                    _unpublishedBranches = value;
+                    _branches = value;
                     OnPropertyChanged();
                 }
             }
@@ -314,6 +293,20 @@ namespace Rubberduck.UI.SourceControl
             DisplayDeleteBranchGrid = false;
         }
 
+        private void DeleteRemoteBranch(string branch)
+        {
+            try
+            {
+                Provider.DeleteBranch(branch);
+            }
+            catch (SourceControlException ex)
+            {
+                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
+            }
+
+            Branches = new ObservableCollection<string>(RemoteBranches().Select(b => b.Name));
+        }
+
         private readonly ICommand _newBranchCommand;
         public ICommand NewBranchCommand
         {
@@ -392,6 +385,15 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return _deleteBranchCancelButtonCommand;
+            }
+        }
+
+        private readonly ICommand _deleteBranchToolbarButtonCommand;
+        public ICommand DeleteBranchToolbarButtonCommand
+        {
+            get
+            {
+                return _deleteBranchToolbarButtonCommand;
             }
         }
 

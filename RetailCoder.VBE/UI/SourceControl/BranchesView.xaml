@@ -4,6 +4,7 @@
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
          xmlns:sourceControl="clr-namespace:Rubberduck.UI.SourceControl"
+         xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
          mc:Ignorable="d"
          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Branches}"
          d:DesignHeight="450" d:DesignWidth="300"
@@ -13,9 +14,11 @@
         <BitmapImage x:Key="MergeBranchImage" UriSource="../../Resources/arrow-merge-090.png" />
         <BitmapImage x:Key="DeleteBranchImage" UriSource="../../Resources/cross-script.png" />
         <BitmapImage x:Key="ErrorImage" UriSource="../../Resources/cross-circle.png" />
+        <BitmapImage x:Key="DeleteImage" UriSource="../../Resources/cross-script.png" />
         <BitmapImage x:Key="MergeArrowImage" UriSource="../../Resources/arrow.png" />
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
 
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -276,19 +279,27 @@
                     </StackPanel>
                 </Grid>
 
-                <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PublishedBranchesLabel}"
-                          Height="175"
-                          Margin="0,0,0,10"
-                          Padding="5">
-                    <ListBox ItemsSource="{Binding PublishedBranches}"
-                             ItemContainerStyle="{StaticResource PrettyListBoxItem}" />
-                </GroupBox>
-                <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UnpublishedBranchesLabel}"
-                          Height="175"
-                          Padding="5">
-                    <ListBox ItemsSource="{Binding UnpublishedBranches}"
-                             ItemContainerStyle="{StaticResource PrettyListBoxItem}" />
-                </GroupBox>
+                <DockPanel>
+                    <ToolBarTray DockPanel.Dock="Top"
+                                 IsLocked="True">
+                        <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
+                            <Button Command="{Binding DeleteBranchToolbarButtonCommand}"
+                                    CommandParameter="{Binding ElementName=BranchList, Path=SelectedItem}"
+                                    IsEnabled="{Binding ElementName=BranchList, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource DeleteImage}" />
+                                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DeleteBranchButton}"
+                                               Margin="2,0"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </ToolBar>
+                    </ToolBarTray>
+                    <ListBox Name="BranchList"
+                             Height="200"
+                             ItemContainerStyle="{StaticResource PrettyListBoxItem}"
+                             ItemsSource="{Binding Branches}" />
+                </DockPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>
