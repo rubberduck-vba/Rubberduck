@@ -28,8 +28,17 @@ namespace Rubberduck.Parsing.Symbols
             _declarationsByName = declarations.GroupBy(declaration => declaration.IdentifierName)
                 .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
 
-            _types = _declarationsByType[DeclarationType.Class].Union(
-                     _declarationsByType[DeclarationType.UserDefinedType]).ToList();
+            Declaration[] classes;
+            if (!_declarationsByType.TryGetValue(DeclarationType.Class, out classes))
+            {
+                classes = new Declaration[]{};
+            }
+            Declaration[] userDefinedTypes;
+            if (!_declarationsByType.TryGetValue(DeclarationType.UserDefinedType, out userDefinedTypes))
+            {
+                userDefinedTypes = new Declaration[]{};
+            }
+            _types = classes.Union(userDefinedTypes).ToList();
         }
 
         private readonly HashSet<Accessibility> _projectScopePublicModifiers =
