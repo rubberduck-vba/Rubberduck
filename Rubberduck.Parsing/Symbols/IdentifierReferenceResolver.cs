@@ -1249,9 +1249,13 @@ namespace Rubberduck.Parsing.Symbols
                 var temp = result.Where(item => !_moduleTypes.Contains(item.DeclarationType)
                     && item.DeclarationType == (accessorType == ContextAccessorType.GetValueOrReference ? DeclarationType.PropertyGet : item.DeclarationType))
                     .ToList();
-                if (temp.Count != 1)
+                if (temp.Count > 1)
                 {
                     Debug.WriteLine("Ambiguous match in '{0}': '{1}'", localScope == null ? "(unknown)" : localScope.IdentifierName, identifierName);
+                }
+                if (temp.Count == 0)
+                {
+                    Debug.WriteLine("Unknown identifier in '{0}': '{1}'", localScope == null ? "(unknown)" : localScope.IdentifierName, identifierName);
                 }
             }
 
