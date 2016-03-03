@@ -1374,4 +1374,13 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SourceControl_PasswordLabel" xml:space="preserve">
     <value>Password:</value>
   </data>
+  <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="SourceControl_PublishBranchButton" xml:space="preserve">
+    <value>Publish</value>
+  </data>
+  <data name="SourceControl_UnpublishBranchButton" xml:space="preserve">
+    <value>Unpublish</value>
+  </data>
 </root>

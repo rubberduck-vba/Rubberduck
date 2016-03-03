@@ -2844,6 +2844,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string SourceControl_DeleteBranchButton {
+            get {
+                return ResourceManager.GetString("SourceControl_DeleteBranchButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Delete Branch.
         /// </summary>
         public static string SourceControl_DeleteBranchCaption {
@@ -3087,6 +3096,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publish.
+        /// </summary>
+        public static string SourceControl_PublishBranchButton {
+            get {
+                return ResourceManager.GetString("SourceControl_PublishBranchButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Published Branches.
         /// </summary>
         public static string SourceControl_PublishedBranchesLabel {
@@ -3173,6 +3191,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_SyncCommitsLabel {
             get {
                 return ResourceManager.GetString("SourceControl_SyncCommitsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unpublish.
+        /// </summary>
+        public static string SourceControl_UnpublishBranchButton {
+            get {
+                return ResourceManager.GetString("SourceControl_UnpublishBranchButton", resourceCulture);
             }
         }
         
