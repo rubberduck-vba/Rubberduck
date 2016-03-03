@@ -1,12 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Rubberduck.Common
 {
+    public enum hAlignment
+    {
+        Left, Center, Right
+    }
+
+    public enum vAlignment
+    {
+        Top, Middle, Bottom
+    }
+
+    public class CellFormatting
+    {
+        public hAlignment HorizontalAlignment;
+        public vAlignment VerticalAlignment;
+        public string FormatString;
+        public bool bold;
+    }
+
+    public class ColumnInfo
+    {
+        public ColumnInfo(string Title, hAlignment HorizontalAlignment = hAlignment.Left, vAlignment VerticalAlignment = vAlignment.Top)
+        {
+            this.Title = Title;
+            this.Data = new CellFormatting();
+            this.Data.HorizontalAlignment = HorizontalAlignment;
+            this.Data.VerticalAlignment = VerticalAlignment;
+            this.Heading = new CellFormatting();
+            this.Heading.HorizontalAlignment = HorizontalAlignment;
+            this.Heading.VerticalAlignment = VerticalAlignment;
+        }
+        public CellFormatting Heading;
+        public CellFormatting Data;
+        public string Title;
+    }
+
     public static class ExportFormatter
     {
         public static string Csv(object[][] data, string Title)
@@ -193,8 +230,6 @@ namespace Rubberduck.Common
 
             s.AppendLine(" <Worksheet ss:Name=\"Sheet1\">");
 
-//            s.AppendLine("  <Table ss:ExpandedColumnCount=\"2\" ss:ExpandedRowCount=\"1\" ss:DefaultRowHeight=\"15\">");
-
             if (data.Length == 0)
             {
                 s.AppendFormat("  <Table ss:ExpandedColumnCount=\"{0}\" ss:ExpandedRowCount=\"{1}\" ss:DefaultRowHeight=\"15\">\r\n", 1, 1);
@@ -234,19 +269,189 @@ namespace Rubberduck.Common
                     }
                     s.AppendLine("    </Row>");
                 }
-            }
-
-
-//            s.AppendLine("    <Row>");
-//            s.AppendLine("     <Cell><Data ss:Type=\"String\">Smith</Data></Cell>");
-//            s.AppendLine("     <Cell><Data ss:Type=\"String\">Jones</Data></Cell>");
-//            s.AppendLine("    </Row>");
-            
+            }            
             s.AppendLine("  </Table>");
             s.AppendLine(" </Worksheet>");
             s.AppendLine("</Workbook>");
 
             return s.ToString();
+        }
+
+        public static MemoryStream XmlSpreadsheetNew(object[][] data, string Title, ColumnInfo[] ColumnInfos)
+        {
+            MemoryStream strm = new MemoryStream();
+            
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.Encoding = new UTF8Encoding(false);
+            
+            XmlWriter xmlSS = XmlWriter.Create(strm, settings); 
+                xmlSS.WriteStartDocument();
+                
+                //Processing Instructions
+                xmlSS.WriteProcessingInstruction("mso-application","progid=\"Excel.Sheet\"");
+                //Namespaces
+                xmlSS.WriteStartElement("Workbook", "urn:schemas-microsoft-com:office:spreadsheet");
+                xmlSS.WriteAttributeString("xmlns", null, null, "urn:schemas-microsoft-com:office:spreadsheet");
+                xmlSS.WriteAttributeString("xmlns", "o", null, "urn:schemas-microsoft-com:office:office");
+                xmlSS.WriteAttributeString("xmlns", "x", null, "urn:schemas-microsoft-com:office:excel");
+                xmlSS.WriteAttributeString("xmlns", "ss", null, "urn:schemas-microsoft-com:office:spreadsheet");
+                xmlSS.WriteAttributeString("xmlns", "html", null, "http://www.w3.org/TR/REC-html40");
+
+                xmlSS.WriteStartElement("Styles");
+
+                xmlSS.WriteStartElement("Style");
+                xmlSS.WriteAttributeString("ss", "ID", null, "Default");
+                xmlSS.WriteAttributeString("ss", "Name", null, "Normal");
+                xmlSS.WriteStartElement("Alignment");
+                xmlSS.WriteAttributeString("ss", "Vertical", null, "Bottom");
+                xmlSS.WriteEndElement(); //Close Alignment
+                xmlSS.WriteStartElement("Font");
+                xmlSS.WriteAttributeString("ss", "FontName", null, "Calibri");
+                xmlSS.WriteAttributeString("x", "Family", null, "Swiss");
+                xmlSS.WriteAttributeString("ss", "Size", null, "11");
+                xmlSS.WriteAttributeString("ss", "Color", null, "#000000");
+                xmlSS.WriteEndElement(); //Close Font
+                xmlSS.WriteElementString("Interior", "");
+                xmlSS.WriteElementString("NumberFormat", "");
+                xmlSS.WriteElementString("Protection", "");
+                xmlSS.WriteEndElement(); //Close Style
+
+                //Style for column headers
+                xmlSS.WriteStartElement("Style");
+                xmlSS.WriteAttributeString("ss", "ID", null, "Headers");
+                xmlSS.WriteStartElement("Borders");
+                
+                xmlSS.WriteStartElement("Border");
+                xmlSS.WriteAttributeString("ss", "Position",null, "Top");
+                xmlSS.WriteAttributeString("ss", "LineStyle",null, "Continuous");
+                xmlSS.WriteAttributeString("ss", "Weight",null, "1");
+                xmlSS.WriteEndElement(); //Close Border
+
+                xmlSS.WriteStartElement("Border");
+                xmlSS.WriteAttributeString("ss", "Position",null, "Bottom");
+                xmlSS.WriteAttributeString("ss", "LineStyle",null, "Continuous");
+                xmlSS.WriteAttributeString("ss", "Weight",null, "1");
+                xmlSS.WriteEndElement(); //Close Border
+                
+                xmlSS.WriteEndElement(); //Close Borders
+                
+                xmlSS.WriteStartElement("Font");
+                xmlSS.WriteAttributeString("ss", "Bold", null, "1");
+                xmlSS.WriteEndElement(); //Close Font
+                xmlSS.WriteEndElement(); //Close Style
+            
+                //Style for last row
+                xmlSS.WriteStartElement("Style");
+                xmlSS.WriteAttributeString("ss", "ID", null, "LastRow");
+                xmlSS.WriteStartElement("Borders");
+                xmlSS.WriteStartElement("Border");
+                xmlSS.WriteAttributeString("ss", "Position", null, "Bottom");
+                xmlSS.WriteAttributeString("ss", "LineStyle", null, "Continuous");
+                xmlSS.WriteAttributeString("ss", "Weight", null, "1");
+                xmlSS.WriteEndElement(); //Close Border
+                xmlSS.WriteEndElement(); //Close Borders
+                xmlSS.WriteEndElement(); //Close Style
+
+
+                //Style for right-aligned data cells
+                xmlSS.WriteStartElement("Style");
+                xmlSS.WriteAttributeString("ss", "ID", null, "RightAligned");
+                xmlSS.WriteStartElement("Alignment");
+                xmlSS.WriteAttributeString("ss", "Horizontal", null, "Right");
+                xmlSS.WriteEndElement(); //Close Alignment
+                xmlSS.WriteEndElement(); //Close Style
+
+                //Style for right-aligned last row data cells
+                xmlSS.WriteStartElement("Style");
+                xmlSS.WriteAttributeString("ss", "ID", null, "LastRowRightAligned");
+                xmlSS.WriteStartElement("Alignment");
+                xmlSS.WriteAttributeString("ss", "Horizontal", null, "Right");
+                xmlSS.WriteEndElement(); //Close Alignment
+                xmlSS.WriteStartElement("Borders");
+                xmlSS.WriteStartElement("Border");
+                xmlSS.WriteAttributeString("ss", "Position", null, "Bottom");
+                xmlSS.WriteAttributeString("ss", "LineStyle", null, "Continuous");
+                xmlSS.WriteAttributeString("ss", "Weight", null, "1");
+                xmlSS.WriteEndElement(); //Close Border
+                xmlSS.WriteEndElement(); //Close Borders
+                xmlSS.WriteEndElement(); //Close Style
+
+
+                xmlSS.WriteEndElement(); //Close Styles
+
+                xmlSS.WriteStartElement("Worksheet");
+                xmlSS.WriteAttributeString("ss", "Name", null, "Sheet1");
+                xmlSS.WriteStartElement("Table");
+                xmlSS.WriteAttributeString("ss", "ExpandedColumnCount", null, "6");
+                xmlSS.WriteAttributeString("ss", "ExpandedRowCount", null, (data.Length + 2).ToString());
+                xmlSS.WriteAttributeString("ss", "DefaultRowHeight", null, "15");
+                xmlSS.WriteStartElement("Row");
+                xmlSS.WriteStartElement("Cell");
+                xmlSS.WriteStartElement("Data");
+                xmlSS.WriteAttributeString("ss", "Type", null, "String");
+                xmlSS.WriteValue(Title);
+                xmlSS.WriteEndElement(); //Close Data
+                xmlSS.WriteEndElement(); //Close Cell
+
+                xmlSS.WriteEndElement(); //Close Row
+
+                //Column Headers
+                xmlSS.WriteStartElement("Row");
+
+                for (var c = 0; c < data[0].Length; c++)
+                {
+                    xmlSS.WriteStartElement("Cell");
+                    xmlSS.WriteAttributeString("ss", "StyleID", null, "Headers");
+                    xmlSS.WriteStartElement("Data");
+                    xmlSS.WriteAttributeString("ss", "Type", null, "String");
+                    xmlSS.WriteValue(ColumnInfos[c].Title);
+                    xmlSS.WriteEndElement(); //Close Data
+                    xmlSS.WriteEndElement(); //Close Cell
+                }
+                xmlSS.WriteEndElement(); //Close Row
+
+                for (var r = 0; r < data.Length; r++)
+                {
+                    xmlSS.WriteStartElement("Row");
+                    for (var c = 0; c < data[r].Length; c++)
+                    {
+                        string ValueType = (data[r][c] is string  || data[r][c] == null) ? "String" : "Number";
+                        xmlSS.WriteStartElement("Cell");
+                        if (ValueType == "Number")
+                        {
+                            xmlSS.WriteAttributeString("ss", "StyleID", null, (r == data.Length - 1 ? "LastRowRightAligned" : "RightAligned"));
+                        }
+                        else
+                        {
+                            if (r == data.Length - 1)
+                            {
+                                xmlSS.WriteAttributeString("ss", "StyleID", null, "LastRow");
+                            }
+                        }
+                        xmlSS.WriteStartElement("Data");
+
+                        xmlSS.WriteAttributeString("ss", "Type", null, ValueType);
+                        if (data[r][c] != null)
+                        {
+                            xmlSS.WriteValue(data[r][c].ToString());
+                        }
+                        xmlSS.WriteEndElement(); //Close Data
+                        xmlSS.WriteEndElement(); //Close Cell
+                    }
+                    xmlSS.WriteEndElement(); //Close Row
+                }
+
+                xmlSS.WriteEndElement(); //Close Table
+
+                xmlSS.WriteEndElement(); //Close Worksheet
+
+                xmlSS.WriteEndElement(); //Close Workbook
+
+                xmlSS.WriteEndDocument();
+                xmlSS.Close();
+                return strm;
+//            return s.ToString();
         }
 
 
