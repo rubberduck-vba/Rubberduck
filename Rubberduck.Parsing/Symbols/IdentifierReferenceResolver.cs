@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
@@ -8,8 +9,148 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
+    public class DeclarationFinder
+    {
+        private readonly IDictionary<DeclarationType, Declaration[]> _declarationsByType;
+        private readonly IDictionary<QualifiedModuleName, CommentNode[]> _comments;
+        private readonly IDictionary<string, Declaration[]> _declarationsByName;
+
+        private readonly IReadOnlyList<Declaration> _types;
+
+        public DeclarationFinder(IReadOnlyList<Declaration> declarations, IEnumerable<CommentNode> comments)
+        {
+            _comments = comments.GroupBy(node => node.QualifiedSelection.QualifiedName)
+                                .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
+
+            _declarationsByType = declarations.GroupBy(declaration => declaration.DeclarationType)
+                .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
+
+            _declarationsByName = declarations.GroupBy(declaration => declaration.IdentifierName)
+                .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
+
+            _types = _declarationsByType[DeclarationType.Class].Union(
+                     _declarationsByType[DeclarationType.UserDefinedType]).ToList();
+        }
+
+        private readonly HashSet<Accessibility> _projectScopePublicModifiers =
+            new HashSet<Accessibility>(new[]
+            {
+                Accessibility.Public,
+                Accessibility.Global,
+                Accessibility.Friend,
+                Accessibility.Implicit,
+            });
+
+        public IEnumerable<CommentNode> ModuleComments(QualifiedModuleName module)
+        {
+            CommentNode[] result;
+            if (_comments.TryGetValue(module, out result))
+            {
+                return result;
+            }
+
+            return new List<CommentNode>();
+        }
+
+        public IEnumerable<Declaration> MatchTypeName(string name)
+        {
+            return _types.Where(declaration => declaration.IdentifierName == name);
+        }
+
+        public IEnumerable<Declaration> MatchName(string name)
+        {
+            Declaration[] result;
+            if (_declarationsByName.TryGetValue(name, out result))
+            {
+                return result;
+            }
+
+            return new List<Declaration>();
+        }
+
+        public Declaration FindProject(Declaration currentScope, string name)
+        {
+            Declaration result = null;
+            try
+            {
+                result = _declarationsByType[DeclarationType.Project].SingleOrDefault(project => 
+                    (currentScope == null || project.Project == currentScope.Project)
+                    && project.IdentifierName == name);
+            }
+            catch (InvalidOperationException exception)
+            {
+                Debug.WriteLine("Multiple matches found for project '{0}'.\n{1}", name, exception);
+            }
+
+            return result;
+        }
+
+        public Declaration FindStdModule(Declaration parent, string name, bool includeBuiltIn = false)
+        {
+            Declaration result = null;
+            try
+            {
+                result = _declarationsByType[DeclarationType.Module].SingleOrDefault(declaration =>
+                    declaration.IdentifierName == name
+                    && (parent == null || parent.Equals(declaration.ParentDeclaration))
+                    && (includeBuiltIn || !declaration.IsBuiltIn));
+            }
+            catch (InvalidOperationException exception)
+            {
+                Debug.WriteLine("Multiple matches found for std.module '{0}'.\n{1}", name, exception);
+            }
+
+            return result;
+        }
+
+        public Declaration FindUserDefinedType(Declaration parent, string name, bool includeBuiltIn = false)
+        {
+            Declaration result = null;
+            try
+            {
+                result = _declarationsByType[DeclarationType.UserDefinedType].SingleOrDefault(declaration =>
+                    declaration.IdentifierName == name
+                    && parent == null
+                        ? _projectScopePublicModifiers.Contains(declaration.Accessibility)
+                        : parent.Equals(declaration.ParentDeclaration)
+                    && (includeBuiltIn || !declaration.IsBuiltIn));
+            }
+            catch (InvalidOperationException exception)
+            {
+                Debug.WriteLine("Multiple matches found for user-defined type '{0}'.\n{1}", name, exception);
+            }
+
+            return result;
+        }
+
+        public Declaration FindClass(Declaration parent, string name, bool includeBuiltIn = false)
+        {
+            if (parent == null)
+            {
+                throw new ArgumentNullException("parent");
+            }
+
+            Declaration result = null;
+            try
+            {
+                result = _declarationsByType[DeclarationType.Class].SingleOrDefault(declaration =>
+                    declaration.IdentifierName == name
+                    && parent.Equals(declaration.ParentDeclaration)
+                    && (includeBuiltIn || !declaration.IsBuiltIn));
+            }
+            catch (InvalidOperationException exception)
+            {
+                Debug.WriteLine("Multiple matches found for class '{0}'.\n{1}", name, exception);
+            }
+
+            return result;
+        }
+    }
+
     public class IdentifierReferenceResolver
     {
+        private readonly DeclarationFinder _declarationFinder;
+
         private enum ContextAccessorType
         {
             GetValueOrReference,
@@ -41,6 +182,8 @@ namespace Rubberduck.Parsing.Symbols
 
         public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, IReadOnlyList<Declaration> declarations, IReadOnlyList<CommentNode> comments)
         {
+            _declarationFinder = new DeclarationFinder(declarations, comments);
+
             _qualifiedModuleName = qualifiedModuleName;
             _declarations = declarations;
             _comments = comments;
@@ -188,7 +331,7 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var commentAbove = _comments.SingleOrDefault(comment => comment.QualifiedSelection.QualifiedName == _qualifiedModuleName && comment.QualifiedSelection.Selection.EndLine == line - 1);
+            var commentAbove = _declarationFinder.ModuleComments(_qualifiedModuleName).SingleOrDefault(comment => comment.QualifiedSelection.Selection.EndLine == line - 1);
             if (commentAbove != null && commentAbove.CommentText.StartsWith("@"))
             {
                 return commentAbove.CommentText;
@@ -235,12 +378,7 @@ namespace Rubberduck.Parsing.Symbols
         private void ResolveType(IList<VBAParser.AmbiguousIdentifierContext> identifiers)
         {
             var first = identifiers[0].GetText();
-            var projectMatch = _currentScope.ProjectName == first
-                ? _declarations.SingleOrDefault(declaration =>
-                    declaration.DeclarationType == DeclarationType.Project
-                    && declaration.Project == _currentScope.Project // todo: account for project references!
-                    && declaration.IdentifierName == first)
-                : null;
+            var projectMatch = _declarationFinder.FindProject(_currentScope, first);
 
             if (projectMatch != null)
             {
@@ -252,22 +390,13 @@ namespace Rubberduck.Parsing.Symbols
                 // - UDT
                 if (identifiers.Count == 3)
                 {
-                    var moduleMatch = _declarations.SingleOrDefault(declaration =>
-                        !declaration.IsBuiltIn && declaration.ParentDeclaration != null
-                        && declaration.ParentDeclaration.Equals(projectMatch)
-                        && declaration.DeclarationType == DeclarationType.Module
-                        && declaration.IdentifierName == identifiers[1].GetText());
-
+                    var moduleMatch = _declarationFinder.FindStdModule(_currentScope, identifiers[1].GetText());
                     if (moduleMatch != null)
                     {
                         var moduleReference = CreateReference(identifiers[1], moduleMatch);
 
                         // 3rd identifier can only be a UDT
-                        var udtMatch = _declarations.SingleOrDefault(declaration =>
-                            !declaration.IsBuiltIn && declaration.ParentDeclaration != null
-                            && declaration.ParentDeclaration.Equals(moduleMatch)
-                            && declaration.DeclarationType == DeclarationType.UserDefinedType
-                            && declaration.IdentifierName == identifiers[2].GetText());
+                        var udtMatch = _declarationFinder.FindUserDefinedType(moduleMatch, identifiers[2].GetText());
                         if (udtMatch != null)
                         {
                             var udtReference = CreateReference(identifiers[2], udtMatch);
@@ -290,12 +419,8 @@ namespace Rubberduck.Parsing.Symbols
                     projectMatch.AddReference(projectReference);
                     _alreadyResolved.Add(projectReference.Context);
 
-                    var match = _declarations.SingleOrDefault(declaration =>
-                        !declaration.IsBuiltIn && declaration.ParentDeclaration != null
-                        && declaration.ParentDeclaration.Equals(projectMatch)
-                        && declaration.IdentifierName == identifiers[1].GetText()
-                        && (declaration.DeclarationType == DeclarationType.Class ||
-                            declaration.DeclarationType == DeclarationType.UserDefinedType));
+                    var match = _declarationFinder.FindClass(projectMatch, identifiers[1].GetText())
+                                ?? _declarationFinder.FindUserDefinedType(null, identifiers[1].GetText());
                     if (match != null)
                     {
                         var reference = CreateReference(identifiers[1], match);
@@ -313,22 +438,14 @@ namespace Rubberduck.Parsing.Symbols
             // if there are 3 identifiers, type isn't in current project.
             if (identifiers.Count != 3)
             {
-                var moduleMatch = _declarations.SingleOrDefault(declaration =>
-                    !declaration.IsBuiltIn && declaration.ParentDeclaration != null
-                    && declaration.ParentDeclaration.Equals(projectMatch)
-                    && declaration.DeclarationType == DeclarationType.Module
-                    && declaration.IdentifierName == identifiers[0].GetText());
-
+                
+                var moduleMatch = _declarationFinder.FindStdModule(projectMatch, identifiers[0].GetText());
                 if (moduleMatch != null)
                 {
                     var moduleReference = CreateReference(identifiers[0], moduleMatch);
 
                     // 2nd identifier can only be a UDT
-                    var udtMatch = _declarations.SingleOrDefault(declaration =>
-                        !declaration.IsBuiltIn && declaration.ParentDeclaration != null
-                        && declaration.ParentDeclaration.Equals(moduleMatch)
-                        && declaration.DeclarationType == DeclarationType.UserDefinedType
-                        && declaration.IdentifierName == identifiers[1].GetText());
+                    var udtMatch = _declarationFinder.FindUserDefinedType(moduleMatch, identifiers[1].GetText());
                     if (udtMatch != null)
                     {
                         var udtReference = CreateReference(identifiers[1], udtMatch);
@@ -343,18 +460,9 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private IEnumerable<Declaration> FindMatchingTypes(string identifier)
-        {
-            return _declarations.Where(declaration =>
-                declaration.IdentifierName == identifier
-                && (declaration.DeclarationType == DeclarationType.Class
-                || declaration.DeclarationType == DeclarationType.UserDefinedType))
-                .ToList();
-        }
-
         private Declaration ResolveInScopeType(string identifier, Declaration scope)
         {
-            var matches = FindMatchingTypes(identifier).ToList();
+            var matches = _declarationFinder.MatchTypeName(identifier).ToList();
             if (matches.Count == 1)
             {
                 return matches.Single();
@@ -377,10 +485,7 @@ namespace Rubberduck.Parsing.Symbols
 
             return null;
         }
-
-
-
-
+        
         private Declaration ResolveType(Declaration parent)
         {
             if (parent != null && parent.DeclarationType == DeclarationType.UserDefinedType)
@@ -1019,7 +1124,7 @@ namespace Rubberduck.Parsing.Symbols
                 localScope = _currentScope;
             }
 
-            var matches = _declarations.Where(d => d.IdentifierName == identifierName);
+            var matches = _declarationFinder.MatchName(identifierName);
             var parent = matches.SingleOrDefault(item =>
                 (item.DeclarationType == DeclarationType.Function || item.DeclarationType == DeclarationType.PropertyGet)
                 && item.Equals(localScope));
@@ -1040,7 +1145,7 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var matches = _declarations.Where(d => d.IdentifierName == identifierName);
+            var matches = _declarationFinder.MatchName(identifierName);
 
             var results = matches.Where(item =>
                 (item.ParentScope == localScope.Scope || (isAssignmentTarget && item.Scope == localScope.Scope))
@@ -1077,7 +1182,7 @@ namespace Rubberduck.Parsing.Symbols
                 localScope = _currentScope;
             }
 
-            var matches = _declarations.Where(d => d.IdentifierName == identifierName);
+            var matches = _declarationFinder.MatchName(identifierName);
             var result = matches.Where(item =>
                 item.ParentScope == localScope.ParentScope
                 && !item.DeclarationType.HasFlag(DeclarationType.Member)
@@ -1102,7 +1207,7 @@ namespace Rubberduck.Parsing.Symbols
                 localScope = _currentScope;
             }
 
-            var matches = _declarations.Where(d => d.IdentifierName == identifierName);
+            var matches = _declarationFinder.MatchName(identifierName);
             var result = matches.Where(item =>
                 item.Project == localScope.Project 
                 && item.ComponentName == localScope.ComponentName 
@@ -1141,8 +1246,13 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                return result.SingleOrDefault(item => !_moduleTypes.Contains(item.DeclarationType)
-                    && item.DeclarationType == (accessorType == ContextAccessorType.GetValueOrReference ? DeclarationType.PropertyGet : item.DeclarationType));
+                var temp = result.Where(item => !_moduleTypes.Contains(item.DeclarationType)
+                    && item.DeclarationType == (accessorType == ContextAccessorType.GetValueOrReference ? DeclarationType.PropertyGet : item.DeclarationType))
+                    .ToList();
+                if (temp.Count != 1)
+                {
+                    Debug.WriteLine("Ambiguous match in '{0}': '{1}'", localScope == null ? "(unknown)" : localScope.IdentifierName, identifierName);
+                }
             }
 
             return null;
