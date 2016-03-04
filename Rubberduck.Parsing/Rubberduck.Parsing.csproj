@@ -93,6 +93,7 @@
     <Compile Include="Preprocessing\NumberLiteralExpression.cs" />
     <Compile Include="Preprocessing\OctNumberLiteralExpression.cs" />
     <Compile Include="Preprocessing\OptionCompareListener.cs" />
+    <Compile Include="Preprocessing\OptionCompareParser.cs" />
     <Compile Include="Preprocessing\PowExpression.cs" />
     <Compile Include="Preprocessing\CSngLibraryFunctionExpression.cs" />
     <Compile Include="Preprocessing\CLngPtrLibraryFunctionExpression.cs" />

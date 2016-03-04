@@ -226,14 +226,14 @@ namespace Rubberduck.Parsing.VBA
             };
 
             token.ThrowIfCancellationRequested();
-
-            var preprocessor = new VBAPreprocessor(double.Parse(_vbe.Version));
+            
+            var preprocessor = new VBAPreprocessor(double.Parse(_vbe.Version), OptionCompareParser.Parse(vbComponent.CodeModule));
             string preprocessedModuleBody;
             try
             {
                 preprocessedModuleBody = preprocessor.Execute(code);
             }
-            catch (VBAPreprocessorException ex)
+            catch (VBAPreprocessorException)
             {
                 // Fall back to not doing any preprocessing at all.
                 preprocessedModuleBody = code;

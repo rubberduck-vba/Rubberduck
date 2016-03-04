@@ -58,7 +58,7 @@ namespace Rubberduck.Parsing.Preprocessing
                        new ConstantExpression(new BoolValue(false)),
                        elseIf.Item1)
                        .Evaluate().AsString);
-                var elseIfIsAlive = elseIf.Item2.EvaluateCondition();
+                var elseIfIsAlive = !ifIsAlive && elseIf.Item2.EvaluateCondition();
                 conditions.Add(elseIfIsAlive);
                 builder.Append(
                     new LivelinessExpression(

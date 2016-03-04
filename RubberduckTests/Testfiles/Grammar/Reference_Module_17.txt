@@ -1,196 +1,272 @@
-Attribute VB_Name = "vbXlPivotFieldPri"
+Attribute VB_Name = "vbXlPivotTablePri"
 Option Explicit
 Option Private Module
 
-Private Const ThisModule As String = ThisProject & "|vbXlPivotFieldPri"
+Private Const ThisModule As String = ThisProject & "|vbXlPivotTablePri"
 
-Public Function GetPivotFieldDataRangeOrNothing(PivotField As Excel.PivotField) As Excel.Range
-    Const ThisProcedure As String = ThisModule & "|GetPivotFieldDataRangeOrNothing|Function"
+Public Function GetPivotTableOrNothing(PivotTables As Excel.PivotTables, Index As Variant) As Excel.PivotTable
+    Const ThisProcedure As String = ThisModule & "|GetPivotTableOrNothing|Function"
     On Error Resume Next
-    Set GetPivotFieldDataRangeOrNothing = PivotField.DataRange
+    Set GetPivotTableOrNothing = PivotTables.Item(Index:=Index)
 End Function
 
-Public Function GetPivotFieldOrNothing(PivotFields As Excel.PivotFields, Index As Variant) As Excel.PivotField
-    Const ThisProcedure As String = ThisModule & "|GetPivotFieldOrNothing|Function"
+Public Function GetPivotTablesOrNothing(Worksheet As Excel.Worksheet) As Excel.PivotTables
+    Const ThisProcedure As String = ThisModule & "|GetPivotTablesOrNothing|Function"
     On Error Resume Next
-    Set GetPivotFieldOrNothing = PivotFields.Item(Index:=Index)
+    Set GetPivotTablesOrNothing = Worksheet.PivotTables
 End Function
 
-Public Function GetPivotFieldPosition(PivotField As Excel.PivotField) As Long
-    Const ThisProcedure As String = ThisModule & "|GetPivotFieldOrNothing|Function"
-    On Error Resume Next
-    GetPivotFieldPosition = PivotField.Position
-End Function
+Public Function GetPivotTableOrNothingFromChart(Chart As Excel.Chart) As Excel.PivotTable
+    Const ThisProcedure As String = ThisModule & "|GetPivotTableOrNothingFromChart|Function"
 
-Private Sub GetPivotFieldsCountTest()
-    Const ThisProcedure As String = ThisModule & "|GetPivotFieldsCountTest|Sub"
-    Dim pt As Excel.PivotTable
-    Set pt = ActiveSheet.PivotTables(1)
-Debug.Print GetPivotFieldsCount(pt.ColumnFields, xlColumnField)
-End Sub
-Public Function GetPivotFieldsCount(PivotFields As Excel.PivotFields, PivotFieldOrientation As XlPivotFieldOrientation) As Long
-    Const ThisProcedure As String = ThisModule & "|GetPivotFieldsCount|Function"
-
-    If PivotFieldOrientation = XlPivotFieldOrientation.xlColumnField Then
-        GetPivotFieldsCount = PivotFields.Count + (GetPivotTableDataFieldPositionInPivotColumnFields(PivotTable:=PivotFields.Parent) > Lo0)
-    Else
-        GetPivotFieldsCount = PivotFields.Count
-    End If
-End Function
-
-Private Sub GetPivotFieldPivotAxisTest()
-    Const ThisProcedure As String = ThisModule & "|GetPivotFieldPivotAxisTest|Sub"
-    Dim lcPivotAxis As Excel.PivotAxis
-    Set lcPivotAxis = GetPivotFieldPivotAxis(PivotField:=ActiveCell.PivotField)
-End Sub
-Public Function GetPivotFieldPivotAxis(PivotField As Excel.PivotField) As Excel.PivotAxis
-    Const ThisProcedure As String = ThisModule & "|GetPivotFieldPivotAxis|Function"
-    Dim lcPivotTable As Excel.PivotTable
-
-    With PivotField
-        Set lcPivotTable = PivotField.Parent
-        Select Case .Orientation
-            Case XlPivotFieldOrientation.xlColumnField
-                Set GetPivotFieldPivotAxis = lcPivotTable.PivotColumnAxis
-
-            Case XlPivotFieldOrientation.xlRowField
-                Set GetPivotFieldPivotAxis = lcPivotTable.PivotRowAxis
-
-            Case Else
-                ' eigentlich müpßte hier ein Fehler kommen
-
-        End Select
+    With Chart
+        If Not .PivotLayout Is Nothing Then
+            Set GetPivotTableOrNothingFromChart = .PivotLayout.PivotTable
+        End If
     End With
 End Function
 
-Private Sub GetPivotFieldDataRangeDataRangeTest()
-    Const ThisProcedure As String = ThisModule & "|GetPivotFieldDataRangeDataRangeTest|Sub"
-Debug.Print GetPivotFieldDataRangeDataRange(ActiveCell.PivotField).Address
-End Sub
-Public Function GetPivotFieldDataRangeDataRange(PivotField As Excel.PivotField) As Excel.Range
-    Const ThisProcedure As String = ThisModule & "|GetPivotFieldDataRangeDataRange|Function"
-    Dim lcCell As Excel.Range
-    Dim lcDataRange As Excel.Range
-
-    For Each lcCell In PivotField.DataRange
-        lcCell.Select
-        With lcCell.PivotCell
-            If .PivotCellType = XlPivotCellType.xlPivotCellDataField _
-            Or .PivotCellType = xlPivotCellPivotItem Then
-                ' xlPivotCellDataField kommt nur bei der PivotColumnAxis vor
-                ' xlPivotCellPivotItem bei beiden PivotAxes
-                If lcDataRange Is Nothing Then
-                    Set lcDataRange = .Range
-                Else
-                    Set lcDataRange = Application.Union(Arg1:=lcDataRange, Arg2:=.Range)
-                End If
-            End If
-        End With
-    Next
-    Set GetPivotFieldDataRangeDataRange = lcDataRange
+Public Function GetPivotTableOrNothingFromRange(Range As Excel.Range) As Excel.PivotTable
+    Const ThisProcedure As String = ThisModule & "|GetPivotTableOrNothingFromRange|Function"
+    On Error Resume Next
+    Set GetPivotTableOrNothingFromRange = Range.PivotTable
 End Function
 
-Private Function IsPivotFieldPositionReadable(PivotField As Excel.PivotField) As Boolean
-    Const ThisProcedure As String = ThisModule & "|IsPivotFieldPositionReadable|Function"
-    Dim lvPosition As Long
-    On Error GoTo CatchError
-    lvPosition = PivotField.Position
-    IsPivotFieldPositionReadable = True
-CatchError:
-    IsPivotFieldPositionReadable = False
-End Function
-Private Sub GetPivotColumnFieldWithHighestPositionTest()
-    Const ThisProcedure As String = ThisModule & "|GetPivotColumnFieldWithHighestPositionTest|Sub"
-Debug.Print GetPivotFieldOrNothingWithHighestPosition(ActiveCell.PivotTable.PageFields, XlPivotFieldOrientation.xlPageField).Name
-End Sub
-Public Function GetPivotFieldOrNothingWithHighestPosition(PivotFields As Excel.PivotFields, PivotFieldOrientation As XlPivotFieldOrientation) As Excel.PivotField
-    Const ThisProcedure As String = ThisModule & "|GetPivotFieldOrNothingWithHighestPosition|Function"
-    Dim lcPivotField As Excel.PivotField
-    Dim lvPosition As Long
-    Dim lvColumnDataFieldPosition As Long
+Public Function IsPivotTablePivotTable(PivotTable1 As Excel.PivotTable, PivotTable2 As Excel.PivotTable) As Boolean
+    Const ThisProcedure As String = ThisModule & "|IsPivotTablePivotTable|Function"
+    Dim lcWorksheet1 As Excel.Worksheet
+    Dim lcWorksheet2 As Excel.Worksheet
 
-    If PivotFieldOrientation = XlPivotFieldOrientation.xlColumnField Then
-        lvColumnDataFieldPosition = GetPivotTableDataFieldPositionInPivotColumnFields(PivotTable:=PivotFields.Parent)
+    If Not PivotTable1 Is Nothing And Not PivotTable2 Is Nothing Then
+        Set lcWorksheet1 = PivotTable1.Parent
+        Set lcWorksheet2 = PivotTable2.Parent
+        'Debug.Print lcWorksheet1.Name, lcWorksheet2.Name
+        IsPivotTablePivotTable = VBA.CBool(lcWorksheet1 Is lcWorksheet2 And PivotTable1.Name = PivotTable2.Name)
+    End If
+End Function
+
+'Private Sub GetPivotTableDataRangeTest()
+'    'Debug.Print GetPivotTableDataRange(Range("A24").PivotTable).Address
+'End Sub
+'Public Function GetPivotTableDataRange(PivotTable As Excel.PivotTable) As Excel.Range
+'    Dim lcColumnDataRange As Excel.Range
+'    Dim lcRowDataRange As Excel.Range
+'
+'    On Error GoTo CatchError
+'
+'    Set lcRowDataRange = GetPivotTableRowDataRange(PivotTable:=PivotTable)
+'    Set lcColumnDataRange = GetPivotTableColumnDataRange(PivotTable:=PivotTable)
+'
+'    If lcColumnDataRange Is Nothing Then
+'        Set GetPivotTableDataRange = lcRowDataRange
+'
+'    ElseIf lcRowDataRange Is Nothing Then
+'        Set GetPivotTableDataRange = lcColumnDataRange
+'
+'    Else
+'        Set GetPivotTableDataRange = GetIntersectOrNothing(Range1:=lcColumnDataRange _
+'                                                         , Range2:=lcRowDataRange _
+'                                                         )
+'    End If
+'
+'    Set lcColumnDataRange = Nothing
+'    Set lcRowDataRange = Nothing
+'
+'    Exit Function
+'
+'CatchError:
+'    ReraiseError
+'End Function
+
+Private Sub GetPivotTableDataRangeTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotTableDataRangeTest|Sub"
+Debug.Print GetPivotTableDataRange(ActiveCell.PivotTable).Address
+End Sub
+Public Function GetPivotTableDataRange(PivotTable As Excel.PivotTable) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|GetPivotTableDataRange|Function"
+    Dim lcColumnDataRange As Excel.Range
+    Dim lcRowDataRange As Excel.Range
+
+    Set lcRowDataRange = GetPivotTableRowDataRange(PivotTable:=PivotTable)
+    Set lcColumnDataRange = GetPivotTableColumnDataRange(PivotTable:=PivotTable)
+
+    If lcColumnDataRange Is Nothing Then
+        Set GetPivotTableDataRange = lcRowDataRange
+
+    ElseIf lcRowDataRange Is Nothing Then
+        Set GetPivotTableDataRange = lcColumnDataRange
+
+    Else
+        Set GetPivotTableDataRange = GetIntersectOrNothing(Range1:=lcColumnDataRange _
+                                                         , Range2:=lcRowDataRange _
+                                                         )
     End If
 
-    For Each lcPivotField In PivotFields
-        With lcPivotField
-            If .Position <> lvColumnDataFieldPosition Then
-                If lvPosition < .Position Then
-                    lvPosition = .Position
-                    Set GetPivotFieldOrNothingWithHighestPosition = lcPivotField
-                End If
-            End If
-        End With
-    Next
+    Set lcColumnDataRange = Nothing
+    Set lcRowDataRange = Nothing
 End Function
 
-Private Sub GetPivotFieldByPositionTest()
-    Const ThisProcedure As String = ThisModule & "|GetPivotFieldByPositionTest|Sub"
-Debug.Print GetPivotFieldByPosition(ActiveCell.PivotTable.RowFields, 1).Name
+'Private Sub GetPivotTableColumnDataRangeTest()
+'    'Debug.Print GetPivotTableColumnDataRange(Range("A30").PivotTable).Address
+'End Sub
+'Public Function GetPivotTableColumnDataRange(PivotTable As Excel.PivotTable) As Excel.Range
+'    Dim lcPivotField As Excel.PivotField
+'    Dim lcPivotFields As Excel.PivotFields
+'    Dim lcPivotItems As Excel.PivotItems
+'
+'    On Error GoTo CatchError
+'
+'    Set lcPivotFields = PivotTable.DataFields
+'    If lcPivotFields.Count = Lo0 Then
+'        Exit Function
+'    End If
+'
+'    Set lcPivotFields = PivotTable.ColumnFields
+'    If lcPivotFields.Count = Lo0 Then
+'        Exit Function
+'    End If
+'
+'    Set lcPivotField = GetPivotFieldOrNothingWithHighestPosition(PivotFields:=lcPivotFields _
+'                                                               , PivotFieldOrientation:=XlPivotFieldOrientation.xlColumnField _
+'                                                               )
+'
+'    If Not lcPivotField Is Nothing Then
+'        Set lcPivotItems = lcPivotField.PivotItems
+'        If Not lcPivotItems Is Nothing Then
+'            Set GetPivotTableColumnDataRange = GetPivotItemsDataRange(PivotItems:=lcPivotField.PivotItems).EntireColumn
+'        End If
+'    End If
+'
+'    Exit Function
+'
+'CatchError:
+'    ReraiseError
+'End Function
+
+Private Sub GetPivotTableColumnDataRangeTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotTableColumnDataRangeTest|Sub"
+Debug.Print GetPivotTableColumnDataRange(Range("g2").PivotTable).Address
 End Sub
-Public Function GetPivotFieldByPosition(PivotFields As Excel.PivotFields _
-                                      , Optional Position As Double = 1 _
-                                      ) As Excel.PivotField
-    Const ThisProcedure As String = ThisModule & "|GetPivotFieldByPosition|Function"
-    Dim lcPivotField As Excel.PivotField
+Public Function GetPivotTableColumnDataRange(PivotTable As Excel.PivotTable) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|GetPivotTableColumnDataRange|Function"
+    Dim lcPivotFields As Excel.PivotFields
 
-    On Error GoTo CatchError
+    Set lcPivotFields = PivotTable.DataFields
+    If lcPivotFields.Count = Lo0 Then
+        Exit Function
+    End If
 
-    For Each lcPivotField In PivotFields
-        If lcPivotField.Position = Position Then
-            Set GetPivotFieldByPosition = lcPivotField
-            Exit For
+    Set lcPivotFields = PivotTable.ColumnFields
+    If lcPivotFields.Count = Lo0 Then
+        Exit Function
+    End If
+
+    Set GetPivotTableColumnDataRange = GetPivotAxisColumnDataRange(PivotTable:=PivotTable).EntireColumn
+End Function
+
+'Private Sub GetPivotTableRowDataRangeTest()
+'    'Debug.Print GetPivotTableRowDataRange(Range("A30").PivotTable).Address
+'End Sub
+'Public Function GetPivotTableRowDataRange(PivotTable As Excel.PivotTable) As Excel.Range
+'    Dim lcDataRange As Excel.Range
+'    Dim lcPivotField As Excel.PivotField
+'    Dim lcPivotFields As Excel.PivotFields
+'    Dim lcPivotItem As Excel.PivotItem
+'    Dim lcPivotItems As Excel.PivotItems
+'
+'    On Error GoTo CatchError
+'
+'    Set lcPivotFields = PivotTable.DataFields
+'    If lcPivotFields.Count = Lo0 Then
+'        Exit Function
+'    End If
+'
+'    Set lcPivotFields = PivotTable.RowFields
+'    If lcPivotFields.Count = Lo0 Then
+'        Exit Function
+'    End If
+'
+'    Set lcPivotField = GetPivotFieldOrNothingWithHighestPosition(PivotFields:=lcPivotFields _
+'                                                               , PivotFieldOrientation:=XlPivotFieldOrientation.xlRowField _
+'                                                               )
+'    Set GetPivotTableRowDataRange = GetPivotItemsDataRange(PivotItems:=lcPivotField.PivotItems).EntireRow
+'
+'    Exit Function
+'
+'CatchError:
+'    ReraiseError
+'End Function
+
+Private Sub GetPivotTableRowDataRangeTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotTableRowDataRangeTest|Sub"
+Debug.Print GetPivotTableRowDataRange(Range("g2").PivotTable).Address
+End Sub
+Public Function GetPivotTableRowDataRange(PivotTable As Excel.PivotTable) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|GetPivotTableRowDataRange|Function"
+    Dim lcPivotFields As Excel.PivotFields
+
+    Set lcPivotFields = PivotTable.DataFields
+    If lcPivotFields.Count = Lo0 Then
+        Exit Function
+    End If
+
+    Set lcPivotFields = PivotTable.RowFields
+    If lcPivotFields.Count = Lo0 Then
+        Exit Function
+    End If
+
+    Set GetPivotTableRowDataRange = GetPivotAxisRowDataRange(PivotTable:=PivotTable).EntireRow
+End Function
+
+Public Function GetPivotTableDataFieldPositionInPivotColumnFields(PivotTable As Excel.PivotTable) As Long
+    Const ThisProcedure As String = ThisModule & "|GetPivotTableDataFieldPositionInPivotColumnFields|Function"
+    Dim lcDataPivotItems As Excel.PivotItems
+
+    With PivotTable.DataPivotField
+        Set lcDataPivotItems = .PivotItems
+        If lcDataPivotItems.Count > Lo1 Then
+            ' nur dann gibt's ein Werte-Feld in den ColumnFields
+            GetPivotTableDataFieldPositionInPivotColumnFields = .Position
+        End If
+        Set lcDataPivotItems = Nothing
+    End With
+End Function
+
+Private Sub GetPivotTablePivotChartsDictionaryTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotTablePivotChartsDictionaryTest|Sub"
+Debug.Print GetPivotTablePivotChartsDictionary(ActiveCell.PivotTable).Count
+End Sub
+Public Function GetPivotTablePivotChartsDictionary(PivotTable As Excel.PivotTable) As Scripting.Dictionary
+    Const ThisProcedure As String = ThisModule & "|GetPivotTablePivotChartsDictionary|Function"
+    Dim lcChart As Excel.Chart
+    Dim lcChartObject As Excel.ChartObject
+    Dim lcDictionary As Scripting.Dictionary
+    Dim lcWorkbook As Excel.Workbook
+    Dim lcWorksheet As Excel.Worksheet
+
+    Set lcDictionary = New Scripting.Dictionary
+
+    Set lcWorksheet = PivotTable.Parent
+    Set lcWorkbook = lcWorksheet.Parent
+
+    For Each lcChart In lcWorkbook.Charts
+        If Not lcChart.PivotLayout Is Nothing Then
+            If IsPivotTablePivotTable(PivotTable1:=lcChart.PivotLayout.PivotTable, PivotTable2:=PivotTable) Then
+                lcDictionary.Add Key:=VBA.ObjPtr(lcChart), Item:=lcChart
+            End If
         End If
     Next
-
-    GoSub CleanUp
-    Exit Function
-
-CleanUp:
-    Set lcPivotField = Nothing
-    Return
-
-CatchError:
-    GoSub CleanUp
-End Function
-
-Private Sub GetPivotFieldOrientationTest()
-    Const ThisProcedure As String = ThisModule & "|GetPivotFieldOrientationTest|Sub"
-Debug.Print GetPivotFieldOrientation(ActiveCell.PivotTable.DataFields(1))
-End Sub
-Public Function GetPivotFieldOrientation(PivotField As Excel.PivotField) As XlPivotFieldOrientation
-    Const ThisProcedure As String = ThisModule & "|GetPivotFieldOrientation|Function"
-    Dim lcPivotTable As Excel.PivotTable
-
-    With PivotField
-        Select Case .Orientation
-            Case XlPivotFieldOrientation.xlColumnField _
-               , XlPivotFieldOrientation.xlDataField _
-               , XlPivotFieldOrientation.xlPageField _
-               , XlPivotFieldOrientation.xlRowField
-                GetPivotFieldOrientation = .Orientation
-
-            Case Else
-                
-                ' die Orientation ist beim Ausführen von WorksheetFunktionen immer lxHidden
-                ' deshalb muss es dann so festgestellt werden
-
-                Set lcPivotTable = PivotField.Parent
-                If Not GetPivotFieldOrNothing(PivotFields:=lcPivotTable.ColumnFields, Index:=.Name) Is Nothing Then
-                    GetPivotFieldOrientation = XlPivotFieldOrientation.xlColumnField
-                ElseIf Not GetPivotFieldOrNothing(PivotFields:=lcPivotTable.DataFields, Index:=.Name) Is Nothing Then
-                    GetPivotFieldOrientation = XlPivotFieldOrientation.xlDataField
-                ElseIf Not GetPivotFieldOrNothing(PivotFields:=lcPivotTable.PageFields, Index:=.Name) Is Nothing Then
-                    GetPivotFieldOrientation = XlPivotFieldOrientation.xlPageField
-                ElseIf Not GetPivotFieldOrNothing(PivotFields:=lcPivotTable.RowFields, Index:=.Name) Is Nothing Then
-                    GetPivotFieldOrientation = XlPivotFieldOrientation.xlRowField
-                Else
-                    GetPivotFieldOrientation = XlPivotFieldOrientation.xlHidden
+    For Each lcWorksheet In lcWorkbook.Worksheets
+        For Each lcChartObject In lcWorksheet.ChartObjects
+            With lcChartObject.Chart
+                If Not .PivotLayout Is Nothing Then
+                    If IsPivotTablePivotTable(PivotTable1:=.PivotLayout.PivotTable, PivotTable2:=PivotTable) Then
+                        lcDictionary.Add Key:=VBA.ObjPtr(lcChartObject.Chart), Item:=lcChartObject.Chart
+                    End If
                 End If
-        End Select
-    End With
+            End With
+        Next
+    Next
 
-    Set lcPivotTable = Nothing
+    Set GetPivotTablePivotChartsDictionary = lcDictionary
 End Function
-

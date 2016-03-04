@@ -9,20 +9,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace RubberduckTests.Grammar
+namespace RubberduckTests.Preprocessing
 {
     [TestClass]
-    public class VBAParserValidityTests
+    public class VBAPreprocessorTests
     {
         [TestMethod]
         [DeploymentItem(@"Testfiles\")]
-        public void TestParser()
+        public void TestPreprocessor()
         {
             foreach (var testfile in GetTestFiles())
             {
                 var filename = testfile.Item1;
                 var code = testfile.Item2;
-                AssertParseResult(filename, code, Parse(code));
+                var expectedProcessed = testfile.Item3;
+                var actualProcessed = Parse(code);
+                AssertParseResult(filename, expectedProcessed, actualProcessed);
             }
         }
 
@@ -31,9 +33,17 @@ namespace RubberduckTests.Grammar
             Assert.AreEqual(originalCode, materializedParseTree, string.Format("{0} mismatch detected.", filename));
         }
 
-        private IEnumerable<Tuple<string, string>> GetTestFiles()
+        private IEnumerable<Tuple<string, string, string>> GetTestFiles()
         {
-            return Directory.EnumerateFiles("Grammar").Select(file => Tuple.Create(file, File.ReadAllText(file))).ToList();
+            // Reference_Module_1 = raw, unprocessed code.
+            // Reference_Module_1_Processed = result of preprocessor.
+            var all = Directory.EnumerateFiles("Preprocessor").ToList();
+            var rawAndProcessed = all
+                .Where(file => !file.Contains("_Processed"))
+                .Select(file => Tuple.Create(file, all.First(f => f.Contains(Path.GetFileNameWithoutExtension(file)) && f.Contains("_Processed")))).ToList();
+            return rawAndProcessed
+                .Select(file =>
+                    Tuple.Create(file.Item1, File.ReadAllText(file.Item1), File.ReadAllText(file.Item2))).ToList();
         }
 
         private string Parse(string code)

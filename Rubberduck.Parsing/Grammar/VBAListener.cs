@@ -1052,17 +1052,6 @@ public interface IVBAListener : IParseTreeListener {
 	void ExitForEachStmt([NotNull] VBAParser.ForEachStmtContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.macroElseBlockStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterMacroElseBlockStmt([NotNull] VBAParser.MacroElseBlockStmtContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.macroElseBlockStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitMacroElseBlockStmt([NotNull] VBAParser.MacroElseBlockStmtContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.exitStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1339,17 +1328,6 @@ public interface IVBAListener : IParseTreeListener {
 	void ExitVariableStmt([NotNull] VBAParser.VariableStmtContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.macroIfBlockStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterMacroIfBlockStmt([NotNull] VBAParser.MacroIfBlockStmtContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.macroIfBlockStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitMacroIfBlockStmt([NotNull] VBAParser.MacroIfBlockStmtContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.subscript"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1440,17 +1418,6 @@ public interface IVBAListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitFunctionStmt([NotNull] VBAParser.FunctionStmtContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.macroElseIfBlockStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterMacroElseIfBlockStmt([NotNull] VBAParser.MacroElseIfBlockStmtContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.macroElseIfBlockStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitMacroElseIfBlockStmt([NotNull] VBAParser.MacroElseIfBlockStmtContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.returnStmt"/>.
@@ -1769,17 +1736,6 @@ public interface IVBAListener : IParseTreeListener {
 	void ExitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.macroConstStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterMacroConstStmt([NotNull] VBAParser.MacroConstStmtContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.macroConstStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitMacroConstStmt([NotNull] VBAParser.MacroConstStmtContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.iCS_B_ProcedureCall"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1835,17 +1791,6 @@ public interface IVBAListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitMidStmt([NotNull] VBAParser.MidStmtContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.macroIfThenElseStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterMacroIfThenElseStmt([NotNull] VBAParser.MacroIfThenElseStmtContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.macroIfThenElseStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitMacroIfThenElseStmt([NotNull] VBAParser.MacroIfThenElseStmtContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>vsPow</c>
@@ -1995,17 +1940,6 @@ public interface IVBAListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitModuleBodyElement([NotNull] VBAParser.ModuleBodyElementContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.macroStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterMacroStmt([NotNull] VBAParser.MacroStmtContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.macroStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitMacroStmt([NotNull] VBAParser.MacroStmtContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>vsMid</c>
