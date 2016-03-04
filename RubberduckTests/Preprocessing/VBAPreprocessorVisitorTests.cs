@@ -1085,11 +1085,45 @@ namespace RubberduckTests.Preprocessing
         public void TestLocale()
         {
             string code = @"
-#Const a = CDate(""3/2/2016"")
+#Const a = CDate(""2016/03/02"")
+#Const b = CBool(""tRuE"")
+#Const c = CBool(""#TRUE#"")
 ";
-            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("en-us");
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-jp");
             var result = Preprocess(code);
             Assert.AreEqual(new DateTime(2016, 3, 2), result.Item1.Get("a").AsDate);
+            Assert.AreEqual(true, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("c").AsBool);
+        }
+
+        [TestMethod]
+        public void TestOptionCompareText()
+        {
+            string code = @"
+#Const a = ""ß"" = ""ss""
+#Const b = ""ß"" < ""ss""
+#Const c = ""ß"" > ""ss""
+";
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("de-de");
+            var result = Preprocess(code, VBAOptionCompare.Text);
+            Assert.AreEqual(true, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("c").AsBool);
+        }
+
+        [TestMethod]
+        public void TestOptionCompareBinary()
+        {
+            string code = @"
+#Const a = ""ß"" = ""ss""
+#Const b = ""ß"" < ""ss""
+#Const c = ""ß"" > ""ss""
+";
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("de-de");
+            var result = Preprocess(code, VBAOptionCompare.Binary);
+            Assert.AreEqual(false, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("c").AsBool);
         }
 
         [TestMethod]
@@ -1158,13 +1192,18 @@ End Sub
 
         private Tuple<SymbolTable<string, IValue>, IValue> Preprocess(string code)
         {
+            return Preprocess(code, VBAOptionCompare.Binary);
+        }
+
+        private Tuple<SymbolTable<string, IValue>, IValue> Preprocess(string code, VBAOptionCompare optionCompare)
+        {
             SymbolTable<string, IValue> symbolTable = new SymbolTable<string, IValue>();
             var stream = new AntlrInputStream(code);
             var lexer = new VBAConditionalCompilationLexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAConditionalCompilationParser(tokens);
             parser.AddErrorListener(new ExceptionErrorListener());
-            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01));
+            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), optionCompare);
             var tree = parser.compilationUnit();
             var expr = evaluator.Visit(tree);
             return Tuple.Create(symbolTable, expr.Evaluate());

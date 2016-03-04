@@ -8,8 +8,12 @@ namespace Rubberduck.Parsing.Preprocessing
     public sealed class VBAPreprocessorVisitor : VBAConditionalCompilationBaseVisitor<IExpression>
     {
         private readonly SymbolTable<string, IValue> _symbolTable;
+        private readonly VBAOptionCompare _optionCompare;
 
-        public VBAPreprocessorVisitor(SymbolTable<string, IValue> symbolTable, VBAPredefinedCompilationConstants predefinedConstants)
+        public VBAPreprocessorVisitor(
+            SymbolTable<string, IValue> symbolTable, 
+            VBAPredefinedCompilationConstants predefinedConstants,
+            VBAOptionCompare optionCompare)
         {
             _symbolTable = symbolTable;
             _symbolTable.Add(VBAPredefinedCompilationConstants.VBA6_NAME, new BoolValue(predefinedConstants.VBA6));
@@ -18,6 +22,7 @@ namespace Rubberduck.Parsing.Preprocessing
             _symbolTable.Add(VBAPredefinedCompilationConstants.WIN32_NAME, new BoolValue(predefinedConstants.Win32));
             _symbolTable.Add(VBAPredefinedCompilationConstants.WIN16_NAME, new BoolValue(predefinedConstants.Win16));
             _symbolTable.Add(VBAPredefinedCompilationConstants.MAC_NAME, new BoolValue(predefinedConstants.Mac));
+            _optionCompare = optionCompare;
         }
 
         public override IExpression VisitCompilationUnit([NotNull] VBAConditionalCompilationParser.CompilationUnitContext context)
@@ -279,42 +284,42 @@ namespace Rubberduck.Parsing.Preprocessing
         {
             var left = Visit(context.ccExpression()[0]);
             var right = Visit(context.ccExpression()[1]);
-            return new LogicalGreaterOrEqualsExpression(left, right);
+            return new LogicalGreaterOrEqualsExpression(left, right, _optionCompare);
         }
 
         private IExpression VisitLeq(VBAConditionalCompilationParser.CcExpressionContext context)
         {
             var left = Visit(context.ccExpression()[0]);
             var right = Visit(context.ccExpression()[1]);
-            return new LogicalLessOrEqualsExpression(left, right);
+            return new LogicalLessOrEqualsExpression(left, right, _optionCompare);
         }
 
         private IExpression VisitGt(VBAConditionalCompilationParser.CcExpressionContext context)
         {
             var left = Visit(context.ccExpression()[0]);
             var right = Visit(context.ccExpression()[1]);
-            return new LogicalGreaterThanExpression(left, right);
+            return new LogicalGreaterThanExpression(left, right, _optionCompare);
         }
 
         private IExpression VisitLt(VBAConditionalCompilationParser.CcExpressionContext context)
         {
             var left = Visit(context.ccExpression()[0]);
             var right = Visit(context.ccExpression()[1]);
-            return new LogicalLessThanExpression(left, right);
+            return new LogicalLessThanExpression(left, right, _optionCompare);
         }
 
         private IExpression VisitNeq(VBAConditionalCompilationParser.CcExpressionContext context)
         {
             var left = Visit(context.ccExpression()[0]);
             var right = Visit(context.ccExpression()[1]);
-            return new LogicalNotEqualsExpression(left, right);
+            return new LogicalNotEqualsExpression(left, right, _optionCompare);
         }
 
         private IExpression VisitEq(VBAConditionalCompilationParser.CcExpressionContext context)
         {
             var left = Visit(context.ccExpression()[0]);
             var right = Visit(context.ccExpression()[1]);
-            return new LogicalEqualsExpression(left, right);
+            return new LogicalEqualsExpression(left, right, _optionCompare);
         }
 
         private IExpression VisitConcat(VBAConditionalCompilationParser.CcExpressionContext context)

@@ -29,11 +29,13 @@ namespace Rubberduck.Parsing.Preprocessing
                     return false;
                 }
                 var str = _value;
-                if (str.ToLower() == "true" || str == "#TRUE#")
+                if (string.CompareOrdinal(str.ToLower(), "true") == 0
+                    || string.CompareOrdinal(str, "#TRUE#") == 0)
                 {
                     return true;
                 }
-                else if (str.ToLower() == "false" || str == "#FALSE#")
+                else if (string.CompareOrdinal(str.ToLower(), "false") == 0
+                    || string.CompareOrdinal(str, "#FALSE#") == 0)
                 {
                     return false;
                 }

@@ -4,11 +4,13 @@
     {
         private readonly IExpression _left;
         private readonly IExpression _right;
+        private readonly VBAOptionCompare _optionCompare;
 
-        public LogicalEqualsExpression(IExpression left, IExpression right)
+        public LogicalEqualsExpression(IExpression left, IExpression right, VBAOptionCompare optionCompare)
         {
             _left = left;
             _right = right;
+            _optionCompare = optionCompare;
         }
 
         public override IValue Evaluate()
@@ -19,19 +21,20 @@
             {
                 return null;
             }
-            if (left.ValueType == ValueType.String && right.ValueType == ValueType.String)
+            if (
+                (left.ValueType == ValueType.String || left.ValueType == ValueType.Empty)
+                && (right.ValueType == ValueType.String || right.ValueType == ValueType.Empty))
             {
                 var leftValue = left.AsString;
                 var rightValue = right.AsString;
-                return new BoolValue(leftValue == rightValue);
-            }
-            else if (left.ValueType == ValueType.String && right.ValueType == ValueType.Empty)
-            {
-                return new BoolValue(left.AsString== right.AsString);
-            }
-            else if (right.ValueType == ValueType.String && left.ValueType == ValueType.Empty)
-            {
-                return new BoolValue(right.AsString== left.AsString);
+                if (_optionCompare == VBAOptionCompare.Binary)
+                {
+                    return new BoolValue(string.CompareOrdinal(leftValue, rightValue) == 0);
+                }
+                else
+                {
+                    return new BoolValue(leftValue.CompareTo(rightValue) == 0);
+                }
             }
             else
             {

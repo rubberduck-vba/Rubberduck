@@ -231,7 +231,7 @@ namespace Rubberduck.Parsing.VBA
             string preprocessedModuleBody;
             try
             {
-                preprocessedModuleBody = preprocessor.Process(code);
+                preprocessedModuleBody = preprocessor.Execute(code);
             }
             catch (VBAPreprocessorException ex)
             {
