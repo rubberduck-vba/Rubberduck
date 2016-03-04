@@ -13,16 +13,12 @@ namespace Rubberduck.UI.SourceControl
         {
             _newBranchCommand = new DelegateCommand(_ => CreateBranch(), _ => Provider != null);
             _mergeBranchCommand = new DelegateCommand(_ => MergeBranch(), _ => Provider != null);
-            _deleteBranchCommand = new DelegateCommand(_ => DeleteBranch(), _ => Provider != null);
 
             _createBranchOkButtonCommand = new DelegateCommand(_ => CreateBranchOk(), _ => !IsNotValidBranchName);
             _createBranchCancelButtonCommand = new DelegateCommand(_ => CreateBranchCancel());
 
             _mergeBranchesOkButtonCommand = new DelegateCommand(_ => MergeBranchOk(), _ => SourceBranch != DestinationBranch);
             _mergeBranchesCancelButtonCommand = new DelegateCommand(_ => MergeBranchCancel());
-
-            _deleteBranchOkButtonCommand = new DelegateCommand(_ => DeleteBranchOk(), _ => Provider != null && Provider.CurrentBranch.Name != BranchToDelete);
-            _deleteBranchCancelButtonCommand = new DelegateCommand(_ => DeleteBranchCancel());
 
             _deleteBranchToolbarButtonCommand = new DelegateCommand(branch => DeleteBranch((string)branch));
             _publishBranchToolbarButtonCommand = new DelegateCommand(branch => PublishBranch((string)branch));
@@ -217,38 +213,9 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private bool _displayDeleteBranchGrid;
-        public bool DisplayDeleteBranchGrid
-        {
-            get { return _displayDeleteBranchGrid; }
-            set
-            {
-                if (_displayDeleteBranchGrid != value)
-                {
-                    _displayDeleteBranchGrid = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private string _branchToDelete;
-        public string BranchToDelete
-        {
-            get { return _branchToDelete; }
-            set
-            {
-                if (_branchToDelete != value)
-                {
-                    _branchToDelete = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         private void CreateBranch()
         {
             DisplayMergeBranchesGrid = false;
-            DisplayDeleteBranchGrid = false;
 
             DisplayCreateBranchGrid = true;
             NewBranchName = string.Empty;
@@ -257,17 +224,8 @@ namespace Rubberduck.UI.SourceControl
         private void MergeBranch()
         {
             DisplayCreateBranchGrid = false;
-            DisplayDeleteBranchGrid = false;
 
             DisplayMergeBranchesGrid = true;
-        }
-
-        private void DeleteBranch()
-        {
-            DisplayCreateBranchGrid = false;
-            DisplayMergeBranchesGrid = false;
-
-            DisplayDeleteBranchGrid = true;
         }
 
         private void CreateBranchOk()
@@ -299,16 +257,6 @@ namespace Rubberduck.UI.SourceControl
         private void MergeBranchCancel()
         {
             DisplayMergeBranchesGrid = false;
-        }
-
-        private void DeleteBranchOk()
-        {
-            DisplayDeleteBranchGrid = false;
-        }
-
-        private void DeleteBranchCancel()
-        {
-            DisplayDeleteBranchGrid = false;
         }
 
         private void DeleteBranch(string branch)
@@ -357,15 +305,6 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _deleteBranchCommand;
-        public ICommand DeleteBranchCommand
-        {
-            get
-            {
-                return _deleteBranchCommand;
-            }
-        }
-
         private readonly ICommand _createBranchOkButtonCommand;
         public ICommand CreateBranchOkButtonCommand
         {
@@ -399,24 +338,6 @@ namespace Rubberduck.UI.SourceControl
             get
             {
                 return _mergeBranchesCancelButtonCommand;
-            }
-        }
-
-        private readonly ICommand _deleteBranchOkButtonCommand;
-        public ICommand DeleteBranchOkButtonCommand
-        {
-            get
-            {
-                return _deleteBranchOkButtonCommand;
-            }
-        }
-
-        private readonly ICommand _deleteBranchCancelButtonCommand;
-        public ICommand DeleteBranchCancelButtonCommand
-        {
-            get
-            {
-                return _deleteBranchCancelButtonCommand;
             }
         }
 

@@ -143,23 +143,6 @@
                             </StackPanel>
                         </Button>
                     </Grid>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition SharedSizeGroup="Buttons" />
-                        </Grid.ColumnDefinitions>
-                        <Button Margin="6"
-                                Height="25"
-                                Command="{Binding DeleteBranchCommand}">
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="{StaticResource DeleteBranchImage}"
-                                       Margin="5,0"
-                                       Width="16" />
-                                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DeleteBranch}"
-                                           Margin="0,0,5,0"
-                                           VerticalAlignment="Center" />
-                            </StackPanel>
-                        </Button>
-                    </Grid>
                 </WrapPanel>
 
                 <Grid Visibility="{Binding DisplayCreateBranchGrid, Converter={StaticResource BoolToVisibility}}">
@@ -192,7 +175,8 @@
                             </Grid.ColumnDefinitions>
                             <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
                                     Padding="5"
-                                    Command="{Binding CreateBranchOkButtonCommand}">
+                                    Command="{Binding CreateBranchOkButtonCommand}"
+                                    CommandParameter="{Binding }">
                             </Button>
                             <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
                                     Grid.Column="1"
@@ -249,36 +233,6 @@
                                     Margin="10,0,0,0"
                                     Padding="5"
                                     Command="{Binding MergeBranchesCancelButtonCommand}">
-                            </Button>
-                        </Grid>
-                    </StackPanel>
-                </Grid>
-
-                <Grid Visibility="{Binding DisplayDeleteBranchGrid, Converter={StaticResource BoolToVisibility}}">
-                    <StackPanel VerticalAlignment="Top"
-                                Margin="10,5">
-                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DeleteBranchTitleLable}"
-                                   FontWeight="SemiBold"
-                                   Margin="0,0,0,5" />
-                        <ComboBox ItemsSource="{Binding LocalBranches}"
-                                  SelectedItem="{Binding BranchToDelete, Mode=TwoWay}"
-                                  Margin="0,0,0,10"/>
-
-                        <Grid Grid.IsSharedSizeScope="True"
-                              HorizontalAlignment="Right">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition SharedSizeGroup="DeleteBranchButtons" />
-                                <ColumnDefinition SharedSizeGroup="DeleteBranchButtons" />
-                            </Grid.ColumnDefinitions>
-                            <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
-                                    Padding="5"
-                                    Command="{Binding DeleteBranchOkButtonCommand}">
-                            </Button>
-                            <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
-                                    Grid.Column="1"
-                                    Margin="10,0,0,0"
-                                    Padding="5"
-                                    Command="{Binding DeleteBranchCancelButtonCommand}">
                             </Button>
                         </Grid>
                     </StackPanel>
