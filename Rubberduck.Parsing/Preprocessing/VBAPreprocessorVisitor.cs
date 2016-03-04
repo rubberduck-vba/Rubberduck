@@ -8,12 +8,10 @@ namespace Rubberduck.Parsing.Preprocessing
     public sealed class VBAPreprocessorVisitor : VBAConditionalCompilationBaseVisitor<IExpression>
     {
         private readonly SymbolTable<string, IValue> _symbolTable;
-        private readonly VBAOptionCompare _optionCompare;
 
         public VBAPreprocessorVisitor(
             SymbolTable<string, IValue> symbolTable, 
-            VBAPredefinedCompilationConstants predefinedConstants,
-            VBAOptionCompare optionCompare)
+            VBAPredefinedCompilationConstants predefinedConstants)
         {
             _symbolTable = symbolTable;
             _symbolTable.Add(VBAPredefinedCompilationConstants.VBA6_NAME, new BoolValue(predefinedConstants.VBA6));
@@ -22,7 +20,6 @@ namespace Rubberduck.Parsing.Preprocessing
             _symbolTable.Add(VBAPredefinedCompilationConstants.WIN32_NAME, new BoolValue(predefinedConstants.Win32));
             _symbolTable.Add(VBAPredefinedCompilationConstants.WIN16_NAME, new BoolValue(predefinedConstants.Win16));
             _symbolTable.Add(VBAPredefinedCompilationConstants.MAC_NAME, new BoolValue(predefinedConstants.Mac));
-            _optionCompare = optionCompare;
         }
 
         public override IExpression VisitCompilationUnit([NotNull] VBAConditionalCompilationParser.CompilationUnitContext context)
@@ -228,7 +225,7 @@ namespace Rubberduck.Parsing.Preprocessing
             var intrinsicFunction = context.intrinsicFunction();
             var functionName = intrinsicFunction.intrinsicFunctionName().GetText();
             var argument = Visit(intrinsicFunction.ccExpression());
-            return VBAEnvironment.CreateLibraryFunction(functionName, argument);
+            return VBALibrary.CreateLibraryFunction(functionName, argument);
         }
 
         private IExpression VisitLike(VBAConditionalCompilationParser.CcExpressionContext context)
@@ -284,42 +281,42 @@ namespace Rubberduck.Parsing.Preprocessing
         {
             var left = Visit(context.ccExpression()[0]);
             var right = Visit(context.ccExpression()[1]);
-            return new LogicalGreaterOrEqualsExpression(left, right, _optionCompare);
+            return new LogicalGreaterOrEqualsExpression(left, right);
         }
 
         private IExpression VisitLeq(VBAConditionalCompilationParser.CcExpressionContext context)
         {
             var left = Visit(context.ccExpression()[0]);
             var right = Visit(context.ccExpression()[1]);
-            return new LogicalLessOrEqualsExpression(left, right, _optionCompare);
+            return new LogicalLessOrEqualsExpression(left, right);
         }
 
         private IExpression VisitGt(VBAConditionalCompilationParser.CcExpressionContext context)
         {
             var left = Visit(context.ccExpression()[0]);
             var right = Visit(context.ccExpression()[1]);
-            return new LogicalGreaterThanExpression(left, right, _optionCompare);
+            return new LogicalGreaterThanExpression(left, right);
         }
 
         private IExpression VisitLt(VBAConditionalCompilationParser.CcExpressionContext context)
         {
             var left = Visit(context.ccExpression()[0]);
             var right = Visit(context.ccExpression()[1]);
-            return new LogicalLessThanExpression(left, right, _optionCompare);
+            return new LogicalLessThanExpression(left, right);
         }
 
         private IExpression VisitNeq(VBAConditionalCompilationParser.CcExpressionContext context)
         {
             var left = Visit(context.ccExpression()[0]);
             var right = Visit(context.ccExpression()[1]);
-            return new LogicalNotEqualsExpression(left, right, _optionCompare);
+            return new LogicalNotEqualsExpression(left, right);
         }
 
         private IExpression VisitEq(VBAConditionalCompilationParser.CcExpressionContext context)
         {
             var left = Visit(context.ccExpression()[0]);
             var right = Visit(context.ccExpression()[1]);
-            return new LogicalEqualsExpression(left, right, _optionCompare);
+            return new LogicalEqualsExpression(left, right);
         }
 
         private IExpression VisitConcat(VBAConditionalCompilationParser.CcExpressionContext context)

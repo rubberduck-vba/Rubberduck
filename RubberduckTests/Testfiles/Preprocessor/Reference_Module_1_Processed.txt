@@ -1,7 +1,6 @@
 Attribute VB_Name = "fnCheckPri"
 Option Explicit
 Option Private Module
-Option Compare Text
 
 Private Const ThisModule As String = ThisProject & "|fnCheckPri"
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Preprocessing
 {
-    public static class VBAEnvironment
+    public static class VBALibrary
     {
         private static readonly Dictionary<string, Func<IExpression, IExpression>> _libraryFunctions = new Dictionary<string, Func<IExpression, IExpression>>()
         {
