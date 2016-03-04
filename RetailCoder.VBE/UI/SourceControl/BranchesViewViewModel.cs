@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows.Input;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
-// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -34,13 +33,18 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _provider = value;
-                OnPropertyChanged("LocalBranches");
-                OnPropertyChanged("PublishedBranches");
-                OnPropertyChanged("UnpublishedBranches");
-                OnPropertyChanged("Branches");
-
-                CurrentBranch = _provider.CurrentBranch.Name;
+                RefreshView();
             }
+        }
+
+        public void RefreshView()
+        {
+            OnPropertyChanged("LocalBranches");
+            OnPropertyChanged("PublishedBranches");
+            OnPropertyChanged("UnpublishedBranches");
+            OnPropertyChanged("Branches");
+
+            CurrentBranch = _provider.CurrentBranch.Name;
         }
 
         public ObservableCollection<string> Branches
@@ -258,6 +262,8 @@ namespace Rubberduck.UI.SourceControl
 
             DisplayCreateBranchGrid = false;
             NewBranchName = string.Empty;
+
+            RefreshView();
         }
 
         private void CreateBranchCancel()
@@ -287,10 +293,7 @@ namespace Rubberduck.UI.SourceControl
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message);
             }
 
-            OnPropertyChanged("LocalBranches");
-            OnPropertyChanged("PublishedBranches");
-            OnPropertyChanged("UnpublishedBranches");
-            OnPropertyChanged("Branches");
+            RefreshView();
         }
 
         private void PublishBranch(string branch)
@@ -304,10 +307,7 @@ namespace Rubberduck.UI.SourceControl
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message);
             }
 
-            OnPropertyChanged("LocalBranches");
-            OnPropertyChanged("PublishedBranches");
-            OnPropertyChanged("UnpublishedBranches");
-            OnPropertyChanged("Branches");
+            RefreshView();
         }
 
         private void UnpublishBranch(string branch)
@@ -321,10 +321,7 @@ namespace Rubberduck.UI.SourceControl
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message);
             }
 
-            OnPropertyChanged("LocalBranches");
-            OnPropertyChanged("PublishedBranches");
-            OnPropertyChanged("UnpublishedBranches");
-            OnPropertyChanged("Branches");
+            RefreshView();
         }
 
         private readonly ICommand _newBranchCommand;
