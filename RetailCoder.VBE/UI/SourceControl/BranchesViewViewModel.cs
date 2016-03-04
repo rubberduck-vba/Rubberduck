@@ -21,10 +21,9 @@ namespace Rubberduck.UI.SourceControl
             _mergeBranchesCancelButtonCommand = new DelegateCommand(_ => MergeBranchCancel());
 
             _deleteBranchToolbarButtonCommand = new DelegateCommand(branch => DeleteBranch((string)branch));
-            _publishBranchToolbarButtonCommand = new DelegateCommand(branch => PublishBranch((string) branch),
-                branch =>
-                    Provider != null && Provider.Branches.Any(b => b.Name == (string) branch) &&
-                    Provider.Branches.First(b => b.Name == (string) branch).IsRemote);
+            _publishBranchToolbarButtonCommand = new DelegateCommand(branch => PublishBranch((string) branch));
+
+            _unpublishBranchToolbarButtonCommand = new DelegateCommand(branch => UnpublishBranch((string)branch));
         }
 
         private ISourceControlProvider _provider;
@@ -35,9 +34,25 @@ namespace Rubberduck.UI.SourceControl
             {
                 _provider = value;
                 LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
+                PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name.Split('/').Last()));
+                UnpublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
                 Branches = new ObservableCollection<string>(_provider.Branches.Select(b => b.Name));
 
                 CurrentBranch = _provider.CurrentBranch.Name;
+            }
+        }
+
+        private ObservableCollection<string> _branches;
+        public ObservableCollection<string> Branches
+        {
+            get { return _branches; }
+            set
+            {
+                if (_branches != value)
+                {
+                    _branches = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -55,15 +70,29 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private ObservableCollection<string> _branches;
-        public ObservableCollection<string> Branches
+        private ObservableCollection<string> _publishedBranches;
+        public ObservableCollection<string> PublishedBranches
         {
-            get { return _branches; }
+            get { return _publishedBranches; }
             set
             {
-                if (_branches != value)
+                if (_publishedBranches != value)
                 {
-                    _branches = value;
+                    _publishedBranches = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private ObservableCollection<string> _unpublishedBranches;
+        public ObservableCollection<string> UnpublishedBranches
+        {
+            get { return _unpublishedBranches; }
+            set
+            {
+                if (_unpublishedBranches != value)
+                {
+                    _unpublishedBranches = value;
                     OnPropertyChanged();
                 }
             }
@@ -273,7 +302,9 @@ namespace Rubberduck.UI.SourceControl
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message);
             }
 
-            Branches = new ObservableCollection<string>(_provider.Branches.Select(b => b.Name));
+            LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
+            PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name.Split('/').Last()));
+            UnpublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
         }
 
         private void PublishBranch(string branch)
@@ -287,7 +318,25 @@ namespace Rubberduck.UI.SourceControl
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message);
             }
 
-            Branches = new ObservableCollection<string>(_provider.Branches.Select(b => b.Name));
+            LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
+            PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name.Split('/').Last()));
+            UnpublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
+        }
+
+        private void UnpublishBranch(string branch)
+        {
+            /*try
+            {
+                Provider.Unpublish(branch);
+            }
+            catch (SourceControlException ex)
+            {
+                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
+            }
+
+            LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
+            PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name.Split('/').Last()));
+            UnpublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));*/
         }
 
         private readonly ICommand _newBranchCommand;
@@ -357,6 +406,12 @@ namespace Rubberduck.UI.SourceControl
         public ICommand PublishBranchToolbarButtonCommand
         {
             get { return _publishBranchToolbarButtonCommand; }
+        }
+
+        private readonly ICommand _unpublishBranchToolbarButtonCommand;
+        public ICommand UnpublishBranchToolbarButtonCommand
+        {
+            get { return _unpublishBranchToolbarButtonCommand; }
         }
 
         public event EventHandler<ErrorEventArgs> ErrorThrown;
