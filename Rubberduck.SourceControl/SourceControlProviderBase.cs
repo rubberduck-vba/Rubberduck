@@ -41,6 +41,7 @@ namespace Rubberduck.SourceControl
         public abstract IRepository Init(string directory, bool bare = false);
         public abstract void Commit(string message);
         public abstract void Publish(string branch);
+        public abstract void Unpublish(string branch);
 
         public virtual void CreateBranch(string sourceBranch, string branch)
         {

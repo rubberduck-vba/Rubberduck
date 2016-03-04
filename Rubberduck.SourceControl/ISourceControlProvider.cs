@@ -137,5 +137,11 @@ namespace Rubberduck.SourceControl
         /// </summary>
         /// <param name="branch">The name of the branch to publish</param>
         void Publish(string branch);
+
+        /// <summary>
+        /// Unpublish a remote branch.
+        /// </summary>
+        /// <param name="branch">The name of the branch to unpublish</param>
+        void Unpublish(string branch);
     }
 }
