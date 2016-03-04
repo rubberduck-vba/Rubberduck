@@ -1,0 +1,61 @@
+Attribute VB_Name = "vbVarTypeNamePri"
+Option Explicit
+Option Private Module
+
+Private Const ThisModule As String = ThisProject & "|vbVarTypeNamePri"
+
+Private Sub VarTypeNameTest()
+    Const ThisProcedure As String = ThisModule & "|VarTypeNameTest|Sub"
+    Dim v As Boolean
+Debug.Print VarTypeName(v)
+End Sub
+
+Public Function VarTypeName(Var As Variant) As String
+    Const ThisProcedure As String = ThisModule & "|VarTypeName|Function"
+    Dim lvArrayType As VBA.VbVarType
+    Dim lvVarType As VBA.VbVarType
+
+    lvArrayType = VBA.VarType(Var) And VBA.VbVarType.vbArray
+    lvVarType = VBA.VarType(Var) And Not VBA.VbVarType.vbArray
+
+    Select Case lvVarType
+    Case VBA.VbVarType.vbEmpty           '  0 Empty (nicht initialisiert)
+        VarTypeName = "Empty"
+    Case VBA.VbVarType.vbNull            '  1 Null (keine gültigen Daten)
+        VarTypeName = "Null"
+    Case VBA.VbVarType.vbInteger         '  2 Ganzzahl (Integer)
+        VarTypeName = "Integer"
+    Case VBA.VbVarType.vbLong            '  3 Ganzzahl (Long)
+        VarTypeName = "Long"
+    Case VBA.VbVarType.vbSingle          '  4 Fließkommazahl einfacher Genauigkeit
+        VarTypeName = "Single"
+    Case VBA.VbVarType.vbDouble          '  5 Fließkommazahl doppelter Genauigkeit
+        VarTypeName = "Double"
+    Case VBA.VbVarType.vbCurrency        '  6 Währungsbetrag (Currency)
+        VarTypeName = "Currency"
+    Case VBA.VbVarType.vbDate            '  7 Datumswert (Date)
+        VarTypeName = "Date"
+    Case VBA.VbVarType.vbString          '  8 Zeichenfolge (String)
+        VarTypeName = "String"
+    Case VBA.VbVarType.vbObject          '  9 Objekt
+        VarTypeName = "Object"
+    Case VBA.VbVarType.vbError           ' 10 Fehlerwert
+        VarTypeName = "Error"
+    Case VBA.VbVarType.vbBoolean         ' 11 Boolescher Wert (Boolean)
+        VarTypeName = "Boolean"
+    Case VBA.VbVarType.vbVariant         ' 12 Variant (nur bei Datenfeldern mit Variant-Werten)
+        VarTypeName = "Variant"
+    Case VBA.VbVarType.vbDataObject      ' 13 Ein Datenzugriffsobjekt
+        VarTypeName = "DataObject"
+    Case VBA.VbVarType.vbDecimal         ' 14 Dezimalwert
+        VarTypeName = "Decimal"
+    Case VBA.VbVarType.vbByte            ' 17 Byte-Wert
+        VarTypeName = "Byte"
+    Case Else
+        On Error GoTo 0
+        RaiseLogicError Source:="VarTypeName"
+    End Select
+    If lvArrayType = VBA.VbVarType.vbArray Then       ' 8192 Datenfeld (Array)
+        VarTypeName = VarTypeName & "()"
+    End If
+End Function

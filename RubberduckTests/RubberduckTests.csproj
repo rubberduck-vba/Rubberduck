@@ -80,6 +80,7 @@
     <Compile Include="ComponentTypeExtensionTests.cs" />
     <Compile Include="ConfigurationTests.cs" />
     <Compile Include="Grammar\VBAParserTests.cs" />
+    <Compile Include="Grammar\VBAParserValidityTests.cs" />
     <Compile Include="Inspections\EncapsulatePublicFieldInspectionTests.cs" />
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspectionTests.cs" />
@@ -168,6 +169,72 @@
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Testfiles\Grammar\Reference_Module_1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_10.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_11.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_12.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_13.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_14.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_15.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_16.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_17.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_18.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_19.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_20.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_21.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_3.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_4.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_5.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_6.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_7.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_8.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_9.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
