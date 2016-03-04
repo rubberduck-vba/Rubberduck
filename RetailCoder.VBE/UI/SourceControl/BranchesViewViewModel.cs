@@ -21,7 +21,10 @@ namespace Rubberduck.UI.SourceControl
             _mergeBranchesCancelButtonCommand = new DelegateCommand(_ => MergeBranchCancel());
 
             _deleteBranchToolbarButtonCommand = new DelegateCommand(branch => DeleteBranch((string)branch));
-            _publishBranchToolbarButtonCommand = new DelegateCommand(branch => PublishBranch((string)branch));
+            _publishBranchToolbarButtonCommand = new DelegateCommand(branch => PublishBranch((string) branch),
+                branch =>
+                    Provider != null && Provider.Branches.Any(b => b.Name == (string) branch) &&
+                    Provider.Branches.First(b => b.Name == (string) branch).IsRemote);
         }
 
         private ISourceControlProvider _provider;
