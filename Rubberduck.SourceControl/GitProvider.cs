@@ -478,6 +478,7 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        // bug: this does not work for completely removing published branches
         public override void DeleteBranch(string branchName)
         {
             try
@@ -496,8 +497,7 @@ namespace Rubberduck.SourceControl
                             };
                         }
 
-                        _repo.Network.Push(branch.Remote, ":refs/heads/" + branchName.Split('/').Last(),
-                            options);
+                        _repo.Network.Push(branch.Remote, ":" + _repo.Branches[branchName].UpstreamBranchCanonicalName, options);
                     }
                     else
                     {
