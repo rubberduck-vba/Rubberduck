@@ -30,11 +30,6 @@ namespace Rubberduck.UI.SourceControl
                 _provider = value;
                 _provider.BranchChanged += Provider_BranchChanged;
 
-                CurrentBranch = Provider.CurrentBranch.Name;
-
-                IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
-                OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
-
                 switch (_action)
                 {
                     case CurrentAction.Push:
@@ -46,7 +41,17 @@ namespace Rubberduck.UI.SourceControl
                 }
 
                 _action = CurrentAction.None;
+
+                RefreshView();
             }
+        }
+
+        public void RefreshView()
+        {
+            CurrentBranch = Provider.CurrentBranch.Name;
+
+            IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
+            OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
         }
 
         private void Provider_BranchChanged(object sender, EventArgs e)
@@ -102,8 +107,7 @@ namespace Rubberduck.UI.SourceControl
             {
                 Provider.Fetch();
 
-                IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
-                OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
+                RefreshView();
             }
             catch (SourceControlException ex)
             {
@@ -117,8 +121,7 @@ namespace Rubberduck.UI.SourceControl
             {
                 Provider.Pull();
 
-                IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
-                OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
+                RefreshView();
             }
             catch (SourceControlException ex)
             {
@@ -132,8 +135,7 @@ namespace Rubberduck.UI.SourceControl
             {
                 Provider.Push();
 
-                IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
-                OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
+                RefreshView();
             }
             catch (SourceControlException ex)
             {
@@ -153,8 +155,7 @@ namespace Rubberduck.UI.SourceControl
                 Provider.Pull();
                 Provider.Push();
 
-                IncomingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedRemoteCommits);
-                OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
+                RefreshView();
             }
             catch (SourceControlException ex)
             {

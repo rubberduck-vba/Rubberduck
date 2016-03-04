@@ -332,7 +332,7 @@ namespace Rubberduck.UI.SourceControl
             DisplayCloneRepoGrid = false;
         }
 
-        private void Refresh()
+        private void OpenRepoAssignedToProject()
         {
             if (!ValidRepoExists())
             {
@@ -349,6 +349,21 @@ namespace Rubberduck.UI.SourceControl
             {
                 ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message));
                 Status = RubberduckUI.Offline;
+            }
+        }
+
+        private void Refresh()
+        {
+            if (Provider == null)
+            {
+                OpenRepoAssignedToProject();
+            }
+            else
+            {
+                foreach (var tab in TabItems)
+                {
+                    tab.ViewModel.RefreshView();
+                }
             }
         }
 

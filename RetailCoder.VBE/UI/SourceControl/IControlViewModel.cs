@@ -19,5 +19,7 @@ namespace Rubberduck.UI.SourceControl
     {
         ISourceControlProvider Provider { get; set; }
         event EventHandler<ErrorEventArgs> ErrorThrown;
+
+        void RefreshView();
     }
 }

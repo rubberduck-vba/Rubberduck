@@ -40,13 +40,6 @@ namespace Rubberduck.UI.SourceControl
                 _provider = value;
                 _provider.BranchChanged += Provider_BranchChanged;
 
-                CurrentBranch = Provider.CurrentBranch.Name;
-
-                var fileStats = Provider.Status().ToList();
-
-                IncludedChanges = new ObservableCollection<IFileStatusEntry>(fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Modified)));
-                UntrackedFiles = new ObservableCollection<IFileStatusEntry>(fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)));
-
                 switch (_action)
                 {
                     case CurrentAction.Push:
@@ -58,7 +51,19 @@ namespace Rubberduck.UI.SourceControl
                 }
 
                 _action = CurrentAction.None;
+
+                RefreshView();
             }
+        }
+
+        public void RefreshView()
+        {
+            CurrentBranch = Provider.CurrentBranch.Name;
+
+            var fileStats = Provider.Status().ToList();
+
+            IncludedChanges = new ObservableCollection<IFileStatusEntry>(fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Modified)));
+            UntrackedFiles = new ObservableCollection<IFileStatusEntry>(fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)));
         }
 
         private void Provider_BranchChanged(object sender, EventArgs e)
