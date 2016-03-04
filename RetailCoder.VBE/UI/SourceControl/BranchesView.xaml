@@ -288,6 +288,15 @@
                     <ToolBarTray DockPanel.Dock="Top"
                                  IsLocked="True">
                         <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
+                            <Button Command="{Binding PublishBranchToolbarButtonCommand}"
+                                    CommandParameter="{Binding ElementName=BranchList, Path=SelectedItem}"
+                                    IsEnabled="{Binding ElementName=BranchList, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PublishBranchButton}"
+                                               Margin="2,0"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
                             <Button Command="{Binding DeleteBranchToolbarButtonCommand}"
                                     CommandParameter="{Binding ElementName=BranchList, Path=SelectedItem}"
                                     IsEnabled="{Binding ElementName=BranchList, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">

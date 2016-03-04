@@ -131,5 +131,11 @@ namespace Rubberduck.SourceControl
         /// </summary>
         /// <param name="filePaths"></param>
         void Stage(IEnumerable<string> filePaths);
+
+        /// <summary>
+        /// Publish a local branch.
+        /// </summary>
+        /// <param name="branch">The name of the branch to publish</param>
+        void Publish(string branch);
     }
 }

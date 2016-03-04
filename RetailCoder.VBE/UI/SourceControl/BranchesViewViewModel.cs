@@ -24,7 +24,8 @@ namespace Rubberduck.UI.SourceControl
             _deleteBranchOkButtonCommand = new DelegateCommand(_ => DeleteBranchOk(), _ => Provider != null && Provider.CurrentBranch.Name != BranchToDelete);
             _deleteBranchCancelButtonCommand = new DelegateCommand(_ => DeleteBranchCancel());
 
-            _deleteBranchToolbarButtonCommand = new DelegateCommand(branch => DeleteRemoteBranch((string)branch));
+            _deleteBranchToolbarButtonCommand = new DelegateCommand(branch => DeleteBranch((string)branch));
+            _publishBranchToolbarButtonCommand = new DelegateCommand(branch => PublishBranch((string)branch));
         }
 
         private ISourceControlProvider _provider;
@@ -271,12 +272,17 @@ namespace Rubberduck.UI.SourceControl
 
         private void CreateBranchOk()
         {
-            Provider.CreateBranch(CreateBranchSource, NewBranchName);
+            try
+            {
+                Provider.CreateBranch(CreateBranchSource, NewBranchName);
+            }
+            catch (SourceControlException ex)
+            {
+                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
+            }
 
             DisplayCreateBranchGrid = false;
             NewBranchName = string.Empty;
-
-
         }
 
         private void CreateBranchCancel()
@@ -305,11 +311,25 @@ namespace Rubberduck.UI.SourceControl
             DisplayDeleteBranchGrid = false;
         }
 
-        private void DeleteRemoteBranch(string branch)
+        private void DeleteBranch(string branch)
         {
             try
             {
                 Provider.DeleteBranch(branch);
+            }
+            catch (SourceControlException ex)
+            {
+                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
+            }
+
+            Branches = new ObservableCollection<string>(_provider.Branches.Select(b => b.Name));
+        }
+
+        private void PublishBranch(string branch)
+        {
+            try
+            {
+                Provider.Publish(branch);
             }
             catch (SourceControlException ex)
             {
@@ -407,6 +427,12 @@ namespace Rubberduck.UI.SourceControl
             {
                 return _deleteBranchToolbarButtonCommand;
             }
+        }
+
+        private readonly ICommand _publishBranchToolbarButtonCommand;
+        public ICommand PublishBranchToolbarButtonCommand
+        {
+            get { return _publishBranchToolbarButtonCommand; }
         }
 
         public event EventHandler<ErrorEventArgs> ErrorThrown;

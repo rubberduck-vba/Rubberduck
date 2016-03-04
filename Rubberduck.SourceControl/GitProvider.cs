@@ -354,6 +354,30 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        public override void Publish(string branch)
+        {
+            try
+            {
+                _repo.Branches.Update(_repo.Branches[branch], b => b.Remote = _repo.Network.Remotes["origin"].Name,
+                    b => b.UpstreamBranch = _repo.Branches[branch].CanonicalName);
+
+                PushOptions options = null;
+                if (_credentials != null)
+                {
+                    options = new PushOptions
+                    {
+                        CredentialsProvider = _credentialsHandler
+                    };
+                }
+
+                _repo.Network.Push(_repo.Branches[branch], options);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Publish failed.", ex);
+            }
+        }
+
         public override void Revert()
         {
             try
