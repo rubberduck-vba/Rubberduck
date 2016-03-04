@@ -34,7 +34,7 @@ namespace Rubberduck.UI.SourceControl
             {
                 _provider = value;
                 LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
-                PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name.Split('/').Last()));
+                PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name));
                 UnpublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote && PublishedBranches.All(p => b.Name != p)).Select(b => b.Name));
                 Branches = new ObservableCollection<string>(_provider.Branches.Select(b => b.Name));
 
@@ -303,7 +303,7 @@ namespace Rubberduck.UI.SourceControl
             }
 
             LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
-            PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name.Split('/').Last()));
+            PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name));
             UnpublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote && PublishedBranches.All(p => b.Name != p)).Select(b => b.Name));
             Branches = new ObservableCollection<string>(_provider.Branches.Select(b => b.Name));
         }
@@ -320,7 +320,7 @@ namespace Rubberduck.UI.SourceControl
             }
 
             LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
-            PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name.Split('/').Last()));
+            PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name));
             UnpublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote && PublishedBranches.All(p => b.Name != p)).Select(b => b.Name));
             Branches = new ObservableCollection<string>(_provider.Branches.Select(b => b.Name));
         }
@@ -337,7 +337,7 @@ namespace Rubberduck.UI.SourceControl
             }
 
             LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
-            PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name.Split('/').Last()));
+            PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name));
             UnpublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote && PublishedBranches.All(p => b.Name != p)).Select(b => b.Name));
             Branches = new ObservableCollection<string>(_provider.Branches.Select(b => b.Name));
         }
