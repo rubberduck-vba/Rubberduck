@@ -33,7 +33,14 @@ namespace Rubberduck.Parsing.VBA
         {
             if (!_state.ParseTrees.Any())
             {
-                _state.AddBuiltInDeclarations(_vbe.HostApplication());
+                var projects = _vbe.VBProjects.Cast<VBProject>().ToList();
+                if (projects.Any())
+                {
+                    var comReflector = new ReferencedDeclarationsCollector();
+                    var project = projects.First();
+                    comReflector.DebugOutputAllReferences(project.References);
+                }
+                //_state.AddBuiltInDeclarations(_vbe.HostApplication());
             }
             await ParseParallel();
         }
