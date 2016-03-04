@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Input;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -33,68 +34,52 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _provider = value;
-                LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
-                PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name));
-                UnpublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote && PublishedBranches.All(p => b.Name != p)).Select(b => b.Name));
-                Branches = new ObservableCollection<string>(_provider.Branches.Select(b => b.Name));
+                OnPropertyChanged("LocalBranches");
+                OnPropertyChanged("PublishedBranches");
+                OnPropertyChanged("UnpublishedBranches");
+                OnPropertyChanged("Branches");
 
                 CurrentBranch = _provider.CurrentBranch.Name;
             }
         }
 
-        private ObservableCollection<string> _branches;
         public ObservableCollection<string> Branches
         {
-            get { return _branches; }
-            set
+            get
             {
-                if (_branches != value)
-                {
-                    _branches = value;
-                    OnPropertyChanged();
-                }
+                return Provider == null
+                  ? new ObservableCollection<string>()
+                  : new ObservableCollection<string>(Provider.Branches.Select(b => b.Name));
             }
         }
 
-        private ObservableCollection<string> _localBranches;
         public ObservableCollection<string> LocalBranches
         {
-            get { return _localBranches; }
-            set
+            get
             {
-                if (_localBranches != value)
-                {
-                    _localBranches = value;
-                    OnPropertyChanged();
-                }
+                return Provider == null
+                    ? new ObservableCollection<string>()
+                    : new ObservableCollection<string>(Provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
             }
         }
 
-        private ObservableCollection<string> _publishedBranches;
         public ObservableCollection<string> PublishedBranches
         {
-            get { return _publishedBranches; }
-            set
+            get
             {
-                if (_publishedBranches != value)
-                {
-                    _publishedBranches = value;
-                    OnPropertyChanged();
-                }
+                return Provider == null
+                    ? new ObservableCollection<string>()
+                    : new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote && !string.IsNullOrEmpty(b.TrackingName)).Select(b => b.Name));
             }
         }
 
-        private ObservableCollection<string> _unpublishedBranches;
         public ObservableCollection<string> UnpublishedBranches
         {
-            get { return _unpublishedBranches; }
-            set
+            get
             {
-                if (_unpublishedBranches != value)
-                {
-                    _unpublishedBranches = value;
-                    OnPropertyChanged();
-                }
+                return Provider == null
+                    ? new ObservableCollection<string>()
+                    : new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote && string.IsNullOrEmpty(b.TrackingName)).Select(b => b.Name));
             }
         }
 
@@ -302,10 +287,10 @@ namespace Rubberduck.UI.SourceControl
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message);
             }
 
-            LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
-            PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name));
-            UnpublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote && PublishedBranches.All(p => b.Name != p)).Select(b => b.Name));
-            Branches = new ObservableCollection<string>(_provider.Branches.Select(b => b.Name));
+            OnPropertyChanged("LocalBranches");
+            OnPropertyChanged("PublishedBranches");
+            OnPropertyChanged("UnpublishedBranches");
+            OnPropertyChanged("Branches");
         }
 
         private void PublishBranch(string branch)
@@ -319,27 +304,27 @@ namespace Rubberduck.UI.SourceControl
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message);
             }
 
-            LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
-            PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name));
-            UnpublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote && PublishedBranches.All(p => b.Name != p)).Select(b => b.Name));
-            Branches = new ObservableCollection<string>(_provider.Branches.Select(b => b.Name));
+            OnPropertyChanged("LocalBranches");
+            OnPropertyChanged("PublishedBranches");
+            OnPropertyChanged("UnpublishedBranches");
+            OnPropertyChanged("Branches");
         }
 
         private void UnpublishBranch(string branch)
         {
             try
             {
-                Provider.Unpublish(branch);
+                Provider.Unpublish(Provider.Branches.First(b => b.Name == branch).TrackingName);
             }
             catch (SourceControlException ex)
             {
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message);
             }
 
-            LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
-            PublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => b.IsRemote).Select(b => b.Name));
-            UnpublishedBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote && PublishedBranches.All(p => b.Name != p)).Select(b => b.Name));
-            Branches = new ObservableCollection<string>(_provider.Branches.Select(b => b.Name));
+            OnPropertyChanged("LocalBranches");
+            OnPropertyChanged("PublishedBranches");
+            OnPropertyChanged("UnpublishedBranches");
+            OnPropertyChanged("Branches");
         }
 
         private readonly ICommand _newBranchCommand;
