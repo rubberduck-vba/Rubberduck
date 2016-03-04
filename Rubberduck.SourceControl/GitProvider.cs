@@ -339,6 +339,21 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        public override void CreateBranch(string sourceBranch, string branch)
+        {
+            try
+            {
+                _repo.CreateBranch(branch, _repo.Branches[sourceBranch].Commits.Last());
+                _repo.Checkout(branch);
+
+                RequeryUnsyncedCommits();
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Branch creation failed.", ex);
+            }
+        }
+
         public override void Revert()
         {
             try

@@ -3105,15 +3105,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Published Branches.
-        /// </summary>
-        public static string SourceControl_PublishedBranchesLabel {
-            get {
-                return ResourceManager.GetString("SourceControl_PublishedBranchesLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Pull.
         /// </summary>
         public static string SourceControl_PullCommitsLabel {
@@ -3168,6 +3159,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Source Branch:.
+        /// </summary>
+        public static string SourceControl_SourceBranch {
+            get {
+                return ResourceManager.GetString("SourceControl_SourceBranch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Source.
         /// </summary>
         public static string SourceControl_SourceLabel {
@@ -3200,15 +3200,6 @@ namespace Rubberduck.UI {
         public static string SourceControl_UnpublishBranchButton {
             get {
                 return ResourceManager.GetString("SourceControl_UnpublishBranchButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unpublished Branches.
-        /// </summary>
-        public static string SourceControl_UnpublishedBranchesLabel {
-            get {
-                return ResourceManager.GetString("SourceControl_UnpublishedBranchesLabel", resourceCulture);
             }
         }
         

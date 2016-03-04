@@ -79,6 +79,13 @@ namespace Rubberduck.SourceControl
         void CreateBranch(string branch);
 
         /// <summary>
+        /// Creates and checks out a new branch.
+        /// </summary>
+        /// <param name="sourceBranch">Name of the branch to base the new branch on.</param>
+        /// <param name="branch">Name of the branch to be created.</param>
+        void CreateBranch(string sourceBranch, string branch);
+
+        /// <summary>
         /// Deletes the specified branch from the local repository.
         /// </summary>
         /// <param name="branch">Name of the branch to be deleted.</param>

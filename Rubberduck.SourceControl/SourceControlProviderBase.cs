@@ -41,6 +41,11 @@ namespace Rubberduck.SourceControl
         public abstract IRepository Init(string directory, bool bare = false);
         public abstract void Commit(string message);
 
+        public virtual void CreateBranch(string sourceBranch, string branch)
+        {
+            Refresh();
+        }
+
         public virtual IRepository InitVBAProject(string directory)
         {
             var projectName = GetProjectNameFromDirectory(directory);

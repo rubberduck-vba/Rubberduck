@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -36,15 +35,10 @@ namespace Rubberduck.UI.SourceControl
             {
                 _provider = value;
                 LocalBranches = new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
-                Branches = new ObservableCollection<string>(RemoteBranches().Select(b => b.Name));
+                Branches = new ObservableCollection<string>(_provider.Branches.Select(b => b.Name));
 
                 CurrentBranch = _provider.CurrentBranch.Name;
             }
-        }
-
-        private IEnumerable<IBranch> RemoteBranches()
-        {
-            return Provider.Branches.Where(b => b.IsRemote && !b.Name.Contains("/HEAD"));
         }
 
         private ObservableCollection<string> _localBranches;
@@ -86,6 +80,8 @@ namespace Rubberduck.UI.SourceControl
                     _currentBranch = value;
                     OnPropertyChanged();
 
+                    CreateBranchSource = value;
+
                     try
                     {
                         Provider.Checkout(_currentBranch);
@@ -107,6 +103,20 @@ namespace Rubberduck.UI.SourceControl
                 if (_displayCreateBranchGrid != value)
                 {
                     _displayCreateBranchGrid = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _createBranchSource;
+        public string CreateBranchSource
+        {
+            get { return _createBranchSource; }
+            set
+            {
+                if (_createBranchSource != value)
+                {
+                    _createBranchSource = value;
                     OnPropertyChanged();
                 }
             }
@@ -261,10 +271,12 @@ namespace Rubberduck.UI.SourceControl
 
         private void CreateBranchOk()
         {
-            Provider.CreateBranch(NewBranchName);
+            Provider.CreateBranch(CreateBranchSource, NewBranchName);
 
             DisplayCreateBranchGrid = false;
             NewBranchName = string.Empty;
+
+
         }
 
         private void CreateBranchCancel()
@@ -304,7 +316,7 @@ namespace Rubberduck.UI.SourceControl
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message);
             }
 
-            Branches = new ObservableCollection<string>(RemoteBranches().Select(b => b.Name));
+            Branches = new ObservableCollection<string>(_provider.Branches.Select(b => b.Name));
         }
 
         private readonly ICommand _newBranchCommand;
