@@ -1,129 +1,446 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
-using Rubberduck.Parsing.Date;
-using Rubberduck.Parsing.Like;
+﻿using Antlr4.Runtime.Misc;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Rubberduck.Parsing.Preprocessing
 {
-    public sealed class VBAPreprocessorVisitor : VBAConditionalCompilationBaseVisitor<object>
+    public sealed class VBAPreprocessorVisitor : VBAConditionalCompilationBaseVisitor<IExpression>
     {
-        private readonly VBAExpressionEvaluator _evaluator;
+        private readonly SymbolTable<string, IValue> _symbolTable;
 
-        public VBAPreprocessorVisitor(SymbolTable symbolTable, VBAPredefinedCompilationConstants predefinedConstants)
+        public VBAPreprocessorVisitor(SymbolTable<string, IValue> symbolTable, VBAPredefinedCompilationConstants predefinedConstants)
         {
-            _evaluator = new VBAExpressionEvaluator(symbolTable);
-            _evaluator.AddConstant(VBAPredefinedCompilationConstants.VBA6_NAME, predefinedConstants.VBA6);
-            _evaluator.AddConstant(VBAPredefinedCompilationConstants.VBA7_NAME, predefinedConstants.VBA7);
-            _evaluator.AddConstant(VBAPredefinedCompilationConstants.WIN64_NAME, predefinedConstants.Win64);
-            _evaluator.AddConstant(VBAPredefinedCompilationConstants.WIN32_NAME, predefinedConstants.Win32);
-            _evaluator.AddConstant(VBAPredefinedCompilationConstants.WIN16_NAME, predefinedConstants.Win16);
-            _evaluator.AddConstant(VBAPredefinedCompilationConstants.MAC_NAME, predefinedConstants.Mac);
+            _symbolTable = symbolTable;
+            _symbolTable.Add(VBAPredefinedCompilationConstants.VBA6_NAME, new BoolValue(predefinedConstants.VBA6));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.VBA7_NAME, new BoolValue(predefinedConstants.VBA7));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN64_NAME, new BoolValue(predefinedConstants.Win64));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN32_NAME, new BoolValue(predefinedConstants.Win32));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN16_NAME, new BoolValue(predefinedConstants.Win16));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.MAC_NAME, new BoolValue(predefinedConstants.Mac));
         }
 
-        public override object VisitCompilationUnit([NotNull] VBAConditionalCompilationParser.CompilationUnitContext context)
+        public override IExpression VisitCompilationUnit([NotNull] VBAConditionalCompilationParser.CompilationUnitContext context)
         {
             return Visit(context.ccBlock());
         }
 
-        public override object VisitLogicalLine([NotNull] VBAConditionalCompilationParser.LogicalLineContext context)
+        public override IExpression VisitLogicalLine([NotNull] VBAConditionalCompilationParser.LogicalLineContext context)
         {
-            return context.GetText();
+            return new ConstantExpression(new StringValue(context.GetText()));
         }
 
-        public override object VisitCcBlock([NotNull] VBAConditionalCompilationParser.CcBlockContext context)
+        public override IExpression VisitCcBlock([NotNull] VBAConditionalCompilationParser.CcBlockContext context)
         {
-            var results = new List<object>();
             if (context.children == null)
             {
-                return string.Empty;
+                return new ConstantExpression(EmptyValue.Value);
             }
-            foreach (var child in context.children)
-            {
-                results.Add(Visit(child));
-            }
-            return string.Join(string.Empty, results);
+            return new ConditionalCompilationBlockExpression(context.children.Select(child => Visit(child)).ToList());
         }
 
-        public override object VisitCcConst([NotNull] VBAConditionalCompilationParser.CcConstContext context)
+        public override IExpression VisitCcConst([NotNull] VBAConditionalCompilationParser.CcConstContext context)
         {
-            // 3.4.1: If <cc-var-lhs> is a <TYPED-NAME> with a <type-suffix>, the <type-suffix> is ignored.
-            var identifier = context.ccVarLhs().name().IDENTIFIER().GetText();
-            _evaluator.EvaluateConstant(identifier, context.ccExpression());
-            return MarkLineAsDead(context.GetText());
+            return new ConditionalCompilationConstantExpression(
+                    new ConstantExpression(new StringValue(context.GetText())),
+                    new ConstantExpression(new StringValue(context.ccVarLhs().name().IDENTIFIER().GetText())),
+                    Visit(context.ccExpression()),
+                    _symbolTable);
         }
 
-        public override object VisitCcIfBlock([NotNull] VBAConditionalCompilationParser.CcIfBlockContext context)
+        public override IExpression VisitCcIfBlock([NotNull] VBAConditionalCompilationParser.CcIfBlockContext context)
         {
-            StringBuilder builder = new StringBuilder();
-            List<bool> conditions = new List<bool>();
-            builder.Append(MarkLineAsDead(context.ccIf().GetText()));
-            var ifIsAlive = _evaluator.EvaluateCondition(context.ccIf().ccExpression());
-            conditions.Add(ifIsAlive);
-            var ifBlock = (string)Visit(context.ccBlock());
-            builder.Append(EvaluateLiveliness(ifBlock, ifIsAlive));
-            foreach (var elseIfBlock in context.ccElseIfBlock())
-            {
-                builder.Append(MarkLineAsDead(elseIfBlock.ccElseIf().GetText()));
-                var elseIfIsAlive = _evaluator.EvaluateCondition(elseIfBlock.ccElseIf().ccExpression());
-                conditions.Add(elseIfIsAlive);
-                var block = (string)Visit(elseIfBlock.ccBlock());
-                builder.Append(EvaluateLiveliness(block, elseIfIsAlive));
-            }
+            var ifCondCode = new ConstantExpression(new StringValue(context.ccIf().GetText()));
+            var ifCond = Visit(context.ccIf().ccExpression());
+            var ifBlock = Visit(context.ccBlock());
+            var elseIfCodeCondBlocks = context
+                .ccElseIfBlock()
+                .Select(elseIf =>
+                        Tuple.Create<IExpression, IExpression, IExpression>(
+                            new ConstantExpression(new StringValue(elseIf.ccElseIf().GetText())),
+                            Visit(elseIf.ccElseIf().ccExpression()),
+                            Visit(elseIf.ccBlock()))).ToList();
+
+            IExpression elseCondCode = null;
+            IExpression elseBlock = null;
             if (context.ccElseBlock() != null)
             {
-                builder.Append(MarkLineAsDead(context.ccElseBlock().ccElse().GetText()));
-                var block = (string)Visit(context.ccElseBlock().ccBlock());
-                var elseIsAlive = conditions.All(condition => !condition);
-                builder.Append(EvaluateLiveliness(block, elseIsAlive));
+                elseCondCode = new ConstantExpression(new StringValue(context.ccElseBlock().ccElse().GetText()));
+                elseBlock = Visit(context.ccElseBlock().ccBlock());
             }
-            builder.Append(MarkLineAsDead(context.ccEndIf().GetText()));
-            return builder.ToString();
+            IExpression endIf = new ConstantExpression(new StringValue(context.ccEndIf().GetText()));
+            return new ConditionalCompilationIfExpression(
+                    ifCondCode,
+                    ifCond,
+                    ifBlock,
+                    elseIfCodeCondBlocks,
+                    elseCondCode,
+                    elseBlock,
+                    endIf);
         }
 
-        private string EvaluateLiveliness(string code, bool isAlive)
+        private IExpression Visit(VBAConditionalCompilationParser.NameContext context)
         {
-            if (isAlive)
+            return new NameExpression(
+                new ConstantExpression(new StringValue(context.IDENTIFIER().GetText())),
+                _symbolTable);
+        }
+
+        private IExpression VisitUnaryMinus(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            return new UnaryMinusExpression(Visit(context.ccExpression()[0]));
+        }
+
+        private IExpression VisitUnaryNot(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            return new UnaryNotExpression(Visit(context.ccExpression()[0]));
+        }
+
+        private IExpression VisitPlus(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            return new BinaryPlusExpression(Visit(context.ccExpression()[0]), Visit(context.ccExpression()[1]));
+        }
+
+        private IExpression VisitMinus(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            return new BinaryMinusExpression(Visit(context.ccExpression()[0]), Visit(context.ccExpression()[1]));
+        }
+
+        private IExpression Visit(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            if (context.literal() != null)
             {
-                return code;
+                return Visit(context.literal());
+            }
+            else if (context.name() != null)
+            {
+                return Visit(context.name());
+            }
+            else if (context.L_PAREN() != null)
+            {
+                return Visit(context.ccExpression()[0]);
+            }
+            else if (context.MINUS() != null && context.ccExpression().Count == 1)
+            {
+                return VisitUnaryMinus(context);
+            }
+            else if (context.NOT() != null)
+            {
+                return VisitUnaryNot(context);
+            }
+            else if (context.PLUS() != null)
+            {
+                return VisitPlus(context);
+            }
+            else if (context.MINUS() != null && context.ccExpression().Count == 2)
+            {
+                return VisitMinus(context);
+            }
+            else if (context.MULT() != null)
+            {
+                return VisitMult(context);
+            }
+            else if (context.DIV() != null)
+            {
+                return VisitDiv(context);
+            }
+            else if (context.INTDIV() != null)
+            {
+                return VisitIntDiv(context);
+            }
+            else if (context.MOD() != null)
+            {
+                return VisitMod(context);
+            }
+            else if (context.POW() != null)
+            {
+                return VisitPow(context);
+            }
+            else if (context.AMPERSAND() != null)
+            {
+                return VisitConcat(context);
+            }
+            else if (context.EQ() != null)
+            {
+                return VisitEq(context);
+            }
+            else if (context.NEQ() != null)
+            {
+                return VisitNeq(context);
+            }
+            else if (context.LT() != null)
+            {
+                return VisitLt(context);
+            }
+            else if (context.GT() != null)
+            {
+                return VisitGt(context);
+            }
+            else if (context.LEQ() != null)
+            {
+                return VisitLeq(context);
+            }
+            else if (context.GEQ() != null)
+            {
+                return VisitGeq(context);
+            }
+            else if (context.AND() != null)
+            {
+                return VisitAnd(context);
+            }
+            else if (context.OR() != null)
+            {
+                return VisitOr(context);
+            }
+            else if (context.XOR() != null)
+            {
+                return VisitXor(context);
+            }
+            else if (context.EQV() != null)
+            {
+                return VisitEqv(context);
+            }
+            else if (context.IMP() != null)
+            {
+                return VisitImp(context);
+            }
+            else if (context.IS() != null)
+            {
+                return VisitIs(context);
+            }
+            else if (context.LIKE() != null)
+            {
+                return VisitLike(context);
             }
             else
             {
-                return MarkAsDead(code);
+                return VisitLibraryFunction(context);
             }
         }
 
-        private string MarkAsDead(string code)
+        private IExpression VisitLibraryFunction(VBAConditionalCompilationParser.CcExpressionContext context)
         {
-            bool hasNewLine = false;
-            if (code.EndsWith(Environment.NewLine))
-            {
-                hasNewLine = true;
-            }
-            // Remove parsed new line.
-            code = code.TrimEnd('\r', '\n');
-            var lines = code.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-            var result = string.Join(Environment.NewLine, lines.Select(_ => string.Empty));
-            if (hasNewLine)
-            {
-                result += Environment.NewLine;
-            }
-            return result;
+            var intrinsicFunction = context.intrinsicFunction();
+            var functionName = intrinsicFunction.intrinsicFunctionName().GetText();
+            var argument = Visit(intrinsicFunction.ccExpression());
+            return VBAEnvironment.CreateLibraryFunction(functionName, argument);
         }
 
-        private string MarkLineAsDead(string line)
+        private IExpression VisitLike(VBAConditionalCompilationParser.CcExpressionContext context)
         {
-            var result = string.Empty;
-            if (line.EndsWith(Environment.NewLine))
+            var expr = Visit(context.ccExpression()[0]);
+            var pattern = Visit(context.ccExpression()[1]);
+            return new LikeExpression(expr, pattern);
+        }
+
+        private IExpression VisitIs(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new IsExpression(left, right);
+        }
+
+        private IExpression VisitImp(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new LogicalImpExpression(left, right);
+        }
+
+        private IExpression VisitEqv(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new LogicalEqvExpression(left, right);
+        }
+
+        private IExpression VisitXor(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new LogicalXorExpression(left, right);
+        }
+
+        private IExpression VisitOr(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new LogicalOrExpression(left, right);
+        }
+
+        private IExpression VisitAnd(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new LogicalAndExpression(left, right);
+        }
+
+        private IExpression VisitGeq(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new LogicalGreaterOrEqualsExpression(left, right);
+        }
+
+        private IExpression VisitLeq(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new LogicalLessOrEqualsExpression(left, right);
+        }
+
+        private IExpression VisitGt(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new LogicalGreaterThanExpression(left, right);
+        }
+
+        private IExpression VisitLt(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new LogicalLessThanExpression(left, right);
+        }
+
+        private IExpression VisitNeq(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new LogicalNotEqualsExpression(left, right);
+        }
+
+        private IExpression VisitEq(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new LogicalEqualsExpression(left, right);
+        }
+
+        private IExpression VisitConcat(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new ConcatExpression(left, right);
+        }
+
+        private IExpression VisitPow(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new PowExpression(left, right);
+        }
+
+        private IExpression VisitMod(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new ModExpression(left, right);
+        }
+
+        private IExpression VisitIntDiv(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new BinaryIntDivExpression(left, right);
+        }
+
+        private IExpression VisitMult(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new BinaryMultiplicationExpression(left, right);
+        }
+
+        private IExpression VisitDiv(VBAConditionalCompilationParser.CcExpressionContext context)
+        {
+            var left = Visit(context.ccExpression()[0]);
+            var right = Visit(context.ccExpression()[1]);
+            return new BinaryDivisionExpression(left, right);
+        }
+
+        private IExpression Visit(VBAConditionalCompilationParser.LiteralContext context)
+        {
+            if (context.HEXLITERAL() != null)
             {
-                result += Environment.NewLine;
+                return VisitHexLiteral(context);
             }
-            return result;
+            else if (context.OCTLITERAL() != null)
+            {
+                return VisitOctLiteral(context);
+            }
+            else if (context.DATELITERAL() != null)
+            {
+                return VisitDateLiteral(context);
+            }
+            else if (context.DOUBLELITERAL() != null)
+            {
+                return VisitDoubleLiteral(context);
+            }
+            else if (context.INTEGERLITERAL() != null)
+            {
+                return VisitIntegerLiteral(context);
+            }
+            else if (context.SHORTLITERAL() != null)
+            {
+                return VisitShortLiteral(context);
+            }
+            else if (context.STRINGLITERAL() != null)
+            {
+                return VisitStringLiteral(context);
+            }
+            else if (context.TRUE() != null)
+            {
+                return new ConstantExpression(new BoolValue(true));
+            }
+            else if (context.FALSE() != null)
+            {
+                return new ConstantExpression(new BoolValue(false));
+            }
+            else if (context.NOTHING() != null || context.NULL() != null)
+            {
+                return new ConstantExpression(null);
+            }
+            else if (context.EMPTY() != null)
+            {
+                return new ConstantExpression(EmptyValue.Value);
+            }
+            throw new Exception(string.Format("Unexpected literal encountered: {0}", context.GetText()));
+        }
+
+        private IExpression VisitStringLiteral(VBAConditionalCompilationParser.LiteralContext context)
+        {
+            return new StringLiteralExpression(new ConstantExpression(new StringValue(context.STRINGLITERAL().GetText())));
+        }
+
+        private IExpression VisitShortLiteral(VBAConditionalCompilationParser.LiteralContext context)
+        {
+            return new NumberLiteralExpression(new ConstantExpression(new StringValue(context.SHORTLITERAL().GetText())));
+        }
+
+        private IExpression VisitIntegerLiteral(VBAConditionalCompilationParser.LiteralContext context)
+        {
+            return new NumberLiteralExpression(new ConstantExpression(new StringValue(context.INTEGERLITERAL().GetText())));
+        }
+
+        private IExpression VisitDoubleLiteral(VBAConditionalCompilationParser.LiteralContext context)
+        {
+            return new NumberLiteralExpression(new ConstantExpression(new StringValue(context.DOUBLELITERAL().GetText())));
+        }
+
+        private IExpression VisitDateLiteral(VBAConditionalCompilationParser.LiteralContext context)
+        {
+            return new DateLiteralExpression(new ConstantExpression(new StringValue(context.DATELITERAL().GetText())));
+        }
+
+        private IExpression VisitOctLiteral(VBAConditionalCompilationParser.LiteralContext context)
+        {
+            return new OctNumberLiteralExpression(new ConstantExpression(new StringValue(context.OCTLITERAL().GetText())));
+        }
+
+        private IExpression VisitHexLiteral(VBAConditionalCompilationParser.LiteralContext context)
+        {
+            return new HexNumberLiteralExpression(new ConstantExpression(new StringValue(context.HEXLITERAL().GetText())));
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Rubberduck.Parsing.Preprocessing
         {
             try
             {
-                SymbolTable symbolTable = new SymbolTable();
+                SymbolTable<string, IValue> symbolTable = new SymbolTable<string, IValue>();
                 var stream = new AntlrInputStream(unprocessedCode);
                 var lexer = new VBAConditionalCompilationLexer(stream);
                 var tokens = new CommonTokenStream(lexer);
@@ -25,8 +25,8 @@ namespace Rubberduck.Parsing.Preprocessing
                 parser.AddErrorListener(new ExceptionErrorListener());
                 var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion));
                 var tree = parser.compilationUnit();
-                var preprocessedModuleBody = (string)evaluator.Visit(tree);
-                return preprocessedModuleBody;
+                var expr = evaluator.Visit(tree);
+                return expr.Evaluate().AsString;
             }
             catch (Exception ex)
             {

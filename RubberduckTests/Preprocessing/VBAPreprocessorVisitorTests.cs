@@ -36,9 +36,9 @@ namespace RubberduckTests.Preprocessing
 ";
             var result = Preprocess(code);
             Assert.AreEqual(result.Item1.Get("b"), result.Item1.Get("a"));
-            Assert.AreEqual(VBAEmptyValue.Value, result.Item1.Get("c"));
-            Assert.AreEqual(1m, result.Item1.Get("d"));
-            Assert.AreEqual(1m, result.Item1.Get("e"));
+            Assert.AreEqual(EmptyValue.Value, result.Item1.Get("c"));
+            Assert.AreEqual(1m, result.Item1.Get("d").AsDecimal);
+            Assert.AreEqual(1m, result.Item1.Get("e").AsDecimal);
         }
 
         [TestMethod]
@@ -55,14 +55,14 @@ namespace RubberduckTests.Preprocessing
 #Const h = -Empty
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(-5m, result.Item1.Get("a"));
-            Assert.AreEqual(-767011m, result.Item1.Get("b"));
-            Assert.AreEqual(new DateTime(1783, 12, 28), result.Item1.Get("c"));
-            Assert.AreEqual(1m, result.Item1.Get("d"));
-            Assert.AreEqual(0m, result.Item1.Get("e"));
+            Assert.AreEqual(-5m, result.Item1.Get("a").AsDecimal);
+            Assert.AreEqual(-767011m, result.Item1.Get("b").AsDecimal);
+            Assert.AreEqual(new DateTime(1783, 12, 28), result.Item1.Get("c").AsDate);
+            Assert.AreEqual(1m, result.Item1.Get("d").AsDecimal);
+            Assert.AreEqual(0m, result.Item1.Get("e").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("f"));
-            Assert.AreEqual(5m, result.Item1.Get("g"));
-            Assert.AreEqual(0m, result.Item1.Get("h"));
+            Assert.AreEqual(5m, result.Item1.Get("g").AsDecimal);
+            Assert.AreEqual(0m, result.Item1.Get("h").AsDecimal);
         }
 
         [TestMethod]
@@ -77,12 +77,12 @@ namespace RubberduckTests.Preprocessing
 #Const f = Not Empty
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(-25m, result.Item1.Get("a"));
-            Assert.AreEqual(-3m, result.Item1.Get("b"));
-            Assert.AreEqual(true, result.Item1.Get("c"));
+            Assert.AreEqual(-25m, result.Item1.Get("a").AsDecimal);
+            Assert.AreEqual(-3m, result.Item1.Get("b").AsDecimal);
+            Assert.AreEqual(true, result.Item1.Get("c").AsBool);
             Assert.AreEqual(null, result.Item1.Get("d"));
-            Assert.AreEqual(-2m, result.Item1.Get("e"));
-            Assert.AreEqual(-1m, result.Item1.Get("f"));
+            Assert.AreEqual(-2m, result.Item1.Get("e").AsDecimal);
+            Assert.AreEqual(-1m, result.Item1.Get("f").AsDecimal);
         }
 
         [TestMethod]
@@ -96,11 +96,11 @@ namespace RubberduckTests.Preprocessing
 #Const e = ""5"" + ""4""
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(1544.242m, result.Item1.Get("a"));
-            Assert.AreEqual(new DateTime(2298, 3, 7), result.Item1.Get("b"));
-            Assert.AreEqual(-2m, result.Item1.Get("c"));
+            Assert.AreEqual(1544.242m, result.Item1.Get("a").AsDecimal);
+            Assert.AreEqual(new DateTime(2298, 3, 7), result.Item1.Get("b").AsDate);
+            Assert.AreEqual(-2m, result.Item1.Get("c").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("d"));
-            Assert.AreEqual("54", result.Item1.Get("e"));
+            Assert.AreEqual("54", result.Item1.Get("e").AsString);
         }
 
         [TestMethod]
@@ -116,13 +116,13 @@ namespace RubberduckTests.Preprocessing
 #Const g = #1/1/2400# - #1/1/1800# - #1/1/1800#
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(2m, result.Item1.Get("a"));
-            Assert.AreEqual(184018m, result.Item1.Get("b"));
-            Assert.AreEqual(2m, result.Item1.Get("c"));
+            Assert.AreEqual(2m, result.Item1.Get("a").AsDecimal);
+            Assert.AreEqual(184018m, result.Item1.Get("b").AsDecimal);
+            Assert.AreEqual(2m, result.Item1.Get("c").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("d"));
-            Assert.AreEqual(2m, result.Item1.Get("e"));
-            Assert.AreEqual(new DateTime(2350, 12, 30), result.Item1.Get("f"));
-            Assert.AreEqual(new DateTime(2599, 12, 27), result.Item1.Get("g"));
+            Assert.AreEqual(2m, result.Item1.Get("e").AsDecimal);
+            Assert.AreEqual(new DateTime(2350, 12, 30), result.Item1.Get("f").AsDate);
+            Assert.AreEqual(new DateTime(2599, 12, 27), result.Item1.Get("g").AsDate);
         }
 
         [TestMethod]
@@ -138,11 +138,11 @@ namespace RubberduckTests.Preprocessing
 ";
             var result = Preprocess(code);
             Assert.AreEqual(null, result.Item1.Get("a"));
-            Assert.AreEqual(0m, result.Item1.Get("b"));
-            Assert.AreEqual(5m, result.Item1.Get("c"));
-            Assert.AreEqual(-1m, result.Item1.Get("d"));
-            Assert.AreEqual(new DateTime(2016, 1, 30), result.Item1.Get("e"));
-            Assert.AreEqual(10m, result.Item1.Get("f"));
+            Assert.AreEqual(0m, result.Item1.Get("b").AsDecimal);
+            Assert.AreEqual(5m, result.Item1.Get("c").AsDecimal);
+            Assert.AreEqual(-1m, result.Item1.Get("d").AsDecimal);
+            Assert.AreEqual(new DateTime(2016, 1, 30), result.Item1.Get("e").AsDate);
+            Assert.AreEqual(10m, result.Item1.Get("f").AsDecimal);
         }
 
         [TestMethod]
@@ -158,11 +158,11 @@ namespace RubberduckTests.Preprocessing
 ";
             var result = Preprocess(code);
             Assert.AreEqual(null, result.Item1.Get("a"));
-            Assert.AreEqual(0m, result.Item1.Get("b"));
-            Assert.AreEqual(5m, result.Item1.Get("c"));
-            Assert.AreEqual(-1m, result.Item1.Get("d"));
-            Assert.AreEqual(new DateTime(2016, 1, 30), result.Item1.Get("e"));
-            Assert.AreEqual(10m, result.Item1.Get("f"));
+            Assert.AreEqual(0m, result.Item1.Get("b").AsDecimal);
+            Assert.AreEqual(5m, result.Item1.Get("c").AsDecimal);
+            Assert.AreEqual(-1m, result.Item1.Get("d").AsDecimal);
+            Assert.AreEqual(new DateTime(2016, 1, 30), result.Item1.Get("e").AsDate);
+            Assert.AreEqual(10m, result.Item1.Get("f").AsDecimal);
         }
 
         [TestMethod]
@@ -178,11 +178,11 @@ namespace RubberduckTests.Preprocessing
 ";
             var result = Preprocess(code);
             Assert.AreEqual(null, result.Item1.Get("a"));
-            Assert.AreEqual(0m, result.Item1.Get("b"));
-            Assert.AreEqual(30m, result.Item1.Get("c"));
-            Assert.AreEqual(1m, result.Item1.Get("d"));
-            Assert.AreEqual(new DateTime(2794, 12, 9), result.Item1.Get("e"));
-            Assert.AreEqual(50m, result.Item1.Get("f"));
+            Assert.AreEqual(0m, result.Item1.Get("b").AsDecimal);
+            Assert.AreEqual(30m, result.Item1.Get("c").AsDecimal);
+            Assert.AreEqual(1m, result.Item1.Get("d").AsDecimal);
+            Assert.AreEqual(new DateTime(2794, 12, 9), result.Item1.Get("e").AsDate);
+            Assert.AreEqual(50m, result.Item1.Get("f").AsDecimal);
         }
 
         [TestMethod]
@@ -197,11 +197,11 @@ namespace RubberduckTests.Preprocessing
 #Const f = Sgn(Nothing)
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(-1m, result.Item1.Get("a"));
-            Assert.AreEqual(1m, result.Item1.Get("b"));
-            Assert.AreEqual(0m, result.Item1.Get("c"));
-            Assert.AreEqual(-1m, result.Item1.Get("d"));
-            Assert.AreEqual(0m, result.Item1.Get("e"));
+            Assert.AreEqual(-1m, result.Item1.Get("a").AsDecimal);
+            Assert.AreEqual(1m, result.Item1.Get("b").AsDecimal);
+            Assert.AreEqual(0m, result.Item1.Get("c").AsDecimal);
+            Assert.AreEqual(-1m, result.Item1.Get("d").AsDecimal);
+            Assert.AreEqual(0m, result.Item1.Get("e").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("f"));
         }
 
@@ -217,8 +217,8 @@ namespace RubberduckTests.Preprocessing
             var result = Preprocess(code);
             Assert.AreEqual(null, result.Item1.Get("a"));
             Assert.AreEqual(null, result.Item1.Get("b"));
-            Assert.AreEqual(0m, result.Item1.Get("c"));
-            Assert.AreEqual(3m, result.Item1.Get("d"));
+            Assert.AreEqual(0m, result.Item1.Get("c").AsDecimal);
+            Assert.AreEqual(3m, result.Item1.Get("d").AsDecimal);
         }
 
         [TestMethod]
@@ -233,8 +233,8 @@ namespace RubberduckTests.Preprocessing
             var result = Preprocess(code);
             Assert.AreEqual(null, result.Item1.Get("a"));
             Assert.AreEqual(null, result.Item1.Get("b"));
-            Assert.AreEqual(0m, result.Item1.Get("c"));
-            Assert.AreEqual(6m, result.Item1.Get("d"));
+            Assert.AreEqual(0m, result.Item1.Get("c").AsDecimal);
+            Assert.AreEqual(6m, result.Item1.Get("d").AsDecimal);
         }
 
         [TestMethod]
@@ -259,20 +259,20 @@ namespace RubberduckTests.Preprocessing
 ";
             var result = Preprocess(code);
             Assert.AreEqual(null, result.Item1.Get("a"));
-            Assert.AreEqual(false, result.Item1.Get("b"));
-            Assert.AreEqual(true, result.Item1.Get("c"));
-            Assert.AreEqual(true, result.Item1.Get("d"));
-            Assert.AreEqual(false, result.Item1.Get("e"));
-            Assert.AreEqual(true, result.Item1.Get("f"));
-            Assert.AreEqual(false, result.Item1.Get("g"));
-            Assert.AreEqual(true, result.Item1.Get("h"));
-            Assert.AreEqual(false, result.Item1.Get("i"));
-            Assert.AreEqual(true, result.Item1.Get("j"));
-            Assert.AreEqual(false, result.Item1.Get("k"));
-            Assert.AreEqual(false, result.Item1.Get("l"));
-            Assert.AreEqual(true, result.Item1.Get("m"));
-            Assert.AreEqual(false, result.Item1.Get("n"));
-            Assert.AreEqual(true, result.Item1.Get("o"));
+            Assert.AreEqual(false, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("d").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("e").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("f").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("g").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("h").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("i").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("j").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("k").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("l").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("m").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("n").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("o").AsBool);
         }
 
         [TestMethod]
@@ -292,15 +292,15 @@ namespace RubberduckTests.Preprocessing
 ";
             var result = Preprocess(code);
             Assert.AreEqual(null, result.Item1.Get("a"));
-            Assert.AreEqual(Convert.ToByte(0), result.Item1.Get("b"));
-            Assert.AreEqual(Convert.ToByte(255), result.Item1.Get("c"));
-            Assert.AreEqual(Convert.ToByte(0), result.Item1.Get("d"));
-            Assert.AreEqual(Convert.ToByte(1), result.Item1.Get("e"));
-            Assert.AreEqual(Convert.ToByte(0), result.Item1.Get("f"));
-            Assert.AreEqual(Convert.ToByte(0), result.Item1.Get("g"));
-            Assert.AreEqual(Convert.ToByte(1), result.Item1.Get("h"));
-            Assert.AreEqual(Convert.ToByte(0), result.Item1.Get("i"));
-            Assert.AreEqual(Convert.ToByte(1), result.Item1.Get("j"));
+            Assert.AreEqual(Convert.ToByte(0), result.Item1.Get("b").AsByte);
+            Assert.AreEqual(Convert.ToByte(255), result.Item1.Get("c").AsByte);
+            Assert.AreEqual(Convert.ToByte(0), result.Item1.Get("d").AsByte);
+            Assert.AreEqual(Convert.ToByte(1), result.Item1.Get("e").AsByte);
+            Assert.AreEqual(Convert.ToByte(0), result.Item1.Get("f").AsByte);
+            Assert.AreEqual(Convert.ToByte(0), result.Item1.Get("g").AsByte);
+            Assert.AreEqual(Convert.ToByte(1), result.Item1.Get("h").AsByte);
+            Assert.AreEqual(Convert.ToByte(0), result.Item1.Get("i").AsByte);
+            Assert.AreEqual(Convert.ToByte(1), result.Item1.Get("j").AsByte);
         }
 
         [TestMethod]
@@ -339,13 +339,13 @@ namespace RubberduckTests.Preprocessing
 ";
             var result = Preprocess(code);
             Assert.AreEqual(null, result.Item1.Get("a"));
-            Assert.AreEqual(VBADateConstants.EPOCH_START, result.Item1.Get("b"));
-            Assert.AreEqual(new DateTime(1899, 12, 29), result.Item1.Get("c"));
-            Assert.AreEqual(VBADateConstants.EPOCH_START, result.Item1.Get("d"));
-            Assert.AreEqual(new DateTime(1899, 12, 31), result.Item1.Get("e"));
-            Assert.AreEqual(VBADateConstants.EPOCH_START, result.Item1.Get("f"));
-            Assert.AreEqual(new DateTime(1899, 12, 31), result.Item1.Get("g"));
-            Assert.AreEqual(VBADateConstants.EPOCH_START, result.Item1.Get("h"));
+            Assert.AreEqual(VBADateConstants.EPOCH_START, result.Item1.Get("b").AsDate);
+            Assert.AreEqual(new DateTime(1899, 12, 29), result.Item1.Get("c").AsDate);
+            Assert.AreEqual(VBADateConstants.EPOCH_START, result.Item1.Get("d").AsDate);
+            Assert.AreEqual(new DateTime(1899, 12, 31), result.Item1.Get("e").AsDate);
+            Assert.AreEqual(VBADateConstants.EPOCH_START, result.Item1.Get("f").AsDate);
+            Assert.AreEqual(new DateTime(1899, 12, 31), result.Item1.Get("g").AsDate);
+            Assert.AreEqual(VBADateConstants.EPOCH_START, result.Item1.Get("h").AsDate);
         }
 
         [TestMethod]
@@ -362,12 +362,12 @@ namespace RubberduckTests.Preprocessing
 ";
             var result = Preprocess(code);
             Assert.AreEqual(null, result.Item1.Get("a"));
-            Assert.AreEqual(string.Empty, result.Item1.Get("b"));
-            Assert.AreEqual("True", result.Item1.Get("c"));
-            Assert.AreEqual("False", result.Item1.Get("d"));
-            Assert.AreEqual(345.23.ToString(), result.Item1.Get("e"));
-            Assert.AreEqual(new DateTime(1899, 12, 30, 2, 1, 0).ToLongTimeString(), result.Item1.Get("f"));
-            Assert.AreEqual(new DateTime(2016, 1, 31).ToShortDateString(), result.Item1.Get("g"));
+            Assert.AreEqual(string.Empty, result.Item1.Get("b").AsString);
+            Assert.AreEqual("True", result.Item1.Get("c").AsString);
+            Assert.AreEqual("False", result.Item1.Get("d").AsString);
+            Assert.AreEqual(345.23.ToString(), result.Item1.Get("e").AsString);
+            Assert.AreEqual(new DateTime(1899, 12, 30, 2, 1, 0).ToLongTimeString(), result.Item1.Get("f").AsString);
+            Assert.AreEqual(new DateTime(2016, 1, 31).ToShortDateString(), result.Item1.Get("g").AsString);
         }
 
         [TestMethod]
@@ -380,8 +380,8 @@ namespace RubberduckTests.Preprocessing
 ";
             var result = Preprocess(code);
             Assert.AreEqual(null, result.Item1.Get("a"));
-            Assert.AreEqual(VBAEmptyValue.Value, result.Item1.Get("b"));
-            Assert.AreEqual(true, result.Item1.Get("c"));
+            Assert.AreEqual(EmptyValue.Value, result.Item1.Get("b"));
+            Assert.AreEqual(true, result.Item1.Get("c").AsBool);
         }
 
         private void AssertIntrinsicNumberFunction(string functionName)
@@ -399,13 +399,13 @@ namespace RubberduckTests.Preprocessing
             code = string.Format(code, functionName);
             var result = Preprocess(code);
             Assert.AreEqual(null, result.Item1.Get("a"));
-            Assert.AreEqual(0m, result.Item1.Get("b"));
-            Assert.AreEqual(-1m, result.Item1.Get("c"));
-            Assert.AreEqual(0m, result.Item1.Get("d"));
-            Assert.AreEqual(1m, result.Item1.Get("e"));
-            Assert.AreEqual(0m, result.Item1.Get("f"));
-            Assert.AreEqual(0m, result.Item1.Get("g"));
-            Assert.AreEqual(1m, result.Item1.Get("h"));
+            Assert.AreEqual(0m, result.Item1.Get("b").AsDecimal);
+            Assert.AreEqual(-1m, result.Item1.Get("c").AsDecimal);
+            Assert.AreEqual(0m, result.Item1.Get("d").AsDecimal);
+            Assert.AreEqual(1m, result.Item1.Get("e").AsDecimal);
+            Assert.AreEqual(0m, result.Item1.Get("f").AsDecimal);
+            Assert.AreEqual(0m, result.Item1.Get("g").AsDecimal);
+            Assert.AreEqual(1m, result.Item1.Get("h").AsDecimal);
         }
 
         [TestMethod]
@@ -427,19 +427,19 @@ namespace RubberduckTests.Preprocessing
 #Const m = ""]*!"" Like ""][*a[!][a[!]""
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(true, result.Item1.Get("a"));
-            Assert.AreEqual(false, result.Item1.Get("b"));
-            Assert.AreEqual(true, result.Item1.Get("c"));
-            Assert.AreEqual(false, result.Item1.Get("d"));
-            Assert.AreEqual(true, result.Item1.Get("e"));
-            Assert.AreEqual(false, result.Item1.Get("f"));
-            Assert.AreEqual(true, result.Item1.Get("g"));
-            Assert.AreEqual(false, result.Item1.Get("h"));
-            Assert.AreEqual(true, result.Item1.Get("i"));
-            Assert.AreEqual(false, result.Item1.Get("j"));
-            Assert.AreEqual(true, result.Item1.Get("k"));
+            Assert.AreEqual(true, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("d").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("e").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("f").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("g").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("h").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("i").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("j").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("k").AsBool);
             Assert.AreEqual(null, result.Item1.Get("l"));
-            Assert.AreEqual(true, result.Item1.Get("m"));
+            Assert.AreEqual(true, result.Item1.Get("m").AsBool);
         }
 
         [TestMethod]
@@ -450,8 +450,8 @@ namespace RubberduckTests.Preprocessing
 #Const b = 1 Is 2
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(true, result.Item1.Get("a"));
-            Assert.AreEqual(false, result.Item1.Get("b"));
+            Assert.AreEqual(true, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("b").AsBool);
         }
 
         [TestMethod]
@@ -470,14 +470,14 @@ namespace RubberduckTests.Preprocessing
 #Const j = Null Imp Null
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(true, result.Item1.Get("a"));
-            Assert.AreEqual(true, result.Item1.Get("b"));
-            Assert.AreEqual(false, result.Item1.Get("c"));
-            Assert.AreEqual(true, result.Item1.Get("d"));
-            Assert.AreEqual(-1m, result.Item1.Get("e"));
+            Assert.AreEqual(true, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("d").AsBool);
+            Assert.AreEqual(-1m, result.Item1.Get("e").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("f"));
-            Assert.AreEqual(-1m, result.Item1.Get("g"));
-            Assert.AreEqual(5m, result.Item1.Get("h"));
+            Assert.AreEqual(-1m, result.Item1.Get("g").AsDecimal);
+            Assert.AreEqual(5m, result.Item1.Get("h").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("i"));
             Assert.AreEqual(null, result.Item1.Get("j"));
         }
@@ -496,11 +496,11 @@ namespace RubberduckTests.Preprocessing
 #Const h = Null Eqv Null
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(true, result.Item1.Get("a"));
-            Assert.AreEqual(false, result.Item1.Get("b"));
-            Assert.AreEqual(false, result.Item1.Get("c"));
-            Assert.AreEqual(true, result.Item1.Get("d"));
-            Assert.AreEqual(-0m, result.Item1.Get("e"));
+            Assert.AreEqual(true, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("d").AsBool);
+            Assert.AreEqual(-0m, result.Item1.Get("e").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("f"));
             Assert.AreEqual(null, result.Item1.Get("g"));
             Assert.AreEqual(null, result.Item1.Get("h"));
@@ -520,11 +520,11 @@ namespace RubberduckTests.Preprocessing
 #Const h = Null Xor Null
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(false, result.Item1.Get("a"));
-            Assert.AreEqual(true, result.Item1.Get("b"));
-            Assert.AreEqual(true, result.Item1.Get("c"));
-            Assert.AreEqual(false, result.Item1.Get("d"));
-            Assert.AreEqual(-1m, result.Item1.Get("e"));
+            Assert.AreEqual(false, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("d").AsBool);
+            Assert.AreEqual(-1m, result.Item1.Get("e").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("f"));
             Assert.AreEqual(null, result.Item1.Get("g"));
             Assert.AreEqual(null, result.Item1.Get("h"));
@@ -544,13 +544,13 @@ namespace RubberduckTests.Preprocessing
 #Const h = Null Or Null
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(false, result.Item1.Get("a"));
-            Assert.AreEqual(true, result.Item1.Get("b"));
-            Assert.AreEqual(true, result.Item1.Get("c"));
-            Assert.AreEqual(true, result.Item1.Get("d"));
-            Assert.AreEqual(-1m, result.Item1.Get("e"));
-            Assert.AreEqual(true, result.Item1.Get("f"));
-            Assert.AreEqual(true, result.Item1.Get("g"));
+            Assert.AreEqual(false, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("d").AsBool);
+            Assert.AreEqual(-1m, result.Item1.Get("e").AsDecimal);
+            Assert.AreEqual(true, result.Item1.Get("f").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("g").AsBool);
             Assert.AreEqual(null, result.Item1.Get("h"));
         }
 
@@ -570,16 +570,16 @@ namespace RubberduckTests.Preprocessing
 #Const j = Null And 0
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(false, result.Item1.Get("a"));
-            Assert.AreEqual(false, result.Item1.Get("b"));
-            Assert.AreEqual(false, result.Item1.Get("c"));
-            Assert.AreEqual(true, result.Item1.Get("d"));
-            Assert.AreEqual(5m, result.Item1.Get("e"));
+            Assert.AreEqual(false, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("d").AsBool);
+            Assert.AreEqual(5m, result.Item1.Get("e").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("f"));
             Assert.AreEqual(null, result.Item1.Get("g"));
             Assert.AreEqual(null, result.Item1.Get("h"));
-            Assert.AreEqual(0, result.Item1.Get("i"));
-            Assert.AreEqual(0, result.Item1.Get("j"));
+            Assert.AreEqual(0, result.Item1.Get("i").AsDecimal);
+            Assert.AreEqual(0, result.Item1.Get("j").AsDecimal);
         }
 
         [TestMethod]
@@ -608,26 +608,26 @@ namespace RubberduckTests.Preprocessing
 #Const t = Empty >= Empty
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(true, result.Item1.Get("a"));
-            Assert.AreEqual(true, result.Item1.Get("b"));
-            Assert.AreEqual(false, result.Item1.Get("c"));
-            Assert.AreEqual(true, result.Item1.Get("d"));
-            Assert.AreEqual(true, result.Item1.Get("e"));
-            Assert.AreEqual(false, result.Item1.Get("f"));
-            Assert.AreEqual(true, result.Item1.Get("g"));
-            Assert.AreEqual(true, result.Item1.Get("h"));
-            Assert.AreEqual(false, result.Item1.Get("i"));
-            Assert.AreEqual(true, result.Item1.Get("j"));
-            Assert.AreEqual(true, result.Item1.Get("k"));
-            Assert.AreEqual(false, result.Item1.Get("l"));
-            Assert.AreEqual(true, result.Item1.Get("m"));
-            Assert.AreEqual(true, result.Item1.Get("n"));
-            Assert.AreEqual(false, result.Item1.Get("o"));
+            Assert.AreEqual(true, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("d").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("e").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("f").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("g").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("h").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("i").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("j").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("k").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("l").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("m").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("n").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("o").AsBool);
             Assert.AreEqual(null, result.Item1.Get("p"));
             Assert.AreEqual(null, result.Item1.Get("q"));
             Assert.AreEqual(null, result.Item1.Get("r"));
-            Assert.AreEqual(true, result.Item1.Get("s"));
-            Assert.AreEqual(true, result.Item1.Get("t"));
+            Assert.AreEqual(true, result.Item1.Get("s").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("t").AsBool);
         }
 
         [TestMethod]
@@ -656,26 +656,26 @@ namespace RubberduckTests.Preprocessing
 #Const t = Empty > Empty
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(true, result.Item1.Get("a"));
-            Assert.AreEqual(false, result.Item1.Get("b"));
-            Assert.AreEqual(false, result.Item1.Get("c"));
-            Assert.AreEqual(true, result.Item1.Get("d"));
-            Assert.AreEqual(false, result.Item1.Get("e"));
-            Assert.AreEqual(false, result.Item1.Get("f"));
-            Assert.AreEqual(true, result.Item1.Get("g"));
-            Assert.AreEqual(false, result.Item1.Get("h"));
-            Assert.AreEqual(false, result.Item1.Get("i"));
-            Assert.AreEqual(true, result.Item1.Get("j"));
-            Assert.AreEqual(false, result.Item1.Get("k"));
-            Assert.AreEqual(false, result.Item1.Get("l"));
-            Assert.AreEqual(true, result.Item1.Get("m"));
-            Assert.AreEqual(false, result.Item1.Get("n"));
-            Assert.AreEqual(false, result.Item1.Get("o"));
+            Assert.AreEqual(true, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("d").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("e").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("f").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("g").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("h").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("i").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("j").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("k").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("l").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("m").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("n").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("o").AsBool);
             Assert.AreEqual(null, result.Item1.Get("p"));
             Assert.AreEqual(null, result.Item1.Get("q"));
             Assert.AreEqual(null, result.Item1.Get("r"));
-            Assert.AreEqual(true, result.Item1.Get("s"));
-            Assert.AreEqual(false, result.Item1.Get("t"));
+            Assert.AreEqual(true, result.Item1.Get("s").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("t").AsBool);
         }
 
         [TestMethod]
@@ -704,26 +704,26 @@ namespace RubberduckTests.Preprocessing
 #Const t = Empty <= Empty
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(false, result.Item1.Get("a"));
-            Assert.AreEqual(true, result.Item1.Get("b"));
-            Assert.AreEqual(true, result.Item1.Get("c"));
-            Assert.AreEqual(false, result.Item1.Get("d"));
-            Assert.AreEqual(true, result.Item1.Get("e"));
-            Assert.AreEqual(true, result.Item1.Get("f"));
-            Assert.AreEqual(false, result.Item1.Get("g"));
-            Assert.AreEqual(true, result.Item1.Get("h"));
-            Assert.AreEqual(true, result.Item1.Get("i"));
-            Assert.AreEqual(false, result.Item1.Get("j"));
-            Assert.AreEqual(true, result.Item1.Get("k"));
-            Assert.AreEqual(true, result.Item1.Get("l"));
-            Assert.AreEqual(false, result.Item1.Get("m"));
-            Assert.AreEqual(true, result.Item1.Get("n"));
-            Assert.AreEqual(true, result.Item1.Get("o"));
+            Assert.AreEqual(false, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("d").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("e").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("f").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("g").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("h").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("i").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("j").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("k").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("l").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("m").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("n").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("o").AsBool);
             Assert.AreEqual(null, result.Item1.Get("p"));
             Assert.AreEqual(null, result.Item1.Get("q"));
             Assert.AreEqual(null, result.Item1.Get("r"));
-            Assert.AreEqual(false, result.Item1.Get("s"));
-            Assert.AreEqual(true, result.Item1.Get("t"));
+            Assert.AreEqual(false, result.Item1.Get("s").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("t").AsBool);
         }
 
         [TestMethod]
@@ -752,26 +752,26 @@ namespace RubberduckTests.Preprocessing
 #Const t = Empty < Empty
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(false, result.Item1.Get("a"));
-            Assert.AreEqual(false, result.Item1.Get("b"));
-            Assert.AreEqual(true, result.Item1.Get("c"));
-            Assert.AreEqual(false, result.Item1.Get("d"));
-            Assert.AreEqual(false, result.Item1.Get("e"));
-            Assert.AreEqual(true, result.Item1.Get("f"));
-            Assert.AreEqual(false, result.Item1.Get("g"));
-            Assert.AreEqual(false, result.Item1.Get("h"));
-            Assert.AreEqual(true, result.Item1.Get("i"));
-            Assert.AreEqual(false, result.Item1.Get("j"));
-            Assert.AreEqual(false, result.Item1.Get("k"));
-            Assert.AreEqual(true, result.Item1.Get("l"));
-            Assert.AreEqual(false, result.Item1.Get("m"));
-            Assert.AreEqual(false, result.Item1.Get("n"));
-            Assert.AreEqual(true, result.Item1.Get("o"));
+            Assert.AreEqual(false, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("d").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("e").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("f").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("g").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("h").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("i").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("j").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("k").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("l").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("m").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("n").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("o").AsBool);
             Assert.AreEqual(null, result.Item1.Get("p"));
             Assert.AreEqual(null, result.Item1.Get("q"));
             Assert.AreEqual(null, result.Item1.Get("r"));
-            Assert.AreEqual(false, result.Item1.Get("s"));
-            Assert.AreEqual(false, result.Item1.Get("t"));
+            Assert.AreEqual(false, result.Item1.Get("s").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("t").AsBool);
         }
 
         [TestMethod]
@@ -795,21 +795,21 @@ namespace RubberduckTests.Preprocessing
 #Const o = Empty = Empty
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(false, result.Item1.Get("a"));
-            Assert.AreEqual(true, result.Item1.Get("b"));
-            Assert.AreEqual(false, result.Item1.Get("c"));
-            Assert.AreEqual(true, result.Item1.Get("d"));
-            Assert.AreEqual(false, result.Item1.Get("e"));
-            Assert.AreEqual(true, result.Item1.Get("f"));
-            Assert.AreEqual(false, result.Item1.Get("g"));
-            Assert.AreEqual(true, result.Item1.Get("h"));
-            Assert.AreEqual(false, result.Item1.Get("i"));
-            Assert.AreEqual(true, result.Item1.Get("j"));
+            Assert.AreEqual(false, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("d").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("e").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("f").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("g").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("h").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("i").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("j").AsBool);
             Assert.AreEqual(null, result.Item1.Get("k"));
             Assert.AreEqual(null, result.Item1.Get("l"));
             Assert.AreEqual(null, result.Item1.Get("m"));
-            Assert.AreEqual(false, result.Item1.Get("n"));
-            Assert.AreEqual(true, result.Item1.Get("o"));
+            Assert.AreEqual(false, result.Item1.Get("n").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("o").AsBool);
         }
 
         [TestMethod]
@@ -833,21 +833,21 @@ namespace RubberduckTests.Preprocessing
 #Const o = Empty <> Empty
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(true, result.Item1.Get("a"));
-            Assert.AreEqual(false, result.Item1.Get("b"));
-            Assert.AreEqual(true, result.Item1.Get("c"));
-            Assert.AreEqual(false, result.Item1.Get("d"));
-            Assert.AreEqual(true, result.Item1.Get("e"));
-            Assert.AreEqual(false, result.Item1.Get("f"));
-            Assert.AreEqual(true, result.Item1.Get("g"));
-            Assert.AreEqual(false, result.Item1.Get("h"));
-            Assert.AreEqual(true, result.Item1.Get("i"));
-            Assert.AreEqual(false, result.Item1.Get("j"));
+            Assert.AreEqual(true, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("b").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("d").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("e").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("f").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("g").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("h").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("i").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("j").AsBool);
             Assert.AreEqual(null, result.Item1.Get("k"));
             Assert.AreEqual(null, result.Item1.Get("l"));
             Assert.AreEqual(null, result.Item1.Get("m"));
-            Assert.AreEqual(true, result.Item1.Get("n"));
-            Assert.AreEqual(false, result.Item1.Get("o"));
+            Assert.AreEqual(true, result.Item1.Get("n").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("o").AsBool);
         }
 
         [TestMethod]
@@ -864,14 +864,14 @@ namespace RubberduckTests.Preprocessing
 #Const h = Empty & Empty
 ";
             var result = Preprocess(code);
-            Assert.AreEqual("Truea", result.Item1.Get("a"));
+            Assert.AreEqual("Truea", result.Item1.Get("a").AsString);
             Assert.AreEqual(null, result.Item1.Get("b"));
-            Assert.AreEqual("1", result.Item1.Get("c"));
-            Assert.AreEqual("1", result.Item1.Get("d"));
-            Assert.AreEqual(new DateTime(1900, 1, 1).ToShortDateString() + "1", result.Item1.Get("e"));
-            Assert.AreEqual("1", result.Item1.Get("f"));
-            Assert.AreEqual("1", result.Item1.Get("g"));
-            Assert.AreEqual(string.Empty, result.Item1.Get("h"));
+            Assert.AreEqual("1", result.Item1.Get("c").AsString);
+            Assert.AreEqual("1", result.Item1.Get("d").AsString);
+            Assert.AreEqual(new DateTime(1900, 1, 1).ToShortDateString() + "1", result.Item1.Get("e").AsString);
+            Assert.AreEqual("1", result.Item1.Get("f").AsString);
+            Assert.AreEqual("1", result.Item1.Get("g").AsString);
+            Assert.AreEqual(string.Empty, result.Item1.Get("h").AsString);
         }
 
         [TestMethod]
@@ -886,9 +886,9 @@ namespace RubberduckTests.Preprocessing
 #Const f = Null ^ Null
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(8m, result.Item1.Get("a"));
-            Assert.AreEqual(1m, result.Item1.Get("b"));
-            Assert.AreEqual(1m, result.Item1.Get("c"));
+            Assert.AreEqual(8m, result.Item1.Get("a").AsDecimal);
+            Assert.AreEqual(1m, result.Item1.Get("b").AsDecimal);
+            Assert.AreEqual(1m, result.Item1.Get("c").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("d"));
             Assert.AreEqual(null, result.Item1.Get("e"));
             Assert.AreEqual(null, result.Item1.Get("f"));
@@ -906,9 +906,9 @@ namespace RubberduckTests.Preprocessing
 #Const f = Null Mod Null
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(0m, result.Item1.Get("a"));
-            Assert.AreEqual(1m, result.Item1.Get("b"));
-            Assert.AreEqual(1m, result.Item1.Get("c"));
+            Assert.AreEqual(0m, result.Item1.Get("a").AsDecimal);
+            Assert.AreEqual(1m, result.Item1.Get("b").AsDecimal);
+            Assert.AreEqual(1m, result.Item1.Get("c").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("d"));
             Assert.AreEqual(null, result.Item1.Get("e"));
             Assert.AreEqual(null, result.Item1.Get("f"));
@@ -929,12 +929,12 @@ namespace RubberduckTests.Preprocessing
 #Const i = Null \ Null
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(2m, result.Item1.Get("a"));
-            Assert.AreEqual(2m, result.Item1.Get("b"));
-            Assert.AreEqual(2m, result.Item1.Get("c"));
-            Assert.AreEqual(-2m, result.Item1.Get("d"));
-            Assert.AreEqual(-2m, result.Item1.Get("e"));
-            Assert.AreEqual(-2m, result.Item1.Get("f"));
+            Assert.AreEqual(2m, result.Item1.Get("a").AsDecimal);
+            Assert.AreEqual(2m, result.Item1.Get("b").AsDecimal);
+            Assert.AreEqual(2m, result.Item1.Get("c").AsDecimal);
+            Assert.AreEqual(-2m, result.Item1.Get("d").AsDecimal);
+            Assert.AreEqual(-2m, result.Item1.Get("e").AsDecimal);
+            Assert.AreEqual(-2m, result.Item1.Get("f").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("g"));
             Assert.AreEqual(null, result.Item1.Get("h"));
             Assert.AreEqual(null, result.Item1.Get("i"));
@@ -951,8 +951,8 @@ namespace RubberduckTests.Preprocessing
 #Const e = Null * Null
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(11m, result.Item1.Get("a"));
-            Assert.AreEqual(-5.5m, result.Item1.Get("b"));
+            Assert.AreEqual(11m, result.Item1.Get("a").AsDecimal);
+            Assert.AreEqual(-5.5m, result.Item1.Get("b").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("c"));
             Assert.AreEqual(null, result.Item1.Get("d"));
             Assert.AreEqual(null, result.Item1.Get("e"));
@@ -969,8 +969,8 @@ namespace RubberduckTests.Preprocessing
 #Const e = Null / Null
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(2.75m, result.Item1.Get("a"));
-            Assert.AreEqual(-5.5m, result.Item1.Get("b"));
+            Assert.AreEqual(2.75m, result.Item1.Get("a").AsDecimal);
+            Assert.AreEqual(-5.5m, result.Item1.Get("b").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("c"));
             Assert.AreEqual(null, result.Item1.Get("d"));
             Assert.AreEqual(null, result.Item1.Get("e"));
@@ -984,8 +984,8 @@ namespace RubberduckTests.Preprocessing
 #Const b = ""a""""b""
 ";
             var result = Preprocess(code);
-            Assert.AreEqual("abc", result.Item1.Get("a"));
-            Assert.AreEqual("a\"\"b", result.Item1.Get("b"));
+            Assert.AreEqual("abc", result.Item1.Get("a").AsString);
+            Assert.AreEqual("a\"\"b", result.Item1.Get("b").AsString);
         }
 
         [TestMethod]
@@ -997,9 +997,9 @@ namespace RubberduckTests.Preprocessing
 #Const c = -50.323e5
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(175m, result.Item1.Get("a"));
-            Assert.AreEqual(275m, result.Item1.Get("b"));
-            Assert.AreEqual(-5032300m, result.Item1.Get("c"));
+            Assert.AreEqual(175m, result.Item1.Get("a").AsDecimal);
+            Assert.AreEqual(275m, result.Item1.Get("b").AsDecimal);
+            Assert.AreEqual(-5032300m, result.Item1.Get("c").AsDecimal);
         }
 
         [TestMethod]
@@ -1022,21 +1022,21 @@ namespace RubberduckTests.Preprocessing
 #Const n = #12:13#
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(new DateTime(1900, 12, 30), result.Item1.Get("a"));
-            Assert.AreEqual(new DateTime(1900, 12, 30), result.Item1.Get("b"));
-            Assert.AreEqual(new DateTime(DateTime.Now.Year, 12, 30), result.Item1.Get("c"));
-            Assert.AreEqual(new DateTime(1899, 12, 30, 12, 0, 0), result.Item1.Get("d"));
-            Assert.AreEqual(new DateTime(1999, 3, 1), result.Item1.Get("e"));
-            Assert.AreEqual(new DateTime(1899, 12, 30, 14, 0, 0), result.Item1.Get("f"));
-            Assert.AreEqual(new DateTime(1999, 12, 1, 0, 0, 0), result.Item1.Get("g"));
-            Assert.AreEqual(new DateTime(1999, 11, 1, 0, 0, 0), result.Item1.Get("h"));
-            Assert.AreEqual(new DateTime(2010, 5, 1, 0, 0, 0), result.Item1.Get("i"));
-            Assert.AreEqual(new DateTime(2010, 7, 15, 0, 0, 0), result.Item1.Get("j"));
-            Assert.AreEqual(new DateTime(1899, 12, 30, 15, 14, 13), result.Item1.Get("k"));
+            Assert.AreEqual(new DateTime(1900, 12, 30), result.Item1.Get("a").AsDate);
+            Assert.AreEqual(new DateTime(1900, 12, 30), result.Item1.Get("b").AsDate);
+            Assert.AreEqual(new DateTime(DateTime.Now.Year, 12, 30), result.Item1.Get("c").AsDate);
+            Assert.AreEqual(new DateTime(1899, 12, 30, 12, 0, 0), result.Item1.Get("d").AsDate);
+            Assert.AreEqual(new DateTime(1999, 3, 1), result.Item1.Get("e").AsDate);
+            Assert.AreEqual(new DateTime(1899, 12, 30, 14, 0, 0), result.Item1.Get("f").AsDate);
+            Assert.AreEqual(new DateTime(1999, 12, 1, 0, 0, 0), result.Item1.Get("g").AsDate);
+            Assert.AreEqual(new DateTime(1999, 11, 1, 0, 0, 0), result.Item1.Get("h").AsDate);
+            Assert.AreEqual(new DateTime(2010, 5, 1, 0, 0, 0), result.Item1.Get("i").AsDate);
+            Assert.AreEqual(new DateTime(2010, 7, 15, 0, 0, 0), result.Item1.Get("j").AsDate);
+            Assert.AreEqual(new DateTime(1899, 12, 30, 15, 14, 13), result.Item1.Get("k").AsDate);
             // "A <ampm> element has no significance if the <hour-value> is greater than 12."
-            Assert.AreEqual(new DateTime(1899, 12, 30, 15, 14, 13), result.Item1.Get("l"));
-            Assert.AreEqual(new DateTime(1899, 12, 30, 0, 0, 0), result.Item1.Get("m"));
-            Assert.AreEqual(new DateTime(1899, 12, 30, 12, 13, 0), result.Item1.Get("n"));
+            Assert.AreEqual(new DateTime(1899, 12, 30, 15, 14, 13), result.Item1.Get("l").AsDate);
+            Assert.AreEqual(new DateTime(1899, 12, 30, 0, 0, 0), result.Item1.Get("m").AsDate);
+            Assert.AreEqual(new DateTime(1899, 12, 30, 12, 13, 0), result.Item1.Get("n").AsDate);
         }
 
         [TestMethod]
@@ -1050,11 +1050,11 @@ namespace RubberduckTests.Preprocessing
 #Const e = Empty
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(true, result.Item1.Get("a"));
-            Assert.AreEqual(false, result.Item1.Get("b"));
+            Assert.AreEqual(true, result.Item1.Get("a").AsBool);
+            Assert.AreEqual(false, result.Item1.Get("b").AsBool);
             Assert.AreEqual(null, result.Item1.Get("c"));
             Assert.AreEqual(null, result.Item1.Get("d"));
-            Assert.AreEqual(VBAEmptyValue.Value, result.Item1.Get("e"));
+            Assert.AreEqual(EmptyValue.Value, result.Item1.Get("e"));
         }
 
         [TestMethod]
@@ -1067,8 +1067,8 @@ namespace RubberduckTests.Preprocessing
 #Const d = True + #1/1/1800# - (4 * Empty Mod (Abs(-5)))
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(1m, result.Item1.Get("c"));
-            Assert.AreEqual(new DateTime(1799, 12, 31), result.Item1.Get("d"));
+            Assert.AreEqual(1m, result.Item1.Get("c").AsDecimal);
+            Assert.AreEqual(new DateTime(1799, 12, 31), result.Item1.Get("d").AsDate);
         }
 
         [TestMethod]
@@ -1078,7 +1078,7 @@ namespace RubberduckTests.Preprocessing
 #Const a = 2 ^ 3 + -5 * 40 / 2 \ 4 Mod 2 + 3 - (2 * 4) Xor 4 Eqv 5 Imp 6 Or 2 And True
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(7m, result.Item1.Get("a"));
+            Assert.AreEqual(7m, result.Item1.Get("a").AsDecimal);
         }
 
         [TestMethod]
@@ -1089,7 +1089,7 @@ namespace RubberduckTests.Preprocessing
 ";
             System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("en-us");
             var result = Preprocess(code);
-            Assert.AreEqual(new DateTime(2016, 3, 2), result.Item1.Get("a"));
+            Assert.AreEqual(new DateTime(2016, 3, 2), result.Item1.Get("a").AsDate);
         }
 
         [TestMethod]
@@ -1131,7 +1131,7 @@ namespace RubberduckTests.Preprocessing
 
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(evaluated, result.Item2);
+            Assert.AreEqual(evaluated, result.Item2.AsString);
         }
 
         [TestMethod]
@@ -1153,12 +1153,12 @@ a:
 End Sub
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(evaluated, result.Item2);
+            Assert.AreEqual(evaluated, result.Item2.AsString);
         }
 
-        private Tuple<SymbolTable, object> Preprocess(string code)
+        private Tuple<SymbolTable<string, IValue>, IValue> Preprocess(string code)
         {
-            SymbolTable symbolTable = new SymbolTable();
+            SymbolTable<string, IValue> symbolTable = new SymbolTable<string, IValue>();
             var stream = new AntlrInputStream(code);
             var lexer = new VBAConditionalCompilationLexer(stream);
             var tokens = new CommonTokenStream(lexer);
@@ -1166,7 +1166,8 @@ End Sub
             parser.AddErrorListener(new ExceptionErrorListener());
             var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01));
             var tree = parser.compilationUnit();
-            return Tuple.Create(symbolTable, evaluator.Visit(tree));
+            var expr = evaluator.Visit(tree);
+            return Tuple.Create(symbolTable, expr.Evaluate());
         }
     }
 }
