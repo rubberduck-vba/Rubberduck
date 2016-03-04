@@ -4,13 +4,11 @@
     {
         private readonly IExpression _left;
         private readonly IExpression _right;
-        private readonly VBAOptionCompare _optionCompare;
 
-        public LogicalLessThanExpression(IExpression left, IExpression right, VBAOptionCompare optionCompare)
+        public LogicalLessThanExpression(IExpression left, IExpression right)
         {
             _left = left;
             _right = right;
-            _optionCompare = optionCompare;
         }
 
         public override IValue Evaluate()
@@ -26,14 +24,7 @@
             {
                 var leftValue = left.AsString;
                 var rightValue = right.AsString;
-                if (_optionCompare == VBAOptionCompare.Binary)
-                {
-                    return new BoolValue(string.CompareOrdinal(leftValue, rightValue) < 0);
-                }
-                else
-                {
-                    return new BoolValue(leftValue.CompareTo(rightValue) < 0);
-                }
+                return new BoolValue(leftValue.CompareTo(rightValue) < 0);
             }
             else
             {

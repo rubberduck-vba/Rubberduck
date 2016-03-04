@@ -4,18 +4,16 @@
     {
         private readonly IExpression _left;
         private readonly IExpression _right;
-        private readonly VBAOptionCompare _optionCompare;
 
-        public LogicalGreaterOrEqualsExpression(IExpression left, IExpression right, VBAOptionCompare optionCompare)
+        public LogicalGreaterOrEqualsExpression(IExpression left, IExpression right)
         {
             _left = left;
             _right = right;
-            _optionCompare = optionCompare;
         }
 
         public override IValue Evaluate()
         {
-            var result = new LogicalLessThanExpression(_left, _right, _optionCompare).Evaluate();
+            var result = new LogicalLessThanExpression(_left, _right).Evaluate();
             if (result == null)
             {
                 return null;

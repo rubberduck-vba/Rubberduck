@@ -7,12 +7,10 @@ namespace Rubberduck.Parsing.Preprocessing
     public sealed class VBAPreprocessor
     {
         private readonly double _vbaVersion;
-        private readonly VBAOptionCompare _optionCompare;
 
-        public VBAPreprocessor(double vbaVersion, VBAOptionCompare optionCompare)
+        public VBAPreprocessor(double vbaVersion)
         {
             _vbaVersion = vbaVersion;
-            _optionCompare = optionCompare;
         }
 
         public string Execute(string unprocessedCode)
@@ -35,7 +33,7 @@ namespace Rubberduck.Parsing.Preprocessing
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAConditionalCompilationParser(tokens);
             parser.AddErrorListener(new ExceptionErrorListener());
-            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion), _optionCompare);
+            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion));
             var tree = parser.compilationUnit();
             var expr = evaluator.Visit(tree);
             return expr.Evaluate().AsString;

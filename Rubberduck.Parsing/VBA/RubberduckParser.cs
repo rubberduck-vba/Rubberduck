@@ -225,7 +225,7 @@ namespace Rubberduck.Parsing.VBA
 
             token.ThrowIfCancellationRequested();
             
-            var preprocessor = new VBAPreprocessor(double.Parse(_vbe.Version), OptionCompareParser.Parse(vbComponent.CodeModule));
+            var preprocessor = new VBAPreprocessor(double.Parse(_vbe.Version));
             string preprocessedModuleBody;
             try
             {

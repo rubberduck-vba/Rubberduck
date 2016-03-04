@@ -92,8 +92,6 @@
     <Compile Include="Preprocessing\NameExpression.cs" />
     <Compile Include="Preprocessing\NumberLiteralExpression.cs" />
     <Compile Include="Preprocessing\OctNumberLiteralExpression.cs" />
-    <Compile Include="Preprocessing\OptionCompareListener.cs" />
-    <Compile Include="Preprocessing\OptionCompareParser.cs" />
     <Compile Include="Preprocessing\PowExpression.cs" />
     <Compile Include="Preprocessing\CSngLibraryFunctionExpression.cs" />
     <Compile Include="Preprocessing\CLngPtrLibraryFunctionExpression.cs" />
@@ -139,14 +137,13 @@
     <Compile Include="Preprocessing\VBAConditionalCompilationListener.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationParser.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationVisitor.cs" />
-    <Compile Include="Preprocessing\VBAEnvironment.cs" />
+    <Compile Include="Preprocessing\VBALibrary.cs" />
     <Compile Include="Preprocessing\VBALikeBaseListener.cs" />
     <Compile Include="Preprocessing\VBALikeBaseVisitor.cs" />
     <Compile Include="Preprocessing\VBALikeLexer.cs" />
     <Compile Include="Preprocessing\VBALikeListener.cs" />
     <Compile Include="Preprocessing\VBALikeParser.cs" />
     <Compile Include="Preprocessing\VBALikeVisitor.cs" />
-    <Compile Include="Preprocessing\VBAOptionCompare.cs" />
     <Compile Include="Preprocessing\VBAPreprocessorException.cs" />
     <Compile Include="Preprocessing\VBADateConstants.cs" />
     <Compile Include="Preprocessing\SymbolTable.cs" />

@@ -1097,36 +1097,6 @@ namespace RubberduckTests.Preprocessing
         }
 
         [TestMethod]
-        public void TestOptionCompareText()
-        {
-            string code = @"
-#Const a = ""ß"" = ""ss""
-#Const b = ""ß"" < ""ss""
-#Const c = ""ß"" > ""ss""
-";
-            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("de-de");
-            var result = Preprocess(code, VBAOptionCompare.Text);
-            Assert.AreEqual(true, result.Item1.Get("a").AsBool);
-            Assert.AreEqual(false, result.Item1.Get("b").AsBool);
-            Assert.AreEqual(false, result.Item1.Get("c").AsBool);
-        }
-
-        [TestMethod]
-        public void TestOptionCompareBinary()
-        {
-            string code = @"
-#Const a = ""ß"" = ""ss""
-#Const b = ""ß"" < ""ss""
-#Const c = ""ß"" > ""ss""
-";
-            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("de-de");
-            var result = Preprocess(code, VBAOptionCompare.Binary);
-            Assert.AreEqual(false, result.Item1.Get("a").AsBool);
-            Assert.AreEqual(false, result.Item1.Get("b").AsBool);
-            Assert.AreEqual(true, result.Item1.Get("c").AsBool);
-        }
-
-        [TestMethod]
         public void TestPreprocessingLiveDeadCode()
         {
             string code = @"
@@ -1189,13 +1159,7 @@ End Sub
             var result = Preprocess(code);
             Assert.AreEqual(evaluated, result.Item2.AsString);
         }
-
         private Tuple<SymbolTable<string, IValue>, IValue> Preprocess(string code)
-        {
-            return Preprocess(code, VBAOptionCompare.Binary);
-        }
-
-        private Tuple<SymbolTable<string, IValue>, IValue> Preprocess(string code, VBAOptionCompare optionCompare)
         {
             SymbolTable<string, IValue> symbolTable = new SymbolTable<string, IValue>();
             var stream = new AntlrInputStream(code);
@@ -1203,7 +1167,7 @@ End Sub
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAConditionalCompilationParser(tokens);
             parser.AddErrorListener(new ExceptionErrorListener());
-            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), optionCompare);
+            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01));
             var tree = parser.compilationUnit();
             var expr = evaluator.Visit(tree);
             return Tuple.Create(symbolTable, expr.Evaluate());
