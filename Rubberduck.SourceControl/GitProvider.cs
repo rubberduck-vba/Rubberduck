@@ -382,9 +382,8 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                var remote = _repo.Branches[branch].Remote;
-
-                _repo.Branches.Update(_repo.Branches[branch], b => b.TrackedBranch = null);
+                _repo.Branches.Update(_repo.Branches[branch], b => b.Remote = "origin",
+                    b => b.TrackedBranch = null);
 
                 PushOptions options = null;
                 if (_credentials != null)
@@ -395,11 +394,15 @@ namespace Rubberduck.SourceControl
                     };
                 }
 
-                _repo.Network.Push(remote, ":refs/heads/" + branch, options);
+                _repo.Network.Push(_repo.Network.Remotes["origin"], ":refs/heads/" + branch.Split('/').Last(), options);
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Unpublish failed.", ex);
+                throw new SourceControlException("Publish failed.", ex);
+            }
+            catch (Exception e)
+            {
+                
             }
         }
 
