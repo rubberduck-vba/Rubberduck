@@ -3006,6 +3006,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your last action failed because Rubberduck did not have your authorization credentials.  Please login and try again..
+        /// </summary>
+        public static string SourceControl_LoginInstructions {
+            get {
+                return ResourceManager.GetString("SourceControl_LoginInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merge.
         /// </summary>
         public static string SourceControl_MergeBranch {

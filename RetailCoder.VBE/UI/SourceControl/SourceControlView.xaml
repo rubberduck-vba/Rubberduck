@@ -259,6 +259,7 @@
                   DockPanel.Dock="Top">
                 <StackPanel Background="LightYellow">
                     <TextBlock Text="{Binding ErrorMessage, UpdateSourceTrigger=PropertyChanged}"
+                               TextWrapping="WrapWithOverflow"
                                Margin="5" />
                     <Button HorizontalAlignment="Right"
                             Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Dismiss}"
@@ -271,6 +272,10 @@
                   DockPanel.Dock="Top">
                 <StackPanel VerticalAlignment="Top"
                             Margin="10,5">
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_LoginInstructions}"
+                               TextWrapping="WrapWithOverflow"
+                               FontWeight="Black"
+                               Margin="0,0,0,5" />
                     <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UserNameLabel}"
                                FontWeight="SemiBold"
                                Margin="0,0,0,5" />

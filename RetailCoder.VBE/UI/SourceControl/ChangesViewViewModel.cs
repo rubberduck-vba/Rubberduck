@@ -9,9 +9,6 @@ namespace Rubberduck.UI.SourceControl
 {
     public class ChangesViewViewModel : ViewModelBase, IControlViewModel
     {
-        private const string UnauthorizedMessage = "Request failed with status code: 401";
-        private CurrentAction _action;   // use to continue push/sync after login
-
         public ChangesViewViewModel()
         {
             _commitCommand = new DelegateCommand(_ => Commit(), _ => !string.IsNullOrEmpty(CommitMessage) && IncludedChanges != null && IncludedChanges.Any());
@@ -39,18 +36,6 @@ namespace Rubberduck.UI.SourceControl
             {
                 _provider = value;
                 _provider.BranchChanged += Provider_BranchChanged;
-
-                switch (_action)
-                {
-                    case CurrentAction.Push:
-                        PushCommits();
-                        break;
-                    case CurrentAction.Sync:
-                        SyncCommits();
-                        break;
-                }
-
-                _action = CurrentAction.None;
 
                 RefreshView();
             }
@@ -155,60 +140,12 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                if (ex.InnerException.Message == UnauthorizedMessage)
-                {
-                    switch (CommitAction)
-                    {
-                        case CommitAction.CommitAndPush:
-                            _action = CurrentAction.Push;
-                            break;
-                        case CommitAction.CommitAndSync:
-                            _action = CurrentAction.Sync;
-                            break;
-                    }
-                }
-                
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message);
             }
 
             CommitMessage = string.Empty;
         }
-
-        private void PushCommits()
-        {
-            try
-            {
-                Provider.Push();
-            }
-            catch (SourceControlException ex)
-            {
-                if (ex.InnerException.Message == UnauthorizedMessage)
-                {
-                    _action = CurrentAction.Push;
-                }
-
-                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
-            }
-        }
-
-        private void SyncCommits()
-        {
-            try
-            {
-                Provider.Pull();
-                Provider.Push();
-            }
-            catch (SourceControlException ex)
-            {
-                if (ex.InnerException.Message == UnauthorizedMessage)
-                {
-                    _action = CurrentAction.Sync;
-                }
-
-                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
-            }
-        }
-
+        
         private readonly ICommand _commitCommand;
         public ICommand CommitCommand
         {

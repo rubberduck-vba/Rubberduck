@@ -424,11 +424,11 @@
                 <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Stretch">
                     <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center" 
                            Source="{Binding SelectedItem.Inspection.Severity, Converter={StaticResource SeverityIconConverter}}"/>
-                    <TextBlock Margin="4" Text="{Binding SelectedItem.Inspection.Description}" FontWeight="Bold" TextWrapping="Wrap"/>
+                    <TextBlock Margin="4" Text="{Binding SelectedItem.Inspection.Description}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
                 </StackPanel>
 
-                <TextBlock Margin="4" Text="{Binding SelectedItem.Inspection.Meta}" FontSize="10" TextWrapping="Wrap"/>
-                <TextBlock Margin="8" Text="{Binding SelectedItem.QualifiedSelection}" FontSize="10" TextWrapping="Wrap" />
+                <TextBlock Margin="4" Text="{Binding SelectedItem.Inspection.Meta}" FontSize="10" TextWrapping="WrapWithOverflow"/>
+                <TextBlock Margin="8" Text="{Binding SelectedItem.QualifiedSelection}" FontSize="10" TextWrapping="WrapWithOverflow" />
                 
                 <WrapPanel>
                     <Button Style="{StaticResource LinkButton}" Margin="4"
