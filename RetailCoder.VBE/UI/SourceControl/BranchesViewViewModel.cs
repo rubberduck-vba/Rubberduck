@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Input;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Rubberduck.UI.SourceControl
 {

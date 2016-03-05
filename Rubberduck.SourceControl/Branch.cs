@@ -38,19 +38,15 @@ namespace Rubberduck.SourceControl
         public string TrackingName { get; private set; }
 
         public Branch(LibGit2Sharp.Branch branch)
-            : this(branch.FriendlyName, branch.CanonicalName, branch.IsRemote, branch.IsCurrentRepositoryHead, branch.TrackedBranch)
-        { }
-
-        public Branch(string name, string canonicalName, bool isRemote, bool isCurrentHead, LibGit2Sharp.Branch trackedBranch)
         {
-            Name = name;
-            CanonicalName = canonicalName;
-            IsRemote = isRemote;
-            IsCurrentHead = isCurrentHead;
+            Name = branch.FriendlyName;
+            CanonicalName = branch.CanonicalName;
+            IsRemote = branch.IsRemote;
+            IsCurrentHead = branch.IsCurrentRepositoryHead;
 
-            if (trackedBranch != null)
+            if (branch.TrackedBranch != null && branch.TrackedBranch.Tip != null)   // make sure the online repo exists
             {
-                TrackingName = trackedBranch.FriendlyName;
+                TrackingName = branch.TrackedBranch.FriendlyName;
             }
         }
     }
