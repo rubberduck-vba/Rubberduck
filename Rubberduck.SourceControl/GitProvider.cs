@@ -486,7 +486,7 @@ namespace Rubberduck.SourceControl
                 var branch = _repo.Branches.FirstOrDefault(b => b.FriendlyName == branchName);
                 if (branch != null)
                 {
-                    if (branch.IsRemote)
+                    if (branch.TrackedBranch != null && branch.TrackedBranch.Tip != null)   // check if the branch exists on the remote repo
                     {
                         PushOptions options = null;
                         if (_credentials != null)
@@ -499,10 +499,9 @@ namespace Rubberduck.SourceControl
 
                         _repo.Network.Push(branch.Remote, ":" + _repo.Branches[branchName].UpstreamBranchCanonicalName, options);
                     }
-                    else
-                    {
-                        _repo.Branches.Remove(branch);
-                    }
+
+                    // remote local repo
+                    _repo.Branches.Remove(branch);
                 }
             }
             catch(LibGit2SharpException ex)
