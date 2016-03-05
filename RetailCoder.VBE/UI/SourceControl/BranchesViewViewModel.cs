@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using Rubberduck.SourceControl;
@@ -21,9 +21,8 @@ namespace Rubberduck.UI.SourceControl
             _mergeBranchesOkButtonCommand = new DelegateCommand(_ => MergeBranchOk(), _ => SourceBranch != DestinationBranch);
             _mergeBranchesCancelButtonCommand = new DelegateCommand(_ => MergeBranchCancel());
 
-            _deleteBranchToolbarButtonCommand = new DelegateCommand(branch => DeleteBranch((string)branch));
+            _deleteBranchToolbarButtonCommand = new DelegateCommand(branch => DeleteBranch((string)branch), branch => (string) branch != CurrentBranch);
             _publishBranchToolbarButtonCommand = new DelegateCommand(branch => PublishBranch((string) branch));
-
             _unpublishBranchToolbarButtonCommand = new DelegateCommand(branch => UnpublishBranch((string)branch));
         }
 
@@ -45,46 +44,46 @@ namespace Rubberduck.UI.SourceControl
             OnPropertyChanged("UnpublishedBranches");
             OnPropertyChanged("Branches");
 
-            CurrentBranch = _provider.CurrentBranch.Name;
+            CurrentBranch = Provider.CurrentBranch.Name;
         }
 
-        public ObservableCollection<string> Branches
+        public IEnumerable<string> Branches
         {
             get
             {
                 return Provider == null
-                  ? new ObservableCollection<string>()
-                  : new ObservableCollection<string>(Provider.Branches.Select(b => b.Name));
+                  ? new string[] { }
+                  : Provider.Branches.Select(b => b.Name);
             }
         }
 
-        public ObservableCollection<string> LocalBranches
+        public IEnumerable<string> LocalBranches
         {
             get
             {
                 return Provider == null
-                    ? new ObservableCollection<string>()
-                    : new ObservableCollection<string>(Provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name));
+                    ? new string[] { }
+                    : Provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name);
             }
         }
 
-        public ObservableCollection<string> PublishedBranches
+        public IEnumerable<string> PublishedBranches
         {
             get
             {
                 return Provider == null
-                    ? new ObservableCollection<string>()
-                    : new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote && !string.IsNullOrEmpty(b.TrackingName)).Select(b => b.Name));
+                    ? new string[] { }
+                    : Provider.Branches.Where(b => !b.IsRemote && !string.IsNullOrEmpty(b.TrackingName)).Select(b => b.Name);
             }
         }
 
-        public ObservableCollection<string> UnpublishedBranches
+        public IEnumerable<string> UnpublishedBranches
         {
             get
             {
                 return Provider == null
-                    ? new ObservableCollection<string>()
-                    : new ObservableCollection<string>(_provider.Branches.Where(b => !b.IsRemote && string.IsNullOrEmpty(b.TrackingName)).Select(b => b.Name));
+                    ? new string[] { }
+                    : Provider.Branches.Where(b => !b.IsRemote && string.IsNullOrEmpty(b.TrackingName)).Select(b => b.Name);
             }
         }
 
