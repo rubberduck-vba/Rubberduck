@@ -16,7 +16,7 @@
         public override IValue Evaluate()
         {
             var identifier = _identifier.Evaluate().AsString;
-            // Special case, identifier that does not exist is VBAEmpty.
+            // Special case, identifier that does not exist is Empty.
             // Could add them to the symbol table, but since they are all constants
             // they never change anyway.
             if (!_symbolTable.HasSymbol(identifier))
