@@ -1094,12 +1094,14 @@ namespace RubberduckTests.Preprocessing
 #Const a = CDate(""2016/03/02"")
 #Const b = CBool(""tRuE"")
 #Const c = CBool(""#TRUE#"")
+#Const d = ""ß"" = ""ss""
 ";
             System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-jp");
             var result = Preprocess(code);
             Assert.AreEqual(new DateTime(2016, 3, 2), result.Item1.Get("a").AsDate);
             Assert.AreEqual(true, result.Item1.Get("b").AsBool);
             Assert.AreEqual(true, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("d").AsBool);
         }
 
         [TestMethod]
