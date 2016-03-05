@@ -478,7 +478,6 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        // bug: this does not work for completely removing published branches
         public override void DeleteBranch(string branchName)
         {
             try
