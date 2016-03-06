@@ -2844,15 +2844,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete.
-        /// </summary>
-        public static string SourceControl_DeleteBranchButton {
-            get {
-                return ResourceManager.GetString("SourceControl_DeleteBranchButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Delete Branch.
         /// </summary>
         public static string SourceControl_DeleteBranchCaption {
@@ -2876,6 +2867,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_DeleteBranchTitleLable {
             get {
                 return ResourceManager.GetString("SourceControl_DeleteBranchTitleLable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string SourceControl_DeleteButton {
+            get {
+                return ResourceManager.GetString("SourceControl_DeleteButton", resourceCulture);
             }
         }
         
@@ -2912,6 +2912,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_ExcludedChanges {
             get {
                 return ResourceManager.GetString("SourceControl_ExcludedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exclude.
+        /// </summary>
+        public static string SourceControl_ExcludeFileButton {
+            get {
+                return ResourceManager.GetString("SourceControl_ExcludeFileButton", resourceCulture);
             }
         }
         
@@ -2975,6 +2984,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_IncludedChanges {
             get {
                 return ResourceManager.GetString("SourceControl_IncludedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include.
+        /// </summary>
+        public static string SourceControl_IncludeFileButton {
+            get {
+                return ResourceManager.GetString("SourceControl_IncludeFileButton", resourceCulture);
             }
         }
         
@@ -3209,6 +3227,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_SyncCommitsLabel {
             get {
                 return ResourceManager.GetString("SourceControl_SyncCommitsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo.
+        /// </summary>
+        public static string SourceControl_UndoChangesButton {
+            get {
+                return ResourceManager.GetString("SourceControl_UndoChangesButton", resourceCulture);
             }
         }
         

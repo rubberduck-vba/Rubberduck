@@ -1368,7 +1368,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SourceControl_PasswordLabel" xml:space="preserve">
     <value>Password:</value>
   </data>
-  <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
+  <data name="SourceControl_DeleteButton" xml:space="preserve">
     <value>Delete</value>
   </data>
   <data name="SourceControl_PublishBranchButton" xml:space="preserve">
@@ -1388,5 +1388,14 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="SourceControl_LoginInstructions" xml:space="preserve">
     <value>Your last action failed because Rubberduck did not have your authorization credentials.  Please login and try again.</value>
+  </data>
+  <data name="SourceControl_ExcludeFileButton" xml:space="preserve">
+    <value>Exclude</value>
+  </data>
+  <data name="SourceControl_IncludeFileButton" xml:space="preserve">
+    <value>Include</value>
+  </data>
+  <data name="SourceControl_UndoChangesButton" xml:space="preserve">
+    <value>Undo</value>
   </data>
 </root>

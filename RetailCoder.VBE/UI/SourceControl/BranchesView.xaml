@@ -248,13 +248,15 @@
                                 <Button Command="{Binding UnpublishBranchToolbarButtonCommand}"
                                         CommandParameter="{Binding ElementName=PublishedBranchList, Path=SelectedItem}"
                                         IsEnabled="{Binding ElementName=PublishedBranchList, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
-                                        Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UnpublishBranchButton}" />
+                                        Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UnpublishBranchButton}"
+                                        Height="22" />
                                 <Button Command="{Binding DeleteBranchToolbarButtonCommand}"
                                         CommandParameter="{Binding ElementName=PublishedBranchList, Path=SelectedItem}"
-                                        IsEnabled="{Binding ElementName=PublishedBranchList, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
+                                        IsEnabled="{Binding ElementName=PublishedBranchList, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
+                                        Height="22">
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="{StaticResource DeleteImage}" />
-                                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DeleteBranchButton}"
+                                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DeleteButton}"
                                                Margin="2,0"
                                                VerticalAlignment="Center" />
                                     </StackPanel>
@@ -278,13 +280,15 @@
                                 <Button Command="{Binding PublishBranchToolbarButtonCommand}"
                                         CommandParameter="{Binding ElementName=UnpublishedBranchList, Path=SelectedItem}"
                                         IsEnabled="{Binding ElementName=UnpublishedBranchList, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
-                                        Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PublishBranchButton}" />
+                                        Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PublishBranchButton}"
+                                        Height="22" />
                                 <Button Command="{Binding DeleteBranchToolbarButtonCommand}"
                                         CommandParameter="{Binding ElementName=UnpublishedBranchList, Path=SelectedItem}"
-                                        IsEnabled="{Binding ElementName=UnpublishedBranchList, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}">
+                                        IsEnabled="{Binding ElementName=UnpublishedBranchList, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
+                                        Height="22">
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="{StaticResource DeleteImage}" />
-                                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DeleteBranchButton}"
+                                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_DeleteButton}"
                                                Margin="2,0"
                                                VerticalAlignment="Center" />
                                     </StackPanel>
