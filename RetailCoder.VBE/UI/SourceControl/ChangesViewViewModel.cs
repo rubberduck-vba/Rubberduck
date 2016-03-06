@@ -12,6 +12,9 @@ namespace Rubberduck.UI.SourceControl
         public ChangesViewViewModel()
         {
             _commitCommand = new DelegateCommand(_ => Commit(), _ => !string.IsNullOrEmpty(CommitMessage) && IncludedChanges != null && IncludedChanges.Any());
+
+            _undoChangesToolbarButtonCommand =
+                new DelegateCommand(fileStatusEntry => UndoChanges((IFileStatusEntry) fileStatusEntry));
         }
 
         private string _commitMessage;
@@ -114,6 +117,22 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        private void UndoChanges(IFileStatusEntry fileStatusEntry)
+        {
+            try
+            {
+                var localLocation = Provider.CurrentRepository.LocalLocation.EndsWith("\\")
+                    ? Provider.CurrentRepository.LocalLocation
+                    : Provider.CurrentRepository.LocalLocation + "\\";
+
+                Provider.Undo(localLocation + fileStatusEntry.FilePath);
+            }
+            catch (SourceControlException ex)
+            {
+                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
+            }
+        }
+
         private void Commit()
         {
             var changes = IncludedChanges.Select(c => c.FilePath).ToList();
@@ -153,6 +172,12 @@ namespace Rubberduck.UI.SourceControl
             {
                 return _commitCommand;
             }
+        }
+
+        private ICommand _undoChangesToolbarButtonCommand;
+        public ICommand UndoChangesToolbarButtonCommand
+        {
+            get { return _undoChangesToolbarButtonCommand; }
         }
 
         public event EventHandler<ErrorEventArgs> ErrorThrown;
