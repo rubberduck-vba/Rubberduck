@@ -71,7 +71,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             module.InsertLines(_insertionLine, Tokens.Implements + ' ' + _model.InterfaceName + Environment.NewLine);
 
             _state.StateChanged += _state_StateChanged;
-            _state.OnParseRequested();
+            _state.OnParseRequested(this);
         }
 
         private int _insertionLine;

@@ -72,10 +72,12 @@
     <Compile Include="Symbols\AdodbObjectModel.cs" />
     <Compile Include="Symbols\CommentExtensions.cs" />
     <Compile Include="Symbols\DeclarationEventArgs.cs" />
+    <Compile Include="Symbols\DeclarationFinder.cs" />
     <Compile Include="Symbols\ExcelObjectModel.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
     <Compile Include="Symbols\MemberProcessedEventArgs.cs" />
+    <Compile Include="Symbols\ParameterDeclaration.cs" />
     <Compile Include="Symbols\ReferencedDeclarationsCollector.cs" />
     <Compile Include="Symbols\SyntaxErrorException.cs" />
     <Compile Include="Nodes\CommentNode.cs" />

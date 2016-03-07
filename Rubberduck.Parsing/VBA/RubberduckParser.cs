@@ -21,28 +21,24 @@ namespace Rubberduck.Parsing.VBA
 {
     public class RubberduckParser : IRubberduckParser
     {
+        private readonly ReferencedDeclarationsCollector _comReflector;
+
         public RubberduckParser(VBE vbe, RubberduckParserState state)
         {
             _vbe = vbe;
             _state = state;
 
+            _comReflector = new ReferencedDeclarationsCollector();
+
             state.ParseRequest += ReparseRequested;
+            state.StateChanged += StateOnStateChanged;
         }
 
         private async void ReparseRequested(object sender, EventArgs e)
         {
-            if (!_state.ParseTrees.Any())
-            {
-                var projects = _vbe.VBProjects.Cast<VBProject>().ToList();
-                if (projects.Any())
-                {
-                    var comReflector = new ReferencedDeclarationsCollector();
-                    var project = projects.First();
-                    comReflector.DebugOutputAllReferences(project.References);
-                }
-                //_state.AddBuiltInDeclarations(_vbe.HostApplication());
-            }
+            Debug.WriteLine("{0} ({1}) requested a reparse", sender, sender.GetHashCode());
             await ParseParallel();
+            Debug.WriteLine("Reparse requested by {0} ({1}) completed.", sender, sender.GetHashCode());
         }
 
         private readonly VBE _vbe;
@@ -64,12 +60,7 @@ namespace Rubberduck.Parsing.VBA
 
                 foreach (var component in components)
                 {
-                    ParseComponent(component, false);
-                }
-
-                using (var tokenSource = new CancellationTokenSource())
-                {
-                    Resolve(tokenSource.Token);
+                    ParseComponent(component);
                 }
             }
             catch (Exception exception)
@@ -78,37 +69,44 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void ParseComponent(VBComponent component, bool resolve = true, TokenStreamRewriter rewriter = null)
+        private void StateOnStateChanged(object sender, ParserStateEventArgs parserStateEventArgs)
         {
-            var tokenSource = RenewTokenSource(component);
-
-            var token = tokenSource.Token;
-            Parse(component, token, rewriter);
-
-            // don't fire up the resolver if any component is still being parsed
-            if (resolve && _state.Status == ParserState.Parsed && !token.IsCancellationRequested)
+            if (parserStateEventArgs.State == ParserState.Parsed)
             {
-                using (var source = new CancellationTokenSource())
+                var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments);
+                using (var tokenSource = new CancellationTokenSource())
                 {
-                    Resolve(source.Token);
+                    Resolve(tokenSource.Token, finder);
                 }
             }
         }
 
+        public void ParseComponent(VBComponent component, TokenStreamRewriter rewriter = null)
+        {
+            Debug.Print("ParseComponent({0}) (Thread {1})", component.Name, Thread.CurrentThread.ManagedThreadId);
+            var tokenSource = RenewTokenSource(component);
+
+            var token = tokenSource.Token;
+            Parse(component, token, rewriter);
+        }
+
         private CancellationTokenSource RenewTokenSource(VBComponent component)
         {
+            Debug.WriteLine("Renewing _tokenSources entry for component '{0}' (Thread {1})", component.Name, Thread.CurrentThread.ManagedThreadId);
             if (_tokenSources.ContainsKey(component))
             {
                 CancellationTokenSource existingTokenSource;
                 _tokenSources.TryRemove(component, out existingTokenSource);
                 if (existingTokenSource != null)
                 {
+                    Debug.WriteLine("Cancelling source {0} in thread {1}", existingTokenSource.GetHashCode(), Thread.CurrentThread.ManagedThreadId);
                     existingTokenSource.Cancel();
                     existingTokenSource.Dispose();
                 }
             }
 
             var tokenSource = new CancellationTokenSource();
+            Debug.WriteLine("Token source for component '{0}' is now {1} (Thread {2})", component.Name, tokenSource.GetHashCode(), Thread.CurrentThread.ManagedThreadId);
             _tokenSources[component] = tokenSource;
             return tokenSource;
         }
@@ -117,24 +115,45 @@ namespace Rubberduck.Parsing.VBA
         {
             try
             {
-                _state.ResetBuiltInDeclarationReferences();
-
-                var components = _vbe.VBProjects.Cast<VBProject>()
+                var projects = _vbe.VBProjects.Cast<VBProject>()
                     .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
+                    .ToList();
+
+                if (!_state.AllDeclarations.Any(declaration => declaration.IsBuiltIn))
+                {
+                    SetComponentsState(projects.SelectMany(project => project.VBComponents.Cast<VBComponent>()), ParserState.LoadingReference);
+                    // multiple projects can (do) have same references; avoid adding them multiple times!
+                    var references = projects.SelectMany(project => project.References.Cast<Reference>())
+                        .GroupBy(reference => reference.Guid)
+                        .Select(grouping => grouping.First());
+
+                    foreach (var reference in references)
+                    {
+                        var stopwatch = Stopwatch.StartNew();
+                        var declarations = _comReflector.GetDeclarationsForReference(reference);
+                        foreach (var declaration in declarations)
+                        {
+                            _state.AddDeclaration(declaration);
+                        }
+                        stopwatch.Stop();
+                        Debug.WriteLine("{0} declarations added in {1}ms (Thread {2})", reference.Name, stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+                    }
+
+                    Debug.WriteLine("{0} built-in declarations added. (Thread {1})", _state.AllDeclarations.Count(d => d.IsBuiltIn), Thread.CurrentThread.ManagedThreadId);
+                }
+
+                var components = projects
                     .SelectMany(project => project.VBComponents.Cast<VBComponent>())
                     .ToList();
 
-                SetComponentsState(components, ParserState.Pending);
-
-                var parseTasks = components.Select(vbComponent => Task.Run(() => ParseComponent(vbComponent, false))).ToArray();
-                await Task.WhenAll(parseTasks)
-                    .ContinueWith(t =>
-                    {
-                        using (var tokenSource = new CancellationTokenSource())
-                        {
-                            Resolve(tokenSource.Token);
-                        }
-                    });
+                foreach (var component in components)
+                {
+                    ParseComponent(component);
+                }
+                //Parallel.ForEach(components, new ParallelOptions(), component =>
+                //{
+                //    ParseComponent(component);
+                //});
             }
             catch (Exception exception)
             {
@@ -144,6 +163,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void SetComponentsState(IEnumerable<VBComponent> components, ParserState state)
         {
+            Debug.WriteLine("Setting all components to '{0}' state... (Thread {1})", state, Thread.CurrentThread.ManagedThreadId);
             foreach (var vbComponent in components)
             {
                 _state.SetModuleState(vbComponent, state);
@@ -161,40 +181,48 @@ namespace Rubberduck.Parsing.VBA
                 var code = rewriter == null
                     ? string.Join(Environment.NewLine, vbComponent.CodeModule.GetSanitizedCode())
                     : rewriter.GetText();
-                    // note: removes everything ignored by the parser, e.g. line numbers
+                // note: removes everything ignored by the parser, e.g. line numbers
 
                 ParseInternal(component, code, token);
             }
             catch (COMException exception)
             {
                 State.SetModuleState(component, ParserState.Error);
-                Debug.Print(exception.ToString());
-
+                Debug.WriteLine("Exception thrown in thread {0}:\n{1}", Thread.CurrentThread.ManagedThreadId, exception);
             }
             catch (SyntaxErrorException exception)
             {
-                Debug.Print(exception.ToString());
+                Debug.WriteLine("Exception thrown in thread {0}:\n{1}", Thread.CurrentThread.ManagedThreadId, exception);
                 State.SetModuleState(component, ParserState.Error, exception);
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException exception)
             {
-                // I'm sick of this crashing on me
+                Debug.WriteLine("Exception thrown in thread {0}:\n{1}", Thread.CurrentThread.ManagedThreadId, exception);
             }
         }
 
-        public void Resolve(CancellationToken token)
+        public void Resolve(CancellationToken token, DeclarationFinder finder)
         {
             try
             {
+                Debug.WriteLine("Starting parallel resolver loop (thread {0})", Thread.CurrentThread.ManagedThreadId);
+
+                var stopwatch = Stopwatch.StartNew();
                 Parallel.ForEach(_state.ParseTrees, kvp =>
                 {
                     token.ThrowIfCancellationRequested();
-                    ResolveReferences(kvp.Key, kvp.Value, token);
+                    ResolveReferences(finder, kvp.Key, kvp.Value, token);
                 });
+                stopwatch.Stop();
+                Debug.WriteLine("Resolver completed in {0}ms (thread {1})", stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
             }
             catch (OperationCanceledException)
             {
                 // let it go...
+            }
+            catch (AggregateException exceptions)
+            {
+                Debug.WriteLine(exceptions);
             }
         }
 
@@ -233,7 +261,14 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             ITokenStream stream;
+            var stopwatch = Stopwatch.StartNew();
             var tree = ParseInternal(code, listeners, out stream);
+            stopwatch.Stop();
+            if (tree != null)
+            {
+                Debug.Print("IParseTree for component '{0}' acquired in {1}ms (thread {2})", vbComponent.Name, stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+            }
+
             _state.AddTokenStream(vbComponent, stream);
             _state.AddParseTree(vbComponent, tree);
 
@@ -295,9 +330,10 @@ namespace Rubberduck.Parsing.VBA
         // todo: remove once performance is acceptable
         private readonly IDictionary<VBComponent, Stopwatch> _resolverTimer = new ConcurrentDictionary<VBComponent, Stopwatch>(); 
 
-        private void ResolveReferences(VBComponent component, IParseTree tree, CancellationToken token)
+        private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree, CancellationToken token)
         {
-            if (_state.GetModuleState(component) != ParserState.Parsed)
+            var state = _state.GetModuleState(component);
+            if (_state.Status == ParserState.ResolverError || state != ParserState.Parsed)
             {
                 return;
             }
@@ -305,28 +341,28 @@ namespace Rubberduck.Parsing.VBA
             _state.SetModuleState(component, ParserState.Resolving);
             _resolverTimer[component] = Stopwatch.StartNew();
 
-            Debug.Print("Resolving '{0}'...", component.Name);
+            Debug.WriteLine("Resolving '{0}'... (thread {1})", component.Name, Thread.CurrentThread.ManagedThreadId);
 
             if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))
             {
                 var qualifiedName = new QualifiedModuleName(component);
-                var declarations = _state.AllDeclarations.ToList();
-                var resolver = new IdentifierReferenceResolver(qualifiedName, declarations, _state.AllComments.ToList());
+                var resolver = new IdentifierReferenceResolver(qualifiedName, finder);
                 var listener = new IdentifierReferenceListener(resolver, token);
                 var walker = new ParseTreeWalker();
                 try
                 {
                     walker.Walk(listener, tree);
+                    _state.SetModuleState(component, ParserState.Ready);
                 }
                 catch (Exception exception)
                 {
-                    Debug.Print("Exception thrown resolving '{0}': {1}", component.Name, exception);
+                    Debug.Print("Exception thrown resolving '{0}' in thread {2}: {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
+                    State.SetModuleState(component, ParserState.ResolverError);
                 }
             }
-            _state.SetModuleState(component, ParserState.Ready);
-            _resolverTimer[component].Stop();
 
-            Debug.Print("'{0}' is {1}. Resolver took {2}ms to complete.", component.Name, _state.GetModuleState(component), _resolverTimer[component].ElapsedMilliseconds);
+            _resolverTimer[component].Stop();
+            Debug.Print("'{0}' is {1}. Resolver took {2}ms to complete in thread {3}", component.Name, _state.GetModuleState(component), _resolverTimer[component].ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
         }
 
         private class ObsoleteCallStatementListener : VBABaseListener

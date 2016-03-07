@@ -777,9 +777,12 @@ End Sub";
             var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
             refactoring.Refactor(qualifiedSelection);
 
+            var actualCode1 = module1.Lines();
+            var actualCode2 = module2.Lines();
+
             //Assert
-            Assert.AreEqual(expectedCode1, module1.Lines());
-            Assert.AreEqual(expectedCode2, module2.Lines());
+            Assert.AreEqual(expectedCode1, actualCode1);
+            Assert.AreEqual(expectedCode2, actualCode2);
         }
 
         [TestMethod]

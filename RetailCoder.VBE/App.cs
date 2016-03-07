@@ -115,7 +115,7 @@ namespace Rubberduck
             connectionPoint.Advise(sink, out cookie);
 
             _componentsEventsConnectionPoints.Add(e.Item.VBComponents, Tuple.Create(connectionPoint, cookie));
-            _parser.State.OnParseRequested();
+            _parser.State.OnParseRequested(sender);
         }
 
         async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
@@ -129,7 +129,7 @@ namespace Rubberduck
             Debug.WriteLine(string.Format("Component '{0}' was renamed.", e.Item.Name));
 
             _parser.State.ClearDeclarations(e.Item);
-            _parser.State.OnParseRequested(e.Item);
+            _parser.State.OnParseRequested(sender, e.Item);
         }
 
         async void sink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)
@@ -142,13 +142,13 @@ namespace Rubberduck
         {
             Debug.WriteLine(string.Format("Component '{0}' was reloaded.", e.Item.Name));
             _parser.State.ClearDeclarations(e.Item);
-            _parser.State.OnParseRequested(e.Item);
+            _parser.State.OnParseRequested(sender, e.Item);
         }
 
         async void sink_ComponentAdded(object sender, DispatcherEventArgs<VBComponent> e)
         {
             Debug.WriteLine(string.Format("Component '{0}' was added.", e.Item.Name));
-            _parser.State.OnParseRequested(e.Item);
+            _parser.State.OnParseRequested(sender, e.Item);
         }
 
         async void sink_ComponentActivated(object sender, DispatcherEventArgs<VBComponent> e)
@@ -161,7 +161,7 @@ namespace Rubberduck
         {
             Debug.WriteLine(string.Format("Project '{0}' was renamed.", e.Item.Name));
             _parser.State.ClearDeclarations(e.Item);
-            _parser.State.OnParseRequested();
+            _parser.State.OnParseRequested(sender);
         }
 
         async void sink_ProjectActivated(object sender, DispatcherEventArgs<VBProject> e)
@@ -244,7 +244,7 @@ namespace Rubberduck
 
         private void _stateBar_Refresh(object sender, EventArgs e)
         {
-            _parser.State.OnParseRequested();
+            _parser.State.OnParseRequested(sender);
         }
 
         private void Parser_StateChanged(object sender, ParserStateEventArgs e)

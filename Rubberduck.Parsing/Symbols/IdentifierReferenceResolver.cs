@@ -4,158 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public class DeclarationFinder
-    {
-        private readonly IDictionary<DeclarationType, Declaration[]> _declarationsByType;
-        private readonly IDictionary<QualifiedModuleName, CommentNode[]> _comments;
-        private readonly IDictionary<string, Declaration[]> _declarationsByName;
-
-        private readonly IReadOnlyList<Declaration> _types;
-
-        public DeclarationFinder(IReadOnlyList<Declaration> declarations, IEnumerable<CommentNode> comments)
-        {
-            _comments = comments.GroupBy(node => node.QualifiedSelection.QualifiedName)
-                                .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
-
-            _declarationsByType = declarations.GroupBy(declaration => declaration.DeclarationType)
-                .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
-
-            _declarationsByName = declarations.GroupBy(declaration => declaration.IdentifierName)
-                .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
-
-            Declaration[] classes;
-            if (!_declarationsByType.TryGetValue(DeclarationType.Class, out classes))
-            {
-                classes = new Declaration[]{};
-            }
-            Declaration[] userDefinedTypes;
-            if (!_declarationsByType.TryGetValue(DeclarationType.UserDefinedType, out userDefinedTypes))
-            {
-                userDefinedTypes = new Declaration[]{};
-            }
-            _types = classes.Union(userDefinedTypes).ToList();
-        }
-
-        private readonly HashSet<Accessibility> _projectScopePublicModifiers =
-            new HashSet<Accessibility>(new[]
-            {
-                Accessibility.Public,
-                Accessibility.Global,
-                Accessibility.Friend,
-                Accessibility.Implicit,
-            });
-
-        public IEnumerable<CommentNode> ModuleComments(QualifiedModuleName module)
-        {
-            CommentNode[] result;
-            if (_comments.TryGetValue(module, out result))
-            {
-                return result;
-            }
-
-            return new List<CommentNode>();
-        }
-
-        public IEnumerable<Declaration> MatchTypeName(string name)
-        {
-            return _types.Where(declaration => declaration.IdentifierName == name);
-        }
-
-        public IEnumerable<Declaration> MatchName(string name)
-        {
-            Declaration[] result;
-            if (_declarationsByName.TryGetValue(name, out result))
-            {
-                return result;
-            }
-
-            return new List<Declaration>();
-        }
-
-        public Declaration FindProject(Declaration currentScope, string name)
-        {
-            Declaration result = null;
-            try
-            {
-                result = _declarationsByType[DeclarationType.Project].SingleOrDefault(project => 
-                    (currentScope == null || project.Project == currentScope.Project)
-                    && project.IdentifierName == name);
-            }
-            catch (InvalidOperationException exception)
-            {
-                Debug.WriteLine("Multiple matches found for project '{0}'.\n{1}", name, exception);
-            }
-
-            return result;
-        }
-
-        public Declaration FindStdModule(Declaration parent, string name, bool includeBuiltIn = false)
-        {
-            Declaration result = null;
-            try
-            {
-                result = _declarationsByType[DeclarationType.Module].SingleOrDefault(declaration =>
-                    declaration.IdentifierName == name
-                    && (parent == null || parent.Equals(declaration.ParentDeclaration))
-                    && (includeBuiltIn || !declaration.IsBuiltIn));
-            }
-            catch (InvalidOperationException exception)
-            {
-                Debug.WriteLine("Multiple matches found for std.module '{0}'.\n{1}", name, exception);
-            }
-
-            return result;
-        }
-
-        public Declaration FindUserDefinedType(Declaration parent, string name, bool includeBuiltIn = false)
-        {
-            Declaration result = null;
-            try
-            {
-                result = _declarationsByType[DeclarationType.UserDefinedType].SingleOrDefault(declaration =>
-                    declaration.IdentifierName == name
-                    && parent == null
-                        ? _projectScopePublicModifiers.Contains(declaration.Accessibility)
-                        : parent.Equals(declaration.ParentDeclaration)
-                    && (includeBuiltIn || !declaration.IsBuiltIn));
-            }
-            catch (InvalidOperationException exception)
-            {
-                Debug.WriteLine("Multiple matches found for user-defined type '{0}'.\n{1}", name, exception);
-            }
-
-            return result;
-        }
-
-        public Declaration FindClass(Declaration parent, string name, bool includeBuiltIn = false)
-        {
-            if (parent == null)
-            {
-                throw new ArgumentNullException("parent");
-            }
-
-            Declaration result = null;
-            try
-            {
-                result = _declarationsByType[DeclarationType.Class].SingleOrDefault(declaration =>
-                    declaration.IdentifierName == name
-                    && parent.Equals(declaration.ParentDeclaration)
-                    && (includeBuiltIn || !declaration.IsBuiltIn));
-            }
-            catch (InvalidOperationException exception)
-            {
-                Debug.WriteLine("Multiple matches found for class '{0}'.\n{1}", name, exception);
-            }
-
-            return result;
-        }
-    }
-
     public class IdentifierReferenceResolver
     {
         private readonly DeclarationFinder _declarationFinder;
@@ -167,35 +19,24 @@ namespace Rubberduck.Parsing.Symbols
             AssignReference
         }
 
-        private readonly IReadOnlyList<Declaration> _declarations;
-        private readonly IReadOnlyList<CommentNode> _comments;
-
         private readonly QualifiedModuleName _qualifiedModuleName;
 
         private readonly IReadOnlyList<DeclarationType> _moduleTypes;
-        private readonly IReadOnlyList<DeclarationType> _scopingTypes;
-        private readonly IReadOnlyList<DeclarationType> _parentTypes;
         private readonly IReadOnlyList<DeclarationType> _returningMemberTypes;
-
-        private readonly IReadOnlyList<Accessibility> _projectScopePublicModifiers; 
 
         private readonly Stack<Declaration> _withBlockQualifiers;
         private readonly HashSet<RuleContext> _alreadyResolved;
 
         private readonly Declaration _moduleDeclaration;
-        private readonly IReadOnlyList<Declaration> _scopingDeclarations;
-        private readonly IReadOnlyList<Declaration> _parentDeclarations;
 
         private Declaration _currentScope;
         private Declaration _currentParent;
 
-        public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, IReadOnlyList<Declaration> declarations, IReadOnlyList<CommentNode> comments)
+        public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, DeclarationFinder finder)
         {
-            _declarationFinder = new DeclarationFinder(declarations, comments);
+            _declarationFinder = finder;
 
             _qualifiedModuleName = qualifiedModuleName;
-            _declarations = declarations;
-            _comments = comments;
 
             _withBlockQualifiers = new Stack<Declaration>();
             _alreadyResolved = new HashSet<RuleContext>();
@@ -206,54 +47,16 @@ namespace Rubberduck.Parsing.Symbols
                 DeclarationType.Class,
             };
 
-            _scopingTypes =new[]
-            {
-                DeclarationType.Function, 
-                DeclarationType.Procedure, 
-                DeclarationType.PropertyGet, 
-                DeclarationType.PropertyLet, 
-                DeclarationType.PropertySet,
-            };
-
-            _parentTypes = new[]
-            {
-                DeclarationType.Function, 
-                DeclarationType.Procedure, 
-                DeclarationType.PropertyGet, 
-                DeclarationType.PropertyLet, 
-                DeclarationType.PropertySet,
-                DeclarationType.Enumeration, 
-                DeclarationType.UserDefinedType, 
-            };
-
             _returningMemberTypes = new[]
             {
                 DeclarationType.Function,
                 DeclarationType.PropertyGet, 
             };
 
-            _projectScopePublicModifiers = new[]
-            {
-                Accessibility.Public, 
-                Accessibility.Global, 
-                Accessibility.Friend, 
-                Accessibility.Implicit, 
-            };
-
-            _moduleDeclaration = _declarations.SingleOrDefault(item =>
-                _moduleTypes.Contains(item.DeclarationType)
-                && item.Project == _qualifiedModuleName.Project
-                && item.ComponentName == _qualifiedModuleName.ComponentName);
-
-            _scopingDeclarations = _declarations.Where(item =>
-                _scopingTypes.Contains(item.DeclarationType)
-                && item.Project == _qualifiedModuleName.Project
-                && item.ComponentName == _qualifiedModuleName.ComponentName).ToList();
-
-            _parentDeclarations = _declarations.Where(item =>
-                _parentTypes.Contains(item.DeclarationType)
-                && item.Project == _qualifiedModuleName.Project
-                && item.ComponentName == _qualifiedModuleName.ComponentName).ToList();
+            _moduleDeclaration = finder.MatchName(_qualifiedModuleName.ComponentName)
+                .SingleOrDefault(item => 
+                    (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module)
+                && item.Project == _qualifiedModuleName.Project && item.ComponentName == _qualifiedModuleName.ComponentName);
 
             SetCurrentScope();
         }
@@ -267,11 +70,13 @@ namespace Rubberduck.Parsing.Symbols
 
         public void SetCurrentScope(string memberName, DeclarationType type)
         {
-            _currentParent = _parentDeclarations.SingleOrDefault(item =>
-                item.DeclarationType == type && item.IdentifierName == memberName);
-
-            _currentScope = _scopingDeclarations.SingleOrDefault(item =>
-                item.DeclarationType == type && item.IdentifierName == memberName) ?? _moduleDeclaration;
+            Debug.WriteLine("Setting current scope: {0} ({1})", memberName, type);
+            
+            _currentParent = _declarationFinder.MatchName(memberName).SingleOrDefault(item => 
+                item.QualifiedName.QualifiedModuleName == _qualifiedModuleName && item.DeclarationType == type);
+            
+            _currentScope = _declarationFinder.MatchName(memberName).SingleOrDefault(item =>
+                item.QualifiedName.QualifiedModuleName == _qualifiedModuleName && item.DeclarationType == type) ?? _moduleDeclaration;
         }
 
         public void EnterWithBlock(VBAParser.WithStmtContext context)
@@ -296,9 +101,8 @@ namespace Rubberduck.Parsing.Symbols
                     if (collectionContext != null)
                     {
                         // object variable is a built-in Collection class instance
-                        qualifier = _declarations.Single(item => item.IsBuiltIn
-                                                                       && item.IdentifierName == collectionContext.GetText()
-                                                                       && item.DeclarationType == DeclarationType.Class);
+                        qualifier = _declarationFinder.MatchName(collectionContext.GetText())
+                            .Single(item => item.IsBuiltIn && item.DeclarationType == DeclarationType.Class);
                         reference = CreateReference(baseTypeContext, qualifier);
                     }
                 }
@@ -335,11 +139,6 @@ namespace Rubberduck.Parsing.Symbols
 
         private string FindAnnotations(int line)
         {
-            if (_comments == null)
-            {
-                return null;
-            }
-
             var commentAbove = _declarationFinder.ModuleComments(_qualifiedModuleName).SingleOrDefault(comment => comment.QualifiedSelection.Selection.EndLine == line - 1);
             if (commentAbove != null && commentAbove.CommentText.StartsWith("@"))
             {
@@ -511,7 +310,7 @@ namespace Rubberduck.Parsing.Symbols
                 ? parent.AsTypeName.Split('.').Last() // bug: this can't be right
                 : parent.AsTypeName;
 
-            var matches = _declarations.Where(d => d.IdentifierName == identifier).ToList();
+            var matches = _declarationFinder.MatchName(identifier).ToList();
 
             var result = matches.Where(item =>
                 item.DeclarationType == DeclarationType.UserDefinedType
@@ -591,7 +390,7 @@ namespace Rubberduck.Parsing.Symbols
                 var udt = ResolveType(localScope);
                 if (udt != null && udt.DeclarationType == DeclarationType.UserDefinedType)
                 {
-                    callee = _declarations.Where(d => d.IdentifierName == identifierName).SingleOrDefault(item => item.Context != null && item.Context.Parent == udt.Context);
+                    callee = _declarationFinder.MatchName(identifierName).SingleOrDefault(item => item.Context != null && item.Context.Parent == udt.Context);
                 }
             }
             else
@@ -673,10 +472,8 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var members = _declarations.Where(declaration => declaration.ParentScope == parentType.Scope);
             var fieldName = fieldCall.ambiguousIdentifier().GetText();
-
-            var result = members.SingleOrDefault(member => member.IdentifierName == fieldName);
+            var result = _declarationFinder.MatchName(fieldName).SingleOrDefault(declaration => declaration.ParentScope == parentType.Scope);
             if (result == null)
             {
                 return null;
@@ -847,7 +644,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var identifierContext = context.ambiguousIdentifier();
-            var member = _declarations.Where(d => d.IdentifierName == identifierContext.GetText())
+            var member = _declarationFinder.MatchName(identifierContext.GetText())
                 .SingleOrDefault(item => item.QualifiedName.QualifiedModuleName == parentType.QualifiedName.QualifiedModuleName
                 && item.DeclarationType != DeclarationType.Event);
 
@@ -1024,7 +821,8 @@ namespace Rubberduck.Parsing.Symbols
                 var collection = baseType.COLLECTION();
                 if (collection != null)
                 {
-                    type = _declarations.Where(d => d.IdentifierName == collection.GetText()).SingleOrDefault(item => item.IsBuiltIn && item.DeclarationType == DeclarationType.Class);
+                    // bug: this code assumes user code has no Collection class...
+                    type = _declarationFinder.MatchName(collection.GetText()).SingleOrDefault(item => item.IsBuiltIn && item.DeclarationType == DeclarationType.Class);
                     reference = CreateReference(baseType, type);
                 }
             }
@@ -1229,7 +1027,7 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasStringQualifier = false)
         {
             // the "$" in e.g. "UCase$" isn't picked up as part of the identifierName, so we need to add it manually:
-            var matches = _declarations.Where(item => !item.IsBuiltIn && item.IdentifierName == identifierName
+            var matches = _declarationFinder.MatchName(identifierName).Where(item => !item.IsBuiltIn
                 || item.IdentifierName == identifierName + (hasStringQualifier ? "$" : string.Empty)).ToList();
 
             if (matches.Count == 1)

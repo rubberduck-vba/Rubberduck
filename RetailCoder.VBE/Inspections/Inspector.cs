@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -63,12 +64,14 @@ namespace Rubberduck.Inspections
                     new Task(() =>
                     {
                         token.ThrowIfCancellationRequested();
+                        Console.WriteLine("Running inspection {0} in thread {1}", inspection.Name, Thread.CurrentThread.ManagedThreadId);
                         var inspectionResults = inspection.GetInspectionResults();
                         var results = inspectionResults as IList<InspectionResultBase> ?? inspectionResults.ToList();
 
                         if (results.Any())
                         {
                             //OnIssuesFound(results);
+                            Console.WriteLine("Inspection '{0}' returned {1} results.", inspection.Name, results.Count);
 
                             foreach (var inspectionResult in results)
                             {
@@ -77,13 +80,22 @@ namespace Rubberduck.Inspections
                         }
                     })).ToArray();
 
-            foreach (var inspection in inspections)
+            try
             {
-                inspection.Start();
+                var stopwatch = Stopwatch.StartNew();
+                Console.WriteLine("Starting code inspections in thread {0}", Thread.CurrentThread.ManagedThreadId);
+                foreach (var inspection in inspections)
+                {
+                    await inspection;
+                }
+
+                //Task.WaitAll(inspections);
+                Console.WriteLine("Code inspections completed ({0}ms) in thread {1}", stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
             }
-
-            Task.WaitAll(inspections);
-
+            catch (AggregateException exceptions)
+            {
+                Console.WriteLine(exceptions);
+            }
             return allIssues.ToList();
         }
 

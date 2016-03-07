@@ -142,8 +142,21 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration CreateDeclaration(string identifierName, string asTypeName, Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool selfAssigned = false, bool withEvents = false)
         {
-            var annotations = FindAnnotations(selection.StartLine);
-            var result = new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations);
+            Declaration result;
+            if (declarationType == DeclarationType.Parameter)
+            {
+                var argContext = (VBAParser.ArgContext) context;
+                var isOptional = argContext.OPTIONAL() != null;
+                var isByRef = argContext.BYREF() != null;
+                var isParamArray = argContext.PARAMARRAY() != null;
+                var isArray = argContext.LPAREN() != null;
+                result = new ParameterDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, context, selection, asTypeName, isOptional, isByRef, isArray, isParamArray);
+            }
+            else
+            {
+                var annotations = FindAnnotations(selection.StartLine);
+                result = new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations);
+            }
 
             OnNewDeclaration(result);
             return result;

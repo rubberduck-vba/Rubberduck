@@ -85,10 +85,16 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             var userDeclarations = _state.AllUserDeclarations
                 .GroupBy(declaration => declaration.Project)
+                .Where(grouping => grouping.Key != null)
                 .ToList();
 
+            if (userDeclarations.Any(grouping => grouping.All(declaration => declaration.DeclarationType != DeclarationType.Project)))
+            {
+                return;
+            }
+
             Projects = new ObservableCollection<CodeExplorerProjectViewModel>(userDeclarations.Select(grouping => 
-                new CodeExplorerProjectViewModel(grouping.Single(declaration => declaration.DeclarationType == DeclarationType.Project), grouping)));
+                new CodeExplorerProjectViewModel(grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project), grouping)));
         }
 
         private void ParserState_ModuleStateChanged(object sender, Parsing.ParseProgressEventArgs e)
@@ -100,7 +106,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private void ExecuteRefreshCommand(object param)
         {
             Debug.WriteLine("CodeExplorerViewModel.ExecuteRefreshCommand - requesting reparse");
-            _state.OnParseRequested();
+            _state.OnParseRequested(this);
         }
     }
 }

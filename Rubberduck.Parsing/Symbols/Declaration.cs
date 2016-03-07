@@ -85,14 +85,44 @@ namespace Rubberduck.Parsing.Symbols
         private readonly QualifiedMemberName _qualifiedName;
         public QualifiedMemberName QualifiedName { get { return _qualifiedName; } }
 
-        private readonly ParserRuleContext _context;
-        public ParserRuleContext Context { get { return _context; } }
+        private ParserRuleContext _context;
+        public ParserRuleContext Context
+        {
+            get
+            {
+                return _context;
+            }
+            set
+            {
+                _context = value;
+            }
+        }
 
-        private readonly ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
-        public IEnumerable<IdentifierReference> References { get { return _references.ToList(); } }
+        private ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
+        public IEnumerable<IdentifierReference> References
+        {
+            get
+            {
+                return _references.Union(_memberCalls);
+            }
+            set
+            {
+                _references = new ConcurrentBag<IdentifierReference>(value);
+            }
+        }
 
-        private readonly ConcurrentBag<IdentifierReference> _memberCalls = new ConcurrentBag<IdentifierReference>();
-        public IEnumerable<IdentifierReference> MemberCalls { get { return _memberCalls.ToList(); } }
+        private ConcurrentBag<IdentifierReference> _memberCalls = new ConcurrentBag<IdentifierReference>();
+        public IEnumerable<IdentifierReference> MemberCalls
+        {
+            get
+            {
+                return _memberCalls.ToList();
+            }
+            set
+            {
+                _memberCalls = new ConcurrentBag<IdentifierReference>(value);
+            }
+        }
 
         private readonly string _annotations;
         public string Annotations { get { return _annotations ?? string.Empty; } }
@@ -215,7 +245,7 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.Constant,
         };
 
-        public bool IsArray()
+        public virtual bool IsArray()
         {
             if (Context == null || _neverArray.Any(item => DeclarationType.HasFlag(item)))
             {
@@ -255,7 +285,7 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.Project, 
         };
 
-        public bool IsTypeSpecified()
+        public virtual bool IsTypeSpecified()
         {
             if (Context == null || _neverSpecified.Any(item => DeclarationType.HasFlag(item)))
             {
@@ -326,7 +356,7 @@ namespace Rubberduck.Parsing.Symbols
                 return false;
             }
 
-            var hint = ((dynamic)Context).typeHint() as VBAParser.TypeHintContext;
+            var hint = method.Invoke(Context, new object[]{}) as VBAParser.TypeHintContext;
             token = hint == null ? null : hint.GetText();
             return hint != null;
         }
@@ -435,12 +465,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void ClearReferences()
         {
-            var references = _references.ToList();
-            for (var i = 0; i < references.Count; i++)
-            {
-                IdentifierReference reference;
-                _references.TryTake(out reference);
-            }
+            _references = new ConcurrentBag<IdentifierReference>();
         }
     }
 }
