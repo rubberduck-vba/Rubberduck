@@ -124,10 +124,9 @@ namespace Rubberduck.Parsing.VBA
                     SetComponentsState(projects.SelectMany(project => project.VBComponents.Cast<VBComponent>()), ParserState.LoadingReference);
                     // multiple projects can (do) have same references; avoid adding them multiple times!
                     var references = projects.SelectMany(project => project.References.Cast<Reference>())
-                        .GroupBy(reference => reference.Guid)
-                        .Select(grouping => grouping.First());
+                                             .DistinctBy(reference => reference.Guid);
 
-                    foreach (var reference in references)
+                    Parallel.ForEach(references, reference =>
                     {
                         var stopwatch = Stopwatch.StartNew();
                         var declarations = _comReflector.GetDeclarationsForReference(reference);
@@ -137,7 +136,7 @@ namespace Rubberduck.Parsing.VBA
                         }
                         stopwatch.Stop();
                         Debug.WriteLine("{0} declarations added in {1}ms (Thread {2})", reference.Name, stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
-                    }
+                    });
 
                     Debug.WriteLine("{0} built-in declarations added. (Thread {1})", _state.AllDeclarations.Count(d => d.IsBuiltIn), Thread.CurrentThread.ManagedThreadId);
                 }
