@@ -1344,4 +1344,28 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SearchResults_MemberType" xml:space="preserve">
     <value>Type</value>
   </data>
+  <data name="ParserState_Error" xml:space="preserve">
+    <value>Parse Error</value>
+  </data>
+  <data name="ParserState_LoadingReference" xml:space="preserve">
+    <value>Loading references</value>
+  </data>
+  <data name="ParserState_Parsed" xml:space="preserve">
+    <value>Parsed</value>
+  </data>
+  <data name="ParserState_Parsing" xml:space="preserve">
+    <value>Parsing...</value>
+  </data>
+  <data name="ParserState_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="ParserState_Ready" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="ParserState_ResolverError" xml:space="preserve">
+    <value>Resolver Error</value>
+  </data>
+  <data name="ParserState_Resolving" xml:space="preserve">
+    <value>Resolving...</value>
+  </data>
 </root>

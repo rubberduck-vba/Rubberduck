@@ -98,6 +98,9 @@ namespace Rubberduck
         {
             if (!_parser.State.AllDeclarations.Any())
             {
+                // forces menus to evaluate their CanExecute state:
+                Parser_StateChanged(this, new ParserStateEventArgs(ParserState.Pending));
+                _stateBar.SetStatusText();
                 return;
             }
 
