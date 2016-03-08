@@ -145,14 +145,11 @@ namespace Rubberduck.Parsing.VBA
                     .SelectMany(project => project.VBComponents.Cast<VBComponent>())
                     .ToList();
 
-                //foreach (var component in components)
-                //{
-                //    ParseComponent(component);
-                //}
-                Parallel.ForEach(components, new ParallelOptions(), component =>
+                foreach (var component in components)
                 {
-                    ParseComponent(component);
-                });
+                    var vbComponent = component;
+                    Task.Run(() => ParseComponent(vbComponent));
+                }
             }
             catch (Exception exception)
             {
