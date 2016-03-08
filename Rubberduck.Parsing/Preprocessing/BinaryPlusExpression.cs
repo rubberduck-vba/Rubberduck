@@ -19,7 +19,7 @@
             {
                 return null;
             }
-            if (left.ValueType == ValueType.String)
+            if (left.ValueType == ValueType.String || right.ValueType == ValueType.String)
             {
                 return new StringValue(left.AsString+ right.AsString);
             }

@@ -94,6 +94,9 @@ namespace RubberduckTests.Preprocessing
 #Const c = True + False + True
 #Const d = Nothing
 #Const e = ""5"" + ""4""
+#Const f = Empty + Empty
+#Const g = Empty + ""a""
+#Const h = ""a"" + Empty
 ";
             var result = Preprocess(code);
             Assert.AreEqual(1544.242m, result.Item1.Get("a").AsDecimal);
@@ -101,6 +104,9 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(-2m, result.Item1.Get("c").AsDecimal);
             Assert.AreEqual(null, result.Item1.Get("d"));
             Assert.AreEqual("54", result.Item1.Get("e").AsString);
+            Assert.AreEqual(0m, result.Item1.Get("f").AsDecimal);
+            Assert.AreEqual("a", result.Item1.Get("g").AsString);
+            Assert.AreEqual("a", result.Item1.Get("h").AsString);
         }
 
         [TestMethod]
@@ -1088,12 +1094,14 @@ namespace RubberduckTests.Preprocessing
 #Const a = CDate(""2016/03/02"")
 #Const b = CBool(""tRuE"")
 #Const c = CBool(""#TRUE#"")
+#Const d = ""ß"" = ""ss""
 ";
             System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-jp");
             var result = Preprocess(code);
             Assert.AreEqual(new DateTime(2016, 3, 2), result.Item1.Get("a").AsDate);
             Assert.AreEqual(true, result.Item1.Get("b").AsBool);
             Assert.AreEqual(true, result.Item1.Get("c").AsBool);
+            Assert.AreEqual(true, result.Item1.Get("d").AsBool);
         }
 
         [TestMethod]
