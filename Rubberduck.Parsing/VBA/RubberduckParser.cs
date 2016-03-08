@@ -148,7 +148,7 @@ namespace Rubberduck.Parsing.VBA
                 foreach (var component in components)
                 {
                     var vbComponent = component;
-                    Task.Run(() => ParseComponent(vbComponent));
+                    ParseComponent(vbComponent);
                 }
             }
             catch (Exception exception)
