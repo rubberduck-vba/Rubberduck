@@ -234,10 +234,9 @@ namespace Rubberduck.Parsing.VBA
 
         private void ParseInternal(VBComponent vbComponent, string code, CancellationToken token)
         {
-            if (!_state.ClearDeclarations(vbComponent))
+            while (!_state.ClearDeclarations(vbComponent))
             {
-                Debug.WriteLine(string.Format("Component '{0}' was not reparsed.", vbComponent.Name));
-                return;
+                // till hell freezes over?
             }
             State.SetModuleState(vbComponent, ParserState.Parsing);
 

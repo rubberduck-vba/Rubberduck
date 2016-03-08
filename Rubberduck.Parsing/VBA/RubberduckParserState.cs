@@ -286,14 +286,14 @@ namespace Rubberduck.Parsing.VBA
             foreach (var key in keys)
             {
                 ConcurrentDictionary<Declaration, byte> declarations;
-                success = success && _declarations.TryRemove(key, out declarations);
+                success = success && (!_declarations.ContainsKey(key) || _declarations.TryRemove(key, out declarations));
             }
             
             ParserState state;
-            success = success && _moduleStates.TryRemove(component, out state);
+            success = success && (!_moduleStates.ContainsKey(component) || _moduleStates.TryRemove(component, out state));
 
             SyntaxErrorException exception;
-            success = success && _moduleExceptions.TryRemove(component, out exception);
+            success = success && (!_moduleExceptions.ContainsKey(component) || _moduleExceptions.TryRemove(component, out exception));
 
             var components = _comments.Keys.Where(key =>
                 key.Collection.Parent == project && key.Name == component.Name);
@@ -301,7 +301,7 @@ namespace Rubberduck.Parsing.VBA
             foreach (var commentKey in components)
             {
                 IList<CommentNode> nodes;
-                success = success && _comments.TryRemove(commentKey, out nodes);
+                success = success && (!_comments.ContainsKey(commentKey) || _comments.TryRemove(commentKey, out nodes));
             }
 
             Debug.WriteLine("ClearDeclarations({0}): {1}", component.Name, success ? "succeeded" : "failed");
