@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
@@ -30,13 +31,20 @@ namespace Rubberduck.Navigation.CodeExplorer
             var parents = items.GroupBy(item => item.ComponentName).OrderBy(item => item.Key).ToList();
             foreach (var component in parents)
             {
-                var moduleName = component.Key;
-                var parent = items.Single(item =>
-                    ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
-                var members = items.Where(item =>
-                    !ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
+                try
+                {
+                    var moduleName = component.Key;
+                    var parent = items.Single(item =>
+                        ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
+                    var members = items.Where(item =>
+                        !ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
 
-                AddChild(new CodeExplorerComponentViewModel(parent, members));
+                    AddChild(new CodeExplorerComponentViewModel(parent, members));
+                }
+                catch (InvalidOperationException exception)
+                {
+                    Console.WriteLine(exception);
+                }
             }
         }
 

@@ -234,10 +234,15 @@ namespace Rubberduck.Parsing.VBA
 
         private void ParseInternal(VBComponent vbComponent, string code, CancellationToken token)
         {
-            _state.ClearDeclarations(vbComponent);
+            if (!_state.ClearDeclarations(vbComponent))
+            {
+                Debug.WriteLine(string.Format("Component '{0}' was not reparsed.", vbComponent.Name));
+                return;
+            }
             State.SetModuleState(vbComponent, ParserState.Parsing);
 
             var qualifiedName = new QualifiedModuleName(vbComponent);
+            Debug.Assert(!_state.AllUserDeclarations.Any(declaration => declaration.Project == qualifiedName.Project && declaration.ComponentName == qualifiedName.ComponentName));
 
             var obsoleteCallsListener = new ObsoleteCallStatementListener();
             var obsoleteLetListener = new ObsoleteLetStatementListener();

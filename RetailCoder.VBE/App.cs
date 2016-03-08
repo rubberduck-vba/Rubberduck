@@ -143,7 +143,6 @@ namespace Rubberduck
 
             Debug.WriteLine(string.Format("Component '{0}' was renamed.", e.Item.Name));
 
-            _parser.State.ClearDeclarations(e.Item);
             _parser.State.OnParseRequested(sender, e.Item);
         }
 
@@ -166,7 +165,6 @@ namespace Rubberduck
             }
 
             Debug.WriteLine(string.Format("Component '{0}' was reloaded.", e.Item.Name));
-            _parser.State.ClearDeclarations(e.Item);
             _parser.State.OnParseRequested(sender, e.Item);
         }
 

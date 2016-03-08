@@ -159,6 +159,7 @@ namespace Rubberduck.UI.CodeInspections
         {
             if (e.State != ParserState.Ready)
             {
+                IsBusy = false;
                 return;
             }
 

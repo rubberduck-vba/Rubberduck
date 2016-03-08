@@ -264,7 +264,10 @@ namespace Rubberduck.Parsing.VBA
             {
                 foreach (var component in project.VBComponents.Cast<VBComponent>())
                 {
-                    ClearDeclarations(component);
+                    while (!ClearDeclarations(component))
+                    {
+                        // until Hell freezes over?
+                    }
                 }
             }
             catch (COMException)
@@ -273,23 +276,24 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void ClearDeclarations(VBComponent component)
+        public bool ClearDeclarations(VBComponent component)
         {
             var project = component.Collection.Parent;
             var keys = _declarations.Keys.Where(kvp => 
                 kvp.Project == project && kvp.Component == component);
 
+            var success = true;
             foreach (var key in keys)
             {
                 ConcurrentDictionary<Declaration, byte> declarations;
-                _declarations.TryRemove(key, out declarations);
+                success = success && _declarations.TryRemove(key, out declarations);
             }
             
             ParserState state;
-            _moduleStates.TryRemove(component, out state);
+            success = success && _moduleStates.TryRemove(component, out state);
 
             SyntaxErrorException exception;
-            _moduleExceptions.TryRemove(component, out exception);
+            success = success && _moduleExceptions.TryRemove(component, out exception);
 
             var components = _comments.Keys.Where(key =>
                 key.Collection.Parent == project && key.Name == component.Name);
@@ -297,8 +301,11 @@ namespace Rubberduck.Parsing.VBA
             foreach (var commentKey in components)
             {
                 IList<CommentNode> nodes;
-                _comments.TryRemove(commentKey, out nodes);
+                success = success && _comments.TryRemove(commentKey, out nodes);
             }
+
+            Debug.WriteLine("ClearDeclarations({0}): {1}", component.Name, success ? "succeeded" : "failed");
+            return success;
         }
 
         public void AddTokenStream(VBComponent component, ITokenStream stream)
