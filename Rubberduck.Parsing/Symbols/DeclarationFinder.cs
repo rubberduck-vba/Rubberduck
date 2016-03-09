@@ -103,7 +103,7 @@ namespace Rubberduck.Parsing.Symbols
                         : parent.Equals(declaration.ParentDeclaration)
                           && (includeBuiltIn || !declaration.IsBuiltIn));
             }
-            catch (InvalidOperationException exception)
+            catch (Exception exception)
             {
                 Debug.WriteLine("Multiple matches found for user-defined type '{0}'.\n{1}", name, exception);
             }

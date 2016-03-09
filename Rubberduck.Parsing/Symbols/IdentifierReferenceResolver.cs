@@ -224,8 +224,11 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 else
                 {
-                    projectMatch.AddReference(projectReference);
-                    _alreadyResolved.Add(projectReference.Context);
+                    if (projectReference != null)
+                    {
+                        projectMatch.AddReference(projectReference);
+                        _alreadyResolved.Add(projectReference.Context);
+                    }
 
                     var match = _declarationFinder.FindClass(projectMatch, identifiers[1].GetText())
                                 ?? _declarationFinder.FindUserDefinedType(null, identifiers[1].GetText());

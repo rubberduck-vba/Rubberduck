@@ -135,7 +135,10 @@ namespace Rubberduck.Parsing.VBA
 
         public ParserState GetModuleState(VBComponent component)
         {
-            return _moduleStates[component];
+            ParserState result;
+            return _moduleStates.TryGetValue(component, out result) 
+                ? result 
+                : ParserState.Pending;
         }
 
         private ParserState _status;

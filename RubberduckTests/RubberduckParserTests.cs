@@ -34,7 +34,7 @@ namespace RubberduckTests
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            parser.ParseComponent(project.Object.VBComponents.Cast<VBComponent>().First());
+            parser.ParseComponentAsync(project.Object.VBComponents.Cast<VBComponent>().First());
 
             //Assert
             Assert.IsFalse(parser.State.AllDeclarations.Any(item => item.IsBuiltIn));

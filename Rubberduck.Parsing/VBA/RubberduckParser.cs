@@ -33,11 +33,9 @@ namespace Rubberduck.Parsing.VBA
             state.StateChanged += StateOnStateChanged;
         }
 
-        private void ReparseRequested(object sender, EventArgs e)
+        private async void ReparseRequested(object sender, EventArgs e)
         {
-            Debug.WriteLine("{0} ({1}) requested a reparse", sender, sender.GetHashCode());
-            ParseParallel();
-            Debug.WriteLine("Reparse requested by {0} ({1}) completed.", sender, sender.GetHashCode());
+            await ParseAsync();
         }
 
         private readonly VBE _vbe;
@@ -60,7 +58,7 @@ namespace Rubberduck.Parsing.VBA
 
                 foreach (var component in components)
                 {
-                    ParseComponent(component);
+                    ParseComponentAsync(component);
                 }
             }
             catch (Exception exception)
@@ -69,88 +67,85 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void StateOnStateChanged(object sender, ParserStateEventArgs parserStateEventArgs)
+        private async void StateOnStateChanged(object sender, ParserStateEventArgs parserStateEventArgs)
         {
             if (parserStateEventArgs.State == ParserState.Parsed)
             {
                 var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments);
-                Resolve(finder);
+                ResolveAsync(finder);
             }
         }
 
-        private void ParseParallel()
+        private async Task ParseAsync()
         {
-            try
+            var projects = _vbe.VBProjects.Cast<VBProject>()
+                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
+                .ToList();
+
+            if (!_state.AllDeclarations.Any(declaration => declaration.IsBuiltIn))
             {
-                var projects = _vbe.VBProjects.Cast<VBProject>()
-                    .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
-                    .ToList();
-
-                if (!_state.AllDeclarations.Any(declaration => declaration.IsBuiltIn))
-                {
-                    SetComponentsState(projects.SelectMany(project => project.VBComponents.Cast<VBComponent>()), ParserState.LoadingReference);
-                    // multiple projects can (do) have same references; avoid adding them multiple times!
-                    var references = projects.SelectMany(project => project.References.Cast<Reference>())
-                                             .DistinctBy(reference => reference.Guid);
-
-                    Parallel.ForEach(references, reference =>
-                    {
-                        var stopwatch = Stopwatch.StartNew();
-                        var declarations = _comReflector.GetDeclarationsForReference(reference);
-                        foreach (var declaration in declarations)
-                        {
-                            _state.AddDeclaration(declaration);
-                        }
-                        stopwatch.Stop();
-                        Debug.WriteLine("{0} declarations added in {1}ms (Thread {2})", reference.Name, stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
-                    });
-
-                    Debug.WriteLine("{0} built-in declarations added. (Thread {1})", _state.AllDeclarations.Count(d => d.IsBuiltIn), Thread.CurrentThread.ManagedThreadId);
-                }
-
-                var components = projects
-                    .SelectMany(project => project.VBComponents.Cast<VBComponent>())
-                    .ToList();
-
-                foreach (var component in components)
-                {
-                    var vbComponent = component;
-                    ParseComponent(vbComponent);
-                }
+                await AddDeclarationsFromProjectReferences(projects);
             }
-            catch (Exception exception)
+
+            var components = projects
+                .SelectMany(project => project.VBComponents.Cast<VBComponent>())
+                .ToList();
+
+            await Task.Run(() =>
             {
-                Debug.Print(exception.ToString());
+                Parallel.ForEach(components, async component =>
+                {
+                    await ParseComponentAsync(component).ConfigureAwait(false);
+                });
+            });
+        }
+
+        private async Task AddDeclarationsFromProjectReferences(IReadOnlyList<VBProject> projects)
+        {
+            SetComponentsState(projects.SelectMany(project => project.VBComponents.Cast<VBComponent>()),
+                ParserState.LoadingReference);
+
+            var references = projects.SelectMany(project => project.References.Cast<Reference>())
+                .DistinctBy(reference => reference.Guid);
+
+            foreach (var reference in references)
+            {
+                await AddDeclarationsFromReference(reference);
+            }
+        }
+
+        private async Task AddDeclarationsFromReference(Reference reference)
+        {
+            var declarations = await Task.Run(() => _comReflector.GetDeclarationsForReference(reference));
+            foreach (var declaration in declarations)
+            {
+                _state.AddDeclaration(declaration);
             }
         }
 
         private void SetComponentsState(IEnumerable<VBComponent> components, ParserState state)
         {
-            Debug.WriteLine("Setting all components to '{0}' state... (Thread {1})", state, Thread.CurrentThread.ManagedThreadId);
             foreach (var vbComponent in components)
             {
                 _state.SetModuleState(vbComponent, state);
             }
         }
 
-        public void ParseComponent(VBComponent vbComponent, TokenStreamRewriter rewriter = null)
+        public async Task ParseComponentAsync(VBComponent vbComponent, TokenStreamRewriter rewriter = null)
         {
             var component = vbComponent;
+            State.SetModuleState(vbComponent, ParserState.Parsing);
 
             try
             {
-                var code = rewriter == null
-                    ? string.Join(Environment.NewLine, vbComponent.CodeModule.GetSanitizedCode())
-                    : rewriter.GetText();
-                // note: removes everything ignored by the parser, e.g. line numbers
+                var qualifiedName = new QualifiedModuleName(vbComponent);
+                var code = rewriter == null ? string.Join(Environment.NewLine, vbComponent.CodeModule.GetSanitizedCode()) : rewriter.GetText();
 
                 while (!_state.ClearDeclarations(vbComponent))
                 {
                     // till hell freezes over?
                 }
-                State.SetModuleState(vbComponent, ParserState.Parsing);
-
-                var qualifiedName = new QualifiedModuleName(vbComponent);
+                // bug: assert fails when parse is requested by inspection results toolwindow
                 Debug.Assert(!_state.AllUserDeclarations.Any(declaration => declaration.Project == qualifiedName.Project && declaration.ComponentName == qualifiedName.ComponentName));
 
                 var obsoleteCallsListener = new ObsoleteCallStatementListener();
@@ -168,38 +163,8 @@ namespace Rubberduck.Parsing.VBA
                     commentListener
                 };
 
-                ITokenStream stream;
-                var stopwatch = Stopwatch.StartNew();
-                var tree = ParseInternal(code, listeners, out stream);
-                stopwatch.Stop();
-                if (tree != null)
-                {
-                    Debug.Print("IParseTree for component '{0}' acquired in {1}ms (thread {2})", vbComponent.Name, stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
-                }
-
-                _state.AddTokenStream(vbComponent, stream);
-                _state.AddParseTree(vbComponent, tree);
-
-                // comments must be in the parser state before we start walking for declarations:
-                var comments = ParseComments(qualifiedName, commentListener.Comments, commentListener.RemComments);
-                _state.SetModuleComments(vbComponent, comments);
-
-                // cannot locate declarations in one pass *the way it's currently implemented*,
-                // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
-                // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
-                var declarationsListener = new DeclarationSymbolsListener(qualifiedName, Accessibility.Implicit, vbComponent.Type, _state.GetModuleComments(vbComponent));
-
-                declarationsListener.NewDeclaration += declarationsListener_NewDeclaration;
-                declarationsListener.CreateModuleDeclarations();
-
-                var walker = new ParseTreeWalker();
-                walker.Walk(declarationsListener, tree);
-                declarationsListener.NewDeclaration -= declarationsListener_NewDeclaration;
-
-                _state.ObsoleteCallContexts = obsoleteCallsListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
-                _state.ObsoleteLetContexts = obsoleteLetListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
-                _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
-                _state.ArgListsWithOneByRefParam = argListsWithOneByRefParam.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
+                var tree = await GetParseTreeAsync(vbComponent, listeners, code, qualifiedName);
+                WalkParseTree(vbComponent, listeners, qualifiedName, tree);
 
                 State.SetModuleState(vbComponent, ParserState.Parsed);
             }
@@ -219,16 +184,64 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void Resolve(DeclarationFinder finder)
+        private void WalkParseTree(VBComponent vbComponent, IParseTreeListener[] listeners, QualifiedModuleName qualifiedName, IParseTree tree)
+        {
+            var obsoleteCallsListener = listeners.OfType<ObsoleteCallStatementListener>().Single();
+            var obsoleteLetListener = listeners.OfType<ObsoleteLetStatementListener>().Single();
+            var emptyStringLiteralListener = listeners.OfType<EmptyStringLiteralListener>().Single();
+            var argListsWithOneByRefParamListener = listeners.OfType<ArgListWithOneByRefParamListener>().Single();
+
+            // cannot locate declarations in one pass *the way it's currently implemented*,
+            // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
+            // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
+            var declarationsListener = new DeclarationSymbolsListener(qualifiedName, Accessibility.Implicit, vbComponent.Type, _state.GetModuleComments(vbComponent));
+
+            declarationsListener.NewDeclaration += declarationsListener_NewDeclaration;
+            declarationsListener.CreateModuleDeclarations();
+
+            var walker = new ParseTreeWalker();
+            walker.Walk(declarationsListener, tree);
+            declarationsListener.NewDeclaration -= declarationsListener_NewDeclaration;
+
+            _state.ObsoleteCallContexts = obsoleteCallsListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
+            _state.ObsoleteLetContexts = obsoleteLetListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
+            _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
+            _state.ArgListsWithOneByRefParam = argListsWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
+        }
+
+        private async Task<IParseTree> GetParseTreeAsync(VBComponent vbComponent, IParseTreeListener[] listeners, string code, QualifiedModuleName qualifiedName)
+        {
+            return await Task.Run(() =>
+            {
+                var commentListener = listeners.OfType<CommentListener>().Single();
+                ITokenStream stream;
+                
+                var stopwatch = Stopwatch.StartNew();
+                var tree = ParseInternal(code, listeners, out stream);
+                stopwatch.Stop();
+                if (tree != null)
+                {
+                    Debug.Print("IParseTree for component '{0}' acquired in {1}ms (thread {2})", vbComponent.Name, stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+                }
+
+                _state.AddTokenStream(vbComponent, stream);
+                _state.AddParseTree(vbComponent, tree);
+
+                var comments = ParseComments(qualifiedName, commentListener.Comments, commentListener.RemComments);
+                _state.SetModuleComments(vbComponent, comments);
+                
+                return tree;
+            });
+        }
+
+        private async Task ResolveAsync(DeclarationFinder finder)
         {
             try
             {
-                Debug.WriteLine("Starting parallel resolver loop (thread {0})", Thread.CurrentThread.ManagedThreadId);
-
                 var stopwatch = Stopwatch.StartNew();
                 Parallel.ForEach(_state.ParseTrees, kvp =>
                 {
-                    ResolveReferences(finder, kvp.Key, kvp.Value);
+                    ResolveReferencesAsync(finder, kvp.Key, kvp.Value);
                 });
                 stopwatch.Stop();
                 Debug.WriteLine("Resolver completed in {0}ms (thread {1})", stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
@@ -245,10 +258,8 @@ namespace Rubberduck.Parsing.VBA
 
         private IEnumerable<CommentNode> ParseComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)
         {
-            var commentNodes = comments
-                .Select(comment => new CommentNode(comment.GetComment(), Tokens.CommentMarker, new QualifiedSelection(qualifiedName, comment.GetSelection())));
-            var remCommentNodes = remComments
-                .Select(comment => new CommentNode(comment.GetComment(), Tokens.Rem, new QualifiedSelection(qualifiedName, comment.GetSelection())));
+            var commentNodes = comments.Select(comment => new CommentNode(comment.GetComment(), Tokens.CommentMarker, new QualifiedSelection(qualifiedName, comment.GetSelection())));
+            var remCommentNodes = remComments.Select(comment => new CommentNode(comment.GetComment(), Tokens.Rem, new QualifiedSelection(qualifiedName, comment.GetSelection())));
             var allCommentNodes = commentNodes.Union(remCommentNodes);
             return allCommentNodes;
         }
@@ -278,7 +289,7 @@ namespace Rubberduck.Parsing.VBA
         // todo: remove once performance is acceptable
         private readonly IDictionary<VBComponent, Stopwatch> _resolverTimer = new ConcurrentDictionary<VBComponent, Stopwatch>(); 
 
-        private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
+        private async Task ResolveReferencesAsync(DeclarationFinder finder, VBComponent component, IParseTree tree)
         {
             var state = _state.GetModuleState(component);
             if (_state.Status == ParserState.ResolverError || state != ParserState.Parsed)
@@ -291,6 +302,15 @@ namespace Rubberduck.Parsing.VBA
 
             Debug.WriteLine("Resolving '{0}'... (thread {1})", component.Name, Thread.CurrentThread.ManagedThreadId);
 
+            state = await WalkParseTree(component, tree, finder);
+            _state.SetModuleState(component, state);
+
+            _resolverTimer[component].Stop();
+            Debug.Print("'{0}' is {1}. Resolver took {2}ms to complete (thread {3})", component.Name, _state.GetModuleState(component), _resolverTimer[component].ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+        }
+
+        private async Task<ParserState> WalkParseTree(VBComponent component, IParseTree tree, DeclarationFinder finder)
+        {
             if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))
             {
                 var qualifiedName = new QualifiedModuleName(component);
@@ -299,18 +319,15 @@ namespace Rubberduck.Parsing.VBA
                 var walker = new ParseTreeWalker();
                 try
                 {
-                    walker.Walk(listener, tree);
-                    _state.SetModuleState(component, ParserState.Ready);
+                    await Task.Run(() => walker.Walk(listener, tree));
                 }
                 catch (Exception exception)
                 {
-                    Debug.Print("Exception thrown resolving '{0}' in thread {2}: {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
-                    State.SetModuleState(component, ParserState.ResolverError);
+                    Debug.Print("Exception thrown resolving '{0}' (thread {2}): {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
+                    return ParserState.ResolverError;
                 }
             }
-
-            _resolverTimer[component].Stop();
-            Debug.Print("'{0}' is {1}. Resolver took {2}ms to complete in thread {3}", component.Name, _state.GetModuleState(component), _resolverTimer[component].ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+            return ParserState.Ready;
         }
 
         private class ObsoleteCallStatementListener : VBABaseListener
