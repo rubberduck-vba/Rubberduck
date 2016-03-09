@@ -17,6 +17,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.Parsing.Preprocessing;
+using System.Globalization;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -224,8 +225,8 @@ namespace Rubberduck.Parsing.VBA
             };
 
             token.ThrowIfCancellationRequested();
-            
-            var preprocessor = new VBAPreprocessor(double.Parse(_vbe.Version));
+
+            var preprocessor = new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
             string preprocessedModuleBody;
             try
             {
