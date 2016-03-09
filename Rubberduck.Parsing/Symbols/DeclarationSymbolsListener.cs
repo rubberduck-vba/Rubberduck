@@ -21,13 +21,11 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _parentDeclaration;
 
         private readonly IEnumerable<CommentNode> _comments;
-        private readonly CancellationToken _token;
 
-        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type, IEnumerable<CommentNode> comments, CancellationToken token)
+        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type, IEnumerable<CommentNode> comments)
         {
             _qualifiedName = qualifiedName;
             _comments = comments;
-            _token = token;
 
             var declarationType = type == vbext_ComponentType.vbext_ct_StdModule
                 ? DeclarationType.Module
@@ -109,8 +107,6 @@ namespace Rubberduck.Parsing.Symbols
         public event EventHandler<DeclarationEventArgs> NewDeclaration;
         private void OnNewDeclaration(Declaration declaration)
         {
-            _token.ThrowIfCancellationRequested();
-
             var handler = NewDeclaration;
             if (handler != null)
             {

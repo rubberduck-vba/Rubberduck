@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
@@ -34,19 +33,16 @@ namespace Rubberduck.Parsing.VBA
             state.StateChanged += StateOnStateChanged;
         }
 
-        private async void ReparseRequested(object sender, EventArgs e)
+        private void ReparseRequested(object sender, EventArgs e)
         {
             Debug.WriteLine("{0} ({1}) requested a reparse", sender, sender.GetHashCode());
-            await ParseParallel();
+            ParseParallel();
             Debug.WriteLine("Reparse requested by {0} ({1}) completed.", sender, sender.GetHashCode());
         }
 
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         public RubberduckParserState State { get { return _state; } }
-
-        private readonly ConcurrentDictionary<VBComponent, CancellationTokenSource> _tokenSources =
-           new ConcurrentDictionary<VBComponent, CancellationTokenSource>();
 
         public void Parse()
         {
@@ -74,44 +70,17 @@ namespace Rubberduck.Parsing.VBA
             if (parserStateEventArgs.State == ParserState.Parsed)
             {
                 var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments);
-                using (var tokenSource = new CancellationTokenSource())
-                {
-                    Resolve(tokenSource.Token, finder);
-                }
+                Resolve(finder);
             }
         }
 
         public void ParseComponent(VBComponent component, TokenStreamRewriter rewriter = null)
         {
             Debug.Print("ParseComponent({0}) (Thread {1})", component.Name, Thread.CurrentThread.ManagedThreadId);
-            var tokenSource = RenewTokenSource(component);
-
-            var token = tokenSource.Token;
-            Parse(component, token, rewriter);
+            Parse(component, rewriter);
         }
 
-        private CancellationTokenSource RenewTokenSource(VBComponent component)
-        {
-            Debug.WriteLine("Renewing _tokenSources entry for component '{0}' (Thread {1})", component.Name, Thread.CurrentThread.ManagedThreadId);
-            if (_tokenSources.ContainsKey(component))
-            {
-                CancellationTokenSource existingTokenSource;
-                _tokenSources.TryRemove(component, out existingTokenSource);
-                if (existingTokenSource != null)
-                {
-                    Debug.WriteLine("Cancelling source {0} in thread {1}", existingTokenSource.GetHashCode(), Thread.CurrentThread.ManagedThreadId);
-                    existingTokenSource.Cancel();
-                    existingTokenSource.Dispose();
-                }
-            }
-
-            var tokenSource = new CancellationTokenSource();
-            Debug.WriteLine("Token source for component '{0}' is now {1} (Thread {2})", component.Name, tokenSource.GetHashCode(), Thread.CurrentThread.ManagedThreadId);
-            _tokenSources[component] = tokenSource;
-            return tokenSource;
-        }
-
-        private async Task ParseParallel()
+        private void ParseParallel()
         {
             try
             {
@@ -166,20 +135,18 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void Parse(VBComponent vbComponent, CancellationToken token, TokenStreamRewriter rewriter = null)
+        private void Parse(VBComponent vbComponent, TokenStreamRewriter rewriter = null)
         {
             var component = vbComponent;
 
             try
             {
-                token.ThrowIfCancellationRequested();
-
                 var code = rewriter == null
                     ? string.Join(Environment.NewLine, vbComponent.CodeModule.GetSanitizedCode())
                     : rewriter.GetText();
                 // note: removes everything ignored by the parser, e.g. line numbers
 
-                ParseInternal(component, code, token);
+                ParseInternal(component, code);
             }
             catch (COMException exception)
             {
@@ -197,7 +164,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void Resolve(CancellationToken token, DeclarationFinder finder)
+        private void Resolve(DeclarationFinder finder)
         {
             try
             {
@@ -206,8 +173,7 @@ namespace Rubberduck.Parsing.VBA
                 var stopwatch = Stopwatch.StartNew();
                 Parallel.ForEach(_state.ParseTrees, kvp =>
                 {
-                    token.ThrowIfCancellationRequested();
-                    ResolveReferences(finder, kvp.Key, kvp.Value, token);
+                    ResolveReferences(finder, kvp.Key, kvp.Value);
                 });
                 stopwatch.Stop();
                 Debug.WriteLine("Resolver completed in {0}ms (thread {1})", stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
@@ -232,7 +198,7 @@ namespace Rubberduck.Parsing.VBA
             return allCommentNodes;
         }
 
-        private void ParseInternal(VBComponent vbComponent, string code, CancellationToken token)
+        private void ParseInternal(VBComponent vbComponent, string code)
         {
             while (!_state.ClearDeclarations(vbComponent))
             {
@@ -258,8 +224,6 @@ namespace Rubberduck.Parsing.VBA
                 commentListener
             };
 
-            token.ThrowIfCancellationRequested();
-
             ITokenStream stream;
             var stopwatch = Stopwatch.StartNew();
             var tree = ParseInternal(code, listeners, out stream);
@@ -272,8 +236,6 @@ namespace Rubberduck.Parsing.VBA
             _state.AddTokenStream(vbComponent, stream);
             _state.AddParseTree(vbComponent, tree);
 
-            token.ThrowIfCancellationRequested();
-
             // comments must be in the parser state before we start walking for declarations:
             var comments = ParseComments(qualifiedName, commentListener.Comments, commentListener.RemComments);
             _state.SetModuleComments(vbComponent, comments);
@@ -281,13 +243,11 @@ namespace Rubberduck.Parsing.VBA
             // cannot locate declarations in one pass *the way it's currently implemented*,
             // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
             // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
-            var declarationsListener = new DeclarationSymbolsListener(qualifiedName, Accessibility.Implicit, vbComponent.Type, _state.GetModuleComments(vbComponent), token);
+            var declarationsListener = new DeclarationSymbolsListener(qualifiedName, Accessibility.Implicit, vbComponent.Type, _state.GetModuleComments(vbComponent));
 
-            token.ThrowIfCancellationRequested();
             declarationsListener.NewDeclaration += declarationsListener_NewDeclaration;
             declarationsListener.CreateModuleDeclarations();
 
-            token.ThrowIfCancellationRequested();
             var walker = new ParseTreeWalker();
             walker.Walk(declarationsListener, tree);
             declarationsListener.NewDeclaration -= declarationsListener_NewDeclaration;
@@ -330,7 +290,7 @@ namespace Rubberduck.Parsing.VBA
         // todo: remove once performance is acceptable
         private readonly IDictionary<VBComponent, Stopwatch> _resolverTimer = new ConcurrentDictionary<VBComponent, Stopwatch>(); 
 
-        private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree, CancellationToken token)
+        private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
         {
             var state = _state.GetModuleState(component);
             if (_state.Status == ParserState.ResolverError || state != ParserState.Parsed)
@@ -347,7 +307,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 var qualifiedName = new QualifiedModuleName(component);
                 var resolver = new IdentifierReferenceResolver(qualifiedName, finder);
-                var listener = new IdentifierReferenceListener(resolver, token);
+                var listener = new IdentifierReferenceListener(resolver);
                 var walker = new ParseTreeWalker();
                 try
                 {
