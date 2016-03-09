@@ -28,7 +28,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
+            parser.ParseSynchronous();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
@@ -55,7 +55,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
+            parser.ParseSynchronous();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
@@ -80,7 +80,7 @@ End Function";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
+            parser.ParseSynchronous();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
@@ -104,7 +104,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
+            parser.ParseSynchronous();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
@@ -128,7 +128,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
+            parser.ParseSynchronous();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
@@ -152,7 +152,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
+            parser.ParseSynchronous();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
@@ -186,7 +186,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
+            parser.ParseSynchronous();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
@@ -219,7 +219,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
+            parser.ParseSynchronous();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
@@ -250,7 +250,7 @@ End Function";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
+            parser.ParseSynchronous();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
@@ -293,7 +293,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
+            parser.ParseSynchronous();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
@@ -333,7 +333,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
+            parser.ParseSynchronous();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
@@ -373,7 +373,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
+            parser.ParseSynchronous();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
@@ -416,7 +416,7 @@ End Function";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
+            parser.ParseSynchronous();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
@@ -459,7 +459,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
+            parser.ParseSynchronous();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(parser.State);
