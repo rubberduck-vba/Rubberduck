@@ -1088,7 +1088,7 @@ namespace RubberduckTests.Preprocessing
         }
 
         [TestMethod]
-        public void TestLocale()
+        public void TestLocaleJapanese()
         {
             string code = @"
 #Const a = CDate(""2016/03/02"")
@@ -1102,6 +1102,17 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(true, result.Item1.Get("b").AsBool);
             Assert.AreEqual(true, result.Item1.Get("c").AsBool);
             Assert.AreEqual(true, result.Item1.Get("d").AsBool);
+        }
+
+        [TestMethod]
+        public void TestLocaleGerman()
+        {
+            string code = @"
+#Const a = 82.5235
+";
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("de-de");
+            var result = Preprocess(code);
+            Assert.AreEqual(82.5235m, result.Item1.Get("a").AsDecimal);
         }
 
         [TestMethod]
