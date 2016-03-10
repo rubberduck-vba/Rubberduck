@@ -91,6 +91,16 @@ namespace Rubberduck.Parsing.VBA
                 .SelectMany(project => project.VBComponents.Cast<VBComponent>())
                 .ToList();
 
+            foreach (var vbComponent in components)
+            {
+                while (!_state.ClearDeclarations(vbComponent))
+                {
+                    // till hell freezes over?
+                }
+            }
+
+            SetComponentsState(components, ParserState.Pending);
+
             await Task.Run(() =>
             {
                 Parallel.ForEach(components, async component =>
@@ -102,12 +112,9 @@ namespace Rubberduck.Parsing.VBA
 
         private async Task AddDeclarationsFromProjectReferences(IReadOnlyList<VBProject> projects)
         {
-            SetComponentsState(projects.SelectMany(project => project.VBComponents.Cast<VBComponent>()),
-                ParserState.LoadingReference);
+            SetComponentsState(projects.SelectMany(project => project.VBComponents.Cast<VBComponent>()), ParserState.LoadingReference);
 
-            var references = projects.SelectMany(project => project.References.Cast<Reference>())
-                .DistinctBy(reference => reference.Guid);
-
+            var references = projects.SelectMany(project => project.References.Cast<Reference>()).DistinctBy(reference => reference.Guid);
             foreach (var reference in references)
             {
                 await AddDeclarationsFromReference(reference);
@@ -141,10 +148,6 @@ namespace Rubberduck.Parsing.VBA
                 var qualifiedName = new QualifiedModuleName(vbComponent);
                 var code = rewriter == null ? string.Join(Environment.NewLine, vbComponent.CodeModule.GetSanitizedCode()) : rewriter.GetText();
 
-                while (!_state.ClearDeclarations(vbComponent))
-                {
-                    // till hell freezes over?
-                }
                 // bug: assert fails when parse is requested by inspection results toolwindow
                 Debug.Assert(!_state.AllUserDeclarations.Any(declaration => declaration.Project == qualifiedName.Project && declaration.ComponentName == qualifiedName.ComponentName));
 
@@ -184,7 +187,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void WalkParseTree(VBComponent vbComponent, IParseTreeListener[] listeners, QualifiedModuleName qualifiedName, IParseTree tree)
+        private void WalkParseTree(VBComponent vbComponent, IReadOnlyList<IParseTreeListener> listeners, QualifiedModuleName qualifiedName, IParseTree tree)
         {
             var obsoleteCallsListener = listeners.OfType<ObsoleteCallStatementListener>().Single();
             var obsoleteLetListener = listeners.OfType<ObsoleteLetStatementListener>().Single();

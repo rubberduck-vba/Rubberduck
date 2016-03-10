@@ -43,13 +43,13 @@ namespace Rubberduck.Parsing.VBA
     {
         public event EventHandler<ParseRequestEventArgs> ParseRequest;
 
-        private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>> _declarations =
+        private static readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>> _declarations =
             new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>>();
 
-        private readonly ConcurrentDictionary<VBComponent, ITokenStream> _tokenStreams =
+        private static readonly ConcurrentDictionary<VBComponent, ITokenStream> _tokenStreams =
             new ConcurrentDictionary<VBComponent, ITokenStream>();
 
-        private readonly ConcurrentDictionary<VBComponent, IParseTree> _parseTrees =
+        private static readonly ConcurrentDictionary<VBComponent, IParseTree> _parseTrees =
             new ConcurrentDictionary<VBComponent, IParseTree>();
 
         public event EventHandler<ParserStateEventArgs> StateChanged;
@@ -63,10 +63,10 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private readonly ConcurrentDictionary<VBComponent, ParserState> _moduleStates =
+        private static readonly ConcurrentDictionary<VBComponent, ParserState> _moduleStates =
             new ConcurrentDictionary<VBComponent, ParserState>();
 
-        private readonly ConcurrentDictionary<VBComponent, SyntaxErrorException> _moduleExceptions =
+        private static readonly ConcurrentDictionary<VBComponent, SyntaxErrorException> _moduleExceptions =
             new ConcurrentDictionary<VBComponent, SyntaxErrorException>();
 
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
@@ -81,56 +81,63 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        private static readonly object _lock = new object();
         public void SetModuleState(VBComponent component, ParserState state, SyntaxErrorException parserError = null)
         {
+            _moduleStates.AddOrUpdate(component, state, (c, s) => state);
+            _moduleExceptions.AddOrUpdate(component, parserError, (c, e) => parserError);
+
             Debug.WriteLine("Module '{0}' state is changing to '{1}' (thread {2})", component.Name, state, Thread.CurrentThread.ManagedThreadId);
-            _moduleStates[component] = state;
-            _moduleExceptions[component] = parserError;
             OnModuleStateChanged(component, state);
+
             Status = EvaluateParserState();
         }
 
         private static readonly ParserState[] States = Enum.GetValues(typeof (ParserState)).Cast<ParserState>().ToArray();
 
-        private ParserState EvaluateParserState()
+        private static ParserState EvaluateParserState()
         {
-            var moduleStates = _moduleStates.Values.ToList();
-            var state = States.SingleOrDefault(value => moduleStates.All(ps => ps == value));
+            lock (_lock)
+            {
+                var moduleStates = _moduleStates.Values.ToList();
+                var state = States.SingleOrDefault(value => moduleStates.All(ps => ps == value));
 
-            ParserState result;
-            if (state != default(ParserState))
-            {
-                // if all modules are in the same state, we have our result.
-                result = state;
-            }
-            else
-            {
-                result = moduleStates.Min();
-            }
- 
-            // intermediate states are toggled when *any* module has them.
-            if (moduleStates.Any(ms => ms == ParserState.Error))
-            {
-                result = ParserState.Error;
-            }
-            if (moduleStates.Any(ms => ms == ParserState.ResolverError))
-            {
-                result = ParserState.ResolverError;
-            }
+                if (state != default(ParserState))
+                {
+                    // if all modules are in the same state, we have our result.
+                    Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", state, Thread.CurrentThread.ManagedThreadId);
+                    return state;
+                }
 
-            // error state takes precedence over every other state
+                // error state takes precedence over every other state
+                if (moduleStates.Any(ms => ms == ParserState.Error))
+                {
+                    Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", ParserState.Error,
+                        Thread.CurrentThread.ManagedThreadId);
+                    return ParserState.Error;
+                }
+                if (moduleStates.Any(ms => ms == ParserState.ResolverError))
+                {
+                    Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", ParserState.ResolverError,
+                        Thread.CurrentThread.ManagedThreadId);
+                    return ParserState.ResolverError;
+                }
 
-            if (moduleStates.Any(ms => ms == ParserState.Parsing))
-            {
-                result = ParserState.Parsing;
-            }
-            if (moduleStates.Any(ms => ms == ParserState.Resolving))
-            {
-                result = ParserState.Resolving;
-            }
+                // intermediate states are toggled when *any* module has them.
+                var result = moduleStates.Min();
+                if (moduleStates.Any(ms => ms == ParserState.Parsing))
+                {
+                    result = ParserState.Parsing;
+                }
+                if (moduleStates.Any(ms => ms == ParserState.Resolving))
+                {
+                    result = ParserState.Resolving;
+                }
 
-            Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", result, Thread.CurrentThread.ManagedThreadId);
-            return result;
+                Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", result,
+                    Thread.CurrentThread.ManagedThreadId);
+                return result;
+            }
         }
 
         public ParserState GetModuleState(VBComponent component)
@@ -256,9 +263,15 @@ namespace Rubberduck.Parsing.VBA
             if (declarations.ContainsKey(declaration))
             {
                 byte _;
-                declarations.TryRemove(declaration, out _);
+                while (!declarations.TryRemove(declaration, out _))
+                {
+                    Debug.WriteLine("Could not remove existing declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+                }
             }
-                declarations.TryAdd(declaration, 0);
+            while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
+            {
+                Debug.WriteLine("Could not add declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+            }
         }
 
         public void ClearDeclarations(VBProject project)

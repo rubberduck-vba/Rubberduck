@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
@@ -70,13 +71,15 @@ namespace Rubberduck.Parsing.Symbols
 
         public void SetCurrentScope(string memberName, DeclarationType type)
         {
-            Debug.WriteLine("Setting current scope: {0} ({1})", memberName, type);
+            Debug.WriteLine("Setting current scope: {0} ({1}) in thread {2}", memberName, type, Thread.CurrentThread.ManagedThreadId);
             
             _currentParent = _declarationFinder.MatchName(memberName).SingleOrDefault(item => 
                 item.QualifiedName.QualifiedModuleName == _qualifiedModuleName && item.DeclarationType == type);
             
             _currentScope = _declarationFinder.MatchName(memberName).SingleOrDefault(item =>
                 item.QualifiedName.QualifiedModuleName == _qualifiedModuleName && item.DeclarationType == type) ?? _moduleDeclaration;
+
+            Debug.WriteLine("Current scope is now {0} in thread {1}", _currentScope == null ? "null" : _currentScope.IdentifierName, Thread.CurrentThread.ManagedThreadId);
         }
 
         public void EnterWithBlock(VBAParser.WithStmtContext context)
@@ -401,6 +404,7 @@ namespace Rubberduck.Parsing.Symbols
                 callee = Resolve(identifierName, localScope, accessorType, parentContext is VBAParser.ICS_S_VariableOrProcedureCallContext, isAssignmentTarget, hasStringQualifier);
             }
 
+
             if (callee == null)
             {
                 // calls inside With block can still refer to identifiers in _currentScope
@@ -452,11 +456,14 @@ namespace Rubberduck.Parsing.Symbols
             var fieldCall = context.dictionaryCallStmt();
 
             var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
-            if (result != null && localScope != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
+            if (result != null && localScope != null /*&& !localScope.DeclarationType.HasFlag(DeclarationType.Member)*/)
             {
                 var reference = CreateReference(context.ambiguousIdentifier(), result, isAssignmentTarget);
-                result.AddReference(reference);
-                localScope.AddMemberCall(reference);
+                if (reference != null)
+                {
+                    result.AddReference(reference);
+                    //localScope.AddMemberCall(reference);
+                }
             }
 
             return result;
@@ -554,6 +561,7 @@ namespace Rubberduck.Parsing.Symbols
                 var isTarget = isLast && isAssignmentTarget;
 
                 var parentType = ResolveType(parent);
+
                 var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType, accessor, hasExplicitLetStatement, isTarget)
                              ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType, accessor, hasExplicitLetStatement, isTarget);
 
@@ -958,7 +966,7 @@ namespace Rubberduck.Parsing.Symbols
             var matches = _declarationFinder.MatchName(identifierName);
 
             var results = matches.Where(item =>
-                (item.ParentScope == localScope.Scope || (isAssignmentTarget && item.Scope == localScope.Scope))
+                (localScope.Equals(item.ParentScopeDeclaration) || (isAssignmentTarget && item.Scope == localScope.Scope))
                 && localScope.Context.GetSelection().Contains(item.Selection)
                 && !_moduleTypes.Contains(item.DeclarationType))
                 .ToList();
@@ -990,6 +998,11 @@ namespace Rubberduck.Parsing.Symbols
             if (localScope == null)
             {
                 localScope = _currentScope;
+            }
+
+            if (identifierName == "Me" && _moduleDeclaration.DeclarationType == DeclarationType.Class)
+            {
+                return _moduleDeclaration;
             }
 
             var matches = _declarationFinder.MatchName(identifierName);
@@ -1056,11 +1069,36 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                var temp = result.Where(item => !_moduleTypes.Contains(item.DeclarationType)
-                    && item.DeclarationType == (accessorType == ContextAccessorType.GetValueOrReference ? DeclarationType.PropertyGet : item.DeclarationType))
+                var nonModules = matches.Where(item => !_moduleTypes.Contains(item.DeclarationType)).ToList();
+                var temp = nonModules.Where(item => item.DeclarationType ==
+                                                    (accessorType == ContextAccessorType.GetValueOrReference
+                                                        ? DeclarationType.PropertyGet
+                                                        : item.DeclarationType))
                     .ToList();
                 if (temp.Count > 1)
                 {
+                    if (localScope == null)
+                    {
+                        var names = new[] {"Global", "_Global"};
+                        var appGlobals = temp.Where(item => names.Contains(item.ParentDeclaration.IdentifierName)).ToList();
+                        if (appGlobals.Count == 1)
+                        {
+                            return appGlobals.Single();
+                        }
+                    }
+                    else
+                    {
+                        var names = new[] { localScope.IdentifierName, "I" + localScope.IdentifierName };
+                        var members = temp.Where(item => names.Contains(item.ParentScopeDeclaration.IdentifierName)
+                                                         && item.DeclarationType == (accessorType == ContextAccessorType.GetValueOrReference
+                                                             ? DeclarationType.PropertyGet
+                                                             : item.DeclarationType)).ToList();
+                        if (members.Count == 1)
+                        {
+                            return members.Single();
+                        }
+                    }
+
                     Debug.WriteLine("Ambiguous match in '{0}': '{1}'", localScope == null ? "(unknown)" : localScope.IdentifierName, identifierName);
                 }
                 if (temp.Count == 0)

@@ -80,7 +80,8 @@ namespace Rubberduck.Parsing.Symbols
             Declaration result = null;
             try
             {
-                result = MatchName(name).SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Module
+                var matches = MatchName(name);
+                result = matches.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Module
                     && (parent == null || parent.Equals(declaration.ParentDeclaration))
                     && (includeBuiltIn || !declaration.IsBuiltIn));
             }
@@ -97,11 +98,10 @@ namespace Rubberduck.Parsing.Symbols
             Declaration result = null;
             try
             {
-                result = MatchName(name).SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.UserDefinedType
-                    && parent == null
-                        ? _projectScopePublicModifiers.Contains(declaration.Accessibility)
-                        : parent.Equals(declaration.ParentDeclaration)
-                          && (includeBuiltIn || !declaration.IsBuiltIn));
+                var matches = MatchName(name);
+                result = matches.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.UserDefinedType
+                    && (parent == null || parent.Equals(declaration.ParentDeclaration))
+                    && (includeBuiltIn || !declaration.IsBuiltIn));
             }
             catch (Exception exception)
             {
