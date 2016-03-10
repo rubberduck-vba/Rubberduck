@@ -1,0 +1,120 @@
+Attribute VB_Name = "fnPivotFieldStatFn_ParPri"
+Option Explicit
+Option Private Module
+
+Private Const ThisModule As String = ThisProject & "|fnPivotFieldStatFn_ParPri"
+
+Public Function GetNR(Name As String, Value As Variant) As tyNameRange
+    Const ThisProcedure As String = ThisModule & "|GetNR|Function"
+    With GetNR
+        .Name = Name
+        If VBA.IsObject(Value) Then
+            Set .Value = Value
+        Else
+            .Value = Value
+        End If
+    End With
+End Function
+
+Public Function GetNV(Name As String, Value As Variant) As tyNameValue
+    Const ThisProcedure As String = ThisModule & "|GetNV|Function"
+    With GetNV
+        .Name = Name
+        .Value = Value
+    End With
+End Function
+
+Public Function GetStatFns(Optional Min As Boolean _
+                         , Optional Avg As Boolean _
+                         , Optional wAvg As Boolean _
+                         , Optional Max As Boolean _
+                         , Optional DecimalPlaces As Variant _
+                         , Optional ExcludeZeros As Variant _
+                         , Optional NoDataHeader As Variant _
+                         , Optional NoFieldHeader As Variant _
+                         ) As tyStatFns
+    Const ThisProcedure As String = ThisModule & "|GetStatFns|Function"
+    Dim ltStatFns As tyStatFns
+
+    With ltStatFns
+        .Min = Min
+        .Avg = Avg
+        .wAvg = wAvg
+        .Max = Max
+        .DecimalPlacesNV = GetNV(Name:=ConParDecimalPlaces, Value:=DecimalPlaces)
+        .ExcludeZerosNV = GetNV(Name:=ConParExcludeZeros, Value:=ExcludeZeros)
+        .NoDataHeaderNV = GetNV(Name:=ConParNoHeader, Value:=NoDataHeader)
+        .NoFieldHeaderNV = GetNV(Name:=ConParNoHeader, Value:=NoFieldHeader)
+    End With
+    GetStatFns = ltStatFns
+End Function
+
+Public Function GetPINVList(Optional FName As String, Optional IName As String _
+                               , Optional ByVal F1 As Variant, Optional ByVal I1 As Variant _
+                               , Optional ByVal F2 As Variant, Optional ByVal I2 As Variant _
+                               , Optional ByVal F3 As Variant, Optional ByVal I3 As Variant _
+                               , Optional ByVal F4 As Variant, Optional ByVal I4 As Variant _
+                               , Optional ByVal F5 As Variant, Optional ByVal I5 As Variant _
+                               , Optional ByVal F6 As Variant, Optional ByVal I6 As Variant _
+                               , Optional ByVal F7 As Variant, Optional ByVal I7 As Variant _
+                               , Optional ByVal F8 As Variant, Optional ByVal I8 As Variant _
+                               , Optional ByVal F9 As Variant, Optional ByVal I9 As Variant _
+                               ) As tyParentItemList
+    Const ThisProcedure As String = ThisModule & "|GetPINVList|Function"
+    Dim ltList As tyParentItemList
+    Dim lvCount As Long
+
+    AddPINV ltList, lvCount, FName, IName, F1, I1
+    AddPINV ltList, lvCount, FName, IName, F2, I2
+    AddPINV ltList, lvCount, FName, IName, F3, I3
+    AddPINV ltList, lvCount, FName, IName, F4, I4
+    AddPINV ltList, lvCount, FName, IName, F5, I5
+    AddPINV ltList, lvCount, FName, IName, F6, I6
+    AddPINV ltList, lvCount, FName, IName, F7, I7
+    AddPINV ltList, lvCount, FName, IName, F8, I8
+    AddPINV ltList, lvCount, FName, IName, F9, I9
+
+    ltList.Count = lvCount
+
+    GetPINVList = ltList
+End Function
+
+Private Sub AddPINV(List As tyParentItemList, Count As Long, FName As String, IName As String, Optional FValue As Variant, Optional IValue As Variant)
+    Const ThisProcedure As String = ThisModule & "|AddPINV|Sub"
+    If VBA.IsMissing(FValue) And VBA.IsMissing(IValue) Then
+        Exit Sub
+    End If
+    With List
+        Count = Count + Lo1
+        If Count = Lo1 Then
+            ReDim .PIs(Lo1 To Count)
+        Else
+            ReDim Preserve .PIs(Lo1 To Count)
+        End If
+
+        With .PIs(Count)
+            With .ParentNV
+                .Name = VBA.Replace(FName, ConChrUnderScore, VBA.CStr(Count))
+                .Value = FValue
+            End With
+            With .ItemNV
+                .Name = VBA.Replace(IName, ConChrUnderScore, VBA.CStr(Count))
+                .Value = IValue
+            End With
+        End With
+    End With
+End Sub
+
+Public Function GetPINV(FName As String, FValue As Variant, IName As String, IValue As Variant) As tyParentItem
+    Const ThisProcedure As String = ThisModule & "|GetPINV|Function"
+    With GetPINV
+        With .ParentNV
+            .Name = FName
+            .Value = FValue
+        End With
+        With .ItemNV
+            .Name = IName
+            .Value = IValue
+        End With
+    End With
+End Function

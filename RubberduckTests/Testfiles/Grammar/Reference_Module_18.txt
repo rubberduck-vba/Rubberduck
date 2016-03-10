@@ -1,0 +1,67 @@
+Attribute VB_Name = "vbXlRangePri"
+Option Explicit
+Option Private Module
+
+Private Const ThisModule As String = ThisProject & "|vbXlRangePri"
+
+Public Function GetIntersectOrNothing(Range1 As Excel.Range, Range2 As Excel.Range) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|GetIntersectOrNothing|Function"
+    On Error Resume Next
+    Set GetIntersectOrNothing = Application.Intersect(Arg1:=Range1 _
+                                                    , Arg2:=Range2 _
+                                                    )
+End Function
+
+Private Sub GetRangePivotTableOrNothingTest()
+    Const ThisProcedure As String = ThisModule & "|GetRangePivotTableOrNothingTest|Sub"
+Debug.Print GetRangePivotTableOrNothing(Selection, True).TableRange1.Address
+End Sub
+Public Function GetRangePivotTableOrNothing(Range As Excel.Range, Optional CheckAllCells As Boolean = False) As Excel.PivotTable
+    Const ThisProcedure As String = ThisModule & "|GetRangePivotTableOrNothing|Function"
+    Dim lcColumnCell As Excel.Range
+    Dim lcRowCell As Excel.Range
+    Dim lcPivotTable As Excel.PivotTable
+
+    On Error Resume Next
+
+    If CheckAllCells Then
+        For Each lcColumnCell In Range.Resize(RowSize:=Lo1)
+            For Each lcRowCell In Application.Intersect(lcColumnCell.EntireColumn, Range)
+                'Debug.Print lcRowCell.Address, lcRowCell.Worksheet.Name
+                ' komischerweise ist manchmal PivotCell korrekt gesetzt, aber PivotTable nicht
+                ' deshalb wird hier die PivotTable über die PivotCell.PivotTable besorgt
+                Set GetRangePivotTableOrNothing = lcRowCell.PivotCell.PivotTable
+                If Not GetRangePivotTableOrNothing Is Nothing Then
+                    Exit Function
+                End If
+            Next
+        Next
+    Else
+        Set GetRangePivotTableOrNothing = Range.PivotTable
+    End If
+End Function
+
+Public Function GetThisCellOrNothing() As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|GetThisCellOrNothing|Function"
+    On Error Resume Next
+    Set GetThisCellOrNothing = Application.ThisCell
+End Function
+
+Public Function GetRangeAddress(Range As Excel.Range, WithWorksheetName As Boolean) As String
+    Const ThisProcedure As String = ThisModule & "|GetRangeAddress|Function"
+    If WithWorksheetName Then
+        GetRangeAddress = ConChrApos _
+                              & VBA.Replace(Range.Worksheet.Name, ConChrApos, ConChrApos & ConChrApos) _
+                              & ConChrApos & ConChrExclPoint _
+                              & Range.Address(RowAbsolute:=True, ColumnAbsolute:=True)
+
+    Else
+        GetRangeAddress = Range.Address(RowAbsolute:=True, ColumnAbsolute:=True)
+    End If
+End Function
+
+Public Function GetVisibleCellsOrNothing(Range As Excel.Range) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|GetVisibleCellsOrNothing|Function"
+    On Error Resume Next
+    Set GetVisibleCellsOrNothing = Range.SpecialCells(Type:=XlCellType.xlCellTypeVisible)
+End Function

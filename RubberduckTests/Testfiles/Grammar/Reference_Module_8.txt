@@ -1,0 +1,947 @@
+Attribute VB_Name = "fnToolsPri"
+Option Explicit
+Option Private Module
+
+Private Const ThisModule As String = ThisProject & "|fnToolsPri"
+
+Private Sub GetDecimalPlacesNumberFormatTest()
+    Const ThisProcedure As String = ThisModule & "|GetDecimalPlacesNumberFormatTest|Sub"
+'    'Debug.Print GetDecimalPlacesNumberFormat(999999999999999#)
+'    'Debug.Print GetDecimalPlacesNumberFormat(-9)
+'    'Debug.Print GetDecimalPlacesNumberFormat(3)
+'    'Debug.Print VBA.Format$(1234.5678, GetDecimalPlacesNumberFormat(3))
+Debug.Print VBA.Format$(0.91, GetDecimalPlacesNumberFormat("#.##0%"))
+End Sub
+Public Function GetDecimalPlacesNumberFormat(DecimalPlaces As Variant) As String
+    Const ThisProcedure As String = ThisModule & "|GetDecimalPlacesNumberFormat|Function"
+    Dim lvLong As Long
+    Dim lvPercent As String
+    Dim lvVariant As Variant
+
+    lvVariant = GetVariantValue(Value:=DecimalPlaces)
+'    If VBA.VarType(lvVariant) = VBA.VbVarType.vbString Then
+'        lvVariant = VBA.Replace(lvVariant, ".", "°")
+'        lvVariant = VBA.Replace(lvVariant, ",", ".")
+'        lvVariant = VBA.Replace(lvVariant, "°", ",")
+'        GetDecimalPlacesNumberFormat = lvVariant
+'    Else
+        On Error Resume Next
+        lvLong = VBA.CLng(lvVariant)
+        On Error GoTo 0
+        If lvLong >= Lo0 And lvLong <= Lo9 Then
+            'lvLong = lvLong ' das ist OK
+        ElseIf lvLong >= Lo100 And lvLong <= Lo109 Then
+            lvLong = lvLong - Lo100
+            lvPercent = "%"
+        Else
+            lvLong = Lo0
+        End If
+        If lvLong = Lo0 Then
+            GetDecimalPlacesNumberFormat = "#,##0" & lvPercent
+        Else
+            GetDecimalPlacesNumberFormat = "#,##0." & VBA.String$(Number:=lvLong, Character:=ConChr0) & lvPercent
+        End If
+'    End If
+End Function
+
+Public Function GetOptNotFoundValue(Optional OptNotFoundValue As Variant) As Variant
+    Const ThisProcedure As String = ThisModule & "|GetOptNotFoundValue|Function"
+    If VBA.IsMissing(OptNotFoundValue) Then
+        GetOptNotFoundValue = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrNA _
+                                      , Description:="Nothing was found" _
+                                      )
+    Else
+        If VBA.VarType(VarName:=OptNotFoundValue) = VBA.VbVarType.vbString Then
+            If VBA.Len(OptNotFoundValue) = Lo0 Then
+                GetOptNotFoundValue = Empty
+            Else
+                GetOptNotFoundValue = OptNotFoundValue
+            End If
+        Else
+            GetOptNotFoundValue = OptNotFoundValue
+        End If
+    End If
+End Function
+
+Public Function GetVariantValue(Value As Variant) As Variant
+    Const ThisProcedure As String = ThisModule & "|GetVariantValue|Function"
+    If VBA.IsObject(Value) Then
+        GetVariantValue = Value.Value
+    Else
+        GetVariantValue = Value
+    End If
+End Function
+
+Public Sub SetValueArraysSearch(SearchValuesCollection As VBA.Collection, SearchRange As Excel.Range, VisibleOnly As Boolean)
+    Const ThisProcedure As String = ThisModule & "|SetValueArraysSearch|Sub"
+    Dim lcArea As Excel.Range
+    Dim laValues As Variant
+
+    If SearchValuesCollection Is Nothing Then
+        Set SearchValuesCollection = New VBA.Collection
+    End If
+    If VisibleOnly Then
+        For Each lcArea In SearchRange.Areas
+            'Debug.Print lcArea.Address
+            laValues = lcArea
+            SearchValuesCollection.Add Item:=laValues
+        Next
+    Else
+        For Each lcArea In SearchRange.Areas
+            'Debug.Print lcArea.Address
+            laValues = lcArea
+            SearchValuesCollection.Add Item:=laValues
+        Next
+        'laValues = SearchRange
+'        Dim i As Long, c As Long
+'        For i = LBound(laValues) To LBound(laValues) + 361
+'            'Debug.Print i, laValues(i)
+'        Next
+        'SearchValuesCollection.Add Item:=laValues
+    End If
+    Set lcArea = Nothing
+End Sub
+Public Sub SetValueArraysSearchUse(SearchValuesCollection As VBA.Collection _
+                                 , UseValuesCollection As VBA.Collection _
+                                 , SearchRange As Excel.Range _
+                                 , UseRange As Excel.Range _
+                                 , VisibleOnly As Boolean _
+                                 )
+    Const ThisProcedure As String = ThisModule & "|SetValueArraysSearchUse|Sub"
+    Dim lcArea As Excel.Range
+    Dim lcUseRange As Excel.Range
+    Dim laValues As Variant
+    Dim lvColumnOffset As Long
+    Dim lvRowOffset As Long
+    Dim lvColumnSize As Long
+    Dim lvRowSize As Long
+
+    If SearchValuesCollection Is Nothing Then
+        Set SearchValuesCollection = New VBA.Collection
+    End If
+    If UseRange Is Nothing Then
+        Set UseValuesCollection = SearchValuesCollection
+        If VisibleOnly Then
+            For Each lcArea In SearchRange.Areas
+                'Debug.Print lcArea.Address
+                laValues = lcArea
+                SearchValuesCollection.Add Item:=laValues
+            Next
+        Else
+            laValues = SearchRange
+            SearchValuesCollection.Add Item:=laValues
+        End If
+    Else
+        If UseValuesCollection Is Nothing Then
+            Set UseValuesCollection = New VBA.Collection
+        End If
+        If VisibleOnly Then
+            For Each lcArea In SearchRange.Areas
+                'Debug.Print lcArea.Address
+                SearchValuesCollection.Add Item:=lcArea.Value
+                lvColumnOffset = lcArea.Column - SearchRange.Column
+                lvRowOffset = lcArea.Row - SearchRange.Row
+                lvColumnSize = lcArea.Columns.Count '- SearchRange.Columns.Count + Lo1
+                lvRowSize = lcArea.Rows.Count '- SearchRange.Rows.Count + Lo1
+                Set lcUseRange = UseRange.Offset(RowOffset:=lvRowOffset, ColumnOffset:=lvColumnOffset) _
+                                         .Resize(RowSize:=lvRowSize, ColumnSize:=lvColumnSize)
+                'Debug.Print lcArea.Address, lcUseRange.Address
+                UseValuesCollection.Add Item:=lcUseRange.Value
+            Next
+        Else
+            laValues = SearchRange.Value
+            SearchValuesCollection.Add Item:=laValues
+            laValues = UseRange.Value
+            UseValuesCollection.Add Item:=laValues
+        End If
+    End If
+    Set lcUseRange = Nothing
+    Set lcArea = Nothing
+End Sub
+Private Sub JoinedArraysTest()
+    Const ThisProcedure As String = ThisModule & "|JoinedArraysTest|Sub"
+    Dim v As Variant
+    v = JoinedArrays(Array(1#, 2.1, 3.33333333333333E+15), Array("a", "b"))
+End Sub
+Public Function JoinedArrays(NumArray As Variant, StrArray As Variant) As Variant
+    Const ThisProcedure As String = ThisModule & "|JoinedArrays|Function"
+    Dim laValues As Variant
+    Dim lvIndex As Long
+    If UBound(NumArray) < UBound(StrArray) Then
+        JoinedArrays = VBA.Join(StrArray, ",")
+    Else
+        JoinedArrays = VBA.Join(NumArray, ",") & VBA.Join(StrArray, ",")
+    End If
+End Function
+
+Public Function SetSingleValue(ValueVar As Variant, ValuePar As Variant, Name As String) As Variant
+    Const ThisProcedure As String = ThisModule & "|SetSingleValue|Function"
+    Dim lcRange As Excel.Range
+    If VBA.IsObject(Expression:=ValuePar) Then
+        Set lcRange = ValuePar
+        If lcRange.Areas.Count <> Lo1 Then
+            SetSingleValue = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:=Name & " has more than 1 area" _
+                                )
+        End If
+        If lcRange.Rows.Count <> Lo1 Then
+            SetSingleValue = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:=Name & " has more than 1 row" _
+                                )
+        End If
+        If lcRange.Columns.Count <> Lo1 Then
+            SetSingleValue = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:=Name & " has more than 1 column" _
+                                )
+        End If
+        ValueVar = lcRange.Value
+        Set lcRange = Nothing
+    ElseIf VBA.IsArray(VarName:=ValuePar) Then
+        SetSingleValue = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                            , Description:=Name & " is an array" _
+                            )
+    Else
+        ValueVar = ValuePar
+    End If
+    Set lcRange = Nothing
+End Function
+Public Function GetObjectValue(Value As Variant) As Variant
+    Const ThisProcedure As String = ThisModule & "|GetObjectValue|Function"
+    If VBA.IsObject(Value) Then
+        GetObjectValue = Value.Value
+    Else
+        GetObjectValue = Value
+    End If
+End Function
+
+Public Function CheckLikeCrit(LikeCrit As Variant) As Variant
+    Const ThisProcedure As String = ThisModule & "|CheckLikeCrit|Function"
+    If VBA.VarType(LikeCrit) And VBA.VbVarType.vbArray Then
+        ' das Suchkriterium darf kein Arry sein
+        CheckLikeCrit = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrValue _
+                           , Description:="LikeCrit may not be an Array" _
+                           )
+        Exit Function
+    Else
+        Select Case VBA.VarType(LikeCrit)
+            Case VBA.VbVarType.vbDataObject _
+               , VbVarType.vbEmpty _
+               , VbVarType.vbError _
+               , VbVarType.vbNull _
+               , VbVarType.vbObject _
+               , VbVarType.vbUserDefinedType
+                CheckLikeCrit = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrValue _
+                                   , Description:="Invalid VarType of LikeCrit" _
+                                   )
+                Exit Function
+
+            Case Else
+                ' der Rest ist OK
+        End Select
+    End If
+End Function
+
+Private Sub GetArrayDimensionCountTest()
+    Const ThisProcedure As String = ThisModule & "|GetArrayDimensionCountTest|Sub"
+    Dim v
+    Dim a1(1)
+    Dim a2(1, 2)
+Debug.Print GetArrayDimensionsCount(v)
+Debug.Print GetArrayDimensionsCount(a1)
+Debug.Print GetArrayDimensionsCount(a2)
+
+End Sub
+
+Public Function GetArrayDimensionsCount(Arr As Variant) As Long
+    Const ThisProcedure As String = ThisModule & "|GetArrayDimensionsCount|Function"
+    Dim lvCount As Long
+    Dim lvValue As Variant
+
+    If VBA.IsArray(Arr) Then
+        Do
+            lvCount = lvCount + Lo1
+            lvValue = LBound(Arr, lvCount)
+            GetArrayDimensionsCount = lvCount
+        Loop
+    End If
+End Function
+
+Public Function ConvertSearchRange(SearchRange As Variant) As Variant
+    Const ThisProcedure As String = ThisModule & "|ConvertSearchRange|Function"
+    If Not TypeOf SearchRange Is Excel.Range Then
+        ConvertSearchRange = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                     , Description:="SearchRange has more than 1 Area" _
+                                     )
+    End If
+End Function
+Public Function CheckSearchRange(SearchRange As Excel.Range) As Variant
+    Const ThisProcedure As String = ThisModule & "|CheckSearchRange|Function"
+    Dim lcRange As Excel.Range
+    If VBA.IsObject(SearchRange) Then
+        Set lcRange = SearchRange
+        If lcRange.Areas.Count <> Lo1 Then
+            CheckSearchRange = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:="SearchRange has more than 1 Area" _
+                                )
+        End If
+        Set lcRange = Nothing
+    Else
+        CheckSearchRange = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrValue _
+                            , Description:="SearchRange is no Range or Array" _
+                            )
+
+    End If
+End Function
+
+Public Function CheckUseRange(UseRange As Excel.Range, UseRangePar As Excel.Range, SearchRange As Excel.Range) As Variant
+    Const ThisProcedure As String = ThisModule & "|CheckUseRange|Function"
+
+    If Not UseRangePar Is Nothing Then
+        If UseRangePar.Areas.Count <> Lo1 Then
+            CheckUseRange = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:="UseRange has more than 1 area" _
+                                )
+        End If
+        On Error Resume Next
+        ' UseRange wird wie bei SummeWenn auf die Größe des SearchRange angepaßt
+        Set UseRange = UseRangePar.Resize(RowSize:=SearchRange.Rows.Count _
+                                        , ColumnSize:=SearchRange.Columns.Count _
+                                        )
+        On Error GoTo 0
+        If UseRange Is Nothing Then
+            CheckUseRange = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrValue _
+                                , Description:="UseRange is over the limits" _
+                                )
+
+        End If
+    End If
+End Function
+
+Public Function CheckCrit(Crit As Variant, CritPar As Variant) As Variant
+    Const ThisProcedure As String = ThisModule & "|CheckCrit|Function"
+    Dim lcRange As Excel.Range
+    If VBA.IsError(CritPar) Then
+        CheckCrit = CritPar
+    ElseIf VBA.IsObject(CritPar) Then
+        Set lcRange = CritPar
+        If lcRange.Areas.Count <> Lo1 Then
+            CheckCrit = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:="Crit has more than 1 Area" _
+                                )
+            Set lcRange = Nothing
+            Exit Function
+        End If
+        If lcRange.Rows.Count <> Lo1 Then
+            CheckCrit = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:="Crit has more than 1 Row" _
+                                )
+            Set lcRange = Nothing
+            Exit Function
+        End If
+        If lcRange.Columns.Count <> Lo1 Then
+            CheckCrit = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:="Crit has more than 1 Column" _
+                                )
+            Set lcRange = Nothing
+            Exit Function
+        End If
+        Crit = CritPar.Value
+    ElseIf VBA.IsArray(CritPar) Then
+            CheckCrit = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:="Crit is an array" _
+                                )
+            Set lcRange = Nothing
+            Exit Function
+    ElseIf VBA.IsEmpty(CritPar) Then
+            CheckCrit = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:="Crit is empty" _
+                                )
+            Set lcRange = Nothing
+            Exit Function
+    Else
+        Crit = CritPar
+        Set lcRange = Nothing
+    End If
+End Function
+
+Public Function CheckLogOp(LogOp As fnenLogOp, LogOpPar As String) As Variant
+    Const ThisProcedure As String = ThisModule & "|CheckLogOp|Function"
+    Select Case VBA.UCase$(LogOpPar)
+        Case "<": LogOp = fnenLogOp.loBLT
+        Case "<=": LogOp = fnenLogOp.loBLE
+        Case "<>": LogOp = fnenLogOp.loBNE
+        Case "=": LogOp = fnenLogOp.loBEQ
+        Case ">=": LogOp = fnenLogOp.loBGE
+        Case ">": LogOp = fnenLogOp.loBGT
+        Case "LE": LogOp = fnenLogOp.loSLe
+        Case "RI": LogOp = fnenLogOp.loSRi
+        Case "LI": LogOp = fnenLogOp.loPLi
+        Case "RE": LogOp = fnenLogOp.loPRE
+        Case Else
+            CheckLogOp = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrValue _
+                                , Description:="Invalid LogOp: " & LogOpPar _
+                                )
+    End Select
+End Function
+
+Public Function CheckText(Text As Variant, TextPar As Variant, Name As String) As Variant
+    Const ThisProcedure As String = ThisModule & "|CheckText|Function"
+    Dim lcRange As Excel.Range
+    If VBA.IsError(TextPar) Then
+        CheckText = TextPar
+    ElseIf VBA.IsObject(TextPar) Then
+        Set lcRange = TextPar
+        If lcRange.Areas.Count > Lo1 Then
+            CheckText = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:=Name & " has more than 1 Area" _
+                                )
+            Set lcRange = Nothing
+            Exit Function
+        End If
+        If lcRange.Cells.Count <> Lo1 Then
+            CheckText = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:=Name & " is a range with more than a a single cell." _
+                                )
+            Set lcRange = Nothing
+            Exit Function
+        End If
+        Text = lcRange.Value
+    ElseIf VBA.IsArray(TextPar) Then
+            CheckText = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:=Name & " is an array." _
+                                )
+            Set lcRange = Nothing
+            Exit Function
+    ElseIf VBA.IsEmpty(TextPar) Then
+            CheckText = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:=Name & " is empty." _
+                                )
+            Set lcRange = Nothing
+            Exit Function
+    ElseIf VBA.VarType(VarName:=TextPar) <> VBA.VbVarType.vbString Then
+            CheckText = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                , Description:=Name & " is not a string." _
+                                )
+            Set lcRange = Nothing
+            Exit Function
+    Else
+        Text = TextPar
+        Set lcRange = Nothing
+    End If
+End Function
+
+Public Sub TerminateCollection(Collection As VBA.Collection)
+    Const ThisProcedure As String = ThisModule & "|TerminateCollection|Sub"
+    If Not Collection Is Nothing Then
+        With Collection
+            Do While .Count > Lo0
+                .Remove Index:=.Count
+            Loop
+        End With
+        Set Collection = Nothing
+    End If
+End Sub
+Public Sub TerminateCollectionWithObjects(Collection As VBA.Collection)
+    Const ThisProcedure As String = ThisModule & "|TerminateCollectionWithObjects|Sub"
+    Dim lcObject As Object
+    If Not Collection Is Nothing Then
+        With Collection
+            Do While .Count > Lo0
+                'Stop
+                Set lcObject = .Item(Index:=.Count)
+                .Remove Index:=.Count
+                Set lcObject = Nothing
+            Loop
+        End With
+        Set Collection = Nothing
+    End If
+End Sub
+Public Sub RemoveAllItemsFromCollection(Collection As VBA.Collection)
+    Const ThisProcedure As String = ThisModule & "|RemoveAllItemsFromCollection|Sub"
+    If Not Collection Is Nothing Then
+        With Collection
+            Do While .Count > Lo0
+                .Remove Index:=.Count
+            Loop
+        End With
+    End If
+End Sub
+
+Public Sub TerminateDictionary(Dictionary As Scripting.Dictionary)
+    Const ThisProcedure As String = ThisModule & "|TerminateDictionary|Sub"
+    If Not Dictionary Is Nothing Then
+        Dictionary.RemoveAll
+        Set Dictionary = Nothing
+    End If
+End Sub
+
+Public Function CheckSort(Sort As fnenSort, SortPar As Long) As Variant
+    Const ThisProcedure As String = ThisModule & "|CheckSort|Function"
+    If SortPar > Lo0 Then
+        Sort = fnenSort.sAscending
+    ElseIf SortPar = Lo0 Then
+        Sort = fnenSort.sNOptSort
+    Else
+        Sort = fnenSort.sDescending
+    End If
+End Function
+
+Private Sub CheckRegExTest()
+    Const ThisProcedure As String = ThisModule & "|CheckRegExTest|Sub"
+    Dim re As VBScript_RegExp_55.RegExp
+    CheckRegEx re, "[", False
+End Sub
+
+Public Function CheckRegEx(RegEx As VBScript_RegExp_55.RegExp, Crit As Variant, IgnoreCase As Boolean) As Variant
+    Const ThisProcedure As String = ThisModule & "|CheckRegEx|Function"
+    If VBA.VarType(VarName:=Crit) = VBA.VbVarType.vbString Then
+        Set RegEx = New VBScript_RegExp_55.RegExp
+        With RegEx
+            .Global = False
+            .IgnoreCase = IgnoreCase
+            .MultiLine = False
+            .Pattern = Crit
+            On Error Resume Next
+            If .Test(EmptyString) Then
+                ' nur um zu schauen, ob das Pattern OK ist
+            End If
+        End With
+        If VBA.Err.Number > Lo0 Then
+            CheckRegEx = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrValue _
+                                , Description:=GetRunTimeError _
+                                )
+        End If
+    End If
+End Function
+Public Function CheckRangeUseRange(SearchRange As Excel.Range, UseRange As Excel.Range, SearchRangePar As Excel.Range, UseRangePar As Excel.Range, VisibleOnly As Boolean) As Variant
+    Const ThisProcedure As String = ThisModule & "|CheckRangeUseRange|Function"
+    Dim lcSearchArea As Excel.Range
+    Dim lcSearchRange As Excel.Range
+    Dim lcUseArea As Excel.Range
+    Dim lcUseRange As Excel.Range
+    Dim lvIndex As Long
+
+    Set SearchRange = SearchRangePar
+    Set UseRange = UseRangePar
+
+    If UseRange Is Nothing Then
+        Set UseRange = SearchRange
+    End If
+
+    If SearchRange.Areas.Count <> UseRange.Areas.Count Then
+        CheckRangeUseRange = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                     , Description:="Range.Areas.Count <> UseRange.Areas.Count" _
+                                     )
+        Exit Function
+    End If
+
+    ' sicherstellen, dass jedes Area dieselben Dimensionen hat
+    For lvIndex = Lo1 To SearchRange.Areas.Count
+        Set lcSearchArea = SearchRange.Areas(Index:=lvIndex)
+        Set lcUseArea = UseRange.Areas(Index:=lvIndex)
+        If lcSearchArea.Rows.Count <> lcUseArea.Rows.Count Then
+            CheckRangeUseRange = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                         , Description:="SearchArea.Rows.Count <> UseArea.Rows.Count" _
+                                         )
+            GoSub CleanUp
+            Exit Function
+        ElseIf lcSearchArea.Columns.Count <> lcUseArea.Columns.Count Then
+            CheckRangeUseRange = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                         , Description:="SearchArea.Columns.Count <> UseArea.Columns.Count" _
+                                         )
+            GoSub CleanUp
+            Exit Function
+        End If
+    Next
+    Exit Function
+
+CleanUp:
+    Set lcUseRange = Nothing
+    Set lcUseArea = Nothing
+    Set lcSearchRange = Nothing
+    Set lcSearchArea = Nothing
+End Function
+
+Public Sub SetVisibleSearchRangeUseRange(SearchRange As Excel.Range, UseRange As Excel.Range, VisibleOnly As Boolean)
+    Const ThisProcedure As String = ThisModule & "|SetVisibleSearchRangeUseRange|Sub"
+    If VisibleOnly = Lo1 Then
+        Set SearchRange = SearchRange.SpecialCells(Type:=xlCellTypeVisible)
+        Set UseRange = UseRange.SpecialCells(Type:=xlCellTypeVisible)
+    End If
+End Sub
+
+Public Function AllDictionariesCount(AllDictionaries As tyAllDictionaries) As Long
+    Const ThisProcedure As String = ThisModule & "|AllDictionariesCount|Function"
+    With AllDictionaries
+        AllDictionariesCount = .BooleanDictionary.Count _
+                             + .DateDictionary.Count _
+                             + .DoubleDictionary.Count _
+                             + .EmptyDictionary.Count _
+                             + .ErrorDictionary.Count _
+                             + .StringDictionary.Count
+    End With
+End Function
+
+Public Function AllArraysCount(AllArrays As tyAllArrayIndexValues) As Long
+    Const ThisProcedure As String = ThisModule & "|AllArraysCount|Function"
+    With AllArrays
+        AllArraysCount = .BooleanArray.Count _
+                       + .DateArray.Count _
+                       + .DoubleArray.Count _
+                       + .EmptyArray.Count _
+                       + .ErrorArray.Count _
+                       + .StringArray.Count
+    End With
+End Function
+
+Public Function JoinAllArrays(AllArrays As tyAllArrayIndexValues, Sort As fnenSort, SeparatorPar As String) As String
+    Const ThisProcedure As String = ThisModule & "|JoinAllArrays|Function"
+    Dim lvResult As String
+    Dim lvSeparator As String
+    ' Zahlen, Zeit, Text, Logisch, Fehler, Leere Zellen
+    With AllArrays
+        If Sort = fnenSort.sDescending Then
+            JoinOneArray OneArray:=.EmptyArray, Result:=lvResult, Separator:=lvSeparator, SeparatorPar:=SeparatorPar
+            JoinOneArray OneArray:=.ErrorArray, Result:=lvResult, Separator:=lvSeparator, SeparatorPar:=SeparatorPar
+            JoinOneArray OneArray:=.BooleanArray, Result:=lvResult, Separator:=lvSeparator, SeparatorPar:=SeparatorPar
+            JoinOneArray OneArray:=.StringArray, Result:=lvResult, Separator:=lvSeparator, SeparatorPar:=SeparatorPar
+            JoinOneArray OneArray:=.DateArray, Result:=lvResult, Separator:=lvSeparator, SeparatorPar:=SeparatorPar
+            JoinOneArray OneArray:=.DoubleArray, Result:=lvResult, Separator:=lvSeparator, SeparatorPar:=SeparatorPar
+        Else
+            JoinOneArray OneArray:=.DoubleArray, Result:=lvResult, Separator:=lvSeparator, SeparatorPar:=SeparatorPar
+            JoinOneArray OneArray:=.DateArray, Result:=lvResult, Separator:=lvSeparator, SeparatorPar:=SeparatorPar
+            JoinOneArray OneArray:=.StringArray, Result:=lvResult, Separator:=lvSeparator, SeparatorPar:=SeparatorPar
+            JoinOneArray OneArray:=.BooleanArray, Result:=lvResult, Separator:=lvSeparator, SeparatorPar:=SeparatorPar
+            JoinOneArray OneArray:=.ErrorArray, Result:=lvResult, Separator:=lvSeparator, SeparatorPar:=SeparatorPar
+            JoinOneArray OneArray:=.EmptyArray, Result:=lvResult, Separator:=lvSeparator, SeparatorPar:=SeparatorPar
+        End If
+    End With
+    JoinAllArrays = lvResult
+End Function
+Private Function JoinOneArray(OneArray As tyArrayIndexValues, Result As String, Separator As String, SeparatorPar As String) As String
+    Const ThisProcedure As String = ThisModule & "|JoinOneArray|Function"
+    With OneArray
+        If .Count > Lo0 Then
+            Result = Result & Separator & VBA.Join(.Values, SeparatorPar)
+            Separator = SeparatorPar
+        End If
+    End With
+End Function
+
+Private Sub IsBooleTest()
+    Const ThisProcedure As String = ThisModule & "|IsBooleTest|Sub"
+Debug.Print IsBoole(0)
+Debug.Print IsBoole(-1)
+Debug.Print IsBoole(1)
+Debug.Print IsBoole(9.9)
+
+End Sub
+Public Function IsBoole(Value As Variant) As Variant
+    Const ThisProcedure As String = ThisModule & "|IsBoole|Function"
+    On Error GoTo CatchError
+    IsBoole = VBA.CBool(Value)
+    IsBoole = True
+    Exit Function
+CatchError:
+    IsBoole = False
+End Function
+
+Private Sub VCellsAddressTest()
+    Const ThisProcedure As String = ThisModule & "|VCellsAddressTest|Sub"
+Debug.Print VCellsAddress(Union(Range("A1:e3"), Range("f3:h5")))
+End Sub
+Public Function VCellsAddress(Range As Excel.Range) As Variant
+    Const ThisProcedure As String = ThisModule & "|VCellsAddress|Function"
+    'Debug.Print Range.Address
+    VCellsAddress = Range.SpecialCells(xlCellTypeVisible).Address
+End Function
+
+Public Sub VisibleRangesTest()
+    Const ThisProcedure As String = ThisModule & "|VisibleRangesTest|Sub"
+    Dim r As Excel.Range, c As Excel.Range
+    Set r = Union(Range("A1:e3"), Range("b3:h5"))
+Debug.Print r.EntireColumn.Address
+Debug.Print VisibleRanges(r).Address
+    For Each r In VisibleRanges(r).Areas
+Debug.Print ">", r.Address
+    Next
+End Sub
+Public Function VisibleRanges(Range As Excel.Range) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|VisibleRanges|Function"
+    Dim lcVisibleColumns As Excel.Range
+    Dim lcVisibleRows As Excel.Range
+
+    ' gibt die Schnittmenge der sichtbaren Spalten und der
+    ' sichtbaren Zeilen von Range zurück
+    ' ACHTUNG: die Menge der zurückgegebenen sichtbaren Zellen
+    '          unterscheidet sich von den SpecialCells(XlCellTypeVisible),
+    '          falls Range Areas enthält, die nicht dieselben Zeilen oder Spalten
+    '          abdecken.
+    ' Beisp.:  Range enthält A1:B2,E2:F3 und alle seien sichtbar
+    '          dann wird z. B. auch A2:A3 zurückgegeben, was in den SpecialCells
+    '          nicht enthalten ist
+
+    Set lcVisibleColumns = VisibleColumns(Range:=Range)
+    If lcVisibleColumns Is Nothing Then
+        Exit Function
+    End If
+    'Debug.Print lcVisibleColumns.Address
+    Set lcVisibleRows = VisibleRows(Range:=Range)
+    If lcVisibleRows Is Nothing Then
+        Set lcVisibleColumns = Nothing
+        Exit Function
+    End If
+    'Debug.Print lcVisibleRows.Address
+
+    Set VisibleRanges = Application.Intersect(Arg1:=lcVisibleRows, Arg2:=lcVisibleColumns)
+
+    Set lcVisibleColumns = Nothing
+    Set lcVisibleRows = Nothing
+End Function
+Private Sub VisibleColumnsTest()
+    Const ThisProcedure As String = ThisModule & "|VisibleColumnsTest|Sub"
+    Dim s As String
+    s = "a1:f3"
+Debug.Print VisibleColumns(Application.Union(Range("a1:e1"), Range("f3:g3"))).Address
+End Sub
+Public Function VisibleColumns(Range As Excel.Range) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|VisibleColumns|Function"
+    Dim lcArea As Excel.Range
+    Dim lcCell As Excel.Range
+    Dim lcRange As Excel.Range
+    Dim lcRow1 As Excel.Range
+
+    For Each lcArea In Range.Areas
+        For Each lcCell In lcArea.Resize(RowSize:=Lo1)
+            With lcCell
+                If Not .EntireColumn.Hidden Then
+                    Set lcRow1 = Application.Cells(RowIndex:=Lo1, ColumnIndex:=.Column)
+                    If lcRange Is Nothing Then
+                        Set lcRange = lcRow1
+                    Else
+                        If Application.Intersect(Arg1:=lcRange, Arg2:=lcRow1) Is Nothing Then
+                            Set lcRange = Application.Union(Arg1:=lcRange, Arg2:=lcRow1)
+                        End If
+                    End If
+                End If
+            End With
+        Next
+    Next
+    If Not lcRange Is Nothing Then
+        Set VisibleColumns = lcRange.EntireColumn
+    End If
+
+    Set lcRange = Nothing
+    Set lcRow1 = Nothing
+    Set lcCell = Nothing
+    Set lcArea = Nothing
+End Function
+
+Public Function VisibleColumnsOld(Range As Excel.Range) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|VisibleColumnsOld|Function"
+    ' Hat nicht funktioniert, weil SpecialCells bei benutzerdefinierten Funktionen
+    ' nur den Original-Range zurückliefert und nicht die sichtbaren Zellen.
+    Dim lcArea As Excel.Range
+    Dim lcRange As Excel.Range
+    Dim lcVisibleArea As Excel.Range
+    Dim lcVisibleAreas As Excel.Range
+
+    ' gibt die sichtbaren Spalten zurück
+    ' wenn sich Ranges bzgl. Spalten überlappen, sind die sich überlappenden
+    ' Spalten im zurückgegebenen Range nur einmal enthalten
+
+    For Each lcArea In Range.Areas
+        Set lcVisibleAreas = GetVisibleCellsOrNothing(Range:=lcArea)
+        'Debug.Print lcVisibleAreas.Address
+        If Not lcVisibleAreas Is Nothing Then
+            For Each lcVisibleArea In lcVisibleAreas.Areas
+                If lcRange Is Nothing Then
+                    Set lcRange = lcVisibleArea.EntireColumn
+                Else
+                    Set lcRange = Application.Union(Arg1:=lcRange, Arg2:=lcVisibleArea.EntireColumn)
+                End If
+                'Debug.Print lcRange.Address
+            Next
+        End If
+    Next
+    If Not lcRange Is Nothing Then
+        Set VisibleColumnsOld = lcRange
+    End If
+
+    Set lcRange = Nothing
+    Set lcVisibleArea = Nothing
+    Set lcVisibleAreas = Nothing
+    Set lcArea = Nothing
+End Function
+
+Private Sub VisibleRowsTest()
+    Const ThisProcedure As String = ThisModule & "|VisibleRowsTest|Sub"
+    Dim s As String
+    s = "a1:f3"
+Debug.Print VisibleRows(Application.Union(Range("a1:a10"), Range("c20:c30"))).Address
+End Sub
+Public Function VisibleRows(Range As Excel.Range) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|VisibleRows|Function"
+    Dim lcArea As Excel.Range
+    Dim lcCell As Excel.Range
+    Dim lcRange As Excel.Range
+    Dim lcColumn1 As Excel.Range
+
+    For Each lcArea In Range.Areas
+        For Each lcCell In lcArea.Resize(ColumnSize:=Lo1)
+            With lcCell
+                If Not .EntireRow.Hidden Then
+                    Set lcColumn1 = Application.Cells(RowIndex:=.Row, ColumnIndex:=Lo1)
+                    If lcRange Is Nothing Then
+                        Set lcRange = lcColumn1
+                    Else
+                        If Application.Intersect(Arg1:=lcRange, Arg2:=lcColumn1) Is Nothing Then
+                            Set lcRange = Application.Union(Arg1:=lcRange, Arg2:=lcColumn1)
+                        End If
+                    End If
+                End If
+            End With
+        Next
+    Next
+    If Not lcRange Is Nothing Then
+        Set VisibleRows = lcRange.EntireRow
+    End If
+
+    Set lcRange = Nothing
+    Set lcColumn1 = Nothing
+    Set lcCell = Nothing
+    Set lcArea = Nothing
+End Function
+
+Public Function VisibleRowsOld2(Range As Excel.Range) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|VisibleRowsOld2|Function"
+    ' Hat nicht funktioniert, weil SpecialCells bei benutzerdefinierten Funktionen
+    ' nur den Original-Range zurückliefert und nicht die sichtbaren Zellen.
+    Dim lcArea As Excel.Range
+    Dim lcRange As Excel.Range
+    Dim lcVisibleArea As Excel.Range
+    Dim lcVisibleAreas As Excel.Range
+
+    ' gibt die sichtbaren Zeilen zurück
+    ' wenn sich Ranges bzgl. Zeilen überlappen, sind die sich überlappenden
+    ' Zeilen im zurückgegebenen Range nur einmal enthalten
+
+    For Each lcArea In Range.Areas
+        Set lcVisibleAreas = GetVisibleCellsOrNothing(Range:=lcArea)
+        'Debug.Print lcVisibleAreas.Address
+        If Not lcVisibleAreas Is Nothing Then
+            For Each lcVisibleArea In lcVisibleAreas.Areas
+                If lcRange Is Nothing Then
+                    Set lcRange = lcVisibleArea.EntireRow
+                Else
+                    Set lcRange = Application.Union(Arg1:=lcRange, Arg2:=lcVisibleArea.EntireRow)
+                End If
+                'Debug.Print lcRange.Address
+            Next
+        End If
+    Next
+    If Not lcRange Is Nothing Then
+        Set VisibleRowsOld2 = lcRange
+    End If
+
+    Set lcRange = Nothing
+    Set lcVisibleArea = Nothing
+    Set lcVisibleAreas = Nothing
+    Set lcArea = Nothing
+End Function
+
+Private Sub VisibleRowsOldTest()
+    Const ThisProcedure As String = ThisModule & "|VisibleRowsOldTest|Sub"
+Debug.Print VisibleRowsOld(Range("a29:a34")).Address
+End Sub
+Public Function VisibleRowsOld(Range As Excel.Range) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|VisibleRowsOld|Function"
+    Dim lcArea As Excel.Range
+    Dim lcCell As Excel.Range
+    Dim lcFirstCell As Excel.Range
+    Dim lcLastCell As Excel.Range
+    Dim lcRange As Excel.Range
+
+    With Application
+        For Each lcCell In Range.Resize(ColumnSize:=Lo1)
+            If lcCell.EntireRow.Hidden Then
+                If Not lcFirstCell Is Nothing Then
+                    Set lcArea = .Range(lcFirstCell, lcLastCell).EntireRow
+                    'Debug.Print lcFirstCell.Address, lcLastCell.Address, lcArea.Address
+                    If lcRange Is Nothing Then
+                        Set lcRange = lcArea
+                    Else
+                        Set lcRange = .Union(Arg1:=lcRange, Arg2:=lcArea)
+                    End If
+                    Set lcArea = Nothing
+                    Set lcFirstCell = Nothing
+                    Set lcLastCell = Nothing
+                End If
+            Else
+                If lcFirstCell Is Nothing Then
+                    Set lcFirstCell = lcCell
+                End If
+                Set lcLastCell = lcCell
+            End If
+        Next
+        If Not lcFirstCell Is Nothing Then
+            Set lcArea = .Range(lcFirstCell, lcLastCell).EntireRow
+            'Debug.Print lcFirstCell.Address, lcLastCell.Address, lcArea.Address
+            If lcRange Is Nothing Then
+                Set lcRange = lcArea
+            Else
+                Set lcRange = .Union(Arg1:=lcRange, Arg2:=lcArea)
+            End If
+            Set lcArea = Nothing
+            Set lcFirstCell = Nothing
+            Set lcLastCell = Nothing
+        End If
+    End With
+    Set VisibleRowsOld = lcRange
+    Set lcRange = Nothing
+End Function
+
+Public Function CheckVarTypeBoolean(ReturnValue As Boolean _
+                                  , Name As String _
+                                  , Value As Variant _
+                                  , Mandatory As Boolean _
+                                  , Default As Boolean _
+                                  ) As Variant
+    Const ThisProcedure As String = ThisModule & "|CheckVarTypeBoolean|Function"
+
+    If VBA.IsMissing(ArgName:=Value) Then
+        If Mandatory Then
+            CheckVarTypeBoolean = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrValue _
+                                          , Description:=Name & " is missing" _
+                                          )
+            Exit Function
+        End If
+        ReturnValue = Default
+    Else
+        If VBA.VarType(VarName:=Value) <> VBA.VbVarType.vbBoolean Then
+            CheckVarTypeBoolean = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrValue _
+                                          , Description:=Name & " must be Boolean" _
+                                          )
+            Exit Function
+        End If
+        ReturnValue = Value
+    End If
+
+    Exit Function
+
+CatchError:
+    CheckVarTypeBoolean = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                  , Description:=VBA.Err.Description _
+                                  )
+End Function
+
+Public Function CheckDoubleIsInteger(NameValue As tyNameValue) As Variant
+    Const ThisProcedure As String = ThisModule & "|CheckDoubleIsInteger|Function"
+
+    With NameValue
+        If VBA.Int(.Value) <> .Value Then
+            RaiseParamIsNotInteger NameValue:=NameValue
+        End If
+    End With
+
+End Function

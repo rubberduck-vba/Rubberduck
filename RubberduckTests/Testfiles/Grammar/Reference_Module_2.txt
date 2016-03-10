@@ -1,0 +1,165 @@
+Attribute VB_Name = "fnConstPri"
+Option Explicit
+Option Private Module
+
+Private Const ThisModule As String = ThisProject & "|fnConstPri"
+
+Public Const ConAddInName As String = "ATGfn"
+Public Const ConAddInTitle As String = "ATG Worksheet functions"
+Public Const ConAddInComments As String = "Provides Worksheet functions used by ATG team members."
+Public Const ConAddInVersion As String = "v2010.0.18"
+
+Public Const ConExtensionAddIn As String = ".xlam"
+Public Const ConExtensionWorkbook As String = ".xlsm"
+
+Public Const ConFileNameATGfnxlam As String = "ATGfn.xlam"
+
+Public Const EmptyDate As Date = #12:00:00 AM#: ' entspricht #00:00:00#
+Public Const EmptyTime As Date = #12:00:00 AM#
+Public Const EmptyString As String = ""
+
+Public Const ConChr0 As String = "0"
+Public Const ConChr1 As String = "1"
+Public Const ConChr2 As String = "2"
+Public Const ConChr3 As String = "3"
+Public Const ConChr4 As String = "4"
+Public Const ConChr5 As String = "5"
+Public Const ConChr6 As String = "6"
+Public Const ConChr7 As String = "7"
+Public Const ConChr8 As String = "8"
+Public Const ConChr9 As String = "9"
+
+Public Const ConChrAmpersand As String = "&"
+Public Const ConChrApos As String = "'"
+Public Const ConChrAsterisk As String = "*"
+Public Const ConChrBackSlash As String = "\"
+Public Const ConChrBar As String = "|"
+Public Const ConChrColon As String = ":"
+Public Const ConChrComma As String = ","
+Public Const ConChrDash As String = "-"
+Public Const ConChrDegree As String = "°"
+Public Const ConChrDollar As String = "$"
+Public Const ConChrDot As String = "."
+Public Const ConChrEquals As String = "="
+Public Const ConChrExclPoint As String = "!"
+Public Const ConChrHash As String = "#"
+Public Const ConChrPct As String = "%"
+Public Const ConChrPlus As String = "+"
+Public Const ConChrQuestMark As String = "?"
+Public Const ConChrQuote As String = """"
+Public Const ConChrSemiColon As String = ";"
+Public Const ConChrSlash As String = "/"
+Public Const ConChrSpace As String = " "
+Public Const ConChrUnderScore As String = "_"
+Public Const ConChrZero As String = "0"
+
+Public Const ConChrLParan As String = "("
+Public Const ConChrRParan As String = ")"
+Public Const ConChrLAngleBracket As String = "<"
+Public Const ConChrRAngleBracket As String = ">"
+Public Const ConChrLCurlyBracket As String = "{"
+Public Const ConChrRCurlyBracket As String = "}"
+Public Const ConChrLSquareBracket As String = "["
+Public Const ConChrRSquareBracket As String = "]"
+
+Public Const ConStrSpaceDashSpace As String = " - "
+Public Const ConStrSpaceSpace As String = "  "
+
+Public Const ConRowColMax As Long = 999999999
+
+Public Const IntP1 As Integer = 1
+
+Public Const InM1 As Integer = -1
+Public Const In0 As Integer = 0
+Public Const In1 As Integer = 1
+Public Const In11 As Integer = 11
+Public Const In12 As Integer = 12
+Public Const In23 As Integer = 23
+Public Const In30 As Integer = 30
+
+Public Const LoM1 As Long = -1
+Public Const Lo0 As Long = 0
+Public Const Lo1 As Long = 1
+Public Const Lo2 As Long = 2
+Public Const Lo3 As Long = 3
+Public Const Lo4 As Long = 4
+Public Const Lo5 As Long = 5
+Public Const Lo6 As Long = 6
+Public Const Lo7 As Long = 7
+Public Const Lo8 As Long = 8
+Public Const Lo9 As Long = 9
+Public Const Lo10 As Long = 10
+Public Const Lo11 As Long = 11
+Public Const Lo12 As Long = 12
+Public Const Lo100 As Long = 100
+Public Const Lo109 As Long = 109
+Public Const Lo99999 As Long = 99999
+
+Public Const Do0 As Double = 0
+Public Const Do1 As Double = 1
+Public Const Do9 As Double = 9
+Public Const Do10 As Double = 10
+Public Const Do24 As Double = 24
+Public Const Do1440 As Double = 1440
+Public Const Do0d5 As Double = 0.5
+Public Const Do0d75 As Double = 0.75
+Public Const Do0d90 As Double = 0.9
+Public Const DoSecondsPerDay As Double = 86400
+Public Const DoMilliSecondsPerDay As Double = 86400000
+
+Public Const ConParPivotTableRange As String = "PivotTableRange"
+Public Const ConParChartIndex As String = "ChartIndex"
+Public Const ConParWorksheetIndex As String = "WorksheetIndex"
+Public Const ConParColumnFieldIndex As String = "ColumnFieldIndex"
+Public Const ConParFieldIndex As String = "FieldIndex"
+Public Const ConParIndex As String = "Index"
+Public Const ConParSlicerIndex As String = "SlicerIndex"
+Public Const ConParSlicerItemIndex As String = "SlicerItemIndex"
+Public Const ConParItemIndex As String = "ItemIndex"
+
+Public Const ConParSelectedOnly As String = "SelectedOnly"
+Public Const ConParNoDataHeader As String = "NoDataHeader"
+Public Const ConParNoFieldHeader As String = "NoFieldHeader"
+Public Const ConParNoHeader As String = "NoHeader"
+Public Const ConParNoDataField As String = "NoDataField"
+Public Const ConParNoTopBottom As String = "NoTopBottom"
+Public Const ConParNoCaption As String = "NoCaption"
+Public Const ConParNoDate As String = "NoDate"
+Public Const ConParNoValue As String = "NoValue"
+Public Const ConParNoSeconds As String = "NoSeconds"
+Public Const ConParMinutesAlways As String = "MinutesAlways"
+Public Const ConParRoundMinutes As String = "RoundMinutes"
+Public Const ConParRoundSeconds As String = "RoundSeconds"
+Public Const ConParSeparator As String = "Separator"
+
+Public Const ConParDecimalPlaces As String = "DecimalPlaces"
+Public Const ConParExcludeZeros As String = "ExcludeZeros"
+Public Const ConParDataIndex As String = "DataIndex"
+Public Const ConParName As String = "Name"
+Public Const ConParField_Name As String = "Field_Name"
+Public Const ConParItem_Value As String = "Item_Value"
+Public Const ConParWorksheetRange As String = "WorksheetRange"
+Public Const ConParPTIndex As String = "PTIndex"
+Public Const ConParPTName As String = "PTName"
+Public Const ConParWeightDataIndex As String = "WeightDataIndex"
+Public Const ConParByDataIndex1 As String = "ByDataIndex1"
+Public Const ConParByDataIndex2 As String = "ByDataIndex2"
+
+Public Const ConUnitByteExaByte2Exp As Long = 60
+Public Const ConUnitBytePetaByte2Exp As Long = 50
+Public Const ConUnitByteTeraByte2Exp As Long = 40
+Public Const ConUnitByteGigaByte2Exp As Long = 30
+Public Const ConUnitByteMegaByte2Exp As Long = 20
+Public Const ConUnitByteKiloByte2Exp As Long = 10
+Public Const ConUnitByteBlockByte2Exp As Long = 9
+Public Const ConUnitByteByte2Exp As Long = 0
+
+Public Const ConUnitByteExaByte2Unit As String = "EB"
+Public Const ConUnitBytePetaByte2Unit As String = "PB"
+Public Const ConUnitByteTeraByte2Unit As String = "TB"
+Public Const ConUnitByteGigaByte2Unit As String = "GB"
+Public Const ConUnitByteMegaByte2Unit As String = "MB"
+Public Const ConUnitByteKiloByte2Unit As String = "KB"
+Public Const ConUnitByteBlockByte2Unit As String = "Blk"
+Public Const ConUnitByteByteByte2Unit As String = "B"
+

@@ -58,8 +58,7 @@ moduleOption :
 ;
 
 moduleDeclarationsElement :
-	comment
-	| declareStmt
+    declareStmt
 	| enumerationStmt 
 	| eventStmt
 	| constStmt
@@ -67,12 +66,7 @@ moduleDeclarationsElement :
 	| variableStmt
 	| moduleOption
 	| typeStmt
-	| macroStmt
 ;
-
-macroStmt :
-	macroConstStmt
-	| macroIfThenElseStmt;
 
 moduleBody : 
 	moduleBodyElement (endOfStatement moduleBodyElement)* endOfStatement;
@@ -83,7 +77,6 @@ moduleBodyElement :
 	| propertySetStmt 
 	| propertyLetStmt 
 	| subStmt 
-	| macroStmt
 ;
 
 
@@ -126,7 +119,6 @@ blockStmt :
 	| loadStmt
 	| lockStmt
 	| lsetStmt
-	| macroStmt
 	| midStmt
 	| mkdirStmt
 	| nameStmt
@@ -290,25 +282,6 @@ loadStmt : LOAD WS valueStmt;
 lockStmt : LOCK WS valueStmt (WS? ',' WS? valueStmt (WS TO WS valueStmt)?)?;
 
 lsetStmt : LSET WS implicitCallStmt_InStmt WS? EQ WS? valueStmt;
-
-macroConstStmt : MACRO_CONST WS? ambiguousIdentifier WS? EQ WS? valueStmt;
-
-macroIfThenElseStmt : macroIfBlockStmt macroElseIfBlockStmt* macroElseBlockStmt? MACRO_END_IF;
-
-macroIfBlockStmt : 
-	MACRO_IF WS? ifConditionStmt WS THEN endOfStatement
-	(moduleDeclarations | moduleBody | block)*
-;
-
-macroElseIfBlockStmt : 
-	MACRO_ELSEIF WS? ifConditionStmt WS THEN endOfStatement
-	(moduleDeclarations | moduleBody | block)*
-;
-
-macroElseBlockStmt : 
-	MACRO_ELSE endOfStatement
-	(moduleDeclarations | moduleBody | block)*
-;
 
 midStmt : MID WS? LPAREN WS? argsCall WS? RPAREN;
 
@@ -585,7 +558,7 @@ letterrange : certainIdentifier (WS? MINUS WS? certainIdentifier)?;
 
 lineLabel : ambiguousIdentifier ':';
 
-literal : HEXLITERAL | OCTLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | SHORTLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
+literal : HEXLITERAL | OCTLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | SHORTLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL | EMPTY;
 
 type : (baseType | complexType) (WS? LPAREN WS? RPAREN)?;
 
@@ -676,6 +649,7 @@ DOUBLE : D O U B L E;
 EACH : E A C H;
 ELSE : E L S E;
 ELSEIF : E L S E I F;
+EMPTY : E M P T Y;
 END_ENUM : E N D WS E N U M;
 END_FUNCTION : E N D WS F U N C T I O N;
 END_IF : E N D WS I F;
@@ -725,11 +699,6 @@ LOCK_READ : L O C K WS R E A D;
 LOCK_WRITE : L O C K WS W R I T E;
 LOCK_READ_WRITE : L O C K WS R E A D WS W R I T E;
 LSET : L S E T;
-MACRO_CONST : '#' C O N S T;
-MACRO_IF : '#' I F;
-MACRO_ELSEIF : '#' E L S E I F;
-MACRO_ELSE : '#' E L S E;
-MACRO_END_IF : '#' E N D WS? I F;
 ME : M E;
 MID : M I D;
 MKDIR : M K D I R;
@@ -845,11 +814,35 @@ fragment DATEVALUE : DATEVALUEPART DATESEPARATOR DATEVALUEPART (DATESEPARATOR DA
 fragment DATEVALUEPART : DIGIT+ | MONTHNAME;
 fragment DATESEPARATOR : WS? [/,-]? WS?;
 fragment MONTHNAME : ENGLISHMONTHNAME | ENGLISHMONTHABBREVIATION;
-fragment ENGLISHMONTHNAME : J A N U A R Y | F E B R U A R Y | M A R C H | A P R I L | M A Y | J U N E  | A U G U S T | S E P T E M B E R | O C T O B E R | N O V E M B E R | D E C E M B E R;
-fragment ENGLISHMONTHABBREVIATION : J A N | F E B | M A R | A P R | J U N | J U L | A U G | S E P |  O C T | N O V | D E C;
+fragment ENGLISHMONTHNAME : JANUARY | FEBRUARY | MARCH | APRIL | MAY | JUNE | JULY | AUGUST | SEPTEMBER | OCTOBER | NOVEMBER | DECEMBER;
+fragment ENGLISHMONTHABBREVIATION : JAN | FEB | MAR | APR | JUN | JUL | AUG | SEP | OCT | NOV | DEC;
 fragment TIMEVALUE : DIGIT+ AMPM | DIGIT+ TIMESEPARATOR DIGIT+ (TIMESEPARATOR DIGIT+)? AMPM?;
 fragment TIMESEPARATOR : WS? (':' | '.') WS?;
 fragment AMPM : WS? (A M | P M | A | P);
+
+JANUARY : J A N U A R Y;
+FEBRUARY : F E B R U A R Y;
+MARCH : M A R C H;
+APRIL : A P R I L;
+MAY : M A Y;
+JUNE : J U N E;
+JULY : J U L Y;
+AUGUST : A U G U S T;
+SEPTEMBER : S E P T E M B E R;
+OCTOBER : O C T O B E R;
+NOVEMBER : N O V E M B E R;
+DECEMBER : D E C E M B E R;
+JAN : J A N;
+FEB : F E B;
+MAR: M A R;
+APR : A P R;
+JUN : J U N;
+JUL: J U L;
+AUG : A U G;
+SEP : S E P;
+OCT : O C T;
+NOV : N O V;
+DEC : D E C;
 
 // whitespace, line breaks, comments, ...
 LINE_CONTINUATION : [ \t]+ UNDERSCORE '\r'? '\n' -> skip;
