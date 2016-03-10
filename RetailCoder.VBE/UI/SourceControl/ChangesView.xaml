@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Rubberduck.UI.SourceControl.ChangesView"
+﻿<TabItem x:Class="Rubberduck.UI.SourceControl.ChangesView"
          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,9 +8,10 @@
          xmlns:converters="clr-namespace:Rubberduck.UI.SourceControl.Converters"
          xmlns:converters1="clr-namespace:Rubberduck.UI.Settings.Converters"
          mc:Ignorable="d"
+         Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Changes}"
          d:DesignHeight="500" d:DesignWidth="300"
          d:DataContext="{d:DesignInstance {x:Type sourceControl:ChangesViewViewModel}, IsDesignTimeCreatable=False}">
-    <UserControl.Resources>
+    <TabItem.Resources>
         <BitmapImage x:Key="CheckImage" UriSource="../../Resources/tick.png" />
         <BitmapImage x:Key="DeleteImage" UriSource="../../Resources/cross-script.png" />
         <BitmapImage x:Key="UndoImage" UriSource="../../Resources/arrow-circle-left.png" />
@@ -74,7 +75,7 @@
             <Setter Property="ColumnHeaderHeight" Value="22" />
             <Setter Property="BorderThickness" Value="0" />
         </Style>
-    </UserControl.Resources>
+    </TabItem.Resources>
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="5">
@@ -249,4 +250,4 @@
             </StackPanel>
         </ScrollViewer>
     </Grid>
-</UserControl>
+</TabItem>

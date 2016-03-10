@@ -2835,6 +2835,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string SourceControl_Delete {
+            get {
+                return ResourceManager.GetString("SourceControl_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete branch.
         /// </summary>
         public static string SourceControl_DeleteBranch {

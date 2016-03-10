@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -13,8 +15,9 @@ namespace Rubberduck.UI.SourceControl
         {
             _commitCommand = new DelegateCommand(_ => Commit(), _ => !string.IsNullOrEmpty(CommitMessage) && IncludedChanges != null && IncludedChanges.Any());
 
-            _undoChangesToolbarButtonCommand =
-                new DelegateCommand(fileStatusEntry => UndoChanges((IFileStatusEntry) fileStatusEntry));
+            _includeChangesToolbarButtonCommand = new DelegateCommand(fileStatusEntry => IncludeChanges((IFileStatusEntry)fileStatusEntry));
+            _excludeChangesToolbarButtonCommand = new DelegateCommand(fileStatusEntry => ExcludeChanges((IFileStatusEntry)fileStatusEntry));
+            _undoChangesToolbarButtonCommand = new DelegateCommand(fileStatusEntry => UndoChanges((IFileStatusEntry) fileStatusEntry));
         }
 
         private string _commitMessage;
@@ -46,74 +49,62 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshView()
         {
-            CurrentBranch = Provider.CurrentBranch.Name;
-
-            var fileStats = Provider.Status().ToList();
-
-            IncludedChanges = new ObservableCollection<IFileStatusEntry>(fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Modified)));
-            UntrackedFiles = new ObservableCollection<IFileStatusEntry>(fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)));
+            OnPropertyChanged("CurrentBranch");
+            OnPropertyChanged("IncludedChanges");
+            OnPropertyChanged("ExcludedChanges");
+            OnPropertyChanged("UntrackedFiles");
         }
 
         private void Provider_BranchChanged(object sender, EventArgs e)
         {
-            CurrentBranch = Provider.CurrentBranch.Name;
+            OnPropertyChanged("CurrentBranch");
         }
 
-        private string _currentBranch;
         public string CurrentBranch
         {
-            get { return _currentBranch; }
-            set
-            {
-                if (_currentBranch != value)
-                {
-                    _currentBranch = value;
-                    OnPropertyChanged();
-                } 
-            }
+            get { return Provider == null ? string.Empty : Provider.CurrentBranch.Name; }
         }
 
         public CommitAction CommitAction { get; set; }
 
-        private ObservableCollection<IFileStatusEntry> _includedChanges;
-        public ObservableCollection<IFileStatusEntry> IncludedChanges
+        public IEnumerable<IFileStatusEntry> IncludedChanges
         {
-            get { return _includedChanges; }
-            set
+            get
             {
-                if (_includedChanges != value)
-                {
-                    _includedChanges = value;
-                    OnPropertyChanged();
-                }
+                return Provider == null
+                    ? new ObservableCollection<IFileStatusEntry>()
+                    : new ObservableCollection<IFileStatusEntry>(
+                        Provider.Status()
+                            .Where(
+                                stat =>
+                                    stat.FileStatus.HasFlag(FileStatus.Modified) ||
+                                    stat.FileStatus.HasFlag(FileStatus.Added)));
             }
         }
 
-        private ObservableCollection<IFileStatusEntry> _excludedChanges;
-        public ObservableCollection<IFileStatusEntry> ExcludedChanges
+        public IEnumerable<IFileStatusEntry> ExcludedChanges
         {
-            get { return _excludedChanges; }
-            set
+            get
             {
-                if (_excludedChanges != value)
-                {
-                    _excludedChanges = value;
-                    OnPropertyChanged();
-                }
+                return Provider == null
+                    ? new ObservableCollection<IFileStatusEntry>()
+                    : new ObservableCollection<IFileStatusEntry>(
+                        Provider.Status()
+                            .Where(
+                                stat =>
+                                    stat.FileStatus.HasFlag(FileStatus.Ignored) &&
+                                    stat.FileStatus.HasFlag(FileStatus.Modified)));
             }
         }
 
-        private ObservableCollection<IFileStatusEntry> _untrackedFiles;
-        public ObservableCollection<IFileStatusEntry> UntrackedFiles
+        public IEnumerable<IFileStatusEntry> UntrackedFiles
         {
-            get { return _untrackedFiles; }
-            set
+            get
             {
-                if (_untrackedFiles != value)
-                {
-                    _untrackedFiles = value;
-                    OnPropertyChanged();
-                }
+                return Provider == null
+                    ? new ObservableCollection<IFileStatusEntry>()
+                    : new ObservableCollection<IFileStatusEntry>(
+                        Provider.Status().Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)));
             }
         }
 
@@ -126,6 +117,8 @@ namespace Rubberduck.UI.SourceControl
                     : Provider.CurrentRepository.LocalLocation + "\\";
 
                 Provider.Undo(localLocation + fileStatusEntry.FilePath);
+
+                RefreshView();
             }
             catch (SourceControlException ex)
             {
@@ -156,6 +149,8 @@ namespace Rubberduck.UI.SourceControl
                 {
                     Provider.Push();
                 }
+
+                RefreshView();
             }
             catch (SourceControlException ex)
             {
@@ -164,20 +159,43 @@ namespace Rubberduck.UI.SourceControl
 
             CommitMessage = string.Empty;
         }
+
+        private void IncludeChanges(IFileStatusEntry fileStatusEntry)
+        {
+            Provider.AddFile(fileStatusEntry.FilePath);
+
+            RefreshView();
+        }
+
+        private void ExcludeChanges(IFileStatusEntry fileStatusEntry)
+        {
+            Provider.ExcludeFile(fileStatusEntry.FilePath);
+
+            RefreshView();
+        }
         
         private readonly ICommand _commitCommand;
         public ICommand CommitCommand
         {
-            get
-            {
-                return _commitCommand;
-            }
+            get { return _commitCommand; }
         }
 
-        private ICommand _undoChangesToolbarButtonCommand;
+        private readonly ICommand _undoChangesToolbarButtonCommand;
         public ICommand UndoChangesToolbarButtonCommand
         {
             get { return _undoChangesToolbarButtonCommand; }
+        }
+
+        private readonly ICommand _excludeChangesToolbarButtonCommand;
+        public ICommand ExcludeChangesToolbarButtonCommand
+        {
+            get { return _excludeChangesToolbarButtonCommand; }
+        }
+
+        private readonly ICommand _includeChangesToolbarButtonCommand;
+        public ICommand IncludeChangesToolbarButtonCommand
+        {
+            get { return _includeChangesToolbarButtonCommand; }
         }
 
         public event EventHandler<ErrorEventArgs> ErrorThrown;

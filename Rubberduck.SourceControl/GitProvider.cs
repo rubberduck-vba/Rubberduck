@@ -436,6 +436,19 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        public override void ExcludeFile(string filePath)
+        {
+            try
+            {
+                // https://github.com/libgit2/libgit2sharp/wiki/Git-add
+                _repo.Unstage(filePath);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException(string.Format("Failed to stage file {0}", filePath), ex);
+            }
+        }
+
         /// <summary>
         /// Removes file from staging area, but leaves the file in the working directory.
         /// </summary>
