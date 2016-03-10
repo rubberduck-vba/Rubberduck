@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
@@ -10,28 +9,28 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class RubberduckCommandBar
     {
-        private readonly IRubberduckParser _parser;
+        private readonly RubberduckParserState _state;
         private readonly VBE _vbe;
 
         private CommandBarButton _refreshButton;
         private CommandBarButton _statusButton;
 
-        public RubberduckCommandBar(IRubberduckParser parser, VBE vbe)
+        public RubberduckCommandBar(RubberduckParserState state, VBE vbe)
         {
-            _parser = parser;
+            _state = state;
             _vbe = vbe;
-            _parser.State.StateChanged += State_StateChanged;
+            _state.StateChanged += State_StateChanged;
             Initialize();
         }
 
-        public void SetStatusText(string value)
+        public void SetStatusText(string value = null)
         {
-            _statusButton.Caption = value;
+            _statusButton.Caption = value ?? RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status);
         }
 
         private void State_StateChanged(object sender, ParserStateEventArgs e)
         {
-            UiDispatcher.Invoke(() => _statusButton.Caption = e.State.ToString());
+            UiDispatcher.Invoke(() => SetStatusText(RubberduckUI.ResourceManager.GetString("ParserState_" + e.State)));
         }
 
         public event EventHandler Refresh;

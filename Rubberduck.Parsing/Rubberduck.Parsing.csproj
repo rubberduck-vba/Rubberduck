@@ -159,10 +159,13 @@
     <Compile Include="Symbols\AdodbObjectModel.cs" />
     <Compile Include="Symbols\CommentExtensions.cs" />
     <Compile Include="Symbols\DeclarationEventArgs.cs" />
+    <Compile Include="Symbols\DeclarationFinder.cs" />
     <Compile Include="Symbols\ExcelObjectModel.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
     <Compile Include="Symbols\MemberProcessedEventArgs.cs" />
+    <Compile Include="Symbols\ParameterDeclaration.cs" />
+    <Compile Include="Symbols\ReferencedDeclarationsCollector.cs" />
     <Compile Include="Symbols\SyntaxErrorException.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />
@@ -179,6 +182,7 @@
     <Compile Include="Symbols\MsFormsLib.cs" />
     <Compile Include="Symbols\ValuedDeclaration.cs" />
     <Compile Include="Symbols\VbaStandardLib.cs" />
+    <Compile Include="VBA\EnumerableExtensions.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />

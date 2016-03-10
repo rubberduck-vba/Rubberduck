@@ -147,7 +147,7 @@ namespace Rubberduck.UI.CodeInspections
             IsBusy = true;
 
             Debug.WriteLine("InspectionResultsViewModel.ExecuteRefreshCommand - requesting reparse");
-            _state.OnParseRequested();
+            _state.OnParseRequested(this);
         }
 
         private bool CanExecuteRefreshCommand(object parameter)
@@ -159,6 +159,7 @@ namespace Rubberduck.UI.CodeInspections
         {
             if (e.State != ParserState.Ready)
             {
+                IsBusy = false;
                 return;
             }
 

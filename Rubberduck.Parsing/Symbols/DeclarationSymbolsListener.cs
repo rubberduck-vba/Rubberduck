@@ -21,13 +21,11 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _parentDeclaration;
 
         private readonly IEnumerable<CommentNode> _comments;
-        private readonly CancellationToken _token;
 
-        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type, IEnumerable<CommentNode> comments, CancellationToken token)
+        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type, IEnumerable<CommentNode> comments)
         {
             _qualifiedName = qualifiedName;
             _comments = comments;
-            _token = token;
 
             var declarationType = type == vbext_ComponentType.vbext_ct_StdModule
                 ? DeclarationType.Module
@@ -109,8 +107,6 @@ namespace Rubberduck.Parsing.Symbols
         public event EventHandler<DeclarationEventArgs> NewDeclaration;
         private void OnNewDeclaration(Declaration declaration)
         {
-            _token.ThrowIfCancellationRequested();
-
             var handler = NewDeclaration;
             if (handler != null)
             {
@@ -142,8 +138,21 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration CreateDeclaration(string identifierName, string asTypeName, Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool selfAssigned = false, bool withEvents = false)
         {
-            var annotations = FindAnnotations(selection.StartLine);
-            var result = new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations);
+            Declaration result;
+            if (declarationType == DeclarationType.Parameter)
+            {
+                var argContext = (VBAParser.ArgContext) context;
+                var isOptional = argContext.OPTIONAL() != null;
+                var isByRef = argContext.BYREF() != null;
+                var isParamArray = argContext.PARAMARRAY() != null;
+                var isArray = argContext.LPAREN() != null;
+                result = new ParameterDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, context, selection, asTypeName, isOptional, isByRef, isArray, isParamArray);
+            }
+            else
+            {
+                var annotations = FindAnnotations(selection.StartLine);
+                result = new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations);
+            }
 
             OnNewDeclaration(result);
             return result;

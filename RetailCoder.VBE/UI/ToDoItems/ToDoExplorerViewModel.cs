@@ -41,7 +41,7 @@ namespace Rubberduck.UI.ToDoItems
                 return _refreshCommand = new DelegateCommand(_ =>
                 {
                     _state.StateChanged += _state_StateChanged;
-                    _state.OnParseRequested();
+                    _state.OnParseRequested(this);
                 });
             }
         }
