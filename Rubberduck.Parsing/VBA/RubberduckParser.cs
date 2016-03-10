@@ -218,7 +218,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 var commentListener = listeners.OfType<CommentListener>().Single();
                 ITokenStream stream;
-                
+
                 var stopwatch = Stopwatch.StartNew();
                 var tree = ParseInternal(code, listeners, out stream);
                 stopwatch.Stop();
@@ -232,7 +232,7 @@ namespace Rubberduck.Parsing.VBA
 
                 var comments = ParseComments(qualifiedName, commentListener.Comments, commentListener.RemComments);
                 _state.SetModuleComments(vbComponent, comments);
-                
+
                 return tree;
             });
         }
@@ -286,11 +286,11 @@ namespace Rubberduck.Parsing.VBA
 
         private void declarationsListener_NewDeclaration(object sender, DeclarationEventArgs e)
         {
-             _state.AddDeclaration(e.Declaration);
+            _state.AddDeclaration(e.Declaration);
         }
 
         // todo: remove once performance is acceptable
-        private readonly IDictionary<VBComponent, Stopwatch> _resolverTimer = new ConcurrentDictionary<VBComponent, Stopwatch>(); 
+        private readonly IDictionary<VBComponent, Stopwatch> _resolverTimer = new ConcurrentDictionary<VBComponent, Stopwatch>();
 
         private async Task ResolveReferencesAsync(DeclarationFinder finder, VBComponent component, IParseTree tree)
         {

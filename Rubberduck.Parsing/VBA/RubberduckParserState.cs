@@ -334,6 +334,11 @@ namespace Rubberduck.Parsing.VBA
             _parseTrees[component] = parseTree;
         }
 
+        public IParseTree GetParseTree(VBComponent component)
+        {
+            return _parseTrees[component];
+        }
+
         public IEnumerable<KeyValuePair<VBComponent, IParseTree>> ParseTrees { get { return _parseTrees; } }
 
         public TokenStreamRewriter GetRewriter(VBComponent component)
