@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
+using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
@@ -349,16 +350,17 @@ namespace Rubberduck.Parsing.Symbols
                 return false;
             }
 
-            var method = Context.GetType().GetMethod("typeHint");
-            if (method == null)
+            try
+            {
+                var hint = ((dynamic) Context).typeHint();
+                token = hint == null ? null : hint.GetText();
+                return hint != null;
+            }
+            catch (RuntimeBinderException)
             {
                 token = null;
                 return false;
             }
-
-            var hint = method.Invoke(Context, new object[]{}) as VBAParser.TypeHintContext;
-            token = hint == null ? null : hint.GetText();
-            return hint != null;
         }
 
         public bool IsSelected(QualifiedSelection selection)

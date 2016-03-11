@@ -62,6 +62,8 @@ namespace Rubberduck.Parsing.VBA
                 {
                     ParseComponentAsync(component).Wait();
                 }
+
+                _resolveAsync = false;
             }
             catch (Exception exception)
             {
@@ -69,12 +71,20 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        private bool _resolveAsync = true;
         private async void StateOnStateChanged(object sender, ParserStateEventArgs parserStateEventArgs)
         {
             if (parserStateEventArgs.State == ParserState.Parsed)
             {
                 var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments);
-                ResolveAsync(finder);
+                if (_resolveAsync)
+                {
+                    ResolveAsync(finder);
+                }
+                else
+                {
+                    await ResolveAsync(finder);
+                }
             }
         }
 
@@ -110,6 +120,8 @@ namespace Rubberduck.Parsing.VBA
                     await ParseComponentAsync(component).ConfigureAwait(false);
                 });
             });
+
+            _resolveAsync = true;
         }
 
         private async Task AddDeclarationsFromProjectReferences(IReadOnlyList<VBProject> projects)
