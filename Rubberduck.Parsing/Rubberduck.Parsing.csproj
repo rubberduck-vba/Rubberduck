@@ -156,11 +156,9 @@
     <Compile Include="Preprocessing\VBAPredefinedCompilationConstants.cs" />
     <Compile Include="Preprocessing\VBAPreprocessor.cs" />
     <Compile Include="Preprocessing\VBAPreprocessorVisitor.cs" />
-    <Compile Include="Symbols\AdodbObjectModel.cs" />
     <Compile Include="Symbols\CommentExtensions.cs" />
     <Compile Include="Symbols\DeclarationEventArgs.cs" />
     <Compile Include="Symbols\DeclarationFinder.cs" />
-    <Compile Include="Symbols\ExcelObjectModel.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
     <Compile Include="Symbols\MemberProcessedEventArgs.cs" />
@@ -179,9 +177,7 @@
     <Compile Include="Symbols\DeclarationType.cs" />
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
-    <Compile Include="Symbols\MsFormsLib.cs" />
     <Compile Include="Symbols\ValuedDeclaration.cs" />
-    <Compile Include="Symbols\VbaStandardLib.cs" />
     <Compile Include="VBA\EnumerableExtensions.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
