@@ -60,7 +60,7 @@ namespace Rubberduck.Parsing.VBA
 
                 foreach (var component in components)
                 {
-                    ParseComponentAsync(component);
+                    ParseComponentAsync(component).Wait();
                 }
             }
             catch (Exception exception)

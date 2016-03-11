@@ -43,13 +43,13 @@ namespace Rubberduck.Parsing.VBA
     {
         public event EventHandler<ParseRequestEventArgs> ParseRequest;
 
-        private static readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>> _declarations =
+        private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>> _declarations =
             new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>>();
 
-        private static readonly ConcurrentDictionary<VBComponent, ITokenStream> _tokenStreams =
+        private readonly ConcurrentDictionary<VBComponent, ITokenStream> _tokenStreams =
             new ConcurrentDictionary<VBComponent, ITokenStream>();
 
-        private static readonly ConcurrentDictionary<VBComponent, IParseTree> _parseTrees =
+        private readonly ConcurrentDictionary<VBComponent, IParseTree> _parseTrees =
             new ConcurrentDictionary<VBComponent, IParseTree>();
 
         public event EventHandler<ParserStateEventArgs> StateChanged;
@@ -63,10 +63,10 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private static readonly ConcurrentDictionary<VBComponent, ParserState> _moduleStates =
+        private readonly ConcurrentDictionary<VBComponent, ParserState> _moduleStates =
             new ConcurrentDictionary<VBComponent, ParserState>();
 
-        private static readonly ConcurrentDictionary<VBComponent, SyntaxErrorException> _moduleExceptions =
+        private readonly ConcurrentDictionary<VBComponent, SyntaxErrorException> _moduleExceptions =
             new ConcurrentDictionary<VBComponent, SyntaxErrorException>();
 
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
@@ -81,7 +81,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private static readonly object _lock = new object();
         public void SetModuleState(VBComponent component, ParserState state, SyntaxErrorException parserError = null)
         {
             _moduleStates.AddOrUpdate(component, state, (c, s) => state);
@@ -93,11 +92,11 @@ namespace Rubberduck.Parsing.VBA
             Status = EvaluateParserState();
         }
 
-        private static readonly ParserState[] States = Enum.GetValues(typeof (ParserState)).Cast<ParserState>().ToArray();
+        private readonly ParserState[] States = Enum.GetValues(typeof (ParserState)).Cast<ParserState>().ToArray();
 
-        private static ParserState EvaluateParserState()
+        private ParserState EvaluateParserState()
         {
-            lock (_lock)
+            //lock (_lock)
             {
                 var moduleStates = _moduleStates.Values.ToList();
                 var state = States.SingleOrDefault(value => moduleStates.All(ps => ps == value));
