@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -12,6 +13,7 @@ using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.Parsing.Preprocessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
@@ -148,6 +150,18 @@ namespace Rubberduck.Parsing.VBA
                 var qualifiedName = new QualifiedModuleName(vbComponent);
                 var code = rewriter == null ? string.Join(Environment.NewLine, vbComponent.CodeModule.GetSanitizedCode()) : rewriter.GetText();
 
+                var preprocessor = new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
+                string preprocessedModuleBody;
+                try
+                {
+                    preprocessedModuleBody = preprocessor.Execute(code);
+                }
+                catch (VBAPreprocessorException)
+                {
+                    // Fall back to not doing any preprocessing at all.
+                    preprocessedModuleBody = code;
+                }
+
                 // bug: assert fails when parse is requested by inspection results toolwindow
                 Debug.Assert(!_state.AllUserDeclarations.Any(declaration => declaration.Project == qualifiedName.Project && declaration.ComponentName == qualifiedName.ComponentName));
 
@@ -166,7 +180,7 @@ namespace Rubberduck.Parsing.VBA
                     commentListener
                 };
 
-                var tree = await GetParseTreeAsync(vbComponent, listeners, code, qualifiedName);
+                var tree = await GetParseTreeAsync(vbComponent, listeners, preprocessedModuleBody, qualifiedName);
                 WalkParseTree(vbComponent, listeners, qualifiedName, tree);
 
                 State.SetModuleState(vbComponent, ParserState.Parsed);
