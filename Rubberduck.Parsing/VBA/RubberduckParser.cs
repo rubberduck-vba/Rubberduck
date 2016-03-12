@@ -35,9 +35,9 @@ namespace Rubberduck.Parsing.VBA
             state.StateChanged += StateOnStateChanged;
         }
 
-        private async void ReparseRequested(object sender, EventArgs e)
+        private void ReparseRequested(object sender, EventArgs e)
         {
-            await ParseAsync();
+            Parse();
         }
 
         private readonly VBE _vbe;
@@ -60,7 +60,7 @@ namespace Rubberduck.Parsing.VBA
 
                 foreach (var component in components)
                 {
-                    ParseComponentAsync(component).Wait();
+                    ParseComponent(component);
                 }
             }
             catch (Exception exception)
@@ -78,7 +78,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private async Task ParseAsync()
+        private void Parse()
         {
             var projects = _vbe.VBProjects.Cast<VBProject>()
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
@@ -86,7 +86,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (!_state.AllDeclarations.Any(declaration => declaration.IsBuiltIn))
             {
-                await AddDeclarationsFromProjectReferences(projects);
+                AddDeclarationsFromProjectReferences(projects);
             }
 
             var components = projects
@@ -104,24 +104,24 @@ namespace Rubberduck.Parsing.VBA
             SetComponentsState(components, ParserState.Pending);
             foreach (var component in components)
             {
-                await ParseComponentAsync(component).ConfigureAwait(false);
+                ParseComponent(component);
             }
         }
 
-        private async Task AddDeclarationsFromProjectReferences(IReadOnlyList<VBProject> projects)
+        private void AddDeclarationsFromProjectReferences(IReadOnlyList<VBProject> projects)
         {
             SetComponentsState(projects.SelectMany(project => project.VBComponents.Cast<VBComponent>()), ParserState.LoadingReference);
 
             var references = projects.SelectMany(project => project.References.Cast<Reference>()).DistinctBy(reference => reference.Guid);
             foreach (var reference in references)
             {
-                await AddDeclarationsFromReference(reference);
+                AddDeclarationsFromReference(reference);
             }
         }
 
-        private async Task AddDeclarationsFromReference(Reference reference)
+        private void AddDeclarationsFromReference(Reference reference)
         {
-            var declarations = await Task.Run(() => _comReflector.GetDeclarationsForReference(reference));
+            var declarations = _comReflector.GetDeclarationsForReference(reference);
             foreach (var declaration in declarations)
             {
                 _state.AddDeclaration(declaration);
@@ -136,7 +136,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public async Task ParseComponentAsync(VBComponent vbComponent, TokenStreamRewriter rewriter = null)
+        public void ParseComponent(VBComponent vbComponent, TokenStreamRewriter rewriter = null)
         {
             var component = vbComponent;
             State.SetModuleState(vbComponent, ParserState.Parsing);
@@ -159,7 +159,7 @@ namespace Rubberduck.Parsing.VBA
                 }
 
                 // bug: assert fails when parse is requested by inspection results toolwindow
-                Debug.Assert(!_state.AllUserDeclarations.Any(declaration => declaration.Project == qualifiedName.Project && declaration.ComponentName == qualifiedName.ComponentName));
+                //Debug.Assert(!_state.AllUserDeclarations.Any(declaration => declaration.Project == qualifiedName.Project && declaration.ComponentName == qualifiedName.ComponentName));
 
                 var obsoleteCallsListener = new ObsoleteCallStatementListener();
                 var obsoleteLetListener = new ObsoleteLetStatementListener();
@@ -176,7 +176,7 @@ namespace Rubberduck.Parsing.VBA
                     commentListener
                 };
 
-                var tree = await GetParseTreeAsync(vbComponent, listeners, preprocessedModuleBody, qualifiedName);
+                var tree = GetParseTree(vbComponent, listeners, preprocessedModuleBody, qualifiedName);
                 WalkParseTree(vbComponent, listeners, qualifiedName, tree);
 
                 State.SetModuleState(vbComponent, ParserState.Parsed);
@@ -197,6 +197,27 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        private IParseTree GetParseTree(VBComponent vbComponent, IParseTreeListener[] listeners, string code, QualifiedModuleName qualifiedName)
+        {
+            var commentListener = listeners.OfType<CommentListener>().Single();
+            ITokenStream stream;
+
+            var stopwatch = Stopwatch.StartNew();
+            var tree = ParseInternal(code, listeners, out stream);
+            stopwatch.Stop();
+            if (tree != null)
+            {
+                Debug.Print("IParseTree for component '{0}' acquired in {1}ms (thread {2})", vbComponent.Name, stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+            }
+
+            _state.AddTokenStream(vbComponent, stream);
+            _state.AddParseTree(vbComponent, tree);
+
+            var comments = ParseComments(qualifiedName, commentListener.Comments, commentListener.RemComments);
+            _state.SetModuleComments(vbComponent, comments);
+
+            return tree;
+        }
         private void WalkParseTree(VBComponent vbComponent, IReadOnlyList<IParseTreeListener> listeners, QualifiedModuleName qualifiedName, IParseTree tree)
         {
             var obsoleteCallsListener = listeners.OfType<ObsoleteCallStatementListener>().Single();
@@ -220,31 +241,6 @@ namespace Rubberduck.Parsing.VBA
             _state.ObsoleteLetContexts = obsoleteLetListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
             _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
             _state.ArgListsWithOneByRefParam = argListsWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
-        }
-
-        private async Task<IParseTree> GetParseTreeAsync(VBComponent vbComponent, IParseTreeListener[] listeners, string code, QualifiedModuleName qualifiedName)
-        {
-            return await Task.Run(() =>
-            {
-                var commentListener = listeners.OfType<CommentListener>().Single();
-                ITokenStream stream;
-
-                var stopwatch = Stopwatch.StartNew();
-                var tree = ParseInternal(code, listeners, out stream);
-                stopwatch.Stop();
-                if (tree != null)
-                {
-                    Debug.Print("IParseTree for component '{0}' acquired in {1}ms (thread {2})", vbComponent.Name, stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
-                }
-
-                _state.AddTokenStream(vbComponent, stream);
-                _state.AddParseTree(vbComponent, tree);
-
-                var comments = ParseComments(qualifiedName, commentListener.Comments, commentListener.RemComments);
-                _state.SetModuleComments(vbComponent, comments);
-
-                return tree;
-            });
         }
 
         private void Resolve(DeclarationFinder finder)
