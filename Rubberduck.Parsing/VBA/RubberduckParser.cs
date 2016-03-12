@@ -62,8 +62,6 @@ namespace Rubberduck.Parsing.VBA
                 {
                     ParseComponentAsync(component).Wait();
                 }
-
-                _resolveAsync = false;
             }
             catch (Exception exception)
             {
@@ -71,20 +69,12 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private bool _resolveAsync = true;
-        private async void StateOnStateChanged(object sender, ParserStateEventArgs parserStateEventArgs)
+        private void StateOnStateChanged(object sender, ParserStateEventArgs parserStateEventArgs)
         {
             if (parserStateEventArgs.State == ParserState.Parsed)
             {
                 var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments);
-                if (_resolveAsync)
-                {
-                    ResolveAsync(finder);
-                }
-                else
-                {
-                    await ResolveAsync(finder);
-                }
+                Resolve(finder);
             }
         }
 
@@ -112,16 +102,10 @@ namespace Rubberduck.Parsing.VBA
             }
 
             SetComponentsState(components, ParserState.Pending);
-
-            await Task.Run(() =>
+            foreach (var component in components)
             {
-                Parallel.ForEach(components, async component =>
-                {
-                    await ParseComponentAsync(component).ConfigureAwait(false);
-                });
-            });
-
-            _resolveAsync = true;
+                await ParseComponentAsync(component).ConfigureAwait(false);
+            }
         }
 
         private async Task AddDeclarationsFromProjectReferences(IReadOnlyList<VBProject> projects)
@@ -263,17 +247,14 @@ namespace Rubberduck.Parsing.VBA
             });
         }
 
-        private async Task ResolveAsync(DeclarationFinder finder)
+        private void Resolve(DeclarationFinder finder)
         {
             try
             {
-                var stopwatch = Stopwatch.StartNew();
-                Parallel.ForEach(_state.ParseTrees, kvp =>
+                foreach (var kvp in _state.ParseTrees)
                 {
-                    ResolveReferencesAsync(finder, kvp.Key, kvp.Value);
-                });
-                stopwatch.Stop();
-                Debug.WriteLine("Resolver completed in {0}ms (thread {1})", stopwatch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
+                    ResolveReferences(finder, kvp.Key, kvp.Value);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -318,7 +299,7 @@ namespace Rubberduck.Parsing.VBA
         // todo: remove once performance is acceptable
         private readonly IDictionary<VBComponent, Stopwatch> _resolverTimer = new ConcurrentDictionary<VBComponent, Stopwatch>();
 
-        private async Task ResolveReferencesAsync(DeclarationFinder finder, VBComponent component, IParseTree tree)
+        private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
         {
             var state = _state.GetModuleState(component);
             if (_state.Status == ParserState.ResolverError || state != ParserState.Parsed)
@@ -331,14 +312,14 @@ namespace Rubberduck.Parsing.VBA
 
             Debug.WriteLine("Resolving '{0}'... (thread {1})", component.Name, Thread.CurrentThread.ManagedThreadId);
 
-            state = await WalkParseTree(component, tree, finder);
+            state = WalkParseTree(component, tree, finder);
             _state.SetModuleState(component, state);
 
             _resolverTimer[component].Stop();
             Debug.Print("'{0}' is {1}. Resolver took {2}ms to complete (thread {3})", component.Name, _state.GetModuleState(component), _resolverTimer[component].ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
         }
 
-        private async Task<ParserState> WalkParseTree(VBComponent component, IParseTree tree, DeclarationFinder finder)
+        private ParserState WalkParseTree(VBComponent component, IParseTree tree, DeclarationFinder finder)
         {
             if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))
             {
@@ -348,7 +329,7 @@ namespace Rubberduck.Parsing.VBA
                 var walker = new ParseTreeWalker();
                 try
                 {
-                    await Task.Run(() => walker.Walk(listener, tree));
+                    walker.Walk(listener, tree);
                 }
                 catch (Exception exception)
                 {
