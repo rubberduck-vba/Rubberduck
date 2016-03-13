@@ -217,17 +217,6 @@
                                         IsEnabled="{Binding ElementName=UntrackFilesGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
                                         Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_IncludeFileButton}"
                                         Height="22" />
-                                <Button Command="{Binding DeleteFileToolbarButtonCommand}"
-                                        CommandParameter="{Binding ElementName=UntrackFilesGrid, Path=SelectedItem}"
-                                        IsEnabled="{Binding ElementName=UntrackFilesGrid, Path=SelectedItem, Converter={StaticResource HasSelectedItems}}"
-                                        Height="22">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="{StaticResource DeleteImage}" />
-                                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Delete}"
-                                               Margin="2,0"
-                                               VerticalAlignment="Center" />
-                                    </StackPanel>
-                                </Button>
                             </ToolBar>
                         </ToolBarTray>
                         <DataGrid ItemsSource="{Binding UntrackedFiles}"
