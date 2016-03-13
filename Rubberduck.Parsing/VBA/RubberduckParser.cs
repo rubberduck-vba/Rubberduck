@@ -37,7 +37,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void ReparseRequested(object sender, EventArgs e)
         {
-            Parse();
+            Task.Run(() => Parse());
         }
 
         private readonly VBE _vbe;
@@ -69,10 +69,12 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void StateOnStateChanged(object sender, ParserStateEventArgs parserStateEventArgs)
+        private void StateOnStateChanged(object sender, EventArgs e)
         {
-            if (parserStateEventArgs.State == ParserState.Parsed)
+            Debug.WriteLine("RubberduckParser handles OnStateChanged ({0})", _state.Status);
+            if (_state.Status == ParserState.Parsed)
             {
+                Debug.WriteLine("(handling OnStateChanged) Starting resolver task");
                 var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments);
                 Resolve(finder);
             }
@@ -157,9 +159,6 @@ namespace Rubberduck.Parsing.VBA
                     // Fall back to not doing any preprocessing at all.
                     preprocessedModuleBody = code;
                 }
-
-                // bug: assert fails when parse is requested by inspection results toolwindow
-                //Debug.Assert(!_state.AllUserDeclarations.Any(declaration => declaration.Project == qualifiedName.Project && declaration.ComponentName == qualifiedName.ComponentName));
 
                 var obsoleteCallsListener = new ObsoleteCallStatementListener();
                 var obsoleteLetListener = new ObsoleteLetStatementListener();

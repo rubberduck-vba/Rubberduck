@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
@@ -28,9 +29,10 @@ namespace Rubberduck.UI.Command.MenuItems
             _statusButton.Caption = value ?? RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status);
         }
 
-        private void State_StateChanged(object sender, ParserStateEventArgs e)
+        private void State_StateChanged(object sender, EventArgs e)
         {
-            UiDispatcher.Invoke(() => SetStatusText(RubberduckUI.ResourceManager.GetString("ParserState_" + e.State)));
+            Debug.WriteLine("RubberduckCommandBar handles StateChanged...");
+            UiDispatcher.Invoke(() => SetStatusText(RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status)));
         }
 
         public event EventHandler Refresh;

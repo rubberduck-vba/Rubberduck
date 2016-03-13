@@ -155,14 +155,16 @@ namespace Rubberduck.UI.CodeInspections
             return !IsBusy;
         }
 
-        private async void _state_StateChanged(object sender, ParserStateEventArgs e)
+        private async void _state_StateChanged(object sender, EventArgs e)
         {
-            if (e.State != ParserState.Ready)
+            Debug.WriteLine("InspectionResultsViewModel handles StateChanged...");
+            if (_state.Status != ParserState.Ready)
             {
                 IsBusy = false;
                 return;
             }
 
+            Debug.WriteLine("Running code inspections...");
             var results = await _inspector.FindIssuesAsync(_state, CancellationToken.None);
             _dispatcher.Invoke(() =>
             {

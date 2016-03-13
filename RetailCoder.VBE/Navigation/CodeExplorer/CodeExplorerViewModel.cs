@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
@@ -75,14 +76,16 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
+        private void ParserState_StateChanged(object sender, EventArgs e)
         {
-            IsBusy = e.State == ParserState.Parsing;
-            if (e.State != ParserState.Parsed)
+            Debug.WriteLine("CodeExplorerViewModel handles StateChanged...");
+            IsBusy = _state.Status == ParserState.Parsing;
+            if (_state.Status != ParserState.Parsed)
             {
                 return;
             }
 
+            Debug.WriteLine("Creating Code Explorer model...");
             var userDeclarations = _state.AllUserDeclarations
                 .GroupBy(declaration => declaration.Project)
                 .Where(grouping => grouping.Key != null)

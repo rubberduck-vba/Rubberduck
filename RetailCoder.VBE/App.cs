@@ -293,8 +293,9 @@ namespace Rubberduck
             _parser.State.OnParseRequested(sender);
         }
 
-        private void Parser_StateChanged(object sender, ParserStateEventArgs e)
+        private void Parser_StateChanged(object sender, EventArgs e)
         {
+            Debug.WriteLine("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
         }
 

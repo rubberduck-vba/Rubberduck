@@ -52,14 +52,14 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, IParseTree> _parseTrees =
             new ConcurrentDictionary<VBComponent, IParseTree>();
 
-        public event EventHandler<ParserStateEventArgs> StateChanged;
+        public event EventHandler StateChanged;
 
-        private void OnStateChanged(ParserState state)
+        private void OnStateChanged()
         {
             var handler = StateChanged;
             if (handler != null)
             {
-                handler.Invoke(this, new ParserStateEventArgs(state));
+                handler.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -88,11 +88,10 @@ namespace Rubberduck.Parsing.VBA
 
             Debug.WriteLine("Module '{0}' state is changing to '{1}' (thread {2})", component.Name, state, Thread.CurrentThread.ManagedThreadId);
             OnModuleStateChanged(component, state);
-
             Status = EvaluateParserState();
         }
 
-        private readonly ParserState[] States = Enum.GetValues(typeof (ParserState)).Cast<ParserState>().ToArray();
+        private static readonly ParserState[] States = Enum.GetValues(typeof (ParserState)).Cast<ParserState>().ToArray();
 
         private ParserState EvaluateParserState()
         {
@@ -156,7 +155,8 @@ namespace Rubberduck.Parsing.VBA
                 if (_status != value)
                 {
                     _status = value; 
-                    OnStateChanged(value);
+                    Debug.WriteLine("ParserState changed to '{0}', raising OnStateChanged", value);
+                    OnStateChanged();
                 }
             } 
         }
