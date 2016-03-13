@@ -51,7 +51,6 @@ namespace Rubberduck.UI.SourceControl
         {
             OnPropertyChanged("CurrentBranch");
             OnPropertyChanged("IncludedChanges");
-            OnPropertyChanged("ExcludedChanges");
             OnPropertyChanged("UntrackedFiles");
         }
 
@@ -75,26 +74,17 @@ namespace Rubberduck.UI.SourceControl
                     ? new ObservableCollection<IFileStatusEntry>()
                     : new ObservableCollection<IFileStatusEntry>(
                         Provider.Status()
-                            .Where(
-                                stat =>
-                                    stat.FileStatus.HasFlag(FileStatus.Modified) ||
-                                    stat.FileStatus.HasFlag(FileStatus.Added)));
+                            .Where(stat =>
+                                    (stat.FileStatus.HasFlag(FileStatus.Modified) ||
+                                    stat.FileStatus.HasFlag(FileStatus.Added)) &&
+                                    !ExcludedChanges.Select(f => f.FilePath).Contains(stat.FilePath)));
             }
         }
 
-        public IEnumerable<IFileStatusEntry> ExcludedChanges
+        private readonly ObservableCollection<IFileStatusEntry> _excludedChanges = new ObservableCollection<IFileStatusEntry>();
+        public ObservableCollection<IFileStatusEntry> ExcludedChanges
         {
-            get
-            {
-                return Provider == null
-                    ? new ObservableCollection<IFileStatusEntry>()
-                    : new ObservableCollection<IFileStatusEntry>(
-                        Provider.Status()
-                            .Where(
-                                stat =>
-                                    stat.FileStatus.HasFlag(FileStatus.Ignored) &&
-                                    stat.FileStatus.HasFlag(FileStatus.Modified)));
-            }
+            get { return _excludedChanges; }
         }
 
         public IEnumerable<IFileStatusEntry> UntrackedFiles
@@ -162,14 +152,21 @@ namespace Rubberduck.UI.SourceControl
 
         private void IncludeChanges(IFileStatusEntry fileStatusEntry)
         {
-            Provider.AddFile(fileStatusEntry.FilePath);
+            if (UntrackedFiles.FirstOrDefault(f => f.FilePath == fileStatusEntry.FilePath) != null)
+            {
+                Provider.AddFile(fileStatusEntry.FilePath);
+            }
+            else
+            {
+                ExcludedChanges.Remove(ExcludedChanges.FirstOrDefault(f => f.FilePath == fileStatusEntry.FilePath));
+            }
 
             RefreshView();
         }
 
         private void ExcludeChanges(IFileStatusEntry fileStatusEntry)
         {
-            Provider.ExcludeFile(fileStatusEntry.FilePath);
+            ExcludedChanges.Add(fileStatusEntry);
 
             RefreshView();
         }

@@ -42,7 +42,6 @@ namespace Rubberduck.SourceControl
         public abstract void Commit(string message);
         public abstract void Publish(string branch);
         public abstract void Unpublish(string branch);
-        public abstract void ExcludeFile(string filePath);
 
         public virtual void CreateBranch(string sourceBranch, string branch)
         {

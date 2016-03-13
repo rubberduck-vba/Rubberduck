@@ -109,12 +109,6 @@ namespace Rubberduck.SourceControl
         void AddFile(string filePath);
 
         /// <summary>
-        /// Exclude a file from tracking.
-        /// </summary>
-        /// <param name="filePath">The name of the file to exclude</param>
-        void ExcludeFile(string filePath);
-
-        /// <summary>
         /// Removes file from tracking.
         /// </summary>
         /// <param name="filePath"></param>
