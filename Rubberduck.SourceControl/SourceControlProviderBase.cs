@@ -103,9 +103,7 @@ namespace Rubberduck.SourceControl
         {
             var componentName = Path.GetFileNameWithoutExtension(filePath);
 
-           //GetFileNameWithoutExtension returns empty string if it's not a file
-           //https://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx
-            if (componentName != string.Empty)
+            if (!File.Exists(filePath))
             {
                 var component = Project.VBComponents.Item(componentName);
                 Project.VBComponents.RemoveSafely(component);
