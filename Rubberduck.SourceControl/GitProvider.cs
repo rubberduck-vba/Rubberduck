@@ -469,7 +469,9 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                _repo.CheckoutPaths(CurrentBranch.Name, new List<string> {filePath});
+                var tip = _repo.Branches.First(b => !b.IsRemote && b.IsCurrentRepositoryHead).Tip;
+                var options = new CheckoutOptions { CheckoutModifiers = CheckoutModifiers.Force };
+                _repo.CheckoutPaths(tip.Sha, new List<string> { filePath }, options);
                 base.Undo(filePath);
             }
             catch (LibGit2SharpException ex)

@@ -101,9 +101,7 @@ namespace Rubberduck.SourceControl
 
         public virtual void Undo(string filePath)
         {
-            //this might need to cherry pick from the tip instead.
-
-           var componentName = Path.GetFileNameWithoutExtension(filePath);
+            var componentName = Path.GetFileNameWithoutExtension(filePath);
 
            //GetFileNameWithoutExtension returns empty string if it's not a file
            //https://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx
