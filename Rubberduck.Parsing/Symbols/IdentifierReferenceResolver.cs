@@ -199,6 +199,7 @@ namespace Rubberduck.Parsing.Symbols
                 // - standard module (only if there's a 3rd identifier)
                 // - class module
                 // - UDT
+                // - Enum
                 if (identifiers.Count == 3)
                 {
                     var moduleMatch = _declarationFinder.FindStdModule(_currentScope, identifiers[1].GetText());
@@ -223,6 +224,22 @@ namespace Rubberduck.Parsing.Symbols
 
                             return;
                         }
+                        var enumMatch = _declarationFinder.FindEnum(moduleMatch, identifiers[2].GetText());
+                        if (enumMatch != null)
+                        {
+                            var enumReference = CreateReference(identifiers[2], enumMatch);
+
+                            projectMatch.AddReference(projectReference);
+                            _alreadyResolved.Add(projectReference.Context);
+
+                            moduleMatch.AddReference(moduleReference);
+                            _alreadyResolved.Add(moduleReference.Context);
+
+                            enumMatch.AddReference(enumReference);
+                            _alreadyResolved.Add(enumReference.Context);
+
+                            return;
+                        }
                     }
                 }
                 else
@@ -234,7 +251,8 @@ namespace Rubberduck.Parsing.Symbols
                     }
 
                     var match = _declarationFinder.FindClass(projectMatch, identifiers[1].GetText())
-                                ?? _declarationFinder.FindUserDefinedType(null, identifiers[1].GetText());
+                                ?? _declarationFinder.FindUserDefinedType(null, identifiers[1].GetText())
+                                ?? _declarationFinder.FindEnum(null, identifiers[1].GetText());
                     if (match != null)
                     {
                         var reference = CreateReference(identifiers[1], match);
@@ -258,17 +276,18 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     var moduleReference = CreateReference(identifiers[0], moduleMatch);
 
-                    // 2nd identifier can only be a UDT
-                    var udtMatch = _declarationFinder.FindUserDefinedType(moduleMatch, identifiers[1].GetText());
-                    if (udtMatch != null)
+                    // 2nd identifier can only be a UDT or enum
+                    var match = _declarationFinder.FindUserDefinedType(moduleMatch, identifiers[1].GetText())
+                            ?? _declarationFinder.FindEnum(moduleMatch, identifiers[1].GetText());
+                    if (match != null)
                     {
-                        var udtReference = CreateReference(identifiers[1], udtMatch);
+                        var reference = CreateReference(identifiers[1], match);
 
                         moduleMatch.AddReference(moduleReference);
                         _alreadyResolved.Add(moduleReference.Context);
 
-                        udtMatch.AddReference(udtReference);
-                        _alreadyResolved.Add(udtReference.Context);
+                        match.AddReference(reference);
+                        _alreadyResolved.Add(reference.Context);
                     }
                 }
             }
@@ -283,10 +302,11 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             // more than one matching identifiers found.
-            // if it matches a UDT in the current scope, resolve to that type.
+            // if it matches a UDT or enum in the current scope, resolve to that type.
             var sameScopeUdt = matches.Where(declaration =>
                 declaration.Project == scope.Project
-                && declaration.DeclarationType == DeclarationType.UserDefinedType
+                && (declaration.DeclarationType == DeclarationType.UserDefinedType
+                || declaration.DeclarationType == DeclarationType.Enumeration)
                 && declaration.ParentDeclaration.Equals(scope))
                 .ToList();
 
@@ -302,7 +322,8 @@ namespace Rubberduck.Parsing.Symbols
         
         private Declaration ResolveType(Declaration parent)
         {
-            if (parent != null && parent.DeclarationType == DeclarationType.UserDefinedType)
+            if (parent != null && (parent.DeclarationType == DeclarationType.UserDefinedType 
+                                || parent.DeclarationType == DeclarationType.Enumeration))
             {
                 return parent;
             }
@@ -319,7 +340,8 @@ namespace Rubberduck.Parsing.Symbols
             var matches = _declarationFinder.MatchName(identifier).ToList();
 
             var result = matches.Where(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType
+                (item.DeclarationType == DeclarationType.UserDefinedType
+                || item.DeclarationType == DeclarationType.Enumeration)
                 && item.Project == _currentScope.Project
                 && item.ComponentName == _currentScope.ComponentName)
             .ToList();
@@ -390,14 +412,9 @@ namespace Rubberduck.Parsing.Symbols
             var hasStringQualifier = sibling is VBAParser.TypeHintContext && sibling.GetText() == "$";
 
             Declaration callee = null;
-            if (localScope.DeclarationType == DeclarationType.Variable)
+            if (localScope.DeclarationType == DeclarationType.UserDefinedType)
             {
-                // localScope is probably a UDT
-                var udt = ResolveType(localScope);
-                if (udt != null && udt.DeclarationType == DeclarationType.UserDefinedType)
-                {
-                    callee = _declarationFinder.MatchName(identifierName).SingleOrDefault(item => item.Context != null && item.Context.Parent == udt.Context);
-                }
+                callee = _declarationFinder.MatchName(identifierName).SingleOrDefault(item => item.Context != null && item.Context.Parent == localScope.Context);
             }
             else
             {

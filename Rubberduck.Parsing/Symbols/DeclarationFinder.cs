@@ -45,7 +45,8 @@ namespace Rubberduck.Parsing.Symbols
         {
             return MatchName(name).Where(declaration =>
                 declaration.DeclarationType == DeclarationType.Class ||
-                declaration.DeclarationType == DeclarationType.UserDefinedType);
+                declaration.DeclarationType == DeclarationType.UserDefinedType ||
+                declaration.DeclarationType == DeclarationType.Enumeration);
         }
 
         public IEnumerable<Declaration> MatchName(string name)
@@ -106,6 +107,24 @@ namespace Rubberduck.Parsing.Symbols
             catch (Exception exception)
             {
                 Debug.WriteLine("Multiple matches found for user-defined type '{0}'.\n{1}", name, exception);
+            }
+
+            return result;
+        }
+
+        public Declaration FindEnum(Declaration parent, string name, bool includeBuiltIn = false)
+        {
+            Declaration result = null;
+            try
+            {
+                var matches = MatchName(name);
+                result = matches.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Enumeration
+                    && (parent == null || parent.Equals(declaration.ParentDeclaration))
+                    && (includeBuiltIn || !declaration.IsBuiltIn));
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine("Multiple matches found for enum type '{0}'.\n{1}", name, exception);
             }
 
             return result;
