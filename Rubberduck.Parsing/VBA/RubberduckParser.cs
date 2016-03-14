@@ -37,7 +37,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void ReparseRequested(object sender, EventArgs e)
         {
-            Task.Run(() => Parse());
+            Task.Run(() => ParseInternal());
         }
 
         private readonly VBE _vbe;
@@ -48,7 +48,7 @@ namespace Rubberduck.Parsing.VBA
         /// This method is not part of the interface and should only be used for testing.
         /// Request a reparse using RubberduckParserState.OnParseRequested instead.
         /// </summary>
-        public void ParseSynchronous()
+        public void Parse()
         {
             try
             {
@@ -80,7 +80,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void Parse()
+        private void ParseInternal()
         {
             var projects = _vbe.VBProjects.Cast<VBProject>()
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)

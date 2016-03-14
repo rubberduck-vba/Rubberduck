@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,7 +18,7 @@ namespace RubberduckTests.Grammar
             var vbe = builder.BuildFromSingleModule(code, moduleType, out component);
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status != ParserState.Ready)
             {
                 Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
@@ -41,8 +42,35 @@ namespace RubberduckTests.Grammar
 
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
-            if (parser.State.Status != ParserState.Ready) { Assert.Inconclusive("Parser state must be 'Ready' to proceed."); }
+            parser.Parse();
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+            }
+
+            return parser.State;
+        }
+
+        private RubberduckParserState Resolve(params Tuple<string,vbext_ComponentType>[] components)
+        {
+            var builder = new MockVbeBuilder();
+            var projectBuilder = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none);
+            for (var i = 0; i < components.Length; i++)
+            {
+                projectBuilder.AddComponent("Component" + (i + 1), components[i].Item2, components[i].Item1);
+            }
+
+            var project = projectBuilder.Build();
+            builder.AddProject(project);
+            var vbe = builder.Build();
+
+            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+            }
 
             return parser.State;
         }
@@ -149,7 +177,9 @@ Option Explicit
 Public foo As Integer
 ";
             // act
-            var state = Resolve(code_class1, code_class2);
+            var state = Resolve(
+                Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule), 
+                Tuple.Create(code_class2, vbext_ComponentType.vbext_ct_StdModule));
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
@@ -158,6 +188,33 @@ Public foo As Integer
             var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment);
             Assert.IsNotNull(reference);
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+        }
+
+        [TestMethod]
+        public void PublicInstanceVariable_RequiresInstance()
+        {
+            // arrange
+            var code_class1 = @"
+Public Sub DoSomething()
+    Debug.Print foo
+End Sub
+";
+            var code_class2 = @"
+Option Explicit
+Public foo As Integer
+";
+            // act
+            var state = Resolve(code_class1, code_class2);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+
+            var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment
+                && item.ParentScoping.IdentifierName == "DoSomething"
+                && item.ParentScoping.DeclarationType == DeclarationType.Procedure);
+
+            Assert.IsNull(reference);
         }
 
         [TestMethod]

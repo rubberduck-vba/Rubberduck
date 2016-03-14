@@ -55,7 +55,7 @@ namespace RubberduckTests.Preprocessing
             mockHost.SetupAllProperties();
             var state = new RubberduckParserState();
             var parser = new RubberduckParser(vbe.Object, state);
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
             var tree = state.GetParseTree(component);
             var parsed = tree.GetText();

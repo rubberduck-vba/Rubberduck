@@ -30,7 +30,7 @@ namespace RubberduckTests
             var vbe = builder.AddProject(project).Build();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act

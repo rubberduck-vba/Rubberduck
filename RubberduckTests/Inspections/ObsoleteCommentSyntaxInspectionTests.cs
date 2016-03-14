@@ -26,7 +26,7 @@ namespace RubberduckTests.Inspections
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
@@ -48,7 +48,7 @@ namespace RubberduckTests.Inspections
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
@@ -72,7 +72,7 @@ Rem test2";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
@@ -96,7 +96,7 @@ Rem test2";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
@@ -124,7 +124,7 @@ Rem test2";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
@@ -154,7 +154,7 @@ Rem test2";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);

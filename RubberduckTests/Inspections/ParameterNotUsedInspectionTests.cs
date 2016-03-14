@@ -28,7 +28,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
@@ -55,7 +55,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
@@ -80,7 +80,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
@@ -105,7 +105,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
@@ -139,7 +139,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
@@ -169,7 +169,7 @@ End Sub";
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);

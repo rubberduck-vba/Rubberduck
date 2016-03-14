@@ -26,7 +26,7 @@ namespace RubberduckTests.Inspections
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new OptionExplicitInspection(parser.State);
@@ -48,7 +48,7 @@ namespace RubberduckTests.Inspections
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new OptionExplicitInspection(parser.State);
@@ -74,7 +74,7 @@ namespace RubberduckTests.Inspections
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new OptionExplicitInspection(parser.State);
@@ -101,7 +101,7 @@ namespace RubberduckTests.Inspections
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new OptionExplicitInspection(parser.State);
@@ -129,7 +129,7 @@ namespace RubberduckTests.Inspections
             mockHost.SetupAllProperties();
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
-            parser.ParseSynchronous();
+            parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new OptionExplicitInspection(parser.State);
