@@ -17,7 +17,8 @@ namespace Rubberduck.Parsing.Symbols
         {
             GetValueOrReference,
             AssignValue,
-            AssignReference
+            AssignReference,
+            AssignValueOrReference = AssignValue | AssignReference
         }
 
         private readonly QualifiedModuleName _qualifiedModuleName;
@@ -918,7 +919,12 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ImplementsStmtContext context)
         {
-            ResolveInternal(context.ambiguousIdentifier(), _currentScope);
+            var target = ResolveInScopeType(context.ambiguousIdentifier().GetText(), _currentScope);
+            if (target != null)
+            {
+                target.AddReference(CreateReference(context.ambiguousIdentifier(), target));
+                _alreadyResolved.Add(context.ambiguousIdentifier());
+            }
         }
 
         public void Resolve(VBAParser.RaiseEventStmtContext context)
@@ -940,7 +946,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             // named parameter reference must be scoped to called procedure
             var callee = FindParentCall(context);
-            ResolveInternal(context.implicitCallStmt_InStmt(), callee, ContextAccessorType.GetValueOrReference);
+            ResolveInternal(context.implicitCallStmt_InStmt(), callee, ContextAccessorType.AssignValueOrReference);
         }
 
         private Declaration FindParentCall(VBAParser.VsAssignContext context)
@@ -1060,8 +1066,9 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasStringQualifier = false)
         {
             // the "$" in e.g. "UCase$" isn't picked up as part of the identifierName, so we need to add it manually:
-            var matches = _declarationFinder.MatchName(identifierName).Where(item => !item.IsBuiltIn
-                || item.IdentifierName == identifierName + (hasStringQualifier ? "$" : string.Empty)).ToList();
+            var matches = _declarationFinder.MatchName(identifierName).Where(item => 
+                (!item.IsBuiltIn || item.IdentifierName == identifierName + (hasStringQualifier ? "$" : string.Empty))
+                && item.ParentDeclaration.DeclarationType == DeclarationType.Module).ToList();
 
             if (matches.Count == 1)
             {
