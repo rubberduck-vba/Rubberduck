@@ -229,29 +229,6 @@ Option Explicit
         }
 
         [TestMethod]
-        public void ObjectVariableAsNew_IsAssignmentReference()
-        {
-            // arrange
-            var code_class1 = @"
-Public Sub DoSomething()
-    Dim foo As New Class2
-End Sub
-";
-            var code_class2 = @"
-Option Explicit
-";
-
-            // act
-            var state = Resolve(code_class1, code_class2);
-
-            // assert
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Class && item.IdentifierName == "Class2");
-
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item => item.IsAssignment));
-        }
-
-        [TestMethod]
         public void ParameterCall_IsReferenceToParameterDeclaration()
         {
             // arrange
