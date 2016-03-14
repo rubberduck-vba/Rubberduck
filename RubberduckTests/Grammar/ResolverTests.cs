@@ -18,7 +18,10 @@ namespace RubberduckTests.Grammar
             var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
 
             parser.ParseSynchronous();
-            if (parser.State.Status != ParserState.Ready) { Assert.Inconclusive("Parser state must be 'Ready' to proceed."); }
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+            }
 
             return parser.State;
         }
@@ -537,5 +540,401 @@ End Sub
                 item.ParentScoping.DeclarationType == DeclarationType.Procedure
                 && item.ParentScoping.IdentifierName == "DoSomething"));
         }
+
+        [TestMethod]
+        public void ForLoop_IsAssignmentReferenceToIteratorDeclaration()
+        {
+            // arrange
+            var code = @"
+Public Sub DoSomething()
+    Dim i As Integer
+    For i = 0 To 9
+    Next
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "i");
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                && item.ParentScoping.IdentifierName == "DoSomething"
+                && item.IsAssignment));
+        }
+
+        [TestMethod]
+        public void ForEachLoop_IsReferenceToIteratorDeclaration()
+        {
+            var code = @"
+Public Sub DoSomething(ByVal c As Collection)
+    Dim i As Variant
+    For Each i In c
+    Next
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "i");
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                && item.ParentScoping.IdentifierName == "DoSomething"
+                && item.IsAssignment));
+        }
+
+        [TestMethod]
+        public void ForEachLoop_InClauseIsReferenceToIteratedDeclaration()
+        {
+            var code = @"
+Public Sub DoSomething(ByVal c As Collection)
+    Dim i As Variant
+    For Each i In c
+    Next
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "c");
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                && item.ParentScoping.IdentifierName == "DoSomething"
+                && !item.IsAssignment));
+        }
+
+        [TestMethod]
+        public void ArraySubscriptAccess_IsReferenceToArrayDeclaration()
+        {
+            var code = @"
+Public Sub DoSomething(ParamArray values())
+    Dim i As Integer
+    For i = 0 To 9
+        Debug.Print values(i)
+    Next
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Parameter 
+                && item.IdentifierName == "values"
+                && item.IsArray());
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                && item.ParentScoping.IdentifierName == "DoSomething"
+                && !item.IsAssignment));
+        }
+
+        [TestMethod]
+        public void ArraySubscriptWrite_IsAssignmentReferenceToArrayDeclaration()
+        {
+            var code = @"
+Public Sub DoSomething(ParamArray values())
+    Dim i As Integer
+    For i = LBound(values) To UBound(values)
+        values(i) = 42
+    Next
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Parameter
+                && item.IdentifierName == "values"
+                && item.IsArray());
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                && item.ParentScoping.IdentifierName == "DoSomething"
+                && item.IsAssignment));
+        }
+
+        [TestMethod]
+        public void PropertyGetCall_IsReferenceToPropertyGetDeclaration()
+        {
+            var code_class1 = @"
+Private tValue As Integer
+
+Public Property Get Foo() As Integer
+    Foo = tValue
+End Property
+
+Public Property Let Foo(ByVal value As Integer)
+    tValue = value
+End Property
+";
+            var code_class2 = @"
+Public Sub DoSomething()
+    Dim bar As New Class1
+    Debug.Print bar.Foo
+End Sub
+";
+
+            var state = Resolve(code_class1, code_class2);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.PropertyGet
+                && item.IdentifierName == "Foo");
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                !item.IsAssignment
+                && item.ParentScoping.IdentifierName == "DoSomething"
+                && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+        }
+
+        [TestMethod]
+        public void PropertySetCall_IsReferenceToPropertySetDeclaration()
+        {
+            var code_class1 = @"
+Private tValue As Object
+
+Public Property Get Foo() As Object
+    Set Foo = tValue
+End Property
+
+Public Property Set Foo(ByVal value As Object)
+    Set tValue = value
+End Property
+";
+            var code_class2 = @"
+Public Sub DoSomething()
+    Dim bar As New Class1
+    Set bar.Foo = Nothing
+End Sub
+";
+
+            var state = Resolve(code_class1, code_class2);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.PropertySet
+                && item.IdentifierName == "Foo");
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                item.IsAssignment
+                && item.ParentScoping.IdentifierName == "DoSomething"
+                && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+        }
+
+        [TestMethod]
+        public void PropertyLetCall_IsReferenceToPropertyLetDeclaration()
+        {
+            var code_class1 = @"
+Private tValue As Integer
+
+Public Property Get Foo() As Integer
+    Foo = tValue
+End Property
+
+Public Property Let Foo(ByVal value As Integer)
+    tValue = value
+End Property
+";
+            var code_class2 = @"
+Public Sub DoSomething()
+    Dim bar As New Class1
+    bar.Foo = 42
+End Sub
+";
+
+            var state = Resolve(code_class1, code_class2);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.PropertyLet
+                && item.IdentifierName == "Foo");
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                item.IsAssignment
+                && item.ParentScoping.IdentifierName == "DoSomething"
+                && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+        }
+
+        [TestMethod]
+        public void EnumMemberCall_IsReferenceToEnumMemberDeclaration()
+        {
+            var code = @"
+Option Explicit
+Public Enum FooBarBaz
+    Foo
+    Bar
+    Baz
+End Enum
+
+Public Sub DoSomething()
+    Dim a As FooBarBaz
+    a = Foo
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.EnumerationMember
+                && item.IdentifierName == "Foo"
+                && item.ParentDeclaration.IdentifierName == "FooBarBaz");
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                !item.IsAssignment 
+                && item.ParentScoping.IdentifierName == "DoSomething"
+                && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+
+        }
+
+        [TestMethod]
+        public void QualifiedEnumMemberCall_IsReferenceToEnumMemberDeclaration()
+        {
+            var code = @"
+Option Explicit
+Public Enum FooBarBaz
+    Foo
+    Bar
+    Baz
+End Enum
+
+Public Sub DoSomething()
+    Dim a As FooBarBaz
+    a = FooBarBaz.Foo
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.EnumerationMember
+                && item.IdentifierName == "Foo"
+                && item.ParentDeclaration.IdentifierName == "FooBarBaz");
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                !item.IsAssignment
+                && item.ParentScoping.IdentifierName == "DoSomething"
+                && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+        }
+
+        [TestMethod]
+        public void EnumParameterAsTypeName_ResolvesToEnumTypeDeclaration()
+        {
+            var code = @"
+
+Option Explicit
+Public Enum FooBarBaz
+    Foo
+    Bar
+    Baz
+End Enum
+
+Public Sub DoSomething(ByVal a As FooBarBaz)
+End Sub
+";
+
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Enumeration
+                && item.IdentifierName == "FooBarBaz");
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item => 
+                item.ParentScoping.IdentifierName == "DoSomething"
+                && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+        }
+
+        [TestMethod]
+        public void UserDefinedTypeParameterAsTypeName_ResolvesToUserDefinedTypeDeclaration()
+        {
+            var code = @"
+Option Explicit
+Public Type TFoo
+    Foo As Integer
+End Type
+
+Public Sub DoSomething(ByVal a As TFoo)
+End Sub
+";
+
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.UserDefinedType
+                && item.IdentifierName == "TFoo");
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                item.ParentScoping.IdentifierName == "DoSomething"
+                && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+        }
+
+        [TestMethod]
+        public void LocalArrayOrFunctionCall_ResolvesToSmallestScopedDeclaration()
+        {
+            var code = @"
+'note: Dim Foo() As Integer on this line would not compile in VBA
+Public Sub DoSomething()
+    Dim Foo() As Integer
+    Debug.Print Foo(0) 'VBA raises index out of bounds error, i.e. VBA resolves to local Foo()
+End Sub
+
+Private Function Foo(ByVal bar As Integer)
+    Foo = bar + 42
+End Function";
+
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item => 
+                item.DeclarationType == DeclarationType.Variable
+                && item.IsArray()
+                && item.ParentScopeDeclaration.IdentifierName == "DoSomething");
+
+            Assert.IsNotNull(declaration.References.SingleOrDefault(item => !item.IsAssignment));
+        }
+
+        [TestMethod]
+        public void AnnotatedReference_LineAbove_HasAnnotations()
+        {
+            var code = @"
+Public Sub DoSomething()
+    Dim foo As Integer
+    '@Ignore UnassignedVariableUsage
+    Debug.Print foo    
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable);
+
+            var usage = declaration.References.Single();
+
+            Assert.AreEqual("@Ignore UnassignedVariableUsage", usage.Annotations);
+        }
+
+        [TestMethod]
+        public void AnnotatedReference_SameLine_HasNoAnnotations()
+        {
+            var code = @"
+Public Sub DoSomething()
+    Dim foo As Integer
+    Debug.Print foo '@Ignore UnassignedVariableUsage 
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable);
+
+            var usage = declaration.References.Single();
+
+            Assert.AreEqual(string.Empty, usage.Annotations);
+        }
+
+
     }
 }
