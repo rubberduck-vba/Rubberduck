@@ -326,7 +326,6 @@ End Sub
             Assert.IsNotNull(declaration.References.SingleOrDefault(item => item.IsAssignment));
         }
 
-
         [TestMethod]
         public void NamedParameterCall_IsReferenceToParameterDeclaration()
         {
@@ -339,7 +338,6 @@ End Sub
 Private Sub DoSomethingElse(ByVal foo As Integer)
 End Sub
 ";
-
             // act
             var state = Resolve(code);
 
