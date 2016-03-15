@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using RubberduckTests.Inspections;
 
 namespace RubberduckTests.Preprocessing
 {
@@ -54,7 +55,7 @@ namespace RubberduckTests.Preprocessing
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var state = new RubberduckParserState();
-            var parser = new RubberduckParser(vbe.Object, state);
+            var parser = MockParser.Create(vbe.Object, state);
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
             var tree = state.GetParseTree(component);

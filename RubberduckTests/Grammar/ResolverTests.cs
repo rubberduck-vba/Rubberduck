@@ -4,6 +4,7 @@ using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using RubberduckTests.Inspections;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Grammar
@@ -16,7 +17,7 @@ namespace RubberduckTests.Grammar
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleModule(code, moduleType, out component);
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
             if (parser.State.Status != ParserState.Ready)
@@ -40,7 +41,7 @@ namespace RubberduckTests.Grammar
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
             if (parser.State.Status != ParserState.Ready)
@@ -64,7 +65,7 @@ namespace RubberduckTests.Grammar
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
             if (parser.State.Status != ParserState.Ready)

@@ -24,10 +24,11 @@ namespace Rubberduck.Parsing.VBA
     {
         private readonly ReferencedDeclarationsCollector _comReflector;
 
-        public RubberduckParser(VBE vbe, RubberduckParserState state)
+        public RubberduckParser(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
         {
             _vbe = vbe;
             _state = state;
+            _attributeParser = attributeParser;
 
             _comReflector = new ReferencedDeclarationsCollector();
 
@@ -42,6 +43,7 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
+        private readonly IAttributeParser _attributeParser;
         public RubberduckParserState State { get { return _state; } }
 
         /// <summary>

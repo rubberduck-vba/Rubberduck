@@ -295,6 +295,7 @@
     <Compile Include="Common\ILowLevelKeyboardHook.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
     <Compile Include="Common\ITimerHook.cs" />
+    <Compile Include="Common\ModuleExporter.cs" />
     <Compile Include="Common\RubberduckHooks.cs" />
     <Compile Include="Common\TimerHook.cs" />
     <Compile Include="Common\WinAPI\KBDLLHOOKSTRUCT.cs" />

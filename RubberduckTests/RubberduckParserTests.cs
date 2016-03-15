@@ -5,6 +5,7 @@ using Moq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
+using RubberduckTests.Inspections;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests
@@ -28,7 +29,7 @@ namespace RubberduckTests
             mockHost.SetupAllProperties();
 
             var vbe = builder.AddProject(project).Build();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
