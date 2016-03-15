@@ -1333,7 +1333,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Schweregrad:</value>
   </data>
   <data name="SettingsCaption_IndenterSettings" xml:space="preserve">
-    <value>Einrüchungseinstellung</value>
+    <value>Einrückungseinstellung</value>
   </data>
   <data name="SettingsInstructions_IndenterSettings" xml:space="preserve">
     <value>Konfiguration der Einrückungseinstellungen</value>
