@@ -1315,7 +1315,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Module</value>
   </data>
   <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
-    <value>Attributierung</value>
+    <value>Beiträge</value>
   </data>
   <data name="AboutWindow_Caption" xml:space="preserve">
     <value>Über Rubberduck</value>
@@ -1471,7 +1471,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Für Inspektionstyp</value>
   </data>
   <data name="CodeInspectionResults_Issue" xml:space="preserve">
-    <value>Vorfall</value>
+    <value>Problem</value>
   </data>
   <data name="CodeInspectionResults_Location" xml:space="preserve">
     <value>Ort</value>
