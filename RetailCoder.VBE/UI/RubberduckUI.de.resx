@@ -1465,10 +1465,10 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Hotkey zum Einrücken von Prozeduren</value>
   </data>
   <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
-    <value>Für Module</value>
+    <value>Nach Modulen</value>
   </data>
   <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
-    <value>Für Inspektionstyp</value>
+    <value>Nach Inspektionstyp</value>
   </data>
   <data name="CodeInspectionResults_Issue" xml:space="preserve">
     <value>Problem</value>
@@ -1483,13 +1483,13 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Gruppierung</value>
   </data>
   <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
-    <value>Für Inspektionstyp</value>
+    <value>Nach Inspektionstyp</value>
   </data>
   <data name="GroupingStyle_ByLocation" xml:space="preserve">
-    <value>Für Ort</value>
+    <value>Nach Ort</value>
   </data>
   <data name="GroupingStyle_ByOutcome" xml:space="preserve">
-    <value>Für Ergebnis</value>
+    <value>Nach Ergebnis</value>
   </data>
   <data name="GeneralSettings_AutoSaveLabel" xml:space="preserve">
     <value>Autospeicherung:</value>

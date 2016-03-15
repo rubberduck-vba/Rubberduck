@@ -271,13 +271,13 @@
     <value>Arrays sind normalerweise null-basiert. Diese Option ändert die untere Standardgrenze für impliziert erzeugte Arrays. Dies kann einen 'off-by-one' Fehler erzeugen, wenn sie nicht sorgsam eingesetzt wird.</value>
   </data>
   <data name="OptionBaseInspectionName" xml:space="preserve">
-    <value>Option Base 1' ist angegeben.</value>
+    <value>'Option Base 1' ist angegeben.</value>
   </data>
   <data name="OptionExplicitInspectionMeta" xml:space="preserve">
     <value>Rubberduck kann keine Variablen auswerten, die nicht deklariert wurden. Nutze am besten 'Option Explicit' um fehleranfällige Programme zu erstellen.</value>
   </data>
   <data name="OptionExplicitInspectionName" xml:space="preserve">
-    <value>Option Expilicit' ist nicht angegeben.</value>
+    <value>'Option Expilicit' ist nicht angegeben.</value>
   </data>
   <data name="ParameterCanBeByValInspectionMeta" xml:space="preserve">
     <value>Ein Parameter der als Referenz übergeben wird, aber keine neue Wert- oder Referenzzuweisung erhält, sollte als Wert übergeben werden.</value>
@@ -441,7 +441,7 @@
     <value>Ersetze 'Global' durch 'Public'</value>
   </data>
   <data name="OptionExplicitInspectionResultFormat" xml:space="preserve">
-    <value>Option Explicit' ist für '{0}' nicht angegeben.</value>
+    <value>'Option Explicit' ist für '{0}' nicht angegeben.</value>
   </data>
   <data name="OptionExplicitQuickFix" xml:space="preserve">
     <value>Setze 'Option Explicit'</value>
