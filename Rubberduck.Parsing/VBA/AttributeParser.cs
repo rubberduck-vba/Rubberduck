@@ -26,6 +26,10 @@ namespace Rubberduck.Parsing.VBA
             _exporter = exporter;
         }
 
+        /// <summary>
+        /// Exports the specified component to a temporary file, loads, and then parses the exported file.
+        /// </summary>
+        /// <param name="component"></param>
         public IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(VBComponent component)
         {
             var path = _exporter.Export(component);

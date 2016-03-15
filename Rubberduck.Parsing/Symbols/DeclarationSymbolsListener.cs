@@ -6,6 +6,7 @@ using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
@@ -21,18 +22,16 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _parentDeclaration;
 
         private readonly IEnumerable<CommentNode> _comments;
+        private readonly IDictionary<Tuple<string, DeclarationType>, Attributes> _attributes;
 
-        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type, IEnumerable<CommentNode> comments)
+        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type, IEnumerable<CommentNode> comments, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
         {
             _qualifiedName = qualifiedName;
             _comments = comments;
+            _attributes = attributes;
 
             var declarationType = type == vbext_ComponentType.vbext_ct_StdModule
                 ? DeclarationType.Module
-                //: result.Component.Type == vbext_ComponentType.vbext_ct_MSForm 
-                //    ? DeclarationType.UserForm
-                //    : result.Component.Type == vbext_ComponentType.vbext_ct_Document
-                //        ? DeclarationType.Document
                 : DeclarationType.Class;
 
             var project = _qualifiedName.Component.Collection.Parent;
@@ -41,6 +40,11 @@ namespace Rubberduck.Parsing.Symbols
             _projectDeclaration = new Declaration(
                 projectQualifiedName.QualifyMemberName(project.Name),
                 null, (Declaration)null, project.Name, false, false, Accessibility.Implicit, DeclarationType.Project, null, Selection.Home, false);
+
+            var key = Tuple.Create(_qualifiedName.ComponentName, declarationType);
+            var moduleAttributes = attributes.ContainsKey(key)
+                ? attributes[key]
+                : new Attributes();
 
             _moduleDeclaration = new Declaration(
                 _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
@@ -52,7 +56,7 @@ namespace Rubberduck.Parsing.Symbols
                 componentAccessibility,
                 declarationType,
                 null, Selection.Home, false,
-                FindAnnotations());
+                FindAnnotations(), moduleAttributes);
 
             SetCurrentScope();
         }

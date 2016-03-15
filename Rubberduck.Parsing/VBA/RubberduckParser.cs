@@ -147,6 +147,8 @@ namespace Rubberduck.Parsing.VBA
 
             try
             {
+                var attributes = _attributeParser.Parse(component);
+
                 var qualifiedName = new QualifiedModuleName(vbComponent);
                 var code = rewriter == null ? string.Join(Environment.NewLine, vbComponent.CodeModule.GetSanitizedCode()) : rewriter.GetText();
 
@@ -178,7 +180,7 @@ namespace Rubberduck.Parsing.VBA
                 };
 
                 var tree = GetParseTree(vbComponent, listeners, preprocessedModuleBody, qualifiedName);
-                WalkParseTree(vbComponent, listeners, qualifiedName, tree);
+                WalkParseTree(vbComponent, listeners, qualifiedName, tree, attributes);
 
                 State.SetModuleState(vbComponent, ParserState.Parsed);
             }
@@ -219,7 +221,8 @@ namespace Rubberduck.Parsing.VBA
 
             return tree;
         }
-        private void WalkParseTree(VBComponent vbComponent, IReadOnlyList<IParseTreeListener> listeners, QualifiedModuleName qualifiedName, IParseTree tree)
+
+        private void WalkParseTree(VBComponent vbComponent, IReadOnlyList<IParseTreeListener> listeners, QualifiedModuleName qualifiedName, IParseTree tree, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
         {
             var obsoleteCallsListener = listeners.OfType<ObsoleteCallStatementListener>().Single();
             var obsoleteLetListener = listeners.OfType<ObsoleteLetStatementListener>().Single();
@@ -229,7 +232,7 @@ namespace Rubberduck.Parsing.VBA
             // cannot locate declarations in one pass *the way it's currently implemented*,
             // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
             // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
-            var declarationsListener = new DeclarationSymbolsListener(qualifiedName, Accessibility.Implicit, vbComponent.Type, _state.GetModuleComments(vbComponent));
+            var declarationsListener = new DeclarationSymbolsListener(qualifiedName, Accessibility.Implicit, vbComponent.Type, _state.GetModuleComments(vbComponent), attributes);
 
             declarationsListener.NewDeclaration += declarationsListener_NewDeclaration;
             declarationsListener.CreateModuleDeclarations();
