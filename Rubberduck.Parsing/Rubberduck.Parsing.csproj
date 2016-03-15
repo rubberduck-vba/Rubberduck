@@ -179,6 +179,12 @@
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
     <Compile Include="Symbols\ValuedDeclaration.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
+    <Compile Include="VBA\AttributesBaseListener.cs" />
+    <Compile Include="VBA\AttributesBaseVisitor.cs" />
+    <Compile Include="VBA\AttributesLexer.cs" />
+    <Compile Include="VBA\AttributesListener.cs" />
+    <Compile Include="VBA\AttributesParser.cs" />
+    <Compile Include="VBA\AttributesVisitor.cs" />
     <Compile Include="VBA\EnumerableExtensions.cs" />
     <Compile Include="VBA\IAttributeParser.cs" />
     <Compile Include="VBA\IModuleExporter.cs" />
@@ -203,6 +209,11 @@
     <None Include="Preprocessing\VBAConditionalCompilation.g4" />
     <None Include="Preprocessing\VBADate.g4" />
     <None Include="Preprocessing\VBALike.g4" />
+    <None Include="VBA\Attributes.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">

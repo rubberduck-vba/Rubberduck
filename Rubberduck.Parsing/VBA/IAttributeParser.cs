@@ -1,10 +1,12 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.VBA
 {
     public interface IAttributeParser
     {
-        IDictionary<string, IEnumerable<string>> Parse(VBComponent component);
+        IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(VBComponent component);
     }
 }
