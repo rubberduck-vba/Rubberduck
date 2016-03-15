@@ -1068,7 +1068,10 @@ namespace Rubberduck.Parsing.Symbols
             // the "$" in e.g. "UCase$" isn't picked up as part of the identifierName, so we need to add it manually:
             var matches = _declarationFinder.MatchName(identifierName).Where(item => 
                 (!item.IsBuiltIn || item.IdentifierName == identifierName + (hasStringQualifier ? "$" : string.Empty))
-                && item.ParentDeclaration.DeclarationType == DeclarationType.Module).ToList();
+                /*&& item.ParentDeclaration.DeclarationType == DeclarationType.Module*/).ToList();
+
+            // note: we cannot be sure that a class has no PredeclaredId until we can read attributes.
+            // for this reason we cannot limit the scope of public members to DeclarationType.Module.
 
             if (matches.Count == 1)
             {

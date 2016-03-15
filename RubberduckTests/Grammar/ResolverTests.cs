@@ -191,8 +191,10 @@ Public foo As Integer
         }
 
         [TestMethod]
-        public void PublicInstanceVariable_RequiresInstance()
+        public void PublicInstanceVariable_DoesNotRequireInstance()
         {
+            // todo: reverse this test condition when we can read module attributes
+
             // arrange
             var code_class1 = @"
 Public Sub DoSomething()
@@ -214,7 +216,7 @@ Public foo As Integer
                 && item.ParentScoping.IdentifierName == "DoSomething"
                 && item.ParentScoping.DeclarationType == DeclarationType.Procedure);
 
-            Assert.IsNull(reference);
+            Assert.IsNotNull(reference);
         }
 
         [TestMethod]
