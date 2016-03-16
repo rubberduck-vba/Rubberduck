@@ -33,6 +33,12 @@ namespace Rubberduck.Parsing.VBA
         public IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(VBComponent component)
         {
             var path = _exporter.Export(component);
+            if (!File.Exists(path))
+            {
+                // a document component without any code wouldn't be exported (file would be empty anyway).
+                return new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+            }
+
             var code = File.ReadAllText(path);
             File.Delete(path);
 
@@ -63,6 +69,7 @@ namespace Rubberduck.Parsing.VBA
             public AttributeListener(Tuple<string,DeclarationType> scope)
             {
                 _currentScope = scope;
+                _currentScopeAttributes = new Attributes();
             }
 
             public IDictionary<Tuple<string, DeclarationType>, Attributes> Attributes
