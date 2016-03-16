@@ -142,7 +142,8 @@ namespace Rubberduck.Parsing.VBA
             public override void ExitModuleConfigElement(AttributesParser.ModuleConfigElementContext context)
             {
                 var name = context.ambiguousIdentifier().GetText();
-                var values = new[] {context.literal().GetText()};
+                var literal = context.literal();
+                var values = new[] { literal == null ? string.Empty : literal.GetText()};
                 _currentScopeAttributes.Add(name, values);
             }
         }

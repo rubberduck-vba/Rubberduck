@@ -33,17 +33,16 @@ module :
 	WS?
 ;
 
-moduleHeader : VERSION WS DOUBLELITERAL WS CLASS;
+moduleHeader : VERSION WS DOUBLELITERAL WS? CLASS? endOfStatement;
 
 moduleConfig :
-	BEGIN endOfStatement
+	BEGIN (WS GUIDLITERAL WS ambiguousIdentifier WS?)? endOfStatement
 	moduleConfigElement+
 	END
 ;
 
 moduleConfigElement :
-	ambiguousIdentifier WS? EQ WS? literal endOfStatement
-;
+	ambiguousIdentifier WS* EQ WS* literal (':' SHORTLITERAL)? endOfStatement;
 
 moduleAttributes : (attributeStmt endOfStatement)+;
 
@@ -423,6 +422,7 @@ HEXLITERAL : '&H' [0-9A-F]+ '&'?;
 SHORTLITERAL : (PLUS|MINUS)? DIGIT+ ('#' | '&' | '@')?;
 INTEGERLITERAL : SHORTLITERAL (E SHORTLITERAL)?;
 DOUBLELITERAL : (PLUS|MINUS)? DIGIT* '.' DIGIT+ (E SHORTLITERAL)?;
+GUIDLITERAL : '{' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '}';
 
 DATELITERAL : '#' DATEORTIME '#';
 fragment DATEORTIME : DATEVALUE WS? TIMEVALUE | DATEVALUE | TIMEVALUE;
