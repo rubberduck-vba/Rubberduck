@@ -179,6 +179,7 @@
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
     <Compile Include="Symbols\ValuedDeclaration.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
+    <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\AttributesBaseListener.cs" />
     <Compile Include="VBA\AttributesBaseVisitor.cs" />
     <Compile Include="VBA\AttributesLexer.cs" />

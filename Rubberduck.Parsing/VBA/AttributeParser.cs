@@ -9,14 +9,6 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.VBA
 {
-    /// <summary>
-    /// A dictionary storing values for a given attribute.
-    /// </summary>
-    /// <remarks>
-    /// Dictionary key is the attribute name/identifier.
-    /// </remarks>
-    public class Attributes : Dictionary<string, IEnumerable<string>> { }
-
     public class AttributeParser : IAttributeParser
     {
         private readonly IModuleExporter _exporter;

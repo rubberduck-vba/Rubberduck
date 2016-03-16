@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 using FUNCFLAGS = System.Runtime.InteropServices.ComTypes.FUNCFLAGS;
 using TYPEDESC = System.Runtime.InteropServices.ComTypes.TYPEDESC;
 using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
@@ -111,8 +114,7 @@ namespace Rubberduck.Parsing.Symbols
 
                 QualifiedModuleName typeQualifiedModuleName;
                 QualifiedMemberName typeQualifiedMemberName;
-                if (typeDeclarationType == DeclarationType.Enumeration ||
-                    typeDeclarationType == DeclarationType.UserDefinedType)
+                if (typeDeclarationType == DeclarationType.Enumeration || typeDeclarationType == DeclarationType.UserDefinedType)
                 {
                     typeQualifiedModuleName = projectQualifiedModuleName;
                     typeQualifiedMemberName = new QualifiedMemberName(projectQualifiedModuleName, typeName);
@@ -131,94 +133,144 @@ namespace Rubberduck.Parsing.Symbols
 
                 var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof (TYPEATTR));
                 //var implements = GetImplementedInterfaceNames(typeAttributes, info);
-
+                
                 for (var memberIndex = 0; memberIndex < typeAttributes.cFuncs; memberIndex++)
                 {
-                    IntPtr memberDescriptorPointer;
-                    info.GetFuncDesc(memberIndex, out memberDescriptorPointer);
-                    var memberDescriptor = (FUNCDESC) Marshal.PtrToStructure(memberDescriptorPointer, typeof (FUNCDESC));
-                            
-                    var memberNames = new string[255]; // member name at index 0; array contains parameter names too
-                    int namesArrayLength;
-                    info.GetNames(memberDescriptor.memid, memberNames, 255, out namesArrayLength);
-
-                    var memberName = memberNames[0];
-
-                    var funcValueType = (VarEnum)memberDescriptor.elemdescFunc.tdesc.vt;
-                    var memberDeclarationType = GetDeclarationType(memberDescriptor, funcValueType);
-
-                    var asTypeName = string.Empty;
-                    if (memberDeclarationType != DeclarationType.Procedure && !TypeNames.TryGetValue(funcValueType, out asTypeName))
+                    FUNCDESC memberDescriptor;
+                    string[] memberNames;
+                    var memberDeclaration = CreateMemberDeclaration(out memberDescriptor, typeAttributes.typekind, info, memberIndex, typeQualifiedModuleName, moduleDeclaration, out memberNames);
+                    if (memberDeclaration == null)
                     {
-                        asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
+                        continue;
                     }
 
-                    var memberDeclaration = new Declaration(new QualifiedMemberName(typeQualifiedModuleName, memberName), moduleDeclaration, moduleDeclaration, asTypeName, false, false, Accessibility.Global, memberDeclarationType, null, Selection.Home);
                     yield return memberDeclaration;
 
                     var parameterCount = memberDescriptor.cParams - 1;
                     for (var paramIndex = 0; paramIndex < parameterCount; paramIndex++)
                     {
-                        var paramName = memberNames[paramIndex + 1];
-
-                        var paramPointer = new IntPtr(memberDescriptor.lprgelemdescParam.ToInt64() + Marshal.SizeOf(typeof (ELEMDESC))*paramIndex);
-                        var elementDesc = (ELEMDESC) Marshal.PtrToStructure(paramPointer, typeof (ELEMDESC));
-                        var isOptional = elementDesc.desc.paramdesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FOPT);
-                        var asParamTypeName = string.Empty;
-                        
-                        var isByRef = false;
-                        var isArray = false;
-                        var paramDesc = elementDesc.tdesc;
-                        var valueType = (VarEnum) paramDesc.vt;
-                        if (valueType == VarEnum.VT_PTR || valueType == VarEnum.VT_BYREF)
-                        {
-                            //var paramTypeDesc = (TYPEDESC) Marshal.PtrToStructure(paramDesc.lpValue, typeof (TYPEDESC));
-                            isByRef = true;
-                            var paramValueType = (VarEnum) paramDesc.vt;
-                            if (!TypeNames.TryGetValue(paramValueType, out asParamTypeName))
-                            {
-                                asParamTypeName = TypeNames[VarEnum.VT_VARIANT];
-                            }
-                            //var href = paramDesc.lpValue.ToInt32();
-                            //ITypeInfo refTypeInfo;
-                            //info.GetRefTypeInfo(href, out refTypeInfo);
-
-                            // todo: get type info?
-                        }
-                        if (valueType == VarEnum.VT_CARRAY || valueType == VarEnum.VT_ARRAY || valueType == VarEnum.VT_SAFEARRAY)
-                        {
-                            // todo: tell ParamArray arrays from normal arrays
-                            isArray = true;
-                        }
-
-                        yield return new ParameterDeclaration(new QualifiedMemberName(typeQualifiedModuleName, paramName), memberDeclaration, asParamTypeName, isOptional, isByRef, isArray);
+                        yield return CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor, typeQualifiedModuleName, memberDeclaration);
                     }
                 }
 
                 for (var fieldIndex = 0; fieldIndex < typeAttributes.cVars; fieldIndex++)
                 {
-                    IntPtr ppVarDesc;
-                    info.GetVarDesc(fieldIndex, out ppVarDesc);
-
-                    var varDesc = (VARDESC) Marshal.PtrToStructure(ppVarDesc, typeof (VARDESC));
-
-                    var names = new string[255];
-                    int namesArrayLength;
-                    info.GetNames(varDesc.memid, names, 255, out namesArrayLength);
-
-                    var fieldName = names[0];
-                    var fieldValueType = (VarEnum)varDesc.elemdescVar.tdesc.vt;
-                    var memberType = GetDeclarationType(varDesc, typeDeclarationType);
-
-                    string asTypeName;
-                    if (!TypeNames.TryGetValue(fieldValueType, out asTypeName))
-                    {
-                        asTypeName = TypeNames[VarEnum.VT_VARIANT];
-                    }
-
-                    yield return new Declaration(new QualifiedMemberName(typeQualifiedModuleName, fieldName), moduleDeclaration, moduleDeclaration, asTypeName, false, false, Accessibility.Global, memberType, null, Selection.Home);
+                    yield return CreateFieldDeclaration(info, fieldIndex, typeDeclarationType, typeQualifiedModuleName, moduleDeclaration);
                 }
             }           
+        }
+
+        private Declaration CreateMemberDeclaration(out FUNCDESC memberDescriptor, TYPEKIND typeKind, ITypeInfo info, int memberIndex,
+            QualifiedModuleName typeQualifiedModuleName, Declaration moduleDeclaration, out string[] memberNames)
+        {
+            IntPtr memberDescriptorPointer;
+            info.GetFuncDesc(memberIndex, out memberDescriptorPointer);
+            memberDescriptor = (FUNCDESC) Marshal.PtrToStructure(memberDescriptorPointer, typeof (FUNCDESC));
+
+            if (memberDescriptor.callconv != CALLCONV.CC_STDCALL)
+            {
+                memberDescriptor = new FUNCDESC();
+                memberNames = new string[] {};
+                return null;
+            }
+
+            memberNames = new string[255];
+            int namesArrayLength;
+            info.GetNames(memberDescriptor.memid, memberNames, 255, out namesArrayLength);
+            
+            var memberName = memberNames[0];
+            var funcValueType = (VarEnum) memberDescriptor.elemdescFunc.tdesc.vt;
+            var memberDeclarationType = GetDeclarationType(memberDescriptor, funcValueType, typeKind);
+
+            var asTypeName = string.Empty;
+            if (memberDeclarationType != DeclarationType.Procedure && !TypeNames.TryGetValue(funcValueType, out asTypeName))
+            {
+                asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
+            }
+
+            var attributes = new Attributes();
+            if (memberName == "_NewEnum" && ((FUNCFLAGS)memberDescriptor.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FNONBROWSABLE))
+            {
+                attributes.AddEnumeratorMemberAttribute(memberName);
+            }
+            else if (memberDescriptor.memid == 0)
+            {
+                attributes.AddDefaultMemberAttribute(memberName);
+                Debug.WriteLine("Default member found: {0}.{1} ({2} / {3})", moduleDeclaration.IdentifierName, memberName, memberDeclarationType, (VarEnum)memberDescriptor.elemdescFunc.tdesc.vt);
+            }
+            else if (((FUNCFLAGS)memberDescriptor.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FHIDDEN))
+            {
+                attributes.AddHiddenMemberAttribute(memberName);
+            }
+
+            return new Declaration(new QualifiedMemberName(typeQualifiedModuleName, memberName),
+                moduleDeclaration, moduleDeclaration, asTypeName, false, false, Accessibility.Global, memberDeclarationType,
+                null, Selection.Home, true, null, attributes);
+        }
+
+        private Declaration CreateFieldDeclaration(ITypeInfo info, int fieldIndex, DeclarationType typeDeclarationType,
+            QualifiedModuleName typeQualifiedModuleName, Declaration moduleDeclaration)
+        {
+            IntPtr ppVarDesc;
+            info.GetVarDesc(fieldIndex, out ppVarDesc);
+
+            var varDesc = (VARDESC) Marshal.PtrToStructure(ppVarDesc, typeof (VARDESC));
+
+            var names = new string[255];
+            int namesArrayLength;
+            info.GetNames(varDesc.memid, names, 255, out namesArrayLength);
+
+            var fieldName = names[0];
+            var fieldValueType = (VarEnum) varDesc.elemdescVar.tdesc.vt;
+            var memberType = GetDeclarationType(varDesc, typeDeclarationType);
+
+            string asTypeName;
+            if (!TypeNames.TryGetValue(fieldValueType, out asTypeName))
+            {
+                asTypeName = TypeNames[VarEnum.VT_VARIANT];
+            }
+
+            return new Declaration(new QualifiedMemberName(typeQualifiedModuleName, fieldName),
+                moduleDeclaration, moduleDeclaration, asTypeName, false, false, Accessibility.Global, memberType, null,
+                Selection.Home);
+        }
+
+        private static ParameterDeclaration CreateParameterDeclaration(IReadOnlyList<string> memberNames, int paramIndex,
+            FUNCDESC memberDescriptor, QualifiedModuleName typeQualifiedModuleName, Declaration memberDeclaration)
+        {
+            var paramName = memberNames[paramIndex + 1];
+
+            var paramPointer = new IntPtr(memberDescriptor.lprgelemdescParam.ToInt64() + Marshal.SizeOf(typeof (ELEMDESC))*paramIndex);
+            var elementDesc = (ELEMDESC) Marshal.PtrToStructure(paramPointer, typeof (ELEMDESC));
+            var isOptional = elementDesc.desc.paramdesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FOPT);
+            var asParamTypeName = string.Empty;
+
+            var isByRef = false;
+            var isArray = false;
+            var paramDesc = elementDesc.tdesc;
+            var valueType = (VarEnum) paramDesc.vt;
+            if (valueType == VarEnum.VT_PTR || valueType == VarEnum.VT_BYREF)
+            {
+                //var paramTypeDesc = (TYPEDESC) Marshal.PtrToStructure(paramDesc.lpValue, typeof (TYPEDESC));
+                isByRef = true;
+                var paramValueType = (VarEnum) paramDesc.vt;
+                if (!TypeNames.TryGetValue(paramValueType, out asParamTypeName))
+                {
+                    asParamTypeName = TypeNames[VarEnum.VT_VARIANT];
+                }
+                //var href = paramDesc.lpValue.ToInt32();
+                //ITypeInfo refTypeInfo;
+                //info.GetRefTypeInfo(href, out refTypeInfo);
+
+                // todo: get type info?
+            }
+            if (valueType == VarEnum.VT_CARRAY || valueType == VarEnum.VT_ARRAY || valueType == VarEnum.VT_SAFEARRAY)
+            {
+                // todo: tell ParamArray arrays from normal arrays
+                isArray = true;
+            }
+
+            return new ParameterDeclaration(new QualifiedMemberName(typeQualifiedModuleName, paramName), memberDeclaration, asParamTypeName, isOptional, isByRef, isArray);
         }
 
         //private IEnumerable<string> GetImplementedInterfaceNames(TYPEATTR typeAttr, ITypeInfo info)
@@ -264,7 +316,7 @@ namespace Rubberduck.Parsing.Symbols
             return typeDeclarationType;
         }
 
-        private DeclarationType GetDeclarationType(FUNCDESC funcDesc, VarEnum funcValueType)
+        private DeclarationType GetDeclarationType(FUNCDESC funcDesc, VarEnum funcValueType, TYPEKIND typekind)
         {
             DeclarationType memberType;
             if (funcDesc.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET))
@@ -283,7 +335,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 memberType = DeclarationType.Procedure;
             }
-            else if (funcDesc.funckind == FUNCKIND.FUNC_PUREVIRTUAL)
+            else if (funcDesc.funckind == FUNCKIND.FUNC_PUREVIRTUAL && typekind == TYPEKIND.TKIND_COCLASS)
             {
                 memberType = DeclarationType.Event;
             }
