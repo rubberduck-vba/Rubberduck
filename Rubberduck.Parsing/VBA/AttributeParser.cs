@@ -77,9 +77,29 @@ namespace Rubberduck.Parsing.VBA
                 _attributes.Add(_currentScope, _currentScopeAttributes);
             }
 
+            private static readonly IReadOnlyDictionary<Type, DeclarationType> ScopingContextTypes =
+                new Dictionary<Type, DeclarationType>
+            {
+                {typeof(AttributesParser.SubStmtContext), DeclarationType.Procedure},
+                {typeof(AttributesParser.FunctionStmtContext), DeclarationType.Function},
+                {typeof(AttributesParser.PropertyGetStmtContext), DeclarationType.PropertyGet},
+                {typeof(AttributesParser.PropertyLetStmtContext), DeclarationType.PropertyLet},
+                {typeof(AttributesParser.PropertySetStmtContext), DeclarationType.PropertySet}
+            };
+
+            public override void EnterAmbiguousIdentifier(AttributesParser.AmbiguousIdentifierContext context)
+            {
+                DeclarationType type;
+                if (!ScopingContextTypes.TryGetValue(context.Parent.GetType(), out type))
+                {
+                    return;
+                }
+
+                _currentScope = Tuple.Create(context.GetText(), type);
+            }
+
             public override void EnterSubStmt(AttributesParser.SubStmtContext context)
             {
-                _currentScope = Tuple.Create(context.ambiguousIdentifier().GetText(), DeclarationType.Procedure);
                 _currentScopeAttributes = new Attributes();
             }
 
@@ -90,7 +110,6 @@ namespace Rubberduck.Parsing.VBA
 
             public override void EnterFunctionStmt(AttributesParser.FunctionStmtContext context)
             {
-                _currentScope = Tuple.Create(context.ambiguousIdentifier().GetText(), DeclarationType.Function);
                 _currentScopeAttributes = new Attributes();
             }
 
@@ -101,7 +120,6 @@ namespace Rubberduck.Parsing.VBA
 
             public override void EnterPropertyGetStmt(AttributesParser.PropertyGetStmtContext context)
             {
-                _currentScope = Tuple.Create(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyGet);
                 _currentScopeAttributes = new Attributes();
             }
 
@@ -112,7 +130,6 @@ namespace Rubberduck.Parsing.VBA
 
             public override void EnterPropertyLetStmt(AttributesParser.PropertyLetStmtContext context)
             {
-                _currentScope = Tuple.Create(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyLet);
                 _currentScopeAttributes = new Attributes();
             }
 
@@ -123,7 +140,6 @@ namespace Rubberduck.Parsing.VBA
 
             public override void EnterPropertySetStmt(AttributesParser.PropertySetStmtContext context)
             {
-                _currentScope = Tuple.Create(context.ambiguousIdentifier().GetText(), DeclarationType.PropertySet);
                 _currentScopeAttributes = new Attributes();
             }
 

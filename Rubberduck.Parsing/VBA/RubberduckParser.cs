@@ -264,6 +264,8 @@ namespace Rubberduck.Parsing.VBA
         {
             try
             {
+                //Parallel.ForEach(_state.AllDeclarations, declaration => declaration.ClearReferences());
+
                 foreach (var kvp in _state.ParseTrees)
                 {
                     ResolveReferences(finder, kvp.Key, kvp.Value);
