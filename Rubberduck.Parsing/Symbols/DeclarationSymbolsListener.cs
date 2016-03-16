@@ -154,8 +154,15 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
+                var key = Tuple.Create(identifierName, declarationType);
+                Attributes attributes = null;
+                if (_attributes.ContainsKey(key))
+                {
+                    attributes = _attributes[key];
+                }
+
                 var annotations = FindAnnotations(selection.StartLine);
-                result = new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations);
+                result = new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations, attributes);
             }
 
             OnNewDeclaration(result);

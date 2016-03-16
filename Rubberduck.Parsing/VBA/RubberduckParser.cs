@@ -97,6 +97,12 @@ namespace Rubberduck.Parsing.VBA
                 .SelectMany(project => project.VBComponents.Cast<VBComponent>())
                 .ToList();
 
+            var invalidCache = _componentAttributes.Keys.Except(components).ToList();
+            foreach (var component in invalidCache)
+            {
+                _componentAttributes.Remove(component);
+            }
+
             foreach (var vbComponent in components)
             {
                 while (!_state.ClearDeclarations(vbComponent))
@@ -147,8 +153,6 @@ namespace Rubberduck.Parsing.VBA
 
             try
             {
-                var attributes = _attributeParser.Parse(component);
-
                 var qualifiedName = new QualifiedModuleName(vbComponent);
                 var code = rewriter == null ? string.Join(Environment.NewLine, vbComponent.CodeModule.GetSanitizedCode()) : rewriter.GetText();
 
@@ -180,7 +184,7 @@ namespace Rubberduck.Parsing.VBA
                 };
 
                 var tree = GetParseTree(vbComponent, listeners, preprocessedModuleBody, qualifiedName);
-                WalkParseTree(vbComponent, listeners, qualifiedName, tree, attributes);
+                WalkParseTree(vbComponent, listeners, qualifiedName, tree);
 
                 State.SetModuleState(vbComponent, ParserState.Parsed);
             }
@@ -222,12 +226,21 @@ namespace Rubberduck.Parsing.VBA
             return tree;
         }
 
-        private void WalkParseTree(VBComponent vbComponent, IReadOnlyList<IParseTreeListener> listeners, QualifiedModuleName qualifiedName, IParseTree tree, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
+        private readonly IDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
+            = new Dictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
+
+        private void WalkParseTree(VBComponent vbComponent, IReadOnlyList<IParseTreeListener> listeners, QualifiedModuleName qualifiedName, IParseTree tree)
         {
             var obsoleteCallsListener = listeners.OfType<ObsoleteCallStatementListener>().Single();
             var obsoleteLetListener = listeners.OfType<ObsoleteLetStatementListener>().Single();
             var emptyStringLiteralListener = listeners.OfType<EmptyStringLiteralListener>().Single();
             var argListsWithOneByRefParamListener = listeners.OfType<ArgListWithOneByRefParamListener>().Single();
+
+            if (!_componentAttributes.ContainsKey(vbComponent))
+            {
+                _componentAttributes.Add(vbComponent, _attributeParser.Parse(vbComponent));
+            }
+            var attributes = _componentAttributes[vbComponent];
 
             // cannot locate declarations in one pass *the way it's currently implemented*,
             // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
