@@ -444,13 +444,13 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <comment>0: Version; 1: Architektur</comment>
   </data>
   <data name="TodoMarkerBug" xml:space="preserve">
-    <value>BUG </value>
+    <value>BUG</value>
   </data>
   <data name="TodoMarkerNote" xml:space="preserve">
-    <value>NOTE </value>
+    <value>NOTE</value>
   </data>
   <data name="TodoMarkerTodo" xml:space="preserve">
-    <value>TODO </value>
+    <value>TODO</value>
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementierungen von '{0}'</value>
@@ -510,10 +510,10 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Typ</value>
   </data>
   <data name="Inspections_DeclarationOf" xml:space="preserve">
-    <value>Deklaration von </value>
+    <value>Deklaration von</value>
   </data>
   <data name="Inspections_UsageOf" xml:space="preserve">
-    <value>Nutzung von </value>
+    <value>Nutzung von</value>
   </data>
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
     <value>Zwei oder mehr Projekte mit Testmethoden haben den selben Namen und identisch benannte Tests. Bitte nennen sie zum Fortfahren eines davon um.</value>
@@ -1219,7 +1219,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Mitglieder</value>
   </data>
   <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
-    <value>Bitte spezifizieren Sie den Interface-Namen und die Mitglieder </value>
+    <value>Bitte spezifizieren Sie den Interface-Namen und die Mitglieder</value>
   </data>
   <data name="IndentCurrentModule" xml:space="preserve">
     <value>Aktuelles Projekt</value>
@@ -1301,5 +1301,238 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="ImplementInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Interface Implementieren</value>
+  </data>
+  <data name="SettingsCaption_InspectionSettings" xml:space="preserve">
+    <value>Einstellungen für die Codeuntersuchung</value>
+  </data>
+  <data name="RubberduckMenu_Settings" xml:space="preserve">
+    <value>&amp;Einstellungen</value>
+  </data>
+  <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
+    <value>Anzeigesprache:</value>
+  </data>
+  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
+    <value>Module</value>
+  </data>
+  <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
+    <value>Beiträge</value>
+  </data>
+  <data name="AboutWindow_Caption" xml:space="preserve">
+    <value>Über Rubberduck</value>
+  </data>
+  <data name="AboutWindow_Copyright" xml:space="preserve">
+    <value>© Copyright 2014-2016 Mathieu Guindon &amp; Christopher McClellan</value>
+  </data>
+  <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
+    <value>Spezieller Dank</value>
+  </data>
+  <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
+    <value>Einstellung für die Unit Tests</value>
+  </data>
+  <data name="SeverityLabelText" xml:space="preserve">
+    <value>Schweregrad:</value>
+  </data>
+  <data name="SettingsCaption_IndenterSettings" xml:space="preserve">
+    <value>Einrückungseinstellung</value>
+  </data>
+  <data name="SettingsInstructions_IndenterSettings" xml:space="preserve">
+    <value>Konfiguration der Einrückungseinstellungen</value>
+  </data>
+  <data name="SettingsInstructions_UnitTestSettings" xml:space="preserve">
+    <value>Einstellungen für neue Unit Test Module und Methoden</value>
+  </data>
+  <data name="UnitTestSettings_AssertMode" xml:space="preserve">
+    <value>Typ-Sicherheit:</value>
+  </data>
+  <data name="UnitTestSettings_BindingMode" xml:space="preserve">
+    <value>Bindungsmodus:</value>
+  </data>
+  <data name="UnitTestSettings_EarlyBinding" xml:space="preserve">
+    <value>Frühes Binden</value>
+  </data>
+  <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
+    <value>Testmethodeninitailisierung / Leeren</value>
+  </data>
+  <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt" xml:space="preserve">
+    <value>Einfügen eine  Testmethodenstubs</value>
+  </data>
+  <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
+    <value>Testmodulinitialiesierung / Leeren</value>
+  </data>
+  <data name="UnitTestSettings_LateBinding" xml:space="preserve">
+    <value>Spätes Binden</value>
+  </data>
+  <data name="UnitTestSettings_PermissiveAssert" xml:space="preserve">
+    <value>Tolereante Forderung</value>
+  </data>
+  <data name="UnitTestSettings_StrictAssert" xml:space="preserve">
+    <value>Strikte Forderung</value>
+  </data>
+  <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
+    <value>Testmodulvorlage</value>
+  </data>
+  <data name="TestOutcome_Failed" xml:space="preserve">
+    <value>Fehlerhaft</value>
+  </data>
+  <data name="TestOutcome_Inconclusive" xml:space="preserve">
+    <value>Ergebnislos</value>
+  </data>
+  <data name="TestOutcome_Succeeded" xml:space="preserve">
+    <value>Erfolgreich</value>
+  </data>
+  <data name="TestOutcome_Unknown" xml:space="preserve">
+    <value>Unbekannt</value>
+  </data>
+  <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
+    <value>Absolut</value>
+  </data>
+  <data name="EndOfLineCommentStyle_AlignInColumn" xml:space="preserve">
+    <value>In Spalten ausrichten</value>
+  </data>
+  <data name="EndOfLineCommentStyle_SameGap" xml:space="preserve">
+    <value>Gleicher Abstand</value>
+  </data>
+  <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
+    <value>Standardabstand</value>
+  </data>
+  <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
+    <value>Freigegeben</value>
+  </data>
+  <data name="GeneralSettings_HotkeyKeyPress" xml:space="preserve">
+    <value>Drücken einer Taste</value>
+  </data>
+  <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
+    <value>Richte Kommentare am Code aus</value>
+  </data>
+  <data name="IndenterSettings_AlignContinuations" xml:space="preserve">
+    <value>Richte Fortsetzung aus</value>
+  </data>
+  <data name="IndenterSettings_AlignDims" xml:space="preserve">
+    <value>Ausrichtung der Deklarationen</value>
+  </data>
+  <data name="IndenterSettings_AlignmentOptionsLabel" xml:space="preserve">
+    <value>Ausrichtungsoptionen</value>
+  </data>
+  <data name="IndenterSettings_EnableOptionsLabel" xml:space="preserve">
+    <value>Optionen freigeben</value>
+  </data>
+  <data name="IndenterSettings_EnableUndo" xml:space="preserve">
+    <value>Rüchgängig freigeben</value>
+  </data>
+  <data name="IndenterSettings_EndOfLineCommentStyle" xml:space="preserve">
+    <value>Zeilenende Kommentarstil:</value>
+  </data>
+  <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
+    <value>Nutze Kompilerdirektiven in Spalte 1</value>
+  </data>
+  <data name="IndenterSettings_ForceDebugDirectivesToColumn1" xml:space="preserve">
+    <value>Nutze Debugdirektiven in Spalte 1</value>
+  </data>
+  <data name="IndenterSettings_IgnoreOperators" xml:space="preserve">
+    <value>Ignoriere Operatoren</value>
+  </data>
+  <data name="IndenterSettings_IndentCase" xml:space="preserve">
+    <value>Rücke Fall ein</value>
+  </data>
+  <data name="IndenterSettings_IndentCompilerDirectives" xml:space="preserve">
+    <value>Rücke Kompilerdirektiven ein</value>
+  </data>
+  <data name="IndenterSettings_IndentEntireProcedureBody" xml:space="preserve">
+    <value>Rücke gesamten Prozedurblock ein</value>
+  </data>
+  <data name="IndenterSettings_IndentFirstCommentBlock" xml:space="preserve">
+    <value>Rücke ersten Kommentarblock ein</value>
+  </data>
+  <data name="IndenterSettings_IndentFirstDeclarationBlock" xml:space="preserve">
+    <value>Rücke ersten Deklarationsblock ein</value>
+  </data>
+  <data name="IndenterSettings_IndentOptionsLabel" xml:space="preserve">
+    <value>Rücke Optionen ein</value>
+  </data>
+  <data name="IndenterSettings_IndentSpaces" xml:space="preserve">
+    <value>Einrückungsleerzeichen:</value>
+  </data>
+  <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
+    <value>Spezielle Optionen</value>
+  </data>
+  <data name="IndentModuleHotkey_Description" xml:space="preserve">
+    <value>Hotkey zum Einrücken von Modulen</value>
+  </data>
+  <data name="IndentProcedureHotkey_Description" xml:space="preserve">
+    <value>Hotkey zum Einrücken von Prozeduren</value>
+  </data>
+  <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
+    <value>Nach Modulen</value>
+  </data>
+  <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
+    <value>Nach Inspektionstyp</value>
+  </data>
+  <data name="CodeInspectionResults_Issue" xml:space="preserve">
+    <value>Problem</value>
+  </data>
+  <data name="CodeInspectionResults_Location" xml:space="preserve">
+    <value>Ort</value>
+  </data>
+  <data name="CodeInspectionResults_Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
+    <value>Gruppierung</value>
+  </data>
+  <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
+    <value>Nach Inspektionstyp</value>
+  </data>
+  <data name="GroupingStyle_ByLocation" xml:space="preserve">
+    <value>Nach Ort</value>
+  </data>
+  <data name="GroupingStyle_ByOutcome" xml:space="preserve">
+    <value>Nach Ergebnis</value>
+  </data>
+  <data name="GeneralSettings_AutoSaveLabel" xml:space="preserve">
+    <value>Autospeicherung:</value>
+  </data>
+  <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
+    <value>Hotkeys:</value>
+  </data>
+  <data name="GeneralSettings_AutoSaveEnabled" xml:space="preserve">
+    <value>Autospeicherung aktivieren</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="AboutWindow_AttributionList" xml:space="preserve">
+    <value>Parsing ermöglicht durch ANTLR
+GitHub Integration ermöglicht durch LibGit2Sharp
+Fugue Icons von Yusuke Kamiyamane</value>
+  </data>
+  <data name="SearchResults_Caption" xml:space="preserve">
+    <value>Suchergebnis</value>
+  </data>
+  <data name="SearchResults_Location" xml:space="preserve">
+    <value>Ort</value>
+  </data>
+  <data name="SearchResults_MemberName" xml:space="preserve">
+    <value>Methode</value>
+  </data>
+  <data name="SearchResults_ModuleName" xml:space="preserve">
+    <value>Modul</value>
+  </data>
+  <data name="SearchResults_Context" xml:space="preserve">
+    <value>Kontext</value>
+  </data>
+  <data name="SearchResults_AllImplementationsTabFormat" xml:space="preserve">
+    <value>Alle Vorkommnisse: '{0}'</value>
+  </data>
+  <data name="SearchResults_AllReferencesTabFormat" xml:space="preserve">
+    <value>Alle Referenzen: '{0}'</value>
+  </data>
+  <data name="Rubberduck" xml:space="preserve">
+    <value>Rubberduck</value>
+  </data>
+  <data name="SearchResults_MemberType" xml:space="preserve">
+    <value>Type</value>
   </data>
 </root>
