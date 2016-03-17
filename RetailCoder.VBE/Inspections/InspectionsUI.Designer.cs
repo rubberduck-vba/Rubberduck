@@ -907,7 +907,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change &apos;{0}$&apos; to &apos;{0}&apos;.
+        ///   Looks up a localized string similar to Change &apos;{0}&apos; to &apos;{0}$&apos;.
         /// </summary>
         internal static string QuickFixUseTypedFunction_ {
             get {
