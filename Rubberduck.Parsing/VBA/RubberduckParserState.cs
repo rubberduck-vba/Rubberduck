@@ -1,22 +1,19 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public enum ResolutionState
-    {
-        Unresolved
-    }
-
     public class ParserStateEventArgs : EventArgs
     {
         private readonly ParserState _state;
@@ -46,9 +43,8 @@ namespace Rubberduck.Parsing.VBA
     {
         public event EventHandler<ParseRequestEventArgs> ParseRequest;
 
-        // keys are the declarations; values indicate whether a declaration is resolved.
-        private readonly ConcurrentDictionary<Declaration, ResolutionState> _declarations =
-            new ConcurrentDictionary<Declaration, ResolutionState>();
+        private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>> _declarations =
+            new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>>();
 
         private readonly ConcurrentDictionary<VBComponent, ITokenStream> _tokenStreams =
             new ConcurrentDictionary<VBComponent, ITokenStream>();
@@ -56,14 +52,14 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, IParseTree> _parseTrees =
             new ConcurrentDictionary<VBComponent, IParseTree>();
 
-        public event EventHandler<ParserStateEventArgs> StateChanged;
+        public event EventHandler StateChanged;
 
-        private void OnStateChanged(ParserState state)
+        private void OnStateChanged()
         {
             var handler = StateChanged;
             if (handler != null)
             {
-                handler.Invoke(this, new ParserStateEventArgs(state));
+                handler.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -87,8 +83,10 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleState(VBComponent component, ParserState state, SyntaxErrorException parserError = null)
         {
-            _moduleStates[component] = state;
-            _moduleExceptions[component] = parserError;
+            _moduleStates.AddOrUpdate(component, state, (c, s) => state);
+            _moduleExceptions.AddOrUpdate(component, parserError, (c, e) => parserError);
+
+            Debug.WriteLine("Module '{0}' state is changing to '{1}' (thread {2})", component.Name, state, Thread.CurrentThread.ManagedThreadId);
             OnModuleStateChanged(component, state);
             Status = EvaluateParserState();
         }
@@ -97,36 +95,55 @@ namespace Rubberduck.Parsing.VBA
 
         private ParserState EvaluateParserState()
         {
-            var moduleStates = _moduleStates.Values.ToList();
-            var state = States.SingleOrDefault(value => moduleStates.All(ps => ps == value));
-
-            if (state != default(ParserState))
+            //lock (_lock)
             {
-                // if all modules are in the same state, we have our result.
-                return state;
-            }
+                var moduleStates = _moduleStates.Values.ToList();
+                var state = States.SingleOrDefault(value => moduleStates.All(ps => ps == value));
 
-            // intermediate states are toggled when *any* module has them.
-            if (moduleStates.Any(ms => ms == ParserState.Error))
-            {
+                if (state != default(ParserState))
+                {
+                    // if all modules are in the same state, we have our result.
+                    Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", state, Thread.CurrentThread.ManagedThreadId);
+                    return state;
+                }
+
                 // error state takes precedence over every other state
-                return ParserState.Error;
-            }
-            if (moduleStates.Any(ms => ms == ParserState.Parsing))
-            {
-                return ParserState.Parsing;
-            }
-            if (moduleStates.Any(ms => ms == ParserState.Resolving))
-            {
-                return ParserState.Resolving;
-            }
+                if (moduleStates.Any(ms => ms == ParserState.Error))
+                {
+                    Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", ParserState.Error,
+                        Thread.CurrentThread.ManagedThreadId);
+                    return ParserState.Error;
+                }
+                if (moduleStates.Any(ms => ms == ParserState.ResolverError))
+                {
+                    Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", ParserState.ResolverError,
+                        Thread.CurrentThread.ManagedThreadId);
+                    return ParserState.ResolverError;
+                }
 
-            return ParserState.Pending;
+                // intermediate states are toggled when *any* module has them.
+                var result = moduleStates.Min();
+                if (moduleStates.Any(ms => ms == ParserState.Parsing))
+                {
+                    result = ParserState.Parsing;
+                }
+                if (moduleStates.Any(ms => ms == ParserState.Resolving))
+                {
+                    result = ParserState.Resolving;
+                }
+
+                Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", result,
+                    Thread.CurrentThread.ManagedThreadId);
+                return result;
+            }
         }
 
         public ParserState GetModuleState(VBComponent component)
         {
-            return _moduleStates[component];
+            ParserState result;
+            return _moduleStates.TryGetValue(component, out result) 
+                ? result 
+                : ParserState.Pending;
         }
 
         private ParserState _status;
@@ -138,7 +155,8 @@ namespace Rubberduck.Parsing.VBA
                 if (_status != value)
                 {
                     _status = value; 
-                    OnStateChanged(value);
+                    Debug.WriteLine("ParserState changed to '{0}', raising OnStateChanged", value);
+                    OnStateChanged();
                 }
             } 
         }
@@ -211,26 +229,47 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// Gets a copy of the collected declarations, including the built-in ones.
         /// </summary>
-        public IEnumerable<Declaration> AllDeclarations { get { return _declarations.Keys.ToList(); } }
+        public IReadOnlyList<Declaration> AllDeclarations 
+        {
+            get
+            {
+                return _declarations.Values.SelectMany(declarations => declarations.Keys).ToList();
+            } 
+        }
 
         /// <summary>
         /// Gets a copy of the collected declarations, excluding the built-in ones.
         /// </summary>
-        public IEnumerable<Declaration> AllUserDeclarations { get { return _declarations.Keys.Where(e => !e.IsBuiltIn).ToList(); } }
+        public IReadOnlyList<Declaration> AllUserDeclarations
+        {
+            get
+            {
+                return _declarations.Values.Where(declarations => 
+                        !declarations.Any(declaration => declaration.Key.IsBuiltIn))
+                    .SelectMany(declarations => declarations.Keys)
+                    .ToList();
+            }
+        }
 
         /// <summary>
         /// Adds the specified <see cref="Declaration"/> to the collection (replaces existing).
         /// </summary>
         public void AddDeclaration(Declaration declaration)
         {
-            if (_declarations.TryAdd(declaration, ResolutionState.Unresolved))
-            {
-                return;
-            }
+            var key = declaration.QualifiedName.QualifiedModuleName;
+            var declarations = _declarations.GetOrAdd(key, new ConcurrentDictionary<Declaration, byte>());
 
-            if (RemoveDeclaration(declaration))
+            if (declarations.ContainsKey(declaration))
             {
-                _declarations.TryAdd(declaration, ResolutionState.Unresolved);
+                byte _;
+                while (!declarations.TryRemove(declaration, out _))
+                {
+                    Debug.WriteLine("Could not remove existing declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+                }
+            }
+            while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
+            {
+                Debug.WriteLine("Could not add declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
             }
         }
 
@@ -240,7 +279,10 @@ namespace Rubberduck.Parsing.VBA
             {
                 foreach (var component in project.VBComponents.Cast<VBComponent>())
                 {
-                    ClearDeclarations(component);
+                    while (!ClearDeclarations(component))
+                    {
+                        // until Hell freezes over?
+                    }
                 }
             }
             catch (COMException)
@@ -249,26 +291,44 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void ClearDeclarations(VBComponent component)
+        public void ClearBuiltInReferences()
         {
-            var declarations = _declarations.Keys.Where(k =>
-                k.QualifiedName.QualifiedModuleName.Project == component.Collection.Parent
-                && k.ComponentName == component.Name);
-
-            foreach (var declaration in declarations)
+            foreach (var item in AllDeclarations.Where(item => item.IsBuiltIn && item.References.Any()))
             {
-                RemoveDeclaration(declaration);
+                item.ClearReferences();
             }
+        }
 
-            var components = _comments.Keys.Where(k =>
-                k.Collection.Parent == component.Collection.Parent
-                && k.Name == component.Name);
+        public bool ClearDeclarations(VBComponent component)
+        {
+            var project = component.Collection.Parent;
+            var keys = _declarations.Keys.Where(kvp => 
+                kvp.Project == project && kvp.Component == component);
+
+            var success = true;
+            foreach (var key in keys)
+            {
+                ConcurrentDictionary<Declaration, byte> declarations;
+                success = success && (!_declarations.ContainsKey(key) || _declarations.TryRemove(key, out declarations));
+            }
+            
+            ParserState state;
+            success = success && (!_moduleStates.ContainsKey(component) || _moduleStates.TryRemove(component, out state));
+
+            SyntaxErrorException exception;
+            success = success && (!_moduleExceptions.ContainsKey(component) || _moduleExceptions.TryRemove(component, out exception));
+
+            var components = _comments.Keys.Where(key =>
+                key.Collection.Parent == project && key.Name == component.Name);
 
             foreach (var commentKey in components)
             {
                 IList<CommentNode> nodes;
-                _comments.TryRemove(commentKey, out nodes);
+                success = success && (!_comments.ContainsKey(commentKey) || _comments.TryRemove(commentKey, out nodes));
             }
+
+            Debug.WriteLine("ClearDeclarations({0}): {1}", component.Name, success ? "succeeded" : "failed");
+            return success;
         }
 
         public void AddTokenStream(VBComponent component, ITokenStream stream)
@@ -279,6 +339,11 @@ namespace Rubberduck.Parsing.VBA
         public void AddParseTree(VBComponent component, IParseTree parseTree)
         {
             _parseTrees[component] = parseTree;
+        }
+
+        public IParseTree GetParseTree(VBComponent component)
+        {
+            return _parseTrees[component];
         }
 
         public IEnumerable<KeyValuePair<VBComponent, IParseTree>> ParseTrees { get { return _parseTrees; } }
@@ -295,55 +360,29 @@ namespace Rubberduck.Parsing.VBA
         /// <returns>Returns true when successful.</returns>
         public bool RemoveDeclaration(Declaration declaration)
         {
-            ResolutionState state;
-            return _declarations.TryRemove(declaration, out state);
+            var key = declaration.QualifiedName.QualifiedModuleName;
+
+            byte _;
+            return _declarations[key].TryRemove(declaration, out _);
         }
 
         /// <summary>
         /// Ensures parser state accounts for built-in declarations.
         /// This method has no effect if built-in declarations have already been loaded.
         /// </summary>
-        public void AddBuiltInDeclarations(IHostApplication hostApplication)
-        {
-            if (_declarations.Any(declaration => declaration.Key.IsBuiltIn))
-            {
-                return;
-            }
-
-            var builtInDeclarations = VbaStandardLib.Declarations;
-
-            // cannot be strongly-typed here because of constraints on COM interop and generics in the inheritance hierarchy. </rant>
-            if (hostApplication != null && hostApplication.ApplicationName == "Excel")
-            {
-                builtInDeclarations = builtInDeclarations.Concat(ExcelObjectModel.Declarations);
-            }
-
-            foreach (var declaration in builtInDeclarations)
-            {
-                AddDeclaration(declaration);
-            }
-        }
-
-        public void ResetBuiltInDeclarationReferences()
-        {
-            foreach (var item in _declarations.Keys.Where(declaration => declaration.IsBuiltIn))
-            {
-                item.ClearReferences();
-            }
-        }
-
         /// <summary>
         /// Requests reparse for specified component.
         /// Omit parameter to request a full reparse.
         /// </summary>
+        /// <param name="requestor">The object requesting a reparse.</param>
         /// <param name="component">The component to reparse.</param>
-        public void OnParseRequested(VBComponent component = null)
+        public void OnParseRequested(object requestor, VBComponent component = null)
         {
             var handler = ParseRequest;
             if (handler != null)
             {
                 var args = new ParseRequestEventArgs(component);
-                handler.Invoke(this, args);
+                handler.Invoke(requestor, args);
             }
         }
     }

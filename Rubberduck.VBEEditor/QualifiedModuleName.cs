@@ -91,6 +91,8 @@ namespace Rubberduck.VBEditor
 
         public override bool Equals(object obj)
         {
+            if (obj == null) { return false; }
+
             try
             {
                 var other = (QualifiedModuleName)obj;

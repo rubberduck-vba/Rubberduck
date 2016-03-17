@@ -1775,6 +1775,78 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parse Error.
+        /// </summary>
+        public static string ParserState_Error {
+            get {
+                return ResourceManager.GetString("ParserState_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading references.
+        /// </summary>
+        public static string ParserState_LoadingReference {
+            get {
+                return ResourceManager.GetString("ParserState_LoadingReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parsed.
+        /// </summary>
+        public static string ParserState_Parsed {
+            get {
+                return ResourceManager.GetString("ParserState_Parsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parsing....
+        /// </summary>
+        public static string ParserState_Parsing {
+            get {
+                return ResourceManager.GetString("ParserState_Parsing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending.
+        /// </summary>
+        public static string ParserState_Pending {
+            get {
+                return ResourceManager.GetString("ParserState_Pending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ready.
+        /// </summary>
+        public static string ParserState_Ready {
+            get {
+                return ResourceManager.GetString("ParserState_Ready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resolver Error.
+        /// </summary>
+        public static string ParserState_ResolverError {
+            get {
+                return ResourceManager.GetString("ParserState_ResolverError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resolving....
+        /// </summary>
+        public static string ParserState_Resolving {
+            get {
+                return ResourceManager.GetString("ParserState_Resolving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parsing project components....
         /// </summary>
         public static string ParseStarted {

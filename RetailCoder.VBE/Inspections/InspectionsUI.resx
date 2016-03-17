@@ -453,7 +453,7 @@
     <value>Pass parameter by value</value>
   </data>
   <data name="QuickFixUseTypedFunction_" xml:space="preserve">
-    <value>Change '{0}$' to '{0}'</value>
+    <value>Change '{0}' to '{0}$'</value>
   </data>
   <data name="QuickFix_ThisModule" xml:space="preserve">
     <value>Fix all occurrences in module</value>

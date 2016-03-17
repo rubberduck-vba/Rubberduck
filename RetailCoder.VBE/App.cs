@@ -96,6 +96,14 @@ namespace Rubberduck
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
+            if (!_parser.State.AllDeclarations.Any())
+            {
+                // forces menus to evaluate their CanExecute state:
+                Parser_StateChanged(this, new ParserStateEventArgs(ParserState.Pending));
+                _stateBar.SetStatusText();
+                return;
+            }
+
             Debug.WriteLine(string.Format("Project '{0}' was added.", e.Item.Name));
             var connectionPointContainer = (IConnectionPointContainer)e.Item.VBComponents;
             var interfaceId = typeof(_dispVBComponentsEvents).GUID;
@@ -115,57 +123,95 @@ namespace Rubberduck
             connectionPoint.Advise(sink, out cookie);
 
             _componentsEventsConnectionPoints.Add(e.Item.VBComponents, Tuple.Create(connectionPoint, cookie));
-            _parser.State.OnParseRequested();
+            _parser.State.OnParseRequested(sender);
         }
 
         async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_parser.State.AllDeclarations.Any())
+            {
+                return;
+            }
+
             Debug.WriteLine(string.Format("Component '{0}' was selected.", e.Item.Name));
             // do something?
         }
 
         async void sink_ComponentRenamed(object sender, DispatcherRenamedEventArgs<VBComponent> e)
         {
+            if (!_parser.State.AllDeclarations.Any())
+            {
+                return;
+            }
+
             Debug.WriteLine(string.Format("Component '{0}' was renamed.", e.Item.Name));
 
-            _parser.State.ClearDeclarations(e.Item);
-            _parser.State.OnParseRequested(e.Item);
+            _parser.State.OnParseRequested(sender, e.Item);
         }
 
         async void sink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_parser.State.AllDeclarations.Any())
+            {
+                return;
+            }
+
             Debug.WriteLine(string.Format("Component '{0}' was removed.", e.Item.Name));
             _parser.State.ClearDeclarations(e.Item);
         }
 
         async void sink_ComponentReloaded(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_parser.State.AllDeclarations.Any())
+            {
+                return;
+            }
+
             Debug.WriteLine(string.Format("Component '{0}' was reloaded.", e.Item.Name));
-            _parser.State.ClearDeclarations(e.Item);
-            _parser.State.OnParseRequested(e.Item);
+            _parser.State.OnParseRequested(sender, e.Item);
         }
 
         async void sink_ComponentAdded(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_parser.State.AllDeclarations.Any())
+            {
+                return;
+            }
+
             Debug.WriteLine(string.Format("Component '{0}' was added.", e.Item.Name));
-            _parser.State.OnParseRequested(e.Item);
+            _parser.State.OnParseRequested(sender, e.Item);
         }
 
         async void sink_ComponentActivated(object sender, DispatcherEventArgs<VBComponent> e)
         {
+            if (!_parser.State.AllDeclarations.Any())
+            {
+                return;
+            }
+
             Debug.WriteLine(string.Format("Component '{0}' was activated.", e.Item.Name));
             // do something?
         }
 
         async void sink_ProjectRenamed(object sender, DispatcherRenamedEventArgs<VBProject> e)
         {
+            if (!_parser.State.AllDeclarations.Any())
+            {
+                return;
+            }
+
             Debug.WriteLine(string.Format("Project '{0}' was renamed.", e.Item.Name));
             _parser.State.ClearDeclarations(e.Item);
-            _parser.State.OnParseRequested();
+            _parser.State.OnParseRequested(sender);
         }
 
         async void sink_ProjectActivated(object sender, DispatcherEventArgs<VBProject> e)
         {
+            if (!_parser.State.AllDeclarations.Any())
+            {
+                return;
+            }
+
             Debug.WriteLine(string.Format("Project '{0}' was activated.", e.Item.Name));
             // do something?
         }
@@ -244,11 +290,12 @@ namespace Rubberduck
 
         private void _stateBar_Refresh(object sender, EventArgs e)
         {
-            _parser.State.OnParseRequested();
+            _parser.State.OnParseRequested(sender);
         }
 
-        private void Parser_StateChanged(object sender, ParserStateEventArgs e)
+        private void Parser_StateChanged(object sender, EventArgs e)
         {
+            Debug.WriteLine("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
         }
 

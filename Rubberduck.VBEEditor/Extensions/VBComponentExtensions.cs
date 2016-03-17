@@ -16,12 +16,12 @@ namespace Rubberduck.VBEditor.Extensions
         /// </summary>
         /// <param name="component">The component to be exported to the file system.</param>
         /// <param name="directoryPath">Destination Path for the resulting source file.</param>
-        public static void ExportAsSourceFile(this VBComponent component, string directoryPath)
+        public static string ExportAsSourceFile(this VBComponent component, string directoryPath)
         {
-            string filePath = Path.Combine(directoryPath, component.Name + component.Type.FileExtension());
+            var filePath = Path.Combine(directoryPath, component.Name + component.Type.FileExtension());
             if (component.Type == vbext_ComponentType.vbext_ct_Document)
             {
-                int lineCount = component.CodeModule.CountOfLines;
+                var lineCount = component.CodeModule.CountOfLines;
                 if (lineCount > 0)
                 {
                     var text = component.CodeModule.get_Lines(1, lineCount);
@@ -32,6 +32,8 @@ namespace Rubberduck.VBEditor.Extensions
             {
                 component.Export(filePath);
             }
+
+            return filePath;
         }
 
         /// <summary>

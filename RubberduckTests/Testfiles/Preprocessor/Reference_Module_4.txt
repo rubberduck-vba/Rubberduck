@@ -1,0 +1,28 @@
+Attribute VB_Name = "vbVBAAllPri"
+Option Explicit
+Option Private Module
+
+#Const ccDebug = True
+
+Public Const ThisProject As String = "ATGfn"
+Private Const ThisModule As String = ThisProject & "|ideVBAAllPri"
+
+'Public Const EmptyDate As Date = #12:00:00 AM#: ' entspricht #00:00:00#
+'Public Const EmptyTime As Date = #12:00:00 AM#
+'Public Const EmptyString As String = ""
+
+Public Function GetccDebug() As Boolean
+    Const ThisProcedure As String = ThisModule & "|GetccDebug|Function"
+
+    On Error GoTo CatchError
+
+    #If ccDebug Then
+        GetccDebug = True
+    #Else
+        GetccDebug = False
+    #End If
+    Exit Function
+
+CatchError:
+'    vbErr.LogReraise Source:=ThisProcedure
+End Function

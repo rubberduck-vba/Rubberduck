@@ -1,0 +1,158 @@
+Attribute VB_Name = "vbXlPivotItemPri"
+Option Explicit
+Option Private Module
+
+Private Const ThisModule As String = ThisProject & "|vbXlPivotItemPri"
+
+Public Function GetPivotItemOrNothing(PivotItems As Excel.PivotItems, Index As Variant) As Excel.PivotItem
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemOrNothing|Function"
+    On Error Resume Next
+    Set GetPivotItemOrNothing = PivotItems.Item(Index:=Index)
+End Function
+
+Public Function GetPivotItemDataRangeOrNothing(PivotItem As Excel.PivotItem) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemDataRangeOrNothing|Function"
+    On Error Resume Next
+    Set GetPivotItemDataRangeOrNothing = PivotItem.DataRange
+End Function
+
+Public Function GetPivotItemPosition(PivotItem As Excel.PivotItem) As Long
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemOrNothing|Function"
+    On Error Resume Next
+    GetPivotItemPosition = PivotItem.Position
+End Function
+
+Public Function GetPivotItemsDataRange(PivotItems As Excel.PivotItems) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemsDataRange|Function"
+    Dim lcDataRange As Excel.Range
+    Dim lcPivotItem As Excel.PivotItem
+
+    For Each lcPivotItem In PivotItems
+        'Debug.Print lcPivotField.Name, lcPivotItem.Name
+        If Not GetPivotItemDataRangeOrNothing(PivotItem:=lcPivotItem) Is Nothing Then
+            If lcDataRange Is Nothing Then
+                Set lcDataRange = lcPivotItem.DataRange
+            Else
+                Set lcDataRange = Application.Union(lcDataRange _
+                                                  , lcPivotItem.DataRange _
+                                                  )
+            End If
+            'Debug.Print lcDataRange.Address
+        End If
+    Next
+    Set GetPivotItemsDataRange = lcDataRange
+End Function
+
+Private Sub GetDateFromPivotItemValueTest()
+    Const ThisProcedure As String = ThisModule & "|GetDateFromPivotItemValueTest|Sub"
+Debug.Print GetDateFromPivotItemValue("2/3/2011")
+Debug.Print GetDateFromPivotItemValue("2/3/2011 12:34:56")
+End Sub
+Public Function GetDateFromPivotItemValue(PivotItemValue As String) As Date
+    Const ThisProcedure As String = ThisModule & "|GetDateFromPivotItemValue|Function"
+    Dim laDateTime As Variant
+    Dim laDate As Variant
+    Dim lvDate As Date
+
+    laDateTime = VBA.Split(PivotItemValue, ConChrSpace)
+    laDate = VBA.Split(laDateTime(Lo0), ConChrSlash)
+    lvDate = VBA.DateSerial(Year:=VBA.CInt(laDate(Lo2)), Month:=VBA.CInt(laDate(Lo1)), Day:=VBA.CInt(laDate(Lo0)))
+    If UBound(laDateTime) > LBound(laDateTime) Then
+        lvDate = lvDate + VBA.TimeValue(laDateTime(Lo1))
+    End If
+    GetDateFromPivotItemValue = lvDate
+End Function
+
+Private Sub PivotCellValuesColumnRangeTest()
+    Const ThisProcedure As String = ThisModule & "|PivotCellValuesColumnRangeTest|Sub"
+Debug.Print PivotCellValuesColumnRange(ActiveCell.PivotTable).Address
+End Sub
+Public Function PivotCellValuesColumnRange(PivotTable As Excel.PivotTable) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|PivotCellValuesColumnRange|Function"
+    Dim lcCell As Excel.Range
+    Dim lcPivotField As Excel.PivotField
+    Dim lcPivotFields As Excel.PivotFields
+    Dim lcRange As Excel.Range
+
+    Set lcPivotFields = PivotTable.ColumnFields
+    With lcPivotFields
+        Set lcPivotField = .Item(Index:=.Count)
+    End With
+
+    For Each lcCell In lcPivotField.DataRange
+        With lcCell
+            If .PivotCell.PivotCellType = XlPivotCellType.xlPivotCellPivotItem Then
+                If lcRange Is Nothing Then
+                    Set lcRange = lcCell
+                Else
+                    Set lcRange = Application.Union(Arg1:=lcRange, Arg2:=lcCell)
+                End If
+            End If
+        End With
+    Next
+
+    Set PivotCellValuesColumnRange = lcRange
+End Function
+
+Private Sub PivotCellValuesRowRangeTest()
+    Const ThisProcedure As String = ThisModule & "|PivotCellValuesRowRangeTest|Sub"
+Debug.Print PivotCellValuesRowRange(ActiveCell.PivotTable).Address
+End Sub
+Public Function PivotCellValuesRowRange(PivotTable As Excel.PivotTable) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|PivotCellValuesRowRange|Function"
+    Dim lcCell As Excel.Range
+    Dim lcPivotField As Excel.PivotField
+    Dim lcPivotFields As Excel.PivotFields
+    Dim lcRange As Excel.Range
+
+    Set lcPivotFields = PivotTable.RowFields
+    With lcPivotFields
+        Set lcPivotField = .Item(Index:=.Count)
+    End With
+
+    For Each lcCell In lcPivotField.DataRange
+        With lcCell
+            If .PivotCell.PivotCellType = XlPivotCellType.xlPivotCellPivotItem Then
+                If lcRange Is Nothing Then
+                    Set lcRange = lcCell
+                Else
+                    Set lcRange = Application.Union(Arg1:=lcRange, Arg2:=lcCell)
+                End If
+            End If
+        End With
+    Next
+
+    Set PivotCellValuesRowRange = lcRange
+End Function
+
+Private Sub GetPivotItemPivotCellValueRangeTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemPivotCellValueRangeTest|Sub"
+Debug.Print GetPivotItemPivotCellValueRange(ActiveCell.PivotTable.RowFields(1).PivotItems(1)).Address
+End Sub
+Public Function GetPivotItemPivotCellValueRange(PivotItem As Excel.PivotItem) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemPivotCellValueRange|Function"
+    Dim lcCell As Excel.Range
+    Dim lcRange As Excel.Range
+    Dim lcPivotField As Excel.PivotField
+    Dim lcPivotLine As Excel.PivotLine
+
+    Set lcPivotField = PivotItem.Parent
+    With lcPivotField
+        Select Case .Orientation
+            Case XlPivotFieldOrientation.xlColumnField
+                Set lcRange = GetPivotAxisRowDataRange(PivotTable:=lcPivotField.Parent)
+
+            Case XlPivotFieldOrientation.xlRowField
+                Set lcRange = GetPivotAxisColumnDataRange(PivotTable:=lcPivotField.Parent)
+
+            Case Else
+
+        End Select
+
+    End With
+
+    Set GetPivotItemPivotCellValueRange = Application.Intersect(Arg1:=PivotItem.DataRange _
+                                                              , Arg2:=lcRange.EntireColumn _
+                                                              )
+End Function
+

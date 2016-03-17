@@ -42,6 +42,7 @@ namespace RubberduckTests.Mocks
             }
 
             _vbe.SetupGet(vbe => vbe.ActiveVBProject).Returns(project.Object);
+            _vbe.SetupGet(vbe => vbe.Version).Returns("7.1");
 
             _vbProjects = CreateProjectsMock();
             _vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
@@ -78,8 +79,13 @@ namespace RubberduckTests.Mocks
         /// <returns></returns>
         public Mock<VBE> BuildFromSingleStandardModule(string content, out VBComponent component)
         {
+            return BuildFromSingleModule(content, vbext_ComponentType.vbext_ct_StdModule, out component);
+        }
+
+        public Mock<VBE> BuildFromSingleModule(string content, vbext_ComponentType type, out VBComponent component)
+        {
             var builder = ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
-            builder.AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, content);
+            builder.AddComponent("TestModule1", type, content);
             var project = builder.Build();
             component = project.Object.VBComponents.Item(0);
             return AddProject(project).Build();
