@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var declarations = Declarations.ToList();
+            var declarations = UserDeclarations.ToList();
 
             var interfaceMemberScopes = declarations.FindInterfaceMembers().Select(m => m.Scope).ToList();
             var interfaceImplementationMemberScopes = declarations.FindInterfaceImplementationMembers().Select(m => m.Scope).ToList();

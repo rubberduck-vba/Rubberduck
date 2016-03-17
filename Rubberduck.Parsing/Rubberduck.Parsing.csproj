@@ -156,13 +156,14 @@
     <Compile Include="Preprocessing\VBAPredefinedCompilationConstants.cs" />
     <Compile Include="Preprocessing\VBAPreprocessor.cs" />
     <Compile Include="Preprocessing\VBAPreprocessorVisitor.cs" />
-    <Compile Include="Symbols\AdodbObjectModel.cs" />
     <Compile Include="Symbols\CommentExtensions.cs" />
     <Compile Include="Symbols\DeclarationEventArgs.cs" />
-    <Compile Include="Symbols\ExcelObjectModel.cs" />
+    <Compile Include="Symbols\DeclarationFinder.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
     <Compile Include="Symbols\MemberProcessedEventArgs.cs" />
+    <Compile Include="Symbols\ParameterDeclaration.cs" />
+    <Compile Include="Symbols\ReferencedDeclarationsCollector.cs" />
     <Compile Include="Symbols\SyntaxErrorException.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />
@@ -176,9 +177,18 @@
     <Compile Include="Symbols\DeclarationType.cs" />
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
-    <Compile Include="Symbols\MsFormsLib.cs" />
     <Compile Include="Symbols\ValuedDeclaration.cs" />
-    <Compile Include="Symbols\VbaStandardLib.cs" />
+    <Compile Include="VBA\AttributeParser.cs" />
+    <Compile Include="VBA\Attributes.cs" />
+    <Compile Include="VBA\AttributesBaseListener.cs" />
+    <Compile Include="VBA\AttributesBaseVisitor.cs" />
+    <Compile Include="VBA\AttributesLexer.cs" />
+    <Compile Include="VBA\AttributesListener.cs" />
+    <Compile Include="VBA\AttributesParser.cs" />
+    <Compile Include="VBA\AttributesVisitor.cs" />
+    <Compile Include="VBA\EnumerableExtensions.cs" />
+    <Compile Include="VBA\IAttributeParser.cs" />
+    <Compile Include="VBA\IModuleExporter.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
@@ -200,6 +210,11 @@
     <None Include="Preprocessing\VBAConditionalCompilation.g4" />
     <None Include="Preprocessing\VBADate.g4" />
     <None Include="Preprocessing\VBALike.g4" />
+    <None Include="VBA\Attributes.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
@@ -207,9 +222,7 @@
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="obj\Debug\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
