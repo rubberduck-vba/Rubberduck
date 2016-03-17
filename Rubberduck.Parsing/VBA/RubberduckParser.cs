@@ -92,6 +92,10 @@ namespace Rubberduck.Parsing.VBA
             {
                 AddDeclarationsFromProjectReferences(projects);
             }
+            else
+            {
+                _state.ClearBuiltInReferences();
+            }
 
             var components = projects
                 .SelectMany(project => project.VBComponents.Cast<VBComponent>())
@@ -264,8 +268,6 @@ namespace Rubberduck.Parsing.VBA
         {
             try
             {
-                //Parallel.ForEach(_state.AllDeclarations, declaration => declaration.ClearReferences());
-
                 foreach (var kvp in _state.ParseTrees)
                 {
                     ResolveReferences(finder, kvp.Key, kvp.Value);

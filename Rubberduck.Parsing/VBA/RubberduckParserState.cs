@@ -291,6 +291,14 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public void ClearBuiltInReferences()
+        {
+            foreach (var item in AllDeclarations.Where(item => item.IsBuiltIn && item.References.Any()))
+            {
+                item.ClearReferences();
+            }
+        }
+
         public bool ClearDeclarations(VBComponent component)
         {
             var project = component.Collection.Parent;

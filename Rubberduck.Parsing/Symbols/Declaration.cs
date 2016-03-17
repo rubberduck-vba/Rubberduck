@@ -562,7 +562,11 @@ namespace Rubberduck.Parsing.Symbols
 
         public void ClearReferences()
         {
-            _references = new ConcurrentBag<IdentifierReference>();
+            while (!_references.IsEmpty)
+            {
+                IdentifierReference reference;
+                _references.TryTake(out reference);
+            }
         }
     }
 }
