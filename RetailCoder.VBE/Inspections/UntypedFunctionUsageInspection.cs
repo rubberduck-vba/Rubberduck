@@ -45,8 +45,8 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var declarations = BuiltInDeclarations
-                .Where(item => item.DeclarationType == DeclarationType.Function
-                               && _tokens.Any(token => item.IdentifierName.EndsWith("_var_" + token)));
+                    // note: these *should* be functions, but somehow they're not defined as such
+                .Where(item => _tokens.Any(token => item.IdentifierName == ("_B_var_" + token) && item.References.Any()));
 
             return declarations.SelectMany(declaration => declaration.References
                 .Select(item => new UntypedFunctionUsageInspectionResult(this, string.Format(Description, declaration.IdentifierName), item.QualifiedModuleName, item.Context)));

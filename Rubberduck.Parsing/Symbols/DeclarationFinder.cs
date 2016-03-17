@@ -56,7 +56,18 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return result;
             }
-
+            if (_declarationsByName.TryGetValue("_" + name, out result))
+            {
+                return result;
+            }
+            if (_declarationsByName.TryGetValue("I" + name, out result))
+            {
+                return result;
+            }
+            if (_declarationsByName.TryGetValue("_I" + name, out result))
+            {
+                return result;
+            }
             return new List<Declaration>();
         }
 

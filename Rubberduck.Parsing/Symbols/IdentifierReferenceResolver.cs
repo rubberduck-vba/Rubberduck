@@ -1092,8 +1092,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             // the "$" in e.g. "UCase$" isn't picked up as part of the identifierName, so we need to add it manually:
             var matches = _declarationFinder.MatchName(identifierName).Where(item => 
-                (!item.IsBuiltIn || item.IdentifierName == identifierName + (hasStringQualifier ? "$" : string.Empty))
-                && item.ParentDeclaration != null && ((item.ParentDeclaration.DeclarationType == DeclarationType.Module
+                item.ParentDeclaration != null && ((item.ParentDeclaration.DeclarationType == DeclarationType.Module
                     || item.ParentDeclaration.HasPredeclaredId))
                   || item.ParentScopeDeclaration.Equals(localScope)).ToList();
 
@@ -1152,12 +1151,22 @@ namespace Rubberduck.Parsing.Symbols
 
                     Debug.WriteLine("Ambiguous match in '{0}': '{1}'", localScope == null ? "(unknown)" : localScope.IdentifierName, identifierName);
                 }
-                if (temp.Count == 0)
-                {
-                    Debug.WriteLine("Unknown identifier in '{0}': '{1}'", localScope == null ? "(unknown)" : localScope.IdentifierName, identifierName);
-                }
             }
 
+            // VBA.Strings.Left function is actually called _B_var_Left;
+            // VBA.Strings.Left$ is _B_str_Left.
+            // same for all $-terminated functions.
+            var surrogateName = hasStringQualifier
+                ? "_B_str_" + identifierName
+                : "_B_var_" + identifierName;
+
+            matches = _declarationFinder.MatchName(surrogateName).ToList();
+            if (matches.Count == 1)
+            {
+                return matches.Single();
+            }
+
+            Debug.WriteLine("Unknown identifier in '{0}': '{1}'", localScope == null ? "(unknown)" : localScope.IdentifierName, identifierName);
             return null;
         }
 
