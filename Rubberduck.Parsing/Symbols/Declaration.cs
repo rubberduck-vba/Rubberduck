@@ -52,7 +52,7 @@ namespace Rubberduck.Parsing.Symbols
             _context = context;
             _isBuiltIn = isBuiltIn;
             _annotations = annotations;
-            _attributes = attributes;
+            _attributes = attributes ?? new Attributes();
 
             _projectName = _qualifiedName.QualifiedModuleName.ProjectName;
 

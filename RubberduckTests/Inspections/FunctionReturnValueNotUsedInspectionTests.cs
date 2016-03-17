@@ -355,7 +355,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_InterfaceImplementationMember()
+        public void GivenInterfaceImplementationMember_ReturnsNoResult()
         {
             const string interfaceCode =
 @"Public Function Test() As Integer

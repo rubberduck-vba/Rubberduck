@@ -65,7 +65,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void ConstantNotUsed_DoesNotReturnResult()
+        public void GivenReferencedConstant_ReturnsNoInspectionResult()
         {
             const string inputCode =
 @"Public Sub Foo()
@@ -94,7 +94,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void ConstantNotUsed_ReturnsResult_SomeConstantsUsed()
+        public void GivenConstantNotUsed_ReturnsResultForUnusedConstant()
         {
             const string inputCode =
 @"Public Sub Foo()

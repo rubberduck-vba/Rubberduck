@@ -192,36 +192,35 @@ Public foo As Integer
         }
 
         [TestMethod]
-        public void PublicInstanceVariable_DoesNotRequireInstance()
+        public void PublicVariableAssignment_IsReferenceToVariableDeclaration()
         {
-            // todo: reverse this test condition when we can read module attributes
-
             // arrange
             var code_class1 = @"
 Public Sub DoSomething()
-    Debug.Print foo
+    foo = 42
 End Sub
 ";
-            var code_class2 = @"
+            var code_module1 = @"
 Option Explicit
 Public foo As Integer
 ";
+            var class1 = Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule);
+            var module1 = Tuple.Create(code_module1, vbext_ComponentType.vbext_ct_StdModule);
+
             // act
-            var state = Resolve(code_class1, code_class2);
+            var state = Resolve(class1, module1);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
-            var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment
-                && item.ParentScoping.IdentifierName == "DoSomething"
-                && item.ParentScoping.DeclarationType == DeclarationType.Procedure);
-
+            var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
             Assert.IsNotNull(reference);
+            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
 
         [TestMethod]
-        public void PublicVariableAssignment_IsReferenceToVariableDeclaration()
+        public void EncapsulatedVariableAssignment_DoesNotResolve()
         {
             // arrange
             var code_class1 = @"
@@ -233,16 +232,18 @@ End Sub
 Option Explicit
 Public foo As Integer
 ";
+            var class1 = Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule);
+            var class2 = Tuple.Create(code_class2, vbext_ComponentType.vbext_ct_ClassModule);
+
             // act
-            var state = Resolve(code_class1, code_class2);
+            var state = Resolve(class1, class2);
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
             var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
-            Assert.IsNotNull(reference);
-            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+            Assert.IsNull(reference);
         }
 
         [TestMethod]

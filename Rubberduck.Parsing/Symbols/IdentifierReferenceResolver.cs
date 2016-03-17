@@ -112,7 +112,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 else
                 {
-                    //qualifier = ResolveType(typeContext.complexType());
+                    qualifier = ResolveType(typeContext.complexType());
                 }
             }
 
@@ -160,11 +160,11 @@ namespace Rubberduck.Parsing.Symbols
             ResolveType(identifiers);
         }
 
-        private void ResolveType(VBAParser.ComplexTypeContext context)
+        private Declaration ResolveType(VBAParser.ComplexTypeContext context)
         {
             if (context == null)
             {
-                return;
+                return null;
             }
 
             var identifiers = context.ambiguousIdentifier()
@@ -175,19 +175,19 @@ namespace Rubberduck.Parsing.Symbols
             if (identifiers.Count == 1)
             {
                 var type = ResolveInScopeType(identifiers.Single().GetText(), _currentScope);
-                if (type != null)
+                if (type != null && !_alreadyResolved.Contains(context))
                 {
                     type.AddReference(CreateReference(context, type));
                     _alreadyResolved.Add(context);
                 }
-                return;
+                return type;
             }
 
             // if there's 2 or more identifiers, resolve to the deepest path:
-            ResolveType(identifiers);
+            return ResolveType(identifiers);
         }
 
-        private void ResolveType(IList<VBAParser.AmbiguousIdentifierContext> identifiers)
+        private Declaration ResolveType(IList<VBAParser.AmbiguousIdentifierContext> identifiers)
         {
             var first = identifiers[0].GetText();
             var projectMatch = _declarationFinder.FindProject(_currentScope, first);
@@ -214,38 +214,56 @@ namespace Rubberduck.Parsing.Symbols
                         {
                             var udtReference = CreateReference(identifiers[2], udtMatch);
 
-                            projectMatch.AddReference(projectReference);
-                            _alreadyResolved.Add(projectReference.Context);
+                            if (!_alreadyResolved.Contains(projectReference.Context))
+                            {
+                                projectMatch.AddReference(projectReference);
+                                _alreadyResolved.Add(projectReference.Context);
+                            }
 
-                            moduleMatch.AddReference(moduleReference);
-                            _alreadyResolved.Add(moduleReference.Context);
+                            if (!_alreadyResolved.Contains(moduleReference.Context))
+                            {
+                                moduleMatch.AddReference(moduleReference);
+                                _alreadyResolved.Add(moduleReference.Context);
+                            }
 
-                            udtMatch.AddReference(udtReference);
-                            _alreadyResolved.Add(udtReference.Context);
+                            if (!_alreadyResolved.Contains(udtReference.Context))
+                            {
+                                udtMatch.AddReference(udtReference);
+                                _alreadyResolved.Add(udtReference.Context);
+                            }
 
-                            return;
+                            return udtMatch;
                         }
                         var enumMatch = _declarationFinder.FindEnum(moduleMatch, identifiers[2].GetText());
                         if (enumMatch != null)
                         {
                             var enumReference = CreateReference(identifiers[2], enumMatch);
 
-                            projectMatch.AddReference(projectReference);
-                            _alreadyResolved.Add(projectReference.Context);
+                            if (!_alreadyResolved.Contains(projectReference.Context))
+                            {
+                                projectMatch.AddReference(projectReference);
+                                _alreadyResolved.Add(projectReference.Context);
+                            }
 
-                            moduleMatch.AddReference(moduleReference);
-                            _alreadyResolved.Add(moduleReference.Context);
+                            if (!_alreadyResolved.Contains(moduleReference.Context))
+                            {
+                                moduleMatch.AddReference(moduleReference);
+                                _alreadyResolved.Add(moduleReference.Context);
+                            }
 
-                            enumMatch.AddReference(enumReference);
-                            _alreadyResolved.Add(enumReference.Context);
+                            if (!_alreadyResolved.Contains(enumReference.Context))
+                            {
+                                enumMatch.AddReference(enumReference);
+                                _alreadyResolved.Add(enumReference.Context);
+                            }
 
-                            return;
+                            return enumMatch;
                         }
                     }
                 }
                 else
                 {
-                    if (projectReference != null)
+                    if (projectReference != null && !_alreadyResolved.Contains(projectReference.Context))
                     {
                         projectMatch.AddReference(projectReference);
                         _alreadyResolved.Add(projectReference.Context);
@@ -257,12 +275,12 @@ namespace Rubberduck.Parsing.Symbols
                     if (match != null)
                     {
                         var reference = CreateReference(identifiers[1], match);
-                        if (reference != null)
+                        if (reference != null && !_alreadyResolved.Contains(reference.Context))
                         {
                             match.AddReference(reference);
                             _alreadyResolved.Add(reference.Context);
-                            return;
                         }
+                        return match;
                     }
                 }
             }
@@ -284,14 +302,24 @@ namespace Rubberduck.Parsing.Symbols
                     {
                         var reference = CreateReference(identifiers[1], match);
 
-                        moduleMatch.AddReference(moduleReference);
-                        _alreadyResolved.Add(moduleReference.Context);
+                        if (!_alreadyResolved.Contains(moduleReference.Context))
+                        {
+                            moduleMatch.AddReference(moduleReference);
+                            _alreadyResolved.Add(moduleReference.Context);
+                        }
 
-                        match.AddReference(reference);
-                        _alreadyResolved.Add(reference.Context);
+                        if (!_alreadyResolved.Contains(reference.Context))
+                        {
+                            match.AddReference(reference);
+                            _alreadyResolved.Add(reference.Context);
+                        }
+
+                        return match;
                     }
                 }
             }
+
+            return null;
         }
 
         private Declaration ResolveInScopeType(string identifier, Declaration scope)
@@ -379,11 +407,6 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            if (_alreadyResolved.Contains(callSiteContext))
-            {
-                return null;
-            }
-
             if (!IdentifierContexts.Contains(callSiteContext.GetType()))
             {
                 throw new ArgumentException("'" + callSiteContext.GetType().Name + "' is not an identifier context.", "callSiteContext");
@@ -440,7 +463,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var reference = CreateReference(callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement);
-            if (reference != null)
+            if (reference != null && !_alreadyResolved.Contains(reference.Context))
             {
                 callee.AddReference(reference);
                 _alreadyResolved.Add(reference.Context);
@@ -989,7 +1012,9 @@ namespace Rubberduck.Parsing.Symbols
             var matches = _declarationFinder.MatchName(identifierName);
 
             var results = matches.Where(item =>
-                (localScope.Equals(item.ParentScopeDeclaration) || (isAssignmentTarget && item.Scope == localScope.Scope))
+                ((localScope.Equals(item.ParentDeclaration)
+                || (item.DeclarationType == DeclarationType.Parameter && localScope.Equals(item.ParentScopeDeclaration))) 
+                || (isAssignmentTarget && item.Scope == localScope.Scope))
                 && localScope.Context.GetSelection().Contains(item.Selection)
                 && !_moduleTypes.Contains(item.DeclarationType))
                 .ToList();
@@ -1068,10 +1093,9 @@ namespace Rubberduck.Parsing.Symbols
             // the "$" in e.g. "UCase$" isn't picked up as part of the identifierName, so we need to add it manually:
             var matches = _declarationFinder.MatchName(identifierName).Where(item => 
                 (!item.IsBuiltIn || item.IdentifierName == identifierName + (hasStringQualifier ? "$" : string.Empty))
-                /*&& item.ParentDeclaration.DeclarationType == DeclarationType.Module*/).ToList();
-
-            // note: we cannot be sure that a class has no PredeclaredId until we can read attributes.
-            // for this reason we cannot limit the scope of public members to DeclarationType.Module.
+                && ((item.ParentDeclaration.DeclarationType == DeclarationType.Module
+                    || item.ParentDeclaration.HasPredeclaredId))
+                  || item.ParentScopeDeclaration.Equals(localScope)).ToList();
 
             if (matches.Count == 1)
             {
