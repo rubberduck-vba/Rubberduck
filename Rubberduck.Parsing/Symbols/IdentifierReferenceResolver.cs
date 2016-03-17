@@ -1093,7 +1093,7 @@ namespace Rubberduck.Parsing.Symbols
             // the "$" in e.g. "UCase$" isn't picked up as part of the identifierName, so we need to add it manually:
             var matches = _declarationFinder.MatchName(identifierName).Where(item => 
                 (!item.IsBuiltIn || item.IdentifierName == identifierName + (hasStringQualifier ? "$" : string.Empty))
-                && ((item.ParentDeclaration.DeclarationType == DeclarationType.Module
+                && item.ParentDeclaration != null && ((item.ParentDeclaration.DeclarationType == DeclarationType.Module
                     || item.ParentDeclaration.HasPredeclaredId))
                   || item.ParentScopeDeclaration.Equals(localScope)).ToList();
 
