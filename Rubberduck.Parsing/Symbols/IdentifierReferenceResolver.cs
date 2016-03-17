@@ -366,7 +366,13 @@ namespace Rubberduck.Parsing.Symbols
                 ? parent.AsTypeName.Split('.').Last() // bug: this can't be right
                 : parent.AsTypeName;
 
-            var matches = _declarationFinder.MatchName(identifier).ToList();
+            identifier = identifier.StartsWith("VT_") ? parent.IdentifierName : identifier;
+
+            var matches = _declarationFinder.MatchTypeName(identifier).ToList();
+            if (matches.Count == 1)
+            {
+                return matches.Single();
+            }
 
             var result = matches.Where(item =>
                 (item.DeclarationType == DeclarationType.UserDefinedType
@@ -1080,8 +1086,8 @@ namespace Rubberduck.Parsing.Symbols
 
             var matches = _declarationFinder.MatchName(identifierName);
             var result = matches.Where(item =>
-                item.Project == localScope.Project 
-                && item.ComponentName == localScope.ComponentName 
+                localScope.ProjectName == item.ProjectName
+                && (localScope.ComponentName.Replace("_", string.Empty) == item.ComponentName.Replace("_", string.Empty))
                 && (IsProcedure(item, localScope) || IsPropertyAccessor(item, accessorType, localScope, isAssignmentTarget)))
             .ToList();
 
