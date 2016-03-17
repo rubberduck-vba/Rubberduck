@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -50,8 +49,21 @@ namespace Rubberduck.UI.SourceControl
         public void RefreshView()
         {
             OnPropertyChanged("CurrentBranch");
-            OnPropertyChanged("IncludedChanges");
-            OnPropertyChanged("UntrackedFiles");
+
+            IncludedChanges = Provider == null
+                ? new ObservableCollection<IFileStatusEntry>()
+                : new ObservableCollection<IFileStatusEntry>(
+                    Provider.Status()
+                        .Where(
+                            stat =>
+                                (stat.FileStatus.HasFlag(FileStatus.Modified) ||
+                                 stat.FileStatus.HasFlag(FileStatus.Added)) &&
+                                !ExcludedChanges.Select(f => f.FilePath).Contains(stat.FilePath)));
+
+            UntrackedFiles = Provider == null
+                ? new ObservableCollection<IFileStatusEntry>()
+                : new ObservableCollection<IFileStatusEntry>(
+                    Provider.Status().Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)));
         }
 
         private void Provider_BranchChanged(object sender, EventArgs e)
@@ -66,35 +78,45 @@ namespace Rubberduck.UI.SourceControl
 
         public CommitAction CommitAction { get; set; }
 
-        public IEnumerable<IFileStatusEntry> IncludedChanges
+        private ObservableCollection<IFileStatusEntry> _includedChanges;
+        public ObservableCollection<IFileStatusEntry> IncludedChanges
         {
-            get
+            get { return _includedChanges; }
+            set
             {
-                return Provider == null
-                    ? new ObservableCollection<IFileStatusEntry>()
-                    : new ObservableCollection<IFileStatusEntry>(
-                        Provider.Status()
-                            .Where(stat =>
-                                    (stat.FileStatus.HasFlag(FileStatus.Modified) ||
-                                    stat.FileStatus.HasFlag(FileStatus.Added)) &&
-                                    !ExcludedChanges.Select(f => f.FilePath).Contains(stat.FilePath)));
+                if (_includedChanges != value)
+                {
+                    _includedChanges = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
-        private readonly ObservableCollection<IFileStatusEntry> _excludedChanges = new ObservableCollection<IFileStatusEntry>();
+        private ObservableCollection<IFileStatusEntry> _excludedChanges = new ObservableCollection<IFileStatusEntry>();
         public ObservableCollection<IFileStatusEntry> ExcludedChanges
         {
             get { return _excludedChanges; }
+            set 
+            {
+                if (_excludedChanges != value)
+                {
+                    _excludedChanges = value;
+                    OnPropertyChanged();
+                } 
+            }
         }
 
-        public IEnumerable<IFileStatusEntry> UntrackedFiles
+        private ObservableCollection<IFileStatusEntry> _untrackedFiles;
+        public ObservableCollection<IFileStatusEntry> UntrackedFiles
         {
-            get
+            get { return _untrackedFiles; }
+            set 
             {
-                return Provider == null
-                    ? new ObservableCollection<IFileStatusEntry>()
-                    : new ObservableCollection<IFileStatusEntry>(
-                        Provider.Status().Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)));
+                if (_untrackedFiles != value)
+                {
+                    _untrackedFiles = value;
+                    OnPropertyChanged();
+                } 
             }
         }
 
