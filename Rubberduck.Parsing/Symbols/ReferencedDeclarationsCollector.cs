@@ -16,6 +16,7 @@ using PARAMFLAG = System.Runtime.InteropServices.ComTypes.PARAMFLAG;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
+using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 
 namespace Rubberduck.Parsing.Symbols
@@ -125,14 +126,20 @@ namespace Rubberduck.Parsing.Symbols
                     typeQualifiedMemberName = new QualifiedMemberName(typeQualifiedModuleName, typeName);
                 }
 
-                var moduleDeclaration = new Declaration(typeQualifiedMemberName, projectDeclaration, projectDeclaration, typeName, false, false, Accessibility.Global, typeDeclarationType, null, Selection.Home);
-                yield return moduleDeclaration;
-
                 IntPtr typeAttributesPointer;
                 info.GetTypeAttr(out typeAttributesPointer);
 
                 var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof (TYPEATTR));
                 //var implements = GetImplementedInterfaceNames(typeAttributes, info);
+
+                var attributes = new Attributes();
+                if (typeAttributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FPREDECLID))
+                {
+                    attributes.AddPredeclaredIdTypeAttribute();
+                }
+
+                var moduleDeclaration = new Declaration(typeQualifiedMemberName, projectDeclaration, projectDeclaration, typeName, false, false, Accessibility.Global, typeDeclarationType, null, Selection.Home, true, null, attributes);
+                yield return moduleDeclaration;
                 
                 for (var memberIndex = 0; memberIndex < typeAttributes.cFuncs; memberIndex++)
                 {

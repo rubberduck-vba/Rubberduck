@@ -1088,13 +1088,26 @@ namespace Rubberduck.Parsing.Symbols
             return result.Count == 1 ? result.SingleOrDefault() : null;
         }
 
+        private bool IsStdModuleMember(Declaration declaration)
+        {
+            return declaration.ParentDeclaration != null
+                   && declaration.ParentDeclaration.DeclarationType == DeclarationType.Module;
+        }
+
+        private bool IsStaticClass(Declaration declaration)
+        {
+            return declaration.ParentDeclaration != null
+                   && declaration.ParentDeclaration.DeclarationType == DeclarationType.Class
+                   && (declaration.ParentDeclaration.HasPredeclaredId || declaration.IsBuiltIn);
+        }
+
         private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasStringQualifier = false)
         {
-            // the "$" in e.g. "UCase$" isn't picked up as part of the identifierName, so we need to add it manually:
             var matches = _declarationFinder.MatchName(identifierName).Where(item => 
-                item.ParentDeclaration != null && ((item.ParentDeclaration.DeclarationType == DeclarationType.Module
-                    || item.ParentDeclaration.HasPredeclaredId))
-                  || item.ParentScopeDeclaration.Equals(localScope)).ToList();
+                item.ParentDeclaration == null 
+                || IsStdModuleMember(item)
+                || IsStaticClass(item)
+                || item.ParentScopeDeclaration.Equals(localScope)).ToList();
 
             if (matches.Count == 1)
             {

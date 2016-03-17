@@ -44,7 +44,7 @@ namespace Rubberduck.Inspections
         {
             var declarations = BuiltInDeclarations
                     // note: these *should* be functions, but somehow they're not defined as such
-                .Where(item => _tokens.Any(token => item.IdentifierName == ("_B_var_" + token) && item.References.Any()));
+                .Where(item => _tokens.Any(token => item.References.Any() && (item.IdentifierName == token || item.IdentifierName == "_B_var_" + token)));
 
             return declarations.SelectMany(declaration => declaration.References
                 .Select(item => new UntypedFunctionUsageInspectionResult(this, string.Format(Description, declaration.IdentifierName), item.QualifiedModuleName, item.Context)));

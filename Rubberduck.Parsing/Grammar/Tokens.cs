@@ -98,7 +98,7 @@
         public static readonly string LBound = "LBound";
         public static readonly string LCase = "LCase";
         public static readonly string Left = "Left";
-        public static readonly string LeftB = "Left";
+        public static readonly string LeftB = "LeftB";
         public static readonly string Len = "Len";
         public static readonly string LenB = "LenB";
         public static readonly string Let = "Let";
@@ -113,7 +113,7 @@
         public static readonly string LTrim = "LTrim";
         public static readonly string Me = "Me";
         public static readonly string Mid = "Mid";
-        public static readonly string MidB = "Mid";
+        public static readonly string MidB = "MidB";
         public static readonly string Minute = "Minute";
         public static readonly string MkDir = "MkDir";
         public static readonly string Mod = "Mod";
@@ -147,7 +147,7 @@
         public static readonly string Resume = "Resume";
         public static readonly string Return = "Return";
         public static readonly string Right = "Right";
-        public static readonly string RightB = "Right";
+        public static readonly string RightB = "RightB";
         public static readonly string RmDir = "RmDir";
         public static readonly string Rnd = "Rnd";
         public static readonly string RTrim = "RTrim";
