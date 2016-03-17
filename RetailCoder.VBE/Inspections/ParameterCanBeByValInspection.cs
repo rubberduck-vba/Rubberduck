@@ -67,7 +67,8 @@ namespace Rubberduck.Inspections
             var ignoredScopes = formEventHandlerScopes.Concat(eventScopes).Concat(declareScopes);
 
             var issues = declarations.Where(declaration =>
-                !ignoredScopes.Contains(declaration.ParentScope)
+                !declaration.IsArray()
+                && !ignoredScopes.Contains(declaration.ParentScope)
                 && declaration.DeclarationType == DeclarationType.Parameter
                 && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null

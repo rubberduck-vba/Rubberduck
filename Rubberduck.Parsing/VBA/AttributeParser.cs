@@ -105,7 +105,10 @@ namespace Rubberduck.Parsing.VBA
 
             public override void ExitSubStmt(AttributesParser.SubStmtContext context)
             {
-                _attributes.Add(_currentScope, _currentScopeAttributes);
+                if (_currentScopeAttributes.Any())
+                {
+                    _attributes.Add(_currentScope, _currentScopeAttributes);
+                }
             }
 
             public override void EnterFunctionStmt(AttributesParser.FunctionStmtContext context)
@@ -115,7 +118,10 @@ namespace Rubberduck.Parsing.VBA
 
             public override void ExitFunctionStmt(AttributesParser.FunctionStmtContext context)
             {
-                _attributes.Add(_currentScope, _currentScopeAttributes);
+                if (_currentScopeAttributes.Any())
+                {
+                    _attributes.Add(_currentScope, _currentScopeAttributes);
+                }
             }
 
             public override void EnterPropertyGetStmt(AttributesParser.PropertyGetStmtContext context)
@@ -125,7 +131,10 @@ namespace Rubberduck.Parsing.VBA
 
             public override void ExitPropertyGetStmt(AttributesParser.PropertyGetStmtContext context)
             {
-                _attributes.Add(_currentScope, _currentScopeAttributes);
+                if (_currentScopeAttributes.Any())
+                {
+                    _attributes.Add(_currentScope, _currentScopeAttributes);
+                }
             }
 
             public override void EnterPropertyLetStmt(AttributesParser.PropertyLetStmtContext context)
@@ -135,7 +144,10 @@ namespace Rubberduck.Parsing.VBA
 
             public override void ExitPropertyLetStmt(AttributesParser.PropertyLetStmtContext context)
             {
-                _attributes.Add(_currentScope, _currentScopeAttributes);
+                if (_currentScopeAttributes.Any())
+                {
+                    _attributes.Add(_currentScope, _currentScopeAttributes);
+                }
             }
 
             public override void EnterPropertySetStmt(AttributesParser.PropertySetStmtContext context)
@@ -145,7 +157,10 @@ namespace Rubberduck.Parsing.VBA
 
             public override void ExitPropertySetStmt(AttributesParser.PropertySetStmtContext context)
             {
-                _attributes.Add(_currentScope, _currentScopeAttributes);
+                if (_currentScopeAttributes.Any())
+                {
+                    _attributes.Add(_currentScope, _currentScopeAttributes);
+                }
             }
 
             public override void ExitAttributeStmt(AttributesParser.AttributeStmtContext context)
