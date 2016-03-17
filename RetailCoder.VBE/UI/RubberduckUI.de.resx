@@ -1021,7 +1021,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Zweig löschen</value>
   </data>
   <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
-    <value>NIcht anzeigen</value>
+    <value>Nicht anzeigen</value>
   </data>
   <data name="SourceControl_CreateNewBranchTitle" xml:space="preserve">
     <value>Neuer Zweig</value>

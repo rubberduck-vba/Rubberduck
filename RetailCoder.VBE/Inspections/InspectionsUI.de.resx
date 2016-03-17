@@ -136,7 +136,7 @@
     <value>Erwäge dem VBAProjekt einen Namen zu egeben.</value>
   </data>
   <data name="DefaultProjectNameInspectionName" xml:space="preserve">
-    <value>Das Proejket hat den Standard-Projektnamen.</value>
+    <value>Das Projekt hat den Standard-Projektnamen.</value>
   </data>
   <data name="EmptyStringLiteralInspection" xml:space="preserve">
     <value>Man sollte bevorzugt 'vbNullString' gegenüber eiem leeren String verwenden.</value>
@@ -214,7 +214,7 @@
     <value>Überlege lange Parameterdeklarationen zusammenzuhalten. Das Aufteilen einer Parameterdeklaration über mehrere Zeilen sollte zugunsten der besseren Lesbarkeit vermieden werden.</value>
   </data>
   <data name="MultilineParameterInspectionName" xml:space="preserve">
-    <value>Die Parameterdefinition ist über mehrer Zeilen verteilt.</value>
+    <value>Die Parameterdefinition ist über mehrere Zeilen verteilt.</value>
   </data>
   <data name="MultipleDeclarationsInspectionMeta" xml:space="preserve">
     <value>Die Deklaration von mehren Variablen in der gleichen Codezeile ist erlaubt, sollte aber sparsam eingesetzt werden. Erwäge die Variablendeklartion in der Nähe der Nutzung als separate Anweisung pro Deklaration.</value>
@@ -335,13 +335,13 @@
     <value>Eine Variable wurde deklariert und hat eine Wert-/Referenzzuweisung erhalten, allerdings wird diese Varibale nicht weitergenutzt.</value>
   </data>
   <data name="VariableNotUsedInspectionName" xml:space="preserve">
-    <value>Die Variable wird niht referenziert.</value>
+    <value>Die Variable wird nicht referenziert.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspectionMeta" xml:space="preserve">
     <value>Varibale, deren Typ nicht explizit deklariert wurde, erhält implizit den Typ 'Variant'. Überlege die Varibale explizit als 'Variant' zu defineren oder eine besseren Typ zu zuweisen.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspectionName" xml:space="preserve">
-    <value>Variable ist imüplizit 'Variant'</value>
+    <value>Variable ist implizit 'Variant'</value>
   </data>
   <data name="WriteOnlyPropertyInspectionMeta" xml:space="preserve">
     <value>Eine Eigenschaft, die eine Änderungsfunktion, aber keine Zugriffsfunktion bereitstellt, führt zu einer unklaren API. Enweder erstelle einen öffentlichen getter oder ändere die Änderungsfunktion in eine Methode ab.</value>
@@ -369,7 +369,7 @@
     <value>Objektvariable ist selbstzugewiesen.</value>
   </data>
   <data name="FunctionReturnValueNotUsedInspectionName" xml:space="preserve">
-    <value>Der Rückgabewert derFunktion wird nicht genutzt.</value>
+    <value>Der Rückgabewert der Funktion wird nicht genutzt.</value>
   </data>
   <data name="FunctionReturnValueNotUsedInspectionResultFormat" xml:space="preserve">
     <value>Der Rückgabewert der Funnktio '{0}' wird nicht verwendet.</value>
