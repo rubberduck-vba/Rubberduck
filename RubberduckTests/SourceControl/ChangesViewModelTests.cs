@@ -260,8 +260,6 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(1, vm.ExcludedChanges.Count);
         }
 
-        // I need to figure out how to make this throw.
-        [Ignore]
         [TestMethod]
         public void ChangesPresenter_WhenCommitFails_ActionFailedEventIsRaised()
         {
@@ -278,6 +276,12 @@ namespace RubberduckTests.SourceControl
                     }
             };
 
+            _providerMock.Setup(p => p.Commit(It.IsAny<string>()))
+                .Throws(
+                    new SourceControlException("A source control exception was thrown.",
+                        new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
+                    );
+
             var wasRaised = false;
 
             vm.ErrorThrown += (e, sender) => wasRaised = true;
@@ -287,6 +291,36 @@ namespace RubberduckTests.SourceControl
 
             //assert
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
+        }
+
+        [TestMethod]
+        public void UndoUndoesChanges()
+        {
+            //arrange
+            var fileStatusEntries = new List<FileStatusEntry>
+                    {
+                        new FileStatusEntry(@"C:\path\to\module.bas", FileStatus.Modified),
+                        new FileStatusEntry(@"C:\path\to\class.cls", FileStatus.Unaltered),
+                        new FileStatusEntry(@"C:\path\to\added.bas", FileStatus.Added | FileStatus.Modified),
+                        new FileStatusEntry(@"C:\path\to\addedUnmodified.bas", FileStatus.Added),
+                        new FileStatusEntry(@"C:\path\to\untracked.frx", FileStatus.Untracked)
+                    };
+
+            var vm = new ChangesViewViewModel
+            {
+                Provider = _providerMock.Object
+            };
+
+            var localLocation = "C:\\users\\desktop\\git\\";
+
+            _providerMock.Setup(git => git.Status()).Returns(fileStatusEntries);
+            _providerMock.SetupGet(git => git.CurrentRepository).Returns(new Repository{LocalLocation = localLocation});
+
+            //act
+            vm.UndoChangesToolbarButtonCommand.Execute(fileStatusEntries[0]);
+
+            //Assert
+            _providerMock.Verify(git => git.Undo(localLocation + fileStatusEntries[0].FilePath));
         }
     }
 }

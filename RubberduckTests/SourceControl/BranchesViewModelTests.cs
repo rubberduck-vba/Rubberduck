@@ -761,5 +761,39 @@ namespace RubberduckTests.SourceControl
             //assert
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
+
+        [TestMethod]
+        public void PublishPublishesBranch()
+        {
+            //arrange
+            var branch = "dev";
+            var vm = new BranchesViewViewModel
+            {
+                Provider = _provider.Object
+            };
+
+            //act
+            vm.PublishBranchToolbarButtonCommand.Execute(branch);
+
+            //Assert
+            _provider.Verify(git => git.Publish(branch));
+        }
+
+        [TestMethod]
+        public void UnpublishUnpublishesBranch()
+        {
+            //arrange
+            var branch = "master";
+            var vm = new BranchesViewViewModel
+            {
+                Provider = _provider.Object
+            };
+
+            //act
+            vm.UnpublishBranchToolbarButtonCommand.Execute(branch);
+
+            //Assert
+            _provider.Verify(git => git.Unpublish(branch));
+        }
     }
 }
