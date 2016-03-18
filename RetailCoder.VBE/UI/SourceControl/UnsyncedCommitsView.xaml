@@ -135,10 +135,10 @@
                     </Grid>
                 </WrapPanel>
 
-                <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_IncomingCommits}"
+                <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_OutgoingCommits}"
                           Height="175"
                           Padding="5">
-                    <DataGrid ItemsSource="{Binding IncomingCommits}"
+                    <DataGrid ItemsSource="{Binding OutgoingCommits}"
                               AutoGenerateColumns="False"
                               CanUserReorderColumns="False"
                               IsReadOnly="True"
@@ -165,10 +165,10 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </GroupBox>
-                <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_OutgoingCommits}"
+                <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_IncomingCommits}"
                           Height="175"
                           Padding="5">
-                    <DataGrid ItemsSource="{Binding OutgoingCommits}"
+                    <DataGrid ItemsSource="{Binding IncomingCommits}"
                               AutoGenerateColumns="False"
                               CanUserReorderColumns="False"
                               IsReadOnly="True"
