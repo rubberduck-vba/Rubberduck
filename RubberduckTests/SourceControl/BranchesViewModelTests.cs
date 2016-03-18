@@ -709,6 +709,31 @@ namespace RubberduckTests.SourceControl
         }
 
         [TestMethod]
+        public void OnMergeBranch_WhenCheckoutFails_ActionFailedEventIsRaised()
+        {
+            //arrange
+            var vm = new BranchesViewViewModel
+            {
+                Provider = _provider.Object
+            };
+            var wasRaised = false;
+
+            _provider.Setup(p => p.Merge(It.IsAny<string>(), It.IsAny<string>()))
+                .Throws(
+                    new SourceControlException("A source control exception was thrown.",
+                        new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
+                    );
+
+            vm.ErrorThrown += (sender, error) => wasRaised = true;
+
+            //act
+            vm.MergeBranchesOkButtonCommand.Execute(null);
+
+            //assert
+            Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
+        }
+
+        [TestMethod]
         public void OnDeleteBranch_WhenDeleteFails_ActionFailedEventIsRaised()
         {
             //arrange
@@ -794,6 +819,56 @@ namespace RubberduckTests.SourceControl
 
             //Assert
             _provider.Verify(git => git.Unpublish(branch));
+        }
+
+        [TestMethod]
+        public void PublishBranch_ActionFailedEventIsRaised()
+        {
+            //arrange
+            var vm = new BranchesViewViewModel
+            {
+                Provider = _provider.Object
+            };
+            var wasRaised = false;
+
+            _provider.Setup(p => p.Publish(It.IsAny<string>()))
+                .Throws(
+                    new SourceControlException("A source control exception was thrown.",
+                        new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
+                    );
+
+            vm.ErrorThrown += (sender, error) => wasRaised = true;
+
+            //act
+            vm.PublishBranchToolbarButtonCommand.Execute(null);
+
+            //assert
+            Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
+        }
+
+        [TestMethod]
+        public void UnpublishBranch_ActionFailedEventIsRaised()
+        {
+            //arrange
+            var vm = new BranchesViewViewModel
+            {
+                Provider = _provider.Object
+            };
+            var wasRaised = false;
+
+            _provider.Setup(p => p.Unpublish(It.IsAny<string>()))
+                .Throws(
+                    new SourceControlException("A source control exception was thrown.",
+                        new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
+                    );
+
+            vm.ErrorThrown += (sender, error) => wasRaised = true;
+
+            //act
+            vm.UnpublishBranchToolbarButtonCommand.Execute("master");
+
+            //assert
+            Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
     }
 }
