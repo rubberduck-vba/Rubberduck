@@ -139,6 +139,7 @@
     <Compile Include="SourceControl\ChangesViewModelTests.cs" />
     <Compile Include="SourceControl\SettingsViewModelTests.cs" />
     <Compile Include="SourceControl\SourceControlTests.cs" />
+    <Compile Include="SourceControl\SourceControlViewModelTests.cs" />
     <Compile Include="SourceControl\UnsyncedCommitsViewModelTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="TodoControllerTests.cs" />

@@ -64,7 +64,7 @@ namespace Rubberduck.UI.SourceControl
         }
 
         private ISourceControlProvider _provider;
-        private ISourceControlProvider Provider
+        public ISourceControlProvider Provider
         {
             get { return _provider; }
             set
