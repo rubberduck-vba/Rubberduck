@@ -135,6 +135,7 @@
     <Compile Include="Settings\TodoSettingsTests.cs" />
     <Compile Include="Settings\UnitTestSettingsTests.cs" />
     <Compile Include="SourceControlConfig.cs" />
+    <Compile Include="SourceControl\BranchesViewModelTests.cs" />
     <Compile Include="SourceControl\ChangesViewModelTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="TodoControllerTests.cs" />

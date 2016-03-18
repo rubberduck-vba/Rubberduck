@@ -45,6 +45,9 @@ namespace Rubberduck.UI.SourceControl
             OnPropertyChanged("Branches");
 
             CurrentBranch = Provider.CurrentBranch.Name;
+
+            SourceBranch = null;
+            DestinationBranch = CurrentBranch;
         }
 
         public IEnumerable<string> Branches
@@ -274,6 +277,15 @@ namespace Rubberduck.UI.SourceControl
 
         private void MergeBranchOk()
         {
+            try
+            {
+                Provider.Merge(SourceBranch, DestinationBranch);
+            }
+            catch (SourceControlException ex)
+            {
+                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
+            }
+
             DisplayMergeBranchesGrid = false;
         }
 
