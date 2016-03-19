@@ -208,7 +208,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void NonReturningFunction_QuickFixWorks_FunctionHasTypeHint()
+        public void GivenFunctionNameWithTypeHint_SubNameHasNoTypeHint()
         {
             const string inputCode =
 @"Function Foo$()
@@ -304,7 +304,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void NonReturningFunction_QuickFixWorks_PropertyGet()
+        public void GivenNonReturningPropertyGetter_QuickFixConvertsToSub()
         {
             const string inputCode =
 @"Property Get Foo() As Boolean
@@ -336,7 +336,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void NonReturningFunction_QuickFixWorks_PropertyGetHasTypeHint()
+        public void GivenNonReturningPropertyGetWithTypeHint_QuickFixDropsTypeHint()
         {
             const string inputCode =
 @"Property Get Foo$()
@@ -368,7 +368,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void NonReturningFunction_QuickFixWorks_PropertyGetReturnsImplicitVariant()
+        public void GivenImplicitVariantPropertyGetter_StillConvertsToSub()
         {
             const string inputCode =
 @"Property Get Foo()
@@ -400,7 +400,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void NonReturningFunction_QuickFixWorks_PropertyGetHasVariable()
+        public void GivenParameterizedPropertyGetter_QuickFixKeepsParameter()
         {
             const string inputCode =
 @"Property Get Foo(ByVal b As Boolean) As String
