@@ -3179,6 +3179,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Repository does not contain any branches..
+        /// </summary>
+        public static string SourceControl_NoBranchesMessage {
+            get {
+                return ResourceManager.GetString("SourceControl_NoBranchesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No branches found.
+        /// </summary>
+        public static string SourceControl_NoBranchesTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_NoBranchesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No repository found..
         /// </summary>
         public static string SourceControl_NoRepoFound {
