@@ -1268,37 +1268,8 @@ Are you sure you want to proceed with this rename?</value>
 GitHub integration powered by LibGit2Sharp
 Fugue icons by Yusuke Kamiyamane</value>
   </data>
-  <data name="AboutWindow_SpecialThanksList" xml:space="preserve">
-    <value>Community:
-Code Review Stack Exchange
-JetBrains ReSharper Community Team
-Stack Overflow
-
-Blogs:
-Michal Krzych (vba4all.com)
-Knjname developer blog (clockahead.blogspot.jp)
-
-Contributors &amp; supporters:
-Abraham Hosch
-Andrew Jackson
-Andrin Meier
-Bruno Costa
-Carlos J. Quintero (MZ-Tools articles &amp; help with VBE API)
-@daFreeMan
-@Duga SE chat bot
-Francis Veilleux-Gaboury
-Frank Van Heeswijk
-@Heslacher
-Jeroen Vannevel
-@mjolka
-Philip Wales
-Rob Bovey
-Ross McLean
-Ross Knudsen
-Simon Forsberg
-Stephen Bullen
-
-All contributors to our GitHub repository
+  <data name="AboutWindow_GeneralThanks" xml:space="preserve">
+    <value>All contributors to our GitHub repository
 All our stargazers, likers &amp; followers, for the warm fuzzies
 ...and anyone reading this!</value>
   </data>
@@ -1424,5 +1395,29 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="ParserState_Resolving" xml:space="preserve">
     <value>Resolving...</value>
+  </data>
+  <data name="AboutWindow_BlogsHeader" xml:space="preserve">
+    <value>Blogs:</value>
+  </data>
+  <data name="AboutWindow_CommunityHeader" xml:space="preserve">
+    <value>Community:</value>
+  </data>
+  <data name="AboutWindow_ContributorsHeader" xml:space="preserve">
+    <value>Contributors &amp; supporters:</value>
+  </data>
+  <data name="SourceControl_MergeStatus" xml:space="preserve">
+    <value>Merge status</value>
+  </data>
+  <data name="SourceControl_UpdateSettingsMessage" xml:space="preserve">
+    <value>Your user name, email address, and default repository location have been saved.</value>
+  </data>
+  <data name="SourceControl_UpdateSettingsTitle" xml:space="preserve">
+    <value>Settings updated</value>
+  </data>
+  <data name="SourceControl_NoBranchesMessage" xml:space="preserve">
+    <value>Repository does not contain any branches.</value>
+  </data>
+  <data name="SourceControl_NoBranchesTitle" xml:space="preserve">
+    <value>No branches found</value>
   </data>
 </root>

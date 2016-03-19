@@ -104,6 +104,9 @@ namespace Rubberduck.UI.SourceControl
             _config.DefaultRepositoryLocation = DefaultRepositoryLocation;
 
             _configService.SaveConfiguration(_config);
+
+            RaiseErrorEvent(RubberduckUI.SourceControl_UpdateSettingsTitle,
+                RubberduckUI.SourceControl_UpdateSettingsMessage);
         }
 
         private void ShowGitIgnore()

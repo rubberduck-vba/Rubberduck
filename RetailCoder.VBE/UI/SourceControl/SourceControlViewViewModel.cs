@@ -254,6 +254,13 @@ namespace Rubberduck.UI.SourceControl
 
         private void SetChildPresenterSourceControlProviders(ISourceControlProvider provider)
         {
+            if (Provider.CurrentBranch == null)
+            {
+                ViewModel_ErrorThrown(null,
+                    new ErrorEventArgs(RubberduckUI.SourceControl_NoBranchesTitle, RubberduckUI.SourceControl_NoBranchesMessage));
+                return;
+            }
+
             foreach (var tab in TabItems)
             {
                 tab.ViewModel.Provider = provider;

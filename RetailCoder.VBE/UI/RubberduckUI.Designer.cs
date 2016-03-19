@@ -81,11 +81,38 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Blogs:.
+        /// </summary>
+        public static string AboutWindow_BlogsHeader {
+            get {
+                return ResourceManager.GetString("AboutWindow_BlogsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to About Rubberduck.
         /// </summary>
         public static string AboutWindow_Caption {
             get {
                 return ResourceManager.GetString("AboutWindow_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Community:.
+        /// </summary>
+        public static string AboutWindow_CommunityHeader {
+            get {
+                return ResourceManager.GetString("AboutWindow_CommunityHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contributors &amp; supporters:.
+        /// </summary>
+        public static string AboutWindow_ContributorsHeader {
+            get {
+                return ResourceManager.GetString("AboutWindow_ContributorsHeader", resourceCulture);
             }
         }
         
@@ -99,47 +126,22 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All contributors to our GitHub repository
+        ///All our stargazers, likers &amp; followers, for the warm fuzzies
+        ///...and anyone reading this!.
+        /// </summary>
+        public static string AboutWindow_GeneralThanks {
+            get {
+                return ResourceManager.GetString("AboutWindow_GeneralThanks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Special Thanks.
         /// </summary>
         public static string AboutWindow_SpecialThanksLabel {
             get {
                 return ResourceManager.GetString("AboutWindow_SpecialThanksLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Community:
-        ///Code Review Stack Exchange
-        ///JetBrains ReSharper Community Team
-        ///Stack Overflow
-        ///
-        ///Blogs:
-        ///Michal Krzych (vba4all.com)
-        ///Knjname developer blog (clockahead.blogspot.jp)
-        ///
-        ///Contributors &amp; supporters:
-        ///Abraham Hosch
-        ///Andrew Jackson
-        ///Andrin Meier
-        ///Bruno Costa
-        ///Carlos J. Quintero (MZ-Tools articles &amp; help with VBE API)
-        ///@daFreeMan
-        ///@Duga SE chat bot
-        ///Francis Veilleux-Gaboury
-        ///Frank Van Heeswijk
-        ///@Heslacher
-        ///Jeroen Vannevel
-        ///@mjolka
-        ///Philip Wales
-        ///Rob Bovey
-        ///Ross McLean
-        ///Ross Knudsen
-        ///Simon Forsberg
-        ///S [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string AboutWindow_SpecialThanksList {
-            get {
-                return ResourceManager.GetString("AboutWindow_SpecialThanksList", resourceCulture);
             }
         }
         
@@ -3150,6 +3152,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Merge status.
+        /// </summary>
+        public static string SourceControl_MergeStatus {
+            get {
+                return ResourceManager.GetString("SourceControl_MergeStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message.
         /// </summary>
         public static string SourceControl_Message {
@@ -3164,6 +3175,24 @@ namespace Rubberduck.UI {
         public static string SourceControl_NewBranch {
             get {
                 return ResourceManager.GetString("SourceControl_NewBranch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repository does not contain any branches..
+        /// </summary>
+        public static string SourceControl_NoBranchesMessage {
+            get {
+                return ResourceManager.GetString("SourceControl_NoBranchesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No branches found.
+        /// </summary>
+        public static string SourceControl_NoBranchesTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_NoBranchesTitle", resourceCulture);
             }
         }
         
@@ -3362,6 +3391,24 @@ namespace Rubberduck.UI {
         public static string SourceControl_UpdateGlobalSettings {
             get {
                 return ResourceManager.GetString("SourceControl_UpdateGlobalSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your user name, email address, and default repository location have been saved..
+        /// </summary>
+        public static string SourceControl_UpdateSettingsMessage {
+            get {
+                return ResourceManager.GetString("SourceControl_UpdateSettingsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings updated.
+        /// </summary>
+        public static string SourceControl_UpdateSettingsTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_UpdateSettingsTitle", resourceCulture);
             }
         }
         

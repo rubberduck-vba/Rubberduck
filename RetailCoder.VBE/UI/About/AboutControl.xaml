@@ -60,8 +60,51 @@
                    Margin="5,0,0,0" />
             <ScrollViewer Margin="15,0,10,10"
                           Height="150">
-                <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_SpecialThanksList}"
-                           FontSize="10" />
+                <StackPanel>
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_CommunityHeader}"
+                               FontWeight="SemiBold"
+                               FontSize="10" />
+                    <TextBlock FontSize="10"
+                               xml:space="preserve">Code Review Stack Exchange
+JetBrains ReSharper Community Team
+Stack Overflow
+                    </TextBlock>
+                    
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_BlogsHeader}"
+                               FontWeight="SemiBold"
+                               FontSize="10" />
+                    <TextBlock FontSize="10"
+                               xml:space="preserve">Michal Krzych (vba4all.com)
+Knjname developer blog (clockahead.blogspot.jp)
+                    </TextBlock>
+                    
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_ContributorsHeader}"
+                               FontWeight="SemiBold"
+                               FontSize="10" />
+                    <TextBlock FontSize="10"
+                               xml:space="preserve">Abraham Hosch
+Andrew Jackson
+Andrin Meier
+Bruno Costa
+Carlos J. Quintero (MZ-Tools articles &amp; help with VBE API)
+@daFreeMan
+@Duga SE chat bot
+Francis Veilleux-Gaboury
+Frank Van Heeswijk
+@Heslacher
+Jeroen Vannevel
+@mjolka
+Philip Wales
+Rob Bovey
+Ross McLean
+Ross Knudsen
+Simon Forsberg
+Stephen Bullen
+                    </TextBlock>
+
+                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_GeneralThanks}"
+                               FontSize="10" />
+                </StackPanel>
             </ScrollViewer>
         </StackPanel>
 
