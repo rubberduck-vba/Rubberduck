@@ -2,22 +2,25 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Nodes;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ImplicitVariantReturnTypeInspectionResult : InspectionResultBase
+    public sealed class ImplicitVariantReturnTypeInspectionResult : InspectionResultBase
     {
+        private readonly string _identifierName;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ImplicitVariantReturnTypeInspectionResult(IInspection inspection, string name, QualifiedContext<ParserRuleContext> qualifiedContext)
+        public ImplicitVariantReturnTypeInspectionResult(IInspection inspection, string identifierName, QualifiedContext<ParserRuleContext> qualifiedContext)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
+            _identifierName = identifierName;
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new SetExplicitVariantReturnTypeQuickFix(Context, QualifiedSelection, InspectionsUI.SetExplicitVariantReturnTypeQuickFix), 
-                new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 
@@ -28,7 +31,7 @@ namespace Rubberduck.Inspections
             get
             {
                 return string.Format(InspectionsUI.ImplicitVariantReturnTypeInspectionResultFormat,
-                    Target.IdentifierName);
+                    _identifierName);
             }
         }
     }

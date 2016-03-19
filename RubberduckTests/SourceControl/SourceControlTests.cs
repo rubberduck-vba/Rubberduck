@@ -1,4 +1,4 @@
-//These tests work fine one at a time, but MSUnit runs async, so they all try to hit the
+﻿//These tests work fine one at a time, but MSUnit runs async, so they all try to hit the
 //file system at the same time. Leaving them here because I'm sure I'll need them in the future.
 
 using System;
@@ -15,10 +15,11 @@ namespace RubberduckTests.SourceControl
     [TestClass]
     public class SourceControlTests
     {
+        [Ignore]
         [TestMethod]
         public void InitVBAProjectIntitializesRepo()
         {
-            Assert.Inconclusive("This test accesses file system.");
+            //Assert.Inconclusive("This test accesses file system.");
 
             //arrange
             var component = new Mock<VBComponent>();
@@ -26,7 +27,7 @@ namespace RubberduckTests.SourceControl
             component.Setup(c => c.Type).Returns(vbext_ComponentType.vbext_ct_StdModule);
             component.Setup(c => c.Export("foo")).Verifiable();
 
-            var componentList = new List<VBComponent> {component.Object};
+            var componentList = new List<VBComponent> { component.Object };
 
             var components = new Mock<VBComponents>();
             components.Setup(c => c.GetEnumerator()).Returns(componentList.GetEnumerator());
@@ -35,7 +36,7 @@ namespace RubberduckTests.SourceControl
 
             project.Setup(p => p.VBComponents).Returns(components.Object);
             project.Setup(p => p.Name).Returns("SourceControlTest");
- 
+
             //act
             var git = new GitProvider(project.Object);
             git.InitVBAProject(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
@@ -47,10 +48,11 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(Directory.Exists(repoDir), "Repo directory does not exist.");
         }
 
+        [Ignore]
         [TestMethod]
         public void CloneCreatesLocalRepo()
         {
-            Assert.Inconclusive("This test accesses file system.");
+            //Assert.Inconclusive("This test accesses file system.");
 
             //arrange
             var project = new Mock<VBProject>();
@@ -70,10 +72,11 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(Directory.Exists(Path.Combine(expected.LocalLocation, ".git")));
         }
 
+        [Ignore]
         [TestMethod]
         public void CreateBranchTest()
         {
-            Assert.Inconclusive("This test accesses file system.");
+            //Assert.Inconclusive("This test accesses file system.");
 
             var project = new Mock<VBProject>();
             var repo = new Repository("SourceControlTest",

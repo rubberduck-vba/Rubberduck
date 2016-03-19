@@ -151,6 +151,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disable this inspection.
+        /// </summary>
+        internal static string DisableThisInspection {
+            get {
+                return ResourceManager.GetString("DisableThisInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Prefer &apos;vbNullString&apos; to an empty string literal.
         /// </summary>
         internal static string EmptyStringLiteralInspection {
@@ -183,6 +192,15 @@ namespace Rubberduck.Inspections {
         internal static string EmptyStringLiteralInspectionQuickFix {
             get {
                 return ResourceManager.GetString("EmptyStringLiteralInspectionQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;vbNullString&apos; preferred to empty string literals.
+        /// </summary>
+        internal static string EmptyStringLiteralInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyStringLiteralInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -268,7 +286,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they&apos;re intended, and prefer working off object references..
+        ///   Looks up a localized string similar to Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they&apos;re intended, and prefer working off object references. Ignore if the member call is referring to a type Rubberduck can&apos;t resolve..
         /// </summary>
         internal static string ImplicitActiveSheetReferenceInspectionMeta {
             get {
@@ -286,7 +304,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit references to the active workbook make the code frail and harder to debug. Consider making these references explicit when they&apos;re intended, and prefer working off object references..
+        ///   Looks up a localized string similar to Implicit references to the active workbook make the code frail and harder to debug. Consider making these references explicit when they&apos;re intended, and prefer working off object references. Ignore if the member call is referring to a type Rubberduck can&apos;t resolve..
         /// </summary>
         internal static string ImplicitActiveWorkbookReferenceInspectionMeta {
             get {
@@ -709,7 +727,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck cannot see variables that aren&apos;t declared. VBA will happily compile a typo and you&apos;ll soon be asking an embarassing question on Stack Overflow. Avoid problems, use &apos;Option Explicit&apos;. .
+        ///   Looks up a localized string similar to Rubberduck cannot see variables that aren&apos;t declared. VBA will happily compile a typo: use &apos;Option Explicit&apos; to prevent successfully compiling an erroneous program..
         /// </summary>
         internal static string OptionExplicitInspectionMeta {
             get {
@@ -898,7 +916,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change &apos;{0}$&apos; to &apos;{0}&apos;.
+        ///   Looks up a localized string similar to Change &apos;{0}&apos; to &apos;{0}$&apos;.
         /// </summary>
         internal static string QuickFixUseTypedFunction_ {
             get {

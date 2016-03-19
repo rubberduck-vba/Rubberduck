@@ -1,49 +1,44 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
     public class IdentifierReferenceResolver
     {
+        private readonly DeclarationFinder _declarationFinder;
+
         private enum ContextAccessorType
         {
             GetValueOrReference,
             AssignValue,
-            AssignReference
+            AssignReference,
+            AssignValueOrReference = AssignValue | AssignReference
         }
-
-        private readonly IReadOnlyList<Declaration> _declarations;
-        private readonly IReadOnlyList<CommentNode> _comments;
 
         private readonly QualifiedModuleName _qualifiedModuleName;
 
         private readonly IReadOnlyList<DeclarationType> _moduleTypes;
-        private readonly IReadOnlyList<DeclarationType> _scopingTypes;
-        private readonly IReadOnlyList<DeclarationType> _parentTypes;
         private readonly IReadOnlyList<DeclarationType> _returningMemberTypes;
-
-        private readonly IReadOnlyList<Accessibility> _projectScopePublicModifiers; 
 
         private readonly Stack<Declaration> _withBlockQualifiers;
         private readonly HashSet<RuleContext> _alreadyResolved;
 
         private readonly Declaration _moduleDeclaration;
-        private readonly IReadOnlyList<Declaration> _scopingDeclarations;
-        private readonly IReadOnlyList<Declaration> _parentDeclarations;
 
         private Declaration _currentScope;
         private Declaration _currentParent;
 
-        public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, IReadOnlyList<Declaration> declarations, IReadOnlyList<CommentNode> comments)
+        public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, DeclarationFinder finder)
         {
+            _declarationFinder = finder;
+
             _qualifiedModuleName = qualifiedModuleName;
-            _declarations = declarations;
-            _comments = comments;
 
             _withBlockQualifiers = new Stack<Declaration>();
             _alreadyResolved = new HashSet<RuleContext>();
@@ -54,54 +49,16 @@ namespace Rubberduck.Parsing.Symbols
                 DeclarationType.Class,
             };
 
-            _scopingTypes =new[]
-            {
-                DeclarationType.Function, 
-                DeclarationType.Procedure, 
-                DeclarationType.PropertyGet, 
-                DeclarationType.PropertyLet, 
-                DeclarationType.PropertySet,
-            };
-
-            _parentTypes = new[]
-            {
-                DeclarationType.Function, 
-                DeclarationType.Procedure, 
-                DeclarationType.PropertyGet, 
-                DeclarationType.PropertyLet, 
-                DeclarationType.PropertySet,
-                DeclarationType.Enumeration, 
-                DeclarationType.UserDefinedType, 
-            };
-
             _returningMemberTypes = new[]
             {
                 DeclarationType.Function,
                 DeclarationType.PropertyGet, 
             };
 
-            _projectScopePublicModifiers = new[]
-            {
-                Accessibility.Public, 
-                Accessibility.Global, 
-                Accessibility.Friend, 
-                Accessibility.Implicit, 
-            };
-
-            _moduleDeclaration = _declarations.SingleOrDefault(item =>
-                _moduleTypes.Contains(item.DeclarationType)
-                && item.Project == _qualifiedModuleName.Project
-                && item.ComponentName == _qualifiedModuleName.ComponentName);
-
-            _scopingDeclarations = _declarations.Where(item =>
-                _scopingTypes.Contains(item.DeclarationType)
-                && item.Project == _qualifiedModuleName.Project
-                && item.ComponentName == _qualifiedModuleName.ComponentName).ToList();
-
-            _parentDeclarations = _declarations.Where(item =>
-                _parentTypes.Contains(item.DeclarationType)
-                && item.Project == _qualifiedModuleName.Project
-                && item.ComponentName == _qualifiedModuleName.ComponentName).ToList();
+            _moduleDeclaration = finder.MatchName(_qualifiedModuleName.ComponentName)
+                .SingleOrDefault(item => 
+                    (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module)
+                && item.Project == _qualifiedModuleName.Project && item.ComponentName == _qualifiedModuleName.ComponentName);
 
             SetCurrentScope();
         }
@@ -115,11 +72,15 @@ namespace Rubberduck.Parsing.Symbols
 
         public void SetCurrentScope(string memberName, DeclarationType type)
         {
-            _currentParent = _parentDeclarations.SingleOrDefault(item =>
-                item.DeclarationType == type && item.IdentifierName == memberName);
+            Debug.WriteLine("Setting current scope: {0} ({1}) in thread {2}", memberName, type, Thread.CurrentThread.ManagedThreadId);
+            
+            _currentParent = _declarationFinder.MatchName(memberName).SingleOrDefault(item => 
+                item.QualifiedName.QualifiedModuleName == _qualifiedModuleName && item.DeclarationType == type);
+            
+            _currentScope = _declarationFinder.MatchName(memberName).SingleOrDefault(item =>
+                item.QualifiedName.QualifiedModuleName == _qualifiedModuleName && item.DeclarationType == type) ?? _moduleDeclaration;
 
-            _currentScope = _scopingDeclarations.SingleOrDefault(item =>
-                item.DeclarationType == type && item.IdentifierName == memberName) ?? _moduleDeclaration;
+            Debug.WriteLine("Current scope is now {0} in thread {1}", _currentScope == null ? "null" : _currentScope.IdentifierName, Thread.CurrentThread.ManagedThreadId);
         }
 
         public void EnterWithBlock(VBAParser.WithStmtContext context)
@@ -144,15 +105,14 @@ namespace Rubberduck.Parsing.Symbols
                     if (collectionContext != null)
                     {
                         // object variable is a built-in Collection class instance
-                        qualifier = _declarations.Single(item => item.IsBuiltIn
-                                                                       && item.IdentifierName == collectionContext.GetText()
-                                                                       && item.DeclarationType == DeclarationType.Class);
+                        qualifier = _declarationFinder.MatchName(collectionContext.GetText())
+                            .Single(item => item.IsBuiltIn && item.DeclarationType == DeclarationType.Class);
                         reference = CreateReference(baseTypeContext, qualifier);
                     }
                 }
                 else
                 {
-                    //qualifier = ResolveType(typeContext.complexType());
+                    qualifier = ResolveType(typeContext.complexType());
                 }
             }
 
@@ -183,12 +143,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private string FindAnnotations(int line)
         {
-            if (_comments == null)
-            {
-                return null;
-            }
-
-            var commentAbove = _comments.SingleOrDefault(comment => comment.QualifiedSelection.QualifiedName == _qualifiedModuleName && comment.QualifiedSelection.Selection.EndLine == line - 1);
+            var commentAbove = _declarationFinder.ModuleComments(_qualifiedModuleName).SingleOrDefault(comment => comment.QualifiedSelection.Selection.EndLine == line - 1);
             if (commentAbove != null && commentAbove.CommentText.StartsWith("@"))
             {
                 return commentAbove.CommentText;
@@ -205,11 +160,11 @@ namespace Rubberduck.Parsing.Symbols
             ResolveType(identifiers);
         }
 
-        private void ResolveType(VBAParser.ComplexTypeContext context)
+        private Declaration ResolveType(VBAParser.ComplexTypeContext context)
         {
             if (context == null)
             {
-                return;
+                return null;
             }
 
             var identifiers = context.ambiguousIdentifier()
@@ -220,27 +175,22 @@ namespace Rubberduck.Parsing.Symbols
             if (identifiers.Count == 1)
             {
                 var type = ResolveInScopeType(identifiers.Single().GetText(), _currentScope);
-                if (type != null)
+                if (type != null && !_alreadyResolved.Contains(context))
                 {
                     type.AddReference(CreateReference(context, type));
                     _alreadyResolved.Add(context);
                 }
-                return;
+                return type;
             }
 
             // if there's 2 or more identifiers, resolve to the deepest path:
-            ResolveType(identifiers);
+            return ResolveType(identifiers);
         }
 
-        private void ResolveType(IList<VBAParser.AmbiguousIdentifierContext> identifiers)
+        private Declaration ResolveType(IList<VBAParser.AmbiguousIdentifierContext> identifiers)
         {
             var first = identifiers[0].GetText();
-            var projectMatch = _currentScope.ProjectName == first
-                ? _declarations.SingleOrDefault(declaration =>
-                    declaration.DeclarationType == DeclarationType.Project
-                    && declaration.Project == _currentScope.Project // todo: account for project references!
-                    && declaration.IdentifierName == first)
-                : null;
+            var projectMatch = _declarationFinder.FindProject(_currentScope, first);
 
             if (projectMatch != null)
             {
@@ -250,61 +200,87 @@ namespace Rubberduck.Parsing.Symbols
                 // - standard module (only if there's a 3rd identifier)
                 // - class module
                 // - UDT
+                // - Enum
                 if (identifiers.Count == 3)
                 {
-                    var moduleMatch = _declarations.SingleOrDefault(declaration =>
-                        !declaration.IsBuiltIn && declaration.ParentDeclaration != null
-                        && declaration.ParentDeclaration.Equals(projectMatch)
-                        && declaration.DeclarationType == DeclarationType.Module
-                        && declaration.IdentifierName == identifiers[1].GetText());
-
+                    var moduleMatch = _declarationFinder.FindStdModule(_currentScope, identifiers[1].GetText());
                     if (moduleMatch != null)
                     {
                         var moduleReference = CreateReference(identifiers[1], moduleMatch);
 
                         // 3rd identifier can only be a UDT
-                        var udtMatch = _declarations.SingleOrDefault(declaration =>
-                            !declaration.IsBuiltIn && declaration.ParentDeclaration != null
-                            && declaration.ParentDeclaration.Equals(moduleMatch)
-                            && declaration.DeclarationType == DeclarationType.UserDefinedType
-                            && declaration.IdentifierName == identifiers[2].GetText());
+                        var udtMatch = _declarationFinder.FindUserDefinedType(moduleMatch, identifiers[2].GetText());
                         if (udtMatch != null)
                         {
                             var udtReference = CreateReference(identifiers[2], udtMatch);
 
-                            projectMatch.AddReference(projectReference);
-                            _alreadyResolved.Add(projectReference.Context);
+                            if (!_alreadyResolved.Contains(projectReference.Context))
+                            {
+                                projectMatch.AddReference(projectReference);
+                                _alreadyResolved.Add(projectReference.Context);
+                            }
 
-                            moduleMatch.AddReference(moduleReference);
-                            _alreadyResolved.Add(moduleReference.Context);
+                            if (!_alreadyResolved.Contains(moduleReference.Context))
+                            {
+                                moduleMatch.AddReference(moduleReference);
+                                _alreadyResolved.Add(moduleReference.Context);
+                            }
 
-                            udtMatch.AddReference(udtReference);
-                            _alreadyResolved.Add(udtReference.Context);
+                            if (!_alreadyResolved.Contains(udtReference.Context))
+                            {
+                                udtMatch.AddReference(udtReference);
+                                _alreadyResolved.Add(udtReference.Context);
+                            }
 
-                            return;
+                            return udtMatch;
+                        }
+                        var enumMatch = _declarationFinder.FindEnum(moduleMatch, identifiers[2].GetText());
+                        if (enumMatch != null)
+                        {
+                            var enumReference = CreateReference(identifiers[2], enumMatch);
+
+                            if (!_alreadyResolved.Contains(projectReference.Context))
+                            {
+                                projectMatch.AddReference(projectReference);
+                                _alreadyResolved.Add(projectReference.Context);
+                            }
+
+                            if (!_alreadyResolved.Contains(moduleReference.Context))
+                            {
+                                moduleMatch.AddReference(moduleReference);
+                                _alreadyResolved.Add(moduleReference.Context);
+                            }
+
+                            if (!_alreadyResolved.Contains(enumReference.Context))
+                            {
+                                enumMatch.AddReference(enumReference);
+                                _alreadyResolved.Add(enumReference.Context);
+                            }
+
+                            return enumMatch;
                         }
                     }
                 }
                 else
                 {
-                    projectMatch.AddReference(projectReference);
-                    _alreadyResolved.Add(projectReference.Context);
+                    if (projectReference != null && !_alreadyResolved.Contains(projectReference.Context))
+                    {
+                        projectMatch.AddReference(projectReference);
+                        _alreadyResolved.Add(projectReference.Context);
+                    }
 
-                    var match = _declarations.SingleOrDefault(declaration =>
-                        !declaration.IsBuiltIn && declaration.ParentDeclaration != null
-                        && declaration.ParentDeclaration.Equals(projectMatch)
-                        && declaration.IdentifierName == identifiers[1].GetText()
-                        && (declaration.DeclarationType == DeclarationType.Class ||
-                            declaration.DeclarationType == DeclarationType.UserDefinedType));
+                    var match = _declarationFinder.FindClass(projectMatch, identifiers[1].GetText())
+                                ?? _declarationFinder.FindUserDefinedType(null, identifiers[1].GetText())
+                                ?? _declarationFinder.FindEnum(null, identifiers[1].GetText());
                     if (match != null)
                     {
                         var reference = CreateReference(identifiers[1], match);
-                        if (reference != null)
+                        if (reference != null && !_alreadyResolved.Contains(reference.Context))
                         {
                             match.AddReference(reference);
                             _alreadyResolved.Add(reference.Context);
-                            return;
                         }
+                        return match;
                     }
                 }
             }
@@ -313,58 +289,53 @@ namespace Rubberduck.Parsing.Symbols
             // if there are 3 identifiers, type isn't in current project.
             if (identifiers.Count != 3)
             {
-                var moduleMatch = _declarations.SingleOrDefault(declaration =>
-                    !declaration.IsBuiltIn && declaration.ParentDeclaration != null
-                    && declaration.ParentDeclaration.Equals(projectMatch)
-                    && declaration.DeclarationType == DeclarationType.Module
-                    && declaration.IdentifierName == identifiers[0].GetText());
-
+                
+                var moduleMatch = _declarationFinder.FindStdModule(projectMatch, identifiers[0].GetText());
                 if (moduleMatch != null)
                 {
                     var moduleReference = CreateReference(identifiers[0], moduleMatch);
 
-                    // 2nd identifier can only be a UDT
-                    var udtMatch = _declarations.SingleOrDefault(declaration =>
-                        !declaration.IsBuiltIn && declaration.ParentDeclaration != null
-                        && declaration.ParentDeclaration.Equals(moduleMatch)
-                        && declaration.DeclarationType == DeclarationType.UserDefinedType
-                        && declaration.IdentifierName == identifiers[1].GetText());
-                    if (udtMatch != null)
+                    // 2nd identifier can only be a UDT or enum
+                    var match = _declarationFinder.FindUserDefinedType(moduleMatch, identifiers[1].GetText())
+                            ?? _declarationFinder.FindEnum(moduleMatch, identifiers[1].GetText());
+                    if (match != null)
                     {
-                        var udtReference = CreateReference(identifiers[1], udtMatch);
+                        var reference = CreateReference(identifiers[1], match);
 
-                        moduleMatch.AddReference(moduleReference);
-                        _alreadyResolved.Add(moduleReference.Context);
+                        if (!_alreadyResolved.Contains(moduleReference.Context))
+                        {
+                            moduleMatch.AddReference(moduleReference);
+                            _alreadyResolved.Add(moduleReference.Context);
+                        }
 
-                        udtMatch.AddReference(udtReference);
-                        _alreadyResolved.Add(udtReference.Context);
+                        if (!_alreadyResolved.Contains(reference.Context))
+                        {
+                            match.AddReference(reference);
+                            _alreadyResolved.Add(reference.Context);
+                        }
+
+                        return match;
                     }
                 }
             }
-        }
 
-        private IEnumerable<Declaration> FindMatchingTypes(string identifier)
-        {
-            return _declarations.Where(declaration =>
-                declaration.IdentifierName == identifier
-                && (declaration.DeclarationType == DeclarationType.Class
-                || declaration.DeclarationType == DeclarationType.UserDefinedType))
-                .ToList();
+            return null;
         }
 
         private Declaration ResolveInScopeType(string identifier, Declaration scope)
         {
-            var matches = FindMatchingTypes(identifier).ToList();
+            var matches = _declarationFinder.MatchTypeName(identifier).ToList();
             if (matches.Count == 1)
             {
                 return matches.Single();
             }
 
             // more than one matching identifiers found.
-            // if it matches a UDT in the current scope, resolve to that type.
+            // if it matches a UDT or enum in the current scope, resolve to that type.
             var sameScopeUdt = matches.Where(declaration =>
                 declaration.Project == scope.Project
-                && declaration.DeclarationType == DeclarationType.UserDefinedType
+                && (declaration.DeclarationType == DeclarationType.UserDefinedType
+                || declaration.DeclarationType == DeclarationType.Enumeration)
                 && declaration.ParentDeclaration.Equals(scope))
                 .ToList();
 
@@ -377,13 +348,11 @@ namespace Rubberduck.Parsing.Symbols
 
             return null;
         }
-
-
-
-
+        
         private Declaration ResolveType(Declaration parent)
         {
-            if (parent != null && parent.DeclarationType == DeclarationType.UserDefinedType)
+            if (parent != null && (parent.DeclarationType == DeclarationType.UserDefinedType 
+                                || parent.DeclarationType == DeclarationType.Enumeration))
             {
                 return parent;
             }
@@ -397,10 +366,17 @@ namespace Rubberduck.Parsing.Symbols
                 ? parent.AsTypeName.Split('.').Last() // bug: this can't be right
                 : parent.AsTypeName;
 
-            var matches = _declarations.Where(d => d.IdentifierName == identifier).ToList();
+            identifier = identifier.StartsWith("VT_") ? parent.IdentifierName : identifier;
+
+            var matches = _declarationFinder.MatchTypeName(identifier).ToList();
+            if (matches.Count == 1)
+            {
+                return matches.Single();
+            }
 
             var result = matches.Where(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType
+                (item.DeclarationType == DeclarationType.UserDefinedType
+                || item.DeclarationType == DeclarationType.Enumeration)
                 && item.Project == _currentScope.Project
                 && item.ComponentName == _currentScope.ComponentName)
             .ToList();
@@ -420,7 +396,8 @@ namespace Rubberduck.Parsing.Symbols
                 .ToList();
             }
 
-            return result.Count == 1 ? result.SingleOrDefault() : null;
+            return result.Count == 1 ? result.SingleOrDefault() : 
+                matches.Count == 1 ? matches.First() : null;
         }
 
         private static readonly Type[] IdentifierContexts =
@@ -431,7 +408,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration ResolveInternal(ParserRuleContext callSiteContext, Declaration localScope, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, VBAParser.DictionaryCallStmtContext fieldCall = null, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
         {
-            if (callSiteContext == null || _alreadyResolved.Contains(callSiteContext))
+            if (callSiteContext == null)
             {
                 return null;
             }
@@ -465,19 +442,15 @@ namespace Rubberduck.Parsing.Symbols
             var hasStringQualifier = sibling is VBAParser.TypeHintContext && sibling.GetText() == "$";
 
             Declaration callee = null;
-            if (localScope.DeclarationType == DeclarationType.Variable)
+            if (localScope.DeclarationType == DeclarationType.UserDefinedType)
             {
-                // localScope is probably a UDT
-                var udt = ResolveType(localScope);
-                if (udt != null && udt.DeclarationType == DeclarationType.UserDefinedType)
-                {
-                    callee = _declarations.Where(d => d.IdentifierName == identifierName).SingleOrDefault(item => item.Context != null && item.Context.Parent == udt.Context);
-                }
+                callee = _declarationFinder.MatchName(identifierName).SingleOrDefault(item => item.Context != null && item.Context.Parent == localScope.Context);
             }
             else
             {
                 callee = Resolve(identifierName, localScope, accessorType, parentContext is VBAParser.ICS_S_VariableOrProcedureCallContext, isAssignmentTarget, hasStringQualifier);
             }
+
 
             if (callee == null)
             {
@@ -487,7 +460,7 @@ namespace Rubberduck.Parsing.Symbols
                 callee = FindLocalScopeDeclaration(identifierName, localScope, parentContext is VBAParser.ICS_S_VariableOrProcedureCallContext, isAssignmentTarget)
                       ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
                       ?? FindModuleScopeDeclaration(identifierName, localScope)
-                      ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, hasStringQualifier);
+                      ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, accessorType, hasStringQualifier);
             }
 
             if (callee == null)
@@ -496,9 +469,12 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var reference = CreateReference(callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement);
-            callee.AddReference(reference);
-            _alreadyResolved.Add(reference.Context);
-            _alreadyResolved.Add(callSiteContext);
+            if (reference != null && !_alreadyResolved.Contains(reference.Context))
+            {
+                callee.AddReference(reference);
+                _alreadyResolved.Add(reference.Context);
+                _alreadyResolved.Add(callSiteContext);
+            }
 
             if (fieldCall != null)
             {
@@ -513,7 +489,7 @@ namespace Rubberduck.Parsing.Symbols
             return FindLocalScopeDeclaration(identifierName, localScope, parentContextIsVariableOrProcedureCall, isAssignmentTarget)
                 ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
                 ?? FindModuleScopeDeclaration(identifierName, localScope)
-                ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, hasStringQualifier);
+                ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, accessorType, hasStringQualifier);
         }
 
         private Declaration ResolveInternal(VBAParser.ICS_S_VariableOrProcedureCallContext context, Declaration localScope, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
@@ -527,9 +503,14 @@ namespace Rubberduck.Parsing.Symbols
             var fieldCall = context.dictionaryCallStmt();
 
             var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
-            if (result != null && localScope != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
+            if (result != null && localScope != null /*&& !localScope.DeclarationType.HasFlag(DeclarationType.Member)*/)
             {
-                localScope.AddMemberCall(CreateReference(context.ambiguousIdentifier(), result));
+                var reference = CreateReference(context.ambiguousIdentifier(), result, isAssignmentTarget);
+                if (reference != null)
+                {
+                    result.AddReference(reference);
+                    //localScope.AddMemberCall(reference);
+                }
             }
 
             return result;
@@ -548,10 +529,8 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var members = _declarations.Where(declaration => declaration.ParentScope == parentType.Scope);
             var fieldName = fieldCall.ambiguousIdentifier().GetText();
-
-            var result = members.SingleOrDefault(member => member.IdentifierName == fieldName);
+            var result = _declarationFinder.MatchName(fieldName).SingleOrDefault(declaration => declaration.ParentScope == parentType.Scope);
             if (result == null)
             {
                 return null;
@@ -629,6 +608,7 @@ namespace Rubberduck.Parsing.Symbols
                 var isTarget = isLast && isAssignmentTarget;
 
                 var parentType = ResolveType(parent);
+
                 var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType, accessor, hasExplicitLetStatement, isTarget)
                              ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType, accessor, hasExplicitLetStatement, isTarget);
 
@@ -722,8 +702,9 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var identifierContext = context.ambiguousIdentifier();
-            var member = _declarations.Where(d => d.IdentifierName == identifierContext.GetText())
-                .SingleOrDefault(item => item.ComponentName == parentType.ComponentName);
+            var member = _declarationFinder.MatchName(identifierContext.GetText())
+                .SingleOrDefault(item => item.QualifiedName.QualifiedModuleName == parentType.QualifiedName.QualifiedModuleName
+                && item.DeclarationType != DeclarationType.Event);
 
             if (member != null)
             {
@@ -790,6 +771,13 @@ namespace Rubberduck.Parsing.Symbols
                 }
             }
 
+            if (parent == null)
+            {
+                
+
+                return;
+            }
+
             var chainedCalls = context.iCS_S_MemberCall();
             foreach (var memberCall in chainedCalls)
             {
@@ -810,7 +798,7 @@ namespace Rubberduck.Parsing.Symbols
                     return;
                 }
 
-                member.AddMemberCall(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
+                member.AddReference(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
                 parent = ResolveType(member);
             }
 
@@ -891,7 +879,8 @@ namespace Rubberduck.Parsing.Symbols
                 var collection = baseType.COLLECTION();
                 if (collection != null)
                 {
-                    type = _declarations.Where(d => d.IdentifierName == collection.GetText()).SingleOrDefault(item => item.IsBuiltIn && item.DeclarationType == DeclarationType.Class);
+                    // bug: this code assumes user code has no Collection class...
+                    type = _declarationFinder.MatchName(collection.GetText()).SingleOrDefault(item => item.IsBuiltIn && item.DeclarationType == DeclarationType.Class);
                     reference = CreateReference(baseType, type);
                 }
             }
@@ -959,7 +948,12 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ImplementsStmtContext context)
         {
-            ResolveInternal(context.ambiguousIdentifier(), _currentScope);
+            var target = ResolveInScopeType(context.ambiguousIdentifier().GetText(), _currentScope);
+            if (target != null)
+            {
+                target.AddReference(CreateReference(context.ambiguousIdentifier(), target));
+                _alreadyResolved.Add(context.ambiguousIdentifier());
+            }
         }
 
         public void Resolve(VBAParser.RaiseEventStmtContext context)
@@ -981,7 +975,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             // named parameter reference must be scoped to called procedure
             var callee = FindParentCall(context);
-            ResolveInternal(context.implicitCallStmt_InStmt(), callee, ContextAccessorType.GetValueOrReference);
+            ResolveInternal(context.implicitCallStmt_InStmt(), callee, ContextAccessorType.AssignValueOrReference);
         }
 
         private Declaration FindParentCall(VBAParser.VsAssignContext context)
@@ -1000,9 +994,10 @@ namespace Rubberduck.Parsing.Symbols
                 localScope = _currentScope;
             }
 
-            var matches = _declarations.Where(d => d.IdentifierName == identifierName);
+            var matches = _declarationFinder.MatchName(identifierName);
             var parent = matches.SingleOrDefault(item =>
-                item.Scope == localScope.Scope);
+                (item.DeclarationType == DeclarationType.Function || item.DeclarationType == DeclarationType.PropertyGet)
+                && item.Equals(localScope));
 
             return parent;
         }
@@ -1020,15 +1015,17 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var matches = _declarations.Where(d => d.IdentifierName == identifierName);
+            var matches = _declarationFinder.MatchName(identifierName);
 
             var results = matches.Where(item =>
-                (item.ParentScope == localScope.Scope || (isAssignmentTarget && item.Scope == localScope.Scope))
+                ((localScope.Equals(item.ParentDeclaration)
+                || (item.DeclarationType == DeclarationType.Parameter && localScope.Equals(item.ParentScopeDeclaration))) 
+                || (isAssignmentTarget && item.Scope == localScope.Scope))
                 && localScope.Context.GetSelection().Contains(item.Selection)
                 && !_moduleTypes.Contains(item.DeclarationType))
                 .ToList();
 
-            if (results.Count > 1 && isAssignmentTarget
+            if (results.Count >= 1 && isAssignmentTarget
                 && _returningMemberTypes.Contains(localScope.DeclarationType)
                 && localScope.IdentifierName == identifierName
                 && parentContextIsVariableOrProcedureCall)
@@ -1057,7 +1054,12 @@ namespace Rubberduck.Parsing.Symbols
                 localScope = _currentScope;
             }
 
-            var matches = _declarations.Where(d => d.IdentifierName == identifierName);
+            if (identifierName == "Me" && _moduleDeclaration.DeclarationType == DeclarationType.Class)
+            {
+                return _moduleDeclaration;
+            }
+
+            var matches = _declarationFinder.MatchName(identifierName);
             var result = matches.Where(item =>
                 item.ParentScope == localScope.ParentScope
                 && !item.DeclarationType.HasFlag(DeclarationType.Member)
@@ -1082,21 +1084,36 @@ namespace Rubberduck.Parsing.Symbols
                 localScope = _currentScope;
             }
 
-            var matches = _declarations.Where(d => d.IdentifierName == identifierName);
+            var matches = _declarationFinder.MatchName(identifierName);
             var result = matches.Where(item =>
-                item.Project == localScope.Project 
-                && item.ComponentName == localScope.ComponentName 
+                localScope.ProjectName == item.ProjectName
+                && (localScope.ComponentName.Replace("_", string.Empty) == item.ComponentName.Replace("_", string.Empty))
                 && (IsProcedure(item, localScope) || IsPropertyAccessor(item, accessorType, localScope, isAssignmentTarget)))
             .ToList();
 
             return result.Count == 1 ? result.SingleOrDefault() : null;
         }
 
-        private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, bool hasStringQualifier = false)
+        private bool IsStdModuleMember(Declaration declaration)
         {
-            // the "$" in e.g. "UCase$" isn't picked up as part of the identifierName, so we need to add it manually:
-            var matches = _declarations.Where(item => !item.IsBuiltIn && item.IdentifierName == identifierName
-                || item.IdentifierName == identifierName + (hasStringQualifier ? "$" : string.Empty)).ToList();
+            return declaration.ParentDeclaration != null
+                   && declaration.ParentDeclaration.DeclarationType == DeclarationType.Module;
+        }
+
+        private bool IsStaticClass(Declaration declaration)
+        {
+            return declaration.ParentDeclaration != null
+                   && declaration.ParentDeclaration.DeclarationType == DeclarationType.Class
+                   && (declaration.ParentDeclaration.HasPredeclaredId || declaration.IsBuiltIn);
+        }
+
+        private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasStringQualifier = false)
+        {
+            var matches = _declarationFinder.MatchName(identifierName).Where(item => 
+                item.ParentDeclaration == null 
+                || IsStdModuleMember(item)
+                || IsStaticClass(item)
+                || item.ParentScopeDeclaration.Equals(localScope)).ToList();
 
             if (matches.Count == 1)
             {
@@ -1119,7 +1136,56 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return result.SingleOrDefault();
             }
+            else
+            {
+                var nonModules = matches.Where(item => !_moduleTypes.Contains(item.DeclarationType)).ToList();
+                var temp = nonModules.Where(item => item.DeclarationType ==
+                                                    (accessorType == ContextAccessorType.GetValueOrReference
+                                                        ? DeclarationType.PropertyGet
+                                                        : item.DeclarationType))
+                    .ToList();
+                if (temp.Count > 1)
+                {
+                    if (localScope == null)
+                    {
+                        var names = new[] {"Global", "_Global"};
+                        var appGlobals = temp.Where(item => names.Contains(item.ParentDeclaration.IdentifierName)).ToList();
+                        if (appGlobals.Count == 1)
+                        {
+                            return appGlobals.Single();
+                        }
+                    }
+                    else
+                    {
+                        var names = new[] { localScope.IdentifierName, "I" + localScope.IdentifierName };
+                        var members = temp.Where(item => names.Contains(item.ParentScopeDeclaration.IdentifierName)
+                                                         && item.DeclarationType == (accessorType == ContextAccessorType.GetValueOrReference
+                                                             ? DeclarationType.PropertyGet
+                                                             : item.DeclarationType)).ToList();
+                        if (members.Count == 1)
+                        {
+                            return members.Single();
+                        }
+                    }
 
+                    Debug.WriteLine("Ambiguous match in '{0}': '{1}'", localScope == null ? "(unknown)" : localScope.IdentifierName, identifierName);
+                }
+            }
+
+            // VBA.Strings.Left function is actually called _B_var_Left;
+            // VBA.Strings.Left$ is _B_str_Left.
+            // same for all $-terminated functions.
+            var surrogateName = hasStringQualifier
+                ? "_B_str_" + identifierName
+                : "_B_var_" + identifierName;
+
+            matches = _declarationFinder.MatchName(surrogateName).ToList();
+            if (matches.Count == 1)
+            {
+                return matches.Single();
+            }
+
+            Debug.WriteLine("Unknown identifier in '{0}': '{1}'", localScope == null ? "(unknown)" : localScope.IdentifierName, identifierName);
             return null;
         }
 
@@ -1149,8 +1215,11 @@ namespace Rubberduck.Parsing.Symbols
             var isBuiltInGlobal = localScope == null && item.Accessibility == Accessibility.Global;
 
             // if localScope is not null, we can resolve to any public or global in that scope:
-            var isInLocalScope = localScope != null && IsPublicOrGlobal(item)
-                && localScope.IdentifierName == item.ParentDeclaration.IdentifierName;
+            var isInLocalScope = (localScope != null && item.Accessibility == Accessibility.Global
+                && localScope.IdentifierName == item.ParentDeclaration.IdentifierName)
+                || (localScope != null && localScope.QualifiedName.QualifiedModuleName.Component != null 
+                    && localScope.QualifiedName.QualifiedModuleName.Component.Type == Microsoft.Vbe.Interop.vbext_ComponentType.vbext_ct_Document
+                 && item.Accessibility == Accessibility.Public && item.ParentDeclaration.DeclarationType == localScope.DeclarationType);
 
             return isBuiltInNonEvent && (isBuiltInGlobal || isInLocalScope);
         }

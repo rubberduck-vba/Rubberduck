@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
@@ -71,12 +73,15 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                DeclarationType result;
-                if (!DeclarationTypes.TryGetValue(ComponentType, out result))
+                var result = DeclarationType.Class;
+                try
                 {
-                    result = DeclarationType.Class;
+                    DeclarationTypes.TryGetValue(ComponentType, out result);
                 }
-
+                catch (COMException exception)
+                {
+                    Console.WriteLine(exception);
+                }
                 return result;
             }
         }

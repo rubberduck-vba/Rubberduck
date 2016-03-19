@@ -754,9 +754,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
     <value>Init New Repo from this Project</value>
   </data>
-  <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
-    <value>Open Working Directory</value>
-  </data>
   <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
     <value>Refreshes pending changes</value>
   </data>
@@ -767,7 +764,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Update</value>
   </data>
   <data name="SourceControl_UserNameLabel" xml:space="preserve">
-    <value>User Name</value>
+    <value>User Name:</value>
   </data>
   <data name="SourceControl_Changes" xml:space="preserve">
     <value>Changes</value>
@@ -784,10 +781,10 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
     <value>Commit message:</value>
   </data>
-  <data name="SourceControl_CommitPush" xml:space="preserve">
+  <data name="SourceControl_CommitAndPush" xml:space="preserve">
     <value>Commit and Push</value>
   </data>
-  <data name="SourceControl_CommitSync" xml:space="preserve">
+  <data name="SourceControl_CommitAndSync" xml:space="preserve">
     <value>Commit and Sync</value>
   </data>
   <data name="SourceControl_CreateNewBranchCaption" xml:space="preserve">
@@ -823,9 +820,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_OutgoingCommits" xml:space="preserve">
     <value>Outgoing commits</value>
   </data>
-  <data name="SourceControl_PublishedBranchesLabel" xml:space="preserve">
-    <value>Published Branches</value>
-  </data>
   <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
     <value>Pull</value>
   </data>
@@ -840,9 +834,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
     <value>Sync</value>
-  </data>
-  <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
-    <value>Unpublished Branches</value>
   </data>
   <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
     <value>Unsynced commits</value>
@@ -971,9 +962,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
     <value>Search:</value>
   </data>
-  <data name="DisableThisInspection" xml:space="preserve">
-    <value>Disable this inspection</value>
-  </data>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Details</value>
   </data>
@@ -1038,7 +1026,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value>Parameter Name:</value>
   </data>
-  <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
+  <data name="SourceControl_DeleteBranch" xml:space="preserve">
     <value>Delete branch</value>
   </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
@@ -1341,10 +1329,100 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>All references: '{0}'</value>
     <comment>0: declaration.identifiername</comment>
   </data>
+  <data name="SourceControl_CloneRepoButtonToolTip" xml:space="preserve">
+    <value>Clone Repository</value>
+  </data>
   <data name="Rubberduck" xml:space="preserve">
     <value>Rubberduck</value>
   </data>
   <data name="SearchResults_MemberType" xml:space="preserve">
     <value>Type</value>
+  </data>
+  <data name="SourceControl_BranchName" xml:space="preserve">
+    <value>Branch Name:</value>
+  </data>
+  <data name="SourceControl_LocalDirectoryLabel" xml:space="preserve">
+    <value>Local Directory:</value>
+  </data>
+  <data name="SourceControl_RemotePathLabel" xml:space="preserve">
+    <value>Remote Path:</value>
+  </data>
+  <data name="SourceControl_FilePath" xml:space="preserve">
+    <value>File Path</value>
+  </data>
+  <data name="SourceControl_FileStatus" xml:space="preserve">
+    <value>File Status</value>
+  </data>
+  <data name="SourceControl_Author" xml:space="preserve">
+    <value>Author</value>
+  </data>
+  <data name="SourceControl_Id" xml:space="preserve">
+    <value>Id</value>
+  </data>
+  <data name="SourceControl_Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="SourceControl_Dismiss" xml:space="preserve">
+    <value>Dismiss</value>
+  </data>
+  <data name="SourceControl_PasswordLabel" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="SourceControl_DeleteButton" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="SourceControl_PublishBranchButton" xml:space="preserve">
+    <value>Publish</value>
+  </data>
+  <data name="SourceControl_UnpublishBranchButton" xml:space="preserve">
+    <value>Unpublish</value>
+  </data>
+  <data name="SourceControl_SourceBranch" xml:space="preserve">
+    <value>Source Branch:</value>
+  </data>
+  <data name="SourceControl_PublishedBranchesLabel" xml:space="preserve">
+    <value>Published Branches</value>
+  </data>
+  <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
+    <value>Unpublished Branches</value>
+  </data>
+  <data name="SourceControl_LoginInstructions" xml:space="preserve">
+    <value>Your last action failed because Rubberduck did not have your authorization credentials.  Please login and try again.</value>
+  </data>
+  <data name="SourceControl_ExcludeFileButton" xml:space="preserve">
+    <value>Exclude</value>
+  </data>
+  <data name="SourceControl_IncludeFileButton" xml:space="preserve">
+    <value>Include</value>
+  </data>
+  <data name="SourceControl_UndoChangesButton" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="SourceControl_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="ParserState_Error" xml:space="preserve">
+    <value>Parse Error</value>
+  </data>
+  <data name="ParserState_LoadingReference" xml:space="preserve">
+    <value>Loading references</value>
+  </data>
+  <data name="ParserState_Parsed" xml:space="preserve">
+    <value>Parsed</value>
+  </data>
+  <data name="ParserState_Parsing" xml:space="preserve">
+    <value>Parsing...</value>
+  </data>
+  <data name="ParserState_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="ParserState_Ready" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="ParserState_ResolverError" xml:space="preserve">
+    <value>Resolver Error</value>
+  </data>
+  <data name="ParserState_Resolving" xml:space="preserve">
+    <value>Resolving...</value>
   </data>
 </root>

@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections
                 select p;
 
             var issues = multilineParameters
-                .Select(param => new MultilineParameterInspectionResult(this, param.Context, param.QualifiedName));
+                .Select(param => new MultilineParameterInspectionResult(this, param));
 
             return issues;
         }

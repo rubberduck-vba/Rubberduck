@@ -74,6 +74,11 @@ namespace Rubberduck.Inspections
             get { return State.AllDeclarations.Where(declaration => !declaration.IsInspectionDisabled(AnnotationName)); }
         }
 
+        protected virtual IEnumerable<Declaration> BuiltInDeclarations
+        {
+            get { return State.AllDeclarations.Where(declaration => declaration.IsBuiltIn); }
+        }
+
         /// <summary>
         /// Gets all user declarations in the parser state without an @Ignore annotation for this inspection.
         /// </summary>

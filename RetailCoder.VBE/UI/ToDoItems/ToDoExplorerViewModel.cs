@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -24,6 +26,7 @@ namespace Rubberduck.UI.ToDoItems
             _dispatcher = Dispatcher.CurrentDispatcher;
             _state = state;
             _configService = configService;
+            _state.StateChanged += _state_StateChanged;
         }
 
         private readonly ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
@@ -40,18 +43,20 @@ namespace Rubberduck.UI.ToDoItems
                 }
                 return _refreshCommand = new DelegateCommand(_ =>
                 {
-                    _state.StateChanged += _state_StateChanged;
-                    _state.OnParseRequested();
+                    _state.OnParseRequested(this);
                 });
             }
         }
 
-        private async void _state_StateChanged(object sender, ParserStateEventArgs e)
+        private async void _state_StateChanged(object sender, EventArgs e)
         {
-            if (e.State != ParserState.Parsed)
+            Debug.WriteLine("ToDoExplorerViewModel handles StateChanged...");
+            if (_state.Status != ParserState.Parsed)
             {
                 return;
             }
+
+            Debug.WriteLine("Refreshing TODO items...");
             _dispatcher.Invoke(() =>
             {
                 Items.Clear();

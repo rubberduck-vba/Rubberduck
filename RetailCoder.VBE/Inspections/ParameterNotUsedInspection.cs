@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var declarations = Declarations.ToList();
+            var declarations = UserDeclarations.ToList();
 
             var interfaceMemberScopes = declarations.FindInterfaceMembers().Select(m => m.Scope).ToList();
             var interfaceImplementationMemberScopes = declarations.FindInterfaceImplementationMembers().Select(m => m.Scope).ToList();
@@ -55,7 +55,9 @@ namespace Rubberduck.Inspections
                 !IsInterfaceMemberParameter(parameter, interfaceMemberScopes)
                 && !builtInHandlers.Contains(parameter.ParentDeclaration))
                 let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)
-                select new ParameterNotUsedInspectionResult(this, issue, isInterfaceImplementationMember, quickFixRefactoring, State);
+                select new ParameterNotUsedInspectionResult(this, issue,
+                        ((dynamic) issue.Context).ambiguousIdentifier(), issue.QualifiedName,
+                        isInterfaceImplementationMember, quickFixRefactoring, State);
 
             return issues.ToList();
         }

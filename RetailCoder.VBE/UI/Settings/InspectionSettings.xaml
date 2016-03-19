@@ -76,10 +76,10 @@
                                             <TextBlock Text="{Binding Description}"
                                                        FontWeight="SemiBold"
                                                        MaxWidth="300"
-                                                       TextWrapping="Wrap" />
+                                                       TextWrapping="WrapWithOverflow" />
                                             <TextBlock Text="{Binding Meta}"
                                                        MaxWidth="300"
-                                                       TextWrapping="Wrap" />
+                                                       TextWrapping="WrapWithOverflow" />
                                         </StackPanel>
                                     </TextBlock.ToolTip>
                                 </TextBlock>

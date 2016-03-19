@@ -15,11 +15,13 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
+using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
+using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
@@ -47,6 +49,7 @@ namespace Rubberduck.Root
             _kernel.Bind<VBE>().ToConstant(_vbe);
             _kernel.Bind<AddIn>().ToConstant(_addin);
             _kernel.Bind<RubberduckParserState>().ToSelf().InSingletonScope();
+            _kernel.Bind<GitProvider>().ToSelf().InSingletonScope();
             
             BindCodeInspectionTypes();
 
@@ -89,6 +92,28 @@ namespace Rubberduck.Root
                 .WhenInjectedInto<ToDoExplorerCommand>()
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new ToDoExplorerWindow { ViewModel = _kernel.Get<ToDoExplorerViewModel>() });
+
+            Bind<IControlView>().To<ChangesView>().Named("changesView");
+            Bind<IControlView>().To<BranchesView>().Named("branchesView");
+            Bind<IControlView>().To<UnsyncedCommitsView>().Named("unsyncedCommitsView");
+            Bind<IControlView>().To<SettingsView>().Named("settingsView");
+
+            Bind<IControlViewModel>().To<ChangesViewViewModel>()
+                .WhenInjectedInto<ChangesView>();
+            Bind<IControlViewModel>().To<BranchesViewViewModel>()
+                .WhenInjectedInto<BranchesView>();
+            Bind<IControlViewModel>().To<UnsyncedCommitsViewViewModel>()
+                .WhenInjectedInto<UnsyncedCommitsView>();
+            Bind<IControlViewModel>().To<SettingsViewViewModel>()
+                .WhenInjectedInto<SettingsView>();
+
+            Bind<ISourceControlProviderFactory>().To<SourceControlProviderFactory>()
+                .WhenInjectedInto<SourceControlViewViewModel>();
+
+            Bind<IPresenter>().To<SourceControlDockablePresenter>()
+                .WhenInjectedInto<ShowSourceControlPanelCommand>()
+                .InSingletonScope()
+                .WithConstructorArgument<IDockableUserControl>(new SourceControlPanel { ViewModel = _kernel.Get<SourceControlViewViewModel>() });
 
             //BindWindowsHooks();
             Debug.Print("completed RubberduckModule.Load()");

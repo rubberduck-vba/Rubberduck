@@ -106,6 +106,7 @@
     <Compile Include="VBEHost\AccessApp.cs" />
     <Compile Include="VBEHost\CorelDRAWApp.cs" />
     <Compile Include="VBEHost\ExcelApp.cs" />
+    <Compile Include="VBEHost\FallbackApp.cs" />
     <Compile Include="VBEHost\HostApplicationBase.cs" />
     <Compile Include="VBEHost\IHostApplication.cs" />
     <Compile Include="VBEHost\OutlookApp.cs" />

@@ -40,6 +40,13 @@ namespace Rubberduck.SourceControl
         public abstract void DeleteBranch(string branch);
         public abstract IRepository Init(string directory, bool bare = false);
         public abstract void Commit(string message);
+        public abstract void Publish(string branch);
+        public abstract void Unpublish(string branch);
+
+        public virtual void CreateBranch(string sourceBranch, string branch)
+        {
+            Refresh();
+        }
 
         public virtual IRepository InitVBAProject(string directory)
         {
@@ -58,6 +65,8 @@ namespace Rubberduck.SourceControl
             CurrentRepository = new Repository(Project.Name, directory, directory);
             return CurrentRepository;
         }
+
+        public virtual event EventHandler<EventArgs> BranchChanged;
 
         public virtual void Pull()
         {
@@ -82,17 +91,19 @@ namespace Rubberduck.SourceControl
         public virtual void Checkout(string branch)
         {
             Refresh();
+
+            var handler = BranchChanged;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         public virtual void Undo(string filePath)
         {
-            //this might need to cherry pick from the tip instead.
+            var componentName = Path.GetFileNameWithoutExtension(filePath);
 
-           var componentName = Path.GetFileNameWithoutExtension(filePath);
-
-           //GetFileNameWithoutExtension returns empty string if it's not a file
-           //https://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx
-            if (componentName != String.Empty)
+            if (!File.Exists(filePath))
             {
                 var component = Project.VBComponents.Item(componentName);
                 Project.VBComponents.RemoveSafely(component);
@@ -123,18 +134,29 @@ namespace Rubberduck.SourceControl
             //Because refreshing removes all components, we need to store the current selection,
             // so we can correctly reset it once the files are imported from the repository.
 
-            var codePane = _wrapperFactory.Create(Project.VBE.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
-            string name = null;
-            if (selection.QualifiedName.Component != null)
+            var codePane = Project.VBE.ActiveCodePane;
+
+            if (codePane != null)
             {
-                name = selection.QualifiedName.Component.Name;
+                var codePaneWrapper = _wrapperFactory.Create(codePane);
+                var selection = new QualifiedSelection(new QualifiedModuleName(codePaneWrapper.CodeModule.Parent),
+                    codePaneWrapper.Selection);
+                string name = null;
+                if (selection.QualifiedName.Component != null)
+                {
+                    name = selection.QualifiedName.Component.Name;
+                }
+
+                Project.RemoveAllComponents();
+                Project.ImportSourceFiles(CurrentRepository.LocalLocation);
+
+                Project.VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name, _wrapperFactory);
             }
-
-            Project.RemoveAllComponents();
-            Project.ImportSourceFiles(CurrentRepository.LocalLocation);
-
-            Project.VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name, _wrapperFactory);
+            else
+            {
+                Project.RemoveAllComponents();
+                Project.ImportSourceFiles(CurrentRepository.LocalLocation);
+            }
         }
     }
 }

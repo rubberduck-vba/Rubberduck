@@ -6,6 +6,7 @@ using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
@@ -21,20 +22,16 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _parentDeclaration;
 
         private readonly IEnumerable<CommentNode> _comments;
-        private readonly CancellationToken _token;
+        private readonly IDictionary<Tuple<string, DeclarationType>, Attributes> _attributes;
 
-        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type, IEnumerable<CommentNode> comments, CancellationToken token)
+        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type, IEnumerable<CommentNode> comments, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
         {
             _qualifiedName = qualifiedName;
             _comments = comments;
-            _token = token;
+            _attributes = attributes;
 
             var declarationType = type == vbext_ComponentType.vbext_ct_StdModule
                 ? DeclarationType.Module
-                //: result.Component.Type == vbext_ComponentType.vbext_ct_MSForm 
-                //    ? DeclarationType.UserForm
-                //    : result.Component.Type == vbext_ComponentType.vbext_ct_Document
-                //        ? DeclarationType.Document
                 : DeclarationType.Class;
 
             var project = _qualifiedName.Component.Collection.Parent;
@@ -43,6 +40,11 @@ namespace Rubberduck.Parsing.Symbols
             _projectDeclaration = new Declaration(
                 projectQualifiedName.QualifyMemberName(project.Name),
                 null, (Declaration)null, project.Name, false, false, Accessibility.Implicit, DeclarationType.Project, null, Selection.Home, false);
+
+            var key = Tuple.Create(_qualifiedName.ComponentName, declarationType);
+            var moduleAttributes = attributes.ContainsKey(key)
+                ? attributes[key]
+                : new Attributes();
 
             _moduleDeclaration = new Declaration(
                 _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
@@ -54,7 +56,7 @@ namespace Rubberduck.Parsing.Symbols
                 componentAccessibility,
                 declarationType,
                 null, Selection.Home, false,
-                FindAnnotations());
+                FindAnnotations(), moduleAttributes);
 
             SetCurrentScope();
         }
@@ -109,8 +111,6 @@ namespace Rubberduck.Parsing.Symbols
         public event EventHandler<DeclarationEventArgs> NewDeclaration;
         private void OnNewDeclaration(Declaration declaration)
         {
-            _token.ThrowIfCancellationRequested();
-
             var handler = NewDeclaration;
             if (handler != null)
             {
@@ -142,8 +142,28 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration CreateDeclaration(string identifierName, string asTypeName, Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool selfAssigned = false, bool withEvents = false)
         {
-            var annotations = FindAnnotations(selection.StartLine);
-            var result = new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations);
+            Declaration result;
+            if (declarationType == DeclarationType.Parameter)
+            {
+                var argContext = (VBAParser.ArgContext) context;
+                var isOptional = argContext.OPTIONAL() != null;
+                var isByRef = argContext.BYREF() != null;
+                var isParamArray = argContext.PARAMARRAY() != null;
+                var isArray = argContext.LPAREN() != null;
+                result = new ParameterDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, context, selection, asTypeName, isOptional, isByRef, isArray, isParamArray);
+            }
+            else
+            {
+                var key = Tuple.Create(identifierName, declarationType);
+                Attributes attributes = null;
+                if (_attributes.ContainsKey(key))
+                {
+                    attributes = _attributes[key];
+                }
+
+                var annotations = FindAnnotations(selection.StartLine);
+                result = new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations, attributes);
+            }
 
             OnNewDeclaration(result);
             return result;
