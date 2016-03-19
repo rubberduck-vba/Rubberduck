@@ -287,6 +287,7 @@ namespace Rubberduck.UI.SourceControl
             }
 
             DisplayMergeBranchesGrid = false;
+            RaiseErrorEvent(RubberduckUI.SourceControl_MergeStatus, string.Format(RubberduckUI.SourceControl_SuccessfulMerge, SourceBranch, DestinationBranch));
         }
 
         private void MergeBranchCancel()

@@ -3152,6 +3152,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Merge status.
+        /// </summary>
+        public static string SourceControl_MergeStatus {
+            get {
+                return ResourceManager.GetString("SourceControl_MergeStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message.
         /// </summary>
         public static string SourceControl_Message {

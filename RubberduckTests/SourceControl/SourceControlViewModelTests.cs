@@ -20,7 +20,6 @@ namespace RubberduckTests.SourceControl
     {
         private Mock<VBE> _vbe;
         private MockWindowsCollection _windows;
-        private Mock<AddIn> _addIn;
         private Mock<Window> _window;
 #pragma warning disable 169
         private object _toolWindow;
@@ -47,8 +46,6 @@ namespace RubberduckTests.SourceControl
             _window = Mocks.MockFactory.CreateWindowMock();
             _windows = new MockWindowsCollection(new List<Window> { _window.Object });
             _vbe = Mocks.MockFactory.CreateVbeMock(_windows);
-
-            _addIn = new Mock<AddIn>();
 
             _configService = new Mock<IConfigurationService<SourceControlConfiguration>>();
             _configService.Setup(c => c.LoadConfiguration()).Returns(GetDummyConfig());
@@ -498,7 +495,6 @@ namespace RubberduckTests.SourceControl
             const string expectedTitle = "Some Action Failed.";
             const string expectedMessage = "Details about failure.";
 
-            //arrange
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
             _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
 
@@ -513,6 +509,35 @@ namespace RubberduckTests.SourceControl
             //assert-act
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
             _vm.OpenRepoCommand.Execute(null);
+
+            //assert
+            Assert.IsTrue(_vm.DisplayErrorMessageGrid);
+
+            var expected = expectedTitle + ":" + Environment.NewLine + expectedMessage;
+            Assert.AreEqual(expected, _vm.ErrorMessage);
+        }
+
+        [TestMethod]
+        public void MergeStatusSuccess_MessageIsShown()
+        {
+            //arrange
+            const string sourceBranch = "dev";
+            const string destinationBranch = "master";
+
+            var expectedTitle = RubberduckUI.SourceControl_MergeStatus;
+            var expectedMessage = string.Format(RubberduckUI.SourceControl_SuccessfulMerge, sourceBranch, destinationBranch);
+
+            SetupValidVbProject();
+            SetupVM();
+
+            _vm.Provider = _provider.Object;
+
+            _branchesVM.SourceBranch = sourceBranch;
+            _branchesVM.DestinationBranch = destinationBranch;
+
+            //assert-act
+            Assert.IsFalse(_vm.DisplayErrorMessageGrid);
+            _branchesVM.MergeBranchesOkButtonCommand.Execute(null);
 
             //assert
             Assert.IsTrue(_vm.DisplayErrorMessageGrid);
