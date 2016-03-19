@@ -4,7 +4,6 @@ using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using RubberduckTests.Inspections;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Grammar
@@ -31,7 +30,7 @@ namespace RubberduckTests.Grammar
         private RubberduckParserState Resolve(params string[] classes)
         {
             var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject", vbext_ProjectProtection.vbext_pp_none);
+            var projectBuilder = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
             for (var i = 0; i < classes.Length; i++)
             {
                 projectBuilder.AddComponent("Class" + (i + 1), vbext_ComponentType.vbext_ct_ClassModule, classes[i]);
@@ -971,6 +970,217 @@ End Sub
             Assert.AreEqual(string.Empty, usage.Annotations);
         }
 
+        [TestMethod]
+        public void GivenUDT_NamedAfterProject_LocalResolvesToUDT()
+        {
+            var code = @"
+Private Type TestProject1
+    Foo As Integer
+    Bar As String
+End Type
 
+Public Sub DoSomething()
+    Dim Foo As TestProject1
+    Foo.Bar = ""DoSomething""
+    Foo.Foo = 42
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.UserDefinedType);
+
+            if (declaration.ProjectName != declaration.IdentifierName)
+            {
+                Assert.Inconclusive("UDT should be named after project.");
+            }
+
+            var usage = declaration.References.SingleOrDefault();
+
+            Assert.IsNotNull(usage);
+        }
+
+        [TestMethod]
+        public void GivenUDT_NamedAfterProject_FieldResolvesToUDT_EvenIfHiddenByLocal()
+        {
+            var code = @"
+Private Type TestProject1
+    Foo As Integer
+    Bar As String
+End Type
+
+Private Foo As TestProject1
+
+Public Sub DoSomething()
+    Dim Foo As TestProject1
+    Foo.Bar = ""DoSomething""
+    Foo.Foo = 42
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.UserDefinedType);
+
+            if (declaration.ProjectName != declaration.IdentifierName)
+            {
+                Assert.Inconclusive("UDT should be named after project.");
+            }
+
+            var usages = declaration.References;
+
+            Assert.AreEqual(2, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenLocalVariable_NamedAfterUDTMember_ResolvesToLocalVariable()
+        {
+            var code = @"
+Private Type TestProject1
+    Foo As Integer
+    Bar As String
+End Type
+
+Public Sub DoSomething()
+    Dim Foo As TestProject1
+    Foo.Bar = ""DoSomething""
+    Foo.Foo = 42
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable);
+
+            if (declaration.ProjectName != declaration.AsTypeName)
+            {
+                Assert.Inconclusive("variable should be named after project.");
+            } 
+            var usages = declaration.References;
+
+            Assert.AreEqual(2, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenLocalVariable_NamedAfterUDTMember_MemberCallResolvesToUDTMember()
+        {
+            var code = @"
+Private Type TestProject1
+    Foo As Integer
+    Bar As String
+End Type
+
+Public Sub DoSomething()
+    Dim Foo As TestProject1
+    Foo.Bar = ""DoSomething""
+    Foo.Foo = 42
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.UserDefinedTypeMember
+                && item.IdentifierName == "Foo");
+
+            var usages = declaration.References.Where(item => 
+                item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenUDTMember_OfUDTType_ResolvesToDeclaredUDT()
+        {
+            var code = @"
+Private Type TestProject1
+    Foo As Integer
+    Bar As String
+End Type
+
+Private Type Foo
+    Foo As TestProject1
+End Type
+
+Public Sub DoSomething()
+    Dim Foo As Foo
+    Foo.Foo.Bar = ""DoSomething""
+    Foo.Foo.Foo = 42
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.UserDefinedTypeMember
+                && item.IdentifierName == "Foo"
+                && item.AsTypeName == item.ProjectName
+                && item.IdentifierName == item.ParentDeclaration.IdentifierName);
+
+            var usages = declaration.References.Where(item => 
+                item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(2, usages.Count());
+        }
+    
+        [TestMethod]
+        public void GivenUDT_NamedAfterModule_LocalAsTypeResolvesToUDT()
+        {
+            var code = @"
+Private Type TestProject1
+    Foo As Integer
+    Bar As String
+End Type
+
+Private Type TestModule1
+    Foo As TestProject1
+End Type
+
+Public Sub DoSomething()
+    Dim Foo As TestModule1
+    Foo.Foo.Bar = ""DoSomething""
+    Foo.Foo.Foo = 42
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.UserDefinedType
+                && item.IdentifierName == item.ComponentName);
+
+            var usages = declaration.References.Where(item => 
+                item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenUDTMember_NamedAfterUDTType_NamedAfterModule_LocalAsTypeResolvesToUDT()
+        {
+            var code = @"
+Private Type TestProject1
+    Foo As Integer
+    Bar As String
+End Type
+
+Private Type TestModule1
+    TestModule1 As TestProject1
+End Type
+
+Public Sub DoSomething()
+    Dim TestModule1 As TestModule1
+    TestModule1.TestModule1.Bar = ""DoSomething""
+    TestModule1.TestModule1.Foo = 42
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.UserDefinedType
+                && item.IdentifierName == item.ComponentName);
+
+            var usages = declaration.References.Where(item =>
+                item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
     }
 }
