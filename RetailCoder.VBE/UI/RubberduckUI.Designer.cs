@@ -3377,6 +3377,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your user name, email address, and default repository location have been saved..
+        /// </summary>
+        public static string SourceControl_UpdateSettingsMessage {
+            get {
+                return ResourceManager.GetString("SourceControl_UpdateSettingsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings updated.
+        /// </summary>
+        public static string SourceControl_UpdateSettingsTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_UpdateSettingsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User Name:.
         /// </summary>
         public static string SourceControl_UserNameLabel {

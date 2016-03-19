@@ -1408,4 +1408,10 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SourceControl_MergeStatus" xml:space="preserve">
     <value>Merge status</value>
   </data>
+  <data name="SourceControl_UpdateSettingsMessage" xml:space="preserve">
+    <value>Your user name, email address, and default repository location have been saved.</value>
+  </data>
+  <data name="SourceControl_UpdateSettingsTitle" xml:space="preserve">
+    <value>Settings updated</value>
+  </data>
 </root>
