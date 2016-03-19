@@ -331,8 +331,8 @@
   <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
     <value>Code &amp;Inspections</value>
   </data>
-  <data name="RubberduckMenu_Options" xml:space="preserve">
-    <value>&amp;Options</value>
+  <data name="RubberduckMenu_Settings" xml:space="preserve">
+    <value>S&amp;ettings</value>
   </data>
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>&amp;Refactor</value>
@@ -471,26 +471,8 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
-  <data name="ByValParameterIsAssigned_" xml:space="preserve">
-    <value>ByVal parameter '{0}' is assigned</value>
-  </data>
-  <data name="ConstantNotUsed_" xml:space="preserve">
-    <value>Constant '{0}' is never used</value>
-  </data>
   <data name="EasterEgg_Continuator" xml:space="preserve">
     <value>You've earned the "Continuator" badge!</value>
-  </data>
-  <data name="FunctionNotUsed_" xml:space="preserve">
-    <value>Function '{0}' is never used</value>
-  </data>
-  <data name="ImplicitByRef_" xml:space="preserve">
-    <value>Parameter '{0}' is passed ByRef implicitly</value>
-  </data>
-  <data name="ImplicitPublicMember_" xml:space="preserve">
-    <value>Member '{0}' is implicitly Public</value>
-  </data>
-  <data name="ImplicitVariantReturnType_" xml:space="preserve">
-    <value>Function '{0}' returns an implicit Variant</value>
   </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Module options should be specified first</value>
@@ -660,9 +642,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
     <value>Selected Tests</value>
   </data>
-  <data name="GenericProjectName_" xml:space="preserve">
-    <value>Project '{0}' has generic name</value>
-  </data>
   <data name="Line" xml:space="preserve">
     <value>Line</value>
   </data>
@@ -739,53 +718,17 @@ Are you sure you want to proceed with this rename?</value>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
   </data>
-  <data name="About_AllContributors" xml:space="preserve">
-    <value>All contributors to our GitHub repository</value>
-  </data>
-  <data name="About_Anyone" xml:space="preserve">
-    <value>...and anyone reading this!</value>
-  </data>
-  <data name="About_Attributions" xml:space="preserve">
+  <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
     <value>Attributions</value>
   </data>
-  <data name="About_Blogs" xml:space="preserve">
-    <value>Blogs:</value>
-  </data>
-  <data name="About_Caption" xml:space="preserve">
+  <data name="AboutWindow_Caption" xml:space="preserve">
     <value>About Rubberduck</value>
   </data>
-  <data name="About_CodeReview" xml:space="preserve">
-    <value>Code Review Stack Exchange</value>
+  <data name="AboutWindow_Copyright" xml:space="preserve">
+    <value>© Copyright 2014-2016 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
-  <data name="About_Community" xml:space="preserve">
-    <value>Community:</value>
-  </data>
-  <data name="About_Contributors" xml:space="preserve">
-    <value>Contributors &amp; supporters:</value>
-  </data>
-  <data name="About_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
-  </data>
-  <data name="About_FugueIconCredit" xml:space="preserve">
-    <value>Fugue icons by Yusuke Kamiyamane</value>
-  </data>
-  <data name="About_JetBrains" xml:space="preserve">
-    <value>JetBrains ReSharper Community Team</value>
-  </data>
-  <data name="About_LibGit2SharpCredit" xml:space="preserve">
-    <value>GitHub integration powered by LibGit2Sharp</value>
-  </data>
-  <data name="About_ParsingCredit" xml:space="preserve">
-    <value>Parsing powered by ANTLR</value>
-  </data>
-  <data name="About_SpecialThanks" xml:space="preserve">
+  <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
     <value>Special Thanks</value>
-  </data>
-  <data name="About_StackOverflow" xml:space="preserve">
-    <value>Stack Overflow</value>
-  </data>
-  <data name="About_Stargazers" xml:space="preserve">
-    <value>All our stargazers, likers &amp; followers, for the warm fuzzies</value>
   </data>
   <data name="SourceControlPanel_Caption" xml:space="preserve">
     <value>Source Control</value>
@@ -811,9 +754,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
     <value>Init New Repo from this Project</value>
   </data>
-  <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
-    <value>Open Working Directory</value>
-  </data>
   <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
     <value>Refreshes pending changes</value>
   </data>
@@ -824,7 +764,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Update</value>
   </data>
   <data name="SourceControl_UserNameLabel" xml:space="preserve">
-    <value>User Name</value>
+    <value>User Name:</value>
   </data>
   <data name="SourceControl_Changes" xml:space="preserve">
     <value>Changes</value>
@@ -841,10 +781,10 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
     <value>Commit message:</value>
   </data>
-  <data name="SourceControl_CommitPush" xml:space="preserve">
+  <data name="SourceControl_CommitAndPush" xml:space="preserve">
     <value>Commit and Push</value>
   </data>
-  <data name="SourceControl_CommitSync" xml:space="preserve">
+  <data name="SourceControl_CommitAndSync" xml:space="preserve">
     <value>Commit and Sync</value>
   </data>
   <data name="SourceControl_CreateNewBranchCaption" xml:space="preserve">
@@ -880,9 +820,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_OutgoingCommits" xml:space="preserve">
     <value>Outgoing commits</value>
   </data>
-  <data name="SourceControl_PublishedBranchesLabel" xml:space="preserve">
-    <value>Published Branches</value>
-  </data>
   <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
     <value>Pull</value>
   </data>
@@ -897,9 +834,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
     <value>Sync</value>
-  </data>
-  <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
-    <value>Unpublished Branches</value>
   </data>
   <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
     <value>Unsynced commits</value>
@@ -1028,17 +962,8 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
     <value>Search:</value>
   </data>
-  <data name="DisableThisInspection" xml:space="preserve">
-    <value>Disable this inspection</value>
-  </data>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Details</value>
-  </data>
-  <data name="ImplicitActiveSheetReference_" xml:space="preserve">
-    <value>'{0}' is an implicit reference to the active worksheet</value>
-  </data>
-  <data name="ImplicitActiveWorkbookReference_" xml:space="preserve">
-    <value>'{0}' is an implicit reference to the active workbook</value>
   </data>
   <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
     <value>Make ActiveSheet reference explicit</value>
@@ -1101,7 +1026,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value>Parameter Name:</value>
   </data>
-  <data name="SourceControl_DeleteBranchButton" xml:space="preserve">
+  <data name="SourceControl_DeleteBranch" xml:space="preserve">
     <value>Delete branch</value>
   </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
@@ -1325,5 +1250,179 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="GroupingStyle_ByOutcome" xml:space="preserve">
     <value>By outcome</value>
+  </data>
+  <data name="GeneralSettings_AutoSaveLabel" xml:space="preserve">
+    <value>Auto Save:</value>
+  </data>
+  <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
+    <value>Hotkeys:</value>
+  </data>
+  <data name="GeneralSettings_AutoSaveEnabled" xml:space="preserve">
+    <value>Enable Auto Save</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="AboutWindow_AttributionList" xml:space="preserve">
+    <value>Parsing powered by ANTLR
+GitHub integration powered by LibGit2Sharp
+Fugue icons by Yusuke Kamiyamane</value>
+  </data>
+  <data name="AboutWindow_SpecialThanksList" xml:space="preserve">
+    <value>Community:
+Code Review Stack Exchange
+JetBrains ReSharper Community Team
+Stack Overflow
+
+Blogs:
+Michal Krzych (vba4all.com)
+Knjname developer blog (clockahead.blogspot.jp)
+
+Contributors &amp; supporters:
+Abraham Hosch
+Andrew Jackson
+Andrin Meier
+Bruno Costa
+Carlos J. Quintero (MZ-Tools articles &amp; help with VBE API)
+@daFreeMan
+@Duga SE chat bot
+Francis Veilleux-Gaboury
+Frank Van Heeswijk
+@Heslacher
+Jeroen Vannevel
+@mjolka
+Philip Wales
+Rob Bovey
+Ross McLean
+Ross Knudsen
+Simon Forsberg
+Stephen Bullen
+
+All contributors to our GitHub repository
+All our stargazers, likers &amp; followers, for the warm fuzzies
+...and anyone reading this!</value>
+  </data>
+  <data name="SearchResults_Caption" xml:space="preserve">
+    <value>Search Results</value>
+  </data>
+  <data name="SearchResults_Location" xml:space="preserve">
+    <value>Location</value>
+    <comment>The applicable selection, in L1C1 notation</comment>
+  </data>
+  <data name="SearchResults_MemberName" xml:space="preserve">
+    <value>Member</value>
+    <comment>The member name, e.g. "Method1"</comment>
+  </data>
+  <data name="SearchResults_ModuleName" xml:space="preserve">
+    <value>Module</value>
+    <comment>The qualified module name, e.g. "Project1.Module1"</comment>
+  </data>
+  <data name="SearchResults_Context" xml:space="preserve">
+    <value>Context</value>
+    <comment>A column to display the search result itself</comment>
+  </data>
+  <data name="SearchResults_AllImplementationsTabFormat" xml:space="preserve">
+    <value>All implementations: '{0}'</value>
+    <comment>0: declaration.identifiername</comment>
+  </data>
+  <data name="SearchResults_AllReferencesTabFormat" xml:space="preserve">
+    <value>All references: '{0}'</value>
+    <comment>0: declaration.identifiername</comment>
+  </data>
+  <data name="SourceControl_CloneRepoButtonToolTip" xml:space="preserve">
+    <value>Clone Repository</value>
+  </data>
+  <data name="Rubberduck" xml:space="preserve">
+    <value>Rubberduck</value>
+  </data>
+  <data name="SearchResults_MemberType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="SourceControl_BranchName" xml:space="preserve">
+    <value>Branch Name:</value>
+  </data>
+  <data name="SourceControl_LocalDirectoryLabel" xml:space="preserve">
+    <value>Local Directory:</value>
+  </data>
+  <data name="SourceControl_RemotePathLabel" xml:space="preserve">
+    <value>Remote Path:</value>
+  </data>
+  <data name="SourceControl_FilePath" xml:space="preserve">
+    <value>File Path</value>
+  </data>
+  <data name="SourceControl_FileStatus" xml:space="preserve">
+    <value>File Status</value>
+  </data>
+  <data name="SourceControl_Author" xml:space="preserve">
+    <value>Author</value>
+  </data>
+  <data name="SourceControl_Id" xml:space="preserve">
+    <value>Id</value>
+  </data>
+  <data name="SourceControl_Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="SourceControl_Dismiss" xml:space="preserve">
+    <value>Dismiss</value>
+  </data>
+  <data name="SourceControl_PasswordLabel" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="SourceControl_DeleteButton" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="SourceControl_PublishBranchButton" xml:space="preserve">
+    <value>Publish</value>
+  </data>
+  <data name="SourceControl_UnpublishBranchButton" xml:space="preserve">
+    <value>Unpublish</value>
+  </data>
+  <data name="SourceControl_SourceBranch" xml:space="preserve">
+    <value>Source Branch:</value>
+  </data>
+  <data name="SourceControl_PublishedBranchesLabel" xml:space="preserve">
+    <value>Published Branches</value>
+  </data>
+  <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
+    <value>Unpublished Branches</value>
+  </data>
+  <data name="SourceControl_LoginInstructions" xml:space="preserve">
+    <value>Your last action failed because Rubberduck did not have your authorization credentials.  Please login and try again.</value>
+  </data>
+  <data name="SourceControl_ExcludeFileButton" xml:space="preserve">
+    <value>Exclude</value>
+  </data>
+  <data name="SourceControl_IncludeFileButton" xml:space="preserve">
+    <value>Include</value>
+  </data>
+  <data name="SourceControl_UndoChangesButton" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="SourceControl_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="ParserState_Error" xml:space="preserve">
+    <value>Parse Error</value>
+  </data>
+  <data name="ParserState_LoadingReference" xml:space="preserve">
+    <value>Loading references</value>
+  </data>
+  <data name="ParserState_Parsed" xml:space="preserve">
+    <value>Parsed</value>
+  </data>
+  <data name="ParserState_Parsing" xml:space="preserve">
+    <value>Parsing...</value>
+  </data>
+  <data name="ParserState_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="ParserState_Ready" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="ParserState_ResolverError" xml:space="preserve">
+    <value>Resolver Error</value>
+  </data>
+  <data name="ParserState_Resolving" xml:space="preserve">
+    <value>Resolving...</value>
   </data>
 </root>

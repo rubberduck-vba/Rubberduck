@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -42,6 +45,8 @@ namespace Rubberduck.UI.CodeInspections
             _quickFixInModuleCommand = new DelegateCommand(ExecuteQuickFixInModuleCommand);
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
+
+            _state.StateChanged += _state_StateChanged;
         }
 
         private readonly ObservableCollection<ICodeInspectionResult> _results = new ObservableCollection<ICodeInspectionResult>();
@@ -141,8 +146,8 @@ namespace Rubberduck.UI.CodeInspections
 
             IsBusy = true;
 
-            _state.StateChanged += _state_StateChanged;
-            _state.OnParseRequested();
+            Debug.WriteLine("InspectionResultsViewModel.ExecuteRefreshCommand - requesting reparse");
+            _state.OnParseRequested(this);
         }
 
         private bool CanExecuteRefreshCommand(object parameter)
@@ -150,13 +155,16 @@ namespace Rubberduck.UI.CodeInspections
             return !IsBusy;
         }
 
-        private async void _state_StateChanged(object sender, ParserStateEventArgs e)
+        private async void _state_StateChanged(object sender, EventArgs e)
         {
-            if (e.State != ParserState.Ready)
+            Debug.WriteLine("InspectionResultsViewModel handles StateChanged...");
+            if (_state.Status != ParserState.Ready)
             {
+                IsBusy = false;
                 return;
             }
 
+            Debug.WriteLine("Running code inspections...");
             var results = await _inspector.FindIssuesAsync(_state, CancellationToken.None);
             _dispatcher.Invoke(() =>
             {
@@ -169,8 +177,6 @@ namespace Rubberduck.UI.CodeInspections
                 IsBusy = false;
                 SelectedItem = null;
             });
-
-            _state.StateChanged -= _state_StateChanged;
         }
 
         private void ExecuteQuickFixes(IEnumerable<CodeInspectionQuickFix> quickFixes)
@@ -282,14 +288,24 @@ namespace Rubberduck.UI.CodeInspections
             {
                 return;
             }
+            var aResults = _results.Select(result => result.ToArray()).ToArray();
 
-            var results = string.Join("\n", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
             var resource = _results.Count == 1
                 ? RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
-            var text = string.Format(resource, DateTime.Now, _results.Count) + Environment.NewLine + results;
 
-            _clipboard.Write(text);
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InstalledUICulture), _results.Count);
+
+            var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
+            var csvResults = ExportFormatter.Csv(aResults, title);
+            var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title);
+            
+            //Add the formats from richest formatting to least formatting
+            _clipboard.AppendData(DataFormats.Html, htmlResults);
+            _clipboard.AppendData(DataFormats.CommaSeparatedValue, csvResults);
+            _clipboard.AppendData(DataFormats.UnicodeText, textResults);
+
+            _clipboard.Flush();
         }
 
         private bool CanExecuteCopyResultsCommand(object parameter)

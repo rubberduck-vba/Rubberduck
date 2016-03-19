@@ -69,7 +69,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         {
             var firstReference = target.References.FirstOrDefault();
 
-            return firstReference != null && target.References.Any(r => r.ParentScope != firstReference.ParentScope);
+            return firstReference != null && target.References.Any(r => r.ParentScoping != firstReference.ParentScoping);
         }
 
         private void MoveCloserToUsage(Declaration target)

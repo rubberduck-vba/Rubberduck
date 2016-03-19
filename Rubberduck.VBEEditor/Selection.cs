@@ -77,7 +77,7 @@ namespace Rubberduck.VBEditor
 
         public override string ToString()
         {
-            return string.Format("Start: L{0}C{1} End: L{2}C{3}", _startLine, _startColumn, _endLine, _endColumn);
+            return string.Format("L{0}C{1} - L{2}C{3}", _startLine, _startColumn, _endLine, _endColumn);
         }
 
         public override bool Equals(object obj)

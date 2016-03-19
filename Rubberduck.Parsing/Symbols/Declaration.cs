@@ -7,6 +7,7 @@ using Antlr4.Runtime;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
@@ -17,15 +18,26 @@ namespace Rubberduck.Parsing.Symbols
     [DebuggerDisplay("({DeclarationType}) {Accessibility} {IdentifierName} As {AsTypeName} | {Selection}")]
     public class Declaration : IEquatable<Declaration>
     {
+        public Declaration(QualifiedMemberName qualifiedName, Declaration parentDeclaration, Declaration parentScope,
+            string asTypeName, bool isSelfAssigned, bool isWithEvents,
+            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool isBuiltIn = true,
+            string annotations = null, Attributes attributes = null)
+            : this(
+                qualifiedName, parentDeclaration, parentScope == null ? null : parentScope.Scope, asTypeName, isSelfAssigned, isWithEvents,
+                accessibility, declarationType, context, selection, isBuiltIn, annotations, attributes)
+        {
+            _parentScopeDeclaration = parentScope;
+        }
+
         public Declaration(QualifiedMemberName qualifiedName, Declaration parentDeclaration, string parentScope,
             string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, bool isBuiltIn = true, string annotations = null)
-            :this(qualifiedName, parentDeclaration, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, isBuiltIn, annotations)
+            Accessibility accessibility, DeclarationType declarationType, bool isBuiltIn = true, string annotations = null, Attributes attributes = null)
+            :this(qualifiedName, parentDeclaration, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, isBuiltIn, annotations, attributes)
         {}
 
         public Declaration(QualifiedMemberName qualifiedName, Declaration parentDeclaration, string parentScope,
             string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool isBuiltIn = false, string annotations = null)
+            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool isBuiltIn = false, string annotations = null, Attributes attributes = null)
         {
             _qualifiedName = qualifiedName;
             _parentDeclaration = parentDeclaration;
@@ -40,6 +52,7 @@ namespace Rubberduck.Parsing.Symbols
             _context = context;
             _isBuiltIn = isBuiltIn;
             _annotations = annotations;
+            _attributes = attributes ?? new Attributes();
 
             _projectName = _qualifiedName.QualifiedModuleName.ProjectName;
 
@@ -63,41 +76,6 @@ namespace Rubberduck.Parsing.Symbols
             _isTypeSpecified = IsTypeSpecified();
         }
 
-        /// <summary>
-        /// Copies this declaration, optionally modifying one or more values.
-        /// </summary>
-        /// <returns></returns>
-        public Declaration Copy(
-            QualifiedMemberName? qualifiedName = null, 
-            Declaration parentDeclaration = null, 
-            string parentScope = null,
-            string asTypeName = null, 
-            bool? isSelfAssigned = null, 
-            bool? isWithEvents = null,
-            Accessibility? accessibility = null, 
-            ParserRuleContext context = null, 
-            Selection? selection = null, 
-            string annotations = null)
-        {
-            var newQualifiedName = qualifiedName ?? _qualifiedName;
-            var newParentDeclaration = parentDeclaration ?? _parentDeclaration;
-            var newParentScope = parentScope ?? _parentScope;
-            var newAsTypeName = asTypeName ?? _asTypeName;
-            var newIsSelfAssigned = isSelfAssigned ?? _isSelfAssigned;
-            var newIsWithEvents = isWithEvents ?? _isWithEvents;
-            var newAccessibility = accessibility ?? _accessibility;
-            var newContext = context ?? _context;
-            var newSelection = selection ?? _selection;
-            var newAnnotations = annotations ?? _annotations;
-
-            return new Declaration(newQualifiedName, newParentDeclaration, newParentScope, newAsTypeName, newIsSelfAssigned, newIsWithEvents, newAccessibility, _declarationType, newContext, newSelection, _isBuiltIn, newAnnotations);
-        }
-
-        /// <summary>
-        /// Marks the declaration for the <see cref="IdentifierReferenceResolver"/> to process.
-        /// </summary>
-        public bool IsDirty { get; set; }
-
         private readonly bool _isBuiltIn;
         /// <summary>
         /// Marks a declaration as non-user code, e.g. the <see cref="VbaStandardLib"/> or <see cref="ExcelObjectModel"/>.
@@ -110,22 +88,140 @@ namespace Rubberduck.Parsing.Symbols
         private readonly QualifiedMemberName _qualifiedName;
         public QualifiedMemberName QualifiedName { get { return _qualifiedName; } }
 
-        private readonly ParserRuleContext _context;
-        public ParserRuleContext Context { get { return _context; } }
+        private ParserRuleContext _context;
+        public ParserRuleContext Context
+        {
+            get
+            {
+                return _context;
+            }
+            set
+            {
+                _context = value;
+            }
+        }
 
         private ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
-        public IEnumerable<IdentifierReference> References { get { return _references.ToList(); } }
-
-        private readonly ConcurrentBag<IdentifierReference> _memberCalls = new ConcurrentBag<IdentifierReference>();
-        public IEnumerable<IdentifierReference> MemberCalls { get { return _memberCalls.ToList(); } }
-
-        public void ClearReferences()
+        public IEnumerable<IdentifierReference> References
         {
-            _references = new ConcurrentBag<IdentifierReference>();
+            get
+            {
+                return _references.Union(_memberCalls);
+            }
+            set
+            {
+                _references = new ConcurrentBag<IdentifierReference>(value);
+            }
+        }
+
+        private ConcurrentBag<IdentifierReference> _memberCalls = new ConcurrentBag<IdentifierReference>();
+        public IEnumerable<IdentifierReference> MemberCalls
+        {
+            get
+            {
+                return _memberCalls.ToList();
+            }
+            set
+            {
+                _memberCalls = new ConcurrentBag<IdentifierReference>(value);
+            }
         }
 
         private readonly string _annotations;
         public string Annotations { get { return _annotations ?? string.Empty; } }
+
+        private readonly Attributes _attributes;
+        public IReadOnlyDictionary<string, IEnumerable<string>> Attributes { get { return _attributes; } }
+
+        /// <summary>
+        /// Gets an attribute value indicating whether a class has a predeclared ID.
+        /// Such classes can be treated as "static classes", or as far as resolving is concerned, as standard modules.
+        /// </summary>
+        public bool HasPredeclaredId
+        {
+            get
+            {
+                IEnumerable<string> value;
+                if (_attributes.TryGetValue("VB_PredeclaredId", out value))
+                {
+                    return value.Single() == "True";
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets an attribute value indicating whether a class is exposed to other projects.
+        /// If this value is false, any public types and members cannot be accessed from outside the project they're declared in.
+        /// </summary>
+        public bool IsExposed
+        {
+            get
+            {
+                IEnumerable<string> value;
+                if (_attributes.TryGetValue("VB_Exposed", out value))
+                {
+                    return value.Single() == "True";
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets an attribute value indicating whether a member is a class' default member.
+        /// If this value is true, any reference to an instance of the class it's the default member of,
+        /// should count as a member call to this member.
+        /// </summary>
+        public bool IsDefaultMember
+        {
+            get
+            {
+                IEnumerable<string> value;
+                if (_attributes.TryGetValue(IdentifierName + ".VB_UserMemId", out value))
+                {
+                    return value.Single() == "0";
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets an attribute value that contains the docstring for a member.
+        /// </summary>
+        public string DescriptionString
+        {
+            get
+            {
+                IEnumerable<string> value;
+                if (_attributes.TryGetValue(IdentifierName + ".VB_Description", out value))
+                {
+                    return value.Single();
+                }
+
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Gets an attribute value indicating whether a member is an enumerator provider.
+        /// Types with such a member support For Each iteration.
+        /// </summary>
+        public bool IsEnumeratorMember
+        {
+            get
+            {
+                IEnumerable<string> value;
+                if (_attributes.TryGetValue(IdentifierName + ".VB_UserMemId", out value))
+                {
+                    return value.Single() == "-4";
+                }
+
+                return false;
+            }
+        }
 
         public bool IsInspectionDisabled(string inspectionName)
         {
@@ -198,6 +294,12 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public string ParentScope { get { return _parentScope; } }
 
+        private readonly Declaration _parentScopeDeclaration;
+        /// <summary>
+        /// Gets the <see cref="Declaration"/> object representing the parent scope of this declaration.
+        /// </summary>
+        public Declaration ParentScopeDeclaration { get { return _parentScopeDeclaration; } }
+
         private readonly string _identifierName;
         /// <summary>
         /// Gets the declared name of the identifier.
@@ -216,9 +318,32 @@ namespace Rubberduck.Parsing.Symbols
 
         private bool? _isArray;
 
-        public bool IsArray()
+        private readonly IReadOnlyList<DeclarationType> _neverArray = new[]
         {
-            if (Context == null || _isArray.HasValue && !_isArray.Value)
+            DeclarationType.Class, 
+            DeclarationType.Control, 
+            DeclarationType.Document, 
+            DeclarationType.Enumeration, 
+            DeclarationType.EnumerationMember, 
+            DeclarationType.Event, 
+            DeclarationType.Function, 
+            DeclarationType.LibraryFunction, 
+            DeclarationType.LibraryProcedure, 
+            DeclarationType.LineLabel, 
+            DeclarationType.Module, 
+            DeclarationType.ModuleOption, 
+            DeclarationType.Project, 
+            DeclarationType.Procedure, 
+            DeclarationType.PropertyGet, 
+            DeclarationType.PropertyLet, 
+            DeclarationType.PropertyLet, 
+            DeclarationType.UserDefinedType, 
+            DeclarationType.Constant,
+        };
+
+        public virtual bool IsArray()
+        {
+            if (Context == null || _neverArray.Any(item => DeclarationType.HasFlag(item)))
             {
                 return false;
             }
@@ -228,35 +353,37 @@ namespace Rubberduck.Parsing.Symbols
                 return _isArray.Value;
             }
 
-            //var variableContext = Context as VBAParser.VariableSubStmtContext;
-            //if (variableContext != null)
-            //{
-            //    return variableContext.LPAREN() != null && variableContext.RPAREN() != null;
-            //}
-
-            //var typeElementContext = Context as VBAParser.TypeStmt_ElementContext;
-            //if (typeElementContext != null)
-            //{
-            //    return typeElementContext.LPAREN() != null && typeElementContext.RPAREN() != null;
-            //}
-            //return false;
-
-            try
-            {
-                var declaration = (dynamic)Context;
-                return declaration.LPAREN() != null && declaration.RPAREN() != null;
-            }
-            catch (RuntimeBinderException)
+            var rParenMethod = Context.GetType().GetMethod("RPAREN");
+            if (rParenMethod == null)
             {
                 return false;
             }
+
+            var declaration = (dynamic)Context;
+            return declaration.LPAREN() != null && declaration.RPAREN() != null;
         }
 
         private bool? _isTypeSpecified;
 
-        public bool IsTypeSpecified()
+        private readonly IReadOnlyList<DeclarationType> _neverSpecified = new[]
         {
-            if (Context == null || _isTypeSpecified.HasValue && !_isTypeSpecified.Value)
+            DeclarationType.Procedure, 
+            DeclarationType.PropertyLet, 
+            DeclarationType.PropertySet, 
+            DeclarationType.UserDefinedType, 
+            DeclarationType.Class, 
+            DeclarationType.Control, 
+            DeclarationType.Enumeration, 
+            DeclarationType.EnumerationMember, 
+            DeclarationType.LibraryProcedure, 
+            DeclarationType.LineLabel, 
+            DeclarationType.ModuleOption, 
+            DeclarationType.Project, 
+        };
+
+        public virtual bool IsTypeSpecified()
+        {
+            if (Context == null || _neverSpecified.Any(item => DeclarationType.HasFlag(item)))
             {
                 return false;
             }
@@ -266,53 +393,18 @@ namespace Rubberduck.Parsing.Symbols
                 return _isTypeSpecified.Value;
             }
 
-            //var variableContext = Context as VBAParser.VariableSubStmtContext;
-            //if (variableContext != null)
-            //{
-            //    return variableContext.asTypeClause() != null || HasTypeHint();
-            //}
-
-            //var argContext = Context as VBAParser.ArgContext;
-            //if (argContext != null)
-            //{
-            //    return argContext.asTypeClause() != null || HasTypeHint();
-            //}
-
-            //var constContext = Context as VBAParser.ConstSubStmtContext;
-            //if (constContext != null)
-            //{
-            //    return constContext.asTypeClause() != null || HasTypeHint();
-            //}
-
-            //var functionContext = Context as VBAParser.FunctionStmtContext;
-            //if (functionContext != null)
-            //{
-            //    return functionContext.asTypeClause() != null || HasTypeHint();
-            //}
-
-            //var getterContext = Context as VBAParser.PropertyGetStmtContext;
-            //if (getterContext != null)
-            //{
-            //    return getterContext.asTypeClause() != null || HasTypeHint();
-            //}
-
-            //var typeElementContext = Context as VBAParser.TypeStmt_ElementContext;
-            //if (typeElementContext != null)
-            //{
-            //    return typeElementContext.asTypeClause() != null || HasTypeHint();
-            //}
-
-            //return false;
-
-            try
-            {
-                var asType = ((dynamic)Context).asTypeClause() as VBAParser.AsTypeClauseContext;
-                return asType != null || HasTypeHint();
-            }
-            catch (RuntimeBinderException)
+            var method = Context.GetType().GetMethod("asTypeClause");
+            if (method == null)
             {
                 return false;
             }
+
+            if (HasTypeHint())
+            {
+                return true;
+            }
+
+            return ((dynamic)Context).asTypeClause() is VBAParser.AsTypeClauseContext;
         }
 
         private bool? _hasTypeHint;
@@ -328,58 +420,34 @@ namespace Rubberduck.Parsing.Symbols
             return HasTypeHint(out token);
         }
 
+        private readonly IReadOnlyList<DeclarationType> _neverHinted = new[]
+        {
+            DeclarationType.Class, 
+            DeclarationType.LineLabel, 
+            DeclarationType.ModuleOption, 
+            DeclarationType.Project, 
+            DeclarationType.Control, 
+            DeclarationType.Enumeration, 
+            DeclarationType.EnumerationMember, 
+            DeclarationType.LibraryProcedure, 
+            DeclarationType.Procedure, 
+            DeclarationType.PropertyLet, 
+            DeclarationType.PropertySet, 
+            DeclarationType.UserDefinedType,
+            DeclarationType.UserDefinedTypeMember, 
+        };
+
         public bool HasTypeHint(out string token)
         {
-            if (Context == null)
+            if (Context == null || _neverHinted.Any(item => DeclarationType.HasFlag(item)))
             {
                 token = null;
                 return false;
             }
 
-            //VBAParser.TypeHintContext hint = null;
-            //var variableContext = Context as VBAParser.VariableSubStmtContext;
-            //if (variableContext != null)
-            //{
-            //    hint = variableContext.typeHint();
-            //}
-
-            ////var argContext = Context as VBAParser.ArgContext;
-            ////if (argContext != null)
-            ////{
-            ////    hint = argContext.typeHint();
-            ////}
-
-            //var constContext = Context as VBAParser.ConstSubStmtContext;
-            //if (constContext != null)
-            //{
-            //    hint = constContext.typeHint();
-            //}
-
-            //var functionContext = Context as VBAParser.FunctionStmtContext;
-            //if (functionContext != null)
-            //{
-            //    hint = functionContext.typeHint();
-            //}
-
-            //var getterContext = Context as VBAParser.PropertyGetStmtContext;
-            //if (getterContext != null)
-            //{
-            //    hint = getterContext.typeHint();
-            //}
-
-            ////var typeElementContext = Context as VBAParser.TypeStmt_ElementContext;
-            ////if (typeElementContext != null)
-            ////{
-            ////    hint = typeElementContext.typeHint();
-            ////}
-
-            //token = hint == null ? null : hint.GetText();
-            //return hint != null;
-
-
             try
             {
-                var hint = ((dynamic)Context).typeHint() as VBAParser.TypeHintContext;
+                var hint = ((dynamic) Context).typeHint();
                 token = hint == null ? null : hint.GetText();
                 return hint != null;
             }
@@ -486,9 +554,18 @@ namespace Rubberduck.Parsing.Symbols
                 hash = hash*23 + _identifierName.GetHashCode();
                 hash = hash*23 + _declarationType.GetHashCode();
                 hash = hash*23 + Scope.GetHashCode();
-                hash = hash*23 + _parentScope == null ? 0 : _parentScope.GetHashCode();
+                hash = hash*23 + _parentScope.GetHashCode();
                 hash = hash*23 + _selection.GetHashCode();
                 return hash;
+            }
+        }
+
+        public void ClearReferences()
+        {
+            while (!_references.IsEmpty)
+            {
+                IdentifierReference reference;
+                _references.TryTake(out reference);
             }
         }
     }

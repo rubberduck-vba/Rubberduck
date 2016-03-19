@@ -24,12 +24,19 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CodeExplorerProjectViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
         {
-            _declaration = declaration;
-            Items = FindFolders(declarations.ToList(), '.');
+            try
+            {
+                _declaration = declaration;
+                Items = FindFolders(declarations.ToList(), '.');
 
-            _icon = _declaration.Project.Protection == vbext_ProjectProtection.vbext_pp_locked
-                ? GetImageSource(resx.lock__exclamation)
-                : GetImageSource(resx.VSObject_Library);
+                _icon = _declaration.Project.Protection == vbext_ProjectProtection.vbext_pp_locked
+                    ? GetImageSource(resx.lock__exclamation)
+                    : GetImageSource(resx.VSObject_Library);
+            }
+            catch (NullReferenceException e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         private static IEnumerable<CodeExplorerItemViewModel> FindFolders(IEnumerable<Declaration> declarations, char delimiter)

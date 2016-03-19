@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections
         {
             // Note: This inspection does not find dictionary calls (e.g. foo!bar) since we do not know what the
             // default member is of a class.
-            var interfaceMembers = UserDeclarations.FindInterfaceMembers();
+            var interfaceMembers = UserDeclarations.FindInterfaceMembers().ToList();
             var interfaceImplementationMembers = UserDeclarations.FindInterfaceImplementationMembers();
             var functions = UserDeclarations.Where(function => function.DeclarationType == DeclarationType.Function).ToList();
             var interfaceMemberIssues = GetInterfaceMemberIssues(interfaceMembers);
@@ -36,30 +36,22 @@ namespace Rubberduck.Inspections
 
         private IEnumerable<FunctionReturnValueNotUsedInspectionResult> GetInterfaceMemberIssues(IEnumerable<Declaration> interfaceMembers)
         {
-            var interfaceIssues = new List<FunctionReturnValueNotUsedInspectionResult>();
-            foreach (var interfaceMember in interfaceMembers)
-            {
-                var implementationMembers = UserDeclarations.FindInterfaceImplementationMembers(interfaceMember.IdentifierName);
-                if (!IsReturnValueUsed(interfaceMember) && implementationMembers.All(member => !IsReturnValueUsed(member)))
-                {
-                    var implementationMemberIssues = implementationMembers
-                        .Select(implementationMember =>
-                            Tuple.Create(
-                                implementationMember.Context,
-                                new QualifiedSelection(
-                                    implementationMember.QualifiedName.QualifiedModuleName,
-                                    implementationMember.Selection),
-                                GetReturnStatements(implementationMember)));
-
-                    interfaceIssues.Add(new FunctionReturnValueNotUsedInspectionResult(
-                            this,
-                            interfaceMember.Context,
-                            interfaceMember.QualifiedName,
-                            GetReturnStatements(interfaceMember),
-                            implementationMemberIssues));
-                }
-            }
-            return interfaceIssues;
+            return from interfaceMember in interfaceMembers
+                   let implementationMembers =
+                       UserDeclarations.FindInterfaceImplementationMembers(interfaceMember.IdentifierName).ToList()
+                   where
+                       !IsReturnValueUsed(interfaceMember) &&
+                       implementationMembers.All(member => !IsReturnValueUsed(member))
+                   let implementationMemberIssues =
+                       implementationMembers.Select(
+                           implementationMember =>
+                               Tuple.Create(implementationMember.Context,
+                                   new QualifiedSelection(implementationMember.QualifiedName.QualifiedModuleName,
+                                       implementationMember.Selection), GetReturnStatements(implementationMember)))
+                   select
+                       new FunctionReturnValueNotUsedInspectionResult(this, interfaceMember.Context,
+                           interfaceMember.QualifiedName, GetReturnStatements(interfaceMember),
+                           implementationMemberIssues, interfaceMember);
         }
 
         private IEnumerable<FunctionReturnValueNotUsedInspectionResult> GetNonInterfaceIssues(IEnumerable<Declaration> nonInterfaceFunctions)
@@ -71,7 +63,8 @@ namespace Rubberduck.Inspections
                             this,
                             function.Context,
                             function.QualifiedName,
-                            GetReturnStatements(function)));
+                            GetReturnStatements(function),
+                            function));
             return nonInterfaceIssues;
         }
 
@@ -84,8 +77,7 @@ namespace Rubberduck.Inspections
 
         private bool IsReturnValueUsed(Declaration function)
         {
-            return function.References.Count() > 0
-                && function.References.Any(usage =>
+            return function.References.Any(usage =>
                             !IsReturnStatement(function, usage) && !IsAddressOfCall(usage) && !IsCallWithoutAssignment(usage));
         }
 
@@ -98,7 +90,7 @@ namespace Rubberduck.Inspections
 
         private bool IsReturnStatement(Declaration function, IdentifierReference assignment)
         {
-            return assignment.ParentScope == function.Scope;
+            return assignment.ParentScoping.Equals(function);
         }
 
         private bool IsCallWithoutAssignment(IdentifierReference usage)

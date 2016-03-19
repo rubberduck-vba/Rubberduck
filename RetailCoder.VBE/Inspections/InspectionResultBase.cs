@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
@@ -14,7 +13,7 @@ namespace Rubberduck.Inspections
     public abstract class InspectionResultBase : ICodeInspectionResult, INavigateSource
     {
         protected InspectionResultBase(IInspection inspection, Declaration target)
-            : this(inspection, target.QualifiedName.QualifiedModuleName, null)
+            : this(inspection, target.QualifiedName.QualifiedModuleName, target.Context)
         {
             _target = target;
         }
@@ -37,6 +36,18 @@ namespace Rubberduck.Inspections
             _comment = comment;
         }
 
+        /// <summary>
+        /// Creates an inspection result.
+        /// </summary>
+        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context, Declaration declaration, CommentNode comment = null)
+        {
+            _inspection = inspection;
+            _qualifiedName = qualifiedName;
+            _context = context;
+            _target = declaration;
+            _comment = comment;
+        }
+
         private readonly IInspection _inspection;
         public IInspection Inspection { get { return _inspection; } }
 
@@ -52,7 +63,7 @@ namespace Rubberduck.Inspections
         public CommentNode Comment { get { return _comment; } }
 
         private readonly Declaration _target;
-        protected Declaration Target { get { return _target; } }
+        protected virtual Declaration Target { get { return _target; } }
 
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
@@ -107,11 +118,17 @@ namespace Rubberduck.Inspections
             return CompareTo(obj as ICodeInspectionResult);
         }
 
+        public object[] ToArray()
+        {
+            var module = QualifiedSelection.QualifiedName;
+            return new object[] {Inspection.Severity.ToString(), Description, module.ProjectName, module.ComponentName, QualifiedSelection.Selection.StartLine };
+        }
+
         public string ToCsvString()
         {
             var module = QualifiedSelection.QualifiedName;
             return string.Format(
-                "{0}, {1}, {2}, {3}, {4}",
+                "\"{0}\",\"{1}\",\"{2}\",\"{3}\",{4}",
                 Inspection.Severity,
                 Description,
                 module.ProjectName,

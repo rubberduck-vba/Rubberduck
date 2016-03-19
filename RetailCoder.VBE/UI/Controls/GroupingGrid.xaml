@@ -28,7 +28,7 @@
             <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
             <Setter Property="BorderThickness" Value="0,.5,0,0" />
             <Setter Property="BorderBrush" Value="DarkGray" />
-            <Setter Property="Height" Value="22" />
+            <Setter Property="Height" Value="26" />
             <Setter Property="TextBlock.FontWeight" Value="Normal" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">

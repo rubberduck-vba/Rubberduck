@@ -3,19 +3,22 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
     public class FunctionReturnValueNotUsedInspectionResult : InspectionResultBase
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
+        private QualifiedMemberName _memberName;
 
         public FunctionReturnValueNotUsedInspectionResult(
             IInspection inspection,
             ParserRuleContext context,
             QualifiedMemberName qualifiedName,
-            IEnumerable<string> returnStatements)
-            : this(inspection, context, qualifiedName, returnStatements, new List<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>>())
+            IEnumerable<string> returnStatements,
+            Declaration target)
+            : this(inspection, context, qualifiedName, returnStatements, new List<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>>(), target)
         {
         }
 
@@ -24,8 +27,9 @@ namespace Rubberduck.Inspections
             ParserRuleContext context,
             QualifiedMemberName qualifiedName,
             IEnumerable<string> returnStatements,
-            IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>> children)
-            : base(inspection, qualifiedName.QualifiedModuleName, context)
+            IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>> children,
+            Declaration target)
+            : base(inspection, qualifiedName.QualifiedModuleName, context, target)
         {
             var root = new ConvertToProcedureQuickFix(context, QualifiedSelection, returnStatements);
             var compositeFix = new CompositeCodeInspectionFix(root);

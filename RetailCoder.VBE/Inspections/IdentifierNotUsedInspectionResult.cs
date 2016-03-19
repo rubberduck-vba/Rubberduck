@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -25,8 +24,7 @@ namespace Rubberduck.Inspections
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
-
-        public override string Description
+        public override string Description 
         {
             get
             {

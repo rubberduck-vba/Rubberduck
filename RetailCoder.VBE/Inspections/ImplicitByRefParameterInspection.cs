@@ -5,7 +5,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -31,7 +30,7 @@ namespace Rubberduck.Inspections
                 let arg = item.Context as VBAParser.ArgContext
                 where arg != null && arg.BYREF() == null && arg.BYVAL() == null
                 select new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg))
-                .Select(issue => new ImplicitByRefParameterInspectionResult(this, string.Format(Description, issue.Context.ambiguousIdentifier().GetText()), issue));
+                .Select(issue => new ImplicitByRefParameterInspectionResult(this, issue.Context.ambiguousIdentifier().GetText(), issue));
 
  
             return issues;

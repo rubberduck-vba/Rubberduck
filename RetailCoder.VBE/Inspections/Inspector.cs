@@ -9,101 +9,99 @@ using Rubberduck.Settings;
 
 namespace Rubberduck.Inspections
 {
-    public interface IInspectorFactory
+    namespace Rubberduck.Inspections
     {
-        IInspector Create();
-    }
-
-    public class Inspector : IInspector, IDisposable
-    {
-        private readonly IGeneralConfigService _configService;
-        private readonly IEnumerable<IInspection> _inspections;
-
-        public Inspector(IGeneralConfigService configService, IEnumerable<IInspection> inspections)
+        public class Inspector : IInspector, IDisposable
         {
-            _inspections = inspections;
+            private readonly IGeneralConfigService _configService;
+            private readonly IEnumerable<IInspection> _inspections;
 
-            _configService = configService;
-            configService.SettingsChanged += ConfigServiceSettingsChanged;
-            UpdateInspectionSeverity();
-        }
-
-        private void ConfigServiceSettingsChanged(object sender, EventArgs e)
-        {
-            UpdateInspectionSeverity();
-        }
-
-        private void UpdateInspectionSeverity()
-        {
-            var config = _configService.LoadConfiguration();
-
-            foreach (var inspection in _inspections)
+            public Inspector(IGeneralConfigService configService, IEnumerable<IInspection> inspections)
             {
-                foreach (var setting in config.UserSettings.CodeInspectionSettings.CodeInspections)
+                _inspections = inspections;
+
+                _configService = configService;
+                configService.LanguageChanged += ConfigServiceLanguageChanged;
+                UpdateInspectionSeverity();
+            }
+
+            private void ConfigServiceLanguageChanged(object sender, EventArgs e)
+            {
+                UpdateInspectionSeverity();
+            }
+
+            private void UpdateInspectionSeverity()
+            {
+                var config = _configService.LoadConfiguration();
+
+                foreach (var inspection in _inspections)
                 {
-                    if (inspection.Description == setting.Description)
+                    foreach (var setting in config.UserSettings.CodeInspectionSettings.CodeInspections)
                     {
-                        inspection.Severity = setting.Severity;
+                        if (inspection.Description == setting.Description)
+                        {
+                            inspection.Severity = setting.Severity;
+                        }
                     }
                 }
             }
-        }
 
-        public async Task<IList<ICodeInspectionResult>> FindIssuesAsync(RubberduckParserState state, CancellationToken token)
-        {
-            if (state == null || !state.AllUserDeclarations.Any())
+            public async Task<IList<ICodeInspectionResult>> FindIssuesAsync(RubberduckParserState state, CancellationToken token)
             {
-                return new ICodeInspectionResult[]{};
-            }
+                if (state == null || !state.AllUserDeclarations.Any())
+                {
+                    return new ICodeInspectionResult[] { };
+                }
 
-            await Task.Yield();
+                await Task.Yield();
 
-            UpdateInspectionSeverity();
-            //OnReset();
+                UpdateInspectionSeverity();
+                //OnReset();
 
-            var allIssues = new ConcurrentBag<ICodeInspectionResult>();
+                var allIssues = new ConcurrentBag<ICodeInspectionResult>();
 
-            var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
-                .Select(inspection =>
-                    new Task(() =>
-                    {
-                        token.ThrowIfCancellationRequested();
-                        var inspectionResults = inspection.GetInspectionResults();
-                        var results = inspectionResults as IList<InspectionResultBase> ?? inspectionResults.ToList();
-
-                        if (results.Any())
+                var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
+                    .Select(inspection =>
+                        new Task(() =>
                         {
-                            //OnIssuesFound(results);
+                            token.ThrowIfCancellationRequested();
+                            var inspectionResults = inspection.GetInspectionResults();
+                            var results = inspectionResults as IList<InspectionResultBase> ?? inspectionResults.ToList();
 
-                            foreach (var inspectionResult in results)
+                            if (results.Any())
                             {
-                                allIssues.Add(inspectionResult);
-                            }
-                        }
-                    })).ToArray();
+                                //OnIssuesFound(results);
 
-            foreach (var inspection in inspections)
-            {
-                inspection.Start();
+                                foreach (var inspectionResult in results)
+                                {
+                                    allIssues.Add(inspectionResult);
+                                }
+                            }
+                        })).ToArray();
+
+                foreach (var inspection in inspections)
+                {
+                    inspection.Start();
+                }
+
+                Task.WaitAll(inspections);
+
+                return allIssues.ToList();
             }
 
-            Task.WaitAll(inspections);
-
-            return allIssues.ToList();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing) { return; }
-
-            if (_configService != null)
+            public void Dispose()
             {
-                _configService.SettingsChanged -= ConfigServiceSettingsChanged;
+                Dispose(true);
+            }
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if (!disposing) { return; }
+
+                if (_configService != null)
+                {
+                    _configService.LanguageChanged -= ConfigServiceLanguageChanged;
+                }
             }
         }
     }

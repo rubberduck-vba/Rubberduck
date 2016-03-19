@@ -22,7 +22,9 @@ namespace RubberduckTests.Settings
                 {
                     new Hotkey{Name="IndentProcedure", IsEnabled=true, KeyDisplaySymbol="CTRL-P"},
                     new Hotkey{Name="IndentModule", IsEnabled=true, KeyDisplaySymbol="CTRL-M"}
-                }
+                },
+                AutoSaveEnabled = false,
+                AutoSavePeriod = 10
             };
 
             var todoSettings = new ToDoListSettings
@@ -82,7 +84,9 @@ namespace RubberduckTests.Settings
                 {
                     new Hotkey{Name="IndentProcedure", IsEnabled=false, KeyDisplaySymbol="CTRL-C"},
                     new Hotkey{Name="IndentModule", IsEnabled=false, KeyDisplaySymbol="CTRL-X"}
-                }
+                },
+                AutoSaveEnabled = true,
+                AutoSavePeriod = 5
             };
 
             var todoSettings = new ToDoListSettings
@@ -233,7 +237,9 @@ namespace RubberduckTests.Settings
             MultiAssert.Aggregate(
                 () => MultiAssert.Aggregate(
                           () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Language, updatedConfig.UserSettings.GeneralSettings.Language),
-                          () => Assert.IsTrue(defaultConfig.UserSettings.GeneralSettings.HotkeySettings.SequenceEqual(updatedConfig.UserSettings.GeneralSettings.HotkeySettings))
+                          () => Assert.IsTrue(defaultConfig.UserSettings.GeneralSettings.HotkeySettings.SequenceEqual(updatedConfig.UserSettings.GeneralSettings.HotkeySettings)),
+                          () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSaveEnabled, updatedConfig.UserSettings.GeneralSettings.AutoSaveEnabled),
+                          () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, updatedConfig.UserSettings.GeneralSettings.AutoSavePeriod)
                       ),
                 () => Assert.IsTrue(defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(updatedConfig.UserSettings.ToDoListSettings.ToDoMarkers)),
                 () => Assert.IsTrue(defaultConfig.UserSettings.CodeInspectionSettings.CodeInspections.SequenceEqual(updatedConfig.UserSettings.CodeInspectionSettings.CodeInspections)),
@@ -283,7 +289,9 @@ namespace RubberduckTests.Settings
             MultiAssert.Aggregate(
                 () => MultiAssert.Aggregate(
                           () => Assert.AreEqual(nondefaultConfig.UserSettings.GeneralSettings.Language, updatedConfig.UserSettings.GeneralSettings.Language),
-                          () => Assert.IsTrue(nondefaultConfig.UserSettings.GeneralSettings.HotkeySettings.SequenceEqual(updatedConfig.UserSettings.GeneralSettings.HotkeySettings))
+                          () => Assert.IsTrue(nondefaultConfig.UserSettings.GeneralSettings.HotkeySettings.SequenceEqual(updatedConfig.UserSettings.GeneralSettings.HotkeySettings)),
+                          () => Assert.AreEqual(nondefaultConfig.UserSettings.GeneralSettings.AutoSaveEnabled, updatedConfig.UserSettings.GeneralSettings.AutoSaveEnabled),
+                          () => Assert.AreEqual(nondefaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, updatedConfig.UserSettings.GeneralSettings.AutoSavePeriod)
                       ),
                 () => Assert.IsTrue(nondefaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(updatedConfig.UserSettings.ToDoListSettings.ToDoMarkers)),
                 () => Assert.IsTrue(nondefaultConfig.UserSettings.CodeInspectionSettings.CodeInspections.SequenceEqual(updatedConfig.UserSettings.CodeInspectionSettings.CodeInspections)),
@@ -327,7 +335,9 @@ namespace RubberduckTests.Settings
             MultiAssert.Aggregate(
                 () => MultiAssert.Aggregate(
                           () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Language, ((GeneralSettingsViewModel)viewModel.SettingsViews[0].Control.ViewModel).SelectedLanguage),
-                          () => Assert.IsTrue(defaultConfig.UserSettings.GeneralSettings.HotkeySettings.SequenceEqual(((GeneralSettingsViewModel)viewModel.SettingsViews[0].Control.ViewModel).Hotkeys))
+                          () => Assert.IsTrue(defaultConfig.UserSettings.GeneralSettings.HotkeySettings.SequenceEqual(((GeneralSettingsViewModel)viewModel.SettingsViews[0].Control.ViewModel).Hotkeys)),
+                          () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSaveEnabled, ((GeneralSettingsViewModel)viewModel.SettingsViews[0].Control.ViewModel).AutoSaveEnabled),
+                          () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, ((GeneralSettingsViewModel)viewModel.SettingsViews[0].Control.ViewModel).AutoSavePeriod)
                       ),
                 () => Assert.IsTrue(defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(viewModel.SettingsViews.Select(v => v.Control.ViewModel).OfType<TodoSettingsViewModel>().First().TodoSettings)),
                 () => Assert.IsTrue(defaultConfig.UserSettings.CodeInspectionSettings.CodeInspections.SequenceEqual(viewModel.SettingsViews.Select(v => v.Control.ViewModel).OfType<InspectionSettingsViewModel>().First().InspectionSettings.SourceCollection.Cast<CodeInspectionSetting>()), "test"),
@@ -390,7 +400,7 @@ namespace RubberduckTests.Settings
             var eventIsFired = false;
             var viewModel = GetDefaultViewModel(GetConfigLoader(GetDefaultConfig()));
 
-            viewModel.OnOKButtonClicked += (sender, args) => { eventIsFired = true; };
+            viewModel.OnWindowClosed += (sender, args) => { eventIsFired = true; };
 
             viewModel.OKButtonCommand.Execute(null);
 
@@ -403,7 +413,7 @@ namespace RubberduckTests.Settings
             var eventIsFired = false;
             var viewModel = GetDefaultViewModel(GetConfigLoader(GetDefaultConfig()));
 
-            viewModel.OnCancelButtonClicked += (sender, args) => { eventIsFired = true; };
+            viewModel.OnWindowClosed += (sender, args) => { eventIsFired = true; };
 
             viewModel.CancelButtonCommand.Execute(null);
 

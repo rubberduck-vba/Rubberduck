@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.Vbe.Interop;
 
 // todo: untangle this mess
@@ -36,6 +37,8 @@ namespace Rubberduck.VBEditor.Extensions
         {
             var ext = Path.GetExtension(filePath);
             var fileName = Path.GetFileNameWithoutExtension(filePath);
+
+            if (!File.Exists(filePath)) { return; }
 
             if (ext == VBComponentExtensions.DocClassExtension)
             {

@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Threading;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -12,7 +14,10 @@ namespace Rubberduck.Inspections
         public ParameterCanBeByValInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion)
         {
+            _dispatcher = Dispatcher.CurrentDispatcher;
         }
+
+        private readonly Dispatcher _dispatcher;
 
         public override string Meta { get { return InspectionsUI.ParameterCanBeByValInspectionMeta; } }
         public override string Description { get { return InspectionsUI.ParameterCanBeByValInspectionName; } }
@@ -39,9 +44,13 @@ namespace Rubberduck.Inspections
         {
             var declarations = UserDeclarations.ToList();
 
-            var interfaceMembers = declarations.FindInterfaceMembers()
-                .Concat(declarations.FindInterfaceImplementationMembers())
-                .ToList();
+            IEnumerable<Declaration> interfaceMembers = null;
+            _dispatcher.Invoke(() =>
+            {
+                interfaceMembers = declarations.FindInterfaceMembers()
+                    .Concat(declarations.FindInterfaceImplementationMembers())
+                    .ToList();
+            });
 
             var formEventHandlerScopes = declarations.FindFormEventHandlers()
                 .Select(handler => handler.Scope);
@@ -58,13 +67,14 @@ namespace Rubberduck.Inspections
             var ignoredScopes = formEventHandlerScopes.Concat(eventScopes).Concat(declareScopes);
 
             var issues = declarations.Where(declaration =>
-                !ignoredScopes.Contains(declaration.ParentScope)
+                !declaration.IsArray()
+                && !ignoredScopes.Contains(declaration.ParentScope)
                 && declaration.DeclarationType == DeclarationType.Parameter
                 && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, string.Format(Description, issue.IdentifierName), ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName));
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName));
 
             return issues;
         }
@@ -77,7 +87,7 @@ namespace Rubberduck.Inspections
             var items = declarations as List<Declaration> ?? declarations.ToList();
 
             var procedureCalls = items.Where(item => item.DeclarationType.HasFlag(DeclarationType.Member))
-                .SelectMany(member => member.References.Where(reference => reference.ParentScope == parameter.ParentScope))
+                .SelectMany(member => member.References.Where(reference => reference.ParentScoping.Equals(parameter.ParentScopeDeclaration)))
                 .GroupBy(call => call.Declaration)
                 .ToList(); // only check a procedure once. its declaration doesn't change if it's called 20 times anyway.
 

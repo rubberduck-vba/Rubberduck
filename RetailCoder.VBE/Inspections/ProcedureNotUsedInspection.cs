@@ -5,7 +5,6 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -43,9 +42,10 @@ namespace Rubberduck.Inspections
                 handlers.AddRange(forms.SelectMany(form => declarations.FindFormEventHandlers(form)));
             }
 
-            var issues = declarations
-                .Where(item => !IsIgnoredDeclaration(declarations, item, handlers, classes, modules))
-                .Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
+            var items = declarations
+                .Where(item => !IsIgnoredDeclaration(declarations, item, handlers, classes, modules)
+                            && !item.IsInspectionDisabled(AnnotationName)).ToList();
+            var issues = items.Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
 
             issues = DocumentNames.DocumentEventHandlerPrefixes.Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains("'" + item)));
 

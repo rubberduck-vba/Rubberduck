@@ -25,7 +25,9 @@
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
         
-        <ObjectDataProvider x:Key="Severities" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+        <ObjectDataProvider x:Key="Severities"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type core:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type Type="inspections:CodeInspectionSeverity"/>
             </ObjectDataProvider.MethodParameters>
@@ -33,7 +35,12 @@
     </UserControl.Resources>
     <Grid>
         <DockPanel Margin="5,5,5,0">
-            <Label DockPanel.Dock="Top" Background="DarkGray" Foreground="White" FontWeight="SemiBold" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_InspectionSettings}" Margin="0,0,0,3">
+            <Label DockPanel.Dock="Top"
+                   Background="DarkGray"
+                   Foreground="White"
+                   FontWeight="SemiBold"
+                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_InspectionSettings}"
+                   Margin="0,0,0,3">
                 <Label.Style>
                     <Style>
                         <Style.Resources>
@@ -44,27 +51,45 @@
                     </Style>
                 </Label.Style>
             </Label>
-            <controls:GroupingGrid ItemsSource="{Binding InspectionSettings}" AutoGenerateColumns="False"
-			    CanUserReorderColumns="False" IsReadOnly="False" SelectionMode="Single" CanUserAddRows="False"
-			    HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"
-			    HeadersVisibility="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-			    ColumnHeaderHeight="22" BorderThickness="0">
+            <controls:GroupingGrid ItemsSource="{Binding InspectionSettings}"
+                                   AutoGenerateColumns="False"
+                                   CanUserReorderColumns="False"
+                                   IsReadOnly="False"
+                                   SelectionMode="Single"
+                                   CanUserAddRows="False"
+                                   HorizontalGridLinesBrush="Transparent"
+                                   VerticalGridLinesBrush="Transparent"
+                                   HeadersVisibility="None"
+                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                   ColumnHeaderHeight="22"
+                                   BorderThickness="0">
                 <controls:GroupingGrid.Columns>
-                    <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}" Width="2.75*" IsReadOnly="True" SortMemberPath="{Binding Description}">
+                    <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}"
+                                            Width="2.75*"
+                                            IsReadOnly="True"
+                                            SortMemberPath="{Binding Description}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Description}">
                                     <TextBlock.ToolTip>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding Description}" FontWeight="SemiBold" MaxWidth="300" TextWrapping="Wrap" />
-                                            <TextBlock Text="{Binding Meta}" MaxWidth="300" TextWrapping="Wrap" />
+                                            <TextBlock Text="{Binding Description}"
+                                                       FontWeight="SemiBold"
+                                                       MaxWidth="300"
+                                                       TextWrapping="WrapWithOverflow" />
+                                            <TextBlock Text="{Binding Meta}"
+                                                       MaxWidth="300"
+                                                       TextWrapping="WrapWithOverflow" />
                                         </StackPanel>
                                     </TextBlock.ToolTip>
                                 </TextBlock>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SeverityLabelText}" Width="*" ItemsSource="{Binding Source={StaticResource Severities}, Converter={StaticResource CodeInspectionSeverityEnumToText}, UpdateSourceTrigger=PropertyChanged}" SelectedItemBinding="{Binding Path=SeverityLabel, Mode=TwoWay}" />
+                    <DataGridComboBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SeverityLabelText}"
+                                            Width="*"
+                                            ItemsSource="{Binding Source={StaticResource Severities}, Converter={StaticResource CodeInspectionSeverityEnumToText}, UpdateSourceTrigger=PropertyChanged}"
+                                            SelectedItemBinding="{Binding Path=SeverityLabel, Mode=TwoWay}" />
                 </controls:GroupingGrid.Columns>
             </controls:GroupingGrid>
         </DockPanel>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -340,6 +339,71 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        public override void CreateBranch(string sourceBranch, string branch)
+        {
+            try
+            {
+                _repo.CreateBranch(branch, _repo.Branches[sourceBranch].Commits.Last());
+                _repo.Checkout(branch);
+
+                RequeryUnsyncedCommits();
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Branch creation failed.", ex);
+            }
+        }
+
+        public override void Publish(string branch)
+        {
+            try
+            {
+                _repo.Branches.Update(_repo.Branches[branch], b => b.Remote = _repo.Network.Remotes["origin"].Name,
+                    b => b.UpstreamBranch = _repo.Branches[branch].CanonicalName);
+
+                PushOptions options = null;
+                if (_credentials != null)
+                {
+                    options = new PushOptions
+                    {
+                        CredentialsProvider = _credentialsHandler
+                    };
+                }
+
+                _repo.Network.Push(_repo.Branches[branch], options);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Publish failed.", ex);
+            }
+        }
+
+        public override void Unpublish(string branch)
+        {
+            try
+            {
+                var remote = _repo.Branches[branch].Remote;
+
+                _repo.Branches.Update(_repo.Branches[branch], b => b.Remote = remote.Name,
+                    b => b.TrackedBranch = null, b => b.UpstreamBranch = null);
+
+                PushOptions options = null;
+                if (_credentials != null)
+                {
+                    options = new PushOptions
+                    {
+                        CredentialsProvider = _credentialsHandler
+                    };
+                }
+
+                _repo.Network.Push(remote, ":" + _repo.Branches[branch].UpstreamBranchCanonicalName, options);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Unpublish failed.", ex);
+            }
+        }
+
         public override void Revert()
         {
             try
@@ -405,7 +469,9 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                _repo.CheckoutPaths(CurrentBranch.Name, new List<string> {filePath});
+                var tip = _repo.Branches.First(b => !b.IsRemote && b.IsCurrentRepositoryHead).Tip;
+                var options = new CheckoutOptions { CheckoutModifiers = CheckoutModifiers.Force };
+                _repo.CheckoutPaths(tip.Sha, new List<string> { filePath }, options);
                 base.Undo(filePath);
             }
             catch (LibGit2SharpException ex)
@@ -414,13 +480,28 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        public override void DeleteBranch(string branch)
+        public override void DeleteBranch(string branchName)
         {
             try
             {
-                if (_repo.Branches.Any(b => 
-                    b.FriendlyName == branch && !b.IsRemote))
+                var branch = _repo.Branches.FirstOrDefault(b => b.FriendlyName == branchName);
+                if (branch != null)
                 {
+                    if (branch.TrackedBranch != null && branch.TrackedBranch.Tip != null)   // check if the branch exists on the remote repo
+                    {
+                        PushOptions options = null;
+                        if (_credentials != null)
+                        {
+                            options = new PushOptions
+                            {
+                                CredentialsProvider = _credentialsHandler
+                            };
+                        }
+
+                        _repo.Network.Push(branch.Remote, ":" + _repo.Branches[branchName].UpstreamBranchCanonicalName, options);
+                    }
+
+                    // remote local repo
                     _repo.Branches.Remove(branch);
                 }
             }
