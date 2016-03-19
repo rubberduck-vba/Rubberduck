@@ -44,12 +44,13 @@ namespace Rubberduck.UI.Controls
         {
             if (_view.ViewModel != null)
             {
-                _view.ViewModel.LastTabClosed -= viewModel_LastTabClosed;
+            _view.ViewModel.LastTabClosed -= viewModel_LastTabClosed;
             }
+
             if (_presenter != null)
             {
-                _presenter.Dispose();
-            }
+            _presenter.Dispose();
         }
     }
+}
 }

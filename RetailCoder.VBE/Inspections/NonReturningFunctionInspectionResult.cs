@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
@@ -7,8 +9,11 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public NonReturningFunctionInspectionResult(IInspection inspection, Declaration target, bool isInterfaceImplementation)
-            : base(inspection, target)
+        public NonReturningFunctionInspectionResult(IInspection inspection,
+            QualifiedContext<ParserRuleContext> qualifiedContext, 
+            bool isInterfaceImplementation,
+            Declaration target)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context, target)
         {
             _quickFixes = isInterfaceImplementation 
                 ? new CodeInspectionQuickFix[] { }

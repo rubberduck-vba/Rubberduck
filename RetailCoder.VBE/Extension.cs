@@ -42,7 +42,6 @@ namespace Rubberduck
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
                 _kernel.Load(new RubberduckModule(_kernel, (VBE)Application, (AddIn)AddInInst));
-                _kernel.Load(new UI.SourceControl.SourceControlBindings());
                 _kernel.Load(new CommandBarsModule(_kernel));
 
                 var app = _kernel.Get<App>();

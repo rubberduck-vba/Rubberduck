@@ -29,8 +29,8 @@ namespace Rubberduck.Inspections
                     && !interfaceMembers.Select(m => m.Scope).Contains(item.ParentScope)
                 let arg = item.Context as VBAParser.ArgContext
                 where arg != null && arg.BYREF() == null && arg.BYVAL() == null
-                select new {Declaration = item, Context = new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg) })
-                .Select(issue => new ImplicitByRefParameterInspectionResult(this, issue.Context, issue.Declaration));
+                select new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg))
+                .Select(issue => new ImplicitByRefParameterInspectionResult(this, issue.Context.ambiguousIdentifier().GetText(), issue));
 
  
             return issues;

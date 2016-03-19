@@ -649,7 +649,6 @@
     <Compile Include="UI\Settings\UnitTestSettings.xaml.cs">
       <DependentUpon>UnitTestSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\ActionFailedEventArgs.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -721,73 +720,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\BranchesControl.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="UI\SourceControl\BranchesView.xaml.cs">
+      <DependentUpon>BranchesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\BranchesControl.Designer.cs">
-      <DependentUpon>BranchesControl.cs</DependentUpon>
+    <Compile Include="UI\SourceControl\BranchesViewViewModel.cs" />
+    <Compile Include="UI\SourceControl\ChangesView.xaml.cs">
+      <DependentUpon>ChangesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\BranchesPresenter.cs" />
-    <Compile Include="UI\SourceControl\ChangesControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\ChangesControl.Designer.cs">
-      <DependentUpon>ChangesControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\ChangesPresenter.cs" />
-    <Compile Include="UI\SourceControl\CloneRepositoryForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\CloneRepositoryForm.Designer.cs">
-      <DependentUpon>CloneRepositoryForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\CreateBranchForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\CreateBranchForm.Designer.cs">
-      <DependentUpon>CreateBranchForm.cs</DependentUpon>
-    </Compile>
+    <Compile Include="UI\SourceControl\ChangesViewViewModel.cs" />
+    <Compile Include="UI\SourceControl\CommitAction.cs" />
+    <Compile Include="UI\SourceControl\Converters\CommitActionsToTextConverter.cs" />
+    <Compile Include="UI\SourceControl\Converters\CommitActionTextToEnum.cs" />
     <Compile Include="UI\FileBrowserDialogFactory.cs" />
-    <Compile Include="UI\SourceControl\DeleteBranchForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\DeleteBranchForm.Designer.cs">
-      <DependentUpon>DeleteBranchForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\FailedActionControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\FailedActionControl.Designer.cs">
-      <DependentUpon>FailedActionControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\IBranchesView.cs" />
-    <Compile Include="UI\SourceControl\IChangesView.cs" />
-    <Compile Include="UI\SourceControl\ICloneRepositoryView.cs" />
-    <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
-    <Compile Include="UI\SourceControl\IDeleteBranchView.cs" />
-    <Compile Include="UI\SourceControl\IMergeView.cs" />
-    <Compile Include="UI\SourceControl\LoginControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\LoginControl.Designer.cs">
-      <DependentUpon>LoginControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\ProviderPresenter.cs" />
-    <Compile Include="UI\SourceControl\IRefreshableView.cs" />
-    <Compile Include="UI\SourceControl\ISettingsView.cs" />
-    <Compile Include="UI\SourceControl\ISourceControlView.cs" />
-    <Compile Include="UI\SourceControl\MergeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\MergeForm.Designer.cs">
-      <DependentUpon>MergeForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\SettingsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\SettingsControl.Designer.cs">
-      <DependentUpon>SettingsControl.cs</DependentUpon>
-    </Compile>
+    <Compile Include="UI\SourceControl\IControlView.cs" />
+    <Compile Include="UI\SourceControl\IControlViewModel.cs" />
     <Compile Include="Refactorings\Rename\IRenameView.cs" />
     <Compile Include="UI\Refactorings\RenameDialog.cs">
       <SubType>Form</SubType>
@@ -796,18 +742,25 @@
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Refactorings\Rename\RenamePresenter.cs" />
-    <Compile Include="UI\SourceControl\SettingsPresenter.cs" />
-    <Compile Include="UI\SourceControl\SourceControlBindings.cs" />
+    <Compile Include="UI\SourceControl\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\SettingsViewViewModel.cs" />
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\SourceControl\SourceControlPanel.Designer.cs">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\SourceControlPresenter.cs" />
     <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
-    <Compile Include="UI\SourceControl\UnsyncedCommitsPresenter.cs" />
+    <Compile Include="UI\SourceControl\SourceControlView.xaml.cs" />
+    <Compile Include="UI\SourceControl\SourceControlViewViewModel.cs" />
+    <Compile Include="UI\SourceControl\SourceControlDockablePresenter.cs" />
     <Compile Include="UI\Controls\INavigateSelection.cs" />
+    <Compile Include="UI\SourceControl\UnsyncedCommitsView.xaml.cs">
+      <DependentUpon>UnsyncedCommitsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\UnsyncedCommitsViewViewModel.cs" />
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="Settings\IConfigurationService.cs" />
     <Compile Include="Settings\ConfigurationLoader.cs" />
@@ -903,13 +856,6 @@
     <Compile Include="UnitTesting\TestResult.cs" />
     <Compile Include="UI\UnitTesting\TestResultToOutcomeTextConverter.cs" />
     <Compile Include="UnitTesting\TestRunner.cs" />
-    <Compile Include="UI\SourceControl\IUnSyncedCommitsView.cs" />
-    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.Designer.cs">
-      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="UnitTesting\PermissiveAssertClass.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorCommandBase.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorExtractMethodCommand.cs" />
@@ -1014,33 +960,6 @@
       <SubType>Designer</SubType>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\BranchesControl.resx">
-      <DependentUpon>BranchesControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\ChangesControl.resx">
-      <DependentUpon>ChangesControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\CloneRepositoryForm.resx">
-      <DependentUpon>CloneRepositoryForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\CreateBranchForm.resx">
-      <DependentUpon>CreateBranchForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\DeleteBranchForm.resx">
-      <DependentUpon>DeleteBranchForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\FailedActionControl.resx">
-      <DependentUpon>FailedActionControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\LoginControl.resx">
-      <DependentUpon>LoginControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\MergeForm.resx">
-      <DependentUpon>MergeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\SettingsControl.resx">
-      <DependentUpon>SettingsControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\SourceControlPanel.resx">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -1050,9 +969,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\UnitTesting\TestExplorerWindow.resx">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\UnSyncedCommitsControl.resx">
-      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -1224,6 +1140,7 @@
     <Resource Include="Resources\flask_exclamation_mask.png" />
     <Resource Include="Resources\flask_mask.png" />
     <Resource Include="Resources\disk.png" />
+    <Resource Include="Resources\arrow-circle-left.png" />
     <Content Include="Resources\arrow_circle_double_mask.bmp" />
     <Content Include="Resources\balloon_ellipsis.bmp" />
     <Content Include="Resources\balloon_mask.bmp" />
@@ -1242,6 +1159,7 @@
     <Resource Include="Resources\folder--plus.png" />
     <Resource Include="Resources\folder-rename.png" />
     <Resource Include="Resources\cross-button.png" />
+    <Resource Include="Resources\init-repo.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
@@ -1474,6 +1392,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\NoOverflowToolbarStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Settings\GeneralSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1495,6 +1417,26 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Settings\UnitTestSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\BranchesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\ChangesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\SourceControlView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\SourceControl\UnsyncedCommitsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -11,9 +11,10 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ParameterNotUsedInspectionResult(IInspection inspection, Declaration declaration, bool isInterfaceImplementation, 
+        public ParameterNotUsedInspectionResult(IInspection inspection, Declaration target,
+            ParserRuleContext context, QualifiedMemberName qualifiedName, bool isInterfaceImplementation, 
             RemoveParametersRefactoring refactoring, RubberduckParserState parseResult)
-            : base(inspection, declaration)
+            : base(inspection, qualifiedName.QualifiedModuleName, context, target)
         {
             _quickFixes = isInterfaceImplementation ? new CodeInspectionQuickFix[] {} : new CodeInspectionQuickFix[]
             {
@@ -26,7 +27,6 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            // bug NullReferenceException thrown here - null Target
             get { return string.Format(InspectionsUI.ParameterNotUsedInspectionResultFormat, Target.IdentifierName); }
         }
     }

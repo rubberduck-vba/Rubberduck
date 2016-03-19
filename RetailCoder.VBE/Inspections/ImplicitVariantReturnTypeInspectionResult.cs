@@ -10,15 +10,17 @@ namespace Rubberduck.Inspections
 {
     public sealed class ImplicitVariantReturnTypeInspectionResult : InspectionResultBase
     {
+        private readonly string _identifierName;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ImplicitVariantReturnTypeInspectionResult(IInspection inspection, Declaration target)
-            : base(inspection, target)
+        public ImplicitVariantReturnTypeInspectionResult(IInspection inspection, string identifierName, QualifiedContext<ParserRuleContext> qualifiedContext)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
+            _identifierName = identifierName;
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new SetExplicitVariantReturnTypeQuickFix(Context, QualifiedSelection, InspectionsUI.SetExplicitVariantReturnTypeQuickFix), 
-                new IgnoreOnceQuickFix(Target.Context, QualifiedSelection, Inspection.AnnotationName), 
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 
@@ -28,7 +30,8 @@ namespace Rubberduck.Inspections
         {
             get
             {
-                return string.Format(InspectionsUI.ImplicitVariantReturnTypeInspectionResultFormat, Target.IdentifierName);
+                return string.Format(InspectionsUI.ImplicitVariantReturnTypeInspectionResultFormat,
+                    _identifierName);
             }
         }
     }

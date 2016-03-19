@@ -59,7 +59,7 @@ namespace Rubberduck.VBEditor.Extensions
 
             var files = dirInfo.EnumerateFiles()
                                 .Where(f => f.Extension == VBComponentExtensions.StandardExtension ||
-                                            f.Extension == VBComponentExtensions.ClassExtesnion ||
+                                            f.Extension == VBComponentExtensions.ClassExtension ||
                                             f.Extension == VBComponentExtensions.DocClassExtension ||
                                             f.Extension == VBComponentExtensions.FormExtension
                                             );

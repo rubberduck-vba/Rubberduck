@@ -135,12 +135,12 @@
     <Compile Include="Settings\TodoSettingsTests.cs" />
     <Compile Include="Settings\UnitTestSettingsTests.cs" />
     <Compile Include="SourceControlConfig.cs" />
-    <Compile Include="SourceControl\BranchesPresenterTests.cs" />
-    <Compile Include="SourceControl\ChangesPresenterTests.cs" />
-    <Compile Include="SourceControl\SCPresenterTests.cs" />
-    <Compile Include="SourceControl\SettingsPresenterTests.cs" />
+    <Compile Include="SourceControl\BranchesViewModelTests.cs" />
+    <Compile Include="SourceControl\ChangesViewModelTests.cs" />
+    <Compile Include="SourceControl\SettingsViewModelTests.cs" />
     <Compile Include="SourceControl\SourceControlTests.cs" />
-    <Compile Include="SourceControl\UnsyncedCommitsPresenterTests.cs" />
+    <Compile Include="SourceControl\SourceControlViewModelTests.cs" />
+    <Compile Include="SourceControl\UnsyncedCommitsViewModelTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="TodoControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -254,6 +254,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

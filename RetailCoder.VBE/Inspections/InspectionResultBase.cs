@@ -36,6 +36,18 @@ namespace Rubberduck.Inspections
             _comment = comment;
         }
 
+        /// <summary>
+        /// Creates an inspection result.
+        /// </summary>
+        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context, Declaration declaration, CommentNode comment = null)
+        {
+            _inspection = inspection;
+            _qualifiedName = qualifiedName;
+            _context = context;
+            _target = declaration;
+            _comment = comment;
+        }
+
         private readonly IInspection _inspection;
         public IInspection Inspection { get { return _inspection; } }
 

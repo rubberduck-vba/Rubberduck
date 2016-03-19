@@ -3,6 +3,7 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -11,8 +12,13 @@ namespace Rubberduck.Inspections
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
         private QualifiedMemberName _memberName;
 
-        public FunctionReturnValueNotUsedInspectionResult(IInspection inspection, ParserRuleContext context, QualifiedMemberName qualifiedName, IEnumerable<string> returnStatements)
-            : this(inspection, context, qualifiedName, returnStatements, new List<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>>())
+        public FunctionReturnValueNotUsedInspectionResult(
+            IInspection inspection,
+            ParserRuleContext context,
+            QualifiedMemberName qualifiedName,
+            IEnumerable<string> returnStatements,
+            Declaration target)
+            : this(inspection, context, qualifiedName, returnStatements, new List<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>>(), target)
         {
         }
 
@@ -21,10 +27,10 @@ namespace Rubberduck.Inspections
             ParserRuleContext context,
             QualifiedMemberName qualifiedName,
             IEnumerable<string> returnStatements,
-            IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>> children)
-            : base(inspection, qualifiedName.QualifiedModuleName, context)
+            IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, IEnumerable<string>>> children,
+            Declaration target)
+            : base(inspection, qualifiedName.QualifiedModuleName, context, target)
         {
-            _memberName = qualifiedName;
             var root = new ConvertToProcedureQuickFix(context, QualifiedSelection, returnStatements);
             var compositeFix = new CompositeCodeInspectionFix(root);
             children.ToList().ForEach(child => compositeFix.AddChild(new ConvertToProcedureQuickFix(child.Item1, child.Item2, child.Item3)));
@@ -40,7 +46,7 @@ namespace Rubberduck.Inspections
         {
             get
             {
-                return string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, _memberName.MemberName);
+                return string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, Target.IdentifierName);
             }
         }
     }
