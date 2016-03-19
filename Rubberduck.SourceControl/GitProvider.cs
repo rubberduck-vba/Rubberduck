@@ -81,7 +81,7 @@ namespace Rubberduck.SourceControl
         {
             get
             {
-                return Branches.First(b => !b.IsRemote && b.IsCurrentHead);
+                return Branches.FirstOrDefault(b => !b.IsRemote && b.IsCurrentHead);
             }
         }
 
