@@ -1107,6 +1107,30 @@ namespace Rubberduck.Parsing.Symbols
                    && (declaration.ParentDeclaration.HasPredeclaredId || declaration.IsBuiltIn);
         }
 
+        private readonly IReadOnlyList<string> SpecialCasedTokens = new[]{
+            Tokens.Error,
+            Tokens.Hex,
+            Tokens.Oct,
+            Tokens.Str,
+            Tokens.CurDir,
+            Tokens.Command,
+            Tokens.Environ,
+            Tokens.Chr,
+            Tokens.ChrW,
+            Tokens.Format,
+            Tokens.LCase,
+            Tokens.Left,
+            Tokens.LeftB,
+            Tokens.LTrim,
+            Tokens.Mid,
+            Tokens.MidB,
+            Tokens.Trim,
+            Tokens.Right,
+            Tokens.RightB,
+            Tokens.RTrim,
+            Tokens.UCase
+        };
+
         private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasStringQualifier = false)
         {
             var matches = _declarationFinder.MatchName(identifierName).Where(item => 
@@ -1115,7 +1139,7 @@ namespace Rubberduck.Parsing.Symbols
                 || IsStaticClass(item)
                 || item.ParentScopeDeclaration.Equals(localScope)).ToList();
 
-            if (matches.Count == 1)
+            if (matches.Count == 1 && !SpecialCasedTokens.Contains(matches.Single().IdentifierName))
             {
                 return matches.Single();
             }
@@ -1132,7 +1156,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             result = matches.Where(item => IsBuiltInDeclarationInScope(item, localScope)).ToList();
-            if (result.Count == 1)
+            if (result.Count == 1 && !SpecialCasedTokens.Contains(matches.Single().IdentifierName))
             {
                 return result.SingleOrDefault();
             }
