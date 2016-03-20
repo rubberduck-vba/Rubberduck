@@ -1553,7 +1553,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value>Repository löschen</value>
   </data>
   <data name="SourceControl_BranchName" xml:space="preserve">
-    <value>Zweigname</value>
+    <value>Zweigname:</value>
   </data>
   <data name="SourceControl_LocalDirectoryLabel" xml:space="preserve">
     <value>Lokales Verzeichnis:</value>

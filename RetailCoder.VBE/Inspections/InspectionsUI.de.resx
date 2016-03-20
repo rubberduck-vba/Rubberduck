@@ -495,7 +495,7 @@
     <value>Ersetze  Mehrfach-Deklarationen in einer Zeile durch Deklaration in getrennten zeilen</value>
   </data>
   <data name="VariableNotAssignedInspectionResultFormat" xml:space="preserve">
-    <value>Der Variabel '{0}' wird kein Wert zugewiesen.</value>
+    <value>Der Variable '{0}' wird kein Wert zugewiesen.</value>
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Deaktivire diese Überprüfung</value>
