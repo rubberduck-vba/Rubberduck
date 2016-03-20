@@ -288,7 +288,7 @@ namespace Rubberduck.SourceControl
 
         public override void Merge(string sourceBranch, string destinationBranch)
         {
-            _repo.Checkout(_repo.Branches[destinationBranch]);
+            Checkout(destinationBranch);
 
             var oldHeadCommit = _repo.Head.Tip;
             var signature = GetSignature();
