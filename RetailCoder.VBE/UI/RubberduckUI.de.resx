@@ -1654,4 +1654,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="SourceControl_NoBranchesTitle" xml:space="preserve">
     <value>Keine Zweige gefunden</value>
   </data>
+  <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
+    <value>Parse alle offenen Projekte</value>
+  </data>
 </root>
