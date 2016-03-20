@@ -495,7 +495,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Neues Repository erstellen</value>
   </data>
   <data name="SourceControl_OpenWorkingDirectory" xml:space="preserve">
-    <value>Working Directory öffnen</value>
+    <value>Arbeitsverzeichnis öffnen</value>
   </data>
   <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
     <value>{0} fehlgeschlagen</value>
@@ -1577,7 +1577,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value>Nachricht</value>
   </data>
   <data name="SourceControl_Dismiss" xml:space="preserve">
-    <value>Verwerfen</value>
+    <value>Entfernen</value>
   </data>
   <data name="SourceControl_PasswordLabel" xml:space="preserve">
     <value>Kennwort:</value>
