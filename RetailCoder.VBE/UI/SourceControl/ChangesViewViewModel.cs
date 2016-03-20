@@ -57,7 +57,10 @@ namespace Rubberduck.UI.SourceControl
                         .Where(
                             stat =>
                                 (stat.FileStatus.HasFlag(FileStatus.Modified) ||
-                                 stat.FileStatus.HasFlag(FileStatus.Added)) &&
+                                 stat.FileStatus.HasFlag(FileStatus.Added) ||
+                                 stat.FileStatus.HasFlag(FileStatus.Removed) ||
+                                 stat.FileStatus.HasFlag(FileStatus.RenamedInIndex) ||
+                                 stat.FileStatus.HasFlag(FileStatus.RenamedInWorkDir)) &&
                                 !ExcludedChanges.Select(f => f.FilePath).Contains(stat.FilePath)));
 
             UntrackedFiles = Provider == null
