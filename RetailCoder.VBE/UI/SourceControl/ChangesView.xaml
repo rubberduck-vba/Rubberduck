@@ -89,7 +89,10 @@
                 <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CommitMessageLabel}" />
                 <TextBox Margin="5,0"
                          Height="50"
-                         Text="{Binding CommitMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                         Text="{Binding CommitMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="WrapWithOverflow"
+                         ScrollViewer.CanContentScroll="True"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto" />
 
                 <Grid HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
