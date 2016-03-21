@@ -396,7 +396,7 @@
     <value>Der Rückgabewert der Methode '{0}' ist implizit 'Variant'.</value>
   </data>
   <data name="MultilineParameterInspectionResultFormat" xml:space="preserve">
-    <value>der Parameter '{0}' wird über mehrere Zeilen angegeben</value>
+    <value>Der Parameter '{0}' wird über mehrere Zeilen angegeben</value>
   </data>
   <data name="NonReturningFunctionInspectionResultFormat" xml:space="preserve">
     <value>Der Rückgabewert der Methode '{0}' wird nicht zugwiesen</value>
@@ -495,9 +495,12 @@
     <value>Ersetze  Mehrfach-Deklarationen in einer Zeile durch Deklaration in getrennten zeilen</value>
   </data>
   <data name="VariableNotAssignedInspectionResultFormat" xml:space="preserve">
-    <value>Der Variabel '{0}' wird kein Wert zugewiesen. </value>
+    <value>Der Variable '{0}' wird kein Wert zugewiesen.</value>
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Deaktivire diese Überprüfung</value>
+  </data>
+  <data name="EmptyStringLiteralInspectionResultFormat" xml:space="preserve">
+    <value>vbNullString' sollte statt einem leeren String-Literal verwendet werden.</value>
   </data>
 </root>

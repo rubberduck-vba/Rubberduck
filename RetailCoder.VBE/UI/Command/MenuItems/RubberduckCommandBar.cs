@@ -54,7 +54,7 @@ namespace Rubberduck.UI.Command.MenuItems
             ParentMenuItemBase.SetButtonImage(_refreshButton, Resources.arrow_circle_double, Resources.arrow_circle_double_mask);
             _refreshButton.Style = MsoButtonStyle.msoButtonIcon;
             _refreshButton.Tag = "Refresh";
-            _refreshButton.TooltipText = "Parse all opened projects";
+            _refreshButton.TooltipText =RubberduckUI.RubberduckCommandbarRefreshButtonTooltip;
             _refreshButton.Click += refreshButton_Click;
 
             _statusButton = (CommandBarButton)commandbar.Controls.Add(MsoControlType.msoControlButton);

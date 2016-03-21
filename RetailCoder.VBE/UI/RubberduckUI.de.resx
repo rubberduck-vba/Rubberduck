@@ -172,7 +172,7 @@
     <value>Name:</value>
   </data>
   <data name="OK" xml:space="preserve">
-    <value>Ok</value>
+    <value>OK</value>
   </data>
   <data name="RenameDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Umbenennen</value>
@@ -495,7 +495,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Neues Repository erstellen</value>
   </data>
   <data name="SourceControl_OpenWorkingDirectory" xml:space="preserve">
-    <value>Working Directory öffnen</value>
+    <value>Arbeitsverzeichnis öffnen</value>
   </data>
   <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
     <value>{0} fehlgeschlagen</value>
@@ -1312,7 +1312,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Anzeigesprache:</value>
   </data>
   <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
-    <value>Module</value>
+    <value>Modul</value>
   </data>
   <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
     <value>Beiträge</value>
@@ -1534,5 +1534,127 @@ Fugue Icons von Yusuke Kamiyamane</value>
   </data>
   <data name="SearchResults_MemberType" xml:space="preserve">
     <value>Type</value>
+  </data>
+  <data name="SourceControl_CommitAndPush" xml:space="preserve">
+    <value>Commit und Push</value>
+  </data>
+  <data name="SourceControl_CommitAndSync" xml:space="preserve">
+    <value>Commit und Synchronisieren</value>
+  </data>
+  <data name="SourceControl_DeleteBranch" xml:space="preserve">
+    <value>Zweig löschen</value>
+  </data>
+  <data name="AboutWindow_GeneralThanks" xml:space="preserve">
+    <value>Allen, die zu unserem GitHub Repositoty beigetragen haben
+Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
+… und jedem der dies leist.</value>
+  </data>
+  <data name="SourceControl_CloneRepoButtonToolTip" xml:space="preserve">
+    <value>Repository löschen</value>
+  </data>
+  <data name="SourceControl_BranchName" xml:space="preserve">
+    <value>Zweigname:</value>
+  </data>
+  <data name="SourceControl_LocalDirectoryLabel" xml:space="preserve">
+    <value>Lokales Verzeichnis:</value>
+  </data>
+  <data name="SourceControl_RemotePathLabel" xml:space="preserve">
+    <value>Entferntes Verzeichnis:</value>
+  </data>
+  <data name="SourceControl_FilePath" xml:space="preserve">
+    <value>Dateipfad</value>
+  </data>
+  <data name="SourceControl_FileStatus" xml:space="preserve">
+    <value>Dateistatus</value>
+  </data>
+  <data name="SourceControl_Author" xml:space="preserve">
+    <value>Autor</value>
+  </data>
+  <data name="SourceControl_Id" xml:space="preserve">
+    <value>Id</value>
+  </data>
+  <data name="SourceControl_Message" xml:space="preserve">
+    <value>Nachricht</value>
+  </data>
+  <data name="SourceControl_Dismiss" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
+  <data name="SourceControl_PasswordLabel" xml:space="preserve">
+    <value>Kennwort:</value>
+  </data>
+  <data name="SourceControl_PublishBranchButton" xml:space="preserve">
+    <value>Veröffentlichen</value>
+  </data>
+  <data name="SourceControl_UnpublishBranchButton" xml:space="preserve">
+    <value>Nicht veröffentlichen</value>
+  </data>
+  <data name="SourceControl_SourceBranch" xml:space="preserve">
+    <value>Quellzweig:</value>
+  </data>
+  <data name="SourceControl_LoginInstructions" xml:space="preserve">
+    <value>Die letzte Aktion konnte nicht durchgeführt werden, da Rubberduck nicht die notwendigen Anmeldedaten hatte. Bitte anmelden und die Aktion wiederholen.</value>
+  </data>
+  <data name="SourceControl_ExcludeFileButton" xml:space="preserve">
+    <value>Ausschließen</value>
+  </data>
+  <data name="SourceControl_IncludeFileButton" xml:space="preserve">
+    <value>Einschließen</value>
+  </data>
+  <data name="SourceControl_UndoChangesButton" xml:space="preserve">
+    <value>Rückgängig</value>
+  </data>
+  <data name="SourceControl_Delete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="ParserState_Error" xml:space="preserve">
+    <value>Fehler beim Parsen</value>
+  </data>
+  <data name="ParserState_LoadingReference" xml:space="preserve">
+    <value>Referenzen werden geladen</value>
+  </data>
+  <data name="ParserState_Parsed" xml:space="preserve">
+    <value>Analysiert</value>
+  </data>
+  <data name="ParserState_Parsing" xml:space="preserve">
+    <value>Parsing …</value>
+  </data>
+  <data name="ParserState_Pending" xml:space="preserve">
+    <value>Wartend</value>
+  </data>
+  <data name="ParserState_Ready" xml:space="preserve">
+    <value>Fertig</value>
+  </data>
+  <data name="ParserState_ResolverError" xml:space="preserve">
+    <value>Fehler beim Auflösen</value>
+  </data>
+  <data name="ParserState_Resolving" xml:space="preserve">
+    <value>Löse auf ...</value>
+  </data>
+  <data name="AboutWindow_BlogsHeader" xml:space="preserve">
+    <value>Blogs:</value>
+  </data>
+  <data name="AboutWindow_CommunityHeader" xml:space="preserve">
+    <value>Community:</value>
+  </data>
+  <data name="AboutWindow_ContributorsHeader" xml:space="preserve">
+    <value>Beitragende &amp; Unterstützer:</value>
+  </data>
+  <data name="SourceControl_MergeStatus" xml:space="preserve">
+    <value>Status der Zusmmenführung</value>
+  </data>
+  <data name="SourceControl_UpdateSettingsMessage" xml:space="preserve">
+    <value>Der Benutzername, die E-Mail-Adresse und das Standard-Repository-Verzeichnis wurde gesichert.</value>
+  </data>
+  <data name="SourceControl_UpdateSettingsTitle" xml:space="preserve">
+    <value>Einstellungen wurden aktualisiert</value>
+  </data>
+  <data name="SourceControl_NoBranchesMessage" xml:space="preserve">
+    <value>Repository enthält keine Zweige</value>
+  </data>
+  <data name="SourceControl_NoBranchesTitle" xml:space="preserve">
+    <value>Keine Zweige gefunden</value>
+  </data>
+  <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
+    <value>Parse alle offenen Projekte</value>
   </data>
 </root>
