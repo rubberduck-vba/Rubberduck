@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using Microsoft.Vbe.Interop;
@@ -21,48 +22,62 @@ namespace Rubberduck.VBEditor.Extensions
         public static string ExportAsSourceFile(this VBComponent component, string directoryPath)
         {
             var path = Path.Combine(directoryPath, component.Name + component.Type.FileExtension());
-            if (component.Type == vbext_ComponentType.vbext_ct_Document)
+            switch (component.Type)
             {
-                var lineCount = component.CodeModule.CountOfLines;
-                if (lineCount > 0)
-                {
-                    var text = component.CodeModule.get_Lines(1, lineCount);
-                    File.WriteAllText(path, text);
-                }
-            }
-            else if(component.Type == vbext_ComponentType.vbext_ct_MSForm)
-            {
-                // VBIDE API inserts an extra newline when exporting a UserForm module.
-                // this issue causes forms to always be treated as "modified" in source control, which causes conflicts.
-                // we need to remove the extra newline before the file gets written to its output location.
-                var tempFile = component.ExportToTempFile();
-                var contents = File.ReadAllLines(tempFile);
-                var vbExposedAttributeLine = 0;
-                for (var i = 0; i < contents.Length; i++)
-                {
-                    if (contents[i].StartsWith("Attribute VB_Exposed = "))
-                    {
-                        vbExposedAttributeLine = i;
-                        break;
-                    }
-                }
-                if (contents.Length > vbExposedAttributeLine && contents[vbExposedAttributeLine + 1].Replace(Environment.NewLine, string.Empty).Trim() == string.Empty)
-                {
-                    // first line in module is empty - assume it wasn't in the VBE
-                    var edited = contents.Take(vbExposedAttributeLine).Union(contents.Skip(vbExposedAttributeLine + 1)).ToArray();
-                    File.WriteAllLines(path, edited);
-                }
-            }
-            else
-            {
-                // other module types can just be exported directly
-                component.Export(path);
+                case vbext_ComponentType.vbext_ct_MSForm:
+                    ExportUserFormModule(component, path);
+                    break;
+                case vbext_ComponentType.vbext_ct_Document:
+                    ExportDocumentModule(component, path);
+                    break;
+                default:
+                    component.Export(path);
+                    break;
             }
 
             return path;
         }
 
-        public static string ExportToTempFile(this VBComponent component)
+        private static void ExportUserFormModule(VBComponent component, string path)
+        {
+            // VBIDE API inserts an extra newline when exporting a UserForm module.
+            // this issue causes forms to always be treated as "modified" in source control, which causes conflicts.
+            // we need to remove the extra newline before the file gets written to its output location.
+
+            var visibleCode = component.CodeModule.Lines().Split(new []{Environment.NewLine}, StringSplitOptions.None);
+            var legitEmptyLineCount = visibleCode.TakeWhile(string.IsNullOrWhiteSpace).Count();
+
+            var tempFile = component.ExportToTempFile();
+            var contents = File.ReadAllLines(tempFile);
+            var nonAttributeLines = contents.TakeWhile(line => !line.StartsWith("Attribute")).Count();
+            var attributeLines = contents.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
+            var declarationsStartLine = nonAttributeLines + attributeLines + 1;
+
+            var emptyLineCount = contents.Skip(declarationsStartLine - 1)
+                                         .TakeWhile(string.IsNullOrWhiteSpace)
+                                         .Count();
+
+            var code = contents;
+            if (emptyLineCount > legitEmptyLineCount)
+            {
+                code = contents.Take(declarationsStartLine).Union(
+                       contents.Skip(declarationsStartLine + emptyLineCount - legitEmptyLineCount))
+                               .ToArray();
+            }
+            File.WriteAllLines(path, code);
+        }
+
+        private static void ExportDocumentModule(VBComponent component, string path)
+        {
+            var lineCount = component.CodeModule.CountOfLines;
+            if (lineCount > 0)
+            {
+                var text = component.CodeModule.Lines[1, lineCount];
+                File.WriteAllText(path, text);
+            }
+        }
+
+        private static string ExportToTempFile(this VBComponent component)
         {
             var path = Path.Combine(Path.GetTempPath(), component.Name + component.Type.FileExtension());
             component.Export(path);
