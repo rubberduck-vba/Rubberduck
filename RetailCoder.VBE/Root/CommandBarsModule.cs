@@ -123,8 +123,6 @@ namespace Rubberduck.Root
 
         private void BindCommandsToMenuItems()
         {
-            _kernel.Bind<IDeclarationNavigator>().To<NavigateAllImplementations>().WhenTargetHas<FindImplementationsAttribute>();
-
             var types = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(type => type.IsClass && type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty))
                 .ToList();
