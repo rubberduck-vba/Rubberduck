@@ -247,7 +247,7 @@ namespace Rubberduck.UI.SourceControl
                 var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
 
-                AddRepoToConfig((Repository)repo);
+                AddOrUpdateLocalPathConfig((Repository)repo);
                 Status = RubberduckUI.Online;
             }
         }
@@ -267,10 +267,27 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private void AddRepoToConfig(Repository repo)
+        private void AddOrUpdateLocalPathConfig(Repository repo)
         {
-            _config.Repositories.Add(repo);
-            _configService.SaveConfiguration(_config);
+            if (_config.Repositories.All(repository => repository.LocalLocation != repo.LocalLocation))
+            {
+                _config.Repositories.Add(repo);
+                _configService.SaveConfiguration(_config);
+            }
+            else
+            {
+                var existing = _config.Repositories.Single(repository => repository.LocalLocation == repo.LocalLocation);
+                if (string.IsNullOrEmpty(repo.RemoteLocation) && !string.IsNullOrEmpty(existing.RemoteLocation))
+                {
+                    // config already has remote location and correct repository name - nothing to update
+                    return;
+                }
+
+                existing.Name = repo.Name;
+                existing.RemoteLocation = repo.RemoteLocation;
+
+                _configService.SaveConfiguration(_config);
+            }
         }
 
         private void OpenRepo()
@@ -295,7 +312,7 @@ namespace Rubberduck.UI.SourceControl
                     return;
                 }
 
-                AddRepoToConfig(repo);
+                AddOrUpdateLocalPathConfig(repo);
 
                 Status = RubberduckUI.Online;
             }
@@ -308,7 +325,7 @@ namespace Rubberduck.UI.SourceControl
                 _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
                 var repo = _provider.Clone(RemotePath, LocalDirectory);
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo, _wrapperFactory);
-                AddRepoToConfig(new Repository
+                AddOrUpdateLocalPathConfig(new Repository
                 {
                     Name = _vbe.ActiveVBProject.Name,
                     LocalLocation = repo.LocalLocation,
