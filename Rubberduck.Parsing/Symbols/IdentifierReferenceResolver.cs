@@ -24,6 +24,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly QualifiedModuleName _qualifiedModuleName;
 
         private readonly IReadOnlyList<DeclarationType> _moduleTypes;
+        private readonly IReadOnlyList<DeclarationType> _memberTypes;
         private readonly IReadOnlyList<DeclarationType> _returningMemberTypes;
 
         private readonly Stack<Declaration> _withBlockQualifiers;
@@ -47,6 +48,15 @@ namespace Rubberduck.Parsing.Symbols
             {
                 DeclarationType.Module, 
                 DeclarationType.Class,
+            };
+
+            _memberTypes = new[]
+            {
+                DeclarationType.Procedure, 
+                DeclarationType.Function, 
+                DeclarationType.PropertyGet, 
+                DeclarationType.PropertyLet, 
+                DeclarationType.PropertySet, 
             };
 
             _returningMemberTypes = new[]
@@ -352,7 +362,10 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration ResolveType(Declaration parent)
         {
             if (parent != null && (parent.DeclarationType == DeclarationType.UserDefinedType 
-                                || parent.DeclarationType == DeclarationType.Enumeration))
+                                || parent.DeclarationType == DeclarationType.Enumeration
+                                || parent.DeclarationType == DeclarationType.Project
+                                || parent.DeclarationType == DeclarationType.Module
+                                || (parent.DeclarationType == DeclarationType.Class && (parent.IsBuiltIn || parent.HasPredeclaredId))))
             {
                 return parent;
             }
@@ -1064,6 +1077,7 @@ namespace Rubberduck.Parsing.Symbols
                 item.ParentScope == localScope.ParentScope
                 && !item.DeclarationType.HasFlag(DeclarationType.Member)
                 && !_moduleTypes.Contains(item.DeclarationType)
+                && item.DeclarationType != DeclarationType.UserDefinedType
                 && (item.DeclarationType != DeclarationType.Event || IsLocalEvent(item, localScope)))
             .ToList();
 
@@ -1086,7 +1100,8 @@ namespace Rubberduck.Parsing.Symbols
 
             var matches = _declarationFinder.MatchName(identifierName);
             var result = matches.Where(item =>
-                localScope.ProjectName == item.ProjectName
+                _memberTypes.Contains(item.DeclarationType)
+                && localScope.ProjectName == item.ProjectName
                 && (localScope.ComponentName.Replace("_", string.Empty) == item.ComponentName.Replace("_", string.Empty))
                 && (IsProcedure(item, localScope) || IsPropertyAccessor(item, accessorType, localScope, isAssignmentTarget)))
             .ToList();

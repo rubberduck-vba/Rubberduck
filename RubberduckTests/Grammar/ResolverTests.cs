@@ -1182,5 +1182,213 @@ End Sub
 
             Assert.AreEqual(1, usages.Count());
         }
+
+        [TestMethod]
+        public void GivenField_NamedUnambiguously_FieldAssignmentCallResolvesToFieldDeclaration()
+        {
+            var code = @"
+Private Type TestModule1
+    Foo As Integer
+End Type
+
+Private Bar As TestModule1
+
+Public Sub DoSomething()
+    Bar.Foo = 42
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable
+                && item.IdentifierName == "Bar");
+
+            var usages = declaration.References.Where(item =>
+                item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenField_NamedUnambiguously_InStatementFieldCallResolvesToFieldDeclaration()
+        {
+            var code = @"
+Private Type TestModule1
+    Foo As Integer
+End Type
+
+Private Bar As TestModule1
+
+Public Sub DoSomething()
+    Debug.Print Bar.Foo
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable
+                && item.IdentifierName == "Bar");
+
+            var usages = declaration.References.Where(item =>
+                item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenField_NamedAmbiguously_FieldAssignmentCallResolvesToFieldDeclaration()
+        {
+            var code = @"
+Private Type TestModule1
+    Foo As Integer
+End Type
+
+Private TestModule1 As TestModule1
+
+Public Sub DoSomething()
+    TestModule1.Foo = 42
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable
+                && item.IdentifierName == item.ComponentName);
+
+            var usages = declaration.References.Where(item =>
+                item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenUDTField_NamedAmbiguously_MemberAssignmentCallResolvesToUDTMember()
+        {
+            var code = @"
+Private Type TestModule1
+    Foo As Integer
+End Type
+
+Private TestModule1 As TestModule1
+
+Public Sub DoSomething()
+    TestModule1.Foo = 42
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.UserDefinedTypeMember
+                && item.IdentifierName == "Foo");
+
+            var usages = declaration.References.Where(item =>
+                item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenUDTField_NamedAmbiguously_FullyQualifiedMemberAssignmentCallResolvesToUDTMember()
+        {
+            var code = @"
+Private Type TestModule1
+    Foo As Integer
+End Type
+
+Private TestModule1 As TestModule1
+
+Public Sub DoSomething()
+    TestProject1.TestModule1.TestModule1.Foo = 42
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.UserDefinedTypeMember
+                && item.IdentifierName == "Foo");
+
+            var usages = declaration.References.Where(item =>
+                item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenFullyReferencedUDTFieldMemberCall_ProjectParentMember_ResolvesToProject()
+        {
+            var code = @"
+Private Type TestModule1
+    Foo As Integer
+End Type
+
+Private TestModule1 As TestModule1
+
+Public Sub DoSomething()
+    TestProject1.TestModule1.TestModule1.Foo = 42
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Project
+                && item.IdentifierName == item.ProjectName);
+
+            var usages = declaration.References.Where(item =>
+                item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenFullyReferencedUDTFieldMemberCall_ModuleParentMember_ResolvesToModule()
+        {
+            var code = @"
+Private Type TestModule1
+    Foo As Integer
+End Type
+
+Private TestModule1 As TestModule1
+
+Public Sub DoSomething()
+    TestProject1.TestModule1.TestModule1.Foo = 42
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Module
+                && item.IdentifierName == item.ComponentName);
+
+            var usages = declaration.References.Where(item =>
+                item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenFullyReferencedUDTFieldMemberCall_FieldParentMember_ResolvesToVariable()
+        {
+            var code = @"
+Private Type TestModule1
+    Foo As Integer
+End Type
+
+Private TestModule1 As TestModule1
+
+Public Sub DoSomething()
+    TestProject1.TestModule1.TestModule1.Foo = 42
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable
+                && item.IdentifierName == item.ComponentName);
+
+            var usages = declaration.References.Where(item =>
+                item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
     }
 }
