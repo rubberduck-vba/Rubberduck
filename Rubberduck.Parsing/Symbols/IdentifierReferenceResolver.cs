@@ -1224,6 +1224,11 @@ namespace Rubberduck.Parsing.Symbols
                 return matches.Single();
             }
 
+            var module = _declarationFinder.FindStdModule(null, identifierName);
+            if (module != null)
+            {
+                return module;
+            }
             Debug.WriteLine("Unknown identifier in '{0}': '{1}'", localScope == null ? "(unknown)" : localScope.IdentifierName, identifierName);
             return null;
         }
