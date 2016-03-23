@@ -1420,4 +1420,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SourceControl_NoBranchesTitle" xml:space="preserve">
     <value>No branches found</value>
   </data>
+  <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
+    <value>Parse all opened projects</value>
+  </data>
 </root>
