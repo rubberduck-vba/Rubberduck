@@ -562,7 +562,7 @@ literal : HEXLITERAL | OCTLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL
 
 type : (baseType | complexType) (WS? LPAREN WS? RPAREN)?;
 
-typeHint : '&' | '%' | '#' | '!' | '@' | '$';
+typeHint : '%' | '&' | '^' | '!' | '#' | '@' | '$';
 
 visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 
