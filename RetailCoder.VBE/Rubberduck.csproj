@@ -275,6 +275,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Accessibility.cs" />
+    <Compile Include="API\Declaration.cs" />
+    <Compile Include="API\DeclarationType.cs" />
+    <Compile Include="API\IdentifierReference.cs" />
+    <Compile Include="API\ParserState.cs" />
     <Compile Include="AppMenu.cs" />
     <Compile Include="AutoSave\AutoSave.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
