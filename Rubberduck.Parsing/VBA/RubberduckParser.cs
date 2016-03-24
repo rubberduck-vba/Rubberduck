@@ -129,8 +129,7 @@ namespace Rubberduck.Parsing.VBA
             var references = projects
                 .SelectMany(project => project.References.Cast<Reference>())
                 .DistinctBy(reference => reference.Guid)
-                .Where(reference => reference.Type == vbext_RefKind.vbext_rk_TypeLib)
-                .ToList();
+                .Where(reference => reference.Type == vbext_RefKind.vbext_rk_TypeLib);
             foreach (var reference in references)
             {
                 AddDeclarationsFromReference(reference);
