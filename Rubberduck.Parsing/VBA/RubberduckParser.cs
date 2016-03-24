@@ -191,8 +191,9 @@ namespace Rubberduck.Parsing.VBA
                     commentListener
                 };
 
-                var tree = GetParseTree(vbComponent, listeners, preprocessedModuleBody, qualifiedName);
-                WalkParseTree(vbComponent, listeners, qualifiedName, tree);
+                DeclarationSymbolsListener listener;
+                var tree = GetParseTree(vbComponent, listeners, preprocessedModuleBody, qualifiedName, out listener);
+                WalkParseTree(listeners, qualifiedName, tree, listener);
 
                 State.SetModuleState(vbComponent, ParserState.Parsed);
             }
@@ -212,12 +213,26 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private IParseTree GetParseTree(VBComponent vbComponent, IParseTreeListener[] listeners, string code, QualifiedModuleName qualifiedName)
+        private IParseTree GetParseTree(VBComponent vbComponent, IParseTreeListener[] listeners, string code, QualifiedModuleName qualifiedName, out DeclarationSymbolsListener declarationsListener)
         {
             var commentListener = listeners.OfType<CommentListener>().Single();
             ITokenStream stream;
 
             var stopwatch = Stopwatch.StartNew();
+            if (!_componentAttributes.ContainsKey(vbComponent))
+            {
+                _componentAttributes.Add(vbComponent, _attributeParser.Parse(vbComponent));
+            }
+            var attributes = _componentAttributes[vbComponent];
+
+            // cannot locate declarations in one pass *the way it's currently implemented*,
+            // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
+            // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
+            declarationsListener = new DeclarationSymbolsListener(qualifiedName, Accessibility.Implicit, vbComponent.Type, _state.GetModuleComments(vbComponent), attributes);
+
+            declarationsListener.NewDeclaration += declarationsListener_NewDeclaration;
+            declarationsListener.CreateModuleDeclarations();
+
             var tree = ParseInternal(code, listeners, out stream);
             stopwatch.Stop();
             if (tree != null)
@@ -237,30 +252,15 @@ namespace Rubberduck.Parsing.VBA
         private readonly IDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
             = new Dictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
 
-        private void WalkParseTree(VBComponent vbComponent, IReadOnlyList<IParseTreeListener> listeners, QualifiedModuleName qualifiedName, IParseTree tree)
+        private void WalkParseTree(IReadOnlyList<IParseTreeListener> listeners, QualifiedModuleName qualifiedName, IParseTree tree, DeclarationSymbolsListener declarationsListener)
         {
             var obsoleteCallsListener = listeners.OfType<ObsoleteCallStatementListener>().Single();
             var obsoleteLetListener = listeners.OfType<ObsoleteLetStatementListener>().Single();
             var emptyStringLiteralListener = listeners.OfType<EmptyStringLiteralListener>().Single();
             var argListsWithOneByRefParamListener = listeners.OfType<ArgListWithOneByRefParamListener>().Single();
 
-            if (!_componentAttributes.ContainsKey(vbComponent))
-            {
-                _componentAttributes.Add(vbComponent, _attributeParser.Parse(vbComponent));
-            }
-            var attributes = _componentAttributes[vbComponent];
-
-            // cannot locate declarations in one pass *the way it's currently implemented*,
-            // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
-            // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
-            var declarationsListener = new DeclarationSymbolsListener(qualifiedName, Accessibility.Implicit, vbComponent.Type, _state.GetModuleComments(vbComponent), attributes);
-
-            declarationsListener.NewDeclaration += declarationsListener_NewDeclaration;
-            declarationsListener.CreateModuleDeclarations();
-
             var walker = new ParseTreeWalker();
             walker.Walk(declarationsListener, tree);
-            declarationsListener.NewDeclaration -= declarationsListener_NewDeclaration;
 
             _state.ObsoleteCallContexts = obsoleteCallsListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
             _state.ObsoleteLetContexts = obsoleteLetListener.Contexts.Select(context => new QualifiedContext(qualifiedName, context));
