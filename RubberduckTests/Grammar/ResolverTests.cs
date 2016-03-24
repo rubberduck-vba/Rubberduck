@@ -1340,7 +1340,7 @@ End Sub
         }
 
         [TestMethod]
-        public void GivenFullyReferencedUDTFieldMemberCall_ModuleParentMember_ResolvesToModule()
+        public void GivenFullyQualifiedUDTFieldMemberCall_ModuleParentMember_ResolvesToModule()
         {
             var code = @"
 Private Type TestModule1
@@ -1366,7 +1366,7 @@ End Sub
         }
 
         [TestMethod]
-        public void GivenFullyReferencedUDTFieldMemberCall_FieldParentMember_ResolvesToVariable()
+        public void GivenFullyQualifiedUDTFieldMemberCall_FieldParentMember_ResolvesToVariable()
         {
             var code = @"
 Private Type TestModule1

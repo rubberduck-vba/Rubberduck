@@ -630,7 +630,8 @@ namespace Rubberduck.Parsing.Symbols
                     return null;
                 }
 
-                member.AddMemberCall(CreateReference(GetMemberCallIdentifierContext(memberCall), parent));
+                var memberReference = CreateReference(GetMemberCallIdentifierContext(memberCall), parent);
+                member.AddMemberCall(memberReference);
                 parent = ResolveType(member);
             }
 
@@ -1022,7 +1023,7 @@ namespace Rubberduck.Parsing.Symbols
                 localScope = _currentScope;
             }
 
-            if (_moduleTypes.Contains(localScope.DeclarationType))
+            if (_moduleTypes.Contains(localScope.DeclarationType) || localScope.DeclarationType == DeclarationType.Project)
             {
                 // "local scope" is not intended to be module level.
                 return null;
@@ -1067,19 +1068,37 @@ namespace Rubberduck.Parsing.Symbols
                 localScope = _currentScope;
             }
 
+            if (localScope.DeclarationType == DeclarationType.Project)
+            {
+                return null;
+            }
+
             if (identifierName == "Me" && _moduleDeclaration.DeclarationType == DeclarationType.Class)
             {
                 return _moduleDeclaration;
             }
 
-            var matches = _declarationFinder.MatchName(identifierName);
+            var scope = localScope; // avoid implicitly capturing 'this'
+            var matches = _declarationFinder.MatchName(identifierName).Where(item => !item.Equals(scope)).ToList();
+
             var result = matches.Where(item =>
-                item.ParentScope == localScope.ParentScope
+                (localScope.ParentScopeDeclaration == null || localScope.ParentScopeDeclaration.Equals(item.ParentScopeDeclaration))
                 && !item.DeclarationType.HasFlag(DeclarationType.Member)
                 && !_moduleTypes.Contains(item.DeclarationType)
-                && item.DeclarationType != DeclarationType.UserDefinedType
+                && item.DeclarationType != DeclarationType.UserDefinedType && item.DeclarationType != DeclarationType.Enumeration
                 && (item.DeclarationType != DeclarationType.Event || IsLocalEvent(item, localScope)))
             .ToList();
+
+            if (matches.Any() && !result.Any())
+            {
+                result = matches.Where(item => 
+                    (localScope != null && localScope.Equals(item.ParentScopeDeclaration))
+                    && !item.DeclarationType.HasFlag(DeclarationType.Member)
+                    && !_moduleTypes.Contains(item.DeclarationType)
+                    && item.DeclarationType != DeclarationType.UserDefinedType && item.DeclarationType != DeclarationType.Enumeration
+                    && (item.DeclarationType != DeclarationType.Event || IsLocalEvent(item, localScope)))
+                .ToList();
+            }
 
             return result.Count == 1 ? result.SingleOrDefault() : null;
         }
@@ -1096,6 +1115,11 @@ namespace Rubberduck.Parsing.Symbols
             if (localScope == null)
             {
                 localScope = _currentScope;
+            }
+
+            if (localScope.DeclarationType == DeclarationType.Project)
+            {
+                return null;
             }
 
             var matches = _declarationFinder.MatchName(identifierName);
@@ -1149,9 +1173,10 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasStringQualifier = false)
         {
             var matches = _declarationFinder.MatchName(identifierName).Where(item => 
-                item.ParentDeclaration == null 
-                || IsStdModuleMember(item)
+                item.DeclarationType == DeclarationType.Project
+                || item.DeclarationType == DeclarationType.Module
                 || IsStaticClass(item)
+                || IsStdModuleMember(item)
                 || item.ParentScopeDeclaration.Equals(localScope)).ToList();
 
             if (matches.Count == 1 && !SpecialCasedTokens.Contains(matches.Single().IdentifierName))
