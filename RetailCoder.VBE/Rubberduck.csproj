@@ -346,6 +346,8 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Command\ShowParserErrorsCommand.cs" />
+    <Compile Include="UI\Command\SyntaxErrorExtensions.cs" />
     <Compile Include="UI\Controls\DeclarationTypeToStringConverter.cs" />
     <Compile Include="UI\Controls\SearchResultPresenterInstanceManager.cs" />
     <Compile Include="UI\Controls\ISearchResultsWindowViewModel.cs" />
