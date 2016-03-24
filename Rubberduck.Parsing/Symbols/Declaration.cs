@@ -27,7 +27,7 @@ namespace Rubberduck.Parsing.Symbols
                 accessibility, declarationType, context, selection, isBuiltIn, annotations, attributes)
         {
             _parentScopeDeclaration = parentScope;
-        }
+       }
 
         public Declaration(QualifiedMemberName qualifiedName, Declaration parentDeclaration, string parentScope,
             string asTypeName, bool isSelfAssigned, bool isWithEvents,
@@ -44,7 +44,7 @@ namespace Rubberduck.Parsing.Symbols
             _parentScope = parentScope ?? string.Empty;
             _identifierName = qualifiedName.MemberName;
             _asTypeName = asTypeName;
-            _isSelfAssigned = isSelfAssigned;
+            _isSelfAssigned = isSelfAssigned || (declarationType == DeclarationType.Variable && parentDeclaration != null && parentDeclaration.IdentifierName == ComponentName);
             _isWithEvents = isWithEvents;
             _accessibility = accessibility;
             _declarationType = declarationType;
