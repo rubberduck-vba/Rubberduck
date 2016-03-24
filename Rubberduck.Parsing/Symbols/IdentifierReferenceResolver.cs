@@ -340,6 +340,11 @@ namespace Rubberduck.Parsing.Symbols
                 return matches.Single();
             }
 
+            if (matches.Count(match => match.Project == scope.Project) == 1)
+            {
+                return matches.Single(match => match.Project == scope.Project);
+            }
+
             // more than one matching identifiers found.
             // if it matches a UDT or enum in the current scope, resolve to that type.
             var sameScopeUdt = matches.Where(declaration =>
