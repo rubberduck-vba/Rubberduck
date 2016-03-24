@@ -1340,7 +1340,7 @@ End Sub
         }
 
         [TestMethod]
-        public void GivenFullyReferencedUDTFieldMemberCall_ModuleParentMember_ResolvesToModule()
+        public void GivenFullyQualifiedUDTFieldMemberCall_ModuleParentMember_ResolvesToModule()
         {
             var code = @"
 Private Type TestModule1
@@ -1366,7 +1366,7 @@ End Sub
         }
 
         [TestMethod]
-        public void GivenFullyReferencedUDTFieldMemberCall_FieldParentMember_ResolvesToVariable()
+        public void GivenFullyQualifiedUDTFieldMemberCall_FieldParentMember_ResolvesToVariable()
         {
             var code = @"
 Private Type TestModule1
@@ -1384,6 +1384,71 @@ End Sub
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable
                 && item.IdentifierName == item.ComponentName);
+
+            var usages = declaration.References.Where(item =>
+                item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenGlobalVariable_QualifiedUsageInOtherModule_AssignmentCallResolvesToVariable()
+        {
+            var code_module1 = @"
+Private Type TSomething
+    Foo As Integer
+    Bar As Integer
+End Type
+
+Public Something As TSomething
+";
+
+            var code_module2 = @"
+Sub DoSomething()
+    Component1.Something.Bar = 42
+End Sub";
+
+            var module1 = Tuple.Create(code_module1, vbext_ComponentType.vbext_ct_StdModule);
+            var module2 = Tuple.Create(code_module2, vbext_ComponentType.vbext_ct_StdModule);
+            var state = Resolve(module1, module2);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable
+                && item.Accessibility == Accessibility.Public
+                && item.IdentifierName == "Something");
+
+            var usages = declaration.References.Where(item =>
+                item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenGlobalVariable_QualifiedUsageInOtherModule_CallResolvesToVariable()
+        {
+            var code_module1 = @"
+Private Type TSomething
+    Foo As Integer
+    Bar As Integer
+End Type
+
+Public Something As TSomething
+";
+
+            var code_module2 = @"
+Sub DoSomething()
+    Debug.Print Component1.Something.Bar
+End Sub
+";
+
+            var module1 = Tuple.Create(code_module1, vbext_ComponentType.vbext_ct_StdModule);
+            var module2 = Tuple.Create(code_module2, vbext_ComponentType.vbext_ct_StdModule);
+            var state = Resolve(module1, module2);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable
+                && item.Accessibility == Accessibility.Public
+                && item.IdentifierName == "Something");
 
             var usages = declaration.References.Where(item =>
                 item.ParentScoping.IdentifierName == "DoSomething");
