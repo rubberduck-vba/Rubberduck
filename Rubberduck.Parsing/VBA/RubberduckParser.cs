@@ -126,7 +126,11 @@ namespace Rubberduck.Parsing.VBA
         {
             SetComponentsState(projects.SelectMany(project => project.VBComponents.Cast<VBComponent>()), ParserState.LoadingReference);
 
-            var references = projects.SelectMany(project => project.References.Cast<Reference>()).DistinctBy(reference => reference.Guid);
+            var references = projects
+                .SelectMany(project => project.References.Cast<Reference>())
+                .DistinctBy(reference => reference.Guid)
+                .Where(reference => reference.Type == vbext_RefKind.vbext_rk_TypeLib)
+                .ToList();
             foreach (var reference in references)
             {
                 AddDeclarationsFromReference(reference);
