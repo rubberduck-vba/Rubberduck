@@ -71,7 +71,7 @@ namespace Rubberduck.Parsing.VBA
 
         public IReadOnlyList<Tuple<VBComponent, SyntaxErrorException>> ModuleExceptions
         {
-            get { return _moduleExceptions.Select(kvp => Tuple.Create(kvp.Key, kvp.Value)).ToList(); }
+            get { return _moduleExceptions.Select(kvp => Tuple.Create(kvp.Key, kvp.Value)).Where(item => item.Item2 != null).ToList(); }
         }
 
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
