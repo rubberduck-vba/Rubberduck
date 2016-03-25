@@ -162,9 +162,6 @@
   <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
     <value>一般設定</value>
   </data>
-  <data name="SettingsCaption_CodeInspections" xml:space="preserve">
-    <value>コード検査設定</value>
-  </data>
   <data name="RenameDialog_ProjectRenameError" xml:space="preserve">
     <value>オブジェクト名を変更出来ませんでした。</value>
   </data>
@@ -457,77 +454,17 @@
   <data name="Warning" xml:space="preserve">
     <value>警告</value>
   </data>
-  <data name="ByValParameterIsAssigned_" xml:space="preserve">
-    <value>ByValパラメータ「{0}」は割り当てられています</value>
-  </data>
-  <data name="ConstantNotUsed_" xml:space="preserve">
-    <value>定数「{0}」は使用されていません</value>
-  </data>
   <data name="EasterEgg_Continuator" xml:space="preserve">
     <value>「継続者」バッジを獲得しました！</value>
   </data>
-  <data name="FunctionNotUsed_" xml:space="preserve">
-    <value>関数「{0}」は仕様されていません</value>
-  </data>
-  <data name="ImplicitByRef_" xml:space="preserve">
-    <value>パラメーター「{0}」は暗黙的にByRefで渡されます</value>
-  </data>
-  <data name="ImplicitPublicMember_" xml:space="preserve">
-    <value>メンバー「{0}」は暗黙的にパブリックになっています</value>
-  </data>
-  <data name="ImplicitVariantReturnType_" xml:space="preserve">
-    <value>関数「{0}」は暗黙的にバリアントを返します</value>
-  </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>モジュールオプションは最初に指定しなければなりません</value>
-  </data>
-  <data name="MultilineParameter_" xml:space="preserve">
-    <value>パラメーター「{0}」は複数の行で宣言されています</value>
-  </data>
-  <data name="NonReturningFunction_" xml:space="preserve">
-    <value>メンバー「{0}」の戻り値は割り当てられていません</value>
   </data>
   <data name="ObsoleteComment" xml:space="preserve">
     <value>不要なRemコメント構文の使用</value>
   </data>
   <data name="ObsoleteGlobal" xml:space="preserve">
     <value>不要なGlobalクセス修飾子の使用</value>
-  </data>
-  <data name="ObsoleteLet" xml:space="preserve">
-    <value>不要なLetステートメントの使用</value>
-  </data>
-  <data name="OptionBase" xml:space="preserve">
-    <value>混乱させる能性のある暗黙な配列下限</value>
-  </data>
-  <data name="OptionExplicit" xml:space="preserve">
-    <value>Option Explicitが指定されていません</value>
-  </data>
-  <data name="ParameterCanBeByVal_" xml:space="preserve">
-    <value>パラメーター「{0}」は値で渡すことが出来ます</value>
-  </data>
-  <data name="ParameterNotUsed_" xml:space="preserve">
-    <value>パラメーター「{0}」は使用されていません</value>
-  </data>
-  <data name="ProcedureNotUsed_" xml:space="preserve">
-    <value>プロシージャー「{0}」は使用されていません</value>
-  </data>
-  <data name="UnassignedVariableUsage_" xml:space="preserve">
-    <value>割り当てられていない変数「{0}」の使用</value>
-  </data>
-  <data name="ObsoleteCall" xml:space="preserve">
-    <value>不要なCallステートメントの使用</value>
-  </data>
-  <data name="VariableNotAssigned_" xml:space="preserve">
-    <value>変数「{0}」は割り当てられていません</value>
-  </data>
-  <data name="VariableNotUsed_" xml:space="preserve">
-    <value>変数「{0}」は使用されていません</value>
-  </data>
-  <data name="_ObsoleteTypeHint_" xml:space="preserve">
-    <value>{0}「{1}」で不要なタイプヒントの使用</value>
-  </data>
-  <data name="Priority" xml:space="preserve">
-    <value>優先順位</value>
   </data>
   <data name="Component" xml:space="preserve">
     <value>コンポーネント</value>
@@ -537,9 +474,6 @@
   </data>
   <data name="Outcome" xml:space="preserve">
     <value>結果</value>
-  </data>
-  <data name="Settings_LanguageLabel" xml:space="preserve">
-    <value>表示言語：</value>
   </data>
   <data name="Language_EN" xml:space="preserve">
     <value>英語</value>
@@ -609,9 +543,6 @@
   </data>
   <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
     <value>最後の実行を繰り返す</value>
-  </data>
-  <data name="GenericProjectName_" xml:space="preserve">
-    <value>プロジェクト名「{0}」はジェネリック名称のままです</value>
   </data>
   <data name="Line" xml:space="preserve">
     <value>線</value>
@@ -776,9 +707,6 @@
   <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
     <value>&amp;Iコード検査</value>
   </data>
-  <data name="RubberduckMenu_Options" xml:space="preserve">
-    <value>&amp;Oリファクタリング</value>
-  </data>
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>&amp;Rリファクタリング</value>
   </data>
@@ -893,12 +821,6 @@
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>メソッド「{0}」は「{1}.{2}」を実装しています。インターフェースメンバーの名前を変更しますか？</value>
   </data>
-  <data name="MultipleDeclarations" xml:space="preserve">
-    <value>命令は複数の宣言を含んでいます</value>
-  </data>
-  <data name="_TypeNotDeclared_" xml:space="preserve">
-    <value>「{1}」は暗黙的にバリアントになります</value>
-  </data>
   <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
     <value>選択したパラメーターをダブルクリックやボタン操作で削除か回復することが出来ます。</value>
   </data>
@@ -934,9 +856,6 @@
   </data>
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>リスト：</value>
-  </data>
-  <data name="TestExplorer_QualifiedMemberName" xml:space="preserve">
-    <value>修飾メンバー名</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
     <value>名前「{0}」は同じスコープ内にある「{1}」を同じです。それでも名前の変更を実行しますか？</value>
@@ -992,9 +911,6 @@
   <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
     <value />
   </data>
-  <data name="UntypedFunctionUsage_" xml:space="preserve">
-    <value />
-  </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
     <value />
   </data>
@@ -1019,9 +935,6 @@
   <data name="RefactorMenu_IntroduceField" xml:space="preserve">
     <value />
   </data>
-  <data name="DisableThisInspection" xml:space="preserve">
-    <value />
-  </data>
   <data name="EncapsulateField_TitleText" xml:space="preserve">
     <value />
   </data>
@@ -1038,9 +951,6 @@
     <value />
   </data>
   <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ImplicitActiveWorkbookReference_" xml:space="preserve">
     <value />
   </data>
   <data name="ImplementInterface_Caption" xml:space="preserve">
@@ -1083,9 +993,6 @@
     <value />
   </data>
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
-    <value />
-  </data>
-  <data name="WriteOnlyProperty_" xml:space="preserve">
     <value />
   </data>
   <data name="IndentCurrentProcedure" xml:space="preserve">

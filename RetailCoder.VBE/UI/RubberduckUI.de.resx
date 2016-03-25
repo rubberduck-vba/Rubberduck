@@ -190,9 +190,6 @@
   <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
     <value>Allgemeine Einstellungen</value>
   </data>
-  <data name="SettingsCaption_CodeInspections" xml:space="preserve">
-    <value>Code Untersuchung Einstellungen</value>
-  </data>
   <data name="SettingsCaption_TodoSettings" xml:space="preserve">
     <value>Todo Einstellungen</value>
   </data>
@@ -331,9 +328,6 @@
   <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
     <value>Code-&amp;Untersuchungen</value>
   </data>
-  <data name="RubberduckMenu_Options" xml:space="preserve">
-    <value>&amp;Optionen</value>
-  </data>
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>Um&amp;gestalten</value>
   </data>
@@ -464,83 +458,17 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Warning" xml:space="preserve">
     <value>Warnung</value>
   </data>
-  <data name="ByValParameterIsAssigned_" xml:space="preserve">
-    <value>ByVal Parameter '{0}' ist zugewiesen</value>
-  </data>
-  <data name="ConstantNotUsed_" xml:space="preserve">
-    <value>Konstante '{0}' wird nie verwendet</value>
-  </data>
   <data name="EasterEgg_Continuator" xml:space="preserve">
     <value>Sie haben das Abzeichen "Continuator" erhalten!</value>
   </data>
-  <data name="FunctionNotUsed_" xml:space="preserve">
-    <value>Funktion '{0}' wird nie verwendet</value>
-  </data>
-  <data name="ImplicitByRef_" xml:space="preserve">
-    <value>Parameter '{0}' wird implizit ByRef übergeben</value>
-  </data>
-  <data name="ImplicitPublicMember_" xml:space="preserve">
-    <value>Mitglied '{0}' ist implizit Public</value>
-  </data>
-  <data name="ImplicitVariantReturnType_" xml:space="preserve">
-    <value>Die Funktion '{0}' gibt implizt ein Variant zurück</value>
-  </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Modul-Optionen sollten zuerst deklariert werden</value>
-  </data>
-  <data name="MultilineParameter_" xml:space="preserve">
-    <value>Parameter '{0}' wird über mehrere Zeilen hinweg deklariert</value>
-  </data>
-  <data name="MultipleDeclarations" xml:space="preserve">
-    <value>Anweisung enthält mehrere Deklarationen</value>
-  </data>
-  <data name="NonReturningFunction_" xml:space="preserve">
-    <value>Rückgabewert für Mitglied '{0}' wird nie zugewiesen</value>
-  </data>
-  <data name="ObsoleteCall" xml:space="preserve">
-    <value>Benutzung der veralteten 'Call'-Anweisung</value>
   </data>
   <data name="ObsoleteComment" xml:space="preserve">
     <value>Benutzung der veralteten 'Rem'-Kommentar-Syntax</value>
   </data>
   <data name="ObsoleteGlobal" xml:space="preserve">
     <value>Benutzung des veralteten 'Global' Zugriffsmodifikators</value>
-  </data>
-  <data name="ObsoleteLet" xml:space="preserve">
-    <value>Benutzung der veralteten 'Let'-Anweisung</value>
-  </data>
-  <data name="OptionBase" xml:space="preserve">
-    <value>Möglicherweise verwirrende implizite Untergrenze des Arrays</value>
-  </data>
-  <data name="OptionExplicit" xml:space="preserve">
-    <value>'Option Explicit' ist für '{0}' nicht angegeben</value>
-  </data>
-  <data name="ParameterCanBeByVal_" xml:space="preserve">
-    <value>Parameter '{0}' kann als Wert übergeben werden</value>
-  </data>
-  <data name="ParameterNotUsed_" xml:space="preserve">
-    <value>Parameter '{0}' wird nicht verwendet</value>
-  </data>
-  <data name="ProcedureNotUsed_" xml:space="preserve">
-    <value>Prozedur '{0}' wird nicht verwendet</value>
-  </data>
-  <data name="UnassignedVariableUsage_" xml:space="preserve">
-    <value>Benutzung der nicht zugewiesenen Variable '{0}'</value>
-  </data>
-  <data name="VariableNotAssigned_" xml:space="preserve">
-    <value>Variable '{0}' wird nie ein Wert zugewiesen</value>
-  </data>
-  <data name="VariableNotUsed_" xml:space="preserve">
-    <value>Variable '{0}' wird nie verwendet</value>
-  </data>
-  <data name="_ObsoleteTypeHint_" xml:space="preserve">
-    <value>Benutzung des veralteten Typ-Hinweises bei {0} '{1}'</value>
-  </data>
-  <data name="_TypeNotDeclared_" xml:space="preserve">
-    <value>{0} '{1}' ist implizit vom Typ Variant</value>
-  </data>
-  <data name="Priority" xml:space="preserve">
-    <value>Priorität</value>
   </data>
   <data name="Component" xml:space="preserve">
     <value>Komponente</value>
@@ -550,9 +478,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="Outcome" xml:space="preserve">
     <value>Ergebnis</value>
-  </data>
-  <data name="Settings_LanguageLabel" xml:space="preserve">
-    <value>Anzeigesprache:</value>
   </data>
   <data name="Language_EN" xml:space="preserve">
     <value>Englisch</value>
@@ -677,9 +602,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="ModuleName" xml:space="preserve">
     <value>Modulname</value>
   </data>
-  <data name="TestExplorer_QualifiedMemberName" xml:space="preserve">
-    <value>Qualifizierter Membername</value>
-  </data>
   <data name="TestExplorer_RunAllTests" xml:space="preserve">
     <value>Alle Tests</value>
   </data>
@@ -703,9 +625,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
     <value>Ausgewählte Tests</value>
-  </data>
-  <data name="GenericProjectName_" xml:space="preserve">
-    <value>Projekt '{0}' hat einen generischen Namen</value>
   </data>
   <data name="Line" xml:space="preserve">
     <value>Zeile</value>
@@ -978,9 +897,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Language_JA" xml:space="preserve">
     <value>Japanisch</value>
   </data>
-  <data name="WriteOnlyProperty_" xml:space="preserve">
-    <value>Die Eigenschaft {0} hat kein 'Get'.</value>
-  </data>
   <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
     <value>Aktuelle Datei</value>
   </data>
@@ -1019,15 +935,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
     <value>Bereich:</value>
-  </data>
-  <data name="UntypedFunctionUsage_" xml:space="preserve">
-    <value>Benutzung der nicht typisierten Funktion '{0}'. Die 'String' zurückgebende Version '{0}$' ist verfügbar.</value>
-  </data>
-  <data name="DisableThisInspection" xml:space="preserve">
-    <value>Blockiere diese Untersuchung</value>
-  </data>
-  <data name="ImplicitActiveWorkbookReference_" xml:space="preserve">
-    <value>'{0}' ist eine implizite Referenz auf das 'ActiveWorkbook'</value>
   </data>
   <data name="ImplicitActiveSheetReference_" xml:space="preserve">
     <value>'{0}' ist eine implizite Referenz auf das 'ActiveSheet'</value>
