@@ -172,8 +172,8 @@ declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? 
 
 deftypeStmt : 
 	(
-		DEFBOOL | DEFBYTE | DEFINT | DEFLNG | DEFCUR | 
-		DEFSNG | DEFDBL | DEFDEC | DEFDATE | 
+		DEFBOOL | DEFBYTE | DEFINT | DEFLNG | DEFLNGLNG | DEFLNGPTR | DEFCUR |
+		DEFSNG | DEFDBL | DEFDATE | 
 		DEFSTR | DEFOBJ | DEFVAR
 	) whiteSpace
 	letterrange (whiteSpace? COMMA whiteSpace? letterrange)*
@@ -205,7 +205,7 @@ enumerationStmt:
 
 enumerationStmt_Constant : ambiguousIdentifier (whiteSpace? EQ whiteSpace? valueStmt)? endOfStatement;
 
-eraseStmt : ERASE whiteSpace valueStmt;
+eraseStmt : ERASE whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)*;
 
 errorStmt : ERROR whiteSpace valueStmt;
 
@@ -406,23 +406,23 @@ unloadStmt : UNLOAD whiteSpace valueStmt;
 unlockStmt : UNLOCK whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? valueStmt (whiteSpace TO whiteSpace valueStmt)?)?;
 
 valueStmt : 
-	literal                                                                         # vsLiteral
-	| implicitCallStmt_InStmt                                                       # vsICS
-	| LPAREN whiteSpace? valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)* RPAREN                        # vsStruct
-	| NEW whiteSpace? valueStmt                                                             # vsNew
-	| typeOfStmt                                                                    # vsTypeOf
-	| midStmt                                                                       # vsMid
-	| ADDRESSOF whiteSpace? valueStmt                                                       # vsAddressOf
+	literal                                                                                         # vsLiteral
+	| implicitCallStmt_InStmt                                                                       # vsICS
+	| LPAREN whiteSpace? valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)* RPAREN                # vsStruct
+	| NEW whiteSpace? valueStmt                                                                     # vsNew
+	| typeOfStmt                                                                                    # vsTypeOf
+	| midStmt                                                                                       # vsMid
+	| ADDRESSOF whiteSpace? valueStmt                                                               # vsAddressOf
 	| implicitCallStmt_InStmt whiteSpace? ASSIGN whiteSpace? valueStmt                              # vsAssign
 	| valueStmt whiteSpace? POW whiteSpace? valueStmt                                               # vsPow
-	| MINUS whiteSpace? valueStmt                                                           # vsNegation
+	| MINUS whiteSpace? valueStmt                                                                   # vsNegation
 	| valueStmt whiteSpace? (MULT | DIV) whiteSpace? valueStmt                                      # vsMult
 	| valueStmt whiteSpace? INTDIV whiteSpace? valueStmt                                            # vsIntDiv
 	| valueStmt whiteSpace? MOD whiteSpace? valueStmt                                               # vsMod
 	| valueStmt whiteSpace? (PLUS | MINUS) whiteSpace? valueStmt                                    # vsAdd
 	| valueStmt whiteSpace? AMPERSAND whiteSpace? valueStmt                                         # vsAmp
 	| valueStmt whiteSpace? (EQ | NEQ | LT | GT | LEQ | GEQ | LIKE | IS) whiteSpace? valueStmt      # vsRelational
-	| NOT whiteSpace? valueStmt                                                             # vsNot
+	| NOT whiteSpace? valueStmt                                                                     # vsNot
 	| valueStmt whiteSpace? AND whiteSpace? valueStmt                                               # vsAnd
 	| valueStmt whiteSpace? OR whiteSpace? valueStmt                                                # vsOr
 	| valueStmt whiteSpace? XOR whiteSpace? valueStmt                                               # vsXor
@@ -540,7 +540,7 @@ ambiguousKeyword :
 	ACCESS | ADDRESSOF | ALIAS | AND | ATTRIBUTE | APPACTIVATE | APPEND | AS |
 	BEEP | BEGIN | BINARY | BOOLEAN | BYVAL | BYREF | BYTE | 
 	CALL | CASE | CLASS | CLOSE | CHDIR | CHDRIVE | COLLECTION | CONST | 
-	DATABASE | DATE | DECLARE | DEFBOOL | DEFBYTE | DEFCUR | DEFDBL | DEFDATE | DEFDEC | DEFINT | DEFLNG | DEFOBJ | DEFSNG | DEFSTR | DEFVAR | DELETESETTING | DIM | DO | DOUBLE | 
+	DATABASE | DATE | DECLARE | DEFBOOL | DEFBYTE | DEFCUR | DEFDBL | DEFDATE | DEFINT | DEFLNG | DEFLNGLNG | DEFLNGPTR | DEFOBJ | DEFSNG | DEFSTR | DEFVAR | DELETESETTING | DIM | DO | DOUBLE | 
 	EACH | ELSE | ELSEIF | END | ENUM | EQV | ERASE | ERROR | EVENT | 
 	FALSE | FILECOPY | FRIEND | FOR | FUNCTION | 
 	GET | GLOBAL | GOSUB | GOTO | 

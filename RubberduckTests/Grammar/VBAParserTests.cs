@@ -97,6 +97,17 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//iCS_S_MembersCall");
         }
 
+        [TestMethod]
+        public void TestEraseStmt()
+        {
+            string code = @"
+Public Sub EraseTwoArrays()
+Erase someArray(), someOtherArray()
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//eraseStmt");
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);
