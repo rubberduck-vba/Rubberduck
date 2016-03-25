@@ -122,6 +122,17 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//eraseStmt");
         }
 
+        [TestMethod]
+        public void TestFixedLengthString()
+        {
+            string code = @"
+Sub FixedLengthString()
+    Dim someString As String * 255
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//fieldLength");
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);

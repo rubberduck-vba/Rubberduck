@@ -1063,6 +1063,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitExitStmt([NotNull] VBAParser.ExitStmtContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.numberLiteral"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNumberLiteral([NotNull] VBAParser.NumberLiteralContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.numberLiteral"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNumberLiteral([NotNull] VBAParser.NumberLiteralContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.argList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

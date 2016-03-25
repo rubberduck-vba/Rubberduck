@@ -1217,6 +1217,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitExitStmt([NotNull] VBAParser.ExitStmtContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.numberLiteral"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterNumberLiteral([NotNull] VBAParser.NumberLiteralContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.numberLiteral"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitNumberLiteral([NotNull] VBAParser.NumberLiteralContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.argList"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

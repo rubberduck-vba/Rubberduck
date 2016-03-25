@@ -522,13 +522,15 @@ comparisonOperator : LT | LEQ | GT | GEQ | EQ | NEQ | IS | LIKE;
 
 complexType : ambiguousIdentifier ((DOT | EXCLAMATIONPOINT) ambiguousIdentifier)*;
 
-fieldLength : MULT whiteSpace? (INTEGERLITERAL | ambiguousIdentifier);
+fieldLength : MULT whiteSpace? (numberLiteral | ambiguousIdentifier);
 
 letterrange : certainIdentifier (whiteSpace? MINUS whiteSpace? certainIdentifier)?;
 
 lineLabel : ambiguousIdentifier COLON;
 
-literal : HEXLITERAL | OCTLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | SHORTLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL | EMPTY;
+literal : numberLiteral | DATELITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL | EMPTY;
+
+numberLiteral : HEXLITERAL | OCTLITERAL | DOUBLELITERAL | INTEGERLITERAL | SHORTLITERAL;
 
 type : (baseType | complexType) (whiteSpace? LPAREN whiteSpace? RPAREN)?;
 
