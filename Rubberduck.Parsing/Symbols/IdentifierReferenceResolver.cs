@@ -1201,7 +1201,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             result = matches.Where(item => IsBuiltInDeclarationInScope(item, localScope)).ToList();
-            if (result.Count == 1 && !SpecialCasedTokens.Contains(matches.Single().IdentifierName))
+            if (result.Count == 1 && !SpecialCasedTokens.Contains(result.Single().IdentifierName))
             {
                 return result.SingleOrDefault();
             }
