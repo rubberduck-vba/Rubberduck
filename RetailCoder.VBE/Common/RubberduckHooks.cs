@@ -11,12 +11,12 @@ namespace Rubberduck.Common
     {
         private readonly IntPtr _mainWindowHandle;
 
-        private IntPtr _oldWndPointer;
-        private User32.WndProc _oldWndProc;
+        private readonly IntPtr _oldWndPointer;
+        private readonly User32.WndProc _oldWndProc;
         private User32.WndProc _newWndProc;
 
         private readonly ITimerHook _timerHook;
-        private readonly IList<IAttachable> _hooks = new List<IAttachable>(); 
+        private readonly IList<IAttachable> _hooks = new List<IAttachable>();
 
 
         private const int WA_INACTIVE = 0;
@@ -25,7 +25,11 @@ namespace Rubberduck.Common
         public RubberduckHooks(IntPtr mainWindowHandle, ITimerHook timerHook)
         {
             _mainWindowHandle = mainWindowHandle;
+            _oldWndProc = WindowProc;
             _newWndProc = WindowProc;
+            _oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _newWndProc);
+            _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
+
             _timerHook = timerHook;
             _timerHook.Tick += timerHook_Tick;
         }
@@ -47,7 +51,7 @@ namespace Rubberduck.Common
                 handler.Invoke(sender, args);
             }
         }
-        
+
         public bool IsAttached { get; private set; }
 
         public void Attach()
@@ -56,9 +60,6 @@ namespace Rubberduck.Common
             {
                 return;
             }
-
-            _oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _newWndProc);
-            _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
 
             foreach (var hook in Hooks)
             {
@@ -112,8 +113,6 @@ namespace Rubberduck.Common
 
         public void Dispose()
         {
-            User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _oldWndProc); 
-            
             _timerHook.Tick -= timerHook_Tick;
             _timerHook.Detach();
 
@@ -124,6 +123,7 @@ namespace Rubberduck.Common
         {
             try
             {
+                var processed = false;
                 if (hWnd == _mainWindowHandle)
                 {
                     switch ((WM)uMsg)
@@ -136,7 +136,7 @@ namespace Rubberduck.Common
                                 {
                                     var args = new HookEventArgs(hook.HotKeyInfo.Keys);
                                     OnMessageReceived(hook, args);
-                                    return IntPtr.Zero;
+                                    processed = true;
                                 }
                             }
                             break;
@@ -152,8 +152,14 @@ namespace Rubberduck.Common
                                     Detach();
                                     break;
                             }
+
                             break;
                     }
+                }
+
+                if (!processed)
+                {
+                    return User32.CallWindowProc(_oldWndProc, hWnd, uMsg, wParam, lParam);
                 }
             }
             catch (Exception exception)
@@ -169,7 +175,9 @@ namespace Rubberduck.Common
         /// </summary>
         private static int LoWord(int dw)
         {
-            return dw & 0xFFFF;
+            return (dw & 0x8000) != 0
+                ? 0x8000 | (dw & 0x7FFF)
+                : dw & 0xFFFF;
         }
 
         private IntPtr GetWindowThread(IntPtr hWnd)

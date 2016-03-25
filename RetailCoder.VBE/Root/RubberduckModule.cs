@@ -115,7 +115,7 @@ namespace Rubberduck.Root
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new SourceControlPanel { ViewModel = _kernel.Get<SourceControlViewViewModel>() });
 
-            //BindWindowsHooks();
+            BindWindowsHooks();
             Debug.Print("completed RubberduckModule.Load()");
         }
 

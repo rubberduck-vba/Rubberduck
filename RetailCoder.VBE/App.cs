@@ -47,8 +47,8 @@ namespace Rubberduck
             IGeneralConfigService configService,
             IAppMenu appMenus,
             RubberduckCommandBar stateBar,
-            IIndenter indenter/*
-            IRubberduckHooks hooks*/)
+            IIndenter indenter,
+            IRubberduckHooks hooks)
         {
             _vbe = vbe;
             _messageBox = messageBox;
@@ -58,10 +58,10 @@ namespace Rubberduck
             _appMenus = appMenus;
             _stateBar = stateBar;
             _indenter = indenter;
-            //_hooks = hooks;
+            _hooks = hooks;
             _logger = LogManager.GetCurrentClassLogger();
 
-            //_hooks.MessageReceived += hooks_MessageReceived;
+            _hooks.MessageReceived += hooks_MessageReceived;
             _configService.LanguageChanged += ConfigServiceLanguageChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _stateBar.Refresh += _stateBar_Refresh;
@@ -307,9 +307,9 @@ namespace Rubberduck
             _appMenus.Localize();
 
             //_hooks.AddHook(new LowLevelKeyboardHook(_vbe));
-            //_hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^R", Keys.R));
-            //_hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^I", Keys.I));
-            //_hooks.Attach();
+            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^R", Keys.R));
+            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^I", Keys.I));
+            _hooks.Attach();
         }
 
         private void CleanReloadConfig()
@@ -354,8 +354,8 @@ namespace Rubberduck
                 item.Value.Item1.Unadvise(item.Value.Item2);
             }
 
-            //_hooks.MessageReceived -= hooks_MessageReceived;
-            //_hooks.Dispose();
+            _hooks.MessageReceived -= hooks_MessageReceived;
+            _hooks.Dispose();
         }
     }
 }
