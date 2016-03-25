@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\TestProj\TestProj\VBAParser.g4 by ANTLR 4.3
+// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\TestProj\TestProj\Grammar\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -1712,6 +1712,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitStopStmt([NotNull] VBAParser.StopStmtContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.whiteSpace"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWhiteSpace([NotNull] VBAParser.WhiteSpaceContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.whiteSpace"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWhiteSpace([NotNull] VBAParser.WhiteSpaceContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.sC_Case"/>.

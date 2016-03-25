@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Preprocessing;
 using Rubberduck.Parsing.Symbols;
 using System;
@@ -1182,7 +1183,7 @@ End Sub
         {
             SymbolTable<string, IValue> symbolTable = new SymbolTable<string, IValue>();
             var stream = new AntlrInputStream(code);
-            var lexer = new VBAConditionalCompilationLexer(stream);
+            var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAConditionalCompilationParser(tokens);
             parser.AddErrorListener(new ExceptionErrorListener());

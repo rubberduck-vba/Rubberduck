@@ -131,12 +131,11 @@
     <Compile Include="Preprocessing\UnaryMinusExpression.cs" />
     <Compile Include="Preprocessing\UnaryNotExpression.cs" />
     <Compile Include="Preprocessing\ValueType.cs" />
-    <Compile Include="Preprocessing\VBAConditionalCompilationBaseListener.cs" />
-    <Compile Include="Preprocessing\VBAConditionalCompilationBaseVisitor.cs" />
-    <Compile Include="Preprocessing\VBAConditionalCompilationLexer.cs" />
-    <Compile Include="Preprocessing\VBAConditionalCompilationListener.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationParser.cs" />
-    <Compile Include="Preprocessing\VBAConditionalCompilationVisitor.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParserBaseListener.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParserBaseVisitor.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParserListener.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParserVisitor.cs" />
     <Compile Include="Preprocessing\VBALibrary.cs" />
     <Compile Include="Preprocessing\VBALikeBaseListener.cs" />
     <Compile Include="Preprocessing\VBALikeBaseVisitor.cs" />
@@ -212,7 +211,7 @@
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Preprocessing\VBAConditionalCompilation.g4" />
+    <None Include="Preprocessing\VBAConditionalCompilationParser.g4" />
     <None Include="Preprocessing\VBADate.g4" />
     <None Include="Preprocessing\VBALike.g4" />
     <None Include="VBA\Attributes.g4">

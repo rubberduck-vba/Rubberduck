@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Rubberduck.Parsing.Preprocessing
 {
-    public sealed class VBAPreprocessorVisitor : VBAConditionalCompilationBaseVisitor<IExpression>
+    public sealed class VBAPreprocessorVisitor : VBAConditionalCompilationParserBaseVisitor<IExpression>
     {
         private readonly SymbolTable<string, IValue> _symbolTable;
 
@@ -118,7 +118,7 @@ namespace Rubberduck.Parsing.Preprocessing
             {
                 return Visit(context.name());
             }
-            else if (context.L_PAREN() != null)
+            else if (context.LPAREN() != null)
             {
                 return Visit(context.ccExpression()[0]);
             }
