@@ -52,6 +52,23 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, IParseTree> _parseTrees =
             new ConcurrentDictionary<VBComponent, IParseTree>();
 
+        private readonly ConcurrentDictionary<VBComponent, ParserState> _moduleStates =
+            new ConcurrentDictionary<VBComponent, ParserState>();
+
+        private readonly ConcurrentDictionary<VBComponent, IList<CommentNode>> _comments =
+            new ConcurrentDictionary<VBComponent, IList<CommentNode>>();
+
+        private readonly ConcurrentDictionary<VBComponent, SyntaxErrorException> _moduleExceptions =
+            new ConcurrentDictionary<VBComponent, SyntaxErrorException>();
+
+        private readonly ConcurrentDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _moduleAttributes =
+            new ConcurrentDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
+
+        public IReadOnlyList<Tuple<VBComponent, SyntaxErrorException>> ModuleExceptions
+        {
+            get { return _moduleExceptions.Select(kvp => Tuple.Create(kvp.Key, kvp.Value)).Where(item => item.Item2 != null).ToList(); }
+        }
+
         public event EventHandler StateChanged;
 
         private void OnStateChanged()
@@ -62,18 +79,6 @@ namespace Rubberduck.Parsing.VBA
                 handler.Invoke(this, EventArgs.Empty);
             }
         }
-
-        private readonly ConcurrentDictionary<VBComponent, ParserState> _moduleStates =
-            new ConcurrentDictionary<VBComponent, ParserState>();
-
-        private readonly ConcurrentDictionary<VBComponent, SyntaxErrorException> _moduleExceptions =
-            new ConcurrentDictionary<VBComponent, SyntaxErrorException>();
-
-        public IReadOnlyList<Tuple<VBComponent, SyntaxErrorException>> ModuleExceptions
-        {
-            get { return _moduleExceptions.Select(kvp => Tuple.Create(kvp.Key, kvp.Value)).Where(item => item.Item2 != null).ToList(); }
-        }
-
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
         private void OnModuleStateChanged(VBComponent component, ParserState state)
@@ -153,6 +158,11 @@ namespace Rubberduck.Parsing.VBA
             internal set { _obsoleteLetContexts = value; }
         }
 
+        internal void SetModuleAttributes(VBComponent component, IDictionary<Tuple<string, Declaration>, Attributes> attributes)
+        {
+            _moduleAttributes.AddOrUpdate(component, attributes, (c, s) => attributes);
+        }
+
         private IEnumerable<QualifiedContext> _emptyStringLiterals = new List<QualifiedContext>();
 
         public IEnumerable<QualifiedContext> EmptyStringLiterals
@@ -169,8 +179,7 @@ namespace Rubberduck.Parsing.VBA
             internal set { _argListsWithOneByRefParam = value; }
         }
 
-        private readonly ConcurrentDictionary<VBComponent, IList<CommentNode>> _comments =
-            new ConcurrentDictionary<VBComponent, IList<CommentNode>>();
+
 
         public IEnumerable<CommentNode> AllComments
         {
@@ -219,6 +228,11 @@ namespace Rubberduck.Parsing.VBA
                     .SelectMany(declarations => declarations.Keys)
                     .ToList();
             }
+        }
+
+        internal IDictionary<Tuple<string, DeclarationType>, Attributes> getModuleAttributes(VBComponent vbComponent)
+        {
+            return _moduleAttributes.[vbComponent];
         }
 
         /// <summary>

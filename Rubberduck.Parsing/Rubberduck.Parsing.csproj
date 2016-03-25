@@ -188,6 +188,7 @@
     <Compile Include="VBA\ParseErrorEventArgs.cs" />
     <Compile Include="VBA\ParserState.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
+    <Compile Include="VBA\RubberduckParserReimpl.cs" />
     <Compile Include="VBA\RubberduckParserState.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
     <Compile Include="VBA\WalkerCancelledException.cs" />
