@@ -31,9 +31,9 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 ";
             var stream = new AntlrInputStream(code);
-            var lexer = new AttributesLexer(stream);
+            var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
-            var parser = new AttributesParser(tokens);
+            var parser = new VBAParser(tokens);
             parser.ErrorListeners.Clear();
             parser.ErrorListeners.Add(new ExceptionErrorListener());
             var tree = parser.startRule();
