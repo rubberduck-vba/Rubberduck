@@ -123,21 +123,6 @@
   <data name="OK_AllCaps" xml:space="preserve">
     <value>OK</value>
   </data>
-  <data name="About_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
-  </data>
-  <data name="About_JetBrains" xml:space="preserve">
-    <value>JetBrains ReSharper Community Team</value>
-  </data>
-  <data name="About_LibGit2SharpCredit" xml:space="preserve">
-    <value>GitHub integration powered by LibGit2Sharp</value>
-  </data>
-  <data name="About_ParsingCredit" xml:space="preserve">
-    <value>Parsing powered by ANTLR</value>
-  </data>
-  <data name="About_StackOverflow" xml:space="preserve">
-    <value>Stack Overflow</value>
-  </data>
   <data name="DeclarationType_Class" xml:space="preserve">
     <value>クラス</value>
   </data>
@@ -734,27 +719,6 @@
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>「{0}」の名前を変更</value>
   </data>
-  <data name="About_AllContributors" xml:space="preserve">
-    <value>GitHubのリポジトリの全ての貢献者</value>
-  </data>
-  <data name="About_Anyone" xml:space="preserve">
-    <value>そして、これを呼んでいる方！</value>
-  </data>
-  <data name="About_Blogs" xml:space="preserve">
-    <value>ブログ：</value>
-  </data>
-  <data name="About_Caption" xml:space="preserve">
-    <value>Rubberduckについて</value>
-  </data>
-  <data name="About_Community" xml:space="preserve">
-    <value>コミュニティ：</value>
-  </data>
-  <data name="About_Contributors" xml:space="preserve">
-    <value>寄与者とサポーター：</value>
-  </data>
-  <data name="About_CodeReview" xml:space="preserve">
-    <value>Code Review Stack Exchange</value>
-  </data>
   <data name="SourceControlPanel_Caption" xml:space="preserve">
     <value>ソースコントロール</value>
   </data>
@@ -980,9 +944,6 @@
   <data name="SourceControl_DefaultRepoLocationLabel" xml:space="preserve">
     <value>リポジトリのデフォルトパス</value>
   </data>
-  <data name="About_SpecialThanks" xml:space="preserve">
-    <value>スペシャルサンクス</value>
-  </data>
   <data name="SourceControl_ExcludedChanges" xml:space="preserve">
     <value>無視されている変更項目</value>
   </data>
@@ -1040,9 +1001,6 @@
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
     <value>文字列：</value>
   </data>
-  <data name="About_FugueIconCredit" xml:space="preserve">
-    <value>Fugue icons by Yusuke Kamiyamane</value>
-  </data>
   <data name="CodeExplorer_Navigate" xml:space="preserve">
     <value>&amp;vナビゲート</value>
   </data>
@@ -1085,14 +1043,8 @@
   <data name="SourceControl_OutgoingCommits" xml:space="preserve">
     <value>出コミット</value>
   </data>
-  <data name="About_Stargazers" xml:space="preserve">
-    <value>私たちを応援して下さっている皆さん。</value>
-  </data>
   <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
     <value>保守性と読みやすさに関する問題</value>
-  </data>
-  <data name="About_Attributions" xml:space="preserve">
-    <value>帰属</value>
   </data>
   <data name="SourceControl_IgnoreFile" xml:space="preserve">
     <value>Ignoreファイル</value>

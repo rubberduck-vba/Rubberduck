@@ -842,54 +842,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Kodutforskare</value>
   </data>
-  <data name="About_AllContributors" xml:space="preserve">
-    <value>Alla bidrag till vårt GitHub repository</value>
-  </data>
-  <data name="About_Anyone" xml:space="preserve">
-    <value>...och alla som läser detta!</value>
-  </data>
-  <data name="About_Attributions" xml:space="preserve">
-    <value>Attributioner</value>
-  </data>
-  <data name="About_Blogs" xml:space="preserve">
-    <value>Bloggar:</value>
-  </data>
-  <data name="About_Caption" xml:space="preserve">
-    <value>Om Rubberduck</value>
-  </data>
-  <data name="About_CodeReview" xml:space="preserve">
-    <value>Code Review Stack Exchange</value>
-  </data>
-  <data name="About_Community" xml:space="preserve">
-    <value>Gemenskap:</value>
-  </data>
-  <data name="About_Contributors" xml:space="preserve">
-    <value>Bidragare &amp; supportrar:</value>
-  </data>
-  <data name="About_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
-  </data>
-  <data name="About_FugueIconCredit" xml:space="preserve">
-    <value>Fuga ikoner av Yusuke Kamiyamane</value>
-  </data>
-  <data name="About_JetBrains" xml:space="preserve">
-    <value>JetBrains ReSharper Community Team</value>
-  </data>
-  <data name="About_LibGit2SharpCredit" xml:space="preserve">
-    <value>GitHub integration driven av LibGit2Sharp</value>
-  </data>
-  <data name="About_ParsingCredit" xml:space="preserve">
-    <value>Tolkare gjord av ANTLR</value>
-  </data>
-  <data name="About_SpecialThanks" xml:space="preserve">
-    <value>Särskilt tack</value>
-  </data>
-  <data name="About_StackOverflow" xml:space="preserve">
-    <value>Stack Overflow</value>
-  </data>
-  <data name="About_Stargazers" xml:space="preserve">
-    <value>Alla som stjärnmärkt, gillat &amp; och följt oss, för den varma känslan det ger oss</value>
-  </data>
   <data name="SourceControlPanel_Caption" xml:space="preserve">
     <value>Källkontroll</value>
   </data>
