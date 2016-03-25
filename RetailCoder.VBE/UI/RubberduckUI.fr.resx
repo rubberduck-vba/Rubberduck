@@ -718,16 +718,16 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Configuration Rubberduck</value>
   </data>
   <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>&amp;Ajouter</value>
+    <value>Ajouter</value>
   </data>
   <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Test (&amp;erreur attendue)</value>
+    <value>Test (erreur attendue)</value>
   </data>
   <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>&amp;Test</value>
+    <value>Test</value>
   </data>
   <data name="TestExplorer_AddTestModule" xml:space="preserve">
-    <value>&amp;Module de tests</value>
+    <value>Module de tests</value>
   </data>
   <data name="TestExplorer_Duration" xml:space="preserve">
     <value>Durée</value>
@@ -745,25 +745,25 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>Nom du membre</value>
   </data>
   <data name="TestExplorer_RunAllTests" xml:space="preserve">
-    <value>&amp;Tous les tests</value>
+    <value>Tous les tests</value>
   </data>
   <data name="TestExplorer_RunButtonText" xml:space="preserve">
-    <value>&amp;Exécuter</value>
+    <value>Exécuter</value>
   </data>
   <data name="TestExplorer_RunFailedTests" xml:space="preserve">
-    <value>Tests é&amp;choués</value>
+    <value>Tests échoués</value>
   </data>
   <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
-    <value>&amp;Répéter</value>
+    <value>Répéter</value>
   </data>
   <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
-    <value>Tests &amp;non exécutés</value>
+    <value>Tests non exécutés</value>
   </data>
   <data name="TestExplorer_RunPassedTests" xml:space="preserve">
-    <value>Tests &amp;passés</value>
+    <value>Tests passés</value>
   </data>
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>Tests &amp;sélectionnés</value>
+    <value>Tests sélectionnés</value>
   </data>
   <data name="TodoExplorer_Description" xml:space="preserve">
     <value>Description</value>

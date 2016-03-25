@@ -714,16 +714,16 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Projektname</value>
   </data>
   <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>&amp;Hinzufügen</value>
+    <value>Hinzufügen</value>
   </data>
   <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>neue Testmethode (&amp;Erwartet Fehler)</value>
+    <value>neue Testmethode (Erwarteter Fehler)</value>
   </data>
   <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>neue &amp;Testmethode</value>
+    <value>neue Testmethode</value>
   </data>
   <data name="TestExplorer_AddTestModule" xml:space="preserve">
-    <value>neues Test&amp;modul</value>
+    <value>neues Testmodul</value>
   </data>
   <data name="TestExplorer_Duration" xml:space="preserve">
     <value>Dauer</value>
@@ -744,28 +744,28 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Qualifizierter Membername</value>
   </data>
   <data name="TestExplorer_RunAllTests" xml:space="preserve">
-    <value>&amp;Alle Tests</value>
+    <value>Alle Tests</value>
   </data>
   <data name="TestExplorer_RunButtonText" xml:space="preserve">
-    <value>Ausfüh&amp;ren</value>
+    <value>Ausführen</value>
   </data>
   <data name="Run" xml:space="preserve">
     <value>Ausführen</value>
   </data>
   <data name="TestExplorer_RunFailedTests" xml:space="preserve">
-    <value>&amp;Fehlgeschlagene Tests</value>
+    <value>Fehlgeschlagene Tests</value>
   </data>
   <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
-    <value>Wiederhole &amp;letzten Testlauf</value>
+    <value>Wiederhole letzten Testlauf</value>
   </data>
   <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
-    <value>&amp;Nicht ausgeführte Tests</value>
+    <value>Nicht ausgeführte Tests</value>
   </data>
   <data name="TestExplorer_RunPassedTests" xml:space="preserve">
-    <value>&amp;Bestanden Tests</value>
+    <value>Bestanden Tests</value>
   </data>
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>Au&amp;sgewählte Tests</value>
+    <value>Ausgewählte Tests</value>
   </data>
   <data name="GenericProjectName_" xml:space="preserve">
     <value>Projekt '{0}' hat einen generischen Namen</value>

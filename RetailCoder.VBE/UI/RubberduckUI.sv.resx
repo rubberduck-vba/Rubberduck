@@ -744,16 +744,16 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
     <value>Rubberduck Inställningar</value>
   </data>
   <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>&amp;Lägg till</value>
+    <value>Lägg till</value>
   </data>
   <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Testmetod (förvändade &amp;fel)</value>
+    <value>Testmetod (förvändade fel)</value>
   </data>
   <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>&amp;Testmetod</value>
+    <value>Testmetod</value>
   </data>
   <data name="TestExplorer_AddTestModule" xml:space="preserve">
-    <value>Test&amp;modul</value>
+    <value>Testmodul</value>
   </data>
   <data name="TestExplorer_Duration" xml:space="preserve">
     <value>Varaktighet</value>
@@ -771,25 +771,25 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
     <value>Kvalificerat medlemsnamn</value>
   </data>
   <data name="TestExplorer_RunAllTests" xml:space="preserve">
-    <value>Kör alla &amp;tester</value>
+    <value>Kör alla tester</value>
   </data>
   <data name="TestExplorer_RunButtonText" xml:space="preserve">
-    <value>&amp;Kör</value>
+    <value>Kör</value>
   </data>
   <data name="TestExplorer_RunFailedTests" xml:space="preserve">
-    <value>Kör &amp;misslyckade tester</value>
+    <value>Kör misslyckade tester</value>
   </data>
   <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
-    <value>&amp;Repetera senast körning</value>
+    <value>Repetera senast körning</value>
   </data>
   <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
-    <value>&amp;icke körda tester</value>
+    <value>icke körda tester</value>
   </data>
   <data name="TestExplorer_RunPassedTests" xml:space="preserve">
-    <value>&amp;Lyckade tester</value>
+    <value>Lyckade tester</value>
   </data>
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>Markera&amp;de tester</value>
+    <value>Markerade tester</value>
   </data>
   <data name="GenericProjectName_" xml:space="preserve">
     <value>Projektet '{0}' har ett generellt namn</value>

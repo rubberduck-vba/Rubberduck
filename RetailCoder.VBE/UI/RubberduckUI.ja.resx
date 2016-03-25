@@ -951,28 +951,28 @@
     <value>&amp;Tテストを全て実行する</value>
   </data>
   <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>&amp;A追加</value>
+    <value>追加</value>
   </data>
   <data name="TestExplorer_RunAllTests" xml:space="preserve">
-    <value>&amp;A全てのテスト</value>
+    <value>全てのテスト</value>
   </data>
   <data name="TestExplorer_RunButtonText" xml:space="preserve">
-    <value>&amp;R実行</value>
+    <value>実行</value>
   </data>
   <data name="TestExplorer_RunFailedTests" xml:space="preserve">
-    <value>&amp;F不合格テスト</value>
+    <value>不合格テスト</value>
   </data>
   <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
-    <value>&amp;N実行されていないテスト</value>
+    <value>実行されていないテスト</value>
   </data>
   <data name="TestExplorer_RunPassedTests" xml:space="preserve">
-    <value>&amp;P合格テスト</value>
+    <value>合格テスト</value>
   </data>
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>&amp;S選択中のテスト</value>
+    <value>選択中のテスト</value>
   </data>
   <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>&amp;Tテストメソッド</value>
+    <value>Tテストメソッド</value>
   </data>
   <data name="SourceControl_AttributesFile" xml:space="preserve">
     <value>属性ファイル</value>
