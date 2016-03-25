@@ -362,63 +362,6 @@
   <data name="Home" xml:space="preserve">
     <value>Accueil</value>
   </data>
-  <data name="Inspections_ChangeGlobalAccessModifierToPublic" xml:space="preserve">
-    <value>Remplacer le modificateur d'accès 'Global' par 'Public'</value>
-  </data>
-  <data name="Inspections_ConvertFunctionToProcedure" xml:space="preserve">
-    <value>Convertir la fonction en procédure</value>
-  </data>
-  <data name="Inspections_DeclareAsExplicitVariant" xml:space="preserve">
-    <value>Déclarer comme explicitement Variant</value>
-  </data>
-  <data name="Inspections_IntroduceLocalVariable" xml:space="preserve">
-    <value>Introduire une variable locale</value>
-  </data>
-  <data name="Inspections_PassParamByReference" xml:space="preserve">
-    <value>Passer le paramètre par référence</value>
-  </data>
-  <data name="Inspections_PassParamByRefExplicitly" xml:space="preserve">
-    <value>Passer le paramètre par référence explicitement</value>
-  </data>
-  <data name="Inspections_PassParamByValue" xml:space="preserve">
-    <value>Passer le paramètre par valeur</value>
-  </data>
-  <data name="Inspections_RemoveComment" xml:space="preserve">
-    <value>Supprimer le commentaire</value>
-  </data>
-  <data name="Inspections_RemoveObsoleteStatement" xml:space="preserve">
-    <value>Supprimer l'instruction obsolète</value>
-  </data>
-  <data name="Inspections_RemoveTypeHints" xml:space="preserve">
-    <value>Suprimer les indicateurs de type</value>
-  </data>
-  <data name="Inspections_RemoveUnassignedVariable" xml:space="preserve">
-    <value>Supprimer la variable non-assignée</value>
-  </data>
-  <data name="Inspections_RemoveUnusedDeclaration" xml:space="preserve">
-    <value>Supprimer la déclaration inutilisée</value>
-  </data>
-  <data name="Inspections_RemoveUnusedParameter" xml:space="preserve">
-    <value>Supprimer le paramètre inutilisé</value>
-  </data>
-  <data name="Inspections_RemoveUsageBreaksCode" xml:space="preserve">
-    <value>Supprimer l'utilisation (brise le code)</value>
-  </data>
-  <data name="Inspections_ReplaceRemWithSingleQuoteMarker" xml:space="preserve">
-    <value>Remplacer l'instruction 'Rem' par une apostrophe</value>
-  </data>
-  <data name="Inspections_ReturnExplicitVariant" xml:space="preserve">
-    <value>Définir explicitement la valeur de retour comme étant Variant</value>
-  </data>
-  <data name="Inspections_SpecifyPublicModifierExplicitly" xml:space="preserve">
-    <value>Spécifier explicitement le modificateur d'accès Public</value>
-  </data>
-  <data name="Inspections_SplitDeclarations" xml:space="preserve">
-    <value>Séparer les déclarations en autant d'instructions</value>
-  </data>
-  <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
-    <value>TODO</value>
-  </data>
   <data name="LoadConfigError" xml:space="preserve">
     <value>Une erreur est survenue lors du chargement des configurations de Rubberduck.</value>
   </data>
@@ -506,12 +449,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
-  </data>
-  <data name="Inspections_DeclarationOf" xml:space="preserve">
-    <value>déclaration de</value>
-  </data>
-  <data name="Inspections_UsageOf" xml:space="preserve">
-    <value>utilisations de</value>
   </data>
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
     <value>Deux ou plusieurs projets ont le même nom et contiennent une ou plusieurs méthodes de test ayant le même nom. Veuillez en renommer un avant de continuer.</value>
@@ -1072,9 +1009,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Language_JA" xml:space="preserve">
     <value />
   </data>
-  <data name="Inspections_MultilineParameter" xml:space="preserve">
-    <value />
-  </data>
   <data name="SourceControl_DeleteButton" xml:space="preserve">
     <value>Supprimer branche</value>
   </data>
@@ -1214,9 +1148,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value />
   </data>
   <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Inspections_SpecifyOptionExplicit" xml:space="preserve">
     <value />
   </data>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">

@@ -358,63 +358,6 @@
   <data name="Home" xml:space="preserve">
     <value>Start</value>
   </data>
-  <data name="Inspections_ChangeGlobalAccessModifierToPublic" xml:space="preserve">
-    <value>'Global' Zugriffsmodifikator mit 'Public' ersetzen</value>
-  </data>
-  <data name="Inspections_ConvertFunctionToProcedure" xml:space="preserve">
-    <value>Funktion in Prozedur umwandeln</value>
-  </data>
-  <data name="Inspections_DeclareAsExplicitVariant" xml:space="preserve">
-    <value>Explizit als 'Variant' deklarieren</value>
-  </data>
-  <data name="Inspections_IntroduceLocalVariable" xml:space="preserve">
-    <value>Lokale Variable einführen</value>
-  </data>
-  <data name="Inspections_PassParamByReference" xml:space="preserve">
-    <value>Parameter als Referenz übergeben</value>
-  </data>
-  <data name="Inspections_PassParamByRefExplicitly" xml:space="preserve">
-    <value>Parameter explizit als Referenz übergeben</value>
-  </data>
-  <data name="Inspections_PassParamByValue" xml:space="preserve">
-    <value>Paramter als Wert übergeben</value>
-  </data>
-  <data name="Inspections_RemoveComment" xml:space="preserve">
-    <value>Kommentar entfernen</value>
-  </data>
-  <data name="Inspections_RemoveObsoleteStatement" xml:space="preserve">
-    <value>Veralteten Aufruf entfernen</value>
-  </data>
-  <data name="Inspections_RemoveTypeHints" xml:space="preserve">
-    <value>Typ-Hinweise entfernen</value>
-  </data>
-  <data name="Inspections_RemoveUnassignedVariable" xml:space="preserve">
-    <value>Unbenutzte Variable entfernen</value>
-  </data>
-  <data name="Inspections_RemoveUnusedDeclaration" xml:space="preserve">
-    <value>Unbenutzte Deklaration entfernen</value>
-  </data>
-  <data name="Inspections_RemoveUnusedParameter" xml:space="preserve">
-    <value>Unbenutzten Parameter entfernen</value>
-  </data>
-  <data name="Inspections_RemoveUsageBreaksCode" xml:space="preserve">
-    <value>Referenzen entfernen (führt zu Fehlern)</value>
-  </data>
-  <data name="Inspections_ReplaceRemWithSingleQuoteMarker" xml:space="preserve">
-    <value>'Rem'-Nutzung durch Hochkomma-Kommentar-Syntax ersetzen</value>
-  </data>
-  <data name="Inspections_ReturnExplicitVariant" xml:space="preserve">
-    <value>Explizit 'Variant' zurückgeben</value>
-  </data>
-  <data name="Inspections_SpecifyPublicModifierExplicitly" xml:space="preserve">
-    <value>Öffentlichen Zugriff explizit angeben</value>
-  </data>
-  <data name="Inspections_SplitDeclarations" xml:space="preserve">
-    <value>Mehrere Deklarationen in mehrere Anweisungen aufteilen</value>
-  </data>
-  <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
-    <value>TODO</value>
-  </data>
   <data name="LoadConfigError" xml:space="preserve">
     <value>Fehler beim Laden der Rubberduck-Konfiguration</value>
   </data>
@@ -508,12 +451,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="Type" xml:space="preserve">
     <value>Typ</value>
-  </data>
-  <data name="Inspections_DeclarationOf" xml:space="preserve">
-    <value>Deklaration von</value>
-  </data>
-  <data name="Inspections_UsageOf" xml:space="preserve">
-    <value>Nutzung von</value>
   </data>
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
     <value>Zwei oder mehr Projekte mit Testmethoden haben den selben Namen und identisch benannte Tests. Bitte nennen sie zum Fortfahren eines davon um.</value>
@@ -1065,9 +1002,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Language_JA" xml:space="preserve">
     <value>Japanisch</value>
   </data>
-  <data name="Inspections_MultilineParameter" xml:space="preserve">
-    <value>Variablen in einer Zeile angeben</value>
-  </data>
   <data name="WriteOnlyProperty_" xml:space="preserve">
     <value>Die Eigenschaft {0} hat kein 'Get'.</value>
   </data>
@@ -1103,9 +1037,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="QuickFix_ThisModule" xml:space="preserve">
     <value>Alle Instanzen des Modules</value>
-  </data>
-  <data name="Inspections_SpecifyOptionExplicit" xml:space="preserve">
-    <value>Setze 'Option Explicit'</value>
   </data>
   <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
     <value>Auswahl</value>

@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
-    <value>TODO</value>
-  </data>
   <data name="OK_AllCaps" xml:space="preserve">
     <value>OK</value>
   </data>
@@ -279,15 +276,6 @@
   <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
     <value>パラメーター削除</value>
   </data>
-  <data name="Inspections_ChangeGlobalAccessModifierToPublic" xml:space="preserve">
-    <value>「Global」アクセス修飾子を「Public」に変更。</value>
-  </data>
-  <data name="Inspections_IntroduceLocalVariable" xml:space="preserve">
-    <value>ローカル変数を導入</value>
-  </data>
-  <data name="Inspections_RemoveComment" xml:space="preserve">
-    <value>コメントを削除する</value>
-  </data>
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>識別子の名前を変更</value>
   </data>
@@ -305,9 +293,6 @@
   </data>
   <data name="CancelButtonText" xml:space="preserve">
     <value>キャンセル</value>
-  </data>
-  <data name="Inspections_MultilineParameter" xml:space="preserve">
-    <value>変数を1行にまとめる</value>
   </data>
   <data name="TodoSettings_Text" xml:space="preserve">
     <value>テキスト</value>
@@ -381,30 +366,6 @@
   </data>
   <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
     <value>ブランチ：</value>
-  </data>
-  <data name="Inspections_PassParamByValue" xml:space="preserve">
-    <value>パラメーターを値で渡す</value>
-  </data>
-  <data name="Inspections_PassParamByRefExplicitly" xml:space="preserve">
-    <value>パラメーターを明示的に参照で渡す</value>
-  </data>
-  <data name="Inspections_RemoveTypeHints" xml:space="preserve">
-    <value>型ヒントを削除する</value>
-  </data>
-  <data name="Inspections_RemoveUnassignedVariable" xml:space="preserve">
-    <value>割り当てられていない変数を削除する</value>
-  </data>
-  <data name="Inspections_RemoveUnusedDeclaration" xml:space="preserve">
-    <value>使用されていない宣言を削除する</value>
-  </data>
-  <data name="Inspections_RemoveUnusedParameter" xml:space="preserve">
-    <value>使用されていないパラメーターを削除する</value>
-  </data>
-  <data name="Inspections_ReturnExplicitVariant" xml:space="preserve">
-    <value>明示的なバリアントを返す</value>
-  </data>
-  <data name="Inspections_SpecifyPublicModifierExplicitly" xml:space="preserve">
-    <value>Publicアクセス修飾子を明示的に指定する</value>
   </data>
   <data name="LoadConfigError" xml:space="preserve">
     <value>Rubberduck設定のロード中にエラーが発生しました</value>
@@ -495,12 +456,6 @@
   </data>
   <data name="Type" xml:space="preserve">
     <value>型</value>
-  </data>
-  <data name="Inspections_DeclarationOf" xml:space="preserve">
-    <value>の宣言</value>
-  </data>
-  <data name="Inspections_UsageOf" xml:space="preserve">
-    <value>の使用</value>
   </data>
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
     <value>2つ以上のテストメソッドを含むプロジェクトはプロジェクト名とテスト名が同じです。続行するには同じであるプロジェクトやテスト名を変更してください。</value>
@@ -869,18 +824,6 @@
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} （解析中...）</value>
   </data>
-  <data name="Inspections_DeclareAsExplicitVariant" xml:space="preserve">
-    <value>明示的バリアントとして宣言</value>
-  </data>
-  <data name="Inspections_ConvertFunctionToProcedure" xml:space="preserve">
-    <value>関数をプロシージャーに変更</value>
-  </data>
-  <data name="Inspections_PassParamByReference" xml:space="preserve">
-    <value>パラメーターを参照で渡す</value>
-  </data>
-  <data name="Inspections_RemoveObsoleteStatement" xml:space="preserve">
-    <value>不要文章を削除</value>
-  </data>
   <data name="FormContextMenu_Rename" xml:space="preserve">
     <value>&amp;n名前の変更</value>
   </data>
@@ -959,12 +902,6 @@
 デフォールト設定を回復しますか？
 注意：カスタム設定が全て上書きされます。 古い設定ファイルは「{3}」に保存されます。</value>
   </data>
-  <data name="Inspections_SplitDeclarations" xml:space="preserve">
-    <value>複数の宣言を複数の命令に分ける</value>
-  </data>
-  <data name="Inspections_ReplaceRemWithSingleQuoteMarker" xml:space="preserve">
-    <value>「Rem」を「'」に変更する</value>
-  </data>
   <data name="SourceControl_MergeFormInstructions" xml:space="preserve">
     <value>ソースとデスティネーションブランチを選択してください。</value>
   </data>
@@ -1018,9 +955,6 @@
   </data>
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
     <value>現在のプロジェクトから新規リポジトリを作成する</value>
-  </data>
-  <data name="Inspections_RemoveUsageBreaksCode" xml:space="preserve">
-    <value>使用を取り外す（コードを壊します）</value>
   </data>
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>リスト：</value>
@@ -1203,9 +1137,6 @@
     <value />
   </data>
   <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Inspections_SpecifyOptionExplicit" xml:space="preserve">
     <value />
   </data>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">

@@ -367,63 +367,6 @@
   <data name="Home" xml:space="preserve">
     <value>Hem</value>
   </data>
-  <data name="Inspections_ChangeGlobalAccessModifierToPublic" xml:space="preserve">
-    <value>Ersätt åtkomstmodifieraren 'Global' med 'Public'</value>
-  </data>
-  <data name="Inspections_ConvertFunctionToProcedure" xml:space="preserve">
-    <value>Konvertera funktion till procedur</value>
-  </data>
-  <data name="Inspections_DeclareAsExplicitVariant" xml:space="preserve">
-    <value>Deklarera som explicit Variant</value>
-  </data>
-  <data name="Inspections_IntroduceLocalVariable" xml:space="preserve">
-    <value>Introducera lokal variabel</value>
-  </data>
-  <data name="Inspections_PassParamByReference" xml:space="preserve">
-    <value>Skicka parameter som referens</value>
-  </data>
-  <data name="Inspections_PassParamByRefExplicitly" xml:space="preserve">
-    <value>Skicka parameter som referens explicit</value>
-  </data>
-  <data name="Inspections_PassParamByValue" xml:space="preserve">
-    <value>Skicka parameter som värde</value>
-  </data>
-  <data name="Inspections_RemoveComment" xml:space="preserve">
-    <value>Ta bort kommentar</value>
-  </data>
-  <data name="Inspections_RemoveObsoleteStatement" xml:space="preserve">
-    <value>Ta bort föråldrat kommando</value>
-  </data>
-  <data name="Inspections_RemoveTypeHints" xml:space="preserve">
-    <value>Ta bort typ-hint</value>
-  </data>
-  <data name="Inspections_RemoveUnassignedVariable" xml:space="preserve">
-    <value>Ta bort otilldelad variabel</value>
-  </data>
-  <data name="Inspections_RemoveUnusedDeclaration" xml:space="preserve">
-    <value>Ta bort oanvänd dekleration</value>
-  </data>
-  <data name="Inspections_RemoveUnusedParameter" xml:space="preserve">
-    <value>Ta bort oanvänd parameter</value>
-  </data>
-  <data name="Inspections_RemoveUsageBreaksCode" xml:space="preserve">
-    <value>Ta bort användning (gör koden trasig)</value>
-  </data>
-  <data name="Inspections_ReplaceRemWithSingleQuoteMarker" xml:space="preserve">
-    <value>Ersät 'Rem' instruktion med en apostrof</value>
-  </data>
-  <data name="Inspections_ReturnExplicitVariant" xml:space="preserve">
-    <value>Returnera explicit Variant</value>
-  </data>
-  <data name="Inspections_SpecifyPublicModifierExplicitly" xml:space="preserve">
-    <value>Specifiera Public åtkomstmodifierare explicit</value>
-  </data>
-  <data name="Inspections_SplitDeclarations" xml:space="preserve">
-    <value>Separera multipla deklerationer till multipla instruktioner</value>
-  </data>
-  <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
-    <value>TODO</value>
-  </data>
   <data name="LoadConfigError" xml:space="preserve">
     <value>Ett fel uppstod vid laddning av konfigurationen för Gummiankan.</value>
   </data>
@@ -520,12 +463,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
   </data>
   <data name="Type" xml:space="preserve">
     <value>Typ</value>
-  </data>
-  <data name="Inspections_DeclarationOf" xml:space="preserve">
-    <value>deklaration av</value>
-  </data>
-  <data name="Inspections_UsageOf" xml:space="preserve">
-    <value>användning av</value>
   </data>
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
     <value>Två eller fler projekt som innehåller testmetoder har samma namn och identisk namngivna tester. Vänligen byt namn på ett test för att fortsätta.</value>
@@ -1066,9 +1003,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value />
   </data>
-  <data name="Inspections_MultilineParameter" xml:space="preserve">
-    <value />
-  </data>
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value />
   </data>
@@ -1211,9 +1145,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
     <value />
   </data>
   <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Inspections_SpecifyOptionExplicit" xml:space="preserve">
     <value />
   </data>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">
