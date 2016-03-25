@@ -119,6 +119,8 @@ namespace Rubberduck.Common
             Detach();
         }
 
+        private bool _isWaitingForStep2 = false;
+
         private IntPtr WindowProc(IntPtr hWnd, int uMsg, int wParam, int lParam)
         {
             try
@@ -137,6 +139,7 @@ namespace Rubberduck.Common
                                     var args = new HookEventArgs(hook.HotKeyInfo.Keys);
                                     OnMessageReceived(hook, args);
                                     processed = true;
+                                    _isWaitingForStep2 = hook.IsTwoStepHotKey;
                                 }
                             }
                             break;

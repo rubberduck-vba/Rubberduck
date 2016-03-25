@@ -307,9 +307,17 @@ namespace Rubberduck
             _appMenus.Localize();
 
             //_hooks.AddHook(new LowLevelKeyboardHook(_vbe));
-            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^R", Keys.R));
-            _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, "%^I", Keys.I));
+            HookHotkeys();
             _hooks.Attach();
+        }
+
+        private void HookHotkeys()
+        {
+            var settings = _config.UserSettings.GeneralSettings.HotkeySettings;
+            foreach (var hotkey in settings.Where(hotkey => hotkey.IsEnabled))
+            {
+                _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, hotkey.KeyDisplaySymbol));
+            }
         }
 
         private void CleanReloadConfig()
