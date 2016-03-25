@@ -728,9 +728,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Settings_Caption" xml:space="preserve">
     <value>Rubberduck Einstellungen</value>
   </data>
-  <data name="TodoSettings_PriorityLabel" xml:space="preserve">
-    <value>Priorisierung:</value>
-  </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
     <value>Token Text:</value>
   </data>
@@ -804,9 +801,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
     <value>Neues Repo auf Basis dieses Projektes erstellen</value>
   </data>
-  <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
-    <value>Arbeitsverzeichnis öffnen</value>
-  </data>
   <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
     <value>Ausstehende Änderungen aktualisieren</value>
   </data>
@@ -833,12 +827,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
     <value>Commit-Meldung:</value>
-  </data>
-  <data name="SourceControl_CommitPush" xml:space="preserve">
-    <value>Commit und Push</value>
-  </data>
-  <data name="SourceControl_CommitSync" xml:space="preserve">
-    <value>Commit und Synchronisieren</value>
   </data>
   <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
     <value>Zweig:</value>
@@ -933,9 +921,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="TodoSettings_TextLabel" xml:space="preserve">
     <value>Text:</value>
   </data>
-  <data name="TodoSettings_Priority" xml:space="preserve">
-    <value>Wichtigkeit</value>
-  </data>
   <data name="SourceControl_DeleteBranchInstructionsLabel" xml:space="preserve">
     <value>Bitte geben Sie einen Zweignamen an.</value>
   </data>
@@ -981,15 +966,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck Code Untersuchung - {0} {1} Probleme gefunden</value>
   </data>
-  <data name="TodoPriority_Medium" xml:space="preserve">
-    <value>Mittel</value>
-  </data>
-  <data name="TodoPriority_High" xml:space="preserve">
-    <value>Hoch</value>
-  </data>
-  <data name="TodoPriority_Low" xml:space="preserve">
-    <value>Niedrig</value>
-  </data>
   <data name="CodeInspectionSeverity_Error" xml:space="preserve">
     <value>Fehler</value>
   </data>
@@ -1032,12 +1008,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="RegexSearchReplace_Caption" xml:space="preserve">
     <value>Regex Suchen &amp; Ersetzen</value>
   </data>
-  <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value>Alle Instanzen des Projektes</value>
-  </data>
-  <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value>Alle Instanzen des Modules</value>
-  </data>
   <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
     <value>Auswahl</value>
   </data>
@@ -1052,9 +1022,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="UntypedFunctionUsage_" xml:space="preserve">
     <value>Benutzung der nicht typisierten Funktion '{0}'. Die 'String' zurückgebende Version '{0}$' ist verfügbar.</value>
-  </data>
-  <data name="QuickFixUseTypedFunction_" xml:space="preserve">
-    <value>Benutze '{0}$' anstelle von '{0}'</value>
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Blockiere diese Untersuchung</value>

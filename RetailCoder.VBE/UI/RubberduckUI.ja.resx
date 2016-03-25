@@ -300,9 +300,6 @@
   <data name="TodoSettings_TextLabel" xml:space="preserve">
     <value>テキスト：</value>
   </data>
-  <data name="TodoSettings_Priority" xml:space="preserve">
-    <value>優先順位</value>
-  </data>
   <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
     <value>Rubberduck コード検査 - {0}
 {1}問題を発見。</value>
@@ -324,15 +321,6 @@
   </data>
   <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
     <value>{1}に{0}が正常にマージされました。</value>
-  </data>
-  <data name="TodoPriority_Medium" xml:space="preserve">
-    <value>中</value>
-  </data>
-  <data name="TodoPriority_Low" xml:space="preserve">
-    <value>低</value>
-  </data>
-  <data name="TodoPriority_High" xml:space="preserve">
-    <value>高</value>
   </data>
   <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
     <value>警告</value>
@@ -643,9 +631,6 @@
   <data name="Settings_Caption" xml:space="preserve">
     <value>Rubberduck設定</value>
   </data>
-  <data name="TodoSettings_PriorityLabel" xml:space="preserve">
-    <value>優先順位：</value>
-  </data>
   <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
     <value>コード品質問題</value>
   </data>
@@ -686,9 +671,6 @@
   <data name="SourceControl_GlobalSettings" xml:space="preserve">
     <value>グローバル設定</value>
   </data>
-  <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
-    <value>作業ダイレクトリーを開く</value>
-  </data>
   <data name="SourceControl_RespositorySettings" xml:space="preserve">
     <value>リポジトリ設定</value>
   </data>
@@ -712,12 +694,6 @@
   </data>
   <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
     <value>コミットメモ：</value>
-  </data>
-  <data name="SourceControl_CommitPush" xml:space="preserve">
-    <value>コミットとプッシュ</value>
-  </data>
-  <data name="SourceControl_CommitSync" xml:space="preserve">
-    <value>コミット同期</value>
   </data>
   <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
     <value>プル</value>
@@ -1001,9 +977,6 @@
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value />
   </data>
-  <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value />
-  </data>
   <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
     <value />
   </data>
@@ -1112,16 +1085,10 @@
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
     <value />
   </data>
-  <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value />
-  </data>
   <data name="WriteOnlyProperty_" xml:space="preserve">
     <value />
   </data>
   <data name="IndentCurrentProcedure" xml:space="preserve">
-    <value />
-  </data>
-  <data name="QuickFixUseTypedFunction_" xml:space="preserve">
     <value />
   </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
