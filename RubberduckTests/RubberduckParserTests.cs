@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Threading;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -36,7 +35,7 @@ namespace RubberduckTests
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            parser.ParseComponent(project.Object.VBComponents.Cast<VBComponent>().First(), CancellationToken.None);
+            parser.ParseComponent(project.Object.VBComponents.Cast<VBComponent>().First());
 
             //Assert
             Assert.IsFalse(parser.State.AllDeclarations.Any(item => item.IsBuiltIn));
