@@ -61,12 +61,12 @@
   <ItemGroup>
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
-    <Compile Include="Grammar\VBABaseListener.cs" />
-    <Compile Include="Grammar\VBABaseVisitor.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
-    <Compile Include="Grammar\VBAListener.cs" />
     <Compile Include="Grammar\VBAParser.cs" />
-    <Compile Include="Grammar\VBAVisitor.cs" />
+    <Compile Include="Grammar\VBAParserBaseListener.cs" />
+    <Compile Include="Grammar\VBAParserBaseVisitor.cs" />
+    <Compile Include="Grammar\VBAParserListener.cs" />
+    <Compile Include="Grammar\VBAParserVisitor.cs" />
     <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IRubberduckParser.cs" />
     <Compile Include="Preprocessing\AbsLibraryFunctionExpression.cs" />
@@ -201,8 +201,13 @@
     <Compile Include="VBComponentExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Grammar\VBAParser.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
-    <None Include="Grammar\VBA.g4">
+    <None Include="Grammar\VBALexer.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

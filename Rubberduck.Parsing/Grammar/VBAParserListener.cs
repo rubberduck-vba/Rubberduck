@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\TestProj\TestProj\VBA.g4 by ANTLR 4.3
+// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\TestProj\TestProj\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -28,7 +28,7 @@ using IToken = Antlr4.Runtime.IToken;
 /// </summary>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
 [System.CLSCompliant(false)]
-public interface IVBAListener : IParseTreeListener {
+public interface IVBAParserListener : IParseTreeListener {
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.seekStmt"/>.
 	/// </summary>

@@ -2,7 +2,7 @@ using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public class IdentifierReferenceListener : VBABaseListener
+    public class IdentifierReferenceListener : VBAParserBaseListener
     {
         private readonly IdentifierReferenceResolver _resolver;
 
