@@ -9,8 +9,7 @@ namespace Rubberduck.Parsing
     public interface IRubberduckParser
     {
         RubberduckParserState State { get; }
-        void ParseComponent(VBComponent component, TokenStreamRewriter rewriter = null);
-        //Task ParseAsync(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null);
-        //void Resolve(CancellationToken token);
+        void ParseComponent(VBComponent vbComponent, TokenStreamRewriter rewriter = null);
+        Task ParseComponentAsync(VBComponent component);
     }
 }

@@ -24,18 +24,21 @@ namespace Rubberduck.Parsing.VBA
     {
         private readonly ReferencedDeclarationsCollector _comReflector;
 
+        private Task _pendingTask = null;
+        private CancellationTokenSource _tokenSource = null;
+
         public RubberduckParser(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
         {
             _vbe = vbe;
             _state = state;
             _attributeParser = attributeParser;
-
+            
             _comReflector = new ReferencedDeclarationsCollector();
 
             state.ParseRequest += ReparseRequested;
             state.StateChanged += StateOnStateChanged;
         }
-
+        
         private void ReparseRequested(object sender, EventArgs e)
         {
             Task.Run(() => ParseInternal());
@@ -62,7 +65,7 @@ namespace Rubberduck.Parsing.VBA
 
                 foreach (var component in components)
                 {
-                    ParseComponent(component);
+                    ParseComponent(component, CancellationToken.None);
                 }
             }
             catch (Exception exception)
@@ -118,7 +121,7 @@ namespace Rubberduck.Parsing.VBA
             SetComponentsState(components, ParserState.Pending);
             foreach (var component in components)
             {
-                ParseComponent(component);
+                ParseComponent(component, CancellationToken.None);
             }
         }
 
@@ -154,7 +157,56 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public async Task ParseComponentAsync(VBComponent component)
+        {
+            await ParseComponentAsync(component, _tokenSource.Token);
+        }
+
+        private async Task ParseComponentAsync(VBComponent component, CancellationToken token)
+        {
+            /* 
+               kudos to @StephenCleary here: 
+               [A pattern for self-cancelling and restarting task]
+               (http://stackoverflow.com/a/19005066/1188513)
+            */
+
+            if (_tokenSource == null)
+            {
+                _tokenSource = new CancellationTokenSource();
+            }
+
+            var previousTokenSource = _tokenSource;
+            var newTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token);
+            _tokenSource = newTokenSource;
+
+            if (previousTokenSource != null)
+            {
+                previousTokenSource.Cancel();
+                try
+                {
+                    await _pendingTask;
+                }
+                catch (OperationCanceledException)
+                {
+                    _state.SetModuleState(component, ParserState.Pending);
+                }
+
+                newTokenSource.Token.ThrowIfCancellationRequested();
+                _pendingTask = new Task(() => ParseComponent(component, newTokenSource.Token), newTokenSource.Token);
+
+                await _pendingTask;
+            }
+        }
+
+
+
         public void ParseComponent(VBComponent vbComponent, TokenStreamRewriter rewriter = null)
+        {
+            var token = _tokenSource.Token;
+            ParseComponent(vbComponent, token, rewriter);
+        }
+
+        public void ParseComponent(VBComponent vbComponent, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
             var component = vbComponent;
             State.SetModuleState(vbComponent, ParserState.Parsing);
@@ -193,6 +245,8 @@ namespace Rubberduck.Parsing.VBA
 
                 DeclarationSymbolsListener listener;
                 var tree = GetParseTree(vbComponent, listeners, preprocessedModuleBody, qualifiedName, out listener);
+                
+                token.ThrowIfCancellationRequested();
                 WalkParseTree(listeners, qualifiedName, tree, listener);
 
                 State.SetModuleState(vbComponent, ParserState.Parsed);
@@ -206,10 +260,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 Debug.WriteLine("Exception thrown in thread {0}:\n{1}", Thread.CurrentThread.ManagedThreadId, exception);
                 State.SetModuleState(component, ParserState.Error, exception);
-            }
-            catch (OperationCanceledException exception)
-            {
-                Debug.WriteLine("Exception thrown in thread {0}:\n{1}", Thread.CurrentThread.ManagedThreadId, exception);
             }
         }
 
