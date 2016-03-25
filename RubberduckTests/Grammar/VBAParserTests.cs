@@ -85,6 +85,20 @@ End Sub";
         }
 
         [TestMethod]
+        public void TestLetStmtLineContinuation()
+        {
+            string code = @"
+Public Sub Test()
+    x = ( _
+            1 / _
+            1 _
+        ) * 1
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//letStmt");
+        }
+
+        [TestMethod]
         public void TestMemberCallLineContinuation()
         {
             string code = @"

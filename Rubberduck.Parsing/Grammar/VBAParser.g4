@@ -408,7 +408,7 @@ unlockStmt : UNLOCK whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? valueSt
 valueStmt : 
 	literal                                                                                         # vsLiteral
 	| implicitCallStmt_InStmt                                                                       # vsICS
-	| LPAREN whiteSpace? valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)* RPAREN                # vsStruct
+	| LPAREN whiteSpace? valueStmt whiteSpace? RPAREN                                               # vsStruct
 	| NEW whiteSpace? valueStmt                                                                     # vsNew
 	| typeOfStmt                                                                                    # vsTypeOf
 	| midStmt                                                                                       # vsMid
