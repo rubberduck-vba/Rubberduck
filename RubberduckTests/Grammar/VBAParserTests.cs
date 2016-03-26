@@ -112,6 +112,19 @@ End Sub";
         }
 
         [TestMethod]
+        public void TestMemberProcedureCallLineContinuation()
+        {
+            string code = @"
+Sub Test()
+	fun(1) _
+	.fun(2) _
+	.fun(3)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//iCS_B_MemberProcedureCall");
+        }
+
+        [TestMethod]
         public void TestEraseStmt()
         {
             string code = @"
