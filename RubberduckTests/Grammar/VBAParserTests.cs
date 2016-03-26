@@ -125,6 +125,17 @@ End Sub";
         }
 
         [TestMethod]
+        public void TestDeclareLineContinuation()
+        {
+            string code = @"
+Private Declare Function ABC Lib ""shell32.dll"" Alias _
+""ShellExecuteA""(ByVal a As Long, ByVal b As String, _
+ByVal c As String, ByVal d As String, ByVal e As String, ByVal f As Long) As Long";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//declareStmt");
+        }
+
+        [TestMethod]
         public void TestEraseStmt()
         {
             string code = @"
