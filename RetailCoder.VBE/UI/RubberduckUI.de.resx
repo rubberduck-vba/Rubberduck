@@ -190,9 +190,6 @@
   <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
     <value>Allgemeine Einstellungen</value>
   </data>
-  <data name="SettingsCaption_CodeInspections" xml:space="preserve">
-    <value>Code Untersuchung Einstellungen</value>
-  </data>
   <data name="SettingsCaption_TodoSettings" xml:space="preserve">
     <value>Todo Einstellungen</value>
   </data>
@@ -331,9 +328,6 @@
   <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
     <value>Code-&amp;Untersuchungen</value>
   </data>
-  <data name="RubberduckMenu_Options" xml:space="preserve">
-    <value>&amp;Optionen</value>
-  </data>
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>Um&amp;gestalten</value>
   </data>
@@ -357,63 +351,6 @@
   </data>
   <data name="Home" xml:space="preserve">
     <value>Start</value>
-  </data>
-  <data name="Inspections_ChangeGlobalAccessModifierToPublic" xml:space="preserve">
-    <value>'Global' Zugriffsmodifikator mit 'Public' ersetzen</value>
-  </data>
-  <data name="Inspections_ConvertFunctionToProcedure" xml:space="preserve">
-    <value>Funktion in Prozedur umwandeln</value>
-  </data>
-  <data name="Inspections_DeclareAsExplicitVariant" xml:space="preserve">
-    <value>Explizit als 'Variant' deklarieren</value>
-  </data>
-  <data name="Inspections_IntroduceLocalVariable" xml:space="preserve">
-    <value>Lokale Variable einführen</value>
-  </data>
-  <data name="Inspections_PassParamByReference" xml:space="preserve">
-    <value>Parameter als Referenz übergeben</value>
-  </data>
-  <data name="Inspections_PassParamByRefExplicitly" xml:space="preserve">
-    <value>Parameter explizit als Referenz übergeben</value>
-  </data>
-  <data name="Inspections_PassParamByValue" xml:space="preserve">
-    <value>Paramter als Wert übergeben</value>
-  </data>
-  <data name="Inspections_RemoveComment" xml:space="preserve">
-    <value>Kommentar entfernen</value>
-  </data>
-  <data name="Inspections_RemoveObsoleteStatement" xml:space="preserve">
-    <value>Veralteten Aufruf entfernen</value>
-  </data>
-  <data name="Inspections_RemoveTypeHints" xml:space="preserve">
-    <value>Typ-Hinweise entfernen</value>
-  </data>
-  <data name="Inspections_RemoveUnassignedVariable" xml:space="preserve">
-    <value>Unbenutzte Variable entfernen</value>
-  </data>
-  <data name="Inspections_RemoveUnusedDeclaration" xml:space="preserve">
-    <value>Unbenutzte Deklaration entfernen</value>
-  </data>
-  <data name="Inspections_RemoveUnusedParameter" xml:space="preserve">
-    <value>Unbenutzten Parameter entfernen</value>
-  </data>
-  <data name="Inspections_RemoveUsageBreaksCode" xml:space="preserve">
-    <value>Referenzen entfernen (führt zu Fehlern)</value>
-  </data>
-  <data name="Inspections_ReplaceRemWithSingleQuoteMarker" xml:space="preserve">
-    <value>'Rem'-Nutzung durch Hochkomma-Kommentar-Syntax ersetzen</value>
-  </data>
-  <data name="Inspections_ReturnExplicitVariant" xml:space="preserve">
-    <value>Explizit 'Variant' zurückgeben</value>
-  </data>
-  <data name="Inspections_SpecifyPublicModifierExplicitly" xml:space="preserve">
-    <value>Öffentlichen Zugriff explizit angeben</value>
-  </data>
-  <data name="Inspections_SplitDeclarations" xml:space="preserve">
-    <value>Mehrere Deklarationen in mehrere Anweisungen aufteilen</value>
-  </data>
-  <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
-    <value>TODO</value>
   </data>
   <data name="LoadConfigError" xml:space="preserve">
     <value>Fehler beim Laden der Rubberduck-Konfiguration</value>
@@ -509,12 +446,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Type" xml:space="preserve">
     <value>Typ</value>
   </data>
-  <data name="Inspections_DeclarationOf" xml:space="preserve">
-    <value>Deklaration von</value>
-  </data>
-  <data name="Inspections_UsageOf" xml:space="preserve">
-    <value>Nutzung von</value>
-  </data>
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
     <value>Zwei oder mehr Projekte mit Testmethoden haben den selben Namen und identisch benannte Tests. Bitte nennen sie zum Fortfahren eines davon um.</value>
   </data>
@@ -527,83 +458,17 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Warning" xml:space="preserve">
     <value>Warnung</value>
   </data>
-  <data name="ByValParameterIsAssigned_" xml:space="preserve">
-    <value>ByVal Parameter '{0}' ist zugewiesen</value>
-  </data>
-  <data name="ConstantNotUsed_" xml:space="preserve">
-    <value>Konstante '{0}' wird nie verwendet</value>
-  </data>
   <data name="EasterEgg_Continuator" xml:space="preserve">
     <value>Sie haben das Abzeichen "Continuator" erhalten!</value>
   </data>
-  <data name="FunctionNotUsed_" xml:space="preserve">
-    <value>Funktion '{0}' wird nie verwendet</value>
-  </data>
-  <data name="ImplicitByRef_" xml:space="preserve">
-    <value>Parameter '{0}' wird implizit ByRef übergeben</value>
-  </data>
-  <data name="ImplicitPublicMember_" xml:space="preserve">
-    <value>Mitglied '{0}' ist implizit Public</value>
-  </data>
-  <data name="ImplicitVariantReturnType_" xml:space="preserve">
-    <value>Die Funktion '{0}' gibt implizt ein Variant zurück</value>
-  </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Modul-Optionen sollten zuerst deklariert werden</value>
-  </data>
-  <data name="MultilineParameter_" xml:space="preserve">
-    <value>Parameter '{0}' wird über mehrere Zeilen hinweg deklariert</value>
-  </data>
-  <data name="MultipleDeclarations" xml:space="preserve">
-    <value>Anweisung enthält mehrere Deklarationen</value>
-  </data>
-  <data name="NonReturningFunction_" xml:space="preserve">
-    <value>Rückgabewert für Mitglied '{0}' wird nie zugewiesen</value>
-  </data>
-  <data name="ObsoleteCall" xml:space="preserve">
-    <value>Benutzung der veralteten 'Call'-Anweisung</value>
   </data>
   <data name="ObsoleteComment" xml:space="preserve">
     <value>Benutzung der veralteten 'Rem'-Kommentar-Syntax</value>
   </data>
   <data name="ObsoleteGlobal" xml:space="preserve">
     <value>Benutzung des veralteten 'Global' Zugriffsmodifikators</value>
-  </data>
-  <data name="ObsoleteLet" xml:space="preserve">
-    <value>Benutzung der veralteten 'Let'-Anweisung</value>
-  </data>
-  <data name="OptionBase" xml:space="preserve">
-    <value>Möglicherweise verwirrende implizite Untergrenze des Arrays</value>
-  </data>
-  <data name="OptionExplicit" xml:space="preserve">
-    <value>'Option Explicit' ist für '{0}' nicht angegeben</value>
-  </data>
-  <data name="ParameterCanBeByVal_" xml:space="preserve">
-    <value>Parameter '{0}' kann als Wert übergeben werden</value>
-  </data>
-  <data name="ParameterNotUsed_" xml:space="preserve">
-    <value>Parameter '{0}' wird nicht verwendet</value>
-  </data>
-  <data name="ProcedureNotUsed_" xml:space="preserve">
-    <value>Prozedur '{0}' wird nicht verwendet</value>
-  </data>
-  <data name="UnassignedVariableUsage_" xml:space="preserve">
-    <value>Benutzung der nicht zugewiesenen Variable '{0}'</value>
-  </data>
-  <data name="VariableNotAssigned_" xml:space="preserve">
-    <value>Variable '{0}' wird nie ein Wert zugewiesen</value>
-  </data>
-  <data name="VariableNotUsed_" xml:space="preserve">
-    <value>Variable '{0}' wird nie verwendet</value>
-  </data>
-  <data name="_ObsoleteTypeHint_" xml:space="preserve">
-    <value>Benutzung des veralteten Typ-Hinweises bei {0} '{1}'</value>
-  </data>
-  <data name="_TypeNotDeclared_" xml:space="preserve">
-    <value>{0} '{1}' ist implizit vom Typ Variant</value>
-  </data>
-  <data name="Priority" xml:space="preserve">
-    <value>Priorität</value>
   </data>
   <data name="Component" xml:space="preserve">
     <value>Komponente</value>
@@ -613,9 +478,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="Outcome" xml:space="preserve">
     <value>Ergebnis</value>
-  </data>
-  <data name="Settings_LanguageLabel" xml:space="preserve">
-    <value>Anzeigesprache:</value>
   </data>
   <data name="Language_EN" xml:space="preserve">
     <value>Englisch</value>
@@ -714,16 +576,16 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Projektname</value>
   </data>
   <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>&amp;Hinzufügen</value>
+    <value>Hinzufügen</value>
   </data>
   <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>neue Testmethode (&amp;Erwartet Fehler)</value>
+    <value>neue Testmethode (Erwarteter Fehler)</value>
   </data>
   <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>neue &amp;Testmethode</value>
+    <value>neue Testmethode</value>
   </data>
   <data name="TestExplorer_AddTestModule" xml:space="preserve">
-    <value>neues Test&amp;modul</value>
+    <value>neues Testmodul</value>
   </data>
   <data name="TestExplorer_Duration" xml:space="preserve">
     <value>Dauer</value>
@@ -740,35 +602,29 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="ModuleName" xml:space="preserve">
     <value>Modulname</value>
   </data>
-  <data name="TestExplorer_QualifiedMemberName" xml:space="preserve">
-    <value>Qualifizierter Membername</value>
-  </data>
   <data name="TestExplorer_RunAllTests" xml:space="preserve">
-    <value>&amp;Alle Tests</value>
+    <value>Alle Tests</value>
   </data>
   <data name="TestExplorer_RunButtonText" xml:space="preserve">
-    <value>Ausfüh&amp;ren</value>
+    <value>Ausführen</value>
   </data>
   <data name="Run" xml:space="preserve">
     <value>Ausführen</value>
   </data>
   <data name="TestExplorer_RunFailedTests" xml:space="preserve">
-    <value>&amp;Fehlgeschlagene Tests</value>
+    <value>Fehlgeschlagene Tests</value>
   </data>
   <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
-    <value>Wiederhole &amp;letzten Testlauf</value>
+    <value>Wiederhole letzten Testlauf</value>
   </data>
   <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
-    <value>&amp;Nicht ausgeführte Tests</value>
+    <value>Nicht ausgeführte Tests</value>
   </data>
   <data name="TestExplorer_RunPassedTests" xml:space="preserve">
-    <value>&amp;Bestanden Tests</value>
+    <value>Bestanden Tests</value>
   </data>
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>Au&amp;sgewählte Tests</value>
-  </data>
-  <data name="GenericProjectName_" xml:space="preserve">
-    <value>Projekt '{0}' hat einen generischen Namen</value>
+    <value>Ausgewählte Tests</value>
   </data>
   <data name="Line" xml:space="preserve">
     <value>Zeile</value>
@@ -790,9 +646,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="Settings_Caption" xml:space="preserve">
     <value>Rubberduck Einstellungen</value>
-  </data>
-  <data name="TodoSettings_PriorityLabel" xml:space="preserve">
-    <value>Priorisierung:</value>
   </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
     <value>Token Text:</value>
@@ -843,54 +696,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
   </data>
-  <data name="About_AllContributors" xml:space="preserve">
-    <value>Alle, die zu unserem GitHub Repository beigetragen haben</value>
-  </data>
-  <data name="About_Anyone" xml:space="preserve">
-    <value>...und alle die dies lesen!</value>
-  </data>
-  <data name="About_Attributions" xml:space="preserve">
-    <value>Namensnennungen</value>
-  </data>
-  <data name="About_Blogs" xml:space="preserve">
-    <value>Blogs:</value>
-  </data>
-  <data name="About_Caption" xml:space="preserve">
-    <value>Über Rubberduck</value>
-  </data>
-  <data name="About_CodeReview" xml:space="preserve">
-    <value>Code Review Stack Exchange</value>
-  </data>
-  <data name="About_Community" xml:space="preserve">
-    <value>Gemeinschaft:</value>
-  </data>
-  <data name="About_Contributors" xml:space="preserve">
-    <value>Beitragende &amp; Unterstützer:</value>
-  </data>
-  <data name="About_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
-  </data>
-  <data name="About_FugueIconCredit" xml:space="preserve">
-    <value>Fugue icons von Yusuke Kamiyamane</value>
-  </data>
-  <data name="About_JetBrains" xml:space="preserve">
-    <value>JetBrains ReSharper Community Team</value>
-  </data>
-  <data name="About_LibGit2SharpCredit" xml:space="preserve">
-    <value>GitHub-Integration ermöglicht durch LibGit2Sharp</value>
-  </data>
-  <data name="About_ParsingCredit" xml:space="preserve">
-    <value>Parsen ermöglicht durch ANTLR</value>
-  </data>
-  <data name="About_SpecialThanks" xml:space="preserve">
-    <value>Danksagungen</value>
-  </data>
-  <data name="About_StackOverflow" xml:space="preserve">
-    <value>Stack Overflow</value>
-  </data>
-  <data name="About_Stargazers" xml:space="preserve">
-    <value>Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln</value>
-  </data>
   <data name="SourceControlPanel_Caption" xml:space="preserve">
     <value>Versionsverwaltung</value>
   </data>
@@ -914,9 +719,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
     <value>Neues Repo auf Basis dieses Projektes erstellen</value>
-  </data>
-  <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
-    <value>Arbeitsverzeichnis öffnen</value>
   </data>
   <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
     <value>Ausstehende Änderungen aktualisieren</value>
@@ -944,12 +746,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
     <value>Commit-Meldung:</value>
-  </data>
-  <data name="SourceControl_CommitPush" xml:space="preserve">
-    <value>Commit und Push</value>
-  </data>
-  <data name="SourceControl_CommitSync" xml:space="preserve">
-    <value>Commit und Synchronisieren</value>
   </data>
   <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
     <value>Zweig:</value>
@@ -1044,9 +840,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="TodoSettings_TextLabel" xml:space="preserve">
     <value>Text:</value>
   </data>
-  <data name="TodoSettings_Priority" xml:space="preserve">
-    <value>Wichtigkeit</value>
-  </data>
   <data name="SourceControl_DeleteBranchInstructionsLabel" xml:space="preserve">
     <value>Bitte geben Sie einen Zweignamen an.</value>
   </data>
@@ -1092,15 +885,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck Code Untersuchung - {0} {1} Probleme gefunden</value>
   </data>
-  <data name="TodoPriority_Medium" xml:space="preserve">
-    <value>Mittel</value>
-  </data>
-  <data name="TodoPriority_High" xml:space="preserve">
-    <value>Hoch</value>
-  </data>
-  <data name="TodoPriority_Low" xml:space="preserve">
-    <value>Niedrig</value>
-  </data>
   <data name="CodeInspectionSeverity_Error" xml:space="preserve">
     <value>Fehler</value>
   </data>
@@ -1112,12 +896,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="Language_JA" xml:space="preserve">
     <value>Japanisch</value>
-  </data>
-  <data name="Inspections_MultilineParameter" xml:space="preserve">
-    <value>Variablen in einer Zeile angeben</value>
-  </data>
-  <data name="WriteOnlyProperty_" xml:space="preserve">
-    <value>Die Eigenschaft {0} hat kein 'Get'.</value>
   </data>
   <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
     <value>Aktuelle Datei</value>
@@ -1146,15 +924,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="RegexSearchReplace_Caption" xml:space="preserve">
     <value>Regex Suchen &amp; Ersetzen</value>
   </data>
-  <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value>Alle Instanzen des Projektes</value>
-  </data>
-  <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value>Alle Instanzen des Modules</value>
-  </data>
-  <data name="Inspections_SpecifyOptionExplicit" xml:space="preserve">
-    <value>Setze 'Option Explicit'</value>
-  </data>
   <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
     <value>Auswahl</value>
   </data>
@@ -1166,18 +935,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
     <value>Bereich:</value>
-  </data>
-  <data name="UntypedFunctionUsage_" xml:space="preserve">
-    <value>Benutzung der nicht typisierten Funktion '{0}'. Die 'String' zurückgebende Version '{0}$' ist verfügbar.</value>
-  </data>
-  <data name="QuickFixUseTypedFunction_" xml:space="preserve">
-    <value>Benutze '{0}$' anstelle von '{0}'</value>
-  </data>
-  <data name="DisableThisInspection" xml:space="preserve">
-    <value>Blockiere diese Untersuchung</value>
-  </data>
-  <data name="ImplicitActiveWorkbookReference_" xml:space="preserve">
-    <value>'{0}' ist eine implizite Referenz auf das 'ActiveWorkbook'</value>
   </data>
   <data name="ImplicitActiveSheetReference_" xml:space="preserve">
     <value>'{0}' ist eine implizite Referenz auf das 'ActiveSheet'</value>

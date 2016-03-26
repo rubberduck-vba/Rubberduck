@@ -5,12 +5,13 @@ using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.Settings;
 using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class CodePaneRefactorRenameCommand : RefactorCommandBase
+    public class CodePaneRefactorRenameCommand : RefactorCommandBase, IHotkeyCommand
     {
         private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
@@ -43,5 +44,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 }
             }
         }
+
+        public RubberduckHotkey Hotkey { get {return RubberduckHotkey.RefactorRename; } }
     }
 }

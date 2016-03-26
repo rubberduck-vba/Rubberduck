@@ -54,7 +54,14 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <StackPanel Margin="5,5,5,0">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0" Margin="5,5,5,0">
             <Label DockPanel.Dock="Top"
                    Background="DarkGray"
                    Foreground="White"
@@ -95,46 +102,78 @@
                                        HorizontalAlignment="Left" />
             </StackPanel>
 
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}"
-                   FontWeight="SemiBold" />
-            <DataGrid ItemsSource="{Binding Hotkeys}"
+        </StackPanel>
+
+        <Label Grid.Row="1" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}" FontWeight="SemiBold" />
+
+        <DataGrid Grid.Row="2" ItemsSource="{Binding Hotkeys}"
+                      HorizontalAlignment="Stretch"
                       AutoGenerateColumns="False"
                       CanUserDeleteRows="False"
                       CanUserReorderColumns="False"
+                      CanUserResizeColumns="True"
                       IsReadOnly="False"
                       SelectionMode="Single"
                       CanUserAddRows="False"
                       HorizontalGridLinesBrush="Transparent"
                       VerticalGridLinesBrush="Transparent"
                       HeadersVisibility="Column"
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Visible"
+                      HorizontalScrollBarVisibility="Hidden"
                       ItemContainerStyle="{StaticResource PrettifyRow}"
                       ColumnHeaderHeight="22"
                       BorderThickness="0">
-                <DataGrid.CellStyle>
-                    <Style TargetType="{x:Type DataGridCell}">
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Background" Value="Transparent" />
-                    </Style>
-                </DataGrid.CellStyle>
-                <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyEnabled}"
-                                            Binding="{Binding IsEnabled}" />
-                    <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyDescription}"
-                                        Binding="{Binding Prompt}"
-                                        Width="*"
-                                        IsReadOnly="True" />
-                    <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyKeyPress}"
-                                            SortMemberPath="KeyDisplaySymbol">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding KeyDisplaySymbol, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
+            <DataGrid.CellStyle>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="Background" Value="Transparent" />
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn
+                    Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyEnabled}"
+                    Width="Auto"
+                    Binding="{Binding IsEnabled}" />
+                <DataGridTextColumn
+                    Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyDescription}"
+                    Binding="{Binding Prompt}"
+                    Width="*"
+                    IsReadOnly="True" />
+                <DataGridCheckBoxColumn
+                    Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyShift}"
+                    Width="Auto"
+                    Binding="{Binding HasShiftModifier}" />
+                <DataGridCheckBoxColumn
+                    Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyAlt}"
+                    Width="Auto"
+                    Binding="{Binding HasAltModifier}" />
+                <DataGridCheckBoxColumn
+                    Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyCtrl}"
+                    Width="Auto"
+                    Binding="{Binding HasCtrlModifier}" />
+                <DataGridTemplateColumn
+                    Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyKey1}"
+                    Width="Auto"
+                    SortMemberPath="KeyDisplaySymbol">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Key1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn
+                    Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyKey2}"
+                    Width="Auto"
+                    SortMemberPath="KeyDisplaySymbol"
+                    Visibility="Collapsed">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Key2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

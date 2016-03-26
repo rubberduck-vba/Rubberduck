@@ -9,7 +9,6 @@ using Rubberduck.Parsing.VBA;
 namespace Rubberduck.API
 {
     [ComVisible(true)]
-    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
     public interface IParserState
     {
         void Initialize(VBE vbe);
@@ -17,21 +16,26 @@ namespace Rubberduck.API
         void Parse();
         void BeginParse();
 
-        Declaration[] AllDeclarations 
-        {
-            get; 
-        }
+        Declaration[] AllDeclarations { get; }
+        Declaration[] UserDeclarations { get; }
+    }
 
-        Declaration[] UserDeclarations
-        {
-            get;
-        }
+    [ComVisible(true)]
+    [Guid("3D8EAA28-8983-44D5-83AF-2EEC4C363079")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+    public interface IParserStateEvents
+    {
+        void OnParsed();
+        void OnReady();
+        void OnError();
     }
 
     [ComVisible(true)]
     [Guid(ClassId)]
     [ProgId(ProgId)]
+    [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComDefaultInterface(typeof(IParserState))]
+    [ComSourceInterfaces(typeof(IParserStateEvents))]
     [EditorBrowsable(EditorBrowsableState.Always)]
     public class ParserState : IParserState
     {
@@ -73,6 +77,10 @@ namespace Rubberduck.API
             _state.OnParseRequested(this);
         }
 
+        public event Action OnParsed;
+        public event Action OnReady;
+        public event Action OnError;
+
         private void _state_StateChanged(object sender, System.EventArgs e)
         {
             _allDeclarations = _state.AllDeclarations
@@ -82,6 +90,24 @@ namespace Rubberduck.API
             _userDeclarations = _state.AllUserDeclarations
                                      .Select(item => new Declaration(item))
                                      .ToArray();
+
+            var errorHandler = OnError;
+            if (_state.Status == Parsing.VBA.ParserState.Error && errorHandler != null)
+            {
+                errorHandler.Invoke();
+            }
+
+            var parsedHandler = OnParsed;
+            if (_state.Status == Parsing.VBA.ParserState.Parsed && parsedHandler != null)
+            {
+                parsedHandler.Invoke();
+            }
+
+            var readyHandler = OnReady;
+            if (_state.Status == Parsing.VBA.ParserState.Ready && readyHandler != null)
+            {
+                readyHandler.Invoke();
+            }
         }
 
         private Declaration[] _allDeclarations;
