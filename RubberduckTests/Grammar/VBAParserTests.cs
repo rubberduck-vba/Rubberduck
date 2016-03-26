@@ -31,9 +31,9 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 ";
             var stream = new AntlrInputStream(code);
-            var lexer = new AttributesLexer(stream);
+            var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
-            var parser = new AttributesParser(tokens);
+            var parser = new VBAParser(tokens);
             parser.ErrorListeners.Clear();
             parser.ErrorListeners.Add(new ExceptionErrorListener());
             var tree = parser.startRule();
@@ -85,6 +85,20 @@ End Sub";
         }
 
         [TestMethod]
+        public void TestLetStmtLineContinuation()
+        {
+            string code = @"
+Public Sub Test()
+    x = ( _
+            1 / _
+            1 _
+        ) * 1
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//letStmt");
+        }
+
+        [TestMethod]
         public void TestMemberCallLineContinuation()
         {
             string code = @"
@@ -95,6 +109,52 @@ Public Sub Test()
 End Sub";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//iCS_S_MembersCall");
+        }
+
+        [TestMethod]
+        public void TestMemberProcedureCallLineContinuation()
+        {
+            string code = @"
+Sub Test()
+	fun(1) _
+	.fun(2) _
+	.fun(3)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//iCS_B_MemberProcedureCall");
+        }
+
+        [TestMethod]
+        public void TestDeclareLineContinuation()
+        {
+            string code = @"
+Private Declare Function ABC Lib ""shell32.dll"" Alias _
+""ShellExecuteA""(ByVal a As Long, ByVal b As String, _
+ByVal c As String, ByVal d As String, ByVal e As String, ByVal f As Long) As Long";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//declareStmt");
+        }
+
+        [TestMethod]
+        public void TestEraseStmt()
+        {
+            string code = @"
+Public Sub EraseTwoArrays()
+Erase someArray(), someOtherArray()
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//eraseStmt");
+        }
+
+        [TestMethod]
+        public void TestFixedLengthString()
+        {
+            string code = @"
+Sub FixedLengthString()
+    Dim someString As String * 255
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//fieldLength");
         }
 
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)

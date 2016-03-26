@@ -11,7 +11,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public class DeclarationSymbolsListener : VBABaseListener
+    public class DeclarationSymbolsListener : VBAParserBaseListener
     {
         private readonly QualifiedModuleName _qualifiedName;
         private readonly Declaration _moduleDeclaration;

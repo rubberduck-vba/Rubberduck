@@ -361,7 +361,7 @@ namespace Rubberduck.Parsing.VBA
             return ParserState.Ready;
         }
 
-        private class ObsoleteCallStatementListener : VBABaseListener
+        private class ObsoleteCallStatementListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.ExplicitCallStmtContext> _contexts = new List<VBAParser.ExplicitCallStmtContext>();
             public IEnumerable<VBAParser.ExplicitCallStmtContext> Contexts { get { return _contexts; } }
@@ -385,7 +385,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private class ObsoleteLetStatementListener : VBABaseListener
+        private class ObsoleteLetStatementListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
             public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
@@ -399,7 +399,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private class EmptyStringLiteralListener : VBABaseListener
+        private class EmptyStringLiteralListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.LiteralContext> _contexts = new List<VBAParser.LiteralContext>();
             public IEnumerable<VBAParser.LiteralContext> Contexts { get { return _contexts; } }
@@ -414,7 +414,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private class ArgListWithOneByRefParamListener : VBABaseListener
+        private class ArgListWithOneByRefParamListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.ArgListContext> _contexts = new List<VBAParser.ArgListContext>();
             public IEnumerable<VBAParser.ArgListContext> Contexts { get { return _contexts; } }
@@ -428,7 +428,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private class CommentListener : VBABaseListener
+        private class CommentListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.RemCommentContext> _remComments = new List<VBAParser.RemCommentContext>();
             public IEnumerable<VBAParser.RemCommentContext> RemComments { get { return _remComments; } }
