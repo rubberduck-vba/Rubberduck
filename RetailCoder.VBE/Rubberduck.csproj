@@ -292,7 +292,6 @@
     <Compile Include="Common\Dispatch\VBProjectsEventsSink.cs" />
     <Compile Include="Common\Dispatch\VBProjectsEventsWrapper.cs" />
     <Compile Include="Common\HookEventArgs.cs" />
-    <Compile Include="Common\Hotkeys\HotkeyController.cs" />
     <Compile Include="Common\Hotkeys\HotkeyInfo.cs" />
     <Compile Include="Common\Hotkeys\Hotkey.cs" />
     <Compile Include="Common\IAttachable.cs" />
