@@ -57,7 +57,7 @@ namespace Rubberduck.Inspections
                 var factory = new EncapsulateFieldPresenterFactory(_parseResult, new ActiveCodePaneEditor(vbe, _wrapperFactory), view);
                 var refactoring = new EncapsulateFieldRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory));
                 refactoring.Refactor(_target);
-                IsCancelled = view.DialogResult == DialogResult.Cancel;
+                IsCancelled = view.DialogResult != DialogResult.OK;
             }
         }
 

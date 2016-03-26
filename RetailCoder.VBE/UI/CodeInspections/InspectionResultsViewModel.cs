@@ -183,25 +183,22 @@ namespace Rubberduck.UI.CodeInspections
         {
             var fixes = quickFixes.ToList();
             var completed = 0;
+            var cancelled = 0;
             foreach (var quickFix in fixes)
             {
-                // if we have more than 1 fix to run, one cancelled should cancel all remaining fixes:
-                if (!fixes.Any(fix => fix.IsCancelled))
+                quickFix.IsCancelled = false;
+                quickFix.Fix();
+                completed++;
+
+                if (quickFix.IsCancelled)
                 {
-                    quickFix.Fix();
-                    if (quickFix.IsCancelled)
-                    {
-                        completed++;
-                    }
-                }
-                else
-                {
-                    break; // no need to keep iterating
+                    cancelled++;
+                    break;
                 }
             }
 
             // refresh if any quickfix has completed without cancelling:
-            if (completed != 0)
+            if (completed != 0 && cancelled < completed)
             {
                 Task.Run(() => ExecuteRefreshCommandAsync(null));
             }
