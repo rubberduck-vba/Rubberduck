@@ -19,6 +19,7 @@ using Rubberduck.UI.Command.MenuItems;
 using Infralution.Localization.Wpf;
 using Rubberduck.Common.Dispatch;
 using Rubberduck.Common.Hotkeys;
+using Rubberduck.UI.Command;
 using Hotkey = Rubberduck.Common.Hotkeys.Hotkey;
 
 namespace Rubberduck
@@ -243,7 +244,7 @@ namespace Rubberduck
         private bool _isAwaitingTwoStepKey;
         private bool _skipKeyUp;
 
-        private async void hooks_MessageReceived(object sender, HookEventArgs e)
+        private void hooks_MessageReceived(object sender, HookEventArgs e)
         {
             if (sender is LowLevelKeyboardHook)
             {
@@ -346,22 +347,25 @@ namespace Rubberduck
         private void CleanReloadConfig()
         {
             LoadConfig();
-            var hotkeys = _config.UserSettings.GeneralSettings
-                .HotkeySettings
-                .Where(hotkey => hotkey.IsEnabled)
-                .ToList();
+            var hotkeys = _config.UserSettings.GeneralSettings.HotkeySettings
+                .Where(hotkey => hotkey.IsEnabled).ToList();
 
             _hotkeyNameMap = hotkeys
                 .ToDictionary(
                     hotkey => hotkey.ToString(),
                     hotkey => (RubberduckHotkey)Enum.Parse(typeof(RubberduckHotkey), hotkey.Name));
 
-            _hotkeyActions = hotkeys
-                .Where(hotkey => string.IsNullOrEmpty(hotkey.Key2))
-                .ToDictionary(
-                    hotkey => (RubberduckHotkey)Enum.Parse(typeof(RubberduckHotkey),
-                        hotkey.Name), hotkey => hotkey.Command);
-
+            _hotkeyActions = (from hotkey in hotkeys
+                             let value = (RubberduckHotkey)Enum.Parse(typeof(RubberduckHotkey),hotkey.Name)
+                             where string.IsNullOrEmpty(hotkey.Key2)
+                             select new
+                             {
+                                 Hotkey = value, 
+                                 Command = _appCommands.OfType<IHotkeyCommand>()
+                                 .SingleOrDefault(command => command.Hotkey == (RubberduckHotkey)Enum.Parse(typeof(RubberduckHotkey),hotkey.Name))
+                             })
+                             .ToDictionary(kvp => kvp.Hotkey, kvp => (ICommand)kvp.Command);
+                             
             _secondKeyActions = hotkeys
                 .Where(hotkey => !string.IsNullOrEmpty(hotkey.Key2))
                 .ToDictionary(

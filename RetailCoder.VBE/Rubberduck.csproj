@@ -348,6 +348,9 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Command\IHotkeyCommand.cs" />
+    <Compile Include="UI\Command\IndentCurrentModuleCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\InspectionResultsCommandMenuItem.cs" />
     <Compile Include="UI\Command\ShowParserErrorsCommand.cs" />
     <Compile Include="UI\Command\SyntaxErrorExtensions.cs" />
     <Compile Include="UI\Controls\DeclarationTypeToStringConverter.cs" />
@@ -560,7 +563,7 @@
     <Compile Include="UI\Command\RegexSearchReplaceCommand.cs" />
     <Compile Include="UI\Command\RunAllTestsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RunAllTestsCommandMenuItem.cs" />
-    <Compile Include="UI\Command\RunCodeInspectionsCommand.cs" />
+    <Compile Include="UI\Command\InspectionResultsCommand.cs" />
     <Compile Include="UI\Command\ShowSourceControlPanelCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ShowSourceControlPanelCommandMenuItem.cs" />
     <Compile Include="UI\Command\TestExplorerCommand.cs" />

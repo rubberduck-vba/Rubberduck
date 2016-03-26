@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
 {
@@ -6,7 +7,7 @@ namespace Rubberduck.UI.Command
     /// A command that displays the Code Explorer window.
     /// </summary>
     [ComVisible(false)]
-    public class CodeExplorerCommand : CommandBase
+    public class CodeExplorerCommand : CommandBase, IHotkeyCommand
     {
         private readonly IPresenter _presenter;
 
@@ -19,5 +20,7 @@ namespace Rubberduck.UI.Command
         {
             _presenter.Show();
         }
+
+        public RubberduckHotkey Hotkey { get {return RubberduckHotkey.CodeExplorer; } }
     }
 }

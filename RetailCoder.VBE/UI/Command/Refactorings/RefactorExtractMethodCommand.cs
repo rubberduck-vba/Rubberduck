@@ -2,12 +2,13 @@ using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
+using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class RefactorExtractMethodCommand : RefactorCommandBase
+    public class RefactorExtractMethodCommand : RefactorCommandBase, IHotkeyCommand
     {
         private readonly RubberduckParserState _state;
 
@@ -24,5 +25,7 @@ namespace Rubberduck.UI.Command.Refactorings
             refactoring.InvalidSelection += HandleInvalidSelection;
             refactoring.Refactor();
         }
+
+        public RubberduckHotkey Hotkey { get {return RubberduckHotkey.RefactorExtractMethod; } }
     }
 }
