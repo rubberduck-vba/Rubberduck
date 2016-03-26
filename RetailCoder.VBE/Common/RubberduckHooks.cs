@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Rubberduck.Common.Hotkeys;
 using Rubberduck.Common.WinAPI;
 
 namespace Rubberduck.Common
@@ -119,8 +120,6 @@ namespace Rubberduck.Common
             Detach();
         }
 
-        private bool _isWaitingForStep2 = false;
-
         private IntPtr WindowProc(IntPtr hWnd, int uMsg, int wParam, int lParam)
         {
             try
@@ -133,13 +132,12 @@ namespace Rubberduck.Common
                         case WM.HOTKEY:
                             if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_mainWindowHandle))
                             {
-                                var hook = Hooks.OfType<IHotKey>().SingleOrDefault(k => k.HotKeyInfo.HookId == (IntPtr)wParam);
+                                var hook = Hooks.OfType<IHotkey>().SingleOrDefault(k => k.HotkeyInfo.HookId == (IntPtr)wParam);
                                 if (hook != null)
                                 {
-                                    var args = new HookEventArgs(hook.HotKeyInfo.Keys);
+                                    var args = new HookEventArgs(hook.HotkeyInfo.Keys);
                                     OnMessageReceived(hook, args);
                                     processed = true;
-                                    _isWaitingForStep2 = hook.IsTwoStepHotKey;
                                 }
                             }
                             break;

@@ -2,16 +2,16 @@ using System;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Rubberduck.Common
+namespace Rubberduck.Common.Hotkeys
 {
-    public struct HotKeyInfo
+    public struct HotkeyInfo
     {
         private const Keys Modifiers = Keys.Alt | Keys.Control | Keys.Shift;
 
         private readonly IntPtr _hookId;
         private readonly Keys _keys;
 
-        public HotKeyInfo(IntPtr hookId, Keys keys)
+        public HotkeyInfo(IntPtr hookId, Keys keys)
         {
             _hookId = hookId;
             _keys = keys;

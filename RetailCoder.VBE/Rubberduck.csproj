@@ -292,11 +292,12 @@
     <Compile Include="Common\Dispatch\VBProjectsEventsSink.cs" />
     <Compile Include="Common\Dispatch\VBProjectsEventsWrapper.cs" />
     <Compile Include="Common\HookEventArgs.cs" />
-    <Compile Include="Common\HotKeyInfo.cs" />
-    <Compile Include="Common\HotKey.cs" />
+    <Compile Include="Common\Hotkeys\HotkeyController.cs" />
+    <Compile Include="Common\Hotkeys\HotkeyInfo.cs" />
+    <Compile Include="Common\Hotkeys\Hotkey.cs" />
     <Compile Include="Common\IAttachable.cs" />
     <Compile Include="Common\IHook.cs" />
-    <Compile Include="Common\IHotKey.cs" />
+    <Compile Include="Common\Hotkeys\IHotkey.cs" />
     <Compile Include="Common\ILowLevelKeyboardHook.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
     <Compile Include="Common\ITimerHook.cs" />
@@ -336,6 +337,7 @@
     </Compile>
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
+    <Compile Include="Settings\RubberduckHotkey.cs" />
     <Compile Include="UI\About\AboutControl.xaml.cs">
       <DependentUpon>AboutControl.xaml</DependentUpon>
     </Compile>
@@ -432,7 +434,7 @@
     <Compile Include="Root\RubberduckModule.cs" />
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
     <Compile Include="Settings\GeneralSettings.cs" />
-    <Compile Include="Settings\Hotkey.cs" />
+    <Compile Include="Settings\HotkeySetting.cs" />
     <Compile Include="Settings\IndenterSettings.cs" />
     <Compile Include="Settings\SourceControlConfiguration.cs" />
     <Compile Include="Settings\SourceControlConfigurationService.cs" />

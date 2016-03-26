@@ -137,13 +137,13 @@ namespace Rubberduck.Settings
             return new GeneralSettings(new DisplayLanguageSetting("en-US"),
                 new[]
                 {
-                    new Hotkey{Name="IndentProcedure", IsEnabled=true, HasCtrlModifier = true, Key1="P"},
-                    new Hotkey{Name="IndentModule", IsEnabled=true, HasCtrlModifier = true, Key1="M"},
-                    new Hotkey{Name="CodeExplorer", IsEnabled=true, HasCtrlModifier = true, Key1="R"},
-                    new Hotkey{Name="InspectionResults", IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="I"},
-                    new Hotkey{Name="TestExplorer", IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="T"},
-                    new Hotkey{Name="RefactorRename", IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="R"},
-                    new Hotkey{Name="RefactorExtractMethod", IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="M"}
+                    new HotkeySetting{Name=RubberduckHotkey.IndentProcedure.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="P"},
+                    new HotkeySetting{Name=RubberduckHotkey.IndentModule.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="M"},
+                    new HotkeySetting{Name=RubberduckHotkey.CodeExplorer.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="R"},
+                    new HotkeySetting{Name=RubberduckHotkey.InspectionResults.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="I"},
+                    new HotkeySetting{Name=RubberduckHotkey.TestExplorer.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="T"},
+                    new HotkeySetting{Name=RubberduckHotkey.RefactorRename.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="R"},
+                    new HotkeySetting{Name=RubberduckHotkey.RefactorExtractMethod.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="M"}
                 },
                 false, 10);
         }

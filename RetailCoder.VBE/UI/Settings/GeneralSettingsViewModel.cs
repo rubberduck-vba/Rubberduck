@@ -20,7 +20,7 @@ namespace Rubberduck.UI.Settings
 
             SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
 
-            Hotkeys = new ObservableCollection<Hotkey>(config.UserSettings.GeneralSettings.HotkeySettings);
+            Hotkeys = new ObservableCollection<HotkeySetting>(config.UserSettings.GeneralSettings.HotkeySettings);
             AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
             AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
         }
@@ -41,8 +41,8 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private ObservableCollection<Hotkey> _hotkeys;
-        public ObservableCollection<Hotkey> Hotkeys
+        private ObservableCollection<HotkeySetting> _hotkeys;
+        public ObservableCollection<HotkeySetting> Hotkeys
         {
             get { return _hotkeys; }
             set
@@ -94,7 +94,7 @@ namespace Rubberduck.UI.Settings
         public void SetToDefaults(Configuration config)
         {
             SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
-            Hotkeys = new ObservableCollection<Hotkey>(config.UserSettings.GeneralSettings.HotkeySettings);
+            Hotkeys = new ObservableCollection<HotkeySetting>(config.UserSettings.GeneralSettings.HotkeySettings);
             AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
             AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
         }

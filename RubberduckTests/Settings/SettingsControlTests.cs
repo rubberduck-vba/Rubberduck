@@ -20,8 +20,8 @@ namespace RubberduckTests.Settings
                 Language = new DisplayLanguageSetting("en-US"),
                 HotkeySettings = new[]
                 {
-                    new Hotkey{Name="IndentProcedure", IsEnabled=true, Key1="CTRL-P"},
-                    new Hotkey{Name="IndentModule", IsEnabled=true, Key1="CTRL-M"}
+                    new HotkeySetting{Name="IndentProcedure", IsEnabled=true, Key1="CTRL-P"},
+                    new HotkeySetting{Name="IndentModule", IsEnabled=true, Key1="CTRL-M"}
                 },
                 AutoSaveEnabled = false,
                 AutoSavePeriod = 10
@@ -82,8 +82,8 @@ namespace RubberduckTests.Settings
                 Language = new DisplayLanguageSetting("sv-SE"),
                 HotkeySettings = new[]
                 {
-                    new Hotkey{Name="IndentProcedure", IsEnabled=false, Key1="CTRL-C"},
-                    new Hotkey{Name="IndentModule", IsEnabled=false, Key1="CTRL-X"}
+                    new HotkeySetting{Name="IndentProcedure", IsEnabled=false, Key1="CTRL-C"},
+                    new HotkeySetting{Name="IndentModule", IsEnabled=false, Key1="CTRL-X"}
                 },
                 AutoSaveEnabled = true,
                 AutoSavePeriod = 5

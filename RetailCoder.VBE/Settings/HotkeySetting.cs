@@ -1,9 +1,11 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Windows.Input;
+using System.Xml.Serialization;
 using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
-    public class Hotkey
+    public class HotkeySetting
     {
         public const string KeyModifierAlt = "%";
         public const string KeyModifierCtrl = "^";
@@ -19,6 +21,9 @@ namespace Rubberduck.Settings
         public bool HasShiftModifier { get; set; }
         public bool HasAltModifier { get; set; }
         public bool HasCtrlModifier { get; set; }
+
+        [XmlIgnore]
+        public ICommand Command { get; set; }
 
         [XmlIgnore]
         public string Prompt
@@ -37,7 +42,7 @@ namespace Rubberduck.Settings
 
         public override bool Equals(object obj)
         {
-            var hotkey = obj as Hotkey;
+            var hotkey = obj as HotkeySetting;
 
             return hotkey != null &&
                    hotkey.Name == Name &&
