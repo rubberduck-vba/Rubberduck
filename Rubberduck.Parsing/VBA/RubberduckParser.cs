@@ -38,8 +38,8 @@ namespace Rubberduck.Parsing.VBA
 
         private void ReparseRequested(object sender, EventArgs e)
         {
-            Task.Run(() => ParseInternal());
-        }
+                Task.Run(() => ParseInternal());
+            }
 
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
@@ -129,7 +129,8 @@ namespace Rubberduck.Parsing.VBA
             var references = projects
                 .SelectMany(project => project.References.Cast<Reference>())
                 .DistinctBy(reference => reference.Guid)
-                .Where(reference => reference.Type == vbext_RefKind.vbext_rk_TypeLib);
+                .Where(reference => reference.Type == vbext_RefKind.vbext_rk_TypeLib)
+                .ToList();
             foreach (var reference in references)
             {
                 AddDeclarationsFromReference(reference);
@@ -358,6 +359,26 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
             return ParserState.Ready;
+        }
+
+        public void Resolve(CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ParseAsync(VBComponent component, TokenStreamRewriter rewriter = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Cancel(VBComponent component = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ParseAsync(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
+        {
+            throw new NotImplementedException();
         }
 
         private class ObsoleteCallStatementListener : VBAParserBaseListener

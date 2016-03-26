@@ -115,10 +115,7 @@ namespace Rubberduck.Parsing.VBA
 
         public ParserState GetModuleState(VBComponent component)
         {
-            ParserState result;
-            return _moduleStates.TryGetValue(component, out result) 
-                ? result 
-                : ParserState.Pending;
+            return _moduleStates.GetOrAdd(component, ParserState.Pending);
         }
 
         private ParserState _status;
@@ -158,7 +155,7 @@ namespace Rubberduck.Parsing.VBA
             internal set { _obsoleteLetContexts = value; }
         }
 
-        internal void SetModuleAttributes(VBComponent component, IDictionary<Tuple<string, Declaration>, Attributes> attributes)
+        internal void SetModuleAttributes(VBComponent component, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
         {
             _moduleAttributes.AddOrUpdate(component, attributes, (c, s) => attributes);
         }
@@ -232,7 +229,7 @@ namespace Rubberduck.Parsing.VBA
 
         internal IDictionary<Tuple<string, DeclarationType>, Attributes> getModuleAttributes(VBComponent vbComponent)
         {
-            return _moduleAttributes.[vbComponent];
+            return _moduleAttributes[vbComponent];
         }
 
         /// <summary>
