@@ -117,26 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
-    <value>TODO</value>
-  </data>
   <data name="OK_AllCaps" xml:space="preserve">
     <value>OK</value>
-  </data>
-  <data name="About_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
-  </data>
-  <data name="About_JetBrains" xml:space="preserve">
-    <value>JetBrains ReSharper Community Team</value>
-  </data>
-  <data name="About_LibGit2SharpCredit" xml:space="preserve">
-    <value>GitHub integration powered by LibGit2Sharp</value>
-  </data>
-  <data name="About_ParsingCredit" xml:space="preserve">
-    <value>Parsing powered by ANTLR</value>
-  </data>
-  <data name="About_StackOverflow" xml:space="preserve">
-    <value>Stack Overflow</value>
   </data>
   <data name="DeclarationType_Class" xml:space="preserve">
     <value>クラス</value>
@@ -179,9 +161,6 @@
   </data>
   <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
     <value>一般設定</value>
-  </data>
-  <data name="SettingsCaption_CodeInspections" xml:space="preserve">
-    <value>コード検査設定</value>
   </data>
   <data name="RenameDialog_ProjectRenameError" xml:space="preserve">
     <value>オブジェクト名を変更出来ませんでした。</value>
@@ -294,15 +273,6 @@
   <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
     <value>パラメーター削除</value>
   </data>
-  <data name="Inspections_ChangeGlobalAccessModifierToPublic" xml:space="preserve">
-    <value>「Global」アクセス修飾子を「Public」に変更。</value>
-  </data>
-  <data name="Inspections_IntroduceLocalVariable" xml:space="preserve">
-    <value>ローカル変数を導入</value>
-  </data>
-  <data name="Inspections_RemoveComment" xml:space="preserve">
-    <value>コメントを削除する</value>
-  </data>
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>識別子の名前を変更</value>
   </data>
@@ -321,17 +291,11 @@
   <data name="CancelButtonText" xml:space="preserve">
     <value>キャンセル</value>
   </data>
-  <data name="Inspections_MultilineParameter" xml:space="preserve">
-    <value>変数を1行にまとめる</value>
-  </data>
   <data name="TodoSettings_Text" xml:space="preserve">
     <value>テキスト</value>
   </data>
   <data name="TodoSettings_TextLabel" xml:space="preserve">
     <value>テキスト：</value>
-  </data>
-  <data name="TodoSettings_Priority" xml:space="preserve">
-    <value>優先順位</value>
   </data>
   <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
     <value>Rubberduck コード検査 - {0}
@@ -354,15 +318,6 @@
   </data>
   <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
     <value>{1}に{0}が正常にマージされました。</value>
-  </data>
-  <data name="TodoPriority_Medium" xml:space="preserve">
-    <value>中</value>
-  </data>
-  <data name="TodoPriority_Low" xml:space="preserve">
-    <value>低</value>
-  </data>
-  <data name="TodoPriority_High" xml:space="preserve">
-    <value>高</value>
   </data>
   <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
     <value>警告</value>
@@ -396,30 +351,6 @@
   </data>
   <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
     <value>ブランチ：</value>
-  </data>
-  <data name="Inspections_PassParamByValue" xml:space="preserve">
-    <value>パラメーターを値で渡す</value>
-  </data>
-  <data name="Inspections_PassParamByRefExplicitly" xml:space="preserve">
-    <value>パラメーターを明示的に参照で渡す</value>
-  </data>
-  <data name="Inspections_RemoveTypeHints" xml:space="preserve">
-    <value>型ヒントを削除する</value>
-  </data>
-  <data name="Inspections_RemoveUnassignedVariable" xml:space="preserve">
-    <value>割り当てられていない変数を削除する</value>
-  </data>
-  <data name="Inspections_RemoveUnusedDeclaration" xml:space="preserve">
-    <value>使用されていない宣言を削除する</value>
-  </data>
-  <data name="Inspections_RemoveUnusedParameter" xml:space="preserve">
-    <value>使用されていないパラメーターを削除する</value>
-  </data>
-  <data name="Inspections_ReturnExplicitVariant" xml:space="preserve">
-    <value>明示的なバリアントを返す</value>
-  </data>
-  <data name="Inspections_SpecifyPublicModifierExplicitly" xml:space="preserve">
-    <value>Publicアクセス修飾子を明示的に指定する</value>
   </data>
   <data name="LoadConfigError" xml:space="preserve">
     <value>Rubberduck設定のロード中にエラーが発生しました</value>
@@ -511,12 +442,6 @@
   <data name="Type" xml:space="preserve">
     <value>型</value>
   </data>
-  <data name="Inspections_DeclarationOf" xml:space="preserve">
-    <value>の宣言</value>
-  </data>
-  <data name="Inspections_UsageOf" xml:space="preserve">
-    <value>の使用</value>
-  </data>
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
     <value>2つ以上のテストメソッドを含むプロジェクトはプロジェクト名とテスト名が同じです。続行するには同じであるプロジェクトやテスト名を変更してください。</value>
   </data>
@@ -529,77 +454,17 @@
   <data name="Warning" xml:space="preserve">
     <value>警告</value>
   </data>
-  <data name="ByValParameterIsAssigned_" xml:space="preserve">
-    <value>ByValパラメータ「{0}」は割り当てられています</value>
-  </data>
-  <data name="ConstantNotUsed_" xml:space="preserve">
-    <value>定数「{0}」は使用されていません</value>
-  </data>
   <data name="EasterEgg_Continuator" xml:space="preserve">
     <value>「継続者」バッジを獲得しました！</value>
   </data>
-  <data name="FunctionNotUsed_" xml:space="preserve">
-    <value>関数「{0}」は仕様されていません</value>
-  </data>
-  <data name="ImplicitByRef_" xml:space="preserve">
-    <value>パラメーター「{0}」は暗黙的にByRefで渡されます</value>
-  </data>
-  <data name="ImplicitPublicMember_" xml:space="preserve">
-    <value>メンバー「{0}」は暗黙的にパブリックになっています</value>
-  </data>
-  <data name="ImplicitVariantReturnType_" xml:space="preserve">
-    <value>関数「{0}」は暗黙的にバリアントを返します</value>
-  </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>モジュールオプションは最初に指定しなければなりません</value>
-  </data>
-  <data name="MultilineParameter_" xml:space="preserve">
-    <value>パラメーター「{0}」は複数の行で宣言されています</value>
-  </data>
-  <data name="NonReturningFunction_" xml:space="preserve">
-    <value>メンバー「{0}」の戻り値は割り当てられていません</value>
   </data>
   <data name="ObsoleteComment" xml:space="preserve">
     <value>不要なRemコメント構文の使用</value>
   </data>
   <data name="ObsoleteGlobal" xml:space="preserve">
     <value>不要なGlobalクセス修飾子の使用</value>
-  </data>
-  <data name="ObsoleteLet" xml:space="preserve">
-    <value>不要なLetステートメントの使用</value>
-  </data>
-  <data name="OptionBase" xml:space="preserve">
-    <value>混乱させる能性のある暗黙な配列下限</value>
-  </data>
-  <data name="OptionExplicit" xml:space="preserve">
-    <value>Option Explicitが指定されていません</value>
-  </data>
-  <data name="ParameterCanBeByVal_" xml:space="preserve">
-    <value>パラメーター「{0}」は値で渡すことが出来ます</value>
-  </data>
-  <data name="ParameterNotUsed_" xml:space="preserve">
-    <value>パラメーター「{0}」は使用されていません</value>
-  </data>
-  <data name="ProcedureNotUsed_" xml:space="preserve">
-    <value>プロシージャー「{0}」は使用されていません</value>
-  </data>
-  <data name="UnassignedVariableUsage_" xml:space="preserve">
-    <value>割り当てられていない変数「{0}」の使用</value>
-  </data>
-  <data name="ObsoleteCall" xml:space="preserve">
-    <value>不要なCallステートメントの使用</value>
-  </data>
-  <data name="VariableNotAssigned_" xml:space="preserve">
-    <value>変数「{0}」は割り当てられていません</value>
-  </data>
-  <data name="VariableNotUsed_" xml:space="preserve">
-    <value>変数「{0}」は使用されていません</value>
-  </data>
-  <data name="_ObsoleteTypeHint_" xml:space="preserve">
-    <value>{0}「{1}」で不要なタイプヒントの使用</value>
-  </data>
-  <data name="Priority" xml:space="preserve">
-    <value>優先順位</value>
   </data>
   <data name="Component" xml:space="preserve">
     <value>コンポーネント</value>
@@ -609,9 +474,6 @@
   </data>
   <data name="Outcome" xml:space="preserve">
     <value>結果</value>
-  </data>
-  <data name="Settings_LanguageLabel" xml:space="preserve">
-    <value>表示言語：</value>
   </data>
   <data name="Language_EN" xml:space="preserve">
     <value>英語</value>
@@ -682,9 +544,6 @@
   <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
     <value>最後の実行を繰り返す</value>
   </data>
-  <data name="GenericProjectName_" xml:space="preserve">
-    <value>プロジェクト名「{0}」はジェネリック名称のままです</value>
-  </data>
   <data name="Line" xml:space="preserve">
     <value>線</value>
   </data>
@@ -702,9 +561,6 @@
   </data>
   <data name="Settings_Caption" xml:space="preserve">
     <value>Rubberduck設定</value>
-  </data>
-  <data name="TodoSettings_PriorityLabel" xml:space="preserve">
-    <value>優先順位：</value>
   </data>
   <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
     <value>コード品質問題</value>
@@ -734,27 +590,6 @@
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>「{0}」の名前を変更</value>
   </data>
-  <data name="About_AllContributors" xml:space="preserve">
-    <value>GitHubのリポジトリの全ての貢献者</value>
-  </data>
-  <data name="About_Anyone" xml:space="preserve">
-    <value>そして、これを呼んでいる方！</value>
-  </data>
-  <data name="About_Blogs" xml:space="preserve">
-    <value>ブログ：</value>
-  </data>
-  <data name="About_Caption" xml:space="preserve">
-    <value>Rubberduckについて</value>
-  </data>
-  <data name="About_Community" xml:space="preserve">
-    <value>コミュニティ：</value>
-  </data>
-  <data name="About_Contributors" xml:space="preserve">
-    <value>寄与者とサポーター：</value>
-  </data>
-  <data name="About_CodeReview" xml:space="preserve">
-    <value>Code Review Stack Exchange</value>
-  </data>
   <data name="SourceControlPanel_Caption" xml:space="preserve">
     <value>ソースコントロール</value>
   </data>
@@ -766,9 +601,6 @@
   </data>
   <data name="SourceControl_GlobalSettings" xml:space="preserve">
     <value>グローバル設定</value>
-  </data>
-  <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
-    <value>作業ダイレクトリーを開く</value>
   </data>
   <data name="SourceControl_RespositorySettings" xml:space="preserve">
     <value>リポジトリ設定</value>
@@ -793,12 +625,6 @@
   </data>
   <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
     <value>コミットメモ：</value>
-  </data>
-  <data name="SourceControl_CommitPush" xml:space="preserve">
-    <value>コミットとプッシュ</value>
-  </data>
-  <data name="SourceControl_CommitSync" xml:space="preserve">
-    <value>コミット同期</value>
   </data>
   <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
     <value>プル</value>
@@ -881,9 +707,6 @@
   <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
     <value>&amp;Iコード検査</value>
   </data>
-  <data name="RubberduckMenu_Options" xml:space="preserve">
-    <value>&amp;Oリファクタリング</value>
-  </data>
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>&amp;Rリファクタリング</value>
   </data>
@@ -904,18 +727,6 @@
   </data>
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} （解析中...）</value>
-  </data>
-  <data name="Inspections_DeclareAsExplicitVariant" xml:space="preserve">
-    <value>明示的バリアントとして宣言</value>
-  </data>
-  <data name="Inspections_ConvertFunctionToProcedure" xml:space="preserve">
-    <value>関数をプロシージャーに変更</value>
-  </data>
-  <data name="Inspections_PassParamByReference" xml:space="preserve">
-    <value>パラメーターを参照で渡す</value>
-  </data>
-  <data name="Inspections_RemoveObsoleteStatement" xml:space="preserve">
-    <value>不要文章を削除</value>
   </data>
   <data name="FormContextMenu_Rename" xml:space="preserve">
     <value>&amp;n名前の変更</value>
@@ -951,37 +762,34 @@
     <value>&amp;Tテストを全て実行する</value>
   </data>
   <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>&amp;A追加</value>
+    <value>追加</value>
   </data>
   <data name="TestExplorer_RunAllTests" xml:space="preserve">
-    <value>&amp;A全てのテスト</value>
+    <value>全てのテスト</value>
   </data>
   <data name="TestExplorer_RunButtonText" xml:space="preserve">
-    <value>&amp;R実行</value>
+    <value>実行</value>
   </data>
   <data name="TestExplorer_RunFailedTests" xml:space="preserve">
-    <value>&amp;F不合格テスト</value>
+    <value>不合格テスト</value>
   </data>
   <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
-    <value>&amp;N実行されていないテスト</value>
+    <value>実行されていないテスト</value>
   </data>
   <data name="TestExplorer_RunPassedTests" xml:space="preserve">
-    <value>&amp;P合格テスト</value>
+    <value>合格テスト</value>
   </data>
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>&amp;S選択中のテスト</value>
+    <value>選択中のテスト</value>
   </data>
   <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>&amp;Tテストメソッド</value>
+    <value>Tテストメソッド</value>
   </data>
   <data name="SourceControl_AttributesFile" xml:space="preserve">
     <value>属性ファイル</value>
   </data>
   <data name="SourceControl_DefaultRepoLocationLabel" xml:space="preserve">
     <value>リポジトリのデフォルトパス</value>
-  </data>
-  <data name="About_SpecialThanks" xml:space="preserve">
-    <value>スペシャルサンクス</value>
   </data>
   <data name="SourceControl_ExcludedChanges" xml:space="preserve">
     <value>無視されている変更項目</value>
@@ -998,12 +806,6 @@
 デフォールト設定を回復しますか？
 注意：カスタム設定が全て上書きされます。 古い設定ファイルは「{3}」に保存されます。</value>
   </data>
-  <data name="Inspections_SplitDeclarations" xml:space="preserve">
-    <value>複数の宣言を複数の命令に分ける</value>
-  </data>
-  <data name="Inspections_ReplaceRemWithSingleQuoteMarker" xml:space="preserve">
-    <value>「Rem」を「'」に変更する</value>
-  </data>
   <data name="SourceControl_MergeFormInstructions" xml:space="preserve">
     <value>ソースとデスティネーションブランチを選択してください。</value>
   </data>
@@ -1019,12 +821,6 @@
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>メソッド「{0}」は「{1}.{2}」を実装しています。インターフェースメンバーの名前を変更しますか？</value>
   </data>
-  <data name="MultipleDeclarations" xml:space="preserve">
-    <value>命令は複数の宣言を含んでいます</value>
-  </data>
-  <data name="_TypeNotDeclared_" xml:space="preserve">
-    <value>「{1}」は暗黙的にバリアントになります</value>
-  </data>
   <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
     <value>選択したパラメーターをダブルクリックやボタン操作で削除か回復することが出来ます。</value>
   </data>
@@ -1039,9 +835,6 @@
   </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
     <value>文字列：</value>
-  </data>
-  <data name="About_FugueIconCredit" xml:space="preserve">
-    <value>Fugue icons by Yusuke Kamiyamane</value>
   </data>
   <data name="CodeExplorer_Navigate" xml:space="preserve">
     <value>&amp;vナビゲート</value>
@@ -1061,14 +854,8 @@
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
     <value>現在のプロジェクトから新規リポジトリを作成する</value>
   </data>
-  <data name="Inspections_RemoveUsageBreaksCode" xml:space="preserve">
-    <value>使用を取り外す（コードを壊します）</value>
-  </data>
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>リスト：</value>
-  </data>
-  <data name="TestExplorer_QualifiedMemberName" xml:space="preserve">
-    <value>修飾メンバー名</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
     <value>名前「{0}」は同じスコープ内にある「{1}」を同じです。それでも名前の変更を実行しますか？</value>
@@ -1085,14 +872,8 @@
   <data name="SourceControl_OutgoingCommits" xml:space="preserve">
     <value>出コミット</value>
   </data>
-  <data name="About_Stargazers" xml:space="preserve">
-    <value>私たちを応援して下さっている皆さん。</value>
-  </data>
   <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
     <value>保守性と読みやすさに関する問題</value>
-  </data>
-  <data name="About_Attributions" xml:space="preserve">
-    <value>帰属</value>
   </data>
   <data name="SourceControl_IgnoreFile" xml:space="preserve">
     <value>Ignoreファイル</value>
@@ -1115,9 +896,6 @@
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value />
   </data>
-  <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value />
-  </data>
   <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
     <value />
   </data>
@@ -1131,9 +909,6 @@
     <value />
   </data>
   <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
-    <value />
-  </data>
-  <data name="UntypedFunctionUsage_" xml:space="preserve">
     <value />
   </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
@@ -1160,9 +935,6 @@
   <data name="RefactorMenu_IntroduceField" xml:space="preserve">
     <value />
   </data>
-  <data name="DisableThisInspection" xml:space="preserve">
-    <value />
-  </data>
   <data name="EncapsulateField_TitleText" xml:space="preserve">
     <value />
   </data>
@@ -1179,9 +951,6 @@
     <value />
   </data>
   <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ImplicitActiveWorkbookReference_" xml:space="preserve">
     <value />
   </data>
   <data name="ImplementInterface_Caption" xml:space="preserve">
@@ -1226,16 +995,7 @@
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
     <value />
   </data>
-  <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value />
-  </data>
-  <data name="WriteOnlyProperty_" xml:space="preserve">
-    <value />
-  </data>
   <data name="IndentCurrentProcedure" xml:space="preserve">
-    <value />
-  </data>
-  <data name="QuickFixUseTypedFunction_" xml:space="preserve">
     <value />
   </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
@@ -1251,9 +1011,6 @@
     <value />
   </data>
   <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Inspections_SpecifyOptionExplicit" xml:space="preserve">
     <value />
   </data>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">
