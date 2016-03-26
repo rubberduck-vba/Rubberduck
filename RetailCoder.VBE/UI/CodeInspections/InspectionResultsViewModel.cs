@@ -181,12 +181,30 @@ namespace Rubberduck.UI.CodeInspections
 
         private void ExecuteQuickFixes(IEnumerable<CodeInspectionQuickFix> quickFixes)
         {
-            foreach (var quickFix in quickFixes)
+            var fixes = quickFixes.ToList();
+            var completed = 0;
+            foreach (var quickFix in fixes)
             {
-                quickFix.Fix();
+                // if we have more than 1 fix to run, one cancelled should cancel all remaining fixes:
+                if (!fixes.Any(fix => fix.IsCancelled))
+                {
+                    quickFix.Fix();
+                    if (quickFix.IsCancelled)
+                    {
+                        completed++;
+                    }
+                }
+                else
+                {
+                    break; // no need to keep iterating
+                }
             }
 
-            Task.Run(() => ExecuteRefreshCommandAsync(null));
+            // refresh if any quickfix has completed without cancelling:
+            if (completed != 0)
+            {
+                Task.Run(() => ExecuteRefreshCommandAsync(null));
+            }
         }
 
         private void ExecuteQuickFixCommand(object parameter)
