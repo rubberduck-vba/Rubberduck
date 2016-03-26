@@ -8,13 +8,10 @@ using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
-using Ninject.Parameters;
-using Rubberduck.Navigation;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.UI.Command.Refactorings;
-using Rubberduck.UI.Controls;
 
 namespace Rubberduck.Root
 {
@@ -139,7 +136,8 @@ namespace Rubberduck.Root
                     var item = types.SingleOrDefault(type => type.Name == commandName + "CommandMenuItem");
                     if (item != null)
                     {
-                        _kernel.Bind<ICommand>().To(command).WhenInjectedExactlyInto(item).InSingletonScope();
+                        _kernel.Bind<ICommand>().To(command).WhenInjectedExactlyInto(item).InSingletonScope().Named("commands");
+                        _kernel.Bind<ICommand>().To(command).WhenInjectedExactlyInto(typeof (App)).InSingletonScope().Named("commands");
                     }
                 }
                 catch (InvalidOperationException exception)
@@ -155,7 +153,7 @@ namespace Rubberduck.Root
             {
                 _kernel.Get<AboutCommandMenuItem>(),
                 _kernel.Get<SettingsCommandMenuItem>(),
-                _kernel.Get<RunCodeInspectionsCommandMenuItem>(),
+                _kernel.Get<InspectionResultsCommandMenuItem>(),
                 _kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
                 GetUnitTestingParentMenu(),
                 GetSmartIndenterParentMenu(),
@@ -205,7 +203,6 @@ namespace Rubberduck.Root
                 _kernel.Get<FindSymbolCommandMenuItem>(),
                 _kernel.Get<FindAllReferencesCommandMenuItem>(),
                 _kernel.Get<FindAllImplementationsCommandMenuItem>(),
-                _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
             };
             return new NavigateParentMenu(items);
         }

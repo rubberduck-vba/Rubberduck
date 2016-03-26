@@ -5,20 +5,20 @@ using Rubberduck.SmartIndenter;
 namespace Rubberduck.UI.Command
 {
     [ComVisible(false)]
-    public class IndentCurrentProcedureCommand : CommandBase, IHotkeyCommand
+    public class IndentCurrentModuleCommand : CommandBase, IHotkeyCommand
     {
         private readonly IIndenter _indenter;
 
-        public IndentCurrentProcedureCommand(IIndenter indenter)
+        public IndentCurrentModuleCommand(IIndenter indenter)
         {
             _indenter = indenter;
         }
 
         public override void Execute(object parameter)
         {
-            _indenter.IndentCurrentProcedure();
+            _indenter.IndentCurrentModule();
         }
 
-        public RubberduckHotkey Hotkey { get {return RubberduckHotkey.IndentProcedure; } }
+        public RubberduckHotkey Hotkey { get {return RubberduckHotkey.IndentModule; } }
     }
 }

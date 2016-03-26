@@ -1182,7 +1182,7 @@ namespace Rubberduck.Parsing.Symbols
                 || item.DeclarationType == DeclarationType.Module
                 || IsStaticClass(item)
                 || IsStdModuleMember(item)
-                || item.ParentScopeDeclaration.Equals(localScope)).ToList();
+                || (item.ParentScopeDeclaration != null && item.ParentScopeDeclaration.Equals(localScope))).ToList();
 
             if (matches.Count == 1 && !SpecialCasedTokens.Contains(matches.Single().IdentifierName))
             {
@@ -1201,7 +1201,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             result = matches.Where(item => IsBuiltInDeclarationInScope(item, localScope)).ToList();
-            if (result.Count == 1 && !SpecialCasedTokens.Contains(matches.Single().IdentifierName))
+            if (result.Count == 1 && !SpecialCasedTokens.Contains(result.Single().IdentifierName))
             {
                 return result.SingleOrDefault();
             }
