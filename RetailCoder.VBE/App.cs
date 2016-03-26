@@ -316,7 +316,7 @@ namespace Rubberduck
             var settings = _config.UserSettings.GeneralSettings.HotkeySettings;
             foreach (var hotkey in settings.Where(hotkey => hotkey.IsEnabled))
             {
-                _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, hotkey.KeyDisplaySymbol));
+                _hooks.AddHook(new HotKey((IntPtr)_vbe.MainWindow.HWnd, hotkey.ToString()));
             }
         }
 
