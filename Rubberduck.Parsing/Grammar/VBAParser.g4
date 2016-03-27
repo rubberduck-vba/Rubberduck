@@ -34,16 +34,16 @@ module :
 	whiteSpace?
 ;
 
-moduleHeader : VERSION WS DOUBLELITERAL WS? CLASS? endOfStatement;
+moduleHeader : VERSION whiteSpace DOUBLELITERAL whiteSpace? CLASS? endOfStatement;
 
 moduleConfig :
-	BEGIN (WS GUIDLITERAL WS ambiguousIdentifier WS?)? endOfStatement
+	BEGIN (whiteSpace GUIDLITERAL whiteSpace ambiguousIdentifier whiteSpace?)? endOfStatement
 	moduleConfigElement+
 	END
 ;
 
 moduleConfigElement :
-	ambiguousIdentifier WS* EQ WS* literal (COLON SHORTLITERAL)? endOfStatement
+	ambiguousIdentifier whiteSpace* EQ whiteSpace* literal (COLON SHORTLITERAL)? endOfStatement
 ;
 
 moduleAttributes : (attributeStmt endOfStatement)+;
