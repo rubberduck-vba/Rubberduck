@@ -17,6 +17,7 @@ using Rubberduck.Parsing.Preprocessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -181,6 +182,7 @@ namespace Rubberduck.Parsing.VBA
                 var emptyStringLiteralListener = new EmptyStringLiteralListener();
                 var argListsWithOneByRefParam = new ArgListWithOneByRefParamListener();
                 var commentListener = new CommentListener();
+                var annotationListener = new AnnotationListener(new VBAParserAnnotationFactory());
 
                 var listeners = new IParseTreeListener[]
                 {
@@ -188,7 +190,8 @@ namespace Rubberduck.Parsing.VBA
                     obsoleteLetListener,
                     emptyStringLiteralListener,
                     argListsWithOneByRefParam,
-                    commentListener
+                    commentListener,
+                    annotationListener
                 };
 
                 DeclarationSymbolsListener listener;

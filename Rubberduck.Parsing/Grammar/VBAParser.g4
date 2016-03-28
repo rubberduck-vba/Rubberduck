@@ -34,16 +34,16 @@ module :
 	whiteSpace?
 ;
 
-moduleHeader : VERSION WS DOUBLELITERAL WS? CLASS? endOfStatement;
+moduleHeader : VERSION whiteSpace DOUBLELITERAL whiteSpace? CLASS? endOfStatement;
 
 moduleConfig :
-	BEGIN (WS GUIDLITERAL WS ambiguousIdentifier WS?)? endOfStatement
+	BEGIN (whiteSpace GUIDLITERAL whiteSpace ambiguousIdentifier whiteSpace?)? endOfStatement
 	moduleConfigElement+
 	END
 ;
 
 moduleConfigElement :
-	ambiguousIdentifier WS* EQ WS* literal (COLON SHORTLITERAL)? endOfStatement
+	ambiguousIdentifier whiteSpace* EQ whiteSpace* literal (COLON SHORTLITERAL)? endOfStatement
 ;
 
 moduleAttributes : (attributeStmt endOfStatement)+;
@@ -562,12 +562,29 @@ ambiguousKeyword :
 	XOR
 ;
 
+endOfLine :
+    whiteSpace? (NEWLINE+ | comment | remComment) whiteSpace?
+    | whiteSpace? annotationList
+;
+
+endOfStatement : (endOfLine | whiteSpace? COLON whiteSpace?)*;
+
 remComment : REMCOMMENT;
 
 comment : COMMENT;
 
-endOfLine : whiteSpace? (NEWLINE+ | comment | remComment) whiteSpace?;
+annotationList : SINGLEQUOTE annotation+;
 
-endOfStatement : (endOfLine | whiteSpace? COLON whiteSpace?)*;
+annotation : AT annotationName annotationArgList?;
+
+annotationName : IDENTIFIER;
+
+annotationArgList : 
+	 whiteSpace annotationArg whiteSpace?
+	 | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+  whiteSpace?
+	 | whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN whiteSpace?
+	 | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN whiteSpace?;
+	
+annotationArg : IDENTIFIER | literal;
 
 whiteSpace : (WS | LINE_CONTINUATION)+;
