@@ -20,11 +20,11 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class RubberduckParser : IRubberduckParser
+    public class RubberduckParserLegacy : IRubberduckParser
     {
         private readonly ReferencedDeclarationsCollector _comReflector;
 
-        public RubberduckParser(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
+        public RubberduckParserLegacy(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
         {
             _vbe = vbe;
             _state = state;

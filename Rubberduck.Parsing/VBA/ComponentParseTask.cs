@@ -93,7 +93,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 Debug.WriteLine("Operation was Cancelled", cancel);
                 // no results to be used, so no results "returned"
-                ParseCompleted.Invoke(this, new ParseCompletionArgs());
+                //ParseCompleted.Invoke(this, new ParseCompletionArgs());
             }
         }
 
@@ -151,7 +151,7 @@ namespace Rubberduck.Parsing.VBA
             public Exception Cause { get; internal set; }
         }
 
-        private class CommentListener : VBABaseListener
+        private class CommentListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.RemCommentContext> _remComments = new List<VBAParser.RemCommentContext>();
             public IEnumerable<VBAParser.RemCommentContext> RemComments { get { return _remComments; } }

@@ -17,7 +17,7 @@ using Antlr4.Runtime.Misc;
 
 namespace Rubberduck.Parsing.VBA
 {
-    class RubberduckParserReimpl : IRubberduckParser
+    public class RubberduckParser : IRubberduckParser
     {
         public RubberduckParserState State
         {
@@ -27,8 +27,8 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private readonly CancellationTokenSource _central = new CancellationTokenSource();
-        private readonly CancellationTokenSource _resolverTokenSource; // linked to _central later
+        private CancellationTokenSource _central = new CancellationTokenSource();
+        private CancellationTokenSource _resolverTokenSource; // linked to _central later
         private readonly Dictionary<VBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks = new Dictionary<VBComponent, Tuple<Task, CancellationTokenSource>>();
 
         private readonly Dictionary<VBComponent, IParseTree> _parseTrees = new Dictionary<VBComponent, IParseTree>();
@@ -45,7 +45,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
 
-        public RubberduckParserReimpl(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
+        public RubberduckParser(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
         {
             _resolverTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token);
             _vbe = vbe;
@@ -60,11 +60,13 @@ namespace Rubberduck.Parsing.VBA
 
         private void StateOnStateChanged(object sender, EventArgs e)
         {
-            var args = e as ParserStateEventArgs;
+            ParserStateEventArgs args = e as ParserStateEventArgs;
+            Debug.WriteLine("RubberduckParser handles OnStateChanged ({0})", _state.Status);
+            // why access _state and not pass through EventArgs?
             if (args.State == ParserState.Parsed)
             {
+                Debug.WriteLine("(handling OnStateChanged) Starting resolver task");
                 Task.Run(() => Resolve(_central.Token));
-                // Resolving should be triggered.. not our job?
             }
         }
 
@@ -79,7 +81,18 @@ namespace Rubberduck.Parsing.VBA
             else
             {
                 Cancel(args.Component);
-                ParseAsync(args.Component, CancellationToken.None, _state.GetRewriter(args.Component));
+                ParseAsync(args.Component, CancellationToken.None);
+            }
+        }
+
+        public void Parse()
+        {
+            try
+            {
+                ParseAll();
+            } catch (Exception e)
+            {
+                Debug.WriteLine(e);
             }
         }
 
@@ -103,16 +116,20 @@ namespace Rubberduck.Parsing.VBA
             {
                 while (!_state.ClearDeclarations(vbComponent)) { }
 
-                ParseAsync(vbComponent, CancellationToken.None, _state.GetRewriter(vbComponent));
+                ParseAsync(vbComponent, CancellationToken.None);
             }
         }
 
         public Task ParseAsync(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
-            // FIXME remove invalidated "things"from _state
-            // this includes: Declarations, Comments, Attributes, "InspectionResults" (ObsoleteCall, ObsoleteLet, EmptyStringLiteral, ArgLists with OneByRef) and possibly more...
+            // Remove invalidated "things" from _state
+            // this includes: Declarations, Comments, Attributes, Exceptions, ParseTree and TokenStream
+            // how that works with the Inspecion results is not quite clear
             _state.ClearDeclarations(component);
-            _state.SetModuleState(component, ParserState.Pending);
+            _state.AddParseTree(component, null);
+            _state.AddTokenStream(component, null);
+            
+            _state.SetModuleState(component, ParserState.Pending); // also clears module-exceptions
             _state.SetModuleComments(component, Enumerable.Empty<CommentNode>());
             _state.SetModuleAttributes(component, new Dictionary<Tuple<string, DeclarationType>, Attributes>());
 
@@ -127,35 +144,49 @@ namespace Rubberduck.Parsing.VBA
         }
 
         public void Cancel(VBComponent component = null)
-        {            
-            if (component == null)
-            {
-                _central.Cancel(false);
-            }
-            else
-            {
-                _resolverTokenSource.Cancel(false);
-                Tuple<Task, CancellationTokenSource> result;
-                if (_currentTasks.TryGetValue(component, out result))
+        {
+            lock (_central)
+            lock (_resolverTokenSource)
                 {
-                    result.Item2.Cancel(false);
+                    if (component == null)
+                    {
+                        _central.Cancel(false);
+
+                        _central.Dispose();
+                        _central = new CancellationTokenSource();
+                        _resolverTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token);
+                    }
+                    else
+                    {
+                        _resolverTokenSource.Cancel(false);
+                        _resolverTokenSource.Dispose();
+
+                        _resolverTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token);
+                        Tuple<Task, CancellationTokenSource> result;
+                        if (_currentTasks.TryGetValue(component, out result))
+                        {
+                            result.Item2.Cancel(false);
+                            result.Item2.Dispose();
+                        }
+                    }
+
                 }
-            }
         }
 
         private void ParseAsyncInternal(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
             var preprocessor = new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
-            var parser = new ComponentParseTask(component, preprocessor, _attributeParser, _state.GetRewriter(component));
+            var parser = new ComponentParseTask(component, preprocessor, _attributeParser, rewriter);
             parser.ParseFailure += (sender, e) => _state.SetModuleState(component, ParserState.Error, e.Cause as SyntaxErrorException);
             parser.ParseCompleted += (sender, e) =>
             {
                 // possibly lock _state
-                _state.SetModuleState(component, ParserState.Parsed);
                 _state.SetModuleAttributes(component, e.Attributes);
                 _state.AddParseTree(component, e.ParseTree);
                 _state.AddTokenStream(component, e.Tokens);
                 _state.SetModuleComments(component, e.Comments);
+                // This really needs to go last
+                _state.SetModuleState(component, ParserState.Parsed);
             };
             _state.SetModuleState(component, ParserState.Parsing);
             parser.Start(token);
@@ -219,7 +250,7 @@ namespace Rubberduck.Parsing.VBA
             _state.ArgListsWithOneByRefParam = argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
             _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
             _state.ObsoleteLetContexts = obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-            _state.ObsoleteCallContexts = obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context))
+            _state.ObsoleteCallContexts = obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
         }
         
         private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
@@ -255,7 +286,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         #region Listener classes
-        private class ObsoleteCallStatementListener : VBABaseListener
+        private class ObsoleteCallStatementListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.ExplicitCallStmtContext> _contexts = new List<VBAParser.ExplicitCallStmtContext>();
             public IEnumerable<VBAParser.ExplicitCallStmtContext> Contexts { get { return _contexts; } }
@@ -279,7 +310,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private class ObsoleteLetStatementListener : VBABaseListener
+        private class ObsoleteLetStatementListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
             public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
@@ -293,7 +324,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private class EmptyStringLiteralListener : VBABaseListener
+        private class EmptyStringLiteralListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.LiteralContext> _contexts = new List<VBAParser.LiteralContext>();
             public IEnumerable<VBAParser.LiteralContext> Contexts { get { return _contexts; } }
@@ -308,7 +339,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private class ArgListWithOneByRefParamListener : VBABaseListener
+        private class ArgListWithOneByRefParamListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.ArgListContext> _contexts = new List<VBAParser.ArgListContext>();
             public IEnumerable<VBAParser.ArgListContext> Contexts { get { return _contexts; } }

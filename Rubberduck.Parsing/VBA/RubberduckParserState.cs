@@ -69,14 +69,14 @@ namespace Rubberduck.Parsing.VBA
             get { return _moduleExceptions.Select(kvp => Tuple.Create(kvp.Key, kvp.Value)).Where(item => item.Item2 != null).ToList(); }
         }
 
-        public event EventHandler StateChanged;
+        public event EventHandler<ParserStateEventArgs> StateChanged;
 
-        private void OnStateChanged()
+        private void OnStateChanged(ParserState state = ParserState.Pending)
         {
             var handler = StateChanged;
             if (handler != null)
             {
-                handler.Invoke(this, EventArgs.Empty);
+                handler.Invoke(this, new ParserStateEventArgs(state));
             }
         }
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
@@ -99,6 +99,8 @@ namespace Rubberduck.Parsing.VBA
             Debug.WriteLine("Module '{0}' state is changing to '{1}' (thread {2})", component.Name, state, Thread.CurrentThread.ManagedThreadId);
             OnModuleStateChanged(component, state);
             Status = EvaluateParserState();
+
+            OnStateChanged(Status);
         }
 
         private ParserState EvaluateParserState()
@@ -128,7 +130,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     _status = value; 
                     Debug.WriteLine("ParserState changed to '{0}', raising OnStateChanged", value);
-                    OnStateChanged();
+                    OnStateChanged(_status);
                 }
             } 
         }
