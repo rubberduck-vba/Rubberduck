@@ -31,6 +31,8 @@ namespace Rubberduck.Parsing.VBA
 
         public ComponentParseTask(VBComponent vbComponent, VBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
         {
+            _attributeParser = attributeParser;
+            _preprocessor = preprocessor;
             _component = vbComponent;
             _rewriter = rewriter;
             _qualifiedName = new QualifiedModuleName(vbComponent); 

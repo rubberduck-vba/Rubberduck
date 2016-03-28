@@ -28,6 +28,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private readonly CancellationTokenSource _central = new CancellationTokenSource();
+        private readonly CancellationTokenSource _resolverTokenSource; // linked to _central later
         private readonly Dictionary<VBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks = new Dictionary<VBComponent, Tuple<Task, CancellationTokenSource>>();
 
         private readonly Dictionary<VBComponent, IParseTree> _parseTrees = new Dictionary<VBComponent, IParseTree>();
@@ -46,6 +47,7 @@ namespace Rubberduck.Parsing.VBA
 
         public RubberduckParserReimpl(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
         {
+            _resolverTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token);
             _vbe = vbe;
             _state = state;
             _attributeParser = attributeParser;
@@ -135,12 +137,11 @@ namespace Rubberduck.Parsing.VBA
             }
             else
             {
+                _resolverTokenSource.Cancel(false);
                 Tuple<Task, CancellationTokenSource> result;
                 if (_currentTasks.TryGetValue(component, out result))
                 {
                     result.Item2.Cancel(false);
-                    // should we do this??
-                    //result.Item1.Wait(); 
                 }
             }
         }
@@ -171,7 +172,8 @@ namespace Rubberduck.Parsing.VBA
 
         public void Resolve(CancellationToken token)
         {
-            Task.Run(() => ResolveInternal(token));
+            var sharedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_resolverTokenSource.Token, token);
+            Task.Run(() => ResolveInternal(sharedTokenSource.Token));
         }
 
         private void ResolveInternal(CancellationToken token)
@@ -197,6 +199,7 @@ namespace Rubberduck.Parsing.VBA
             var declarations = new List<Declaration>();
             var qualifiedModuleName = new QualifiedModuleName(component);
             DeclarationSymbolsListener declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, Accessibility.Implicit, component.Type, _state.GetModuleComments(component), _state.getModuleAttributes(component));
+            // TODO: should we unify the API? consider working like the other listeners instead of event-based
             declarationsListener.NewDeclaration += (sender, e) => _state.AddDeclaration(e.Declaration);
             declarationsListener.CreateModuleDeclarations();
 
@@ -211,7 +214,6 @@ namespace Rubberduck.Parsing.VBA
                 obsoleteLetStatementListener,
                 emptyStringLiteralListener,
                 argListWithOneByRefParamListener,
-                
                 declarationsListener,
             }), tree);
 
@@ -219,8 +221,7 @@ namespace Rubberduck.Parsing.VBA
             _state.ArgListsWithOneByRefParam = argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
             _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
             _state.ObsoleteLetContexts = obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-            _state.ObsoleteCallContexts = obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-            
+            _state.ObsoleteCallContexts = obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context))
         }
         
         private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
