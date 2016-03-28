@@ -562,12 +562,29 @@ ambiguousKeyword :
 	XOR
 ;
 
+endOfLine :
+    whiteSpace? (NEWLINE+ | comment | remComment) whiteSpace?
+    | whiteSpace? annotationList
+;
+
+endOfStatement : (endOfLine | whiteSpace? COLON whiteSpace?)*;
+
 remComment : REMCOMMENT;
 
 comment : COMMENT;
 
-endOfLine : whiteSpace? (NEWLINE+ | comment | remComment) whiteSpace?;
+annotationList : SINGLEQUOTE annotation+;
 
-endOfStatement : (endOfLine | whiteSpace? COLON whiteSpace?)*;
+annotation : AT annotationName annotationArgList?;
+
+annotationName : IDENTIFIER;
+
+annotationArgList : 
+	 whiteSpace annotationArg whiteSpace?
+	 | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+  whiteSpace?
+	 | whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN whiteSpace?
+	 | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN whiteSpace?;
+	
+annotationArg : IDENTIFIER | literal;
 
 whiteSpace : (WS | LINE_CONTINUATION)+;
