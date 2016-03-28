@@ -120,12 +120,9 @@ namespace Rubberduck.Parsing.VBA
 
             var task = new Task(() => ParseAsyncInternal(component, linkedTokenSource.Token, rewriter));
             _currentTasks.Add(component, Tuple.Create(task, linkedTokenSource));
-
             task.ContinueWith(t => _currentTasks.Remove(component)); // default also executes on cancel
 
-            _state.SetModuleState(component, ParserState.Parsing);
             task.Start();
-
             return task;
         }
 
@@ -160,9 +157,8 @@ namespace Rubberduck.Parsing.VBA
                 _state.AddTokenStream(component, e.Tokens);
                 _state.SetModuleComments(component, e.Comments);
             };
-            var task = parser.ParseAsync(token);
             _state.SetModuleState(component, ParserState.Parsing);
-            task.Start();
+            parser.Start(token);
         }
 
         public void ParseComponent(VBComponent component, TokenStreamRewriter rewriter = null)
@@ -207,6 +203,8 @@ namespace Rubberduck.Parsing.VBA
             var obsoleteLetStatementListener = new ObsoleteLetStatementListener();
             var emptyStringLiteralListener = new EmptyStringLiteralListener();
             var argListWithOneByRefParamListener = new ArgListWithOneByRefParamListener();
+
+            // FIXME account for errors here
 
             var walker = new ParseTreeWalker();
             walker.Walk(new CombinedParseTreeListener(new IParseTreeListener[]{

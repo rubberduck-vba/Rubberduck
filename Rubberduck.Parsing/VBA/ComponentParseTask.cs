@@ -37,13 +37,8 @@ namespace Rubberduck.Parsing.VBA
             _rewriter = rewriter;
             _qualifiedName = new QualifiedModuleName(vbComponent); 
         }
-
-        public Task ParseAsync(CancellationToken token)
-        {
-            return new Task(() => ParseInternal(token));
-        }
-
-        private void ParseInternal(CancellationToken token)
+        
+        public void Start(CancellationToken token)
         {
             try
             {
@@ -142,12 +137,7 @@ namespace Rubberduck.Parsing.VBA
             var allCommentNodes = commentNodes.Union(remCommentNodes);
             return allCommentNodes;
         }
-
-        public void Parse()
-        {
-            ParseAsync(CancellationToken.None).Wait();
-        }
-
+        
         public class ParseCompletionArgs
         {
             public ITokenStream Tokens { get; internal set; }
