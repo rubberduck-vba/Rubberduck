@@ -45,6 +45,10 @@ namespace Rubberduck.Parsing.VBA
                 var code = RewriteAndPreprocess();
                 token.ThrowIfCancellationRequested();
 
+                var attributes = _attributeParser.Parse(_component);
+
+                token.ThrowIfCancellationRequested();
+
                 // temporal coupling... comments must be acquired before we walk the parse tree for declarations
                 // otherwise none of the annotations get associated to their respective Declaration
                 var commentListener = new CommentListener();
@@ -59,10 +63,6 @@ namespace Rubberduck.Parsing.VBA
                 }
 
                 var comments = QualifyAndUnionComments(_qualifiedName, commentListener.Comments, commentListener.RemComments);
-                token.ThrowIfCancellationRequested();
-
-                var attributes = _attributeParser.Parse(_component);
-
                 token.ThrowIfCancellationRequested();
 
                 ParseCompleted.Invoke(this, new ParseCompletionArgs

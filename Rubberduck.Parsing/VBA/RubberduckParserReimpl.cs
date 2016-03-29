@@ -66,7 +66,8 @@ namespace Rubberduck.Parsing.VBA
             if (args.State == ParserState.Parsed)
             {
                 Debug.WriteLine("(handling OnStateChanged) Starting resolver task");
-                Task.Run(() => Resolve(_central.Token));
+                Resolve(_central.Token); // Tests expect this to be synchronous
+                //Task.Run(() => Resolve(_central.Token));
             }
         }
 
@@ -87,12 +88,23 @@ namespace Rubberduck.Parsing.VBA
 
         public void Parse()
         {
-            try
+            var projects = _vbe.VBProjects
+                .Cast<VBProject>()
+                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none);
+
+            var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>());
+            // invalidation cleanup should go into ParseAsync?
+            foreach (var invalidated in _componentAttributes.Keys.Except(components))
             {
-                ParseAll();
-            } catch (Exception e)
+                _componentAttributes.Remove(invalidated);
+            }
+
+            foreach (var vbComponent in components)
             {
-                Debug.WriteLine(e);
+                while (!_state.ClearDeclarations(vbComponent)) { }
+                
+                // expects synchronous parse :/
+                ParseComponent(vbComponent);
             }
         }
 
@@ -185,6 +197,7 @@ namespace Rubberduck.Parsing.VBA
                 _state.AddParseTree(component, e.ParseTree);
                 _state.AddTokenStream(component, e.Tokens);
                 _state.SetModuleComments(component, e.Comments);
+
                 // This really needs to go last
                 _state.SetModuleState(component, ParserState.Parsed);
             };
@@ -200,7 +213,9 @@ namespace Rubberduck.Parsing.VBA
         public void Resolve(CancellationToken token)
         {
             var sharedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_resolverTokenSource.Token, token);
-            Task.Run(() => ResolveInternal(sharedTokenSource.Token));
+            // tests expect this to be synchronous :/
+            //Task.Run(() => ResolveInternal(sharedTokenSource.Token));
+            ResolveInternal(sharedTokenSource.Token);
         }
 
         private void ResolveInternal(CancellationToken token)
@@ -220,37 +235,43 @@ namespace Rubberduck.Parsing.VBA
 
         private void ResolveDeclarations(VBComponent component, IParseTree tree)
         {
-            // cannot locate declarations in one pass *the way it's currently implemented*,
-            // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
-            // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
-            var declarations = new List<Declaration>();
             var qualifiedModuleName = new QualifiedModuleName(component);
-            DeclarationSymbolsListener declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, Accessibility.Implicit, component.Type, _state.GetModuleComments(component), _state.getModuleAttributes(component));
-            // TODO: should we unify the API? consider working like the other listeners instead of event-based
-            declarationsListener.NewDeclaration += (sender, e) => _state.AddDeclaration(e.Declaration);
-            declarationsListener.CreateModuleDeclarations();
 
             var obsoleteCallStatementListener = new ObsoleteCallStatementListener();
             var obsoleteLetStatementListener = new ObsoleteLetStatementListener();
             var emptyStringLiteralListener = new EmptyStringLiteralListener();
             var argListWithOneByRefParamListener = new ArgListWithOneByRefParamListener();
+            
+            try
+            {
+                var walker = new ParseTreeWalker();
+                walker.Walk(new CombinedParseTreeListener(new IParseTreeListener[]{
+                    obsoleteCallStatementListener,
+                    obsoleteLetStatementListener,
+                    emptyStringLiteralListener,
+                    argListWithOneByRefParamListener,
+                }), tree);
+                // FIXME this are actually (almost) isnpection results.. we should handle them as such
+                _state.ArgListsWithOneByRefParam = argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
+                _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
+                _state.ObsoleteLetContexts = obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
+                _state.ObsoleteCallContexts = obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
 
-            // FIXME account for errors here
+                // cannot locate declarations in one pass *the way it's currently implemented*,
+                // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
+                // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
+                DeclarationSymbolsListener declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, Accessibility.Implicit, component.Type, _state.GetModuleComments(component), _state.getModuleAttributes(component));
+                // TODO: should we unify the API? consider working like the other listeners instead of event-based
+                declarationsListener.NewDeclaration += (sender, e) => _state.AddDeclaration(e.Declaration);
+                declarationsListener.CreateModuleDeclarations();
+                // rewalk parse tree for second declaration level
+                walker.Walk(declarationsListener, tree);
+            } catch (Exception exception)
+            {
+                Debug.Print("Exception thrown resolving '{0}' (thread {2}): {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
+                _state.SetModuleState(component, ParserState.ResolverError);
+            }
 
-            var walker = new ParseTreeWalker();
-            walker.Walk(new CombinedParseTreeListener(new IParseTreeListener[]{
-                obsoleteCallStatementListener,
-                obsoleteLetStatementListener,
-                emptyStringLiteralListener,
-                argListWithOneByRefParamListener,
-                declarationsListener,
-            }), tree);
-
-            // FIXME this are actually (almost) isnpection results.. we should handle them as such
-            _state.ArgListsWithOneByRefParam = argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-            _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-            _state.ObsoleteLetContexts = obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-            _state.ObsoleteCallContexts = obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
         }
         
         private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
