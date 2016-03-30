@@ -1432,4 +1432,19 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="HotkeyDescription_RefactorExtractMethod" xml:space="preserve">
     <value>Refactor / Methode extrahieren</value>
   </data>
+  <data name="UnitTest_NewModule_UncommentLateBinding" xml:space="preserve">
+    <value>Für die späte Bindung einkommentieren</value>
+  </data>
+  <data name="UnitTest_NewModule_CommentEarlyBinding" xml:space="preserve">
+    <value>Die frühe Bindung benötigt eine Referenz auf Rubberduck.UnitTesting.tlb </value>
+  </data>
+  <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
+    <value>Diese Methode wird einmal pro Modul ausgeführt</value>
+  </data>
+  <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
+    <value>Diese Methode wird vor jedem Test ausgeführt.</value>
+  </data>
+  <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
+    <value>Diese Methode wird nach jedem Test ausgeführt</value>
+  </data>
 </root>

@@ -1450,4 +1450,19 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="HotkeyDescription_TestExplorer" xml:space="preserve">
     <value>Test Explorer</value>
   </data>
+  <data name="UnitTest_NewModule_UncommentLateBinding" xml:space="preserve">
+    <value>uncomment for late-binding</value>
+  </data>
+  <data name="UnitTest_NewModule_CommentEarlyBinding" xml:space="preserve">
+    <value>early-binding requires reference to Rubberduck.UnitTesting.tlb</value>
+  </data>
+  <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
+    <value>this method runs once per module</value>
+  </data>
+  <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
+    <value>this method runs before every test in the module</value>
+  </data>
+  <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
+    <value>this method runs after every test in the module</value>
+  </data>
 </root>
