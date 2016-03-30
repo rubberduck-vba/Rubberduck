@@ -464,12 +464,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Modul-Optionen sollten zuerst deklariert werden</value>
   </data>
-  <data name="ObsoleteComment" xml:space="preserve">
-    <value>Benutzung der veralteten 'Rem'-Kommentar-Syntax</value>
-  </data>
-  <data name="ObsoleteGlobal" xml:space="preserve">
-    <value>Benutzung des veralteten 'Global' Zugriffsmodifikators</value>
-  </data>
   <data name="Component" xml:space="preserve">
     <value>Komponente</value>
   </data>
@@ -936,9 +930,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
     <value>Bereich:</value>
   </data>
-  <data name="ImplicitActiveSheetReference_" xml:space="preserve">
-    <value>'{0}' ist eine implizite Referenz auf das 'ActiveSheet'</value>
-  </data>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Details</value>
   </data>
@@ -1158,9 +1149,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
     <value>Freigegeben</value>
   </data>
-  <data name="GeneralSettings_HotkeyKeyPress" xml:space="preserve">
-    <value>Drücken einer Taste</value>
-  </data>
   <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
     <value>Richte Kommentare am Code aus</value>
   </data>
@@ -1214,12 +1202,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Spezielle Optionen</value>
-  </data>
-  <data name="IndentModuleHotkey_Description" xml:space="preserve">
-    <value>Hotkey zum Einrücken von Modulen</value>
-  </data>
-  <data name="IndentProcedureHotkey_Description" xml:space="preserve">
-    <value>Hotkey zum Einrücken von Prozeduren</value>
   </data>
   <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
     <value>Nach Modulen</value>
