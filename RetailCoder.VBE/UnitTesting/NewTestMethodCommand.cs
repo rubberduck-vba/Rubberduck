@@ -16,7 +16,7 @@ namespace Rubberduck.UnitTesting
 
         private static readonly string TestMethodTemplate = string.Concat(
             "'@TestMethod\n",
-            "Public Sub ", NamePlaceholder, "() 'TODO Rename test\n",
+            "Public Sub ", NamePlaceholder, "() 'TODO ", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_Rename, "\n",
             "    On Error GoTo TestFail\n",
             "    \n",
             "    'Arrange:\n\n",
@@ -26,20 +26,20 @@ namespace Rubberduck.UnitTesting
             "TestExit:\n",
             "    Exit Sub\n",
             "TestFail:\n",
-            "    Assert.Fail \"Test raised an error: #\" & Err.Number & \" - \" & Err.Description\n",
+            "    Assert.Fail \"", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_RaisedTestError, ": #\" & Err.Number & \" - \" & Err.Description\n",
             "End Sub\n"
             );
 
         private static readonly string TestMethodExpectedErrorTemplate = string.Concat(
             "'@TestMethod\n",
-            "Public Sub ", NamePlaceholder, "() 'TODO Rename test\n",
-            "    Const ExpectedError As Long = 0 'TODO Change to expected error number\n",
+            "Public Sub ", NamePlaceholder, "() 'TODO ", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_Rename, "\n",
+            "    Const ExpectedError As Long = 0 'TODO ", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_ChangeErrorNo, "\n",
             "    On Error GoTo TestFail\n",
             "    \n",
             "    'Arrange:\n\n",
             "    'Act:\n\n",
             "Assert:\n",
-            "    Assert.Fail \"Expected error was not raised.\"\n\n",
+            "    Assert.Fail \"", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_ErrorNotRaised, ".\"\n\n",
             "TestExit:\n",
             "    Exit Sub\n",
             "TestFail:\n",
