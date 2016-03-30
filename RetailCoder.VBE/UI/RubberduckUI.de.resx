@@ -1414,4 +1414,40 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Parse alle offenen Projekte</value>
   </data>
+  <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
+    <value>Strg</value>
+  </data>
+  <data name="HotkeyDescription_IndentModule" xml:space="preserve">
+    <value>Modul einrücken</value>
+  </data>
+  <data name="HotkeyDescription_IndentProcedure" xml:space="preserve">
+    <value>Prozedur einrücken</value>
+  </data>
+  <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
+    <value>Key2</value>
+  </data>
+  <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
+    <value>Key1</value>
+  </data>
+  <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
+    <value>Umschalt</value>
+  </data>
+  <data name="HotkeyDescription_CodeExplorer" xml:space="preserve">
+    <value>Code Explorer</value>
+  </data>
+  <data name="HotkeyDescription_TestExplorer" xml:space="preserve">
+    <value>Test Explorer</value>
+  </data>
+  <data name="HotkeyDescription_RefactorRename" xml:space="preserve">
+    <value>Refactor / Umbenennen</value>
+  </data>
+  <data name="HotkeyDescription_InspectionResults" xml:space="preserve">
+    <value>Codeuntersuchung</value>
+  </data>
+  <data name="HotkeyDescription_RefactorExtractMethod" xml:space="preserve">
+    <value>Refactor / Methode extrahieren</value>
+  </data>
 </root>
