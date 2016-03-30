@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Forms;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -7,6 +8,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using MessageBox = Rubberduck.UI.MessageBox;
 
 namespace Rubberduck.Inspections
 {
@@ -57,6 +59,7 @@ namespace Rubberduck.Inspections
                 var factory = new RenamePresenterFactory(vbe, view, _state, new MessageBox(), _wrapperFactory);
                 var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory), new MessageBox(), _state);
                 refactoring.Refactor(_target);
+                IsCancelled = view.DialogResult == DialogResult.Cancel;
             }
         }
 

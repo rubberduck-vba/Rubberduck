@@ -20,6 +20,8 @@ namespace Rubberduck.Inspections
         public ParserRuleContext Context { get { return _context; } }
         public QualifiedSelection Selection { get { return _selection; } }
 
+        public bool IsCancelled { get; set; }
+
         public abstract void Fix();
 
         /// <summary>

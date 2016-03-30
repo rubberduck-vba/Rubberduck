@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Conventions;
@@ -79,7 +80,7 @@ namespace Rubberduck.Root
                 .WithConstructorArgument<IDockableUserControl>(new TestExplorerWindow { ViewModel = _kernel.Get<TestExplorerViewModel>() });
 
             Bind<IPresenter>().To<CodeInspectionsDockablePresenter>()
-                .WhenInjectedInto<RunCodeInspectionsCommand>()
+                .WhenInjectedInto<InspectionResultsCommand>()
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>() });
             
@@ -115,7 +116,7 @@ namespace Rubberduck.Root
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new SourceControlPanel { ViewModel = _kernel.Get<SourceControlViewViewModel>() });
 
-            //BindWindowsHooks();
+            BindWindowsHooks();
             Debug.Print("completed RubberduckModule.Load()");
         }
 

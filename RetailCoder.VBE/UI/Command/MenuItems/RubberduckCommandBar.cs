@@ -12,16 +12,26 @@ namespace Rubberduck.UI.Command.MenuItems
     {
         private readonly RubberduckParserState _state;
         private readonly VBE _vbe;
+        private readonly IShowParserErrorsCommand _command;
 
         private CommandBarButton _refreshButton;
         private CommandBarButton _statusButton;
 
-        public RubberduckCommandBar(RubberduckParserState state, VBE vbe)
+        public RubberduckCommandBar(RubberduckParserState state, VBE vbe, IShowParserErrorsCommand command)
         {
             _state = state;
             _vbe = vbe;
+            _command = command;
             _state.StateChanged += State_StateChanged;
             Initialize();
+        }
+
+        private void _statusButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            if (_state.Status == ParserState.Error)
+            {
+                _command.Execute(null);
+            }
         }
 
         public void SetStatusText(string value = null)
@@ -54,12 +64,13 @@ namespace Rubberduck.UI.Command.MenuItems
             ParentMenuItemBase.SetButtonImage(_refreshButton, Resources.arrow_circle_double, Resources.arrow_circle_double_mask);
             _refreshButton.Style = MsoButtonStyle.msoButtonIcon;
             _refreshButton.Tag = "Refresh";
-            _refreshButton.TooltipText = "Parse all opened projects";
+            _refreshButton.TooltipText =RubberduckUI.RubberduckCommandbarRefreshButtonTooltip;
             _refreshButton.Click += refreshButton_Click;
 
             _statusButton = (CommandBarButton)commandbar.Controls.Add(MsoControlType.msoControlButton);
             _statusButton.Style = MsoButtonStyle.msoButtonCaption;
             _statusButton.Tag = "Status";
+            _statusButton.Click += _statusButton_Click;
 
             commandbar.Visible = true;
         }

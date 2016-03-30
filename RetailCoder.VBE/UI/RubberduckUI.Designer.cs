@@ -1138,6 +1138,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Alt.
+        /// </summary>
+        public static string GeneralSettings_HotkeyAlt {
+            get {
+                return ResourceManager.GetString("GeneralSettings_HotkeyAlt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ctrl.
+        /// </summary>
+        public static string GeneralSettings_HotkeyCtrl {
+            get {
+                return ResourceManager.GetString("GeneralSettings_HotkeyCtrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Description.
         /// </summary>
         public static string GeneralSettings_HotkeyDescription {
@@ -1156,11 +1174,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Key Press.
+        ///   Looks up a localized string similar to Key1.
         /// </summary>
-        public static string GeneralSettings_HotkeyKeyPress {
+        public static string GeneralSettings_HotkeyKey1 {
             get {
-                return ResourceManager.GetString("GeneralSettings_HotkeyKeyPress", resourceCulture);
+                return ResourceManager.GetString("GeneralSettings_HotkeyKey1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key2.
+        /// </summary>
+        public static string GeneralSettings_HotkeyKey2 {
+            get {
+                return ResourceManager.GetString("GeneralSettings_HotkeyKey2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shift.
+        /// </summary>
+        public static string GeneralSettings_HotkeyShift {
+            get {
+                return ResourceManager.GetString("GeneralSettings_HotkeyShift", resourceCulture);
             }
         }
         
@@ -1233,6 +1269,69 @@ namespace Rubberduck.UI {
         public static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code Explorer.
+        /// </summary>
+        public static string HotkeyDescription_CodeExplorer {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_CodeExplorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent Module.
+        /// </summary>
+        public static string HotkeyDescription_IndentModule {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_IndentModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent Procedure.
+        /// </summary>
+        public static string HotkeyDescription_IndentProcedure {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_IndentProcedure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code Inspections.
+        /// </summary>
+        public static string HotkeyDescription_InspectionResults {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_InspectionResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refactor / Extract Method.
+        /// </summary>
+        public static string HotkeyDescription_RefactorExtractMethod {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_RefactorExtractMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refactor / Rename.
+        /// </summary>
+        public static string HotkeyDescription_RefactorRename {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_RefactorRename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test Explorer.
+        /// </summary>
+        public static string HotkeyDescription_TestExplorer {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_TestExplorer", resourceCulture);
             }
         }
         
@@ -1440,24 +1539,6 @@ namespace Rubberduck.UI {
         public static string IndenterSettings_SpecialOptionsLabel {
             get {
                 return ResourceManager.GetString("IndenterSettings_SpecialOptionsLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Indent Module Hotkey.
-        /// </summary>
-        public static string IndentModuleHotkey_Description {
-            get {
-                return ResourceManager.GetString("IndentModuleHotkey_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Indent Procedure Hotkey.
-        /// </summary>
-        public static string IndentProcedureHotkey_Description {
-            get {
-                return ResourceManager.GetString("IndentProcedureHotkey_Description", resourceCulture);
             }
         }
         
@@ -2401,6 +2482,15 @@ namespace Rubberduck.UI {
         public static string Rubberduck_AboutBuild {
             get {
                 return ResourceManager.GetString("Rubberduck_AboutBuild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parse all opened projects.
+        /// </summary>
+        public static string RubberduckCommandbarRefreshButtonTooltip {
+            get {
+                return ResourceManager.GetString("RubberduckCommandbarRefreshButtonTooltip", resourceCulture);
             }
         }
         

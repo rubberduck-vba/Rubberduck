@@ -1161,8 +1161,8 @@ Are you sure you want to proceed with this rename?</value>
   <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
     <value>Enabled</value>
   </data>
-  <data name="GeneralSettings_HotkeyKeyPress" xml:space="preserve">
-    <value>Key Press</value>
+  <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
+    <value>Key1</value>
   </data>
   <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
     <value>Align comments with code</value>
@@ -1218,11 +1218,11 @@ Are you sure you want to proceed with this rename?</value>
   <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Special Options</value>
   </data>
-  <data name="IndentModuleHotkey_Description" xml:space="preserve">
-    <value>Indent Module Hotkey</value>
+  <data name="HotkeyDescription_IndentModule" xml:space="preserve">
+    <value>Indent Module</value>
   </data>
-  <data name="IndentProcedureHotkey_Description" xml:space="preserve">
-    <value>Indent Procedure Hotkey</value>
+  <data name="HotkeyDescription_IndentProcedure" xml:space="preserve">
+    <value>Indent Procedure</value>
   </data>
   <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
     <value>By module</value>
@@ -1419,5 +1419,35 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="SourceControl_NoBranchesTitle" xml:space="preserve">
     <value>No branches found</value>
+  </data>
+  <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
+    <value>Parse all opened projects</value>
+  </data>
+  <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
+    <value>Ctrl</value>
+  </data>
+  <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
+    <value>Key2</value>
+  </data>
+  <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
+    <value>Shift</value>
+  </data>
+  <data name="HotkeyDescription_CodeExplorer" xml:space="preserve">
+    <value>Code Explorer</value>
+  </data>
+  <data name="HotkeyDescription_InspectionResults" xml:space="preserve">
+    <value>Code Inspections</value>
+  </data>
+  <data name="HotkeyDescription_RefactorExtractMethod" xml:space="preserve">
+    <value>Refactor / Extract Method</value>
+  </data>
+  <data name="HotkeyDescription_RefactorRename" xml:space="preserve">
+    <value>Refactor / Rename</value>
+  </data>
+  <data name="HotkeyDescription_TestExplorer" xml:space="preserve">
+    <value>Test Explorer</value>
   </data>
 </root>

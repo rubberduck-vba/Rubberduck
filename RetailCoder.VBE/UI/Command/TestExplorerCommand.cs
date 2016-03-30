@@ -1,9 +1,10 @@
 using System.Runtime.InteropServices;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
 {
     [ComVisible(false)]
-    public class TestExplorerCommand : CommandBase
+    public class TestExplorerCommand : CommandBase, IHotkeyCommand
     {
         private readonly IPresenter _presenter;
 
@@ -16,5 +17,7 @@ namespace Rubberduck.UI.Command
         {
             _presenter.Show();
         }
+
+        public RubberduckHotkey Hotkey { get {return RubberduckHotkey.TestExplorer; } }
     }
 }

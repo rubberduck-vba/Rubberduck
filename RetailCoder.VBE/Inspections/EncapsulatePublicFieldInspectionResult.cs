@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Forms;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -56,6 +57,7 @@ namespace Rubberduck.Inspections
                 var factory = new EncapsulateFieldPresenterFactory(_parseResult, new ActiveCodePaneEditor(vbe, _wrapperFactory), view);
                 var refactoring = new EncapsulateFieldRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory));
                 refactoring.Refactor(_target);
+                IsCancelled = view.DialogResult != DialogResult.OK;
             }
         }
 

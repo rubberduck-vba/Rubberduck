@@ -1,32 +1,31 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Rubberduck.Common.WinAPI;
 
-namespace Rubberduck.Common
+namespace Rubberduck.Common.Hotkeys
 {
-    public class HotKey : IHotKey
+    public class Hotkey : IHotkey
     {
         private readonly string _key;
         private readonly IntPtr _hWndVbe;
 
-        public HotKey(IntPtr hWndVbe, string key, Keys secondKey = Keys.None)
+        public Hotkey(IntPtr hWndVbe, string key, Keys secondKey = Keys.None)
         {
             _hWndVbe = hWndVbe;
 
-            IsTwoStepHotKey = secondKey != Keys.None;
+            IsTwoStepHotkey = secondKey != Keys.None;
             _key = key;
             Combo = GetCombo(key);
             SecondKey = secondKey;
         }
 
-        public HotKeyInfo HotKeyInfo { get; private set; }
+        public string Key { get { return _key; } }
+        public HotkeyInfo HotkeyInfo { get; private set; }
         public Keys Combo { get; private set; }
         public Keys SecondKey { get; private set; }
-        public bool IsTwoStepHotKey { get; private set; }
+        public bool IsTwoStepHotkey { get; private set; }
         public bool IsAttached { get; private set; }
 
         public void Attach()
@@ -50,8 +49,8 @@ namespace Rubberduck.Common
                 throw new InvalidOperationException("Hook is already detached.");
             }
 
-            User32.UnregisterHotKey(_hWndVbe, HotKeyInfo.HookId);
-            Kernel32.GlobalDeleteAtom(HotKeyInfo.HookId);
+            User32.UnregisterHotKey(_hWndVbe, HotkeyInfo.HookId);
+            Kernel32.GlobalDeleteAtom(HotkeyInfo.HookId);
 
             IsAttached = false;
         }
@@ -70,7 +69,7 @@ namespace Rubberduck.Common
                 throw new Win32Exception("HotKey was not registered.");
             }
 
-            HotKeyInfo = new HotKeyInfo(hookId, Combo);
+            HotkeyInfo = new HotkeyInfo(hookId, Combo);
             IsAttached = true;
         }
 
@@ -111,9 +110,7 @@ namespace Rubberduck.Common
 
         private static Keys GetCombo(string key)
         {
-            var combo = key;
-            var modifiers = GetModifierValue(ref combo);
-            return (Keys)Enum.Parse(typeof(Keys), combo) // will break with special keys, e.g. {f12}
+            return (Keys)Enum.Parse(typeof(Keys), key.Trim('%', '^', '+')) // will break with special keys, e.g. {f12}
                    | (key.Contains("%") ? Keys.Alt : Keys.None)
                    | (key.Contains("^") ? Keys.Control : Keys.None)
                    | (key.Contains("+") ? Keys.Shift : Keys.None);

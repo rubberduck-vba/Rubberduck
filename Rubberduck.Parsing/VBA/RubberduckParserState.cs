@@ -69,6 +69,11 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, SyntaxErrorException> _moduleExceptions =
             new ConcurrentDictionary<VBComponent, SyntaxErrorException>();
 
+        public IReadOnlyList<Tuple<VBComponent, SyntaxErrorException>> ModuleExceptions
+        {
+            get { return _moduleExceptions.Select(kvp => Tuple.Create(kvp.Key, kvp.Value)).Where(item => item.Item2 != null).ToList(); }
+        }
+
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
         private void OnModuleStateChanged(VBComponent component, ParserState state)

@@ -11,6 +11,7 @@ using UnitTestSettings = Rubberduck.UI.Settings.UnitTestSettings;
 namespace RubberduckTests.Settings
 {
     [TestClass]
+    [Ignore] // these tests incur IO and actually modify the config file.
     public class SettingsControlTests
     {
         private Configuration GetDefaultConfig()
@@ -20,8 +21,8 @@ namespace RubberduckTests.Settings
                 Language = new DisplayLanguageSetting("en-US"),
                 HotkeySettings = new[]
                 {
-                    new Hotkey{Name="IndentProcedure", IsEnabled=true, KeyDisplaySymbol="CTRL-P"},
-                    new Hotkey{Name="IndentModule", IsEnabled=true, KeyDisplaySymbol="CTRL-M"}
+                    new HotkeySetting{Name="IndentProcedure", IsEnabled=true, Key1="^P"},
+                    new HotkeySetting{Name="IndentModule", IsEnabled=true, Key1="^M"}
                 },
                 AutoSaveEnabled = false,
                 AutoSavePeriod = 10
@@ -82,8 +83,8 @@ namespace RubberduckTests.Settings
                 Language = new DisplayLanguageSetting("sv-SE"),
                 HotkeySettings = new[]
                 {
-                    new Hotkey{Name="IndentProcedure", IsEnabled=false, KeyDisplaySymbol="CTRL-C"},
-                    new Hotkey{Name="IndentModule", IsEnabled=false, KeyDisplaySymbol="CTRL-X"}
+                    new HotkeySetting{Name="IndentProcedure", IsEnabled=false, Key1="CTRL-C"},
+                    new HotkeySetting{Name="IndentModule", IsEnabled=false, Key1="CTRL-X"}
                 },
                 AutoSaveEnabled = true,
                 AutoSavePeriod = 5

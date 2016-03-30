@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Microsoft.Vbe.Interop;
 
 // todo: untangle this mess
@@ -36,25 +37,41 @@ namespace Rubberduck.VBEditor.Extensions
         public static void ImportSourceFile(this VBComponents components, string filePath)
         {
             var ext = Path.GetExtension(filePath);
-            var fileName = Path.GetFileNameWithoutExtension(filePath);
+            var name = Path.GetFileNameWithoutExtension(filePath);
+            if (!File.Exists(filePath))
+            {
+                return;
+            }
 
-            if (!File.Exists(filePath)) { return; }
-
+            var codeString = File.ReadAllText(filePath);
+            var codeLines = codeString.Split(new []{Environment.NewLine}, StringSplitOptions.None);
             if (ext == VBComponentExtensions.DocClassExtension)
             {
-                var component = components.Item(fileName);
+                var component = components.Item(name);
                 if (component != null)
                 {
                     component.CodeModule.Clear();
-
-                    var text = File.ReadAllText(filePath);
-                    component.CodeModule.AddFromString(text);
+                    component.CodeModule.AddFromString(codeString);
                 }
-
             }
             else if(ext != VBComponentExtensions.FormBinaryExtension)
             {
                 components.Import(filePath);
+            }
+
+            if (ext == VBComponentExtensions.FormExtension)
+            {
+                var component = components.Item(name);
+                // note: vbeCode contains an extraneous line here:
+                //var vbeCode = component.CodeModule.Lines().Split(new []{Environment.NewLine}, StringSplitOptions.None);
+                
+                var nonAttributeLines = codeLines.TakeWhile(line => !line.StartsWith("Attribute")).Count();
+                var attributeLines = codeLines.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
+                var declarationsStartLine = nonAttributeLines + attributeLines + 1;
+                var correctCodeString = string.Join(Environment.NewLine, codeLines.Skip(declarationsStartLine - 1).ToArray());
+
+                component.CodeModule.Clear();
+                component.CodeModule.AddFromString(correctCodeString);
             }
         }
     }

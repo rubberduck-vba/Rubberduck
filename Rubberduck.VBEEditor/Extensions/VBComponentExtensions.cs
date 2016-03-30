@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using Microsoft.Vbe.Interop;
 
@@ -18,22 +21,67 @@ namespace Rubberduck.VBEditor.Extensions
         /// <param name="directoryPath">Destination Path for the resulting source file.</param>
         public static string ExportAsSourceFile(this VBComponent component, string directoryPath)
         {
-            var filePath = Path.Combine(directoryPath, component.Name + component.Type.FileExtension());
-            if (component.Type == vbext_ComponentType.vbext_ct_Document)
+            var path = Path.Combine(directoryPath, component.Name + component.Type.FileExtension());
+            switch (component.Type)
             {
-                var lineCount = component.CodeModule.CountOfLines;
-                if (lineCount > 0)
-                {
-                    var text = component.CodeModule.get_Lines(1, lineCount);
-                    File.WriteAllText(filePath, text);
-                }
-            }
-            else
-            {
-                component.Export(filePath);
+                case vbext_ComponentType.vbext_ct_MSForm:
+                    ExportUserFormModule(component, path);
+                    break;
+                case vbext_ComponentType.vbext_ct_Document:
+                    ExportDocumentModule(component, path);
+                    break;
+                default:
+                    component.Export(path);
+                    break;
             }
 
-            return filePath;
+            return path;
+        }
+
+        private static void ExportUserFormModule(VBComponent component, string path)
+        {
+            // VBIDE API inserts an extra newline when exporting a UserForm module.
+            // this issue causes forms to always be treated as "modified" in source control, which causes conflicts.
+            // we need to remove the extra newline before the file gets written to its output location.
+
+            var visibleCode = component.CodeModule.Lines().Split(new []{Environment.NewLine}, StringSplitOptions.None);
+            var legitEmptyLineCount = visibleCode.TakeWhile(string.IsNullOrWhiteSpace).Count();
+
+            var tempFile = component.ExportToTempFile();
+            var contents = File.ReadAllLines(tempFile);
+            var nonAttributeLines = contents.TakeWhile(line => !line.StartsWith("Attribute")).Count();
+            var attributeLines = contents.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
+            var declarationsStartLine = nonAttributeLines + attributeLines + 1;
+
+            var emptyLineCount = contents.Skip(declarationsStartLine - 1)
+                                         .TakeWhile(string.IsNullOrWhiteSpace)
+                                         .Count();
+
+            var code = contents;
+            if (emptyLineCount > legitEmptyLineCount)
+            {
+                code = contents.Take(declarationsStartLine).Union(
+                       contents.Skip(declarationsStartLine + emptyLineCount - legitEmptyLineCount))
+                               .ToArray();
+            }
+            File.WriteAllLines(path, code);
+        }
+
+        private static void ExportDocumentModule(VBComponent component, string path)
+        {
+            var lineCount = component.CodeModule.CountOfLines;
+            if (lineCount > 0)
+            {
+                var text = component.CodeModule.Lines[1, lineCount];
+                File.WriteAllText(path, text);
+            }
+        }
+
+        private static string ExportToTempFile(this VBComponent component)
+        {
+            var path = Path.Combine(Path.GetTempPath(), component.Name + component.Type.FileExtension());
+            component.Export(path);
+            return path;
         }
 
         /// <summary>
