@@ -140,7 +140,7 @@ namespace Rubberduck.Root
 
         private void BindWindowsHooks()
         {
-            _kernel.Rebind<ITimerHook>().To<TimerHook>()
+            _kernel.Rebind<IAttachable>().To<TimerHook>()
                 .InSingletonScope()
                 .WithConstructorArgument("mainWindowHandle", (IntPtr)_vbe.MainWindow.HWnd);
 

@@ -11,7 +11,7 @@ namespace RubberduckTests
         [TestMethod]
         public void GetDefaultTodoMarkersTest()
         {
-            var configService = new ConfigurationLoader(null);
+            var configService = new ConfigurationLoader(null, null);
 
             ToDoMarker[] markers = configService.GetDefaultTodoMarkers();
             Assert.AreEqual("NOTE ", markers[0].Text,"Note failed to load.");
@@ -28,7 +28,7 @@ namespace RubberduckTests
             inspection.SetupGet(m => m.Severity).Returns(CodeInspectionSeverity.DoNotShow);
 
             var expected = new[] { inspection.Object };
-            var configService = new ConfigurationLoader(expected);
+            var configService = new ConfigurationLoader(expected, null);
 
             var actual = configService.GetDefaultCodeInspections();
 

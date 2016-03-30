@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace Rubberduck.Common
 {
-    public interface IRubberduckHooks : IHook, IDisposable
+    public interface IRubberduckHooks : IDisposable, IAttachable
     {
-        IEnumerable<IAttachable> Hooks { get; }
-        void AddHook(IAttachable hook);
+        void HookHotkeys();
     }
 }

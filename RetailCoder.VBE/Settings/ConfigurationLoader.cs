@@ -4,8 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Input;
 using Rubberduck.Inspections;
 using Rubberduck.UI;
+using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.Refactorings;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Rubberduck.Settings
@@ -18,10 +21,12 @@ namespace Rubberduck.Settings
     public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IGeneralConfigService
     {
         private readonly IEnumerable<IInspection> _inspections;
+        private readonly IEnumerable<ICommand> _commands;
 
-        public ConfigurationLoader(IEnumerable<IInspection> inspections)
+        public ConfigurationLoader(IEnumerable<IInspection> inspections, IEnumerable<ICommand> commands)
         {
             _inspections = inspections;
+            _commands = commands;
         }
 
         protected override string ConfigFile
@@ -137,13 +142,13 @@ namespace Rubberduck.Settings
             return new GeneralSettings(new DisplayLanguageSetting("en-US"),
                 new[]
                 {
-                    new HotkeySetting{Name=RubberduckHotkey.IndentProcedure.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="P"},
-                    new HotkeySetting{Name=RubberduckHotkey.IndentModule.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="M"},
-                    new HotkeySetting{Name=RubberduckHotkey.CodeExplorer.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="R"},
-                    new HotkeySetting{Name=RubberduckHotkey.InspectionResults.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="I"},
-                    new HotkeySetting{Name=RubberduckHotkey.TestExplorer.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="T"},
-                    new HotkeySetting{Name=RubberduckHotkey.RefactorRename.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="R"},
-                    new HotkeySetting{Name=RubberduckHotkey.RefactorExtractMethod.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="M"}
+                    new HotkeySetting{Name=RubberduckHotkey.IndentProcedure.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="P", Command = _commands.SingleOrDefault(cmd => cmd is IndentCurrentProcedureCommand)},
+                    new HotkeySetting{Name=RubberduckHotkey.IndentModule.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="M", Command = _commands.SingleOrDefault(cmd => cmd is IndentCurrentModuleCommand)},
+                    new HotkeySetting{Name=RubberduckHotkey.CodeExplorer.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="R", Command = _commands.SingleOrDefault(cmd => cmd is CodeExplorerCommand)},
+                    new HotkeySetting{Name=RubberduckHotkey.InspectionResults.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="I", Command = _commands.SingleOrDefault(cmd => cmd is InspectionResultsCommand)},
+                    new HotkeySetting{Name=RubberduckHotkey.TestExplorer.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="T", Command = _commands.SingleOrDefault(cmd => cmd is TestExplorerCommand)},
+                    new HotkeySetting{Name=RubberduckHotkey.RefactorRename.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="R", Command = _commands.SingleOrDefault(cmd => cmd is CodePaneRefactorRenameCommand)},
+                    new HotkeySetting{Name=RubberduckHotkey.RefactorExtractMethod.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="M", Command = _commands.SingleOrDefault(cmd => cmd is RefactorExtractMethodCommand)}
                 },
                 false, 10);
         }

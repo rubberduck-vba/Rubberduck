@@ -2,37 +2,48 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Common.WinAPI;
+using Rubberduck.Settings;
 
 namespace Rubberduck.Common
 {
     public class RubberduckHooks : IRubberduckHooks
     {
+        private readonly VBE _vbe;
         private readonly IntPtr _mainWindowHandle;
 
         private readonly IntPtr _oldWndPointer;
         private readonly User32.WndProc _oldWndProc;
         private User32.WndProc _newWndProc;
 
-        private readonly ITimerHook _timerHook;
+        private readonly IAttachable _timerHook;
+        private readonly IGeneralConfigService _config;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
 
-
-        private const int WA_INACTIVE = 0;
-        private const int WA_ACTIVE = 1;
-
-        public RubberduckHooks(IntPtr mainWindowHandle, ITimerHook timerHook)
+        public RubberduckHooks(VBE vbe, IAttachable timerHook, IGeneralConfigService config)
         {
-            _mainWindowHandle = mainWindowHandle;
+            _vbe = vbe;
+            _mainWindowHandle = (IntPtr)vbe.MainWindow.HWnd;
             _oldWndProc = WindowProc;
             _newWndProc = WindowProc;
             _oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _newWndProc);
             _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
 
             _timerHook = timerHook;
-            _timerHook.Tick += timerHook_Tick;
+            _config = config;
+            _timerHook.MessageReceived += timerHook_MessageReceived;
+        }
+
+        public void HookHotkeys()
+        {
+            var config = _config.LoadConfiguration();
+            var settings = config.UserSettings.GeneralSettings.HotkeySettings;
+            foreach (var hotkey in settings.Where(hotkey => hotkey.IsEnabled))
+            {
+                AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), hotkey.Command));
+            }
         }
 
         public IEnumerable<IAttachable> Hooks { get { return _hooks; } }
@@ -65,11 +76,7 @@ namespace Rubberduck.Common
             foreach (var hook in Hooks)
             {
                 hook.Attach();
-                var h = hook as IHook;
-                if (h != null)
-                {
-                    h.MessageReceived += hook_MessageReceived;
-                }
+                hook.MessageReceived += hook_MessageReceived;
             }
 
             IsAttached = true;
@@ -77,6 +84,18 @@ namespace Rubberduck.Common
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
+            if (sender is ILowLevelKeyboardHook)
+            {
+                // todo: handle 2-step hotkeys?
+                return;
+            }
+
+            var hotkey = sender as IHotkey;
+            if (hotkey != null)
+            {
+                hotkey.Command.Execute(null);
+            }
+
             OnMessageReceived(sender, e);
         }
 
@@ -90,17 +109,13 @@ namespace Rubberduck.Common
             foreach (var hook in Hooks)
             {
                 hook.Detach();
-                var h = hook as IHook;
-                if (h != null)
-                {
-                    h.MessageReceived -= hook_MessageReceived;
-                }
+                hook.MessageReceived -= hook_MessageReceived;
             }
 
             IsAttached = false;
         }
 
-        private void timerHook_Tick(object sender, EventArgs e)
+        private void timerHook_MessageReceived(object sender, EventArgs e)
         {
             if (!IsAttached && User32.GetForegroundWindow() == _mainWindowHandle)
             {
@@ -114,7 +129,7 @@ namespace Rubberduck.Common
 
         public void Dispose()
         {
-            _timerHook.Tick -= timerHook_Tick;
+            _timerHook.MessageReceived -= timerHook_MessageReceived;
             _timerHook.Detach();
 
             Detach();
@@ -130,30 +145,11 @@ namespace Rubberduck.Common
                     switch ((WM)uMsg)
                     {
                         case WM.HOTKEY:
-                            if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_mainWindowHandle))
-                            {
-                                var hook = Hooks.OfType<IHotkey>().SingleOrDefault(k => k.HotkeyInfo.HookId == (IntPtr)wParam);
-                                if (hook != null)
-                                {
-                                    var args = new HookEventArgs(hook.HotkeyInfo.Keys);
-                                    OnMessageReceived(hook, args);
-                                    processed = true;
-                                }
-                            }
+                            processed = HandleHotkeyMessage(wParam);
                             break;
 
                         case WM.ACTIVATEAPP:
-                            switch (LoWord(wParam))
-                            {
-                                case WA_ACTIVE:
-                                    Attach();
-                                    break;
-
-                                case WA_INACTIVE:
-                                    Detach();
-                                    break;
-                            }
-
+                            HandleActivateAppMessage(wParam);
                             break;
                     }
                 }
@@ -169,6 +165,40 @@ namespace Rubberduck.Common
             }
 
             return User32.CallWindowProc(_oldWndProc, hWnd, uMsg, wParam, lParam);
+        }
+
+        private bool HandleHotkeyMessage(int wParam)
+        {
+            var processed = false;
+            if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_mainWindowHandle))
+            {
+                var hook = Hooks.OfType<Hotkey>().SingleOrDefault(k => k.HotkeyInfo.HookId == (IntPtr) wParam);
+                if (hook != null)
+                {
+                    hook.OnMessageReceived();
+                    processed = true;
+                }
+            }
+            return processed;
+        }
+
+        private void HandleActivateAppMessage(int wParam)
+        {
+            const int WA_INACTIVE = 0;
+            const int WA_ACTIVE = 1;
+            const int WA_CLICKACTIVE = 2;
+
+            switch (LoWord(wParam))
+            {
+                case WA_ACTIVE:
+                case WA_CLICKACTIVE:
+                    Attach();
+                    break;
+
+                case WA_INACTIVE:
+                    Detach();
+                    break;
+            }
         }
 
         /// <summary>
