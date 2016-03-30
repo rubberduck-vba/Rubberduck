@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Common.WinAPI;
 
@@ -120,7 +119,7 @@ namespace Rubberduck.Common
             Detach();
         }
 
-        private IntPtr WindowProc(IntPtr hWnd, int uMsg, int wParam, int lParam)
+        private IntPtr WindowProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam)
         {
             try
             {
@@ -171,14 +170,9 @@ namespace Rubberduck.Common
             return User32.CallWindowProc(_oldWndProc, hWnd, uMsg, wParam, lParam);
         }
 
-        /// <summary>
-        /// Gets the integer portion of a word
-        /// </summary>
-        private static int LoWord(int dw)
+        private static int LoWord(IntPtr dw)
         {
-            return (dw & 0x8000) != 0
-                ? 0x8000 | (dw & 0x7FFF)
-                : dw & 0xFFFF;
+            return unchecked((short)(uint)dw);
         }
 
         private IntPtr GetWindowThread(IntPtr hWnd)
