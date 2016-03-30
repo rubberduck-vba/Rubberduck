@@ -3872,6 +3872,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Change to expected error number ähnelt.
+        /// </summary>
+        public static string UnitTest_NewMethod_ChangeErrorNo {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_ChangeErrorNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Expected error was not raised ähnelt.
+        /// </summary>
+        public static string UnitTest_NewMethod_ErrorNotRaised {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_ErrorNotRaised", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Test raised an error ähnelt.
+        /// </summary>
+        public static string UnitTest_NewMethod_RaisedTestError {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_RaisedTestError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Rename test ähnelt.
+        /// </summary>
+        public static string UnitTest_NewMethod_Rename {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_Rename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die early-binding requires reference to Rubberduck.UnitTesting.tlb ähnelt.
         /// </summary>
         public static string UnitTest_NewModule_CommentEarlyBinding {

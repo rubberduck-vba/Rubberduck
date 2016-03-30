@@ -1465,4 +1465,16 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
     <value>this method runs after every test in the module</value>
   </data>
+  <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
+    <value>Rename test</value>
+  </data>
+  <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
+    <value>Test raised an error</value>
+  </data>
+  <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
+    <value>Change to expected error number</value>
+  </data>
+  <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
+    <value>Expected error was not raised</value>
+  </data>
 </root>

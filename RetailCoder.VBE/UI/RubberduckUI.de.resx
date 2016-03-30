@@ -1447,4 +1447,16 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
     <value>Diese Methode wird nach jedem Test ausgeführt</value>
   </data>
+  <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
+    <value>Test umbenennen</value>
+  </data>
+  <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
+    <value>Test hat diesen Fehler ergeben</value>
+  </data>
+  <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
+    <value>Auf den Fehlercode des erwarteten Fehlers ändern</value>
+  </data>
+  <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
+    <value>Der erwartete Fehler wurde nicht gefunden</value>
+  </data>
 </root>
