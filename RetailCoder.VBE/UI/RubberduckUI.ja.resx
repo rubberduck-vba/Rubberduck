@@ -460,12 +460,6 @@
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>モジュールオプションは最初に指定しなければなりません</value>
   </data>
-  <data name="ObsoleteComment" xml:space="preserve">
-    <value>不要なRemコメント構文の使用</value>
-  </data>
-  <data name="ObsoleteGlobal" xml:space="preserve">
-    <value>不要なGlobalクセス修飾子の使用</value>
-  </data>
   <data name="Component" xml:space="preserve">
     <value>コンポーネント</value>
   </data>
@@ -1044,9 +1038,6 @@
     <value />
   </data>
   <data name="IntroduceField_Caption" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ImplicitActiveSheetReference_" xml:space="preserve">
     <value />
   </data>
   <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">

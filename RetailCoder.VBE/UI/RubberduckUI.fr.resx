@@ -462,12 +462,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Les options du module devraient être spécifiées en premier</value>
   </data>
-  <data name="ObsoleteComment" xml:space="preserve">
-    <value>Utilisation obsolète de Rem pour indiquer un commentaire</value>
-  </data>
-  <data name="ObsoleteGlobal" xml:space="preserve">
-    <value>Utilisation obsolète du modificateur d'accès Global</value>
-  </data>
   <data name="Language_EN" xml:space="preserve">
     <value>Anglais</value>
   </data>
@@ -1055,9 +1049,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value />
   </data>
   <data name="IntroduceField_Caption" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ImplicitActiveSheetReference_" xml:space="preserve">
     <value />
   </data>
   <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
