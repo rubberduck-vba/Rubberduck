@@ -20,11 +20,11 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class RubberduckParser : IRubberduckParser
+    public class RubberduckParserLegacy : IRubberduckParser
     {
         private readonly ReferencedDeclarationsCollector _comReflector;
 
-        public RubberduckParser(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
+        public RubberduckParserLegacy(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
         {
             _vbe = vbe;
             _state = state;
@@ -38,8 +38,8 @@ namespace Rubberduck.Parsing.VBA
 
         private void ReparseRequested(object sender, EventArgs e)
         {
-            Task.Run(() => ParseInternal());
-        }
+                Task.Run(() => ParseInternal());
+            }
 
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
@@ -361,7 +361,27 @@ namespace Rubberduck.Parsing.VBA
             return ParserState.Ready;
         }
 
-        private class ObsoleteCallStatementListener : VBABaseListener
+        public void Resolve(CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ParseAsync(VBComponent component, TokenStreamRewriter rewriter = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Cancel(VBComponent component = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ParseAsync(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        private class ObsoleteCallStatementListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.ExplicitCallStmtContext> _contexts = new List<VBAParser.ExplicitCallStmtContext>();
             public IEnumerable<VBAParser.ExplicitCallStmtContext> Contexts { get { return _contexts; } }
@@ -385,7 +405,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private class ObsoleteLetStatementListener : VBABaseListener
+        private class ObsoleteLetStatementListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
             public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
@@ -399,7 +419,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private class EmptyStringLiteralListener : VBABaseListener
+        private class EmptyStringLiteralListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.LiteralContext> _contexts = new List<VBAParser.LiteralContext>();
             public IEnumerable<VBAParser.LiteralContext> Contexts { get { return _contexts; } }
@@ -414,7 +434,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private class ArgListWithOneByRefParamListener : VBABaseListener
+        private class ArgListWithOneByRefParamListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.ArgListContext> _contexts = new List<VBAParser.ArgListContext>();
             public IEnumerable<VBAParser.ArgListContext> Contexts { get { return _contexts; } }
@@ -428,7 +448,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private class CommentListener : VBABaseListener
+        private class CommentListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.RemCommentContext> _remComments = new List<VBAParser.RemCommentContext>();
             public IEnumerable<VBAParser.RemCommentContext> RemComments { get { return _remComments; } }

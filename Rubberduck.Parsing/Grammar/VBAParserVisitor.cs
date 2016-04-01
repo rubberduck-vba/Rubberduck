@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\TestProj\TestProj\VBA.g4 by ANTLR 4.3
+// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\TestProj\TestProj\Grammar\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -29,7 +29,7 @@ using IToken = Antlr4.Runtime.IToken;
 /// <typeparam name="Result">The return type of the visit operation.</typeparam>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
 [System.CLSCompliant(false)]
-public interface IVBAVisitor<Result> : IParseTreeVisitor<Result> {
+public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.seekStmt"/>.
 	/// </summary>
@@ -684,6 +684,13 @@ public interface IVBAVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitExitStmt([NotNull] VBAParser.ExitStmtContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.numberLiteral"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNumberLiteral([NotNull] VBAParser.NumberLiteralContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.argList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1093,6 +1100,13 @@ public interface IVBAVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitStopStmt([NotNull] VBAParser.StopStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.whiteSpace"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWhiteSpace([NotNull] VBAParser.WhiteSpaceContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.sC_Case"/>.
