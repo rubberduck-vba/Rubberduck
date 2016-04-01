@@ -98,9 +98,8 @@ namespace Rubberduck.Parsing.VBA
 
             Debug.WriteLine("Module '{0}' state is changing to '{1}' (thread {2})", component.Name, state, Thread.CurrentThread.ManagedThreadId);
             OnModuleStateChanged(component, state);
-            Status = EvaluateParserState();
 
-            OnStateChanged(Status);
+            Status = EvaluateParserState();
         }
 
         private ParserState EvaluateParserState()
@@ -286,7 +285,7 @@ namespace Rubberduck.Parsing.VBA
         {
             var project = component.Collection.Parent;
             var keys = _declarations.Keys.Where(kvp => 
-                kvp.Project == project && kvp.Component == component);
+                kvp.Project == project && kvp.ComponentName == component.Name); // VBComponent reference seems to mismatch
 
             var success = true;
             foreach (var key in keys)
