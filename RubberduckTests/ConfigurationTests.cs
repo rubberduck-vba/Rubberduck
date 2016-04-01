@@ -14,9 +14,9 @@ namespace RubberduckTests
             var configService = new ConfigurationLoader(null, null);
 
             ToDoMarker[] markers = configService.GetDefaultTodoMarkers();
-            Assert.AreEqual("NOTE ", markers[0].Text,"Note failed to load.");
-            Assert.AreEqual("TODO ", markers[1].Text,"Todo failed to load.");
-            Assert.AreEqual("BUG ", markers[2].Text,"Bug failed to load.");
+            Assert.AreEqual("NOTE", markers[0].Text.Trim(),"Note failed to load.");
+            Assert.AreEqual("TODO", markers[1].Text.Trim(),"Todo failed to load.");
+            Assert.AreEqual("BUG" , markers[2].Text.Trim(),"Bug failed to load.");
         }
 
         [TestMethod]
