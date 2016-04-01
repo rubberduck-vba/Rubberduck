@@ -167,12 +167,12 @@ namespace Rubberduck.Common
             return User32.CallWindowProc(_oldWndProc, hWnd, uMsg, wParam, lParam);
         }
 
-        private bool HandleHotkeyMessage(int wParam)
+        private bool HandleHotkeyMessage(IntPtr wParam)
         {
             var processed = false;
                             if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_mainWindowHandle))
                             {
-                var hook = Hooks.OfType<Hotkey>().SingleOrDefault(k => k.HotkeyInfo.HookId == (IntPtr) wParam);
+                var hook = Hooks.OfType<Hotkey>().SingleOrDefault(k => k.HotkeyInfo.HookId == wParam);
                                 if (hook != null)
                                 {
                     hook.OnMessageReceived();
@@ -182,7 +182,7 @@ namespace Rubberduck.Common
             return processed;
                             }
 
-        private void HandleActivateAppMessage(int wParam)
+        private void HandleActivateAppMessage(IntPtr wParam)
         {
             const int WA_INACTIVE = 0;
             const int WA_ACTIVE = 1;
