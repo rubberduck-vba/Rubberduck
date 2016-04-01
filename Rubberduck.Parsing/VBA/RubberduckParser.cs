@@ -57,12 +57,12 @@ namespace Rubberduck.Parsing.VBA
             state.StateChanged += StateOnStateChanged;
         }
 
-        private void StateOnStateChanged(object sender, EventArgs e)
+        private void StateOnStateChanged(object sender, ParserStateEventArgs e)
         {
-            ParserStateEventArgs args = e as ParserStateEventArgs;
-            Debug.WriteLine("RubberduckParser handles OnStateChanged ({0})", _state.Status);
-            // why access _state and not pass through EventArgs?
-            if (args.State == ParserState.Parsed)
+            Debug.WriteLine("RubberduckParser handles OnStateChanged ({0})", e.State);
+            Debug.Assert(e.State == _state.Status);
+
+            if (e.State == ParserState.Parsed)
             {
                 Debug.WriteLine("(handling OnStateChanged) Starting resolver task");
                 Resolve(_central.Token); // Tests expect this to be synchronous
@@ -91,7 +91,12 @@ namespace Rubberduck.Parsing.VBA
                 .Cast<VBProject>()
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none);
 
-            var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>());
+            var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
+            foreach (var component in components)
+            {
+                _state.SetModuleState(component, ParserState.Pending);
+            }
+
             // invalidation cleanup should go into ParseAsync?
             foreach (var invalidated in _componentAttributes.Keys.Except(components))
             {
@@ -116,7 +121,12 @@ namespace Rubberduck.Parsing.VBA
                 .Cast<VBProject>()
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none);
 
-            var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>());
+            var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
+            foreach (var component in components)
+            {
+                _state.SetModuleState(component, ParserState.Pending);
+            }
+
             // invalidation cleanup should go into ParseAsync?
             foreach (var invalidated in _componentAttributes.Keys.Except(components))
             {
@@ -258,7 +268,7 @@ namespace Rubberduck.Parsing.VBA
                 // cannot locate declarations in one pass *the way it's currently implemented*,
                 // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
                 // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
-                DeclarationSymbolsListener declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, Accessibility.Implicit, component.Type, _state.GetModuleComments(component), _state.getModuleAttributes(component));
+                var declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, Accessibility.Implicit, component.Type, _state.GetModuleComments(component), _state.getModuleAttributes(component));
                 // TODO: should we unify the API? consider working like the other listeners instead of event-based
                 declarationsListener.NewDeclaration += (sender, e) => _state.AddDeclaration(e.Declaration);
                 declarationsListener.CreateModuleDeclarations();

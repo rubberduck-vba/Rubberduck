@@ -108,7 +108,7 @@ namespace Rubberduck.Parsing.VBA
             var moduleStates = _moduleStates.Values.ToList();
 
             var prelim = moduleStates.Max();
-            if (prelim == ParserState.Parsed && !moduleStates.All(s => s == ParserState.Parsed))
+            if (prelim == ParserState.Parsed && moduleStates.Any(s => s != ParserState.Parsed))
             {
                 prelim = moduleStates.Where(s => s != ParserState.Parsed).Max();
             }
