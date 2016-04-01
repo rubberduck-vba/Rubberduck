@@ -77,7 +77,7 @@ namespace Rubberduck.Common
             {
                 hook.Attach();
                 hook.MessageReceived += hook_MessageReceived;
-            }
+                }
 
             IsAttached = true;
         }
@@ -110,7 +110,7 @@ namespace Rubberduck.Common
             {
                 hook.Detach();
                 hook.MessageReceived -= hook_MessageReceived;
-            }
+                }
 
             IsAttached = false;
         }
@@ -135,7 +135,7 @@ namespace Rubberduck.Common
             Detach();
         }
 
-        private IntPtr WindowProc(IntPtr hWnd, int uMsg, int wParam, int lParam)
+        private IntPtr WindowProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam)
         {
             try
             {
@@ -170,17 +170,17 @@ namespace Rubberduck.Common
         private bool HandleHotkeyMessage(int wParam)
         {
             var processed = false;
-            if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_mainWindowHandle))
-            {
+                            if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_mainWindowHandle))
+                            {
                 var hook = Hooks.OfType<Hotkey>().SingleOrDefault(k => k.HotkeyInfo.HookId == (IntPtr) wParam);
-                if (hook != null)
-                {
+                                if (hook != null)
+                                {
                     hook.OnMessageReceived();
-                    processed = true;
-                }
+                                    processed = true;
+                                }
             }
             return processed;
-        }
+                            }
 
         private void HandleActivateAppMessage(int wParam)
         {
@@ -188,27 +188,22 @@ namespace Rubberduck.Common
             const int WA_ACTIVE = 1;
             const int WA_CLICKACTIVE = 2;
 
-            switch (LoWord(wParam))
-            {
-                case WA_ACTIVE:
+                            switch (LoWord(wParam))
+                            {
+                                case WA_ACTIVE:
                 case WA_CLICKACTIVE:
-                    Attach();
-                    break;
+                                    Attach();
+                                    break;
 
-                case WA_INACTIVE:
-                    Detach();
-                    break;
-            }
+                                case WA_INACTIVE:
+                                    Detach();
+                                    break;
+                    }
         }
 
-        /// <summary>
-        /// Gets the integer portion of a word
-        /// </summary>
-        private static int LoWord(int dw)
+        private static int LoWord(IntPtr dw)
         {
-            return (dw & 0x8000) != 0
-                ? 0x8000 | (dw & 0x7FFF)
-                : dw & 0xFFFF;
+            return unchecked((short)(uint)dw);
         }
 
         private IntPtr GetWindowThread(IntPtr hWnd)

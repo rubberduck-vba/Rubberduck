@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\TestProj\TestProj\VBA.g4 by ANTLR 4.3
+// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\TestProj\TestProj\Grammar\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -26,13 +26,13 @@ using IToken = Antlr4.Runtime.IToken;
 using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 
 /// <summary>
-/// This class provides an empty implementation of <see cref="IVBAListener"/>,
+/// This class provides an empty implementation of <see cref="IVBAParserListener"/>,
 /// which can be extended to create a listener which only needs to handle a subset
 /// of the available methods.
 /// </summary>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
 [System.CLSCompliant(false)]
-public partial class VBABaseListener : IVBAListener {
+public partial class VBAParserBaseListener : IVBAParserListener {
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.seekStmt"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -1217,6 +1217,19 @@ public partial class VBABaseListener : IVBAListener {
 	public virtual void ExitExitStmt([NotNull] VBAParser.ExitStmtContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.numberLiteral"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterNumberLiteral([NotNull] VBAParser.NumberLiteralContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.numberLiteral"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitNumberLiteral([NotNull] VBAParser.NumberLiteralContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.argList"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -1956,6 +1969,19 @@ public partial class VBABaseListener : IVBAListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitStopStmt([NotNull] VBAParser.StopStmtContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.whiteSpace"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterWhiteSpace([NotNull] VBAParser.WhiteSpaceContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.whiteSpace"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitWhiteSpace([NotNull] VBAParser.WhiteSpaceContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.sC_Case"/>.

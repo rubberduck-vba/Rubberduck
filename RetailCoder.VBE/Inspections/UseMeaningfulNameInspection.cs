@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -25,10 +26,11 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = UserDeclarations
-                            .Where(declaration => declaration.DeclarationType != DeclarationType.ModuleOption &&
+                            .Where(declaration => declaration.DeclarationType != DeclarationType.ModuleOption && 
                                                   (declaration.IdentifierName.Length < 3 ||
                                                   char.IsDigit(declaration.IdentifierName.Last()) ||
-                                                  !declaration.IdentifierName.Any(c => new[] {'a', 'e', 'i', 'o', 'u', 'y'}.Contains(c))))
+                                                  !declaration.IdentifierName.Any(c => 
+                                                      "aeiouy".Any(a => string.Compare(a.ToString(), c.ToString(), StringComparison.OrdinalIgnoreCase) == 0))))
                             .Select(issue => new UseMeaningfulNameInspectionResult(this, issue, State, _wrapperFactory, _messageBox))
                             .ToList();
 

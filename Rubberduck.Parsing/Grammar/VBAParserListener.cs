@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\TestProj\TestProj\VBA.g4 by ANTLR 4.3
+// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\TestProj\TestProj\Grammar\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -28,7 +28,7 @@ using IToken = Antlr4.Runtime.IToken;
 /// </summary>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
 [System.CLSCompliant(false)]
-public interface IVBAListener : IParseTreeListener {
+public interface IVBAParserListener : IParseTreeListener {
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.seekStmt"/>.
 	/// </summary>
@@ -1063,6 +1063,17 @@ public interface IVBAListener : IParseTreeListener {
 	void ExitExitStmt([NotNull] VBAParser.ExitStmtContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.numberLiteral"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNumberLiteral([NotNull] VBAParser.NumberLiteralContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.numberLiteral"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNumberLiteral([NotNull] VBAParser.NumberLiteralContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.argList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1712,6 +1723,17 @@ public interface IVBAListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitStopStmt([NotNull] VBAParser.StopStmtContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.whiteSpace"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWhiteSpace([NotNull] VBAParser.WhiteSpaceContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.whiteSpace"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWhiteSpace([NotNull] VBAParser.WhiteSpaceContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.sC_Case"/>.

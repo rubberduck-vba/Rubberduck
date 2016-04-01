@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
 
@@ -29,7 +30,7 @@ namespace Rubberduck.Parsing.Preprocessing
         {
             SymbolTable<string, IValue> symbolTable = new SymbolTable<string, IValue>();
             var stream = new AntlrInputStream(unprocessedCode);
-            var lexer = new VBAConditionalCompilationLexer(stream);
+            var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAConditionalCompilationParser(tokens);
             parser.AddErrorListener(new ExceptionErrorListener());
