@@ -244,14 +244,13 @@ namespace Rubberduck.Parsing.VBA
             
             try
             {
-                var walker = new ParseTreeWalker();
-                walker.Walk(new CombinedParseTreeListener(new IParseTreeListener[]{
+                ParseTreeWalker.Default.Walk(new CombinedParseTreeListener(new IParseTreeListener[]{
                     obsoleteCallStatementListener,
                     obsoleteLetStatementListener,
                     emptyStringLiteralListener,
                     argListWithOneByRefParamListener,
                 }), tree);
-                // FIXME this are actually (almost) isnpection results.. we should handle them as such
+                // FIXME these are actually (almost) isnpection results.. we should handle them as such
                 _state.ArgListsWithOneByRefParam = argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
                 _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
                 _state.ObsoleteLetContexts = obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
