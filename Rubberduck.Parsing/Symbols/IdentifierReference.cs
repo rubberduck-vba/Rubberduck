@@ -2,6 +2,7 @@
 using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
+using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -115,8 +116,8 @@ namespace Rubberduck.Parsing.Symbols
                 _hasTypeHint = false;
                 return false;
             }
-
-            var method = Context.Parent.GetType().GetMethod("typeHint");
+            System.Reflection.MethodInfo method = null;
+            method = Context.Parent.GetType().GetMethods().FirstOrDefault(m => m.Name == "typeHint");
             if (method == null)
             {
                 token = null;
