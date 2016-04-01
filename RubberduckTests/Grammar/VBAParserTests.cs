@@ -150,11 +150,60 @@ End Sub";
         public void TestFixedLengthString()
         {
             string code = @"
-Sub FixedLengthString()
+Sub Test()
     Dim someString As String * 255
 End Sub";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//fieldLength");
+        }
+
+        [TestMethod]
+        public void TestDeleteSettingsStatement()
+        {
+            string code = @"
+Sub Test()
+    DELETESETTING ""a""
+    DELETESETTING ""a"", ""b""
+    DELETESETTING ""a"", ""b"", ""c""
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//deleteSettingStmt");
+        }
+
+        [TestMethod]
+        public void TestDoLoopStatement()
+        {
+            string code = @"
+Sub Test()
+    Do
+    Loop Until var > 10
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//doLoopStmt");
+        }
+
+        [TestMethod]
+        public void TestForNextStatement()
+        {
+            string code = @"
+Sub Test()
+    For n = 1 To 10
+    Next n%
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//forNextStmt");
+        }
+
+        [TestMethod]
+        public void TestLineLabelStatement()
+        {
+            string code = @"
+Sub Test()
+    a:
+    10:
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lineLabel");
         }
 
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
