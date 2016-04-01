@@ -288,28 +288,30 @@ namespace Rubberduck.Parsing.VBA
                 kvp.Project == project && kvp.ComponentName == component.Name); // VBComponent reference seems to mismatch
 
             var success = true;
+            var declarationsRemoved = 0;
             foreach (var key in keys)
             {
-                ConcurrentDictionary<Declaration, byte> declarations;
+                ConcurrentDictionary<Declaration, byte> declarations = null;
                 success = success && (!_declarations.ContainsKey(key) || _declarations.TryRemove(key, out declarations));
-            }
-            
-            ParserState state;
-            success = success && (!_moduleStates.ContainsKey(component) || _moduleStates.TryRemove(component, out state));
+                declarationsRemoved = declarations == null ? 0 : declarations.Count;
 
-            SyntaxErrorException exception;
-            success = success && (!_moduleExceptions.ContainsKey(component) || _moduleExceptions.TryRemove(component, out exception));
+                IParseTree tree;
+                success = success && (!_parseTrees.ContainsKey(key.Component) || _parseTrees.TryRemove(key.Component, out tree));
 
-            var components = _comments.Keys.Where(key =>
-                key.Collection.Parent == project && key.Name == component.Name);
+                ITokenStream stream;
+                success = success && (!_tokenStreams.ContainsKey(key.Component) || _tokenStreams.TryRemove(key.Component, out stream));
 
-            foreach (var commentKey in components)
-            {
+                ParserState state;
+                success = success && (!_moduleStates.ContainsKey(key.Component) || _moduleStates.TryRemove(key.Component, out state));
+
+                SyntaxErrorException exception;
+                success = success && (!_moduleExceptions.ContainsKey(key.Component) || _moduleExceptions.TryRemove(key.Component, out exception));
+
                 IList<CommentNode> nodes;
-                success = success && (!_comments.ContainsKey(commentKey) || _comments.TryRemove(commentKey, out nodes));
+                success = success && (!_comments.ContainsKey(key.Component) || _comments.TryRemove(key.Component, out nodes));
             }
 
-            Debug.WriteLine("ClearDeclarations({0}): {1}", component.Name, success ? "succeeded" : "failed");
+            Debug.WriteLine("ClearDeclarations({0}): {1} - {2} declarations removed", component.Name, success ? "succeeded" : "failed", declarationsRemoved);
             return success;
         }
 
