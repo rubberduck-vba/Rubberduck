@@ -43,7 +43,7 @@ End Function
 'Public Sub CheckPivotFieldItemIndexPos(ByVal Name As String _
 '                                     , ByVal Value As Long _
 '                                     , ByVal PivotFields As Excel.PivotFields _
-'                                     , PivotFieldOrientation As XlPivotFieldOrientation _
+'                                     , PivotFieldOrientation As XlPivotFieldOrientation
 
 
 

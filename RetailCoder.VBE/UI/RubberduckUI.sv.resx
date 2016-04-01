@@ -476,12 +476,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Modulinställningar ska specifieras först</value>
   </data>
-  <data name="ObsoleteComment" xml:space="preserve">
-    <value>Användning av föråldrad Rem kommentarssyntax</value>
-  </data>
-  <data name="ObsoleteGlobal" xml:space="preserve">
-    <value>Användning av föråldrad Global åtkomstmodifierare</value>
-  </data>
   <data name="Component" xml:space="preserve">
     <value>Komponent</value>
   </data>
@@ -1052,9 +1046,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
     <value />
   </data>
   <data name="IntroduceField_Caption" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ImplicitActiveSheetReference_" xml:space="preserve">
     <value />
   </data>
   <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">

@@ -40,9 +40,9 @@ namespace Rubberduck.Parsing.VBA
             var listener = new AttributeListener(Tuple.Create(component.Name, type));
 
             var stream = new AntlrInputStream(code);
-            var lexer = new AttributesLexer(stream);
+            var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
-            var parser = new AttributesParser(tokens);
+            var parser = new VBAParser(tokens);
             parser.AddParseListener(listener);
 
             // parse tree isn't usable for declarations because
@@ -53,7 +53,7 @@ namespace Rubberduck.Parsing.VBA
             return listener.Attributes;
         }
 
-        private class AttributeListener : AttributesBaseListener
+        private class AttributeListener : VBAParserBaseListener
         {
             private readonly Dictionary<Tuple<string, DeclarationType>, Attributes> _attributes = 
                 new Dictionary<Tuple<string, DeclarationType>, Attributes>();
@@ -72,7 +72,7 @@ namespace Rubberduck.Parsing.VBA
             private Tuple<string,DeclarationType> _currentScope;
             private Attributes _currentScopeAttributes;
 
-            public override void ExitModuleAttributes(AttributesParser.ModuleAttributesContext context)
+            public override void ExitModuleAttributes(VBAParser.ModuleAttributesContext context)
             {
                 _attributes.Add(_currentScope, _currentScopeAttributes);
             }
@@ -80,14 +80,14 @@ namespace Rubberduck.Parsing.VBA
             private static readonly IReadOnlyDictionary<Type, DeclarationType> ScopingContextTypes =
                 new Dictionary<Type, DeclarationType>
             {
-                {typeof(AttributesParser.SubStmtContext), DeclarationType.Procedure},
-                {typeof(AttributesParser.FunctionStmtContext), DeclarationType.Function},
-                {typeof(AttributesParser.PropertyGetStmtContext), DeclarationType.PropertyGet},
-                {typeof(AttributesParser.PropertyLetStmtContext), DeclarationType.PropertyLet},
-                {typeof(AttributesParser.PropertySetStmtContext), DeclarationType.PropertySet}
+                {typeof(VBAParser.SubStmtContext), DeclarationType.Procedure},
+                {typeof(VBAParser.FunctionStmtContext), DeclarationType.Function},
+                {typeof(VBAParser.PropertyGetStmtContext), DeclarationType.PropertyGet},
+                {typeof(VBAParser.PropertyLetStmtContext), DeclarationType.PropertyLet},
+                {typeof(VBAParser.PropertySetStmtContext), DeclarationType.PropertySet}
             };
 
-            public override void EnterAmbiguousIdentifier(AttributesParser.AmbiguousIdentifierContext context)
+            public override void EnterAmbiguousIdentifier(VBAParser.AmbiguousIdentifierContext context)
             {
                 DeclarationType type;
                 if (!ScopingContextTypes.TryGetValue(context.Parent.GetType(), out type))
@@ -98,12 +98,12 @@ namespace Rubberduck.Parsing.VBA
                 _currentScope = Tuple.Create(context.GetText(), type);
             }
 
-            public override void EnterSubStmt(AttributesParser.SubStmtContext context)
+            public override void EnterSubStmt(VBAParser.SubStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
             }
 
-            public override void ExitSubStmt(AttributesParser.SubStmtContext context)
+            public override void ExitSubStmt(VBAParser.SubStmtContext context)
             {
                 if (_currentScopeAttributes.Any())
                 {
@@ -111,12 +111,12 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            public override void EnterFunctionStmt(AttributesParser.FunctionStmtContext context)
+            public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
             }
 
-            public override void ExitFunctionStmt(AttributesParser.FunctionStmtContext context)
+            public override void ExitFunctionStmt(VBAParser.FunctionStmtContext context)
             {
                 if (_currentScopeAttributes.Any())
                 {
@@ -124,12 +124,12 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            public override void EnterPropertyGetStmt(AttributesParser.PropertyGetStmtContext context)
+            public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
             }
 
-            public override void ExitPropertyGetStmt(AttributesParser.PropertyGetStmtContext context)
+            public override void ExitPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
             {
                 if (_currentScopeAttributes.Any())
                 {
@@ -137,12 +137,12 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            public override void EnterPropertyLetStmt(AttributesParser.PropertyLetStmtContext context)
+            public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
             }
 
-            public override void ExitPropertyLetStmt(AttributesParser.PropertyLetStmtContext context)
+            public override void ExitPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
             {
                 if (_currentScopeAttributes.Any())
                 {
@@ -150,12 +150,12 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            public override void EnterPropertySetStmt(AttributesParser.PropertySetStmtContext context)
+            public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
             }
 
-            public override void ExitPropertySetStmt(AttributesParser.PropertySetStmtContext context)
+            public override void ExitPropertySetStmt(VBAParser.PropertySetStmtContext context)
             {
                 if (_currentScopeAttributes.Any())
                 {
@@ -163,14 +163,14 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            public override void ExitAttributeStmt(AttributesParser.AttributeStmtContext context)
+            public override void ExitAttributeStmt(VBAParser.AttributeStmtContext context)
             {
                 var name = context.implicitCallStmt_InStmt().GetText();
                 var values = context.literal().Select(e => e.GetText()).ToList();
                 _currentScopeAttributes.Add(name, values);
             }
 
-            public override void ExitModuleConfigElement(AttributesParser.ModuleConfigElementContext context)
+            public override void ExitModuleConfigElement(VBAParser.ModuleConfigElementContext context)
             {
                 var name = context.ambiguousIdentifier().GetText();
                 var literal = context.literal();

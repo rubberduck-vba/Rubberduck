@@ -46,44 +46,9 @@ namespace Rubberduck.Common.WinAPI
         [DllImport("user32.dll")]
         public static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, WndProc dwNewLong);
 
-        /// <summary>
-        /// Changes an attribute of the specified window. 
-        /// The function also sets the 32-bit (long) value at the specified offset into the extra window memory.
-        /// </summary>
-        /// <param name="hWnd">A handle to the window and, indirectly, the class to which the window belongs.</param>
-        /// <param name="nIndex">The zero-based offset to the value to be set. 
-        /// Valid values are in the range zero through the number of bytes of extra window memory, minus the size of an integer.
-        /// <see cref="WindowLongFlags"/>.</param>
-        /// <param name="dwNewLong">The replacement value.</param>
-        /// <returns>The return value specifies the result of the message processing and depends on the message sent.</returns>
-        //public static IntPtr SetWindowLongPtr(IntPtr hWnd, WindowLongFlags nIndex, WndProc dwNewLong)
-        //{
-        //    return IntPtr.Size == 8 
-        //        ? SetWindowLongPtr64(hWnd, nIndex, dwNewLong) 
-        //        : new IntPtr(SetWindowLong32(hWnd, nIndex, dwNewLong.ToInt32()));
-        //}
-
-        //[DllImport("user32.dll", EntryPoint = "SetWindowLong")]
-        //private static extern int SetWindowLong32(IntPtr hWnd, WindowLongFlags nIndex, int dwNewLong);
-
-        //[DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
-        //private static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, WindowLongFlags nIndex, IntPtr dwNewLong);
-
-
-        /// <summary>
-        /// Passes message information to the specified window procedure.
-        /// </summary>
-        /// <param name="lpPrevWndFunc">The previous window procedure. 
-        /// If this value is obtained by calling the GetWindowLong function with the nIndex parameter set to GWL_WNDPROC or DWL_DLGPROC, 
-        /// it is actually either the address of a window or dialog box procedure, or a special internal value meaningful only to CallWindowProc.</param>
-        /// <param name="hWnd">A handle to the window procedure to receive the message.</param>
-        /// <param name="Msg">The message.</param>
-        /// <param name="wParam">Additional message-specific information. The contents of this parameter depend on the value of the Msg parameter.</param>
-        /// <param name="lParam">Additional message-specific information. The contents of this parameter depend on the value of the Msg parameter.</param>
-        /// <returns></returns>
         [DllImport("user32.dll")]
-        public static extern IntPtr CallWindowProc(WndProc lpPrevWndFunc, IntPtr hWnd, int Msg, int wParam, int lParam);
-        public delegate IntPtr WndProc(IntPtr hWnd, int uMsg, int wParam, int lParam);
+        public static extern IntPtr CallWindowProc(WndProc lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        public delegate IntPtr WndProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
 
         /// <summary>
         /// A pointer to the hook procedure. 
