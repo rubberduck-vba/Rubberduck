@@ -38,11 +38,10 @@ namespace Rubberduck
         {
             try
             {
-                AppDomain currentDomain = AppDomain.CurrentDomain;
+                var currentDomain = AppDomain.CurrentDomain;
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
                 _kernel.Load(new RubberduckModule(_kernel, (VBE)Application, (AddIn)AddInInst));
-                _kernel.Load(new CommandBarsModule(_kernel));
 
                 var app = _kernel.Get<App>();
                 app.Startup();

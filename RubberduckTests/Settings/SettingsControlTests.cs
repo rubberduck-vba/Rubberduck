@@ -162,7 +162,7 @@ namespace RubberduckTests.Settings
 
         private ConfigurationLoader GetConfigLoader(Configuration config)
         {
-            var configLoader = new ConfigurationLoader(Inspections());
+            var configLoader = new ConfigurationLoader(Inspections(), null);
             configLoader.SaveConfiguration(config);
 
             return configLoader;
