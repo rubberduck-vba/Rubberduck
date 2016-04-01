@@ -20,11 +20,11 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class RubberduckParser : IRubberduckParser
+    public class RubberduckParserLegacy : IRubberduckParser
     {
         private readonly ReferencedDeclarationsCollector _comReflector;
 
-        public RubberduckParser(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
+        public RubberduckParserLegacy(VBE vbe, RubberduckParserState state, IAttributeParser attributeParser)
         {
             _vbe = vbe;
             _state = state;
@@ -38,8 +38,8 @@ namespace Rubberduck.Parsing.VBA
 
         private void ReparseRequested(object sender, EventArgs e)
         {
-            Task.Run(() => ParseInternal());
-        }
+                Task.Run(() => ParseInternal());
+            }
 
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
@@ -359,6 +359,26 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
             return ParserState.Ready;
+        }
+
+        public void Resolve(CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ParseAsync(VBComponent component, TokenStreamRewriter rewriter = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Cancel(VBComponent component = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ParseAsync(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
+        {
+            throw new NotImplementedException();
         }
 
         private class ObsoleteCallStatementListener : VBAParserBaseListener
