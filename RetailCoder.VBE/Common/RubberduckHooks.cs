@@ -170,11 +170,11 @@ namespace Rubberduck.Common
         private bool HandleHotkeyMessage(IntPtr wParam)
         {
             var processed = false;
-            if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_mainWindowHandle))
-            {
-                var hook = Hooks.OfType<Hotkey>().SingleOrDefault(k => k.HotkeyInfo.HookId == (IntPtr) wParam);
-                if (hook != null)
-                {
+                            if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_mainWindowHandle))
+                            {
+                var hook = Hooks.OfType<Hotkey>().SingleOrDefault(k => k.HotkeyInfo.HookId == wParam);
+                                if (hook != null)
+                                {
                     hook.OnMessageReceived();
                     processed = true;
                 }
