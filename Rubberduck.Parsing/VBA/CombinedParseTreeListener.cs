@@ -10,30 +10,44 @@ namespace Rubberduck.Parsing.VBA
     /// </summary>
     public class CombinedParseTreeListener : IParseTreeListener
     {
-        private List<IParseTreeListener> _listeners;
-        public CombinedParseTreeListener(IParseTreeListener[] listeners)
+        private readonly IReadOnlyList<IParseTreeListener> _listeners;
+        public CombinedParseTreeListener(IEnumerable<IParseTreeListener> listeners)
         {
             _listeners = listeners.ToList();
         }
 
         public void EnterEveryRule(ParserRuleContext ctx)
         {
-            _listeners.ForEach(l => l.EnterEveryRule(ctx));
+            foreach (var listener in _listeners)
+            {
+                listener.EnterEveryRule(ctx);
+                ctx.EnterRule(listener);
+            }
         }
 
         public void ExitEveryRule(ParserRuleContext ctx)
         {
-            _listeners.ForEach(l => l.ExitEveryRule(ctx));
+            foreach (var listener in _listeners)
+            {
+                listener.ExitEveryRule(ctx);
+                ctx.ExitRule(listener);
+            }
         }
 
         public void VisitErrorNode(IErrorNode node)
         {
-            _listeners.ForEach(l => l.VisitErrorNode(node));
+            foreach (var listener in _listeners)
+            {
+                listener.VisitErrorNode(node);
+            }
         }
 
         public void VisitTerminal(ITerminalNode node)
         {
-            _listeners.ForEach(l => l.VisitTerminal(node));
+            foreach (var listener in _listeners)
+            {
+                listener.VisitTerminal(node);
+            }
         }
     }
 }
