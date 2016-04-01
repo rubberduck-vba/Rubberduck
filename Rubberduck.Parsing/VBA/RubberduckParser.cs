@@ -57,12 +57,11 @@ namespace Rubberduck.Parsing.VBA
             state.StateChanged += StateOnStateChanged;
         }
 
-        private void StateOnStateChanged(object sender, ParserStateEventArgs e)
+        private void StateOnStateChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("RubberduckParser handles OnStateChanged ({0})", e.State);
-            Debug.Assert(e.State == _state.Status);
+            Debug.WriteLine("RubberduckParser handles OnStateChanged ({0})", _state.Status);
 
-            if (e.State == ParserState.Parsed)
+            if (_state.Status == ParserState.Parsed)
             {
                 Debug.WriteLine("(handling OnStateChanged) Starting resolver task");
                 Resolve(_central.Token); // Tests expect this to be synchronous
