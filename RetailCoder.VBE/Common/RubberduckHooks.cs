@@ -167,38 +167,38 @@ namespace Rubberduck.Common
             return User32.CallWindowProc(_oldWndProc, hWnd, uMsg, wParam, lParam);
         }
 
-        private bool HandleHotkeyMessage(int wParam)
+        private bool HandleHotkeyMessage(IntPtr wParam)
         {
             var processed = false;
-                            if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_mainWindowHandle))
-                            {
+            if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_mainWindowHandle))
+            {
                 var hook = Hooks.OfType<Hotkey>().SingleOrDefault(k => k.HotkeyInfo.HookId == (IntPtr) wParam);
-                                if (hook != null)
-                                {
+                if (hook != null)
+                {
                     hook.OnMessageReceived();
-                                    processed = true;
-                                }
+                    processed = true;
+                }
             }
             return processed;
-                            }
+        }
 
-        private void HandleActivateAppMessage(int wParam)
+        private void HandleActivateAppMessage(IntPtr wParam)
         {
             const int WA_INACTIVE = 0;
             const int WA_ACTIVE = 1;
             const int WA_CLICKACTIVE = 2;
 
-                            switch (LoWord(wParam))
-                            {
-                                case WA_ACTIVE:
+            switch (LoWord(wParam))
+            {
+                case WA_ACTIVE:
                 case WA_CLICKACTIVE:
-                                    Attach();
-                                    break;
+                    Attach();
+                    break;
 
-                                case WA_INACTIVE:
-                                    Detach();
-                                    break;
-                    }
+                case WA_INACTIVE:
+                    Detach();
+                    break;
+            }
         }
 
         private static int LoWord(IntPtr dw)
