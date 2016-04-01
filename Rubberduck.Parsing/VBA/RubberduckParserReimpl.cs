@@ -264,7 +264,7 @@ namespace Rubberduck.Parsing.VBA
                 declarationsListener.NewDeclaration += (sender, e) => _state.AddDeclaration(e.Declaration);
                 declarationsListener.CreateModuleDeclarations();
                 // rewalk parse tree for second declaration level
-                walker.Walk(declarationsListener, tree);
+                ParseTreeWalker.Default.Walk(declarationsListener, tree);
             } catch (Exception exception)
             {
                 Debug.Print("Exception thrown resolving '{0}' (thread {2}): {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
