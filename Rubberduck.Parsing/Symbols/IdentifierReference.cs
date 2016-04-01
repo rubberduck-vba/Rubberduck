@@ -1,5 +1,4 @@
 ﻿using Antlr4.Runtime;
-using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using System.Linq;
@@ -116,8 +115,7 @@ namespace Rubberduck.Parsing.Symbols
                 _hasTypeHint = false;
                 return false;
             }
-            System.Reflection.MethodInfo method = null;
-            method = Context.Parent.GetType().GetMethods().FirstOrDefault(m => m.Name == "typeHint");
+            var method = Context.Parent.GetType().GetMethods().FirstOrDefault(m => m.Name == "typeHint");
             if (method == null)
             {
                 token = null;
