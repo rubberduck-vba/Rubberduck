@@ -10,12 +10,14 @@ namespace Rubberduck.Inspections
     {
         protected readonly RubberduckParserState State;
         private readonly CodeInspectionSeverity _defaultSeverity;
+        private readonly string _name;
 
         protected InspectionBase(RubberduckParserState state, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning)
         {
             State = state;
             _defaultSeverity = defaultSeverity;
             Severity = _defaultSeverity;
+            _name = GetType().Name;
         }
 
         /// <summary>
@@ -42,7 +44,7 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// The inspection type name, obtained by reflection.
         /// </summary>
-        public string Name { get { return GetType().Name; } }
+        public string Name { get { return _name; } }
 
         /// <summary>
         /// Inspection severity level. Can control whether an inspection is enabled.

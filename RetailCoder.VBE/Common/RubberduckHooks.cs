@@ -176,11 +176,11 @@ namespace Rubberduck.Common
                                 if (hook != null)
                                 {
                     hook.OnMessageReceived();
-                                    processed = true;
-                                }
+                    processed = true;
+                }
             }
             return processed;
-                            }
+        }
 
         private void HandleActivateAppMessage(IntPtr wParam)
         {
@@ -188,17 +188,17 @@ namespace Rubberduck.Common
             const int WA_ACTIVE = 1;
             const int WA_CLICKACTIVE = 2;
 
-                            switch (LoWord(wParam))
-                            {
-                                case WA_ACTIVE:
+            switch (LoWord(wParam))
+            {
+                case WA_ACTIVE:
                 case WA_CLICKACTIVE:
-                                    Attach();
-                                    break;
+                    Attach();
+                    break;
 
-                                case WA_INACTIVE:
-                                    Detach();
-                                    break;
-                    }
+                case WA_INACTIVE:
+                    Detach();
+                    break;
+            }
         }
 
         private static int LoWord(IntPtr dw)
