@@ -22,7 +22,6 @@ namespace Rubberduck.Inspections
 
                 _configService = configService;
                 configService.LanguageChanged += ConfigServiceLanguageChanged;
-                UpdateInspectionSeverity();
             }
 
             private void ConfigServiceLanguageChanged(object sender, EventArgs e)

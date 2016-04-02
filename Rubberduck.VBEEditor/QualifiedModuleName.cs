@@ -24,6 +24,7 @@ namespace Rubberduck.VBEditor
 
             _component = component;
             _componentName = component == null ? string.Empty : component.Name;
+            _project = component == null ? null : component.Collection.Parent;
             _projectName = component == null ? string.Empty : component.Collection.Parent.Name;
             _projectHashCode = component == null ? 0 : component.Collection.Parent.GetHashCode();
 
@@ -47,7 +48,6 @@ namespace Rubberduck.VBEditor
         public QualifiedModuleName(string projectName, string componentName)
         {
             _project = null; // field is only assigned when the instance refers to a VBProject.
-
             _projectName = projectName;
             _componentName = componentName;
             _component = null;
@@ -64,7 +64,7 @@ namespace Rubberduck.VBEditor
         public VBComponent Component { get { return _component; } }
 
         private readonly VBProject _project;
-        public VBProject Project { get { return _project ?? (_component == null ? null : _component.Collection.Parent); } }
+        public VBProject Project { get { return _project; } }
 
         private readonly int _projectHashCode;
         public int ProjectHashCode { get { return _projectHashCode; } }

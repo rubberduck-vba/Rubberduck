@@ -15,6 +15,7 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.SourceControl
 {
+    [Ignore]
     [TestClass]
     public class SourceControlViewModelTests
     {

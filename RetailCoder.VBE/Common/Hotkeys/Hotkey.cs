@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Forms;
+using System.Windows.Input;
 using Rubberduck.Common.WinAPI;
 
 namespace Rubberduck.Common.Hotkeys
@@ -9,24 +11,39 @@ namespace Rubberduck.Common.Hotkeys
     public class Hotkey : IHotkey
     {
         private readonly string _key;
+        private readonly ICommand _command;
         private readonly IntPtr _hWndVbe;
 
-        public Hotkey(IntPtr hWndVbe, string key, Keys secondKey = Keys.None)
+        public Hotkey(IntPtr hWndVbe, string key, ICommand command, Keys secondKey = Keys.None)
         {
             _hWndVbe = hWndVbe;
 
             IsTwoStepHotkey = secondKey != Keys.None;
             _key = key;
+            _command = command;
             Combo = GetCombo(key);
             SecondKey = secondKey;
         }
 
+        public ICommand Command { get { return _command; } }
         public string Key { get { return _key; } }
         public HotkeyInfo HotkeyInfo { get; private set; }
         public Keys Combo { get; private set; }
         public Keys SecondKey { get; private set; }
         public bool IsTwoStepHotkey { get; private set; }
         public bool IsAttached { get; private set; }
+
+        public event EventHandler<HookEventArgs> MessageReceived;
+
+        public void OnMessageReceived()
+        {
+            var handler = MessageReceived;
+            if (handler != null)
+            {
+                var args = new HookEventArgs(HotkeyInfo.Keys);
+                handler.Invoke(this, args);
+            }
+        }
 
         public void Attach()
         {
@@ -71,6 +88,7 @@ namespace Rubberduck.Common.Hotkeys
 
             HotkeyInfo = new HotkeyInfo(hookId, Combo);
             IsAttached = true;
+            Debug.WriteLine("Hotkey '{0}' hooked successfully to command '{1}'", Key, Command.GetType());
         }
 
         private static readonly IDictionary<char,uint> Modifiers = new Dictionary<char, uint>
