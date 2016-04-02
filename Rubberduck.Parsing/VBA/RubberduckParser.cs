@@ -69,18 +69,17 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ReparseRequested(object sender, EventArgs e)
+        private void ReparseRequested(object sender, ParseRequestEventArgs e)
         {
-            var args = e as ParseRequestEventArgs;
-            if (args.IsFullReparseRequest)
+            if (e.IsFullReparseRequest)
             {
                 Cancel();
                 ParseAll();
             }
             else
             {
-                Cancel(args.Component);
-                ParseAsync(args.Component, CancellationToken.None);
+                Cancel(e.Component);
+                ParseAsync(e.Component, CancellationToken.None);
             }
         }
 
@@ -88,7 +87,21 @@ namespace Rubberduck.Parsing.VBA
         {
             var projects = _vbe.VBProjects
                 .Cast<VBProject>()
-                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none);
+                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
+                .ToList();
+
+            if (!_state.AllDeclarations.Any(item => item.IsBuiltIn))
+            {
+                var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
+                foreach (var reference in references)
+                {
+                    var items = _comReflector.GetDeclarationsForReference(reference);
+                    foreach (var declaration in items)
+                    {
+                        _state.AddDeclaration(declaration);
+                    }
+                }
+            }
 
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
             foreach (var component in components)
@@ -118,7 +131,21 @@ namespace Rubberduck.Parsing.VBA
         {
             var projects = _vbe.VBProjects
                 .Cast<VBProject>()
-                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none);
+                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
+                .ToList();
+
+            if (!_state.AllDeclarations.Any(item => item.IsBuiltIn))
+            {
+                var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
+                foreach (var reference in references)
+                {
+                    var items = _comReflector.GetDeclarationsForReference(reference);
+                    foreach (var declaration in items)
+                    {
+                        _state.AddDeclaration(declaration);
+                    }
+                }
+            }
 
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
             foreach (var component in components)
