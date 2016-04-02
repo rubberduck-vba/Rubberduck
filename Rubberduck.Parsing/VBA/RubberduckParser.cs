@@ -90,6 +90,12 @@ namespace Rubberduck.Parsing.VBA
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
                 .ToList();
 
+            var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
+            foreach (var component in components)
+            {
+                _state.SetModuleState(component, ParserState.LoadingReference);
+            }
+
             if (!_state.AllDeclarations.Any(item => item.IsBuiltIn))
             {
                 var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
@@ -103,7 +109,6 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
             foreach (var component in components)
             {
                 _state.SetModuleState(component, ParserState.Pending);
@@ -134,6 +139,12 @@ namespace Rubberduck.Parsing.VBA
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
                 .ToList();
 
+            var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
+            foreach (var component in components)
+            {
+                _state.SetModuleState(component, ParserState.LoadingReference);
+            }
+
             if (!_state.AllDeclarations.Any(item => item.IsBuiltIn))
             {
                 var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
@@ -147,7 +158,6 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
             foreach (var component in components)
             {
                 _state.SetModuleState(component, ParserState.Pending);
