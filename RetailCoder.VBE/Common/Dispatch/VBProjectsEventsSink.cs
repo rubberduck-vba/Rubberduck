@@ -8,20 +8,26 @@ namespace Rubberduck.Common.Dispatch
         public event EventHandler<DispatcherEventArgs<VBProject>> ProjectAdded;
         public void ItemAdded(VBProject VBProject)
         {
-            OnDispatch(ProjectAdded, VBProject);
+            if (VBProject.Protection == vbext_ProjectProtection.vbext_pp_none)
+            {
+                OnDispatch(ProjectAdded, VBProject);
+            }
         }
 
         public event EventHandler<DispatcherEventArgs<VBProject>> ProjectRemoved;
         public void ItemRemoved(VBProject VBProject)
         {
-            OnDispatch(ProjectRemoved, VBProject);
+            if (VBProject.Protection == vbext_ProjectProtection.vbext_pp_none)
+            {
+                OnDispatch(ProjectRemoved, VBProject);
+            }
         }
 
         public event EventHandler<DispatcherRenamedEventArgs<VBProject>> ProjectRenamed;
         public void ItemRenamed(VBProject VBProject, string OldName)
         {
             var handler = ProjectRenamed;
-            if (handler != null)
+            if (handler != null && VBProject.Protection == vbext_ProjectProtection.vbext_pp_none)
             {
                 handler.Invoke(this, new DispatcherRenamedEventArgs<VBProject>(VBProject, OldName));
             }
@@ -30,7 +36,10 @@ namespace Rubberduck.Common.Dispatch
         public event EventHandler<DispatcherEventArgs<VBProject>> ProjectActivated;
         public void ItemActivated(VBProject VBProject)
         {
-            OnDispatch(ProjectActivated, VBProject);
+            if (VBProject.Protection == vbext_ProjectProtection.vbext_pp_none)
+            {
+                OnDispatch(ProjectActivated, VBProject);
+            }
         }
 
         private void OnDispatch(EventHandler<DispatcherEventArgs<VBProject>> dispatched, VBProject project)
