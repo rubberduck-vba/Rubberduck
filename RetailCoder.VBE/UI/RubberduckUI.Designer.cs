@@ -643,6 +643,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Hook is already attached. ähnelt.
+        /// </summary>
+        public static string CommonHotkey_HookAttached {
+            get {
+                return ResourceManager.GetString("CommonHotkey_HookAttached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Hook is already detached. ähnelt.
+        /// </summary>
+        public static string CommonHotkey_HookDetached {
+            get {
+                return ResourceManager.GetString("CommonHotkey_HookDetached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Invalid key. ähnelt.
+        /// </summary>
+        public static string CommonHotkey_InvalidKey {
+            get {
+                return ResourceManager.GetString("CommonHotkey_InvalidKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die HotKey was not registered. ähnelt.
+        /// </summary>
+        public static string CommonHotkey_KeyNotRegistered {
+            get {
+                return ResourceManager.GetString("CommonHotkey_KeyNotRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Component ähnelt.
         /// </summary>
         public static string Component {

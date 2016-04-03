@@ -1459,4 +1459,16 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
     <value>Der erwartete Fehler wurde nicht gefunden</value>
   </data>
+  <data name="CommonHotkey_InvalidKey" xml:space="preserve">
+    <value>Ungültiges Zeichen.</value>
+  </data>
+  <data name="CommonHotkey_HookDetached" xml:space="preserve">
+    <value>Hook ist schon abgehängt.</value>
+  </data>
+  <data name="CommonHotkey_HookAttached" xml:space="preserve">
+    <value>Hook ist schon hinzugefügt.</value>
+  </data>
+  <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
+    <value>Hotkey wurde nicht registriert.</value>
+  </data>
 </root>
