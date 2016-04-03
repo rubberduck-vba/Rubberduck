@@ -17,8 +17,14 @@ namespace Rubberduck.Parsing.Symbols
             _comments = comments.GroupBy(node => node.QualifiedSelection.QualifiedName)
                 .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
 
-            _declarationsByName = declarations.GroupBy(declaration => declaration.IdentifierName)
-                .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
+            _declarationsByName = declarations.GroupBy(declaration => new
+            {
+                IdentifierName = declaration.Project != null && 
+                    declaration.DeclarationType == DeclarationType.Project
+                        ? declaration.Project.Name
+                        : declaration.IdentifierName
+            })
+                .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
         }
 
         private readonly HashSet<Accessibility> _projectScopePublicModifiers =

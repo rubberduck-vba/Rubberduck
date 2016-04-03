@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor
 {
@@ -13,7 +14,7 @@ namespace Rubberduck.VBEditor
             _component = null;
             _componentName = null;
             _project = project;
-            _projectName = project.Name;
+            _projectName = project.ProjectName();
             _contentHashCode = 0;  
        }
 
@@ -24,7 +25,7 @@ namespace Rubberduck.VBEditor
             _component = component;
             _componentName = component == null ? string.Empty : component.Name;
             _project = component == null ? null : component.Collection.Parent;
-            _projectName = component == null ? string.Empty : component.Collection.Parent.Name;
+            _projectName = component == null ? string.Empty : component.ProjectName();
 
             _contentHashCode = 0;
             if (component == null)
@@ -92,10 +93,10 @@ namespace Rubberduck.VBEditor
                 var other = (QualifiedModuleName)obj;
                 if (other.Component == null)
                 {
-                    return other.Project == Project && other.ComponentName == ComponentName;
+                    return other.ProjectName == ProjectName && other.ComponentName == ComponentName;
                 }
 
-                var result = other.Project == Project // ugh. not reliable...
+                var result = other.ProjectName == ProjectName
                     && other.ComponentName == ComponentName 
                     && other._contentHashCode == _contentHashCode;
                 return result;
