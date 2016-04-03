@@ -18,12 +18,12 @@ namespace Rubberduck.Parsing.Symbols
                 .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
 
             _declarationsByName = declarations.GroupBy(declaration => new
-            {
-                IdentifierName = declaration.Project != null && 
-                    declaration.DeclarationType == DeclarationType.Project
-                        ? declaration.Project.Name
-                        : declaration.IdentifierName
-            })
+                {
+                    IdentifierName = declaration.Project != null && 
+                        declaration.DeclarationType == DeclarationType.Project
+                            ? declaration.Project.Name
+                            : declaration.IdentifierName
+                })
                 .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
         }
 
@@ -83,7 +83,7 @@ namespace Rubberduck.Parsing.Symbols
             try
             {
                 result = MatchName(name).SingleOrDefault(project => project.DeclarationType == DeclarationType.Project 
-                    && (currentScope == null || project.Project == currentScope.Project));
+                    && (currentScope == null || project.ProjectName == currentScope.ProjectName));
             }
             catch (InvalidOperationException exception)
             {
