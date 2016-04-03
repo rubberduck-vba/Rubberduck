@@ -84,6 +84,11 @@ namespace Rubberduck
         {
             CleanReloadConfig();
 
+            foreach (var project in _vbe.VBProjects.Cast<VBProject>())
+            {
+                _parser.State.AddProject(project);
+            }
+
             _appMenus.Initialize();
             _appMenus.Localize();
 
