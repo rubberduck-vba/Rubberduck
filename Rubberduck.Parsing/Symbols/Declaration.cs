@@ -62,7 +62,9 @@ namespace Rubberduck.Parsing.Symbols
             string result;
             if (string.IsNullOrEmpty(ns))
             {
-                result = _projectName;
+                result = _qualifiedName.QualifiedModuleName.Project == null
+                    ? _projectName
+                    : _qualifiedName.QualifiedModuleName.Project.Name;
             }
             else
             {

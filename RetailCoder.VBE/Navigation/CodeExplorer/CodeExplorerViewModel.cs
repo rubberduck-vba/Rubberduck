@@ -87,7 +87,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             Debug.WriteLine("Creating Code Explorer model...");
             var userDeclarations = _state.AllUserDeclarations
-                .GroupBy(declaration => declaration.Project)
+                .GroupBy(declaration => declaration.ProjectName)
                 .Where(grouping => grouping.Key != null)
                 .ToList();
 

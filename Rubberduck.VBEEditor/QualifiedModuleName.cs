@@ -81,7 +81,13 @@ namespace Rubberduck.VBEditor
 
         public override int GetHashCode()
         {
-            return _component == null ? 0 : _component.GetHashCode();
+            unchecked
+            {
+                var hash = 17;
+                hash = hash * 23 + _projectName.GetHashCode();
+                hash = hash * 23 + (_component == null ? 0 : _component.GetHashCode());
+                return hash;
+            }
         }
 
         public override bool Equals(object obj)
@@ -97,8 +103,7 @@ namespace Rubberduck.VBEditor
                 }
 
                 var result = other.ProjectName == ProjectName
-                    && other.ComponentName == ComponentName 
-                    && other._contentHashCode == _contentHashCode;
+                    && other.ComponentName == ComponentName;
                 return result;
             }
             catch (InvalidCastException)
