@@ -38,8 +38,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var candidates = declarations.Where(item => !item.IsBuiltIn && ModuleTypes.Contains(item.DeclarationType)).ToList();
 
             _targetDeclaration = candidates.SingleOrDefault(item => 
-                           item.Project == selection.QualifiedName.Project
-                        && item.QualifiedSelection.QualifiedName.ComponentName == selection.QualifiedName.ComponentName);
+                        item.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
 
             if (_targetDeclaration == null)
             {

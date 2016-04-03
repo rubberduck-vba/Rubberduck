@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor
 {
@@ -13,8 +14,7 @@ namespace Rubberduck.VBEditor
             _component = null;
             _componentName = null;
             _project = project;
-            _projectName = project.Name;
-            _projectHashCode = project.GetHashCode();
+            _projectName = project.ProjectName();
             _contentHashCode = 0;  
        }
 
@@ -25,8 +25,7 @@ namespace Rubberduck.VBEditor
             _component = component;
             _componentName = component == null ? string.Empty : component.Name;
             _project = component == null ? null : component.Collection.Parent;
-            _projectName = component == null ? string.Empty : component.Collection.Parent.Name;
-            _projectHashCode = component == null ? 0 : component.Collection.Parent.GetHashCode();
+            _projectName = component == null ? string.Empty : component.ProjectName();
 
             _contentHashCode = 0;
             if (component == null)
@@ -47,12 +46,11 @@ namespace Rubberduck.VBEditor
         /// </summary>
         public QualifiedModuleName(string projectName, string componentName)
         {
-            _project = null; // field is only assigned when the instance refers to a VBProject.
+            _project = null;
             _projectName = projectName;
             _componentName = componentName;
             _component = null;
             _contentHashCode = componentName.GetHashCode();
-            _projectHashCode = projectName.GetHashCode();
         }
 
         public QualifiedMemberName QualifyMemberName(string member)
@@ -65,9 +63,6 @@ namespace Rubberduck.VBEditor
 
         private readonly VBProject _project;
         public VBProject Project { get { return _project; } }
-
-        private readonly int _projectHashCode;
-        public int ProjectHashCode { get { return _projectHashCode; } }
 
         private readonly int _contentHashCode;
 
@@ -101,8 +96,7 @@ namespace Rubberduck.VBEditor
                     return other.ProjectName == ProjectName && other.ComponentName == ComponentName;
                 }
 
-                var result = other.Project == Project 
-                    && other.ProjectName == ProjectName
+                var result = other.ProjectName == ProjectName
                     && other.ComponentName == ComponentName 
                     && other._contentHashCode == _contentHashCode;
                 return result;

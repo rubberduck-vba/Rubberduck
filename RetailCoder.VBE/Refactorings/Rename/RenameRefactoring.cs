@@ -211,7 +211,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             try
             {
-                var project = _model.VBE.VBProjects.Cast<VBProject>().FirstOrDefault(p => p.Name == _model.Target.IdentifierName);
+                var project = _state.Projects.SingleOrDefault(p => p == _model.Target.Project);
                 if (project != null)
                 {
                     project.Name = _model.NewName;

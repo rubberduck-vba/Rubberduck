@@ -7,6 +7,31 @@ namespace Rubberduck.VBEditor.Extensions
 {
     public static class ProjectExtensions
     {
+        public static string ProjectName(this VBProject project)
+        {
+            var projectName = project.Name;
+            var documentModule = project
+                .VBComponents.Cast<VBComponent>()
+                .FirstOrDefault(item => item.Type == vbext_ComponentType.vbext_ct_Document);
+
+            if (documentModule != null)
+            {
+                var hostDocumentNameProperty = documentModule.Properties.Item("Name");
+                if (hostDocumentNameProperty != null)
+                {
+                    projectName += string.Format(" ({0})", hostDocumentNameProperty.Value);
+                }
+            }
+
+            return projectName;
+        }
+
+        public static string ProjectName(this VBComponent component)
+        {
+            var project = component.Collection.Parent;
+            return project.ProjectName();
+        }
+
         public static IEnumerable<string> ComponentNames(this VBProject project)
         {
             foreach (VBComponent component in project.VBComponents)

@@ -46,7 +46,6 @@ namespace Rubberduck.VBEditor
 
         public string GetLines(Selection selection)
         {
-            // ReSharper disable once UseIndexedProperty
             return Editor.get_Lines(selection.StartLine, selection.LineCount);
         }
 

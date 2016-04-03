@@ -550,7 +550,7 @@ namespace Rubberduck.Parsing.Symbols
             unchecked
             {
                 var hash = 17;
-                hash = hash*23 + QualifiedName.QualifiedModuleName.ProjectHashCode;
+                hash = hash*23 + QualifiedName.QualifiedModuleName.GetHashCode();
                 hash = hash*23 + _identifierName.GetHashCode();
                 hash = hash*23 + _declarationType.GetHashCode();
                 hash = hash*23 + Scope.GetHashCode();

@@ -398,6 +398,14 @@ namespace Rubberduck.Common
                 : matches.First();
         }
 
+        public static Declaration FindTarget(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
+        {
+            var items = declarations.ToList();
+            Debug.Assert(!items.Any(item => item.IsBuiltIn));
+
+            return items.SingleOrDefault(item => item.IsSelected(selection) || item.References.Any(reference => reference.IsSelected(selection)));
+        }
+
         /// <summary>
         /// Returns the declaration contained in a qualified selection.
         /// To get the selection of a variable or field, use FindVariable(QualifiedSelection)
@@ -412,7 +420,7 @@ namespace Rubberduck.Common
 
             var target = items
                 .Where(item => !item.IsBuiltIn)
-                .FirstOrDefault(item => item.IsSelected(selection)
+                .SingleOrDefault(item => item.IsSelected(selection)
                                      || item.References.Any(r => r.IsSelected(selection)));
 
             if (target != null && validDeclarationTypes.Contains(target.DeclarationType))
@@ -531,8 +539,7 @@ namespace Rubberduck.Common
                         implementsStmt.GetSelection().StartColumn, reference.Selection.EndLine,
                         reference.Selection.EndColumn);
 
-                    if (reference.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName &&
-                        reference.QualifiedModuleName.Project == selection.QualifiedName.Project &&
+                    if (reference.QualifiedModuleName.Equals(selection.QualifiedName) &&
                         completeSelection.Contains(selection.Selection))
                     {
                         return declaration;

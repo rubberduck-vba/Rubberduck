@@ -12,24 +12,14 @@ namespace Rubberduck.VBEditor.Extensions
         public static void SetSelection(this VBE vbe, VBProject vbProject, Selection selection, string name,
             ICodePaneWrapperFactory wrapperFactory)
         {
-            var project = vbe.VBProjects.Cast<VBProject>()
-                .SingleOrDefault(p => p.Protection != vbext_ProjectProtection.vbext_pp_locked
-                                      && ReferenceEquals(p, vbProject));
-
-            VBComponent component = null;
-            if (project != null)
-            {
-                component = project.VBComponents.Cast<VBComponent>()
-                    .SingleOrDefault(c => c.Name == name);
-            }
-
-            if (component == null)
-            {
-                return;
-            }
-
             try
             {
+                var component = vbProject.VBComponents.Cast<VBComponent>().SingleOrDefault(c => c.Name == name);
+                if (component == null)
+                {
+                    return;
+                }
+
                 var codePane = wrapperFactory.Create(component.CodeModule.CodePane);
                 codePane.Selection = selection;
             }
