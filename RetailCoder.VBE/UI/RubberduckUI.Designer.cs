@@ -670,7 +670,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die HotKey was not registered. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Hotkey ({0}) not registered. ähnelt.
         /// </summary>
         public static string CommonHotkey_KeyNotRegistered {
             get {

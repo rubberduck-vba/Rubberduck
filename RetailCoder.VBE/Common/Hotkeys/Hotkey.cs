@@ -83,8 +83,8 @@ namespace Rubberduck.Common.Hotkeys
             var success = User32.RegisterHotKey(_hWndVbe, hookId, shift, (uint)key);
             if (!success)
             {
-                Debug.WriteLine("Hotkey ({0}) not registered.", key);
-                //throw new Win32Exception("HotKey was not registered.");
+                Debug.WriteLine(Rubberduck.UI.RubberduckUI.CommonHotkey_KeyNotRegistered, key);
+                //throw new Win32Exception(Rubberduck.UI.RubberduckUI.CommonHotkey_KeyNotRegistered, key);
             }
 
             HotkeyInfo = new HotkeyInfo(hookId, Combo);

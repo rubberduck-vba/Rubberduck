@@ -1463,12 +1463,12 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value>Ungültiges Zeichen.</value>
   </data>
   <data name="CommonHotkey_HookDetached" xml:space="preserve">
-    <value>Hook ist schon abgehängt.</value>
+    <value>Hook ist nicht mehr aktiv.</value>
   </data>
   <data name="CommonHotkey_HookAttached" xml:space="preserve">
     <value>Hook ist schon hinzugefügt.</value>
   </data>
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
-    <value>Hotkey wurde nicht registriert.</value>
+    <value>Hotkey ({0}) ist nicht registriert.</value>
   </data>
 </root>

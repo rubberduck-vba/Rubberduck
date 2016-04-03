@@ -1487,6 +1487,6 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Hook is already attached.</value>
   </data>
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
-    <value>HotKey was not registered.</value>
+    <value>Hotkey ({0}) not registered.</value>
   </data>
 </root>
