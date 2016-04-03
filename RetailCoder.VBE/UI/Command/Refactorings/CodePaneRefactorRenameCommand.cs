@@ -2,6 +2,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using System.Runtime.InteropServices;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
@@ -27,21 +28,28 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             if (Vbe.ActiveCodePane == null) { return; }
 
+            Declaration target;
+            if (parameter != null)
+            {
+                target = parameter as Declaration;
+            }
+            else
+            {
+                var selection = Vbe.ActiveCodePane.GetSelection();
+                target = _state.AllUserDeclarations.FindTarget(selection);
+            }
+
+            if (target == null)
+            {
+                return;
+            }
+
             using (var view = new RenameDialog())
             {
                 var factory = new RenamePresenterFactory(Vbe, view, _state, new MessageBox(), _wrapperWrapperFactory);
                 var refactoring = new RenameRefactoring(factory, Editor, new MessageBox(), _state);
 
-                var target = parameter as Declaration;
-
-                if (target == null)
-                {
-                    refactoring.Refactor();
-                }
-                else
-                {
-                    refactoring.Refactor(target);
-                }
+                refactoring.Refactor(target);
             }
         }
 

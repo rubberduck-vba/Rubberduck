@@ -94,6 +94,8 @@ namespace Rubberduck
         #region sink handlers. todo: move to another class
         async void sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
+            _parser.State.RemoveProject(e.Item);
+
             Debug.WriteLine(string.Format("Project '{0}' was removed.", e.Item.Name));
             Tuple<IConnectionPoint, int> value;
             if (_componentsEventsConnectionPoints.TryGetValue(e.Item.VBComponents, out value))
@@ -107,6 +109,8 @@ namespace Rubberduck
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
+            _parser.State.AddProject(e.Item);
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 // forces menus to evaluate their CanExecute state:

@@ -100,8 +100,9 @@ namespace Rubberduck.Navigation.RegexSearchReplace
         private void SetSelection(RegexSearchResult item)
         {
             var project = _vbe.ActiveVBProject;
-            foreach (var proj in _vbe.VBProjects.Cast<VBProject>())
+            foreach (var proj in _parser.State.Projects)
             {
+                // wtf?
                 project = proj;
                 break;
             }
@@ -170,14 +171,14 @@ namespace Rubberduck.Navigation.RegexSearchReplace
         private List<RegexSearchResult> SearchOpenProjects(string searchPattern)
         {
             var results = new List<RegexSearchResult>();
+            var modules = _vbe.VBProjects.Cast<VBProject>()
+                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
+                .SelectMany(project => project.VBComponents.Cast<VBComponent>())
+                .Select(component => component.CodeModule);
 
-            foreach (VBProject project in _vbe.VBProjects)
+            foreach (var module in modules)
             {
-                foreach (var component in project.VBComponents.Cast<VBComponent>())
-                {
-                    var module = component.CodeModule;
-                    results.AddRange(GetResultsFromModule(module, searchPattern));
-                }
+                results.AddRange(GetResultsFromModule(module, searchPattern));
             }
 
             return results;

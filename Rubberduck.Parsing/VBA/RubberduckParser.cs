@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -28,7 +29,8 @@ namespace Rubberduck.Parsing.VBA
 
         private CancellationTokenSource _central = new CancellationTokenSource();
         private CancellationTokenSource _resolverTokenSource; // linked to _central later
-        private readonly Dictionary<VBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks = new Dictionary<VBComponent, Tuple<Task, CancellationTokenSource>>();
+        private readonly ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks = 
+            new ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>>();
 
         private readonly Dictionary<VBComponent, IParseTree> _parseTrees = new Dictionary<VBComponent, IParseTree>();
         private readonly Dictionary<QualifiedModuleName, Dictionary<Declaration, byte>> _declarations = new Dictionary<QualifiedModuleName, Dictionary<Declaration, byte>>();
@@ -85,8 +87,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void Parse()
         {
-            var projects = _vbe.VBProjects
-                .Cast<VBProject>()
+            var projects = _state.Projects
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
                 .ToList();
 
@@ -134,8 +135,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         private void ParseAll()
         {
-            var projects = _vbe.VBProjects
-                .Cast<VBProject>()
+            var projects = _state.Projects
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
                 .ToList();
 
@@ -193,8 +193,9 @@ namespace Rubberduck.Parsing.VBA
             var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token, token);
 
             var task = new Task(() => ParseAsyncInternal(component, linkedTokenSource.Token, rewriter));
-            _currentTasks.Add(component, Tuple.Create(task, linkedTokenSource));
-            task.ContinueWith(t => _currentTasks.Remove(component)); // default also executes on cancel
+            _currentTasks.TryAdd(component, Tuple.Create(task, linkedTokenSource));
+            Tuple<Task, CancellationTokenSource> removedTask;
+            task.ContinueWith(t => _currentTasks.TryRemove(component, out removedTask)); // default also executes on cancel
 
             task.Start();
             return task;

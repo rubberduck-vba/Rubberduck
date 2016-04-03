@@ -43,6 +43,9 @@ namespace Rubberduck.Parsing.VBA
     {
         public event EventHandler<ParseRequestEventArgs> ParseRequest;
 
+        // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
+        private readonly IList<VBProject> _projects = new List<VBProject>();
+
         private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>> _declarations =
             new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>>();
 
@@ -63,6 +66,24 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly ConcurrentDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _moduleAttributes =
             new ConcurrentDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
+
+        public void AddProject(VBProject project)
+        {
+            if (!_projects.Contains(project))
+            {
+                _projects.Add(project);
+            }
+        }
+
+        public void RemoveProject(VBProject project)
+        {
+            if (_projects.Contains(project))
+            {
+                _projects.Remove(project);
+            }
+        }
+
+        public IReadOnlyList<VBProject> Projects { get { return _projects.ToList(); } }
 
         public IReadOnlyList<Tuple<VBComponent, SyntaxErrorException>> ModuleExceptions
         {
@@ -283,9 +304,9 @@ namespace Rubberduck.Parsing.VBA
 
         public bool ClearDeclarations(VBComponent component)
         {
-            var project = component.Collection.Parent;
+            var projectName = component.Collection.Parent.Name;
             var keys = _declarations.Keys.Where(kvp => 
-                kvp.Project == project && kvp.ComponentName == component.Name); // VBComponent reference seems to mismatch
+                kvp.ProjectName == projectName && kvp.ComponentName == component.Name); // COM object references aren't reliable
 
             var success = true;
             var declarationsRemoved = 0;

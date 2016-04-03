@@ -47,8 +47,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
             _targetClass = _declarations.SingleOrDefault(d =>
                         !d.IsBuiltIn && d.DeclarationType == DeclarationType.Class &&
-                        d.QualifiedSelection.QualifiedName.ComponentName == selection.QualifiedName.ComponentName &&
-                        d.Project == selection.QualifiedName.Project);
+                        d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
 
             if (_targetClass == null || _targetInterface == null)
             {

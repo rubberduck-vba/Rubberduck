@@ -68,7 +68,7 @@ namespace Rubberduck.Parsing.Symbols
             _moduleDeclaration = finder.MatchName(_qualifiedModuleName.ComponentName)
                 .SingleOrDefault(item => 
                     (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module)
-                && item.Project == _qualifiedModuleName.Project && item.ComponentName == _qualifiedModuleName.ComponentName);
+                && item.QualifiedName.QualifiedModuleName.Equals(_qualifiedModuleName));
 
             SetCurrentScope();
         }
