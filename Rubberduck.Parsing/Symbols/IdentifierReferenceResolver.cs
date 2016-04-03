@@ -340,15 +340,15 @@ namespace Rubberduck.Parsing.Symbols
                 return matches.Single();
             }
 
-            if (matches.Count(match => match.Project == scope.Project) == 1)
+            if (matches.Count(match => match.ProjectName == scope.ProjectName) == 1)
             {
-                return matches.Single(match => match.Project == scope.Project);
+                return matches.Single(match => match.ProjectName == scope.ProjectName);
             }
 
             // more than one matching identifiers found.
             // if it matches a UDT or enum in the current scope, resolve to that type.
             var sameScopeUdt = matches.Where(declaration =>
-                declaration.Project == scope.Project
+                declaration.ProjectName == scope.ProjectName
                 && (declaration.DeclarationType == DeclarationType.UserDefinedType
                 || declaration.DeclarationType == DeclarationType.Enumeration)
                 && declaration.ParentDeclaration.Equals(scope))
@@ -395,7 +395,7 @@ namespace Rubberduck.Parsing.Symbols
             var result = matches.Where(item =>
                 (item.DeclarationType == DeclarationType.UserDefinedType
                 || item.DeclarationType == DeclarationType.Enumeration)
-                && item.Project == _currentScope.Project
+                && item.ProjectName == _currentScope.ProjectName
                 && item.ComponentName == _currentScope.ComponentName)
             .ToList();
 
@@ -403,7 +403,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 result = matches.Where(item =>
                     _moduleTypes.Contains(item.DeclarationType)
-                    && item.Project == _currentScope.Project)
+                    && item.ProjectName == _currentScope.ProjectName)
                 .ToList();                
             }
 
@@ -1111,7 +1111,7 @@ namespace Rubberduck.Parsing.Symbols
         private bool IsLocalEvent(Declaration item, Declaration localScope)
         {
             return item.DeclarationType == DeclarationType.Event
-                   && localScope.Project == _currentScope.Project
+                   && localScope.ProjectName == _currentScope.ProjectName
                    && localScope.ComponentName == _currentScope.ComponentName;
         }
 
@@ -1297,7 +1297,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             var isProcedure = item.DeclarationType == DeclarationType.Procedure
                               || item.DeclarationType == DeclarationType.Function;
-            var isSameModule = item.Project == localScope.Project
+            var isSameModule = item.ProjectName == localScope.ProjectName
                                && item.ComponentName == localScope.ComponentName;
             return isProcedure && isSameModule;
         }

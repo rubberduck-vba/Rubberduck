@@ -534,7 +534,7 @@ namespace Rubberduck.Parsing.Symbols
         public bool Equals(Declaration other)
         {
             return other != null
-                && other.Project == Project
+                && other.ProjectName == ProjectName
                 && other.IdentifierName == IdentifierName
                 && other.DeclarationType == DeclarationType
                 && other.Scope == Scope
