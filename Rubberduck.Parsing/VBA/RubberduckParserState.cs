@@ -11,6 +11,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -43,6 +44,9 @@ namespace Rubberduck.Parsing.VBA
     {
         public event EventHandler<ParseRequestEventArgs> ParseRequest;
 
+        // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
+        private readonly IDictionary<string,VBProject> _projects = new Dictionary<string,VBProject>();
+
         private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>> _declarations =
             new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>>();
 
@@ -63,6 +67,26 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly ConcurrentDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _moduleAttributes =
             new ConcurrentDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
+
+        public void AddProject(VBProject project)
+        {
+            var name = project.ProjectName();
+            if (!_projects.ContainsKey(name))
+            {
+                _projects.Add(name, project);
+            }
+        }
+
+        public void RemoveProject(VBProject project)
+        {
+            var name = project.ProjectName();
+            if (_projects.ContainsKey(name))
+            {
+                _projects.Remove(name);
+            }
+        }
+
+        public IReadOnlyList<VBProject> Projects { get { return _projects.Values.ToList(); } }
 
         public IReadOnlyList<Tuple<VBComponent, SyntaxErrorException>> ModuleExceptions
         {
@@ -283,9 +307,9 @@ namespace Rubberduck.Parsing.VBA
 
         public bool ClearDeclarations(VBComponent component)
         {
-            var project = component.Collection.Parent;
+            var projectName = component.Collection.Parent.ProjectName();
             var keys = _declarations.Keys.Where(kvp => 
-                kvp.Project == project && kvp.ComponentName == component.Name); // VBComponent reference seems to mismatch
+                kvp.ProjectName == projectName && kvp.ComponentName == component.Name); 
 
             var success = true;
             var declarationsRemoved = 0;

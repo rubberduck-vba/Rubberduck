@@ -354,7 +354,7 @@ namespace Rubberduck.Common
             var handlerNames = events.Select(e => withEventsDeclaration.IdentifierName + '_' + e.IdentifierName);
 
             return items.Where(item => item.Project != null 
-                                               && item.Project.Equals(withEventsDeclaration.Project)
+                                               && item.ProjectName == withEventsDeclaration.ProjectName
                                                && item.ParentScope == withEventsDeclaration.ParentScope
                                                && item.DeclarationType == DeclarationType.Procedure
                                                && handlerNames.Any(name => item.IdentifierName == name))
@@ -363,7 +363,7 @@ namespace Rubberduck.Common
 
         private static IEnumerable<Declaration> GetTypeMembers(this IEnumerable<Declaration> declarations, Declaration type)
         {
-            return declarations.Where(item => item.Project != null && item.Project.Equals(type.Project) && item.ParentScope == type.Scope);
+            return declarations.Where(item => item.Project != null && item.ProjectName == type.ProjectName && item.ParentScope == type.Scope);
         }
 
             /// <summary>
@@ -394,8 +394,16 @@ namespace Rubberduck.Common
             var matches = members.Where(m => !m.IsBuiltIn && implementation.IdentifierName == m.ComponentName + '_' + m.IdentifierName).ToList();
 
             return matches.Count > 1 
-                ? matches.SingleOrDefault(m => m.Project == implementation.Project) 
+                ? matches.SingleOrDefault(m => m.ProjectName == implementation.ProjectName) 
                 : matches.First();
+        }
+
+        public static Declaration FindTarget(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
+        {
+            var items = declarations.ToList();
+            Debug.Assert(!items.Any(item => item.IsBuiltIn));
+
+            return items.SingleOrDefault(item => item.IsSelected(selection) || item.References.Any(reference => reference.IsSelected(selection)));
         }
 
         /// <summary>
@@ -412,7 +420,7 @@ namespace Rubberduck.Common
 
             var target = items
                 .Where(item => !item.IsBuiltIn)
-                .FirstOrDefault(item => item.IsSelected(selection)
+                .SingleOrDefault(item => item.IsSelected(selection)
                                      || item.References.Any(r => r.IsSelected(selection)));
 
             if (target != null && validDeclarationTypes.Contains(target.DeclarationType))
@@ -531,8 +539,7 @@ namespace Rubberduck.Common
                         implementsStmt.GetSelection().StartColumn, reference.Selection.EndLine,
                         reference.Selection.EndColumn);
 
-                    if (reference.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName &&
-                        reference.QualifiedModuleName.Project == selection.QualifiedName.Project &&
+                    if (reference.QualifiedModuleName.Equals(selection.QualifiedName) &&
                         completeSelection.Contains(selection.Selection))
                     {
                         return declaration;
