@@ -65,12 +65,18 @@ namespace Rubberduck.API
             _parser = new RubberduckParser(vbe, _state, _attributeParser);
         }
 
+        /// <summary>
+        /// Blocking call, for easier unit-test code
+        /// </summary>
         public void Parse()
         {
             // blocking call
             _parser.Parse();
         }
 
+        /// <summary>
+        /// Begins asynchronous parsing
+        /// </summary>
         public void BeginParse()
         {
             // non-blocking call

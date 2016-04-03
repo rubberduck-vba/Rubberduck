@@ -87,6 +87,14 @@ namespace Rubberduck.Parsing.VBA
 
         public void Parse()
         {
+            if (!_state.Projects.Any())
+            {
+                foreach (var project in _vbe.VBProjects.Cast<VBProject>())
+                {
+                    _state.AddProject(project);
+                }
+            }
+
             var projects = _state.Projects
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
                 .ToList();
