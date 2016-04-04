@@ -8,7 +8,7 @@ using Rubberduck.VBEditor;
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class RefactorExtractMethodCommand : RefactorCommandBase, IHotkeyCommand
+    public class RefactorExtractMethodCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
 

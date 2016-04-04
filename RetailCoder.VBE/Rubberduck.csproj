@@ -345,7 +345,6 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Command\IHotkeyCommand.cs" />
     <Compile Include="UI\Command\IndentCurrentModuleCommand.cs" />
     <Compile Include="UI\Command\MenuItems\InspectionResultsCommandMenuItem.cs" />
     <Compile Include="UI\Command\ShowParserErrorsCommand.cs" />

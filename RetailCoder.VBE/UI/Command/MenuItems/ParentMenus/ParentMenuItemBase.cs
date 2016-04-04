@@ -40,11 +40,16 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             {
                 return;
             }
-
+            
             Item.Caption = Caption.Invoke();
             foreach (var kvp in _items)
             {
                 kvp.Value.Caption = kvp.Key.Caption.Invoke();
+                var command = kvp.Key as CommandMenuItemBase;
+                if (command != null)
+                {
+                    ((CommandBarButton)kvp.Value).ShortcutText = ((CommandBase)command.Command).ShortcutText;
+                }
 
                 var childMenu = kvp.Key as ParentMenuItemBase;
                 if (childMenu != null)
@@ -119,6 +124,10 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             child.BeginGroup = item.BeginGroup;
             child.Tag = item.GetType().FullName;
             child.Caption = item.Caption.Invoke();
+            var command = item.Command as CommandBase; // todo: add 'ShortcutText' to a new 'interface ICommand : System.Windows.Input.ICommand'
+            child.ShortcutText = command != null
+                ? command.ShortcutText
+                : string.Empty; 
 
             Debug.WriteLine("Menu item '{0}' created; hash code: {1} (command hash code {2})", child.Caption, child.GetHashCode(), item.Command.GetHashCode());
 

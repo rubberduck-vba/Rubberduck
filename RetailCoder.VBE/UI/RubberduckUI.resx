@@ -1489,4 +1489,10 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>Hotkey ({0}) not registered.</value>
   </data>
+  <data name="HotkeyDescription_FindSymbol" xml:space="preserve">
+    <value>Find symbol</value>
+  </data>
+  <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
+    <value>Rege&amp;x Search/Replace</value>
+  </data>
 </root>
