@@ -1165,12 +1165,14 @@
     <Resource Include="Resources\cross-button.png" />
     <Resource Include="Resources\init-repo.png" />
     <Content Include="Resources\Microsoft\Mask\AddProperty_5538_32.bmp" />
+    <None Include="Resources\Microsoft\Mask\AddVariable_5541_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <None Include="Resources\Microsoft\Mask\ExtractInterface_6778_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
     <None Include="Resources\Microsoft\Mask\RemoveParameters_6781_32.bmp" />
     <None Include="Resources\Microsoft\Mask\ImplementInterface_5540_32.bmp" />
+    <None Include="Resources\Microsoft\Mask\PromoteLocal_6784_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\ReorderParameters_6780_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\TestManager_8590_32.bmp" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
