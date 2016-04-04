@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
@@ -32,6 +34,21 @@ namespace Rubberduck.UI.Command
             _vbe = vbe;
             _viewModel = viewModel;
             _presenterService = presenterService;
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            if (_vbe.ActiveCodePane == null && _state.Status != ParserState.Ready)
+            {
+                return false;
+            }
+
+            // todo: make this work for Code/Project Explorer context menus too (may require a new command implementation)
+            var target = FindTarget(parameter);
+            var canExecute = target != null;
+
+            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
+            return canExecute;
         }
 
         public override void Execute(object parameter)

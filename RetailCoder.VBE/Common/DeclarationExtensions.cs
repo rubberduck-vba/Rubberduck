@@ -435,7 +435,7 @@ namespace Rubberduck.Common
 
             var currentSelection = new Selection(0, 0, int.MaxValue, int.MaxValue);
 
-            foreach (var declaration in targets)
+            foreach (var declaration in targets.Where(item => item.Context != null))
             {
                 var activeSelection = new Selection(declaration.Context.Start.Line,
                                                     declaration.Context.Start.Column,
