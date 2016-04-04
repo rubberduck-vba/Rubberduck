@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Microsoft.Win32;
 using Rubberduck.Inspections;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
@@ -205,6 +206,13 @@ namespace Rubberduck.Settings
 
         public IndenterSettings GetDefaultIndenterSettings()
         {
+            var tabWidth = 4;
+            var reg = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\6.0\Common", false) ??
+                      Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\7.0\Common", false);
+            if (reg != null)
+            {
+                tabWidth = Convert.ToInt32(reg.GetValue("TabWidth") ?? tabWidth);
+            }
             return new IndenterSettings
             {
                 IndentEntireProcedureBody = true,
@@ -222,7 +230,7 @@ namespace Rubberduck.Settings
                 EnableUndo = true,
                 EndOfLineCommentStyle = SmartIndenter.EndOfLineCommentStyle.AlignInColumn,
                 EndOfLineCommentColumnSpaceAlignment = 50,
-                IndentSpaces = 4
+                IndentSpaces = tabWidth
             };
         }
     }
