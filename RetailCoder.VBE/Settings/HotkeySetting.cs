@@ -34,17 +34,17 @@ namespace Rubberduck.Settings
         public string ToMenuHotkeyString()
         {
             return string.Format("{0}{1}{2}+{3}",
-                HasShiftModifier ? "Shift" : string.Empty,
-                HasCtrlModifier ? (HasShiftModifier ? "+" : string.Empty) + "Ctrl" : string.Empty,
-                HasAltModifier ? (HasShiftModifier | HasCtrlModifier ? "+" : string.Empty) + "Alt" : string.Empty,
+                HasCtrlModifier ? "Ctrl" : string.Empty,
+                HasShiftModifier ? (HasCtrlModifier ? "+" : string.Empty) + "Shift" : string.Empty,
+                HasAltModifier ? (HasCtrlModifier | HasShiftModifier ? "+" : string.Empty) + "Alt" : string.Empty,
                 Key1);
         }
 
         public override string ToString()
         {
-            return string.Format("{0}{1}{2}{3}", 
-                HasShiftModifier ? KeyModifierShift : string.Empty,
+            return string.Format("{0}{1}{2}{3}",
                 HasCtrlModifier ? KeyModifierCtrl : string.Empty,
+                HasShiftModifier ? KeyModifierShift : string.Empty,
                 HasAltModifier ? KeyModifierAlt : string.Empty,
                 Key1);
         }

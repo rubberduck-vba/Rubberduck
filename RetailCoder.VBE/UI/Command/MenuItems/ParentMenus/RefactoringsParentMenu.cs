@@ -18,11 +18,11 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         ExtractMethod,
         ExtractInterface,
         ImplementInterface,
-        MoveCloserToUsage,
-        IntroduceParameter,
-        ReorderParameters,
         RemoveParameters,
-        IntroduceField,
+        ReorderParameters,
+        MoveCloserToUsage,
         EncapsulateField,
+        IntroduceParameter,
+        IntroduceField,
     }
 }
