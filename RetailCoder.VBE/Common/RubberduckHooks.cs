@@ -19,7 +19,6 @@ namespace Rubberduck.Common
         private User32.WndProc _newWndProc;
 
         private readonly IAttachable _timerHook;
-        private readonly IAttachable _mouseHook;
         private readonly IGeneralConfigService _config;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
 
