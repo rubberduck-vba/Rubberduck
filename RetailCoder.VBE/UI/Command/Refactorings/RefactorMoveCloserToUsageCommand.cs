@@ -1,4 +1,8 @@
-﻿using Microsoft.Vbe.Interop;
+﻿using System.Diagnostics;
+using System.Linq;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Common;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.VBEditor;
@@ -16,6 +20,22 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             _state = state;
             _wrapperWrapperFactory = wrapperWrapperFactory;
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+            {
+                return false;
+            }
+
+            var selection = Vbe.ActiveCodePane.GetSelection();
+            var target = _state.AllUserDeclarations.FindTarget(selection, new []{DeclarationType.Variable, DeclarationType.Constant, });
+
+            var canExecute = target != null && target.References.Any();
+
+            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
+            return canExecute;
         }
 
         public override void Execute(object parameter)
