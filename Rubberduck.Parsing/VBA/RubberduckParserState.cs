@@ -307,9 +307,8 @@ namespace Rubberduck.Parsing.VBA
 
         public bool ClearDeclarations(VBComponent component)
         {
-            var projectName = component.Collection.Parent.ProjectName();
-            var keys = _declarations.Keys.Where(kvp => 
-                kvp.ProjectName == projectName && kvp.ComponentName == component.Name); 
+            var match = new QualifiedModuleName(component);
+            var keys = _declarations.Keys.Where(kvp => kvp.Equals(match)); 
 
             var success = true;
             var declarationsRemoved = 0;

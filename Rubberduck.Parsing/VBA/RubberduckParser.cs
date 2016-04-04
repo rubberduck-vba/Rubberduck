@@ -148,23 +148,7 @@ namespace Rubberduck.Parsing.VBA
                 .ToList();
 
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
-            foreach (var component in components)
-            {
-                _state.SetModuleState(component, ParserState.LoadingReference);
-            }
-
-            if (!_state.AllDeclarations.Any(item => item.IsBuiltIn))
-            {
-                var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
-                foreach (var reference in references)
-                {
-                    var items = _comReflector.GetDeclarationsForReference(reference).ToList();
-                    foreach (var declaration in items)
-                    {
-                        _state.AddDeclaration(declaration);
-                    }
-                }
-            }
+            LoadComReferences(components, projects);
 
             foreach (var component in components)
             {
@@ -185,18 +169,31 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        private void LoadComReferences(IEnumerable<VBComponent> components, IEnumerable<VBProject> projects)
+        {
+            foreach (var component in components)
+            {
+                _state.SetModuleState(component, ParserState.LoadingReference);
+            }
+
+            if (!_state.AllDeclarations.Any(item => item.IsBuiltIn))
+            {
+                var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
+                foreach (var reference in references)
+                {
+                    var items = _comReflector.GetDeclarationsForReference(reference).ToList();
+                    foreach (var declaration in items)
+                    {
+                        _state.AddDeclaration(declaration);
+                    }
+                }
+            }
+        }
+
         public Task ParseAsync(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
-            // Remove invalidated "things" from _state
-            // this includes: Declarations, Comments, Attributes, Exceptions, ParseTree and TokenStream
-            // how that works with the Inspecion results is not quite clear
-            _state.ClearDeclarations(component);
-            _state.AddParseTree(component, null);
-            _state.AddTokenStream(component, null);
-            
+            _state.ClearDeclarations(component);            
             _state.SetModuleState(component, ParserState.Pending); // also clears module-exceptions
-            _state.SetModuleComments(component, Enumerable.Empty<CommentNode>());
-            _state.SetModuleAttributes(component, new Dictionary<Tuple<string, DeclarationType>, Attributes>());
 
             var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token, token);
 
