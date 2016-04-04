@@ -14,15 +14,15 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
     public enum RefactoringsMenuItemDisplayOrder
     {
-        ExtractMethod,
         RenameIdentifier,
-        ReorderParameters,
+        ExtractMethod,
+        ExtractInterface,
+        ImplementInterface,
         RemoveParameters,
+        ReorderParameters,
+        MoveCloserToUsage,
+        EncapsulateField,
         IntroduceParameter,
         IntroduceField,
-        EncapsulateField,
-        MoveCloserToUsage,
-        ExtractInterface,
-        ImplementInterface
     }
 }

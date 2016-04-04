@@ -7,7 +7,7 @@ namespace Rubberduck.UI.Command
     /// A command that runs all active code inspections for the active VBAProject.
     /// </summary>
     [ComVisible(false)]
-    public class InspectionResultsCommand : CommandBase, IHotkeyCommand
+    public class InspectionResultsCommand : CommandBase
     {
         private readonly IPresenter _presenter;
 

@@ -7,7 +7,7 @@ namespace Rubberduck.UI.Command
     /// A command that displays the Code Explorer window.
     /// </summary>
     [ComVisible(false)]
-    public class CodeExplorerCommand : CommandBase, IHotkeyCommand
+    public class CodeExplorerCommand : CommandBase
     {
         private readonly IPresenter _presenter;
 

@@ -12,7 +12,7 @@ using Rubberduck.UI.Refactorings;
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class CodePaneRefactorRenameCommand : RefactorCommandBase, IHotkeyCommand
+    public class CodePaneRefactorRenameCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;

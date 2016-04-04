@@ -123,9 +123,29 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AddProperty_5538_321_Mask {
+            get {
+                object obj = ResourceManager.GetObject("AddProperty_5538_321_Mask", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap AddVariable_5541_32 {
             get {
                 object obj = ResourceManager.GetObject("AddVariable_5541_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap AddVariable_5541_32_Mask {
+            get {
+                object obj = ResourceManager.GetObject("AddVariable_5541_32_Mask", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -493,6 +513,16 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ExtractInterface_6778_321_Mask {
+            get {
+                object obj = ResourceManager.GetObject("ExtractInterface_6778_321_Mask", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ExtractMethod_6786_32 {
             get {
                 object obj = ResourceManager.GetObject("ExtractMethod_6786_32", resourceCulture);
@@ -733,6 +763,16 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ImplementInterface_5540_321_Mask {
+            get {
+                object obj = ResourceManager.GetObject("ImplementInterface_5540_321_Mask", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap information {
             get {
                 object obj = ResourceManager.GetObject("information", resourceCulture);
@@ -806,6 +846,26 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap plus_circle {
             get {
                 object obj = ResourceManager.GetObject("plus_circle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PromoteLocal_6784_32 {
+            get {
+                object obj = ResourceManager.GetObject("PromoteLocal_6784_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PromoteLocal_6784_32_Mask {
+            get {
+                object obj = ResourceManager.GetObject("PromoteLocal_6784_32_Mask", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

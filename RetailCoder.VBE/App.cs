@@ -61,6 +61,7 @@ namespace Rubberduck
             _hooks = hooks;
             _logger = LogManager.GetCurrentClassLogger();
 
+            _configService.SettingsChanged += _configService_SettingsChanged;
             _configService.LanguageChanged += ConfigServiceLanguageChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _stateBar.Refresh += _stateBar_Refresh;
@@ -78,6 +79,13 @@ namespace Rubberduck
             _projectsEventsConnectionPoint.Advise(sink, out _projectsEventsCookie);
 
             UiDispatcher.Initialize();
+        }
+
+        private void _configService_SettingsChanged(object sender, EventArgs e)
+        {
+            // also updates the ShortcutKey text
+            _appMenus.Localize();
+            _hooks.HookHotkeys();
         }
 
         public void Startup()
