@@ -158,7 +158,7 @@ namespace Rubberduck.Parsing.VBA
                 var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
                 foreach (var reference in references)
                 {
-                    var items = _comReflector.GetDeclarationsForReference(reference);
+                    var items = _comReflector.GetDeclarationsForReference(reference).ToList();
                     foreach (var declaration in items)
                     {
                         _state.AddDeclaration(declaration);

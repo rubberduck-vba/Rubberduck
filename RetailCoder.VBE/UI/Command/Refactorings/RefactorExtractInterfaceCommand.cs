@@ -1,20 +1,56 @@
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.ImplementInterface;
+using Rubberduck.Refactorings.ExtractInterface;
+using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class RefactorImplementInterfaceCommand : RefactorCommandBase
+    public class RefactorExtractInterfaceCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly IMessageBox _messageBox;
 
-        public RefactorImplementInterfaceCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor)
-            : base (vbe, editor)
+        public RefactorExtractInterfaceCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, IMessageBox messageBox)
+            : base(vbe, editor)
         {
             _state = state;
+            _messageBox = messageBox;
+        }
+
+        private static readonly vbext_ComponentType[] ModuleTypes =
+        {
+            vbext_ComponentType.vbext_ct_ClassModule, 
+            vbext_ComponentType.vbext_ct_Document, 
+            vbext_ComponentType.vbext_ct_MSForm, 
+        };
+
+        public override bool CanExecute(object parameter)
+        {
+            var activePane = Vbe.ActiveCodePane;
+            if (activePane == null)
+            {
+                return false;
+            }
+
+            var selection = activePane.GetSelection();
+            var target = _state.AllUserDeclarations.SingleOrDefault(item =>
+                item.QualifiedName.QualifiedModuleName.Equals(selection.QualifiedName)
+                && item.IdentifierName == selection.QualifiedName.ComponentName
+                && (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Document || item.DeclarationType == DeclarationType.UserForm));
+            var hasMembers = _state.AllUserDeclarations.Any(item => item.DeclarationType.HasFlag(DeclarationType.Member) && item.ParentDeclaration.Equals(target));
+
+            // true if active code pane is for a class/document/form module
+            var canExecute = ModuleTypes.Contains(Vbe.ActiveCodePane.CodeModule.Parent.Type) && target != null && hasMembers;
+
+            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
+            return canExecute;
         }
 
         public override void Execute(object parameter)
@@ -24,8 +60,12 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            var refactoring = new ImplementInterfaceRefactoring(_state, Editor, new MessageBox());
-            refactoring.Refactor();
+            using (var view = new ExtractInterfaceDialog())
+            {
+                var factory = new ExtractInterfacePresenterFactory(_state, Editor, view);
+                var refactoring = new ExtractInterfaceRefactoring(_state, _messageBox, factory, Editor);
+                refactoring.Refactor();
+            }
         }
     }
 }

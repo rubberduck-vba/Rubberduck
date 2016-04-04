@@ -24,6 +24,11 @@ namespace Rubberduck.UI.Command.Refactorings
             _wrapperWrapperFactory = wrapperWrapperFactory;
         }
 
+        public override bool CanExecute(object parameter)
+        {
+            return _state.Status == ParserState.Ready;
+        }
+
         public override void Execute(object parameter)
         {
             using (var view = new RenameDialog())

@@ -1,5 +1,9 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Common;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.UI.Refactorings;
@@ -19,6 +23,39 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             _state = state;
             _wrapperWrapperFactory = wrapperWrapperFactory;
+        }
+
+        private static readonly DeclarationType[] ValidDeclarationTypes =
+        {
+            DeclarationType.Event,
+            DeclarationType.Function,
+            DeclarationType.Procedure,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
+
+        public override bool CanExecute(object parameter)
+        {
+            if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+            {
+                return false;
+            }
+
+            var selection = Vbe.ActiveCodePane.GetSelection();
+            var member = _state.AllUserDeclarations.FindTarget(selection, ValidDeclarationTypes);
+            if (member == null)
+            {
+                return false;
+            }
+
+            var parameters = _state.AllUserDeclarations.Where(item => member.Equals(item.ParentScopeDeclaration)).ToList();
+            var canExecute = (member.DeclarationType == DeclarationType.PropertyLet || member.DeclarationType == DeclarationType.PropertySet)
+                    ? parameters.Count > 2
+                    : parameters.Count > 1;
+
+            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
+            return canExecute;
         }
 
         public override void Execute(object parameter)

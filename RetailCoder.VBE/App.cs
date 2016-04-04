@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
-using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
@@ -61,6 +60,7 @@ namespace Rubberduck
             _hooks = hooks;
             _logger = LogManager.GetCurrentClassLogger();
 
+            _hooks.MessageReceived += _hooks_MessageReceived;
             _configService.SettingsChanged += _configService_SettingsChanged;
             _configService.LanguageChanged += ConfigServiceLanguageChanged;
             _parser.State.StateChanged += Parser_StateChanged;
@@ -79,6 +79,15 @@ namespace Rubberduck
             _projectsEventsConnectionPoint.Advise(sink, out _projectsEventsCookie);
 
             UiDispatcher.Initialize();
+        }
+
+        private void _hooks_MessageReceived(object sender, HookEventArgs e)
+        {
+            if (sender is MouseHookWrapper)
+            {
+                // right-click detected
+                _appMenus.EvaluateCanExecute(_parser.State);
+            }
         }
 
         private void _configService_SettingsChanged(object sender, EventArgs e)
@@ -252,6 +261,15 @@ namespace Rubberduck
 
         private void Parser_StateChanged(object sender, EventArgs e)
         {
+            if (_parser.State.Status != ParserState.Ready)
+            {
+                _hooks.Detach();
+            }
+            else
+            {
+                _hooks.Attach();
+            }
+
             Debug.WriteLine("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
         }

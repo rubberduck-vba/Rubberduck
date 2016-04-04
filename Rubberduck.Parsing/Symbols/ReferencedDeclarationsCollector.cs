@@ -98,12 +98,23 @@ namespace Rubberduck.Parsing.Symbols
 
             ITypeLib typeLibrary;
             LoadTypeLibEx(path, REGKIND.REGKIND_NONE, out typeLibrary);
+            if (typeLibrary == null)
+            {
+                yield break;
+            }
 
             var typeCount = typeLibrary.GetTypeInfoCount();
             for (var i = 0; i < typeCount; i++)
             {
                 ITypeInfo info;
-                typeLibrary.GetTypeInfo(i, out info);
+                try
+                {
+                    typeLibrary.GetTypeInfo(i, out info);
+                }
+                catch(NullReferenceException)
+                {
+                    yield break;
+                }
 
                 if (info == null)
                 {

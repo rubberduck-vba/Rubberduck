@@ -2,6 +2,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using System.Runtime.InteropServices;
+using NLog.Targets;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -22,6 +23,17 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             _state = state;
             _wrapperWrapperFactory = wrapperWrapperFactory;
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            if (Vbe.ActiveCodePane == null) { return false; }
+
+            var selection = Vbe.ActiveCodePane.GetSelection();
+            var target = _state.AllDeclarations.FindTarget(selection);
+
+            return _state.Status == ParserState.Ready
+                && target != null;
         }
 
         public override void Execute(object parameter)

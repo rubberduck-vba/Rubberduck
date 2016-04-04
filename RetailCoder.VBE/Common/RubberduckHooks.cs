@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
@@ -31,15 +32,18 @@ namespace Rubberduck.Common
             _oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _newWndProc);
             _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
 
-            _timerHook = timerHook;
             _config = config;
+            _timerHook = timerHook;
             _timerHook.MessageReceived += timerHook_MessageReceived;
         }
+
 
         public void HookHotkeys()
         {
             Detach();
             _hooks.Clear();
+
+            AddHook(new MouseHookWrapper());
 
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.GeneralSettings.HotkeySettings;
@@ -89,9 +93,16 @@ namespace Rubberduck.Common
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
-            if (sender is ILowLevelKeyboardHook)
+            if (sender is LowLevelKeyboardHook)
             {
                 // todo: handle 2-step hotkeys?
+                return;
+            }
+
+            if (sender is MouseHookWrapper)
+            {
+                Debug.WriteLine("MouseHookWrapper message received");
+                OnMessageReceived(sender, HookEventArgs.Empty);
                 return;
             }
 
