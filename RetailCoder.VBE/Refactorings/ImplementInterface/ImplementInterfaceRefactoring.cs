@@ -187,7 +187,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
                            })
                            .ToList();
 
-            if (member.DeclarationType == DeclarationType.PropertyGet)
+            if (member.DeclarationType == DeclarationType.PropertyGet && parameters.Any())
             {
                 parameters.Remove(parameters.Last());
             }
