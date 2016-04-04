@@ -1477,4 +1477,16 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
     <value>Expected error was not raised</value>
   </data>
+  <data name="CommonHotkey_InvalidKey" xml:space="preserve">
+    <value>Invalid key.</value>
+  </data>
+  <data name="CommonHotkey_HookDetached" xml:space="preserve">
+    <value>Hook is already detached.</value>
+  </data>
+  <data name="CommonHotkey_HookAttached" xml:space="preserve">
+    <value>Hook is already attached.</value>
+  </data>
+  <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
+    <value>Hotkey ({0}) not registered.</value>
+  </data>
 </root>

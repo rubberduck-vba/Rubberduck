@@ -53,7 +53,7 @@ namespace Rubberduck.Common.Hotkeys
 
             if (key == Keys.None)
             {
-                throw new InvalidOperationException("Invalid key.");
+                throw new InvalidOperationException(Rubberduck.UI.RubberduckUI.CommonHotkey_InvalidKey);
             }
 
             HookKey(key, shift);
@@ -63,7 +63,7 @@ namespace Rubberduck.Common.Hotkeys
         {
             if (!IsAttached)
             {
-                throw new InvalidOperationException("Hook is already detached.");
+                throw new InvalidOperationException(Rubberduck.UI.RubberduckUI.CommonHotkey_HookDetached);
             }
 
             User32.UnregisterHotKey(_hWndVbe, HotkeyInfo.HookId);
@@ -76,20 +76,20 @@ namespace Rubberduck.Common.Hotkeys
         {
             if (IsAttached)
             {
-                throw new InvalidOperationException("Hook is already attached.");
+                throw new InvalidOperationException(Rubberduck.UI.RubberduckUI.CommonHotkey_HookAttached);
             }
 
             var hookId = (IntPtr)Kernel32.GlobalAddAtom(Guid.NewGuid().ToString());
             var success = User32.RegisterHotKey(_hWndVbe, hookId, shift, (uint)key);
             if (!success)
             {
-                Debug.WriteLine("Hotkey ({0}) not registered.", key);
-                //throw new Win32Exception("HotKey was not registered.");
+                Debug.WriteLine(Rubberduck.UI.RubberduckUI.CommonHotkey_KeyNotRegistered, key);
+                //throw new Win32Exception(Rubberduck.UI.RubberduckUI.CommonHotkey_KeyNotRegistered, key);
             }
 
             HotkeyInfo = new HotkeyInfo(hookId, Combo);
             IsAttached = true;
-            Debug.WriteLine("Hotkey '{0}' hooked successfully to command '{1}'", Key, Command.GetType());
+            Debug.WriteLine("Hotkey '{0}' hooked successfully to command '{1}'", Key, Command.GetType());  //no translation needed for Debug.Writeline
         }
 
         private static readonly IDictionary<char,uint> Modifiers = new Dictionary<char, uint>
