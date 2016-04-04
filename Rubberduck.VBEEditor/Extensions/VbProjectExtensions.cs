@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.Extensions
@@ -9,21 +12,29 @@ namespace Rubberduck.VBEditor.Extensions
     {
         public static string ProjectName(this VBProject project)
         {
-            var projectName = project.Name;
-            if (project.Protection == vbext_ProjectProtection.vbext_pp_none)
+            var projectName = string.Empty;
+            try
             {
-                var documentModule = project
-                    .VBComponents.Cast<VBComponent>()
-                    .FirstOrDefault(item => item.Type == vbext_ComponentType.vbext_ct_Document);
-
-                if (documentModule != null)
+                projectName = project.Name;
+                if (project.Protection == vbext_ProjectProtection.vbext_pp_none)
                 {
-                    var hostDocumentNameProperty = documentModule.Properties.Item("Name");
-                    if (hostDocumentNameProperty != null)
+                    var documentModule = project
+                        .VBComponents.Cast<VBComponent>()
+                        .FirstOrDefault(item => item.Type == vbext_ComponentType.vbext_ct_Document);
+
+                    if (documentModule != null)
                     {
-                        projectName += string.Format(" ({0})", hostDocumentNameProperty.Value);
+                        var hostDocumentNameProperty = documentModule.Properties.Item("Name");
+                        if (hostDocumentNameProperty != null)
+                        {
+                            projectName += string.Format(" ({0})", hostDocumentNameProperty.Value);
+                        }
                     }
                 }
+            }
+            catch (COMException exception)
+            {
+                Debug.WriteLine(exception);
             }
             return projectName;
         }
