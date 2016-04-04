@@ -1,9 +1,13 @@
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
+using Antlr4.Runtime;
+using Rubberduck.Common;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -18,6 +22,18 @@ namespace Rubberduck.UI.Command.Refactorings
             _state = state;
         }
 
+        public override bool CanExecute(object parameter)
+        {
+            if (Vbe.ActiveCodePane == null)
+            {
+                return false;
+            }
+
+            var selection = Vbe.ActiveCodePane.GetSelection();
+            var target = _state.AllDeclarations.FindSelectedDeclaration(selection, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
+            return _state.Status == ParserState.Ready && target != null;
+        }
+
         public override void Execute(object parameter)
         {
             var factory = new ExtractMethodPresenterFactory(Editor, _state.AllDeclarations);
@@ -25,7 +41,5 @@ namespace Rubberduck.UI.Command.Refactorings
             refactoring.InvalidSelection += HandleInvalidSelection;
             refactoring.Refactor();
         }
-
-        public RubberduckHotkey Hotkey { get {return RubberduckHotkey.RefactorExtractMethod; } }
     }
 }

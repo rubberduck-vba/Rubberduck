@@ -298,6 +298,7 @@
     <Compile Include="Common\Hotkeys\IHotkey.cs" />
     <Compile Include="Common\ILowLevelKeyboardHook.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
+    <Compile Include="Common\LowLevelMouseHook.cs" />
     <Compile Include="Common\ModuleExporter.cs" />
     <Compile Include="Common\RubberduckHooks.cs" />
     <Compile Include="Common\TimerHook.cs" />

@@ -19,6 +19,7 @@ namespace Rubberduck.Common
         private User32.WndProc _newWndProc;
 
         private readonly IAttachable _timerHook;
+        private readonly IAttachable _mouseHook;
         private readonly IGeneralConfigService _config;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
 
@@ -31,15 +32,18 @@ namespace Rubberduck.Common
             _oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _newWndProc);
             _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
 
-            _timerHook = timerHook;
             _config = config;
+            _timerHook = timerHook;
             _timerHook.MessageReceived += timerHook_MessageReceived;
         }
+
 
         public void HookHotkeys()
         {
             Detach();
             _hooks.Clear();
+
+            //AddHook(new LowLevelMouseHook()); // todo: understand how this line throws a NRE in COM reflection
 
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.GeneralSettings.HotkeySettings;
@@ -89,10 +93,15 @@ namespace Rubberduck.Common
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
-            if (sender is ILowLevelKeyboardHook)
+            if (sender is LowLevelKeyboardHook)
             {
                 // todo: handle 2-step hotkeys?
                 return;
+            }
+
+            if (sender is LowLevelMouseHook)
+            {
+                OnMessageReceived(sender, HookEventArgs.Empty);
             }
 
             var hotkey = sender as IHotkey;
