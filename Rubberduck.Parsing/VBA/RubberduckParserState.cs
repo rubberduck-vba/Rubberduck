@@ -375,7 +375,6 @@ namespace Rubberduck.Parsing.VBA
 
         /// <summary>
         /// Ensures parser state accounts for built-in declarations.
-        /// This method has no effect if built-in declarations have already been loaded.
         /// </summary>
         /// <summary>
         /// Requests reparse for specified component.

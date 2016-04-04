@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using NLog;
@@ -117,6 +118,8 @@ namespace Rubberduck
 
             _appMenus.Initialize();
             _appMenus.Localize();
+
+            Task.Delay(1000).ContinueWith(t => _parser.State.OnParseRequested(this));
 
             _hooks.HookHotkeys();
             _hooks.Attach();
