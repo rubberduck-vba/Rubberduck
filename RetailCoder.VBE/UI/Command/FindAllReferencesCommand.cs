@@ -117,9 +117,10 @@ namespace Rubberduck.UI.Command
             if (!selection.Equals(default(QualifiedSelection)))
             {
                 declaration = _state.AllDeclarations
-                    .SingleOrDefault(item =>
-                        IsSelectedDeclaration(selection, item) ||
-                        item.References.Any(reference => IsSelectedReference(selection, reference)));
+                    .SingleOrDefault(item => item.DeclarationType != DeclarationType.Project &&
+                        item.DeclarationType != DeclarationType.ModuleOption &&
+                        (IsSelectedDeclaration(selection, item) ||
+                        item.References.Any(reference => IsSelectedReference(selection, reference))));
             }
             return declaration;
         }
