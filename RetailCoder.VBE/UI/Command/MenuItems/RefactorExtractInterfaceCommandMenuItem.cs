@@ -16,6 +16,7 @@ namespace Rubberduck.UI.Command.MenuItems
         public override string Key { get { return "RefactorMenu_ExtractInterface"; } }
         public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.ExtractInterface; } }
         public override Image Image { get { return Resources.ExtractInterface_6778_32; } }
+        public override Image Mask { get { return Resources.ExtractInterface_6778_321_Mask; } }
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {
