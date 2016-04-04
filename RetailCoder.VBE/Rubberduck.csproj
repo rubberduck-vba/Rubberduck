@@ -314,6 +314,7 @@
     <Compile Include="Common\Hotkeys\IHotkey.cs" />
     <Compile Include="Common\ILowLevelKeyboardHook.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
+    <Compile Include="Common\KeyboardHookWrapper.cs" />
     <Compile Include="Common\ModuleExporter.cs" />
     <Compile Include="Common\MouseHookWrapper.cs" />
     <Compile Include="Common\RubberduckHooks.cs" />
@@ -324,7 +325,6 @@
     <Compile Include="Common\WinAPI\POINT.cs" />
     <Compile Include="Common\WinAPI\WindowsHook.cs" />
     <Compile Include="Common\WinAPI\Kernel32.cs" />
-    <Compile Include="Common\LowLevelKeyboardHook.cs" />
     <Compile Include="Common\KeyHookEventArgs.cs" />
     <Compile Include="Common\WinAPI\User32.cs" />
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />

@@ -6,6 +6,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command
@@ -62,9 +63,14 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindModuleDeclaration(VBComponent component)
         {
-            return _state.AllUserDeclarations.Single(item => item.ProjectName == component.Collection.Parent.ProjectName()
-                                                             && item.QualifiedName.QualifiedModuleName.Component == component 
+
+            var result = _state.AllUserDeclarations.SingleOrDefault(item => item.ProjectName == component.Collection.Parent.ProjectName()
+                                                             && item.QualifiedName.QualifiedModuleName.ComponentName == component.Name
                                                              && (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module));
+            return result
+                   ?? // module isn't in parser state - give it a dummy declaration, just so the ViewModel has something to chew on:
+                   new Declaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name), null,
+                       null, component.Name, false, false, Accessibility.Global, DeclarationType.Module, false);
         }
     }
 }

@@ -88,6 +88,15 @@ namespace Rubberduck
                 // right-click detected
                 _appMenus.EvaluateCanExecute(_parser.State);
             }
+            if (sender is KeyboardHookWrapper)
+            {
+                var pane = _vbe.ActiveCodePane;
+                if (pane == null)
+                {
+                    return;
+                }
+                _parser.State.OnParseRequested(this, pane.CodeModule.Parent);
+            }
         }
 
         private void _configService_SettingsChanged(object sender, EventArgs e)
@@ -261,15 +270,6 @@ namespace Rubberduck
 
         private void Parser_StateChanged(object sender, EventArgs e)
         {
-            if (_parser.State.Status != ParserState.Ready)
-            {
-                _hooks.Detach();
-            }
-            else
-            {
-                _hooks.Attach();
-            }
-
             Debug.WriteLine("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
         }

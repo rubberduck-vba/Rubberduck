@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using EventHook;
 using EventHook.Hooks;
 
@@ -6,11 +7,6 @@ namespace Rubberduck.Common
 {
     public class MouseHookWrapper : IAttachable
     {
-        public MouseHookWrapper()
-        {
-            MouseWatcher.OnMouseInput += MouseWatcher_OnMouseInput;
-        }
-
         private void MouseWatcher_OnMouseInput(object sender, MouseEventArgs e)
         {
             // only handle right-clicks
@@ -32,13 +28,17 @@ namespace Rubberduck.Common
         public void Attach()
         {
             MouseWatcher.Start();
+            MouseWatcher.OnMouseInput += MouseWatcher_OnMouseInput;
             IsAttached = true;
+            Debug.WriteLine("{0}: {1}", GetType().Name, IsAttached ? "Attached" : "Detached");
         }
 
         public void Detach()
         {
             MouseWatcher.Stop();
+            MouseWatcher.OnMouseInput -= MouseWatcher_OnMouseInput;
             IsAttached = false;
+            Debug.WriteLine("{0}: {1}", GetType().Name, IsAttached ? "Attached" : "Detached");
         }
     }
 }

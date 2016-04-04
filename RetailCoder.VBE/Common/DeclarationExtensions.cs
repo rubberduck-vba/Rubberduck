@@ -419,16 +419,14 @@ namespace Rubberduck.Common
             var items = declarations.ToList();
 
             var target = items
-                .Where(item => !item.IsBuiltIn)
+                .Where(item => !item.IsBuiltIn && validDeclarationTypes.Contains(item.DeclarationType))
                 .SingleOrDefault(item => item.IsSelected(selection)
                                      || item.References.Any(r => r.IsSelected(selection)));
 
-            if (target != null && validDeclarationTypes.Contains(target.DeclarationType))
+            if (target != null)
             {
                 return target;
             }
-
-            target = null;
 
             var targets = items
                 .Where(item => !item.IsBuiltIn

@@ -44,6 +44,7 @@ namespace Rubberduck.Common
             _hooks.Clear();
 
             AddHook(new MouseHookWrapper());
+            AddHook(new KeyboardHookWrapper(_vbe));
 
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.GeneralSettings.HotkeySettings;
@@ -91,30 +92,6 @@ namespace Rubberduck.Common
             IsAttached = true;
         }
 
-        private void hook_MessageReceived(object sender, HookEventArgs e)
-        {
-            if (sender is LowLevelKeyboardHook)
-            {
-                // todo: handle 2-step hotkeys?
-                return;
-            }
-
-            if (sender is MouseHookWrapper)
-            {
-                Debug.WriteLine("MouseHookWrapper message received");
-                OnMessageReceived(sender, HookEventArgs.Empty);
-                return;
-            }
-
-            var hotkey = sender as IHotkey;
-            if (hotkey != null)
-            {
-                hotkey.Command.Execute(null);
-            }
-
-            OnMessageReceived(sender, e);
-        }
-
         public void Detach()
         {
             if (!IsAttached)
@@ -129,6 +106,25 @@ namespace Rubberduck.Common
             }
 
             IsAttached = false;
+        }
+
+        private void hook_MessageReceived(object sender, HookEventArgs e)
+        {
+            if (sender is MouseHookWrapper)
+            {
+                Debug.WriteLine("MouseHookWrapper message received");
+                OnMessageReceived(sender, HookEventArgs.Empty);
+                return;
+            }
+
+            var hotkey = sender as IHotkey;
+            if (hotkey != null)
+            {
+                hotkey.Command.Execute(null);
+                return;
+            }
+
+            OnMessageReceived(sender, e);
         }
 
         private void timerHook_MessageReceived(object sender, EventArgs e)
