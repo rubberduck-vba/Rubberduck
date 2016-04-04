@@ -13,6 +13,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override string Key { get { return "RefactorMenu_MoveCloserToUsage"; } }
         public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.MoveCloserToUsage; } }
+        public override bool BeginGroup { get { return true; } }
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

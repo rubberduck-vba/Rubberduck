@@ -1363,6 +1363,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Move declaration closer to usage.
+        /// </summary>
+        public static string HotkeyDescription_RefactorMoveCloserToUsage {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_RefactorMoveCloserToUsage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refactor / Rename.
         /// </summary>
         public static string HotkeyDescription_RefactorRename {

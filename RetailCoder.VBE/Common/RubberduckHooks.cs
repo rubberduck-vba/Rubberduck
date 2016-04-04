@@ -38,12 +38,17 @@ namespace Rubberduck.Common
 
         public void HookHotkeys()
         {
+            Detach();
+            _hooks.Clear();
+
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.GeneralSettings.HotkeySettings;
             foreach (var hotkey in settings.Where(hotkey => hotkey.IsEnabled))
             {
                 AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), hotkey.Command));
             }
+
+            Attach();
         }
 
         public IEnumerable<IAttachable> Hooks { get { return _hooks; } }
@@ -77,7 +82,7 @@ namespace Rubberduck.Common
             {
                 hook.Attach();
                 hook.MessageReceived += hook_MessageReceived;
-                }
+            }
 
             IsAttached = true;
         }
@@ -110,7 +115,7 @@ namespace Rubberduck.Common
             {
                 hook.Detach();
                 hook.MessageReceived -= hook_MessageReceived;
-                }
+            }
 
             IsAttached = false;
         }

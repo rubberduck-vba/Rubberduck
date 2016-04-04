@@ -93,6 +93,7 @@ namespace Rubberduck.Settings
                 { RubberduckHotkey.IndentModule, Command<IndentCurrentModuleCommand>() },
                 { RubberduckHotkey.IndentProcedure, Command<IndentCurrentProcedureCommand>() },
                 { RubberduckHotkey.FindSymbol, Command<FindSymbolCommand>() },
+                { RubberduckHotkey.RefactorMoveCloserToUsage, Command<RefactorMoveCloserToUsageCommand>() },
                 { RubberduckHotkey.InspectionResults, Command<InspectionResultsCommand>() },
                 { RubberduckHotkey.RefactorExtractMethod, Command<RefactorExtractMethodCommand>() },
                 { RubberduckHotkey.RefactorRename, Command<CodePaneRefactorRenameCommand>() },
@@ -188,6 +189,7 @@ namespace Rubberduck.Settings
                     new HotkeySetting{Name=RubberduckHotkey.FindSymbol.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="T", Command = commandMappings[RubberduckHotkey.InspectionResults]},
                     new HotkeySetting{Name=RubberduckHotkey.InspectionResults.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="I", Command = commandMappings[RubberduckHotkey.InspectionResults]},
                     new HotkeySetting{Name=RubberduckHotkey.TestExplorer.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="T", Command = commandMappings[RubberduckHotkey.TestExplorer]},
+                    new HotkeySetting{Name=RubberduckHotkey.RefactorMoveCloserToUsage.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="C", Command = commandMappings[RubberduckHotkey.RefactorMoveCloserToUsage]},
                     new HotkeySetting{Name=RubberduckHotkey.RefactorRename.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="R", Command = commandMappings[RubberduckHotkey.RefactorRename]},
                     new HotkeySetting{Name=RubberduckHotkey.RefactorExtractMethod.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="M", Command = commandMappings[RubberduckHotkey.RefactorExtractMethod]}
                 },

@@ -8,6 +8,7 @@ namespace Rubberduck.Settings
         FindSymbol,
         InspectionResults,
         TestExplorer,
+        RefactorMoveCloserToUsage,
         RefactorRename,
         RefactorExtractMethod,
     }
