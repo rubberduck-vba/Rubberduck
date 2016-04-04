@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
@@ -42,7 +43,7 @@ namespace Rubberduck.Common
             Detach();
             _hooks.Clear();
 
-            //AddHook(new LowLevelMouseHook()); // todo: understand how this line throws a NRE in COM reflection
+            AddHook(new MouseHookWrapper());
 
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.GeneralSettings.HotkeySettings;
@@ -98,9 +99,11 @@ namespace Rubberduck.Common
                 return;
             }
 
-            if (sender is LowLevelMouseHook)
+            if (sender is MouseHookWrapper)
             {
+                Debug.WriteLine("MouseHookWrapper message received");
                 OnMessageReceived(sender, HookEventArgs.Empty);
+                return;
             }
 
             var hotkey = sender as IHotkey;

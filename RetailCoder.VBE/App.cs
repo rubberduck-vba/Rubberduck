@@ -83,7 +83,7 @@ namespace Rubberduck
 
         private void _hooks_MessageReceived(object sender, HookEventArgs e)
         {
-            if (sender is LowLevelMouseHook)
+            if (sender is MouseHookWrapper)
             {
                 // right-click detected
                 _appMenus.EvaluateCanExecute(_parser.State);
@@ -261,6 +261,15 @@ namespace Rubberduck
 
         private void Parser_StateChanged(object sender, EventArgs e)
         {
+            if (_parser.State.Status != ParserState.Ready)
+            {
+                _hooks.Detach();
+            }
+            else
+            {
+                _hooks.Attach();
+            }
+
             Debug.WriteLine("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
         }
