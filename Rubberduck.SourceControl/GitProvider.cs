@@ -37,7 +37,7 @@ namespace Rubberduck.SourceControl
             }
             catch (RepositoryNotFoundException ex)
             {
-                throw new SourceControlException("Repository not found.", ex);
+                throw new SourceControlException(SourceControlText.GitRepoNotFound, ex);
             }
         }
 
@@ -114,7 +114,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Failed to clone remote repository.", ex);
+                throw new SourceControlException(SourceControlText.GitRepoNotCloned, ex);
             }
         }
 
@@ -130,7 +130,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Unable to initialize repository.", ex);
+                throw new SourceControlException(SourceControlText.GitNotInit, ex);
             }
         }
 
@@ -162,7 +162,7 @@ namespace Rubberduck.SourceControl
                 }
                 catch(LibGit2SharpException ex)
                 {
-                    throw new SourceControlException("Unable to perform intial commit.", ex);
+                    throw new SourceControlException(SourceControlText.GitNoInitialCommit, ex);
                 }
             }
 
@@ -190,7 +190,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Push Failed.", ex);
+                throw new SourceControlException(SourceControlText.GitPushFailed, ex);
             }
         }
 
@@ -218,7 +218,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Fetch failed.", ex);
+                throw new SourceControlException(SourceControlText.GitFetchFailed, ex);
             }
         }
 
@@ -243,7 +243,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Pull Failed.", ex);
+                throw new SourceControlException(SourceControlText.GitPullFailed, ex);
             }
         }
 
@@ -258,7 +258,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Commit Failed.", ex);
+                throw new SourceControlException(SourceControlText.GitCommitFailed, ex);
             }
         }
 
@@ -270,7 +270,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw  new SourceControlException("Failed to stage file.", ex);
+                throw  new SourceControlException(SourceControlText.GitFileStageFailed, ex);
             }
         }
 
@@ -282,7 +282,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Failed to stage file.", ex);
+                throw new SourceControlException(SourceControlText.GitFileStageFailed, ex);
             }
         }
 
@@ -320,7 +320,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Checkout failed.", ex);
+                throw new SourceControlException(SourceControlText.GitCheckoutFailed, ex);
             }
         }
 
@@ -335,7 +335,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Branch creation failed.", ex);
+                throw new SourceControlException(SourceControlText.GitNewBranchFailed, ex);
             }
         }
 
@@ -350,7 +350,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Branch creation failed.", ex);
+                throw new SourceControlException(SourceControlText.GitNewBranchFailed, ex);
             }
         }
 
@@ -374,7 +374,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Publish failed.", ex);
+                throw new SourceControlException(SourceControlText.GitPublishFailed, ex);
             }
         }
 
@@ -400,7 +400,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Unpublish failed.", ex);
+                throw new SourceControlException(SourceControlText.GitUnpublishFailed, ex);
             }
         }
 
@@ -412,14 +412,14 @@ namespace Rubberduck.SourceControl
 
                 if (results.Status == RevertStatus.Conflicts)
                 {
-                    throw new SourceControlException("Revert resulted in conflicts. Revert failed.");
+                    throw new SourceControlException(SourceControlText.GitRevertConflict);
                 }
 
                 base.Revert();
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Revert failed.", ex);
+                throw new SourceControlException(SourceControlText.GitRevertFailed, ex);
             }
         }
 
@@ -432,7 +432,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException(string.Format("Failed to stage file {0}", filePath), ex);
+                throw new SourceControlException(string.Format(SourceControlText.GitFileStageFailedMsg, filePath), ex);
             }
         }
 
@@ -448,7 +448,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException(string.Format("Failed to remove file {0} from staging area.", filePath), ex);
+                throw new SourceControlException(string.Format(SourceControlText.GitFileStageFailedMsg, filePath), ex);
             }
         }
 
@@ -461,7 +461,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Failed to retrieve repository status.", ex);
+                throw new SourceControlException(SourceControlText.GitRepoStatusFailed, ex);
             }
         }
 
@@ -476,7 +476,7 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                throw new SourceControlException("Undo failed.", ex);
+                throw new SourceControlException(SourceControlText.GitUndoFailed, ex);
             }
         }
 
@@ -507,7 +507,7 @@ namespace Rubberduck.SourceControl
             }
             catch(LibGit2SharpException ex)
             {
-                throw new SourceControlException("Branch deletion failed.", ex);
+                throw new SourceControlException(SourceControlText.GitBranchDeleteFailed, ex);
             }
         }
 
