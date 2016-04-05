@@ -119,10 +119,12 @@ namespace Rubberduck
             _appMenus.Initialize();
             _appMenus.Localize();
 
-            Task.Delay(1000).ContinueWith(t => _parser.State.OnParseRequested(this));
-
-            _hooks.HookHotkeys();
-            _hooks.Attach();
+            Task.Delay(1000).ContinueWith(t =>
+            {
+                _parser.State.OnParseRequested(this);
+                _hooks.HookHotkeys();
+                _hooks.Attach();
+            });
         }
 
         #region sink handlers. todo: move to another class

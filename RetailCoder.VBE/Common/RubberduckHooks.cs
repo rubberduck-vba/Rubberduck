@@ -19,7 +19,7 @@ namespace Rubberduck.Common
         private readonly User32.WndProc _oldWndProc;
         private User32.WndProc _newWndProc;
 
-        private readonly IAttachable _timerHook;
+        //private readonly IAttachable _timerHook;
         private readonly IGeneralConfigService _config;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
 
@@ -33,8 +33,8 @@ namespace Rubberduck.Common
             _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
 
             _config = config;
-            _timerHook = timerHook;
-            _timerHook.MessageReceived += timerHook_MessageReceived;
+            //_timerHook = timerHook;
+            //_timerHook.MessageReceived += timerHook_MessageReceived;
         }
 
 
@@ -141,8 +141,8 @@ namespace Rubberduck.Common
 
         public void Dispose()
         {
-            _timerHook.MessageReceived -= timerHook_MessageReceived;
-            _timerHook.Detach();
+            //_timerHook.MessageReceived -= timerHook_MessageReceived;
+            //_timerHook.Detach();
 
             Detach();
         }
@@ -166,9 +166,9 @@ namespace Rubberduck.Common
                     }
                 }
 
-                if (!processed)
+                if (processed)
                 {
-                    return User32.CallWindowProc(_oldWndProc, hWnd, uMsg, wParam, lParam);
+                    return IntPtr.Zero;
                 }
             }
             catch (Exception exception)
@@ -182,11 +182,11 @@ namespace Rubberduck.Common
         private bool HandleHotkeyMessage(IntPtr wParam)
         {
             var processed = false;
-                            if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_mainWindowHandle))
-                            {
+            if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_mainWindowHandle))
+            {
                 var hook = Hooks.OfType<Hotkey>().SingleOrDefault(k => k.HotkeyInfo.HookId == wParam);
-                                if (hook != null)
-                                {
+                if (hook != null)
+                {
                     hook.OnMessageReceived();
                     processed = true;
                 }
