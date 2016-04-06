@@ -274,13 +274,13 @@ namespace Rubberduck.Parsing.VBA
             foreach (var kvp in _state.ParseTrees)
             {
                 if (token.IsCancellationRequested) return;
-                ResolveDeclarations(kvp.Key, kvp.Value);
+                ResolveDeclarations(kvp.Key.Component, kvp.Value);
             }
             var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments);
             foreach (var kvp in _state.ParseTrees)
             {
                 if (token.IsCancellationRequested) return;
-                ResolveReferences(finder, kvp.Key, kvp.Value);
+                ResolveReferences(finder, kvp.Key.Component, kvp.Value);
             }
         }
 
