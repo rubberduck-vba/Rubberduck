@@ -318,7 +318,7 @@ namespace Rubberduck.Parsing.VBA
                 ParseTreeWalker.Default.Walk(declarationsListener, tree);
             } catch (Exception exception)
             {
-                Debug.Print("Exception thrown resolving '{0}' (thread {2}): {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
+                Debug.Print("Exception thrown finding declarations for '{0}' (thread {2}): {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
                 _state.SetModuleState(component, ParserState.ResolverError);
             }
 

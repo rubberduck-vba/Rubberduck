@@ -166,7 +166,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             // "working" states are toggled when *any* module has them.
-            var result = moduleStates.Min();
+            var result = moduleStates.Except(new[]{ParserState.Ready}).Min();
             if (moduleStates.Any(ms => ms == ParserState.LoadingReference))
             {
                 result = ParserState.LoadingReference;

@@ -467,13 +467,13 @@ eCS_ProcedureCall : CALL whiteSpace ambiguousIdentifier typeHint? (whiteSpace? L
 eCS_MemberProcedureCall : CALL whiteSpace implicitCallStmt_InStmt? DOT ambiguousIdentifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
 implicitCallStmt_InBlock :
-	iCS_B_MemberProcedureCall 
-	| iCS_B_ProcedureCall
+	iCS_B_ProcedureCall
+	| iCS_B_MemberProcedureCall 
 ;
 
-iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? whiteSpace? DOT whiteSpace? ambiguousIdentifier typeHint? (whiteSpace argsCall)? (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
-
 iCS_B_ProcedureCall : certainIdentifier (whiteSpace argsCall)? (whiteSpace? LPAREN subscripts RPAREN)*;
+
+iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? whiteSpace? DOT whiteSpace? ambiguousIdentifier typeHint? (whiteSpace argsCall)? (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
 implicitCallStmt_InStmt :
 	iCS_S_MembersCall

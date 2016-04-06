@@ -595,7 +595,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             Declaration parent;
-            if (_withBlockQualifiers.Any())
+            if (_withBlockQualifiers.Any() && (context.iCS_S_VariableOrProcedureCall() == null && context.iCS_S_ProcedureOrArrayCall() == null))
             {
                 parent = _withBlockQualifiers.Peek();
                 if (parent == null)
