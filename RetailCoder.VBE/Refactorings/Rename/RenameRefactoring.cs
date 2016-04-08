@@ -12,6 +12,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -77,7 +78,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 var targetReference = reference;
                 var potentialDeclarations = _model.Declarations.Where(item => !item.IsBuiltIn
-                                                         && item.Project.Equals(targetReference.Declaration.Project)
+                                                         && item.ProjectName == targetReference.Declaration.ProjectName
                                                          && ((item.Context != null
                                                          && item.Context.Start.Line <= targetReference.Selection.StartLine
                                                          && item.Context.Stop.Line >= targetReference.Selection.EndLine)
@@ -148,7 +149,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 // properties can have more than 1 member.
                 var members = _model.Declarations.Named(_model.Target.IdentifierName)
-                    .Where(item => item.Project == _model.Target.Project
+                    .Where(item => item.ProjectName == _model.Target.ProjectName
                         && item.ComponentName == _model.Target.ComponentName
                         && item.DeclarationType.HasFlag(DeclarationType.Property));
                 foreach (var member in members)
@@ -211,7 +212,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             try
             {
-                var project = _model.VBE.VBProjects.Cast<VBProject>().FirstOrDefault(p => p.Name == _model.Target.IdentifierName);
+                var project = _state.Projects.SingleOrDefault(p => p.ProjectName() == _model.Target.ProjectName);
                 if (project != null)
                 {
                     project.Name = _model.NewName;
@@ -250,7 +251,7 @@ namespace Rubberduck.Refactorings.Rename
             else
             {
                 var members = _model.Declarations.Named(target.IdentifierName)
-                    .Where(item => item.Project == target.Project
+                    .Where(item => item.ProjectName == target.ProjectName
                         && item.ComponentName == target.ComponentName
                         && item.DeclarationType.HasFlag(DeclarationType.Property));
 

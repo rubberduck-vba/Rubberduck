@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -28,7 +29,8 @@ namespace Rubberduck.Parsing.VBA
 
         private CancellationTokenSource _central = new CancellationTokenSource();
         private CancellationTokenSource _resolverTokenSource; // linked to _central later
-        private readonly Dictionary<VBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks = new Dictionary<VBComponent, Tuple<Task, CancellationTokenSource>>();
+        private readonly ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks = 
+            new ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>>();
 
         private readonly Dictionary<VBComponent, IParseTree> _parseTrees = new Dictionary<VBComponent, IParseTree>();
         private readonly Dictionary<QualifiedModuleName, Dictionary<Declaration, byte>> _declarations = new Dictionary<QualifiedModuleName, Dictionary<Declaration, byte>>();
@@ -57,12 +59,11 @@ namespace Rubberduck.Parsing.VBA
             state.StateChanged += StateOnStateChanged;
         }
 
-        private void StateOnStateChanged(object sender, ParserStateEventArgs e)
+        private void StateOnStateChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("RubberduckParser handles OnStateChanged ({0})", e.State);
-            Debug.Assert(e.State == _state.Status);
+            Debug.WriteLine("RubberduckParser handles OnStateChanged ({0})", _state.Status);
 
-            if (e.State == ParserState.Parsed)
+            if (_state.Status == ParserState.Parsed)
             {
                 Debug.WriteLine("(handling OnStateChanged) Starting resolver task");
                 Resolve(_central.Token); // Tests expect this to be synchronous
@@ -70,28 +71,53 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ReparseRequested(object sender, EventArgs e)
+        private void ReparseRequested(object sender, ParseRequestEventArgs e)
         {
-            var args = e as ParseRequestEventArgs;
-            if (args.IsFullReparseRequest)
+            if (e.IsFullReparseRequest)
             {
                 Cancel();
                 ParseAll();
             }
             else
             {
-                Cancel(args.Component);
-                ParseAsync(args.Component, CancellationToken.None);
+                Cancel(e.Component);
+                ParseAsync(e.Component, CancellationToken.None);
             }
         }
 
         public void Parse()
         {
-            var projects = _vbe.VBProjects
-                .Cast<VBProject>()
-                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none);
+            if (!_state.Projects.Any())
+            {
+                foreach (var project in _vbe.VBProjects.Cast<VBProject>())
+                {
+                    _state.AddProject(project);
+                }
+            }
+
+            var projects = _state.Projects
+                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
+                .ToList();
 
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
+            foreach (var component in components)
+            {
+                _state.SetModuleState(component, ParserState.LoadingReference);
+            }
+
+            if (!_state.AllDeclarations.Any(item => item.IsBuiltIn))
+            {
+                var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
+                foreach (var reference in references)
+                {
+                    var items = _comReflector.GetDeclarationsForReference(reference);
+                    foreach (var declaration in items)
+                    {
+                        _state.AddDeclaration(declaration);
+                    }
+                }
+            }
+
             foreach (var component in components)
             {
                 _state.SetModuleState(component, ParserState.Pending);
@@ -117,11 +143,29 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         private void ParseAll()
         {
-            var projects = _vbe.VBProjects
-                .Cast<VBProject>()
-                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none);
+            var projects = _state.Projects
+                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
+                .ToList();
 
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
+            foreach (var component in components)
+            {
+                _state.SetModuleState(component, ParserState.LoadingReference);
+            }
+
+            if (!_state.AllDeclarations.Any(item => item.IsBuiltIn))
+            {
+                var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
+                foreach (var reference in references)
+                {
+                    var items = _comReflector.GetDeclarationsForReference(reference).ToList();
+                    foreach (var declaration in items)
+                    {
+                        _state.AddDeclaration(declaration);
+                    }
+                }
+            }
+
             foreach (var component in components)
             {
                 _state.SetModuleState(component, ParserState.Pending);
@@ -157,8 +201,9 @@ namespace Rubberduck.Parsing.VBA
             var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token, token);
 
             var task = new Task(() => ParseAsyncInternal(component, linkedTokenSource.Token, rewriter));
-            _currentTasks.Add(component, Tuple.Create(task, linkedTokenSource));
-            task.ContinueWith(t => _currentTasks.Remove(component)); // default also executes on cancel
+            _currentTasks.TryAdd(component, Tuple.Create(task, linkedTokenSource));
+            Tuple<Task, CancellationTokenSource> removedTask;
+            task.ContinueWith(t => _currentTasks.TryRemove(component, out removedTask)); // default also executes on cancel
 
             task.Start();
             return task;

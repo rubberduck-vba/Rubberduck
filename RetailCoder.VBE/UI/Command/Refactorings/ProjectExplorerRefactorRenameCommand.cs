@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -50,7 +51,7 @@ namespace Rubberduck.UI.Command.Refactorings
             
             return _state.AllUserDeclarations.SingleOrDefault(
                     t => t.IdentifierName == Vbe.SelectedVBComponent.Name &&
-                            t.Project == Vbe.ActiveVBProject &&
+                            t.ProjectName == Vbe.ActiveVBProject.ProjectName() &&
                             new[]
                                 {
                                     DeclarationType.Class,

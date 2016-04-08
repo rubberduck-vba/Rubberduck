@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Microsoft.Win32;
 using Rubberduck.Inspections;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
@@ -88,14 +89,21 @@ namespace Rubberduck.Settings
         {
             return new Dictionary<RubberduckHotkey, ICommand>
             {
-                { RubberduckHotkey.CodeExplorer, _commands.SingleOrDefault(cmd => cmd is CodeExplorerCommand)},
-                { RubberduckHotkey.IndentModule, _commands.SingleOrDefault(cmd => cmd is IndentCurrentModuleCommand)},
-                { RubberduckHotkey.IndentProcedure, _commands.SingleOrDefault(cmd => cmd is IndentCurrentProcedureCommand)},
-                { RubberduckHotkey.InspectionResults, _commands.SingleOrDefault(cmd => cmd is InspectionResultsCommand)},
-                { RubberduckHotkey.RefactorExtractMethod, _commands.SingleOrDefault(cmd => cmd is RefactorExtractMethodCommand)},
-                { RubberduckHotkey.RefactorRename, _commands.SingleOrDefault(cmd => cmd is CodePaneRefactorRenameCommand)},
-                { RubberduckHotkey.TestExplorer, _commands.SingleOrDefault(cmd => cmd is TestExplorerCommand)}
+                { RubberduckHotkey.CodeExplorer, Command<CodeExplorerCommand>() },
+                { RubberduckHotkey.IndentModule, Command<IndentCurrentModuleCommand>() },
+                { RubberduckHotkey.IndentProcedure, Command<IndentCurrentProcedureCommand>() },
+                { RubberduckHotkey.FindSymbol, Command<FindSymbolCommand>() },
+                { RubberduckHotkey.RefactorMoveCloserToUsage, Command<RefactorMoveCloserToUsageCommand>() },
+                { RubberduckHotkey.InspectionResults, Command<InspectionResultsCommand>() },
+                { RubberduckHotkey.RefactorExtractMethod, Command<RefactorExtractMethodCommand>() },
+                { RubberduckHotkey.RefactorRename, Command<CodePaneRefactorRenameCommand>() },
+                { RubberduckHotkey.TestExplorer, Command<TestExplorerCommand>() }
             };
+        }
+
+        private ICommand Command<TCommand>() where TCommand : ICommand
+        {
+            return _commands.OfType<TCommand>().SingleOrDefault();
         }
 
         private void AssociateHotkeyCommands(Configuration config)
@@ -107,6 +115,7 @@ namespace Rubberduck.Settings
                 if (Enum.TryParse(setting.Name, out hotkey))
                 {
                     setting.Command = mappings[hotkey];
+                    ((CommandBase)setting.Command).ShortcutText = setting.ToMenuHotkeyString(); // yuck
                 }
             }
         }
@@ -177,8 +186,10 @@ namespace Rubberduck.Settings
                     new HotkeySetting{Name=RubberduckHotkey.IndentProcedure.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="P", Command = commandMappings[RubberduckHotkey.IndentProcedure]},
                     new HotkeySetting{Name=RubberduckHotkey.IndentModule.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="M", Command = commandMappings[RubberduckHotkey.IndentModule]},
                     new HotkeySetting{Name=RubberduckHotkey.CodeExplorer.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="R", Command = commandMappings[RubberduckHotkey.CodeExplorer]},
+                    new HotkeySetting{Name=RubberduckHotkey.FindSymbol.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="T", Command = commandMappings[RubberduckHotkey.InspectionResults]},
                     new HotkeySetting{Name=RubberduckHotkey.InspectionResults.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="I", Command = commandMappings[RubberduckHotkey.InspectionResults]},
                     new HotkeySetting{Name=RubberduckHotkey.TestExplorer.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="T", Command = commandMappings[RubberduckHotkey.TestExplorer]},
+                    new HotkeySetting{Name=RubberduckHotkey.RefactorMoveCloserToUsage.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="C", Command = commandMappings[RubberduckHotkey.RefactorMoveCloserToUsage]},
                     new HotkeySetting{Name=RubberduckHotkey.RefactorRename.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="R", Command = commandMappings[RubberduckHotkey.RefactorRename]},
                     new HotkeySetting{Name=RubberduckHotkey.RefactorExtractMethod.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="M", Command = commandMappings[RubberduckHotkey.RefactorExtractMethod]}
                 },
@@ -205,6 +216,13 @@ namespace Rubberduck.Settings
 
         public IndenterSettings GetDefaultIndenterSettings()
         {
+            var tabWidth = 4;
+            var reg = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\6.0\Common", false) ??
+                      Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\7.0\Common", false);
+            if (reg != null)
+            {
+                tabWidth = Convert.ToInt32(reg.GetValue("TabWidth") ?? tabWidth);
+            }
             return new IndenterSettings
             {
                 IndentEntireProcedureBody = true,
@@ -222,7 +240,7 @@ namespace Rubberduck.Settings
                 EnableUndo = true,
                 EndOfLineCommentStyle = SmartIndenter.EndOfLineCommentStyle.AlignInColumn,
                 EndOfLineCommentColumnSpaceAlignment = 50,
-                IndentSpaces = 4
+                IndentSpaces = tabWidth
             };
         }
     }

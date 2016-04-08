@@ -5,8 +5,10 @@ namespace Rubberduck.Settings
         IndentProcedure,
         IndentModule,
         CodeExplorer,
+        FindSymbol,
         InspectionResults,
         TestExplorer,
+        RefactorMoveCloserToUsage,
         RefactorRename,
         RefactorExtractMethod,
     }

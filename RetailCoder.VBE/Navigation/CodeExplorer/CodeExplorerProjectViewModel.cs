@@ -83,7 +83,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public override BitmapImage CollapsedIcon { get { return _icon; } }
         public override BitmapImage ExpandedIcon { get { return _icon; } }
 
-        public override string Name { get { return _declaration.CustomFolder; } }
+        public override string Name { get { return _declaration.IdentifierName; } }
         public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
     }
 }

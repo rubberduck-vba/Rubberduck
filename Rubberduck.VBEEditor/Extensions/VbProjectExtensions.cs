@@ -1,12 +1,50 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.Extensions
 {
     public static class ProjectExtensions
     {
+        public static string ProjectName(this VBProject project)
+        {
+            var projectName = string.Empty;
+            try
+            {
+                projectName = project.Name;
+                if (project.Protection == vbext_ProjectProtection.vbext_pp_none)
+                {
+                    var documentModule = project
+                        .VBComponents.Cast<VBComponent>()
+                        .FirstOrDefault(item => item.Type == vbext_ComponentType.vbext_ct_Document);
+
+                    if (documentModule != null)
+                    {
+                        var hostDocumentNameProperty = documentModule.Properties.Item("Name");
+                        if (hostDocumentNameProperty != null)
+                        {
+                            projectName += string.Format(" ({0})", hostDocumentNameProperty.Value);
+                        }
+                    }
+                }
+            }
+            catch (COMException exception)
+            {
+                Debug.WriteLine(exception);
+            }
+            return projectName;
+        }
+
+        public static string ProjectName(this VBComponent component)
+        {
+            var project = component.Collection.Parent;
+            return project.ProjectName();
+        }
+
         public static IEnumerable<string> ComponentNames(this VBProject project)
         {
             foreach (VBComponent component in project.VBComponents)

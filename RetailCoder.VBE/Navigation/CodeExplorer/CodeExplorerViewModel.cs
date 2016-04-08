@@ -80,14 +80,14 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             Debug.WriteLine("CodeExplorerViewModel handles StateChanged...");
             IsBusy = _state.Status == ParserState.Parsing;
-            if (_state.Status != ParserState.Parsed)
+            if (_state.Status != ParserState.Ready)
             {
                 return;
             }
 
             Debug.WriteLine("Creating Code Explorer model...");
             var userDeclarations = _state.AllUserDeclarations
-                .GroupBy(declaration => declaration.Project)
+                .GroupBy(declaration => declaration.ProjectName)
                 .Where(grouping => grouping.Key != null)
                 .ToList();
 

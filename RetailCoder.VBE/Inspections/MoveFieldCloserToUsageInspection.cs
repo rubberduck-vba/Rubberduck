@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections
 
             return UserDeclarations.SingleOrDefault(d =>
                         reference.ParentScoping.Equals(d) && declarationTypes.Contains(d.DeclarationType) &&
-                        d.Project == reference.QualifiedModuleName.Project);
+                        d.QualifiedName.QualifiedModuleName.Equals(reference.QualifiedModuleName));
         }
     }
 }

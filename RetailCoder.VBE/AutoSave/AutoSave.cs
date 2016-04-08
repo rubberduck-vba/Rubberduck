@@ -48,11 +48,11 @@ namespace Rubberduck.AutoSave
             {
                 try
                 {
-                    // note: VBProject.FileName getter throws IOException if unsaved
-                    _vbe.VBProjects.OfType<VBProject>().Select(p => p.FileName).ToList();
+                    var projects = _vbe.VBProjects.OfType<VBProject>().Select(p => p.FileName).ToList();
                 }
-                catch (DirectoryNotFoundException)
+                catch (IOException)
                 {
+                    // note: VBProject.FileName getter throws IOException if unsaved
                     return;
                 }
 

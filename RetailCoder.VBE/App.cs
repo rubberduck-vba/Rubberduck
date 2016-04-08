@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
-using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
@@ -61,6 +60,8 @@ namespace Rubberduck
             _hooks = hooks;
             _logger = LogManager.GetCurrentClassLogger();
 
+            _hooks.MessageReceived += _hooks_MessageReceived;
+            _configService.SettingsChanged += _configService_SettingsChanged;
             _configService.LanguageChanged += ConfigServiceLanguageChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _stateBar.Refresh += _stateBar_Refresh;
@@ -80,9 +81,30 @@ namespace Rubberduck
             UiDispatcher.Initialize();
         }
 
+        private void _hooks_MessageReceived(object sender, HookEventArgs e)
+        {
+            if (sender is MouseHookWrapper)
+            {
+                // right-click detected
+                _appMenus.EvaluateCanExecute(_parser.State);
+            }
+        }
+
+        private void _configService_SettingsChanged(object sender, EventArgs e)
+        {
+            // also updates the ShortcutKey text
+            _appMenus.Localize();
+            _hooks.HookHotkeys();
+        }
+
         public void Startup()
         {
             CleanReloadConfig();
+
+            foreach (var project in _vbe.VBProjects.Cast<VBProject>())
+            {
+                _parser.State.AddProject(project);
+            }
 
             _appMenus.Initialize();
             _appMenus.Localize();
@@ -94,6 +116,8 @@ namespace Rubberduck
         #region sink handlers. todo: move to another class
         async void sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
+            _parser.State.RemoveProject(e.Item);
+
             Debug.WriteLine(string.Format("Project '{0}' was removed.", e.Item.Name));
             Tuple<IConnectionPoint, int> value;
             if (_componentsEventsConnectionPoints.TryGetValue(e.Item.VBComponents, out value))
@@ -107,6 +131,8 @@ namespace Rubberduck
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
+            _parser.State.AddProject(e.Item);
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 // forces menus to evaluate their CanExecute state:
@@ -235,6 +261,15 @@ namespace Rubberduck
 
         private void Parser_StateChanged(object sender, EventArgs e)
         {
+            if (_parser.State.Status != ParserState.Ready)
+            {
+                _hooks.Detach();
+            }
+            else
+            {
+                _hooks.Attach();
+            }
+
             Debug.WriteLine("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
         }

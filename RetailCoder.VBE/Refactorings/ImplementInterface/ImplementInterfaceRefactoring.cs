@@ -47,8 +47,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
             _targetClass = _declarations.SingleOrDefault(d =>
                         !d.IsBuiltIn && d.DeclarationType == DeclarationType.Class &&
-                        d.QualifiedSelection.QualifiedName.ComponentName == selection.QualifiedName.ComponentName &&
-                        d.Project == selection.QualifiedName.Project);
+                        d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
 
             if (_targetClass == null || _targetInterface == null)
             {
@@ -188,7 +187,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
                            })
                            .ToList();
 
-            if (member.DeclarationType == DeclarationType.PropertyGet)
+            if (member.DeclarationType == DeclarationType.PropertyGet && parameters.Any())
             {
                 parameters.Remove(parameters.Last());
             }
@@ -207,7 +206,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         private IEnumerable<Declaration> GetImplementedMembers()
         {
             return _declarations.FindInterfaceImplementationMembers()
-                                .Where(item => item.Project.Equals(_targetInterface.Project)
+                                .Where(item => item.ProjectName == _targetInterface.ProjectName
                                         && item.ComponentName == _targetClass.IdentifierName
                                         && item.IdentifierName.StartsWith(_targetInterface.ComponentName + "_")
                                         && !item.Equals(_targetClass))

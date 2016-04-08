@@ -11,6 +11,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -43,6 +44,9 @@ namespace Rubberduck.Parsing.VBA
     {
         public event EventHandler<ParseRequestEventArgs> ParseRequest;
 
+        // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
+        private readonly IDictionary<string,VBProject> _projects = new Dictionary<string,VBProject>();
+
         private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>> _declarations =
             new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>>();
 
@@ -63,6 +67,26 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly ConcurrentDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _moduleAttributes =
             new ConcurrentDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
+
+        public void AddProject(VBProject project)
+        {
+            var name = project.ProjectName();
+            if (!_projects.ContainsKey(name))
+            {
+                _projects.Add(name, project);
+            }
+        }
+
+        public void RemoveProject(VBProject project)
+        {
+            var name = project.ProjectName();
+            if (_projects.ContainsKey(name))
+            {
+                _projects.Remove(name);
+            }
+        }
+
+        public IReadOnlyList<VBProject> Projects { get { return _projects.Values.ToList(); } }
 
         public IReadOnlyList<Tuple<VBComponent, SyntaxErrorException>> ModuleExceptions
         {
@@ -98,9 +122,8 @@ namespace Rubberduck.Parsing.VBA
 
             Debug.WriteLine("Module '{0}' state is changing to '{1}' (thread {2})", component.Name, state, Thread.CurrentThread.ManagedThreadId);
             OnModuleStateChanged(component, state);
-            Status = EvaluateParserState();
 
-            OnStateChanged(Status);
+            Status = EvaluateParserState();
         }
 
         private ParserState EvaluateParserState()
@@ -284,33 +307,35 @@ namespace Rubberduck.Parsing.VBA
 
         public bool ClearDeclarations(VBComponent component)
         {
-            var project = component.Collection.Parent;
+            var projectName = component.Collection.Parent.ProjectName();
             var keys = _declarations.Keys.Where(kvp => 
-                kvp.Project == project && kvp.Component == component);
+                kvp.ProjectName == projectName && kvp.ComponentName == component.Name); 
 
             var success = true;
+            var declarationsRemoved = 0;
             foreach (var key in keys)
             {
-                ConcurrentDictionary<Declaration, byte> declarations;
+                ConcurrentDictionary<Declaration, byte> declarations = null;
                 success = success && (!_declarations.ContainsKey(key) || _declarations.TryRemove(key, out declarations));
-            }
-            
-            ParserState state;
-            success = success && (!_moduleStates.ContainsKey(component) || _moduleStates.TryRemove(component, out state));
+                declarationsRemoved = declarations == null ? 0 : declarations.Count;
 
-            SyntaxErrorException exception;
-            success = success && (!_moduleExceptions.ContainsKey(component) || _moduleExceptions.TryRemove(component, out exception));
+                IParseTree tree;
+                success = success && (!_parseTrees.ContainsKey(key.Component) || _parseTrees.TryRemove(key.Component, out tree));
 
-            var components = _comments.Keys.Where(key =>
-                key.Collection.Parent == project && key.Name == component.Name);
+                ITokenStream stream;
+                success = success && (!_tokenStreams.ContainsKey(key.Component) || _tokenStreams.TryRemove(key.Component, out stream));
 
-            foreach (var commentKey in components)
-            {
+                ParserState state;
+                success = success && (!_moduleStates.ContainsKey(key.Component) || _moduleStates.TryRemove(key.Component, out state));
+
+                SyntaxErrorException exception;
+                success = success && (!_moduleExceptions.ContainsKey(key.Component) || _moduleExceptions.TryRemove(key.Component, out exception));
+
                 IList<CommentNode> nodes;
-                success = success && (!_comments.ContainsKey(commentKey) || _comments.TryRemove(commentKey, out nodes));
+                success = success && (!_comments.ContainsKey(key.Component) || _comments.TryRemove(key.Component, out nodes));
             }
 
-            Debug.WriteLine("ClearDeclarations({0}): {1}", component.Name, success ? "succeeded" : "failed");
+            Debug.WriteLine("ClearDeclarations({0}): {1} - {2} declarations removed", component.Name, success ? "succeeded" : "failed", declarationsRemoved);
             return success;
         }
 

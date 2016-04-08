@@ -31,11 +31,20 @@ namespace Rubberduck.Settings
             get { return RubberduckUI.ResourceManager.GetString("HotkeyDescription_" + Name); } 
         }
 
+        public string ToMenuHotkeyString()
+        {
+            return string.Format("{0}{1}{2}+{3}",
+                HasCtrlModifier ? "Ctrl" : string.Empty,
+                HasShiftModifier ? (HasCtrlModifier ? "+" : string.Empty) + "Shift" : string.Empty,
+                HasAltModifier ? (HasCtrlModifier | HasShiftModifier ? "+" : string.Empty) + "Alt" : string.Empty,
+                Key1);
+        }
+
         public override string ToString()
         {
-            return string.Format("{0}{1}{2}{3}", 
-                HasShiftModifier ? KeyModifierShift : string.Empty,
+            return string.Format("{0}{1}{2}{3}",
                 HasCtrlModifier ? KeyModifierCtrl : string.Empty,
+                HasShiftModifier ? KeyModifierShift : string.Empty,
                 HasAltModifier ? KeyModifierAlt : string.Empty,
                 Key1);
         }

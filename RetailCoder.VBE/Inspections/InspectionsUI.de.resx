@@ -139,7 +139,7 @@
     <value>Das Projekt hat den Standard-Projektnamen.</value>
   </data>
   <data name="EmptyStringLiteralInspection" xml:space="preserve">
-    <value>Man sollte bevorzugt 'vbNullString' gegenüber eiem leeren String verwenden.</value>
+    <value>Man sollte bevorzugt 'vbNullString' gegenüber einem leeren String verwenden.</value>
   </data>
   <data name="EmptyStringLiteralInspectionMeta" xml:space="preserve">
     <value>Die eingbaute Konstante 'vbNullString' ist ein Null String Zeiger, der 0 bytes Arbeitsspeicher benötigt. Dies ist das beabsichtigete Verhalten eines leeren Strings.</value>
@@ -199,7 +199,7 @@
     <value>Eine Variable, die im Modulkopf deklariert wurde aber nur in einer Prozedur verwendet wird, sollte in der Prozedur deklariert werden.</value>
   </data>
   <data name="MoveFieldCloserToUsageInspectionName" xml:space="preserve">
-    <value>Die Größe der Varibale ist größer als benötigt.</value>
+    <value>Die Größe der Variable ist größer als benötigt.</value>
   </data>
   <data name="MoveFieldCloserToUsageInspectionResultFormat" xml:space="preserve">
     <value>Veringere die Größe der Modulvariable '{0}'.</value>
@@ -247,7 +247,7 @@
     <value>Die 'REM'-Anweisung existiert aus Gründen der Abwärtskompatibilität. Sie kann gefahrlos durch ein einfaches Anführungszeichen ersetzt werden.</value>
   </data>
   <data name="ObsoleteCommentSyntaxInspectionName" xml:space="preserve">
-    <value>Nutzung der 'REM'-anweisung</value>
+    <value>Nutzung der 'REM'-Anweisung</value>
   </data>
   <data name="ObsoleteGlobalInspectionMeta" xml:space="preserve">
     <value>Das Schlüsselwort 'Global' existiert aus Gründen der Abwärtskompatibilität. Es kann gefahrlos mit 'Public' ersetzt werden.</value>
@@ -265,7 +265,7 @@
     <value>Die Verwendung der Typ-Buchstaben (z.B. $)  existiert aus Gründen der Abwärtskompatibilität. Sie kann gefahrlos in der Deklaration durch 'as' ersetzt werden.</value>
   </data>
   <data name="ObsoleteTypeHintInspectionName" xml:space="preserve">
-    <value>Verwendugshinweis für Typ</value>
+    <value>Verwendungshinweis für Typ</value>
   </data>
   <data name="OptionBaseInspectionMeta" xml:space="preserve">
     <value>Arrays sind normalerweise null-basiert. Diese Option ändert die untere Standardgrenze für impliziert erzeugte Arrays. Dies kann einen 'off-by-one' Fehler erzeugen, wenn sie nicht sorgsam eingesetzt wird.</value>
@@ -277,7 +277,7 @@
     <value>Rubberduck kann keine Variablen auswerten, die nicht deklariert wurden. Nutze am besten 'Option Explicit' um fehleranfällige Programme zu erstellen.</value>
   </data>
   <data name="OptionExplicitInspectionName" xml:space="preserve">
-    <value>'Option Expilicit' ist nicht angegeben.</value>
+    <value>'Option Explicit' ist nicht angegeben.</value>
   </data>
   <data name="ParameterCanBeByValInspectionMeta" xml:space="preserve">
     <value>Ein Parameter der als Referenz übergeben wird, aber keine neue Wert- oder Referenzzuweisung erhält, sollte als Wert übergeben werden.</value>
@@ -332,13 +332,13 @@
     <value>Variable wurde deklariert aber nie genutzt.</value>
   </data>
   <data name="VariableNotUsedInspectionMeta" xml:space="preserve">
-    <value>Eine Variable wurde deklariert und hat eine Wert-/Referenzzuweisung erhalten, allerdings wird diese Varibale nicht weitergenutzt.</value>
+    <value>Eine Variable wurde deklariert und hat eine Wert-/Referenzzuweisung erhalten, allerdings wird diese Variable nicht weitergenutzt.</value>
   </data>
   <data name="VariableNotUsedInspectionName" xml:space="preserve">
     <value>Die Variable wird nicht referenziert.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspectionMeta" xml:space="preserve">
-    <value>Varibale, deren Typ nicht explizit deklariert wurde, erhält implizit den Typ 'Variant'. Überlege die Varibale explizit als 'Variant' zu defineren oder eine besseren Typ zu zuweisen.</value>
+    <value>Variable, deren Typ nicht explizit deklariert wurde, erhält implizit den Typ 'Variant'. Überlege die Variable explizit als 'Variant' zu definieren oder eine besseren Typ zu zuweisen.</value>
   </data>
   <data name="VariableTypeNotDeclaredInspectionName" xml:space="preserve">
     <value>Variable ist implizit 'Variant'</value>

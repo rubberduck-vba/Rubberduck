@@ -1266,6 +1266,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Parsing powered by ANTLR
 GitHub integration powered by LibGit2Sharp
+Windows hooks powered by EventHook
 Fugue icons by Yusuke Kamiyamane</value>
   </data>
   <data name="AboutWindow_GeneralThanks" xml:space="preserve">
@@ -1476,5 +1477,26 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
     <value>Expected error was not raised</value>
+  </data>
+  <data name="CommonHotkey_InvalidKey" xml:space="preserve">
+    <value>Invalid key.</value>
+  </data>
+  <data name="CommonHotkey_HookDetached" xml:space="preserve">
+    <value>Hook is already detached.</value>
+  </data>
+  <data name="CommonHotkey_HookAttached" xml:space="preserve">
+    <value>Hook is already attached.</value>
+  </data>
+  <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
+    <value>Hotkey ({0}) not registered.</value>
+  </data>
+  <data name="HotkeyDescription_FindSymbol" xml:space="preserve">
+    <value>Find symbol</value>
+  </data>
+  <data name="HotkeyDescription_RefactorMoveCloserToUsage" xml:space="preserve">
+    <value>Move declaration closer to usage</value>
+  </data>
+  <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
+    <value>Rege&amp;x Search/Replace</value>
   </data>
 </root>

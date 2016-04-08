@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -21,6 +22,11 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             _state = state;
             _wrapperWrapperFactory = wrapperWrapperFactory;
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            return _state.Status == ParserState.Ready;
         }
 
         public override void Execute(object parameter)
@@ -55,7 +61,7 @@ namespace Rubberduck.UI.Command.Refactorings
                     return _state.AllUserDeclarations
                         .FirstOrDefault(item => item.IdentifierName == control.Name &&
                                                 item.ComponentName == Vbe.SelectedVBComponent.Name &&
-                                                Vbe.ActiveVBProject.Equals(item.Project));
+                                                Vbe.ActiveVBProject.ProjectName() == item.ProjectName);
                 }
             }
 

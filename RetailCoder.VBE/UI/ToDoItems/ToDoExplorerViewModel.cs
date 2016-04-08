@@ -51,7 +51,7 @@ namespace Rubberduck.UI.ToDoItems
         private async void _state_StateChanged(object sender, EventArgs e)
         {
             Debug.WriteLine("ToDoExplorerViewModel handles StateChanged...");
-            if (_state.Status != ParserState.Parsed)
+            if (_state.Status != ParserState.Ready)
             {
                 return;
             }
