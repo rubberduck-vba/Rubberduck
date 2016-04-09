@@ -5,7 +5,7 @@ using Rubberduck.SmartIndenter;
 namespace Rubberduck.UI.Command
 {
     [ComVisible(false)]
-    public class IndentCurrentProcedureCommand : CommandBase, IHotkeyCommand
+    public class IndentCurrentProcedureCommand : CommandBase
     {
         private readonly IIndenter _indenter;
 

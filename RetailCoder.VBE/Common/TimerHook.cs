@@ -4,7 +4,7 @@ using Rubberduck.Common.WinAPI;
 
 namespace Rubberduck.Common
 {
-    public class TimerHook : ITimerHook, IDisposable
+    public class TimerHook : IAttachable, IDisposable
     {
         private readonly IntPtr _mainWindowHandle;
         private readonly User32.TimerProc _timerProc;
@@ -21,6 +21,7 @@ namespace Rubberduck.Common
         }
 
         public bool IsAttached { get { return _isAttached; } }
+        public event EventHandler<HookEventArgs> MessageReceived;
 
         public void Attach()
         {

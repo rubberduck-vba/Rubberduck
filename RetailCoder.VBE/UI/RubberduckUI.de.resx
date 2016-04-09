@@ -464,12 +464,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Modul-Optionen sollten zuerst deklariert werden</value>
   </data>
-  <data name="ObsoleteComment" xml:space="preserve">
-    <value>Benutzung der veralteten 'Rem'-Kommentar-Syntax</value>
-  </data>
-  <data name="ObsoleteGlobal" xml:space="preserve">
-    <value>Benutzung des veralteten 'Global' Zugriffsmodifikators</value>
-  </data>
   <data name="Component" xml:space="preserve">
     <value>Komponente</value>
   </data>
@@ -936,9 +930,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
     <value>Bereich:</value>
   </data>
-  <data name="ImplicitActiveSheetReference_" xml:space="preserve">
-    <value>'{0}' ist eine implizite Referenz auf das 'ActiveSheet'</value>
-  </data>
   <data name="ParserProgress_ShowDetails" xml:space="preserve">
     <value>Details</value>
   </data>
@@ -1108,13 +1099,13 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Frühes Binden</value>
   </data>
   <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
-    <value>Testmethodeninitailisierung / Leeren</value>
+    <value>Testmethodeninitialisierung / Leeren</value>
   </data>
   <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt" xml:space="preserve">
     <value>Einfügen eine  Testmethodenstubs</value>
   </data>
   <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
-    <value>Testmodulinitialiesierung / Leeren</value>
+    <value>Testmodulinitialisierung / Leeren</value>
   </data>
   <data name="UnitTestSettings_LateBinding" xml:space="preserve">
     <value>Spätes Binden</value>
@@ -1156,10 +1147,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Beschreibung</value>
   </data>
   <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
-    <value>Freigegeben</value>
-  </data>
-  <data name="GeneralSettings_HotkeyKeyPress" xml:space="preserve">
-    <value>Drücken einer Taste</value>
+    <value>Aktiv</value>
   </data>
   <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
     <value>Richte Kommentare am Code aus</value>
@@ -1177,7 +1165,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Optionen freigeben</value>
   </data>
   <data name="IndenterSettings_EnableUndo" xml:space="preserve">
-    <value>Rüchgängig freigeben</value>
+    <value>Rückgängig freigeben</value>
   </data>
   <data name="IndenterSettings_EndOfLineCommentStyle" xml:space="preserve">
     <value>Zeilenende Kommentarstil:</value>
@@ -1192,7 +1180,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Ignoriere Operatoren</value>
   </data>
   <data name="IndenterSettings_IndentCase" xml:space="preserve">
-    <value>Rücke Fall ein</value>
+    <value>Rücke 'Case' ein</value>
   </data>
   <data name="IndenterSettings_IndentCompilerDirectives" xml:space="preserve">
     <value>Rücke Kompilerdirektiven ein</value>
@@ -1214,12 +1202,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Spezielle Optionen</value>
-  </data>
-  <data name="IndentModuleHotkey_Description" xml:space="preserve">
-    <value>Hotkey zum Einrücken von Modulen</value>
-  </data>
-  <data name="IndentProcedureHotkey_Description" xml:space="preserve">
-    <value>Hotkey zum Einrücken von Prozeduren</value>
   </data>
   <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
     <value>Nach Modulen</value>
@@ -1413,5 +1395,80 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Parse alle offenen Projekte</value>
+  </data>
+  <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
+    <value>Strg</value>
+  </data>
+  <data name="HotkeyDescription_IndentModule" xml:space="preserve">
+    <value>Modul einrücken</value>
+  </data>
+  <data name="HotkeyDescription_IndentProcedure" xml:space="preserve">
+    <value>Prozedur einrücken</value>
+  </data>
+  <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
+    <value>Key2</value>
+  </data>
+  <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
+    <value>Key1</value>
+  </data>
+  <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
+    <value>Umschalt</value>
+  </data>
+  <data name="HotkeyDescription_CodeExplorer" xml:space="preserve">
+    <value>Code Explorer</value>
+  </data>
+  <data name="HotkeyDescription_TestExplorer" xml:space="preserve">
+    <value>Test Explorer</value>
+  </data>
+  <data name="HotkeyDescription_RefactorRename" xml:space="preserve">
+    <value>Refactor / Umbenennen</value>
+  </data>
+  <data name="HotkeyDescription_InspectionResults" xml:space="preserve">
+    <value>Codeuntersuchung</value>
+  </data>
+  <data name="HotkeyDescription_RefactorExtractMethod" xml:space="preserve">
+    <value>Refactor / Methode extrahieren</value>
+  </data>
+  <data name="UnitTest_NewModule_UncommentLateBinding" xml:space="preserve">
+    <value>Für die späte Bindung einkommentieren</value>
+  </data>
+  <data name="UnitTest_NewModule_CommentEarlyBinding" xml:space="preserve">
+    <value>Die frühe Bindung benötigt eine Referenz auf Rubberduck.UnitTesting.tlb </value>
+  </data>
+  <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
+    <value>Diese Methode wird einmal pro Modul ausgeführt</value>
+  </data>
+  <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
+    <value>Diese Methode wird vor jedem Test ausgeführt.</value>
+  </data>
+  <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
+    <value>Diese Methode wird nach jedem Test ausgeführt</value>
+  </data>
+  <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
+    <value>Test umbenennen</value>
+  </data>
+  <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
+    <value>Test hat diesen Fehler ergeben</value>
+  </data>
+  <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
+    <value>Auf den Fehlercode des erwarteten Fehlers ändern</value>
+  </data>
+  <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
+    <value>Der erwartete Fehler wurde nicht gefunden</value>
+  </data>
+  <data name="CommonHotkey_InvalidKey" xml:space="preserve">
+    <value>Ungültiges Zeichen.</value>
+  </data>
+  <data name="CommonHotkey_HookDetached" xml:space="preserve">
+    <value>Hook ist nicht mehr aktiv.</value>
+  </data>
+  <data name="CommonHotkey_HookAttached" xml:space="preserve">
+    <value>Hook ist schon hinzugefügt.</value>
+  </data>
+  <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
+    <value>Hotkey ({0}) ist nicht registriert.</value>
   </data>
 </root>

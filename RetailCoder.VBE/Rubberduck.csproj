@@ -229,6 +229,10 @@
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.3.2.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="EventHook, Version=1.4.26.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EventHook.1.4.26\lib\net45\EventHook.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -243,6 +247,18 @@
     </Reference>
     <Reference Include="Ninject.Extensions.NamedScope">
       <HintPath>..\packages\Ninject.Extensions.NamedScope.3.2.0.0\lib\net45-full\Ninject.Extensions.NamedScope.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.3.0.1\lib\net45\Nito.AsyncEx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Concurrent, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.3.0.1\lib\net45\Nito.AsyncEx.Concurrent.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Enlightenment, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.3.0.1\lib\net45\Nito.AsyncEx.Enlightenment.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -295,12 +311,11 @@
     <Compile Include="Common\Hotkeys\HotkeyInfo.cs" />
     <Compile Include="Common\Hotkeys\Hotkey.cs" />
     <Compile Include="Common\IAttachable.cs" />
-    <Compile Include="Common\IHook.cs" />
     <Compile Include="Common\Hotkeys\IHotkey.cs" />
     <Compile Include="Common\ILowLevelKeyboardHook.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
-    <Compile Include="Common\ITimerHook.cs" />
     <Compile Include="Common\ModuleExporter.cs" />
+    <Compile Include="Common\MouseHookWrapper.cs" />
     <Compile Include="Common\RubberduckHooks.cs" />
     <Compile Include="Common\TimerHook.cs" />
     <Compile Include="Common\WinAPI\KBDLLHOOKSTRUCT.cs" />
@@ -347,7 +362,6 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Command\IHotkeyCommand.cs" />
     <Compile Include="UI\Command\IndentCurrentModuleCommand.cs" />
     <Compile Include="UI\Command\MenuItems\InspectionResultsCommandMenuItem.cs" />
     <Compile Include="UI\Command\ShowParserErrorsCommand.cs" />
@@ -432,7 +446,6 @@
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersRefactoring.cs" />
-    <Compile Include="Root\CommandBarsModule.cs" />
     <Compile Include="Root\RubberduckModule.cs" />
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
     <Compile Include="Settings\GeneralSettings.cs" />
@@ -1168,10 +1181,15 @@
     <Resource Include="Resources\folder-rename.png" />
     <Resource Include="Resources\cross-button.png" />
     <Resource Include="Resources\init-repo.png" />
+    <Content Include="Resources\Microsoft\Mask\AddProperty_5538_32.bmp" />
+    <None Include="Resources\Microsoft\Mask\AddVariable_5541_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
+    <None Include="Resources\Microsoft\Mask\ExtractInterface_6778_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
     <None Include="Resources\Microsoft\Mask\RemoveParameters_6781_32.bmp" />
+    <None Include="Resources\Microsoft\Mask\ImplementInterface_5540_32.bmp" />
+    <None Include="Resources\Microsoft\Mask\PromoteLocal_6784_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\ReorderParameters_6780_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\TestManager_8590_32.bmp" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />

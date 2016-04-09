@@ -62,7 +62,9 @@ namespace Rubberduck.Parsing.Symbols
             string result;
             if (string.IsNullOrEmpty(ns))
             {
-                result = _projectName;
+                result = _qualifiedName.QualifiedModuleName.Project == null
+                    ? _projectName
+                    : _qualifiedName.QualifiedModuleName.Project.Name;
             }
             else
             {
@@ -532,7 +534,7 @@ namespace Rubberduck.Parsing.Symbols
         public bool Equals(Declaration other)
         {
             return other != null
-                && other.Project == Project
+                && other.ProjectName == ProjectName
                 && other.IdentifierName == IdentifierName
                 && other.DeclarationType == DeclarationType
                 && other.Scope == Scope
@@ -550,7 +552,7 @@ namespace Rubberduck.Parsing.Symbols
             unchecked
             {
                 var hash = 17;
-                hash = hash*23 + QualifiedName.QualifiedModuleName.ProjectHashCode;
+                hash = hash*23 + QualifiedName.QualifiedModuleName.GetHashCode();
                 hash = hash*23 + _identifierName.GetHashCode();
                 hash = hash*23 + _declarationType.GetHashCode();
                 hash = hash*23 + Scope.GetHashCode();

@@ -4,7 +4,7 @@ using Rubberduck.Settings;
 namespace Rubberduck.UI.Command
 {
     [ComVisible(false)]
-    public class TestExplorerCommand : CommandBase, IHotkeyCommand
+    public class TestExplorerCommand : CommandBase
     {
         private readonly IPresenter _presenter;
 

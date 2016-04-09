@@ -1266,6 +1266,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Parsing powered by ANTLR
 GitHub integration powered by LibGit2Sharp
+Windows hooks powered by EventHook
 Fugue icons by Yusuke Kamiyamane</value>
   </data>
   <data name="AboutWindow_GeneralThanks" xml:space="preserve">
@@ -1449,5 +1450,53 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="HotkeyDescription_TestExplorer" xml:space="preserve">
     <value>Test Explorer</value>
+  </data>
+  <data name="UnitTest_NewModule_UncommentLateBinding" xml:space="preserve">
+    <value>uncomment for late-binding</value>
+  </data>
+  <data name="UnitTest_NewModule_CommentEarlyBinding" xml:space="preserve">
+    <value>early-binding requires reference to Rubberduck.UnitTesting.tlb</value>
+  </data>
+  <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
+    <value>this method runs once per module</value>
+  </data>
+  <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
+    <value>this method runs before every test in the module</value>
+  </data>
+  <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
+    <value>this method runs after every test in the module</value>
+  </data>
+  <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
+    <value>Rename test</value>
+  </data>
+  <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
+    <value>Test raised an error</value>
+  </data>
+  <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
+    <value>Change to expected error number</value>
+  </data>
+  <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
+    <value>Expected error was not raised</value>
+  </data>
+  <data name="CommonHotkey_InvalidKey" xml:space="preserve">
+    <value>Invalid key.</value>
+  </data>
+  <data name="CommonHotkey_HookDetached" xml:space="preserve">
+    <value>Hook is already detached.</value>
+  </data>
+  <data name="CommonHotkey_HookAttached" xml:space="preserve">
+    <value>Hook is already attached.</value>
+  </data>
+  <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
+    <value>Hotkey ({0}) not registered.</value>
+  </data>
+  <data name="HotkeyDescription_FindSymbol" xml:space="preserve">
+    <value>Find symbol</value>
+  </data>
+  <data name="HotkeyDescription_RefactorMoveCloserToUsage" xml:space="preserve">
+    <value>Move declaration closer to usage</value>
+  </data>
+  <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
+    <value>Rege&amp;x Search/Replace</value>
   </data>
 </root>

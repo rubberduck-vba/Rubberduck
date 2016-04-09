@@ -179,7 +179,10 @@ deftypeStmt :
 	letterrange (whiteSpace? COMMA whiteSpace? letterrange)*
 ;
 
-deleteSettingStmt : DELETESETTING whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)?;
+deleteSettingStmt :
+    DELETESETTING whiteSpace valueStmt whiteSpace?
+    | DELETESETTING whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt
+    | DELETESETTING whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt whiteSpace? COMMA whiteSpace? valueStmt;
 
 doLoopStmt :
 	DO endOfStatement 
@@ -191,7 +194,7 @@ doLoopStmt :
 	LOOP
 	| 
 	DO endOfStatement
-	block
+	block?
 	LOOP whiteSpace (WHILE | UNTIL) whiteSpace valueStmt
 ;
 
@@ -224,7 +227,7 @@ forEachStmt :
 forNextStmt : 
 	FOR whiteSpace ambiguousIdentifier typeHint? (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? valueStmt whiteSpace TO whiteSpace valueStmt (whiteSpace STEP whiteSpace valueStmt)? endOfStatement 
 	block?
-	NEXT (whiteSpace ambiguousIdentifier)?
+	NEXT (whiteSpace ambiguousIdentifier typeHint?)?
 ; 
 
 functionStmt :
@@ -526,7 +529,7 @@ fieldLength : MULT whiteSpace? (numberLiteral | ambiguousIdentifier);
 
 letterrange : certainIdentifier (whiteSpace? MINUS whiteSpace? certainIdentifier)?;
 
-lineLabel : ambiguousIdentifier COLON;
+lineLabel : (ambiguousIdentifier | numberLiteral) COLON;
 
 literal : numberLiteral | DATELITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL | EMPTY;
 

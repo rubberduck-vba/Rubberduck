@@ -6,6 +6,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command
 {
@@ -61,7 +62,7 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindModuleDeclaration(VBComponent component)
         {
-            return _state.AllUserDeclarations.Single(item => item.Project == component.Collection.Parent
+            return _state.AllUserDeclarations.Single(item => item.ProjectName == component.Collection.Parent.ProjectName()
                                                              && item.QualifiedName.QualifiedModuleName.Component == component 
                                                              && (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module));
         }

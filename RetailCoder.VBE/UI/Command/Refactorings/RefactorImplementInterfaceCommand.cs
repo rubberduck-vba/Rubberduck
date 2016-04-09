@@ -1,23 +1,45 @@
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
+using Rubberduck.Common;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.ExtractInterface;
-using Rubberduck.UI.Refactorings;
+using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class RefactorExtractInterfaceCommand : RefactorCommandBase
+    public class RefactorImplementInterfaceCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _messageBox;
 
-        public RefactorExtractInterfaceCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, IMessageBox messageBox)
-            : base (vbe, editor)
+        public RefactorImplementInterfaceCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor)
+            : base(vbe, editor)
         {
             _state = state;
-            _messageBox = messageBox;
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+            {
+                return false;
+            }
+
+            var selection = Vbe.ActiveCodePane.GetSelection();
+            var targetInterface = _state.AllUserDeclarations.FindInterface(selection);
+
+            var targetClass = _state.AllUserDeclarations.SingleOrDefault(d =>
+                        !d.IsBuiltIn && d.DeclarationType == DeclarationType.Class &&
+                        d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
+
+            var canExecute = targetInterface != null && targetClass != null;
+
+            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
+            return canExecute;
         }
 
         public override void Execute(object parameter)
@@ -27,12 +49,8 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            using (var view = new ExtractInterfaceDialog())
-            {
-                var factory = new ExtractInterfacePresenterFactory(_state, Editor, view);
-                var refactoring = new ExtractInterfaceRefactoring(_state, _messageBox, factory, Editor);
-                refactoring.Refactor();
-            }
+            var refactoring = new ImplementInterfaceRefactoring(_state, Editor, new MessageBox());
+            refactoring.Refactor();
         }
     }
 }

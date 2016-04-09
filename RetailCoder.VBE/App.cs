@@ -4,9 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
@@ -18,9 +16,6 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using Infralution.Localization.Wpf;
 using Rubberduck.Common.Dispatch;
-using Rubberduck.Common.Hotkeys;
-using Rubberduck.UI.Command;
-using Hotkey = Rubberduck.Common.Hotkeys.Hotkey;
 
 namespace Rubberduck
 {
@@ -35,7 +30,6 @@ namespace Rubberduck
         private readonly RubberduckCommandBar _stateBar;
         private readonly IIndenter _indenter;
         private readonly IRubberduckHooks _hooks;
-        private readonly IEnumerable<ICommand> _appCommands;
 
         private readonly Logger _logger;
 
@@ -47,19 +41,13 @@ namespace Rubberduck
         private readonly IDictionary<VBComponents, Tuple<IConnectionPoint, int>>  _componentsEventsConnectionPoints = 
             new Dictionary<VBComponents, Tuple<IConnectionPoint, int>>();
 
-        private IReadOnlyDictionary<string, RubberduckHotkey> _hotkeyNameMap;
-
-        private IReadOnlyDictionary<RubberduckHotkey, ICommand> _hotkeyActions;
-        private IReadOnlyDictionary<string, ICommand> _secondKeyActions;
-
         public App(VBE vbe, IMessageBox messageBox,
             IRubberduckParser parser,
             IGeneralConfigService configService,
             IAppMenu appMenus,
             RubberduckCommandBar stateBar,
             IIndenter indenter,
-            IRubberduckHooks hooks,
-            IEnumerable<ICommand> appCommands)
+            IRubberduckHooks hooks)
         {
             _vbe = vbe;
             _messageBox = messageBox;
@@ -70,10 +58,10 @@ namespace Rubberduck
             _stateBar = stateBar;
             _indenter = indenter;
             _hooks = hooks;
-            _appCommands = appCommands;
             _logger = LogManager.GetCurrentClassLogger();
 
-            _hooks.MessageReceived += hooks_MessageReceived;
+            _hooks.MessageReceived += _hooks_MessageReceived;
+            _configService.SettingsChanged += _configService_SettingsChanged;
             _configService.LanguageChanged += ConfigServiceLanguageChanged;
             _parser.State.StateChanged += Parser_StateChanged;
             _stateBar.Refresh += _stateBar_Refresh;
@@ -93,20 +81,43 @@ namespace Rubberduck
             UiDispatcher.Initialize();
         }
 
+        private void _hooks_MessageReceived(object sender, HookEventArgs e)
+        {
+            if (sender is MouseHookWrapper)
+            {
+                // right-click detected
+                _appMenus.EvaluateCanExecute(_parser.State);
+            }
+        }
+
+        private void _configService_SettingsChanged(object sender, EventArgs e)
+        {
+            // also updates the ShortcutKey text
+            _appMenus.Localize();
+            _hooks.HookHotkeys();
+        }
+
         public void Startup()
         {
             CleanReloadConfig();
 
+            foreach (var project in _vbe.VBProjects.Cast<VBProject>())
+            {
+                _parser.State.AddProject(project);
+            }
+
             _appMenus.Initialize();
             _appMenus.Localize();
 
-            //_hooks.AddHook(new LowLevelKeyboardHook(_vbe));
-            HookHotkeys();
+            _hooks.HookHotkeys();
             _hooks.Attach();
         }
 
+        #region sink handlers. todo: move to another class
         async void sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
+            _parser.State.RemoveProject(e.Item);
+
             Debug.WriteLine(string.Format("Project '{0}' was removed.", e.Item.Name));
             Tuple<IConnectionPoint, int> value;
             if (_componentsEventsConnectionPoints.TryGetValue(e.Item.VBComponents, out value))
@@ -120,6 +131,8 @@ namespace Rubberduck
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
+            _parser.State.AddProject(e.Item);
+
             if (!_parser.State.AllDeclarations.Any())
             {
                 // forces menus to evaluate their CanExecute state:
@@ -239,90 +252,7 @@ namespace Rubberduck
             Debug.WriteLine(string.Format("Project '{0}' was activated.", e.Item.Name));
             // do something?
         }
-
-        private Keys _firstStepHotKey;
-        private bool _isAwaitingTwoStepKey;
-        private bool _skipKeyUp;
-
-        private void hooks_MessageReceived(object sender, HookEventArgs e)
-        {
-            if (sender is LowLevelKeyboardHook)
-            {
-                HandleLowLevelKeyhook(e);
-                return;
-            }
-            
-            var hotKey = sender as IHotkey;
-            if (hotKey != null)
-            {
-                HandleHotkey(hotKey);
-            }
-            else
-            {
-                AwaitNextKey();
-            }
-        }
-
-        private void HandleHotkey(IHotkey hotkey)
-        {
-            if (hotkey.IsTwoStepHotkey)
-            {
-                _firstStepHotKey = hotkey.HotkeyInfo.Keys;
-                AwaitNextKey(true, hotkey.HotkeyInfo);
-            }
-            else
-            {
-                _firstStepHotKey = Keys.None;
-                _hotkeyActions[_hotkeyNameMap[hotkey.Key]].Execute(null);
-                AwaitNextKey();
-            }
-        }
-
-        private void HandleLowLevelKeyhook(HookEventArgs e)
-        {
-            if (_skipKeyUp)
-            {
-                _skipKeyUp = false;
-                return;
-            }
-
-            if (_isAwaitingTwoStepKey)
-            {
-                // todo: use _firstStepHotKey and e.Key to run 2-step hotkey action
-                if (_firstStepHotKey == Keys.I && e.Key == Keys.M)
-                {
-                    _indenter.IndentCurrentModule();
-                }
-
-                AwaitNextKey();
-                return;
-            }
-
-            var component = _vbe.ActiveCodePane.CodeModule.Parent;
-            _parser.ParseComponent(component);
-
-            AwaitNextKey();
-            return;
-        }
-
-        private void AwaitNextKey(bool eatNextKey = false, HotkeyInfo info = default(HotkeyInfo))
-        {
-            _isAwaitingTwoStepKey = eatNextKey;
-            foreach (var hook in _hooks.Hooks.OfType<ILowLevelKeyboardHook>())
-            {
-                hook.EatNextKey = eatNextKey;
-            }
-
-            _skipKeyUp = eatNextKey;
-            if (eatNextKey)
-            {
-                _stateBar.SetStatusText("(" + info + ") was pressed. Waiting for second key...");
-            }
-            else
-            {
-                _stateBar.SetStatusText(_parser.State.Status.ToString());
-            }
-        }
+        #endregion
 
         private void _stateBar_Refresh(object sender, EventArgs e)
         {
@@ -331,46 +261,22 @@ namespace Rubberduck
 
         private void Parser_StateChanged(object sender, EventArgs e)
         {
+            if (_parser.State.Status != ParserState.Ready)
+            {
+                _hooks.Detach();
+            }
+            else
+            {
+                _hooks.Attach();
+            }
+
             Debug.WriteLine("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
-        }
-
-        private void HookHotkeys()
-        {
-            var settings = _config.UserSettings.GeneralSettings.HotkeySettings;
-            foreach (var hotkey in settings.Where(hotkey => hotkey.IsEnabled))
-            {
-                _hooks.AddHook(new Hotkey((IntPtr)_vbe.MainWindow.HWnd, hotkey.ToString()));
-            }
         }
 
         private void CleanReloadConfig()
         {
             LoadConfig();
-            var hotkeys = _config.UserSettings.GeneralSettings.HotkeySettings
-                .Where(hotkey => hotkey.IsEnabled).ToList();
-
-            _hotkeyNameMap = hotkeys
-                .ToDictionary(
-                    hotkey => hotkey.ToString(),
-                    hotkey => (RubberduckHotkey)Enum.Parse(typeof(RubberduckHotkey), hotkey.Name));
-
-            _hotkeyActions = (from hotkey in hotkeys
-                             let value = (RubberduckHotkey)Enum.Parse(typeof(RubberduckHotkey),hotkey.Name)
-                             where string.IsNullOrEmpty(hotkey.Key2)
-                             select new
-                             {
-                                 Hotkey = value, 
-                                 Command = _appCommands.OfType<IHotkeyCommand>()
-                                 .SingleOrDefault(command => command.Hotkey == (RubberduckHotkey)Enum.Parse(typeof(RubberduckHotkey),hotkey.Name))
-                             })
-                             .ToDictionary(kvp => kvp.Hotkey, kvp => (ICommand)kvp.Command);
-                             
-            _secondKeyActions = hotkeys
-                .Where(hotkey => !string.IsNullOrEmpty(hotkey.Key2))
-                .ToDictionary(
-                    hotkey => hotkey.Key2,
-                    hotkey => hotkey.Command);
         }
 
         private void ConfigServiceLanguageChanged(object sender, EventArgs e)
@@ -410,7 +316,6 @@ namespace Rubberduck
                 item.Value.Item1.Unadvise(item.Value.Item2);
             }
 
-            _hooks.MessageReceived -= hooks_MessageReceived;
             _hooks.Dispose();
         }
     }

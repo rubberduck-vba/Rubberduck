@@ -122,8 +122,7 @@ namespace Rubberduck.Inspections
                         !d.IsBuiltIn &&
                         d.IdentifierName == procedureName &&
                         d.Context is VBAParser.SubStmtContext &&
-                        d.ComponentName == _subStmtQualifiedContext.ModuleName.ComponentName &&
-                        d.Project == _subStmtQualifiedContext.ModuleName.Project);
+                        d.QualifiedName.QualifiedModuleName.Equals(_subStmtQualifiedContext.ModuleName));
 
             if (procedure == null) { return; }
 

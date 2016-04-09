@@ -1,6 +1,6 @@
 namespace Rubberduck.Common
 {
-    public interface ILowLevelKeyboardHook : IHook
+    public interface ILowLevelKeyboardHook : IAttachable
     {
         bool EatNextKey { get; set; }
     }

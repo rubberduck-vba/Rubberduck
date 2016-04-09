@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -37,9 +38,7 @@ namespace Rubberduck.Parsing.Symbols
             var project = _qualifiedName.Component.Collection.Parent;
             var projectQualifiedName = new QualifiedModuleName(project);
 
-            _projectDeclaration = new Declaration(
-                projectQualifiedName.QualifyMemberName(project.Name),
-                null, (Declaration)null, project.Name, false, false, Accessibility.Implicit, DeclarationType.Project, null, Selection.Home, false);
+            _projectDeclaration = CreateProjectDeclaration(projectQualifiedName, project);
 
             var key = Tuple.Create(_qualifiedName.ComponentName, declarationType);
             var moduleAttributes = attributes.ContainsKey(key)
@@ -59,6 +58,17 @@ namespace Rubberduck.Parsing.Symbols
                 FindAnnotations(), moduleAttributes);
 
             SetCurrentScope();
+        }
+
+        private static Declaration CreateProjectDeclaration(QualifiedModuleName projectQualifiedName, VBProject project)
+        {
+            var projectName = project.ProjectName();
+
+            var declaration = new Declaration(
+                projectQualifiedName.QualifyMemberName(projectName),
+                null, (Declaration) null, projectName, false, false, Accessibility.Implicit, DeclarationType.Project, null,
+                Selection.Home, false);
+            return declaration;
         }
 
         private string FindAnnotations()

@@ -195,6 +195,8 @@
     <Compile Include="Symbols\ValuedDeclaration.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
+    <Compile Include="VBA\CombinedParseTreeListener.cs" />
+    <Compile Include="VBA\ComponentParseTask.cs" />
     <Compile Include="VBA\EnumerableExtensions.cs" />
     <Compile Include="VBA\IAttributeParser.cs" />
     <Compile Include="VBA\IModuleExporter.cs" />
