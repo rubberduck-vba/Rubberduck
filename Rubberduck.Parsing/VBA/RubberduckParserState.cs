@@ -12,6 +12,7 @@ using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -61,6 +62,9 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly ConcurrentDictionary<VBComponent, IList<CommentNode>> _comments =
             new ConcurrentDictionary<VBComponent, IList<CommentNode>>();
+
+        private readonly ConcurrentDictionary<VBComponent, IList<IAnnotation>> _annotations =
+            new ConcurrentDictionary<VBComponent, IList<IAnnotation>>();
 
         private readonly ConcurrentDictionary<VBComponent, SyntaxErrorException> _moduleExceptions =
             new ConcurrentDictionary<VBComponent, SyntaxErrorException>();
@@ -201,8 +205,6 @@ namespace Rubberduck.Parsing.VBA
             internal set { _argListsWithOneByRefParam = value; }
         }
 
-
-
         public IEnumerable<CommentNode> AllComments
         {
             get
@@ -225,6 +227,30 @@ namespace Rubberduck.Parsing.VBA
         public void SetModuleComments(VBComponent component, IEnumerable<CommentNode> comments)
         {
             _comments[component] = comments.ToList();
+        }
+
+        public IEnumerable<IAnnotation> AllAnnotations
+        {
+            get
+            {
+                return _annotations.Values.SelectMany(annotation => annotation.ToList());
+            }
+        }
+
+        public IEnumerable<IAnnotation> GetModuleAnnotations(VBComponent component)
+        {
+            IList<IAnnotation> result;
+            if (_annotations.TryGetValue(component, out result))
+            {
+                return result;
+            }
+
+            return new List<IAnnotation>();
+        }
+
+        public void SetModuleAnnotations(VBComponent component, IEnumerable<IAnnotation> annotations)
+        {
+            _annotations[component] = annotations.ToList();
         }
 
         /// <summary>
@@ -252,7 +278,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        internal IDictionary<Tuple<string, DeclarationType>, Attributes> getModuleAttributes(VBComponent vbComponent)
+        internal IDictionary<Tuple<string, DeclarationType>, Attributes> GetModuleAttributes(VBComponent vbComponent)
         {
             return _moduleAttributes[vbComponent];
         }

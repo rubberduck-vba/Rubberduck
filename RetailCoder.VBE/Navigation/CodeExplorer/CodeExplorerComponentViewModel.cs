@@ -7,6 +7,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -50,8 +51,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                return _declaration.DeclarationType == DeclarationType.Module 
-                       && _declaration.Annotations.Split('\n').Contains(Parsing.Grammar.Annotations.TestModule);
+                return _declaration.DeclarationType == DeclarationType.Module
+                       && _declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.TestModule);
             }
         }
 
