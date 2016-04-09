@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,8 +9,10 @@ namespace Rubberduck.Parsing.Annotations
     {
         private readonly IEnumerable<string> _inspectionNames;
 
-        public IgnoreAnnotation(VBAParser.AnnotationContext context, AnnotationTargetType targetType, IEnumerable<string> parameters)
-            : base(context, AnnotationType.Ignore, targetType)
+        public IgnoreAnnotation(
+            QualifiedSelection qualifiedSelection,
+            IEnumerable<string> parameters)
+            : base(AnnotationType.Ignore, qualifiedSelection)
         {
             if (!parameters.Any())
             {
@@ -33,7 +36,7 @@ namespace Rubberduck.Parsing.Annotations
 
         public override string ToString()
         {
-            return string.Format("Ignored inspections: {0}.", string.Join(", ", _inspectionNames));
+            return string.Format("Ignored inspections: {0}", string.Join(", ", _inspectionNames));
         }
     }
 }

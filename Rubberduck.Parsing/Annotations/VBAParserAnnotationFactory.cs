@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Rubberduck.Parsing.Annotations
             _creators.Add(AnnotationType.Folder.ToString().ToUpperInvariant(), typeof(FolderAnnotation));
         }
 
-        public IAnnotation Create(VBAParser.AnnotationContext context, AnnotationTargetType targetType)
+        public IAnnotation Create(VBAParser.AnnotationContext context, QualifiedSelection qualifiedSelection)
         {
             string annotationName = context.annotationName().GetText();
             List<string> parameters = new List<string>();
@@ -33,7 +34,7 @@ namespace Rubberduck.Parsing.Annotations
             Type annotationCLRType = null;
             if (_creators.TryGetValue(annotationName.ToUpperInvariant(), out annotationCLRType))
             {
-                return (IAnnotation)Activator.CreateInstance(annotationCLRType, context, targetType, parameters);
+                return (IAnnotation)Activator.CreateInstance(annotationCLRType, qualifiedSelection, parameters);
             }
             return null;
         }

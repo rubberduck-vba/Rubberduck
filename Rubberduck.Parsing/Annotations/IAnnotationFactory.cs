@@ -1,11 +1,10 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Annotations
 {
     public interface IAnnotationFactory
     {
-        IAnnotation Create(VBAParser.AnnotationContext annotationContext, AnnotationTargetType targetType);
+        IAnnotation Create(VBAParser.AnnotationContext context, QualifiedSelection qualifiedSelection);
     }
 }

@@ -1,12 +1,15 @@
 ﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
+using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Annotations
 {
     public sealed class TestModuleAnnotation : AnnotationBase
     {
-        public TestModuleAnnotation(VBAParser.AnnotationContext context, AnnotationTargetType targetType)
-            : base(context, AnnotationType.TestModule, targetType)
+        public TestModuleAnnotation(
+            QualifiedSelection qualifiedSelection,
+            IEnumerable<string> parameters)
+            : base(AnnotationType.TestModule, qualifiedSelection)
         {
         }
     }

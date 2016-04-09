@@ -1,11 +1,11 @@
 ﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Annotations
 {
     public interface IAnnotation
     {
         AnnotationType AnnotationType { get; }
-        VBAParser.AnnotationContext Context { get; }
-        AnnotationTargetType TargetType { get; }
+        QualifiedSelection QualifiedSelection { get; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,8 +8,10 @@ namespace Rubberduck.Parsing.Annotations
     {
         private readonly string _folderName;
 
-        public FolderAnnotation(VBAParser.AnnotationContext context, AnnotationTargetType targetType, IEnumerable<string> parameters)
-            : base(context, AnnotationType.Folder, targetType)
+        public FolderAnnotation(
+            QualifiedSelection qualifiedSelection,
+            IEnumerable<string> parameters)
+            : base(AnnotationType.Folder, qualifiedSelection)
         {
             if (parameters.Count() != 1)
             {
@@ -28,7 +30,7 @@ namespace Rubberduck.Parsing.Annotations
 
         public override string ToString()
         {
-            return string.Format("Folder: {0}.", _folderName);
+            return string.Format("Folder: {0}", _folderName);
         }
     }
 }

@@ -61,7 +61,6 @@
   <ItemGroup>
     <Compile Include="Annotations\AnnotationBase.cs" />
     <Compile Include="Annotations\AnnotationListener.cs" />
-    <Compile Include="Annotations\AnnotationTargetType.cs" />
     <Compile Include="Annotations\AnnotationType.cs" />
     <Compile Include="Annotations\FolderAnnotation.cs" />
     <Compile Include="Annotations\IAnnotation.cs" />
