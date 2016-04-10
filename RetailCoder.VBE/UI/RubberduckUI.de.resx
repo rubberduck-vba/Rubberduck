@@ -1471,4 +1471,13 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>Hotkey ({0}) ist nicht registriert.</value>
   </data>
+  <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
+    <value>Rege&amp;x Suchen/Ersetzen</value>
+  </data>
+  <data name="HotkeyDescription_FindSymbol" xml:space="preserve">
+    <value>Suche Symbol</value>
+  </data>
+  <data name="HotkeyDescription_RefactorMoveCloserToUsage" xml:space="preserve">
+    <value>Ziehe die Deklaration näher an die Nutzung. </value>
+  </data>
 </root>
