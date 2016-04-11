@@ -84,12 +84,11 @@ namespace Rubberduck
 
         private void _hooks_MessageReceived(object sender, HookEventArgs e)
         {
-            if (sender is MouseHookWrapper)
+            if (sender is MouseHook)
             {
-                // right-click detected
                 _appMenus.EvaluateCanExecute(_parser.State);
             }
-            if (sender is KeyboardHookWrapper)
+            if (sender is KeyboardHook)
             {
                 var pane = _vbe.ActiveCodePane;
                 if (pane == null)
@@ -121,10 +120,12 @@ namespace Rubberduck
 
             Task.Delay(1000).ContinueWith(t =>
             {
-                _parser.State.OnParseRequested(this);
-                _hooks.HookHotkeys();
-                _hooks.Attach();
-            });
+                UiDispatcher.Invoke(() =>
+                {
+                    _parser.State.OnParseRequested(this);
+                    _hooks.HookHotkeys();
+                });
+            }).ConfigureAwait(false);
         }
 
         #region sink handlers. todo: move to another class

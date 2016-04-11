@@ -126,6 +126,7 @@ namespace Rubberduck.Parsing.VBA
             Status = EvaluateParserState();
         }
 
+        private static readonly ParserState[] States = Enum.GetValues(typeof(ParserState)).Cast<ParserState>().ToArray();
         private ParserState EvaluateParserState()
         {
             var moduleStates = _moduleStates.Values.ToList();
@@ -133,11 +134,50 @@ namespace Rubberduck.Parsing.VBA
             var prelim = moduleStates.Max();
             if (prelim == ParserState.Parsed && moduleStates.Any(s => s != ParserState.Parsed))
             {
-                prelim = moduleStates.Where(s => s != ParserState.Parsed).Max();
+                prelim = moduleStates.Where(s => s < ParserState.Parsed).Max();
             }
             return prelim;
-        }
+            //var moduleStates = _moduleStates.Values.ToList();
 
+            //var state = States.SingleOrDefault(value => moduleStates.All(ps => ps == value));
+            //if (state != default(ParserState))
+            //{
+            //    // if all modules are in the same state, we have our result.
+            //    Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", state, Thread.CurrentThread.ManagedThreadId);
+            //    return state;
+            //}
+
+            //// error state takes precedence over every other state
+            //if (moduleStates.Any(ms => ms == ParserState.Error))
+            //{
+            //    Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", ParserState.Error, Thread.CurrentThread.ManagedThreadId);
+            //    return ParserState.Error;
+            //}
+            //if (moduleStates.Any(ms => ms == ParserState.ResolverError))
+            //{
+            //    Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", ParserState.ResolverError, Thread.CurrentThread.ManagedThreadId);
+            //    return ParserState.ResolverError;
+            //}
+
+            //// "working" states are toggled when *any* module has them.
+            //var result = moduleStates.Min();
+            //if (moduleStates.Any(ms => ms == ParserState.LoadingReference))
+            //{
+            //    result = ParserState.LoadingReference;
+            //}
+            //if (moduleStates.Any(ms => ms == ParserState.Parsing))
+            //{
+            //    result = ParserState.Parsing;
+            //}
+            //if (moduleStates.Any(ms => ms == ParserState.Resolving))
+            //{
+            //    result = ParserState.Resolving;
+            //}
+
+            //// otherwise, return the 
+            //Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", result, Thread.CurrentThread.ManagedThreadId);
+            //return result;
+        }
         public ParserState GetModuleState(VBComponent component)
         {
             return _moduleStates.GetOrAdd(component, ParserState.Pending);

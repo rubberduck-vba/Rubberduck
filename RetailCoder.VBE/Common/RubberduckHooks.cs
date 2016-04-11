@@ -22,8 +22,10 @@ namespace Rubberduck.Common
         //private readonly IAttachable _timerHook;
         private readonly IGeneralConfigService _config;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
+        private MouseHook _mouseHook;
+        private KeyboardHook _keyHook;
 
-        public RubberduckHooks(VBE vbe, IAttachable timerHook, IGeneralConfigService config)
+        public RubberduckHooks(VBE vbe, IGeneralConfigService config)
         {
             _vbe = vbe;
             _mainWindowHandle = (IntPtr)vbe.MainWindow.HWnd;
@@ -33,8 +35,9 @@ namespace Rubberduck.Common
             _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
 
             _config = config;
-            //_timerHook = timerHook;
-            //_timerHook.MessageReceived += timerHook_MessageReceived;
+
+            _mouseHook = new MouseHook();
+            _keyHook = new KeyboardHook(_vbe);
         }
 
 
@@ -42,9 +45,6 @@ namespace Rubberduck.Common
         {
             Detach();
             _hooks.Clear();
-
-            AddHook(new MouseHookWrapper());
-            AddHook(new KeyboardHookWrapper(_vbe));
 
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.GeneralSettings.HotkeySettings;
@@ -83,13 +83,23 @@ namespace Rubberduck.Common
                 return;
             }
 
-            foreach (var hook in Hooks)
+            try
             {
-                hook.Attach();
-                hook.MessageReceived += hook_MessageReceived;
-            }
+                _mouseHook.Attach();
+                _keyHook.Attach();
 
-            IsAttached = true;
+                foreach (var hook in Hooks)
+                {
+                    hook.Attach();
+                    hook.MessageReceived += hook_MessageReceived;
+                }
+
+                IsAttached = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         public void Detach()
@@ -99,21 +109,35 @@ namespace Rubberduck.Common
                 return;
             }
 
-            foreach (var hook in Hooks)
+            try
             {
-                hook.Detach();
-                hook.MessageReceived -= hook_MessageReceived;
-            }
+                foreach (var hook in Hooks)
+                {
+                    hook.Detach();
+                    hook.MessageReceived -= hook_MessageReceived;
+                }
 
-            IsAttached = false;
+                IsAttached = false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
-            if (sender is MouseHookWrapper)
+            if (sender is MouseHook)
             {
-                Debug.WriteLine("MouseHookWrapper message received");
-                OnMessageReceived(sender, HookEventArgs.Empty);
+                Debug.WriteLine("MouseHook message received");
+                OnMessageReceived(sender, e);
+                return;
+            }
+
+            if (sender is KeyboardHook)
+            {
+                Debug.WriteLine("KeyboardHook message received");
+                OnMessageReceived(sender, e);
                 return;
             }
 
@@ -127,23 +151,8 @@ namespace Rubberduck.Common
             OnMessageReceived(sender, e);
         }
 
-        private void timerHook_MessageReceived(object sender, EventArgs e)
-        {
-            if (!IsAttached && User32.GetForegroundWindow() == _mainWindowHandle)
-            {
-                Attach();
-            }
-            else
-            {
-                Detach();
-            }
-        }
-
         public void Dispose()
         {
-            //_timerHook.MessageReceived -= timerHook_MessageReceived;
-            //_timerHook.Detach();
-
             Detach();
         }
 
@@ -151,13 +160,13 @@ namespace Rubberduck.Common
         {
             try
             {
-                var processed = false;
+                var suppress = false;
                 if (hWnd == _mainWindowHandle)
                 {
                     switch ((WM)uMsg)
                     {
                         case WM.HOTKEY:
-                            processed = HandleHotkeyMessage(wParam);
+                            suppress = HandleHotkeyMessage(wParam);
                             break;
 
                         case WM.ACTIVATEAPP:
@@ -166,7 +175,7 @@ namespace Rubberduck.Common
                     }
                 }
 
-                if (processed)
+                if (suppress)
                 {
                     return IntPtr.Zero;
                 }
@@ -218,7 +227,7 @@ namespace Rubberduck.Common
             return unchecked((short)(uint)dw);
         }
 
-        private IntPtr GetWindowThread(IntPtr hWnd)
+        private static IntPtr GetWindowThread(IntPtr hWnd)
         {
             uint hThread;
             User32.GetWindowThreadProcessId(hWnd, out hThread);
