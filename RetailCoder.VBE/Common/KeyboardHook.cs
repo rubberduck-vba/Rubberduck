@@ -65,7 +65,12 @@ namespace Rubberduck.Common
                 return;
             }
 
-            _hookId = User32.SetWindowsHookEx(WindowsHook.KEYBOARD, HookCallback, Kernel32.GetModuleHandle("user32"), 0);
+            var handle = Kernel32.GetModuleHandle("user32");
+            if (handle == IntPtr.Zero)
+            {
+                throw new Win32Exception();
+            }
+            _hookId = User32.SetWindowsHookEx(WindowsHook.KEYBOARD, HookCallback, handle, 0);
             if (_hookId == IntPtr.Zero)
             {
                 throw new Win32Exception();
@@ -81,7 +86,10 @@ namespace Rubberduck.Common
                 return;
             }
 
-            User32.UnhookWindowsHookEx(_hookId);
+            if (!User32.UnhookWindowsHookEx(_hookId))
+            {
+                throw new Win32Exception();
+            }
 
             IsAttached = false;
             Debug.WriteLine("{0}: {1}", GetType().Name, IsAttached ? "Attached" : "Detached");
