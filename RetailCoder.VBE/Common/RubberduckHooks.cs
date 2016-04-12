@@ -22,8 +22,6 @@ namespace Rubberduck.Common
         //private readonly IAttachable _timerHook;
         private readonly IGeneralConfigService _config;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
-        private MouseHook _mouseHook;
-        private KeyboardHook _keyHook;
 
         public RubberduckHooks(VBE vbe, IGeneralConfigService config)
         {
@@ -36,10 +34,7 @@ namespace Rubberduck.Common
 
             _config = config;
 
-            _mouseHook = new MouseHook();
-            _keyHook = new KeyboardHook(_vbe);
         }
-
 
         public void HookHotkeys()
         {
@@ -48,6 +43,9 @@ namespace Rubberduck.Common
 
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.GeneralSettings.HotkeySettings;
+
+            AddHook(new KeyboardHook(_vbe));
+            AddHook(new MouseHook(_vbe));
             foreach (var hotkey in settings.Where(hotkey => hotkey.IsEnabled))
             {
                 AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), hotkey.Command));
@@ -85,9 +83,6 @@ namespace Rubberduck.Common
 
             try
             {
-                _mouseHook.Attach();
-                _keyHook.Attach();
-
                 foreach (var hook in Hooks)
                 {
                     hook.Attach();
@@ -96,9 +91,9 @@ namespace Rubberduck.Common
 
                 IsAttached = true;
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Console.WriteLine(e);
+                Debug.WriteLine(exception);
             }
         }
 
@@ -119,9 +114,9 @@ namespace Rubberduck.Common
 
                 IsAttached = false;
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Console.WriteLine(e);
+                Debug.WriteLine(exception);
             }
         }
 
@@ -144,10 +139,12 @@ namespace Rubberduck.Common
             var hotkey = sender as IHotkey;
             if (hotkey != null)
             {
+                Debug.WriteLine("Hotkey message received");
                 hotkey.Command.Execute(null);
                 return;
             }
 
+            Debug.WriteLine("Unknown message received");
             OnMessageReceived(sender, e);
         }
 
@@ -169,36 +166,42 @@ namespace Rubberduck.Common
                             suppress = HandleHotkeyMessage(wParam);
                             break;
 
-                        case WM.ACTIVATEAPP:
-                            HandleActivateAppMessage(wParam);
-                            break;
+                        //case WM.ACTIVATEAPP:
+                        //    HandleActivateAppMessage(wParam);
+                        //    break;
                     }
                 }
 
-                if (suppress)
-                {
-                    return IntPtr.Zero;
-                }
+                return suppress 
+                    ? IntPtr.Zero 
+                    : User32.CallWindowProc(_oldWndProc, hWnd, uMsg, wParam, lParam);
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception);
+                Debug.WriteLine(exception);
             }
 
-            return User32.CallWindowProc(_oldWndProc, hWnd, uMsg, wParam, lParam);
+            return IntPtr.Zero;
         }
 
         private bool HandleHotkeyMessage(IntPtr wParam)
         {
             var processed = false;
-            if (GetWindowThread(User32.GetForegroundWindow()) == GetWindowThread(_mainWindowHandle))
+            try
             {
-                var hook = Hooks.OfType<Hotkey>().SingleOrDefault(k => k.HotkeyInfo.HookId == wParam);
-                if (hook != null)
+                if (User32.IsVbeWindowActive(_mainWindowHandle))
                 {
-                    hook.OnMessageReceived();
-                    processed = true;
+                    var hook = Hooks.OfType<Hotkey>().SingleOrDefault(k => k.HotkeyInfo.HookId == wParam);
+                    if (hook != null)
+                    {
+                        hook.OnMessageReceived();
+                        processed = true;
+                    }
                 }
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception);
             }
             return processed;
         }
@@ -225,14 +228,6 @@ namespace Rubberduck.Common
         private static int LoWord(IntPtr dw)
         {
             return unchecked((short)(uint)dw);
-        }
-
-        private static IntPtr GetWindowThread(IntPtr hWnd)
-        {
-            uint hThread;
-            User32.GetWindowThreadProcessId(hWnd, out hThread);
-
-            return (IntPtr)hThread;
         }
     }
 }

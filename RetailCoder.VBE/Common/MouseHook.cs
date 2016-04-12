@@ -1,28 +1,48 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Common.WinAPI;
 
 namespace Rubberduck.Common
 {
     public class MouseHook : IAttachable
     {
+        private readonly VBE _vbe;
         private IntPtr _hookId;
+        private readonly User32.HookProc _callback;
+
+        public MouseHook(VBE vbe)
+        {
+            _vbe = vbe;
+            _callback = HookCallback;
+        }
 
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0)
+            try
             {
-                var button = (WM)wParam;
-                if (button == WM.RBUTTONDOWN || button == WM.LBUTTONDOWN)
+                var pane = _vbe.ActiveCodePane;
+                if (User32.IsVbeWindowActive((IntPtr)_vbe.MainWindow.HWnd) && nCode >= 0 && pane != null)
                 {
-                    // handle right-click to evaluate commands' CanExecute before the context menu is shown;
-                    // handle left-click to do the same before the Rubberduck menu is drawn, too.
-                    OnMessageReceived();
+                    Debug.WriteLine("MouseHook handles message (wParam:{0}, lParam:{1})", wParam, lParam);
+                    var button = (WM)wParam;
+                    if (button == WM.RBUTTONDOWN || button == WM.LBUTTONDOWN)
+                    {
+                        // handle right-click to evaluate commands' CanExecute before the context menu is shown;
+                        // handle left-click to do the same before the Rubberduck menu is drawn, too.
+                        OnMessageReceived();
+                    }
                 }
+
+                return User32.CallNextHookEx(_hookId, nCode, wParam, lParam);
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception);
             }
 
-            return User32.CallNextHookEx(_hookId, nCode, wParam, lParam);
+            return IntPtr.Zero;
         }
 
         private void OnMessageReceived()
@@ -49,7 +69,7 @@ namespace Rubberduck.Common
             {
                 throw new Win32Exception();
             } 
-            _hookId = User32.SetWindowsHookEx(WindowsHook.MOUSE, HookCallback, handle, 0);
+            _hookId = User32.SetWindowsHookEx(WindowsHook.MOUSE_LL, _callback, handle, 0);
             if (_hookId == IntPtr.Zero)
             {
                 throw new Win32Exception();

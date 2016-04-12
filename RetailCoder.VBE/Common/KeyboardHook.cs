@@ -1,8 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common.WinAPI;
 
@@ -13,37 +11,50 @@ namespace Rubberduck.Common
         private readonly VBE _vbe;
         private IntPtr _hookId;
 
+        private readonly User32.HookProc _callback;
+
         public KeyboardHook(VBE vbe)
         {
             _vbe = vbe;
+            _callback = HookCallback;
         }
 
         private int _lastLineIndex;
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            var pane = _vbe.ActiveCodePane;
-            if (pane != null)
+            try
             {
-                int startLine;
-                int endLine;
-                int startColumn;
-                int endColumn;
-
-                // not using extension method because a QualifiedSelection would be overkill:
-                pane.GetSelection(out startLine, out startColumn, out endLine, out endColumn);                
-                if (startLine != _lastLineIndex)
+                var pane = _vbe.ActiveCodePane;
+                if (User32.IsVbeWindowActive((IntPtr)_vbe.MainWindow.HWnd) && pane != null && (WM)wParam == WM.KEYUP)
                 {
-                    // if the current line has changed, let the KEYDOWN be written to the IDE, and notify on KEYUP:
-                    _lastLineIndex = startLine;
-                    if (nCode >= 0 && (WM)wParam == WM.KEYUP)
+                    Debug.WriteLine("KeyboardHook handles message (wParam:{0}, lParam:{1})", wParam, lParam);
+                    int startLine;
+                    int endLine;
+                    int startColumn;
+                    int endColumn;
+
+                    // not using extension method because a QualifiedSelection would be overkill:
+                    pane.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+                    if (startLine != _lastLineIndex)
                     {
-                        //var key = (Keys)Marshal.ReadInt32(lParam);
-                        OnMessageReceived();
+                        // if the current line has changed, let the KEYDOWN be written to the IDE, and notify on KEYUP:
+                        _lastLineIndex = startLine;
+                        if (nCode >= 0)
+                        {
+                            //var key = (Keys)Marshal.ReadInt32(lParam);
+                            OnMessageReceived();
+                        }
                     }
                 }
+
+                return User32.CallNextHookEx(_hookId, nCode, wParam, lParam);
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception);
             }
 
-            return User32.CallNextHookEx(_hookId, nCode, wParam, lParam);
+            return IntPtr.Zero;
         }
 
         private void OnMessageReceived()
@@ -70,7 +81,8 @@ namespace Rubberduck.Common
             {
                 throw new Win32Exception();
             }
-            _hookId = User32.SetWindowsHookEx(WindowsHook.KEYBOARD, HookCallback, handle, 0);
+
+            _hookId = User32.SetWindowsHookEx(WindowsHook.KEYBOARD_LL, _callback, handle, 0);
             if (_hookId == IntPtr.Zero)
             {
                 throw new Win32Exception();
