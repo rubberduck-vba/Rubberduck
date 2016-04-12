@@ -15,7 +15,7 @@ namespace Rubberduck.VBEditor
             _componentName = null;
             _project = project;
             _projectName = project.ProjectName();
-            //_contentHashCode = 0;  
+            _contentHashCode = 0;  
        }
 
         public QualifiedModuleName(VBComponent component)
@@ -27,17 +27,17 @@ namespace Rubberduck.VBEditor
             _project = component == null ? null : component.Collection.Parent;
             _projectName = component == null ? string.Empty : component.ProjectName();
 
-            //_contentHashCode = 0;
-            //if (component == null)
-            //{
-            //    return;
-            //}
+            _contentHashCode = 0;
+            if (component == null)
+            {
+                return;
+            }
 
-            //var module = component.CodeModule;
-            //_contentHashCode = module.CountOfLines > 0
-            //    // ReSharper disable once UseIndexedProperty
-            //    ? module.get_Lines(1, module.CountOfLines).GetHashCode() 
-            //    : 0;
+            var module = component.CodeModule;
+            _contentHashCode = module.CountOfLines > 0
+                // ReSharper disable once UseIndexedProperty
+                ? module.get_Lines(1, module.CountOfLines).GetHashCode()
+                : 0;
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Rubberduck.VBEditor
             _projectName = projectName;
             _componentName = componentName;
             _component = null;
-            //_contentHashCode = 0;
+            _contentHashCode = 0;
         }
 
         public QualifiedMemberName QualifyMemberName(string member)
@@ -64,7 +64,8 @@ namespace Rubberduck.VBEditor
         private readonly VBProject _project;
         public VBProject Project { get { return _project; } }
 
-        //private readonly int _contentHashCode;
+        private readonly int _contentHashCode;
+        public int ContentHashCode { get { return _contentHashCode; } }
 
         private readonly string _projectName;
         public string ProjectName { get { return _projectName;} }

@@ -170,6 +170,7 @@
     <Compile Include="Preprocessing\VBAPredefinedCompilationConstants.cs" />
     <Compile Include="Preprocessing\VBAPreprocessor.cs" />
     <Compile Include="Preprocessing\VBAPreprocessorVisitor.cs" />
+    <Compile Include="StaTaskScheduler.cs" />
     <Compile Include="Symbols\CommentExtensions.cs" />
     <Compile Include="Symbols\DeclarationEventArgs.cs" />
     <Compile Include="Symbols\DeclarationFinder.cs" />
