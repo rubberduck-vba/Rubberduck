@@ -25,7 +25,6 @@ namespace Rubberduck.Common
                 var pane = _vbe.ActiveCodePane;
                 if (User32.IsVbeWindowActive((IntPtr)_vbe.MainWindow.HWnd) && nCode >= 0 && pane != null)
                 {
-                    Debug.WriteLine("MouseHook handles message (wParam:{0}, lParam:{1})", wParam, lParam);
                     var button = (WM)wParam;
                     if (button == WM.RBUTTONDOWN || button == WM.LBUTTONDOWN)
                     {

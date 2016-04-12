@@ -401,8 +401,6 @@ namespace Rubberduck.Common
         public static Declaration FindTarget(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
         {
             var items = declarations.ToList();
-            Debug.Assert(!items.Any(item => item.IsBuiltIn));
-
             return items.SingleOrDefault(item => item.IsSelected(selection) || item.References.Any(reference => reference.IsSelected(selection)));
         }
 

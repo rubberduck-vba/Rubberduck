@@ -27,7 +27,6 @@ namespace Rubberduck.Common
                 var pane = _vbe.ActiveCodePane;
                 if (User32.IsVbeWindowActive((IntPtr)_vbe.MainWindow.HWnd) && pane != null && (WM)wParam == WM.KEYUP)
                 {
-                    Debug.WriteLine("KeyboardHook handles message (wParam:{0}, lParam:{1})", wParam, lParam);
                     int startLine;
                     int endLine;
                     int startColumn;
