@@ -59,6 +59,21 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Annotations\AnnotationBase.cs" />
+    <Compile Include="Annotations\AnnotationListener.cs" />
+    <Compile Include="Annotations\AnnotationType.cs" />
+    <Compile Include="Annotations\FolderAnnotation.cs" />
+    <Compile Include="Annotations\IAnnotation.cs" />
+    <Compile Include="Annotations\IAnnotationFactory.cs" />
+    <Compile Include="Annotations\IgnoreAnnotation.cs" />
+    <Compile Include="Annotations\InvalidAnnotationArgumentException.cs" />
+    <Compile Include="Annotations\ModuleCleanupAnnotation.cs" />
+    <Compile Include="Annotations\ModuleInitializeAnnotation.cs" />
+    <Compile Include="Annotations\TestCleanupAnnotation.cs" />
+    <Compile Include="Annotations\TestInitializeAnnotation.cs" />
+    <Compile Include="Annotations\TestMethodAnnotation.cs" />
+    <Compile Include="Annotations\TestModuleAnnotation.cs" />
+    <Compile Include="Annotations\VBAParserAnnotationFactory.cs" />
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBALexer.cs" />

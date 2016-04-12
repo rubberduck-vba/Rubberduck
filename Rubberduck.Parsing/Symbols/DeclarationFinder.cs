@@ -4,17 +4,24 @@ using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.Symbols
 {
     public class DeclarationFinder
     {
         private readonly IDictionary<QualifiedModuleName, CommentNode[]> _comments;
+        private readonly IDictionary<QualifiedModuleName, IAnnotation[]> _annotations;
         private readonly IDictionary<string, Declaration[]> _declarationsByName;
 
-        public DeclarationFinder(IReadOnlyList<Declaration> declarations, IEnumerable<CommentNode> comments)
+        public DeclarationFinder(
+            IReadOnlyList<Declaration> declarations, 
+            IEnumerable<CommentNode> comments,
+            IEnumerable<IAnnotation> annotations)
         {
             _comments = comments.GroupBy(node => node.QualifiedSelection.QualifiedName)
+                .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
+            _annotations = annotations.GroupBy(node => node.QualifiedSelection.QualifiedName)
                 .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
 
             _declarationsByName = declarations.GroupBy(declaration => new
@@ -45,6 +52,17 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             return new List<CommentNode>();
+        }
+
+        public IEnumerable<IAnnotation> ModuleAnnotations(QualifiedModuleName module)
+        {
+            IAnnotation[] result;
+            if (_annotations.TryGetValue(module, out result))
+            {
+                return result;
+            }
+
+            return new List<IAnnotation>();
         }
 
         public IEnumerable<Declaration> MatchTypeName(string name)
