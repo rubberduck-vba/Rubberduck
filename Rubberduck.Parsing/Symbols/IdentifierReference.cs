@@ -1,15 +1,25 @@
 ﻿using Antlr4.Runtime;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
     public class IdentifierReference
     {
-        public IdentifierReference(QualifiedModuleName qualifiedName, Declaration parentScopingDeclaration, Declaration parentNonScopingDeclaration, string identifierName,
-            Selection selection, ParserRuleContext context, Declaration declaration, bool isAssignmentTarget = false,
-            bool hasExplicitLetStatement = false, string annotations = null)
+        public IdentifierReference(
+            QualifiedModuleName qualifiedName, 
+            Declaration parentScopingDeclaration, 
+            Declaration parentNonScopingDeclaration, 
+            string identifierName,
+            Selection selection, 
+            ParserRuleContext context, 
+            Declaration declaration, 
+            bool isAssignmentTarget = false,
+            bool hasExplicitLetStatement = false, 
+            IEnumerable<IAnnotation> annotations = null)
         {
             _parentScopingDeclaration = parentScopingDeclaration;
             _parentNonScopingDeclaration = parentNonScopingDeclaration;
@@ -20,7 +30,7 @@ namespace Rubberduck.Parsing.Symbols
             _declaration = declaration;
             _hasExplicitLetStatement = hasExplicitLetStatement;
             _isAssignmentTarget = isAssignmentTarget;
-            _annotations = annotations ?? string.Empty;
+            _annotations = annotations ?? new List<IAnnotation>();
         }
 
         private readonly QualifiedModuleName _qualifiedName;
@@ -55,13 +65,14 @@ namespace Rubberduck.Parsing.Symbols
         private readonly Declaration _declaration;
         public Declaration Declaration { get { return _declaration; } }
 
-        private readonly string _annotations;
-        public string Annotations { get { return _annotations ?? string.Empty; } }
+        private readonly IEnumerable<IAnnotation> _annotations;
+        public IEnumerable<IAnnotation> Annotations { get { return _annotations; } }
 
         public bool IsInspectionDisabled(string inspectionName)
         {
-            return Annotations.Contains(Grammar.Annotations.IgnoreInspection)
-                && Annotations.Contains(inspectionName);
+            return Annotations.Any(annotation =>
+                annotation.AnnotationType == AnnotationType.Ignore
+                && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
         }
 
         private readonly bool _hasExplicitLetStatement;

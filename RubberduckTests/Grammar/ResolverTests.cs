@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Annotations;
 
 namespace RubberduckTests.Grammar
 {
@@ -947,8 +948,12 @@ End Sub
                 item.DeclarationType == DeclarationType.Variable);
 
             var usage = declaration.References.Single();
-
-            Assert.AreEqual("@Ignore UnassignedVariableUsage", usage.Annotations);
+            var annotation = (IgnoreAnnotation)usage.Annotations.First();
+            Assert.IsTrue(
+                usage.Annotations.Count() == 1
+                && annotation.AnnotationType == AnnotationType.Ignore
+                && annotation.InspectionNames.Count() == 1
+                && annotation.InspectionNames.First() == "UnassignedVariableUsage");
         }
 
         [TestMethod]
@@ -967,7 +972,7 @@ End Sub
 
             var usage = declaration.References.Single();
 
-            Assert.AreEqual(string.Empty, usage.Annotations);
+            Assert.IsTrue(!usage.Annotations.Any());
         }
 
         [TestMethod]

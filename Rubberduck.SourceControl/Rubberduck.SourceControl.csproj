@@ -68,6 +68,11 @@
     <Compile Include="Repository.cs" />
     <Compile Include="SourceControlException.cs" />
     <Compile Include="SourceControlProviderBase.cs" />
+    <Compile Include="SourceControlText.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SourceControlText.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -77,6 +82,14 @@
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SourceControlText.de.resx" />
+    <EmbeddedResource Include="SourceControlText.fr.resx" />
+    <EmbeddedResource Include="SourceControlText.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SourceControlText.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

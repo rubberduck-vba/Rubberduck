@@ -6,6 +6,7 @@ using System.Threading;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -151,14 +152,17 @@ namespace Rubberduck.Parsing.Symbols
             return new IdentifierReference(_qualifiedModuleName, _currentScope, _currentParent, name, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement, annotations);
         }
 
-        private string FindAnnotations(int line)
+        private IEnumerable<IAnnotation> FindAnnotations(int line)
         {
-            var commentAbove = _declarationFinder.ModuleComments(_qualifiedModuleName).SingleOrDefault(comment => comment.QualifiedSelection.Selection.EndLine == line - 1);
-            if (commentAbove != null && commentAbove.CommentText.StartsWith("@"))
+            var annotationAbove = _declarationFinder.ModuleAnnotations(_qualifiedModuleName).SingleOrDefault(annotation => annotation.QualifiedSelection.Selection.EndLine == line - 1);
+            if (annotationAbove != null)
             {
-                return commentAbove.CommentText;
+                return new List<IAnnotation>()
+                {
+                    annotationAbove
+                };
             }
-            return null;
+            return new List<IAnnotation>();
         }
 
         private void ResolveType(VBAParser.ICS_S_MembersCallContext context)

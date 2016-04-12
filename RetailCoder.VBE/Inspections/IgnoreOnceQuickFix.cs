@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections
             int commentStart;
             if (codeLine.HasComment(out commentStart) && codeLine.Substring(commentStart).StartsWith(ignoreAnnotation))
             {
-                annotationText = codeLine + ' ' + _inspectionName;
+                annotationText = codeLine + ", " + _inspectionName;
                 codeModule.ReplaceLine(insertLine - 1, annotationText);
             }
             else

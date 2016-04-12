@@ -1,9 +1,11 @@
 ﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Antlr4.Runtime.Tree.Xpath;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
+using System.Collections.Generic;
 
 namespace RubberduckTests.Grammar
 {
@@ -219,6 +221,19 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lineLabel");
         }
 
+        [TestMethod]
+        public void TestAnnotations()
+        {
+            string code = @"
+'@Folder a @Folder b
+Sub Test()
+    ' Test Comment
+    Dim someString As String * 255 '@Folder c @Folder d
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//annotation", matches => matches.Count == 4);
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);
@@ -234,8 +249,13 @@ End Sub";
 
         private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath)
         {
+            AssertTree(parser, root, xpath, matches => matches.Count >= 1);
+        }
+
+        private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath, Predicate<ICollection<IParseTree>> assertion)
+        {
             var matches = new XPath(parser, xpath).Evaluate(root);
-            Assert.IsTrue(matches.Count >= 1);
+            Assert.IsTrue(assertion(matches));
         }
     }
 }
