@@ -12,6 +12,7 @@ using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -62,6 +63,9 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<QualifiedModuleName, IList<CommentNode>> _comments =
             new ConcurrentDictionary<QualifiedModuleName, IList<CommentNode>>();
 
+        private readonly ConcurrentDictionary<QualifiedModuleName, IList<IAnnotation>> _annotations =
+            new ConcurrentDictionary<QualifiedModuleName, IList<IAnnotation>>();
+        
         private readonly ConcurrentDictionary<QualifiedModuleName, SyntaxErrorException> _moduleExceptions =
             new ConcurrentDictionary<QualifiedModuleName, SyntaxErrorException>();
 
@@ -144,45 +148,26 @@ namespace Rubberduck.Parsing.VBA
         private ParserState EvaluateParserState()
         {
             var moduleStates = _moduleStates.Values.ToList();
-
-            var state = States.SingleOrDefault(value => moduleStates.All(ps => ps == value));
-            if (state != default(ParserState))
+            if (States.Any(state => moduleStates.All(module => module == state)))
             {
-                // if all modules are in the same state, we have our result.
-                Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", state, Thread.CurrentThread.ManagedThreadId);
-                return state;
+                // all modules have the same state - we're done here:
+                return moduleStates.First();
             }
 
-            // error state takes precedence over every other state
-            if (moduleStates.Any(ms => ms == ParserState.Error))
+            if (moduleStates.Any(module => module > ParserState.Ready)) // only states beyond "ready" are error states
             {
-                Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", ParserState.Error, Thread.CurrentThread.ManagedThreadId);
-                return ParserState.Error;
-            }
-            if (moduleStates.Any(ms => ms == ParserState.ResolverError))
-            {
-                Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", ParserState.ResolverError, Thread.CurrentThread.ManagedThreadId);
-                return ParserState.ResolverError;
+                // any error state seals the deal:
+                return moduleStates.Max();
             }
 
-            // "working" states are toggled when *any* module has them.
-            var result = moduleStates.Min();
-            if (moduleStates.Any(ms => ms == ParserState.LoadingReference))
+            if (moduleStates.Any(module => module != ParserState.Ready))
             {
-                result = ParserState.LoadingReference;
-            }
-            if (moduleStates.Any(ms => ms == ParserState.Parsing))
-            {
-                result = ParserState.Parsing;
-            }
-            if (moduleStates.Any(ms => ms == ParserState.Resolving))
-            {
-                result = ParserState.Resolving;
+                // any module not ready means at least one of them has work in progress;
+                // report the least advanced of them, except if that's 'Pending':
+                return moduleStates.Except(new[]{ParserState.Pending}).Min();
             }
 
-            // otherwise, return the 
-            Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", result, Thread.CurrentThread.ManagedThreadId);
-            return result;
+            return default(ParserState); // default value is 'Pending'.
         }
 
         public ParserState GetModuleState(VBComponent component)
@@ -248,8 +233,6 @@ namespace Rubberduck.Parsing.VBA
             internal set { _argListsWithOneByRefParam = value; }
         }
 
-
-
         public IEnumerable<CommentNode> AllComments
         {
             get
@@ -272,6 +255,30 @@ namespace Rubberduck.Parsing.VBA
         public void SetModuleComments(VBComponent component, IEnumerable<CommentNode> comments)
         {
             _comments[new QualifiedModuleName(component)] = comments.ToList();
+        }
+
+        public IEnumerable<IAnnotation> AllAnnotations
+        {
+            get
+            {
+                return _annotations.Values.SelectMany(annotation => annotation.ToList());
+            }
+        }
+
+        public IEnumerable<IAnnotation> GetModuleAnnotations(VBComponent component)
+        {
+            IList<IAnnotation> result;
+            if (_annotations.TryGetValue(new QualifiedModuleName(component), out result))
+            {
+                return result;
+            }
+
+            return new List<IAnnotation>();
+        }
+
+        public void SetModuleAnnotations(VBComponent component, IEnumerable<IAnnotation> annotations)
+        {
+            _annotations[new QualifiedModuleName(component)] = annotations.ToList();
         }
 
         /// <summary>
@@ -299,7 +306,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        internal IDictionary<Tuple<string, DeclarationType>, Attributes> getModuleAttributes(VBComponent vbComponent)
+        internal IDictionary<Tuple<string, DeclarationType>, Attributes> GetModuleAttributes(VBComponent vbComponent)
         {
             return _moduleAttributes[new QualifiedModuleName(vbComponent)];
         }
@@ -401,6 +408,8 @@ namespace Rubberduck.Parsing.VBA
         }
 
         public IEnumerable<KeyValuePair<QualifiedModuleName, IParseTree>> ParseTrees { get { return _parseTrees; } }
+
+        public bool HasAllParseTrees { get { return _moduleStates.Count == _parseTrees.Count; } }
 
         public TokenStreamRewriter GetRewriter(VBComponent component)
         {

@@ -92,6 +92,12 @@ This library makes localizing WPF applications at runtime using resx files a bre
 
 > Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx).
 
+###[EventHook](https://github.com/justcoding121/Windows-User-Action-Hook)
+
+> A one stop library for global windows user actions such mouse, keyboard, clipboard, website visit & print events.
+
+This library allows Rubberduck to detect righ-click actions in the active code pane, to dynamically enable/disable menu commands depending on the current context/selection. We're also using it to capture keypresses, to trigger a reparse of the current module as it's being modified.
+
 ##Icons
 
 We didn't come up with these icons ourselves! Here's who did what:

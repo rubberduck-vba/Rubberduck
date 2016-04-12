@@ -147,7 +147,7 @@ namespace Rubberduck.Common.Hotkeys
                     result = Keys.Return;
                     break;
                 default:
-                    if (!String.IsNullOrEmpty(keyCode))
+                    if (!string.IsNullOrEmpty(keyCode))
                     {
                         result = (Keys)Enum.Parse(typeof(Keys), keyCode);
                     }

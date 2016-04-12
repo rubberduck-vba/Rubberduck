@@ -9,6 +9,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -18,10 +19,20 @@ namespace Rubberduck.Parsing.Symbols
     [DebuggerDisplay("({DeclarationType}) {Accessibility} {IdentifierName} As {AsTypeName} | {Selection}")]
     public class Declaration : IEquatable<Declaration>
     {
-        public Declaration(QualifiedMemberName qualifiedName, Declaration parentDeclaration, Declaration parentScope,
-            string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool isBuiltIn = true,
-            string annotations = null, Attributes attributes = null)
+        public Declaration(
+            QualifiedMemberName qualifiedName, 
+            Declaration parentDeclaration, 
+            Declaration parentScope,
+            string asTypeName, 
+            bool isSelfAssigned,
+            bool isWithEvents,
+            Accessibility accessibility, 
+            DeclarationType declarationType, 
+            ParserRuleContext context, 
+            Selection selection, 
+            bool isBuiltIn = true,
+            IEnumerable<IAnnotation> annotations = null, 
+            Attributes attributes = null)
             : this(
                 qualifiedName, parentDeclaration, parentScope == null ? null : parentScope.Scope, asTypeName, isSelfAssigned, isWithEvents,
                 accessibility, declarationType, context, selection, isBuiltIn, annotations, attributes)
@@ -29,15 +40,35 @@ namespace Rubberduck.Parsing.Symbols
             _parentScopeDeclaration = parentScope;
        }
 
-        public Declaration(QualifiedMemberName qualifiedName, Declaration parentDeclaration, string parentScope,
-            string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, bool isBuiltIn = true, string annotations = null, Attributes attributes = null)
+        public Declaration(
+            QualifiedMemberName qualifiedName, 
+            Declaration parentDeclaration, 
+            string parentScope,
+            string asTypeName, 
+            bool isSelfAssigned, 
+            bool isWithEvents,
+            Accessibility accessibility, 
+            DeclarationType declarationType, 
+            bool isBuiltIn = true,
+            IEnumerable<IAnnotation> annotations = null, 
+            Attributes attributes = null)
             :this(qualifiedName, parentDeclaration, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, isBuiltIn, annotations, attributes)
         {}
 
-        public Declaration(QualifiedMemberName qualifiedName, Declaration parentDeclaration, string parentScope,
-            string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool isBuiltIn = false, string annotations = null, Attributes attributes = null)
+        public Declaration(
+            QualifiedMemberName qualifiedName, 
+            Declaration parentDeclaration, 
+            string parentScope,
+            string asTypeName, 
+            bool isSelfAssigned, 
+            bool isWithEvents,
+            Accessibility accessibility, 
+            DeclarationType declarationType, 
+            ParserRuleContext context, 
+            Selection selection, 
+            bool isBuiltIn = false,
+            IEnumerable<IAnnotation> annotations = null, 
+            Attributes attributes = null)
         {
             _qualifiedName = qualifiedName;
             _parentDeclaration = parentDeclaration;
@@ -56,11 +87,9 @@ namespace Rubberduck.Parsing.Symbols
 
             _projectName = _qualifiedName.QualifiedModuleName.ProjectName;
 
-            var ns = Annotations.Split('\n')
-                .FirstOrDefault(annotation => annotation.StartsWith(Grammar.Annotations.AnnotationMarker + Grammar.Annotations.Folder));
-
+            var @namespace = Annotations.FirstOrDefault(annotation => annotation.AnnotationType == AnnotationType.Folder);
             string result;
-            if (string.IsNullOrEmpty(ns))
+            if (@namespace == null)
             {
                 result = _qualifiedName.QualifiedModuleName.Project == null
                     ? _projectName
@@ -68,11 +97,10 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                var value = ns.Split(' ')[1];
+                var value = ((FolderAnnotation)@namespace).FolderName;
                 result = value;
             }
             _customFolder = result;
-
             _isArray = IsArray();
             _hasTypeHint = HasTypeHint();
             _isTypeSpecified = IsTypeSpecified();
@@ -129,8 +157,8 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private readonly string _annotations;
-        public string Annotations { get { return _annotations ?? string.Empty; } }
+        private readonly IEnumerable<IAnnotation> _annotations;
+        public IEnumerable<IAnnotation> Annotations { get { return _annotations ?? new List<IAnnotation>(); } }
 
         private readonly Attributes _attributes;
         public IReadOnlyDictionary<string, IEnumerable<string>> Attributes { get { return _attributes; } }
@@ -227,8 +255,9 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool IsInspectionDisabled(string inspectionName)
         {
-            return Annotations.Contains(Grammar.Annotations.IgnoreInspection) 
-                && Annotations.Contains(inspectionName);
+            return Annotations.Any(annotation =>
+                annotation.AnnotationType == AnnotationType.Ignore
+                && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
         }
 
         public void AddReference(IdentifierReference reference)

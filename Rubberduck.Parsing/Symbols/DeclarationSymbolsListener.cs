@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -23,12 +24,20 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _parentDeclaration;
 
         private readonly IEnumerable<CommentNode> _comments;
+        private readonly IEnumerable<IAnnotation> _annotations;
         private readonly IDictionary<Tuple<string, DeclarationType>, Attributes> _attributes;
 
-        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type, IEnumerable<CommentNode> comments, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
+        public DeclarationSymbolsListener(
+            QualifiedModuleName qualifiedName, 
+            Accessibility componentAccessibility, 
+            vbext_ComponentType type, 
+            IEnumerable<CommentNode> comments,
+            IEnumerable<IAnnotation> annotations,
+            IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
         {
             _qualifiedName = qualifiedName;
             _comments = comments;
+            _annotations = annotations;
             _attributes = attributes;
 
             var declarationType = type == vbext_ComponentType.vbext_ct_StdModule
@@ -71,39 +80,33 @@ namespace Rubberduck.Parsing.Symbols
             return declaration;
         }
 
-        private string FindAnnotations()
+        private IEnumerable<IAnnotation> FindAnnotations()
         {
-            if (_comments == null)
+            if (_annotations == null)
             {
                 return null;
             }
-
             var lastDeclarationsSectionLine = _qualifiedName.Component.CodeModule.CountOfDeclarationLines;
-            var annotations = _comments.Where(comment => comment.QualifiedSelection.QualifiedName.Equals(_qualifiedName)
-                && comment.QualifiedSelection.Selection.EndLine <= lastDeclarationsSectionLine
-                && comment.CommentText.StartsWith("@")).ToArray();
-
-            if (annotations.Any())
-            {
-                return string.Join("\n", annotations.Select(annotation => annotation.CommentText));
-            }
-
-            return null;
+            var annotations = _annotations.Where(annotation => annotation.QualifiedSelection.QualifiedName.Equals(_qualifiedName)
+                && annotation.QualifiedSelection.Selection.EndLine <= lastDeclarationsSectionLine);
+            return annotations.ToList();
         }
 
-        private string FindAnnotations(int line)
+        private IEnumerable<IAnnotation> FindAnnotations(int line)
         {
-            if (_comments == null)
+            if (_annotations == null)
             {
                 return null;
             }
-
-            var commentAbove = _comments.SingleOrDefault(comment => comment.QualifiedSelection.Selection.EndLine == line - 1);
-            if (commentAbove != null && commentAbove.CommentText.StartsWith("@"))
+            var annotationAbove = _annotations.SingleOrDefault(annotation => annotation.QualifiedSelection.Selection.EndLine == line - 1);
+            if (annotationAbove == null)
             {
-                return commentAbove.CommentText;
+                return new List<IAnnotation>();
             }
-            return null;
+            return new List<IAnnotation>()
+            {
+                annotationAbove
+            };
         }
 
         public void CreateModuleDeclarations()

@@ -248,6 +248,7 @@ namespace Rubberduck.Parsing.VBA
                 _state.AddParseTree(component, e.ParseTree);
                 _state.AddTokenStream(component, e.Tokens);
                 _state.SetModuleComments(component, e.Comments);
+                _state.SetModuleAnnotations(component, e.Annotations);
 
                 // This really needs to go last
                 _state.SetModuleState(component, ParserState.Parsed);
@@ -271,12 +272,17 @@ namespace Rubberduck.Parsing.VBA
 
         private void ResolveInternal(CancellationToken token)
         {
+            if (!_state.HasAllParseTrees)
+            {
+                return;
+            }
+
             foreach (var kvp in _state.ParseTrees)
             {
                 if (token.IsCancellationRequested) return;
                 ResolveDeclarations(kvp.Key.Component, kvp.Value);
             }
-            var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments);
+            var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments, _state.AllAnnotations);
             foreach (var kvp in _state.ParseTrees)
             {
                 if (token.IsCancellationRequested) return;
@@ -310,7 +316,7 @@ namespace Rubberduck.Parsing.VBA
                 // cannot locate declarations in one pass *the way it's currently implemented*,
                 // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
                 // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
-                var declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, Accessibility.Implicit, component.Type, _state.GetModuleComments(component), _state.getModuleAttributes(component));
+                var declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, Accessibility.Implicit, component.Type, _state.GetModuleComments(component), _state.GetModuleAnnotations(component),_state.GetModuleAttributes(component));
                 // TODO: should we unify the API? consider working like the other listeners instead of event-based
                 declarationsListener.NewDeclaration += (sender, e) => _state.AddDeclaration(e.Declaration);
                 declarationsListener.CreateModuleDeclarations();

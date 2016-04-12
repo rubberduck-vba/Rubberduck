@@ -117,7 +117,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         {
             var memberParams = GetParameters(member);
 
-            var memberSignature = "Public Sub " + _targetInterface.IdentifierName + "_" + member.IdentifierName + "(" +
+            var memberSignature = "Private Sub " + _targetInterface.IdentifierName + "_" + member.IdentifierName + "(" +
                                   string.Join(", ", memberParams) + ")";
 
             var memberCloseStatement = "End Sub" + Environment.NewLine;
@@ -129,7 +129,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         {
             var memberParams = GetParameters(member);
 
-            var memberSignature = "Public Function " + _targetInterface.IdentifierName + "_" + member.IdentifierName + "(" +
+            var memberSignature = "Private Function " + _targetInterface.IdentifierName + "_" + member.IdentifierName + "(" +
                                   string.Join(", ", memberParams) + ")" + " As " + member.AsTypeName;
 
             var memberCloseStatement = "End Function" + Environment.NewLine;
@@ -141,7 +141,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         {
             var memberParams = GetParameters(member);
 
-            var memberSignature = "Public Property Get " + _targetInterface.IdentifierName + "_" + member.IdentifierName + "(" +
+            var memberSignature = "Private Property Get " + _targetInterface.IdentifierName + "_" + member.IdentifierName + "(" +
                                   string.Join(", ", memberParams) + ")" + " As " + member.AsTypeName;
 
             var memberCloseStatement = "End Property" + Environment.NewLine;
@@ -153,7 +153,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         {
             var memberParams = GetParameters(member);
 
-            var memberSignature = "Public Property Let " + _targetInterface.IdentifierName + "_" + member.IdentifierName +
+            var memberSignature = "Private Property Let " + _targetInterface.IdentifierName + "_" + member.IdentifierName +
                                   "(" + string.Join(", ", memberParams) + ")";
 
             var memberCloseStatement = "End Property" + Environment.NewLine;
@@ -165,7 +165,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         {
             var memberParams = GetParameters(member);
 
-            var memberSignature = "Public Property Set " + _targetInterface.IdentifierName + "_" + member.IdentifierName +
+            var memberSignature = "Private Property Set " + _targetInterface.IdentifierName + "_" + member.IdentifierName +
                                   "(" + string.Join(", ", memberParams) + ")";
 
             var memberCloseStatement = "End Property" + Environment.NewLine;
