@@ -272,6 +272,11 @@ namespace Rubberduck.Parsing.VBA
 
         private void ResolveInternal(CancellationToken token)
         {
+            if (!_state.HasAllParseTrees)
+            {
+                return;
+            }
+
             foreach (var kvp in _state.ParseTrees)
             {
                 if (token.IsCancellationRequested) return;

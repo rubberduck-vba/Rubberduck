@@ -409,6 +409,8 @@ namespace Rubberduck.Parsing.VBA
 
         public IEnumerable<KeyValuePair<QualifiedModuleName, IParseTree>> ParseTrees { get { return _parseTrees; } }
 
+        public bool HasAllParseTrees { get { return _moduleStates.Count == _parseTrees.Count; } }
+
         public TokenStreamRewriter GetRewriter(VBComponent component)
         {
             return new TokenStreamRewriter(_tokenStreams[new QualifiedModuleName(component)]);
