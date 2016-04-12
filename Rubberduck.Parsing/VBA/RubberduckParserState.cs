@@ -63,6 +63,9 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<QualifiedModuleName, IList<CommentNode>> _comments =
             new ConcurrentDictionary<QualifiedModuleName, IList<CommentNode>>();
 
+        private readonly ConcurrentDictionary<QualifiedModuleName, IList<IAnnotation>> _annotations =
+            new ConcurrentDictionary<QualifiedModuleName, IList<IAnnotation>>();
+        
         private readonly ConcurrentDictionary<QualifiedModuleName, SyntaxErrorException> _moduleExceptions =
             new ConcurrentDictionary<QualifiedModuleName, SyntaxErrorException>();
 
@@ -252,7 +255,7 @@ namespace Rubberduck.Parsing.VBA
         public IEnumerable<IAnnotation> GetModuleAnnotations(VBComponent component)
         {
             IList<IAnnotation> result;
-            if (_annotations.TryGetValue(component, out result))
+            if (_annotations.TryGetValue(new QualifiedModuleName(component), out result))
             {
                 return result;
             }
@@ -262,7 +265,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleAnnotations(VBComponent component, IEnumerable<IAnnotation> annotations)
         {
-            _annotations[component] = annotations.ToList();
+            _annotations[new QualifiedModuleName(component)] = annotations.ToList();
         }
 
         /// <summary>
