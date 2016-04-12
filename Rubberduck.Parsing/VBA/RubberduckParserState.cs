@@ -144,17 +144,30 @@ namespace Rubberduck.Parsing.VBA
             Status = EvaluateParserState();
         }
 
-        //private static readonly ParserState[] States = Enum.GetValues(typeof(ParserState)).Cast<ParserState>().ToArray();
+        private static readonly ParserState[] States = Enum.GetValues(typeof(ParserState)).Cast<ParserState>().ToArray();
         private ParserState EvaluateParserState()
         {
             var moduleStates = _moduleStates.Values.ToList();
-
-            var prelim = moduleStates.Max();
-            if (prelim == ParserState.Parsed && moduleStates.Any(s => s != ParserState.Parsed))
+            if (States.Any(state => moduleStates.All(module => module == state)))
             {
-                prelim = moduleStates.Where(s => s != ParserState.Parsed).Max();
+                // all modules have the same state - we're done here:
+                return moduleStates.First();
             }
-            return prelim;
+
+            if (moduleStates.Any(module => module > ParserState.Ready)) // only states beyond "ready" are error states
+            {
+                // any error state seals the deal:
+                return moduleStates.Max();
+            }
+
+            if (moduleStates.Any(module => module != ParserState.Ready))
+            {
+                // any module not ready means at least one of them has work in progress;
+                // report the least advanced of them, except if that's 'Pending':
+                return moduleStates.Except(new[]{ParserState.Pending}).Min();
+            }
+
+            return default(ParserState); // default value is 'Pending'.
         }
 
         public ParserState GetModuleState(VBComponent component)
