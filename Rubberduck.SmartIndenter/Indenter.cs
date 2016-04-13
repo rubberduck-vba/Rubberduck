@@ -55,7 +55,7 @@ namespace Rubberduck.SmartIndenter
 
             if (string.IsNullOrEmpty(procName))
             {
-                procName = null;
+                return;
             }
 
             var startLine = pane.CodeModule.get_ProcStartLine(procName, procKind);

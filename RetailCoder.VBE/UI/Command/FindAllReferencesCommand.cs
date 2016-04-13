@@ -110,7 +110,7 @@ namespace Rubberduck.UI.Command
                 return declaration;
             }
 
-            return _state.FindSelecteDeclaration(_vbe.ActiveCodePane);
+            return _state.FindSelectedDeclaration(_vbe.ActiveCodePane);
         }
     }
 }

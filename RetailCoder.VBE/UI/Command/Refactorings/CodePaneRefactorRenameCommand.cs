@@ -32,7 +32,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var target = _state.FindSelecteDeclaration(Vbe.ActiveCodePane);
+            var target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
             return _state.Status == ParserState.Ready && target != null;
         }
 
