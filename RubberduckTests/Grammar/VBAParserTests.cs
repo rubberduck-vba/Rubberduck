@@ -63,6 +63,19 @@ Attribute VB_Exposed = False
         }
 
         [TestMethod]
+        public void TestModuleOption()
+        {
+            string code = @"
+Option Explicit
+
+Sub DoSomething()
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleOption");
+        }
+
+        [TestMethod]
         public void TestModuleConfig()
         {
             string code = @"
@@ -227,7 +240,7 @@ End Sub";
             var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAParser(tokens);
-            parser.AddErrorListener(new ExceptionErrorListener());
+            //parser.AddErrorListener(new ExceptionErrorListener());
             var root = parser.startRule();
             // Useful for figuring out what XPath to use for querying the parse tree.
             var str = root.ToStringTree(parser);

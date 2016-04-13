@@ -129,7 +129,7 @@ namespace Rubberduck.Common.Hotkeys
 
         private static Keys GetCombo(string key)
         {
-            return (Keys)Enum.Parse(typeof(Keys), key.Trim('%', '^', '+')) // will break with special keys, e.g. {f12}
+            return GetKey(key.Trim('%', '^', '+')) // will break with special keys, e.g. {f12}
                    | (key.Contains("%") ? Keys.Alt : Keys.None)
                    | (key.Contains("^") ? Keys.Control : Keys.None)
                    | (key.Contains("+") ? Keys.Shift : Keys.None);
@@ -146,8 +146,11 @@ namespace Rubberduck.Common.Hotkeys
                 case "~":
                     result = Keys.Return;
                     break;
+                case "`":
+                    result = Keys.Oemtilde;
+                    break;
                 default:
-                    if (!String.IsNullOrEmpty(keyCode))
+                    if (!string.IsNullOrEmpty(keyCode))
                     {
                         result = (Keys)Enum.Parse(typeof(Keys), keyCode);
                     }

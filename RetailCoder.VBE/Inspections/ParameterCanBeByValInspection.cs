@@ -45,12 +45,9 @@ namespace Rubberduck.Inspections
             var declarations = UserDeclarations.ToList();
 
             IEnumerable<Declaration> interfaceMembers = null;
-            _dispatcher.Invoke(() =>
-            {
-                interfaceMembers = declarations.FindInterfaceMembers()
-                    .Concat(declarations.FindInterfaceImplementationMembers())
-                    .ToList();
-            });
+            interfaceMembers = declarations.FindInterfaceMembers()
+                .Concat(declarations.FindInterfaceImplementationMembers())
+                .ToList();
 
             var formEventHandlerScopes = declarations.FindFormEventHandlers()
                 .Select(handler => handler.Scope);

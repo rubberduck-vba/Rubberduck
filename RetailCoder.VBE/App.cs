@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using NLog;
@@ -16,6 +17,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using Infralution.Localization.Wpf;
 using Rubberduck.Common.Dispatch;
+using Rubberduck.Common.Hotkeys;
 
 namespace Rubberduck
 {
@@ -40,6 +42,8 @@ namespace Rubberduck
 
         private readonly IDictionary<VBComponents, Tuple<IConnectionPoint, int>>  _componentsEventsConnectionPoints = 
             new Dictionary<VBComponents, Tuple<IConnectionPoint, int>>();
+
+        private readonly IDictionary<Type, Action> _hookActions;
 
         public App(VBE vbe, IMessageBox messageBox,
             IRubberduckParser parser,
@@ -78,16 +82,39 @@ namespace Rubberduck
 
             _projectsEventsConnectionPoint.Advise(sink, out _projectsEventsCookie);
 
+            _hookActions = new Dictionary<Type, Action>
+            {
+                { typeof(MouseHook), HandleMouseMessage },
+                //{ typeof(KeyboardHook), HandleKeyboardMessage },
+            };
+            
+            
             UiDispatcher.Initialize();
         }
 
         private void _hooks_MessageReceived(object sender, HookEventArgs e)
         {
-            if (sender is MouseHookWrapper)
+            var hookType = sender.GetType();
+            Action action;
+            if (_hookActions.TryGetValue(hookType, out action))
             {
-                // right-click detected
-                _appMenus.EvaluateCanExecute(_parser.State);
+                action.Invoke();
             }
+        }
+
+        private void HandleMouseMessage()
+        {
+            _appMenus.EvaluateCanExecute(_parser.State);
+        }
+
+        private void HandleKeyboardMessage()
+        {
+            var pane = _vbe.ActiveCodePane;
+            if (pane == null)
+            {
+                return;
+            }
+            _parser.State.OnParseRequested(this, pane.CodeModule.Parent);
         }
 
         private void _configService_SettingsChanged(object sender, EventArgs e)
@@ -109,8 +136,15 @@ namespace Rubberduck
             _appMenus.Initialize();
             _appMenus.Localize();
 
-            _hooks.HookHotkeys();
-            _hooks.Attach();
+            Task.Delay(1000).ContinueWith(t =>
+            {
+                // run this on UI thread
+                UiDispatcher.Invoke(() =>
+                {
+                    _parser.State.OnParseRequested(this);
+                    _hooks.HookHotkeys();
+                });
+            }, new StaTaskScheduler()).ConfigureAwait(false);
         }
 
         #region sink handlers. todo: move to another class
@@ -256,20 +290,12 @@ namespace Rubberduck
 
         private void _stateBar_Refresh(object sender, EventArgs e)
         {
+            // handles "refresh" button click on "Rubberduck" command bar
             _parser.State.OnParseRequested(sender);
         }
 
         private void Parser_StateChanged(object sender, EventArgs e)
         {
-            if (_parser.State.Status != ParserState.Ready)
-            {
-                _hooks.Detach();
-            }
-            else
-            {
-                _hooks.Attach();
-            }
-
             Debug.WriteLine("App handles StateChanged ({0}), evaluating menu states...", _parser.State.Status);
             _appMenus.EvaluateCanExecute(_parser.State);
         }

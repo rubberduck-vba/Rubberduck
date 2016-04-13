@@ -24,33 +24,39 @@ namespace Rubberduck.VBEditor.Extensions
 
                     if (documentModule != null)
                     {
-                        var hostDocumentNameProperty = documentModule.Properties.Item("Name");
-                        if (hostDocumentNameProperty != null)
+                        var nameProperty = documentModule.Properties.Item("Name");
+                        if (nameProperty != null)
                         {
-                            projectName += string.Format(" ({0})", hostDocumentNameProperty.Value);
+                            projectName += string.Format(" ({0})", nameProperty.Value);
                         }
                     }
                 }
             }
-            catch (COMException exception)
+            catch (COMException)
             {
-                Debug.WriteLine(exception);
+                // component is stale, corrupted, or is a document module without a "Name" property
             }
             return projectName;
         }
 
         public static string ProjectName(this VBComponent component)
         {
-            var project = component.Collection.Parent;
-            return project.ProjectName();
+            try
+            {
+                var guard = component.Name;
+                var project = component.Collection.Parent;
+                return project.ProjectName();
+            }
+            catch (COMException)
+            {
+                // if merely accessing the component's name and parent collection blows up, return null and remove from parser state
+                return null;
+            }
         }
 
         public static IEnumerable<string> ComponentNames(this VBProject project)
         {
-            foreach (VBComponent component in project.VBComponents)
-            {
-                yield return component.Name;
-            }
+            return project.VBComponents.Cast<VBComponent>().Select(component => component.Name);
         }
 
         /// <summary>

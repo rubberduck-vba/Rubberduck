@@ -164,6 +164,7 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             Debug.WriteLine("Running code inspections...");
+            IsBusy = true;
             var results = await _inspector.FindIssuesAsync(_state, CancellationToken.None);
             _dispatcher.Invoke(() =>
             {

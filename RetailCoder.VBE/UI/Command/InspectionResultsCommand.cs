@@ -24,7 +24,5 @@ namespace Rubberduck.UI.Command
         {
             _presenter.Show();
         }
-
-        public RubberduckHotkey Hotkey { get { return RubberduckHotkey.InspectionResults; } }
     }
 }

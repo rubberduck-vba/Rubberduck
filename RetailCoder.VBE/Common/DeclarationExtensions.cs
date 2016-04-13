@@ -401,8 +401,6 @@ namespace Rubberduck.Common
         public static Declaration FindTarget(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
         {
             var items = declarations.ToList();
-            Debug.Assert(!items.Any(item => item.IsBuiltIn));
-
             return items.SingleOrDefault(item => item.IsSelected(selection) || item.References.Any(reference => reference.IsSelected(selection)));
         }
 
@@ -419,16 +417,14 @@ namespace Rubberduck.Common
             var items = declarations.ToList();
 
             var target = items
-                .Where(item => !item.IsBuiltIn)
+                .Where(item => !item.IsBuiltIn && validDeclarationTypes.Contains(item.DeclarationType))
                 .SingleOrDefault(item => item.IsSelected(selection)
                                      || item.References.Any(r => r.IsSelected(selection)));
 
-            if (target != null && validDeclarationTypes.Contains(target.DeclarationType))
+            if (target != null)
             {
                 return target;
             }
-
-            target = null;
 
             var targets = items
                 .Where(item => !item.IsBuiltIn
@@ -437,7 +433,7 @@ namespace Rubberduck.Common
 
             var currentSelection = new Selection(0, 0, int.MaxValue, int.MaxValue);
 
-            foreach (var declaration in targets)
+            foreach (var declaration in targets.Where(item => item.Context != null))
             {
                 var activeSelection = new Selection(declaration.Context.Start.Line,
                                                     declaration.Context.Start.Column,

@@ -16,7 +16,7 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
             public override bool EvaluateCanExecute(RubberduckParserState state)
             {
-                return state.Status == ParserState.Ready;
+                return Command.CanExecute(null);
             }
         }
     }

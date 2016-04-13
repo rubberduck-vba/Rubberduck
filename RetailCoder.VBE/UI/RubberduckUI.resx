@@ -1499,4 +1499,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
     <value>Rege&amp;x Search/Replace</value>
   </data>
+  <data name="HotkeyDescription_ParseAll" xml:space="preserve">
+    <value>Refresh parser state</value>
+  </data>
 </root>

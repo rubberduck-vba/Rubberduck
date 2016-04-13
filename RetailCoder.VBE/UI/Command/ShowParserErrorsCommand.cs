@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
@@ -6,6 +7,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command
@@ -36,6 +38,11 @@ namespace Rubberduck.UI.Command
             }
 
             var viewModel = CreateViewModel();
+            if (_viewModel == null)
+            {
+                return;
+            }
+
             _viewModel.AddTab(viewModel);
             _viewModel.SelectedTab = viewModel;
 
@@ -54,17 +61,27 @@ namespace Rubberduck.UI.Command
         {
             var errors = from error in _state.ModuleExceptions
                 let declaration = FindModuleDeclaration(error.Item1)
+                where declaration != null
                 select new SearchResultItem(declaration, error.Item2.GetNavigateCodeEventArgs(declaration), error.Item2.Message);
 
-            var viewModel = new SearchResultsViewModel(_navigateCommand, "Parser Errors", null, errors.ToList());
+            var searchResultItems = errors as IList<SearchResultItem> ?? errors.ToList();
+            var viewModel = new SearchResultsViewModel(_navigateCommand, "Parser Errors", null, searchResultItems);
             return viewModel;
         }
 
         private Declaration FindModuleDeclaration(VBComponent component)
         {
-            return _state.AllUserDeclarations.Single(item => item.ProjectName == component.Collection.Parent.ProjectName()
-                                                             && item.QualifiedName.QualifiedModuleName.Component == component 
+            var projectName = component.ProjectName();
+
+            var project = _state.AllUserDeclarations.SingleOrDefault(item => 
+                item.DeclarationType == DeclarationType.Project && item.ProjectName == projectName);
+
+            var result = _state.AllUserDeclarations.SingleOrDefault(item => item.ProjectName == component.Collection.Parent.ProjectName()
+                                                             && item.QualifiedName.QualifiedModuleName.ComponentName == component.Name
                                                              && (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module));
+
+            var declaration = new Declaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name), project, project.Scope, component.Name, false, false, Accessibility.Global, DeclarationType.Module, false);
+            return result ?? declaration; // module isn't in parser state - give it a dummy declaration, just so the ViewModel has something to chew on
         }
     }
 }
