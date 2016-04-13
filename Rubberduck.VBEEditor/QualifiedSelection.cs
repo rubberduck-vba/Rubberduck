@@ -18,5 +18,23 @@
         {
             return string.Concat(QualifiedName, " ", Selection);
         }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hash = 17;
+                hash = hash*23 + _qualifiedName.GetHashCode();
+                hash = hash * 23 + _selection.GetHashCode();
+                return hash;
+            } 
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = (QualifiedSelection) obj;
+            return other.QualifiedName.Equals(_qualifiedName)
+                   && other.Selection.Equals(_selection);
+        }
     }
 }

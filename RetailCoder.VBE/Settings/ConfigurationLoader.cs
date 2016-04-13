@@ -89,6 +89,7 @@ namespace Rubberduck.Settings
         {
             return new Dictionary<RubberduckHotkey, ICommand>
             {
+                { RubberduckHotkey.ParseAll, Command<ReparseCommand>() },
                 { RubberduckHotkey.CodeExplorer, Command<CodeExplorerCommand>() },
                 { RubberduckHotkey.IndentModule, Command<IndentCurrentModuleCommand>() },
                 { RubberduckHotkey.IndentProcedure, Command<IndentCurrentProcedureCommand>() },
@@ -183,6 +184,7 @@ namespace Rubberduck.Settings
             return new GeneralSettings(new DisplayLanguageSetting("en-US"),
                 new[]
                 {
+                    new HotkeySetting{Name=RubberduckHotkey.ParseAll.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="`", Command = commandMappings[RubberduckHotkey.ParseAll]},
                     new HotkeySetting{Name=RubberduckHotkey.IndentProcedure.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="P", Command = commandMappings[RubberduckHotkey.IndentProcedure]},
                     new HotkeySetting{Name=RubberduckHotkey.IndentModule.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="M", Command = commandMappings[RubberduckHotkey.IndentModule]},
                     new HotkeySetting{Name=RubberduckHotkey.CodeExplorer.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="R", Command = commandMappings[RubberduckHotkey.CodeExplorer]},

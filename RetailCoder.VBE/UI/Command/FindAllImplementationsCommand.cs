@@ -115,16 +115,7 @@ namespace Rubberduck.UI.Command
                 return declaration;
             }
 
-            var selection = _vbe.ActiveCodePane.GetSelection();
-            if (!selection.Equals(default(QualifiedSelection)))
-            {
-                declaration = _state.AllDeclarations
-                    .SingleOrDefault(item => item.DeclarationType != DeclarationType.Project &&
-                        item.DeclarationType != DeclarationType.ModuleOption &&
-                        (IsSelectedDeclaration(selection, item) ||
-                        item.References.Any(reference => IsSelectedReference(selection, reference))));
-            }
-            return declaration;
+            return _state.FindSelecteDeclaration(_vbe.ActiveCodePane);
         }
 
         private IEnumerable<Declaration> FindImplementations(Declaration target)
@@ -182,18 +173,6 @@ namespace Rubberduck.UI.Command
             name = member.ComponentName + "." + member.IdentifierName;
             return items.FindInterfaceImplementationMembers(member.IdentifierName)
                    .Where(item => item.IdentifierName == member.ComponentName + "_" + member.IdentifierName);
-        }
-
-        private static bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
-        {
-            return declaration.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName)
-                   && declaration.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Selection);
-        }
-
-        private static bool IsSelectedReference(QualifiedSelection selection, IdentifierReference reference)
-        {
-            return reference.QualifiedModuleName.Equals(selection.QualifiedName)
-                   && reference.Selection.ContainsFirstCharacter(selection.Selection);
         }
     }
 }

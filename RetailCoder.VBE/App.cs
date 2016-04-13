@@ -85,7 +85,7 @@ namespace Rubberduck
             _hookActions = new Dictionary<Type, Action>
             {
                 { typeof(MouseHook), HandleMouseMessage },
-                { typeof(KeyboardHook), HandleKeyboardMessage },
+                //{ typeof(KeyboardHook), HandleKeyboardMessage },
             };
             
             

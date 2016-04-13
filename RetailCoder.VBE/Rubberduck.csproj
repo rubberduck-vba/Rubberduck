@@ -361,6 +361,7 @@
     </Compile>
     <Compile Include="UI\Command\IndentCurrentModuleCommand.cs" />
     <Compile Include="UI\Command\MenuItems\InspectionResultsCommandMenuItem.cs" />
+    <Compile Include="UI\Command\ReparseCommand.cs" />
     <Compile Include="UI\Command\ShowParserErrorsCommand.cs" />
     <Compile Include="UI\Command\SyntaxErrorExtensions.cs" />
     <Compile Include="UI\Controls\DeclarationTypeToStringConverter.cs" />

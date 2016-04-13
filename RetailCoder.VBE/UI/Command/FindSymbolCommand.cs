@@ -35,7 +35,5 @@ namespace Rubberduck.UI.Command
                 view.ShowDialog();
             }
         }
-
-        public RubberduckHotkey Hotkey { get { return RubberduckHotkey.FindSymbol; } }
     }
 }

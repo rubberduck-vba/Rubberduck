@@ -13,6 +13,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -59,6 +60,9 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly ConcurrentDictionary<QualifiedModuleName, ParserState> _moduleStates =
             new ConcurrentDictionary<QualifiedModuleName, ParserState>();
+
+        private readonly ConcurrentDictionary<QualifiedModuleName, int> _moduleContentHashCodes =
+            new ConcurrentDictionary<QualifiedModuleName, int>();
 
         private readonly ConcurrentDictionary<QualifiedModuleName, IList<CommentNode>> _comments =
             new ConcurrentDictionary<QualifiedModuleName, IList<CommentNode>>();
@@ -399,7 +403,9 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddParseTree(VBComponent component, IParseTree parseTree)
         {
-            _parseTrees[new QualifiedModuleName(component)] = parseTree;
+            var key = new QualifiedModuleName(component);
+            _parseTrees[key] = parseTree;
+            _moduleContentHashCodes[key] = key.ContentHashCode;
         }
 
         public IParseTree GetParseTree(VBComponent component)
@@ -446,6 +452,60 @@ namespace Rubberduck.Parsing.VBA
                 var args = new ParseRequestEventArgs(component);
                 handler.Invoke(requestor, args);
             }
+        }
+
+        public bool IsModified(VBComponent component)
+        {
+            var key = new QualifiedModuleName(component);
+            return IsModified(key);
+        }
+        
+        public bool IsModified(QualifiedModuleName key)
+        {
+            int current;
+            if (_moduleContentHashCodes.TryGetValue(key, out current))
+            {
+                return key.ContentHashCode != current;
+            }
+
+            return true;
+        }
+
+        private QualifiedSelection _lastSelection;
+        private Declaration _selectedDeclaration;
+
+        public Declaration FindSelecteDeclaration(CodePane activeCodePane)
+        {
+            var selection = activeCodePane.GetSelection();
+            if (selection.Equals(_lastSelection))
+            {
+                return _selectedDeclaration;
+            }
+
+            _lastSelection = selection;
+            _selectedDeclaration = null;
+
+            if (!selection.Equals(default(QualifiedSelection)))
+            {
+                _selectedDeclaration = AllDeclarations
+                    .SingleOrDefault(item => item.DeclarationType != DeclarationType.Project &&
+                        item.DeclarationType != DeclarationType.ModuleOption &&
+                        (IsSelectedDeclaration(selection, item) ||
+                        item.References.Any(reference => IsSelectedReference(selection, reference))));
+            }
+            return _selectedDeclaration;
+        }
+
+        private static bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
+        {
+            return declaration.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName)
+                   && declaration.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Selection);
+        }
+
+        private static bool IsSelectedReference(QualifiedSelection selection, IdentifierReference reference)
+        {
+            return reference.QualifiedModuleName.Equals(selection.QualifiedName)
+                   && reference.Selection.ContainsFirstCharacter(selection.Selection);
         }
     }
 }

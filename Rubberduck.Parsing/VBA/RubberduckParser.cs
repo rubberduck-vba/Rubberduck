@@ -12,6 +12,7 @@ using Rubberduck.VBEditor;
 using System.Globalization;
 using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 
@@ -26,7 +27,6 @@ namespace Rubberduck.Parsing.VBA
                 return _state;
             }
         }
-
         private CancellationTokenSource _central = new CancellationTokenSource();
         private CancellationTokenSource _resolverTokenSource; // linked to _central later
         private readonly ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks = 
@@ -67,7 +67,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 Debug.WriteLine("(handling OnStateChanged) Starting resolver task");
                 Resolve(_central.Token); // Tests expect this to be synchronous
-                //Task.Run(() => Resolve(_central.Token));
             }
         }
 
@@ -148,9 +147,10 @@ namespace Rubberduck.Parsing.VBA
                 .ToList();
 
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
+            var modified = components.Where(_state.IsModified).ToList();
             LoadComReferences(components, projects);
 
-            foreach (var component in components)
+            foreach (var component in modified)
             {
                 _state.SetModuleState(component, ParserState.Pending);
             }
@@ -161,7 +161,7 @@ namespace Rubberduck.Parsing.VBA
                 _componentAttributes.Remove(invalidated);
             }
 
-            foreach (var vbComponent in components)
+            foreach (var vbComponent in modified)
             {
                 while (!_state.ClearDeclarations(vbComponent)) { }
 
@@ -171,21 +171,23 @@ namespace Rubberduck.Parsing.VBA
 
         private void LoadComReferences(IEnumerable<VBComponent> components, IEnumerable<VBProject> projects)
         {
+            if (_state.AllDeclarations.Any(item => item.IsBuiltIn))
+            {
+                return;
+            }
+
             foreach (var component in components)
             {
                 _state.SetModuleState(component, ParserState.LoadingReference);
             }
 
-            if (!_state.AllDeclarations.Any(item => item.IsBuiltIn))
+            var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
+            foreach (var reference in references)
             {
-                var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
-                foreach (var reference in references)
+                var items = _comReflector.GetDeclarationsForReference(reference).ToList();
+                foreach (var declaration in items)
                 {
-                    var items = _comReflector.GetDeclarationsForReference(reference).ToList();
-                    foreach (var declaration in items)
-                    {
-                        _state.AddDeclaration(declaration);
-                    }
+                    _state.AddDeclaration(declaration);
                 }
             }
         }
@@ -197,12 +199,14 @@ namespace Rubberduck.Parsing.VBA
 
             var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token, token);
 
+            //var taskFactory = new TaskFactory(new StaTaskScheduler());
             var task = new Task(() => ParseAsyncInternal(component, linkedTokenSource.Token, rewriter));
             _currentTasks.TryAdd(component, Tuple.Create(task, linkedTokenSource));
+
             Tuple<Task, CancellationTokenSource> removedTask;
             task.ContinueWith(t => _currentTasks.TryRemove(component, out removedTask)); // default also executes on cancel
 
-            task.Start();
+            task.Start(/*taskFactory.Scheduler*/);
             return task;
         }
 
@@ -210,30 +214,29 @@ namespace Rubberduck.Parsing.VBA
         {
             lock (_central)
             lock (_resolverTokenSource)
+            {
+                if (component == null)
                 {
-                    if (component == null)
-                    {
-                        _central.Cancel(false);
+                    _central.Cancel(false);
 
-                        _central.Dispose();
-                        _central = new CancellationTokenSource();
-                        _resolverTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token);
-                    }
-                    else
-                    {
-                        _resolverTokenSource.Cancel(false);
-                        _resolverTokenSource.Dispose();
-
-                        _resolverTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token);
-                        Tuple<Task, CancellationTokenSource> result;
-                        if (_currentTasks.TryGetValue(component, out result))
-                        {
-                            result.Item2.Cancel(false);
-                            result.Item2.Dispose();
-                        }
-                    }
-
+                    _central.Dispose();
+                    _central = new CancellationTokenSource();
+                    _resolverTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token);
                 }
+                else
+                {
+                    _resolverTokenSource.Cancel(false);
+                    _resolverTokenSource.Dispose();
+
+                    _resolverTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token);
+                    Tuple<Task, CancellationTokenSource> result;
+                    if (_currentTasks.TryGetValue(component, out result))
+                    {
+                        result.Item2.Cancel(false);
+                        result.Item2.Dispose();
+                    }
+                }
+            }
         }
 
         private void ParseAsyncInternal(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
@@ -279,9 +282,27 @@ namespace Rubberduck.Parsing.VBA
 
             foreach (var kvp in _state.ParseTrees)
             {
-                if (token.IsCancellationRequested) return;
-                ResolveDeclarations(kvp.Key.Component, kvp.Value);
+                var qualifiedName = kvp.Key;
+                if (_state.IsModified(qualifiedName))
+                {
+                    Debug.WriteLine(string.Format("Module '{0}' was modified since last parse. Walking parse tree for declarations...", kvp.Key.ComponentName));
+                    // modified module; walk parse tree and re-acquire all declarations
+                    if (token.IsCancellationRequested) return;
+                    ResolveDeclarations(qualifiedName.Component, kvp.Value);
+                }
+                else
+                {
+                    Debug.WriteLine(string.Format("Module '{0}' was not modified since last parse. Clearing identifier references...", kvp.Key.ComponentName));
+                    // clear identifier references for non-modified modules
+                    var declarations = _state.AllUserDeclarations.Where(item => item.QualifiedName.QualifiedModuleName.Equals(qualifiedName));
+                    foreach (var declaration in declarations)
+                    {
+                        declaration.ClearReferences();
+                    }
+                }
             }
+
+            // walk all parse trees (modified or not) for identifier references
             var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments, _state.AllAnnotations);
             foreach (var kvp in _state.ParseTrees)
             {
