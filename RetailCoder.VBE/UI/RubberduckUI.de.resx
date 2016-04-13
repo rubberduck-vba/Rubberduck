@@ -1480,4 +1480,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="HotkeyDescription_RefactorMoveCloserToUsage" xml:space="preserve">
     <value>Ziehe die Deklaration näher an die Nutzung. </value>
   </data>
+  <data name="HotkeyDescription_ParseAll" xml:space="preserve">
+    <value>Aktualisierung des Parserstatus</value>
+  </data>
 </root>
