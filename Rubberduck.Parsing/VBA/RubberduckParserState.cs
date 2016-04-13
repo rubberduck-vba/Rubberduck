@@ -474,7 +474,7 @@ namespace Rubberduck.Parsing.VBA
         private QualifiedSelection _lastSelection;
         private Declaration _selectedDeclaration;
 
-        public Declaration FindSelecteDeclaration(CodePane activeCodePane)
+        public Declaration FindSelectedDeclaration(CodePane activeCodePane)
         {
             var selection = activeCodePane.GetSelection();
             if (selection.Equals(_lastSelection))
@@ -493,6 +493,12 @@ namespace Rubberduck.Parsing.VBA
                         (IsSelectedDeclaration(selection, item) ||
                         item.References.Any(reference => IsSelectedReference(selection, reference))));
             }
+
+            if (_selectedDeclaration != null)
+            {
+                Debug.WriteLine("Current selection ({0}) is '{1}' ({2})", selection, _selectedDeclaration.IdentifierName, _selectedDeclaration.DeclarationType);
+            }
+
             return _selectedDeclaration;
         }
 

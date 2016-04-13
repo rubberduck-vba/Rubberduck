@@ -29,7 +29,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var target = _state.FindSelecteDeclaration(Vbe.ActiveCodePane);
+            var target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
             var canExecute = target != null 
                 && (target.DeclarationType == DeclarationType.Variable || target.DeclarationType == DeclarationType.Constant)
                 && target.References.Any();

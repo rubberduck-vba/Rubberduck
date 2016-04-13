@@ -29,7 +29,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            //var target = _state.FindSelecteDeclaration(Vbe.ActiveCodePane); // nope. logic is a bit more complex here.
+            //var target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane); // nope. logic is a bit more complex here.
 
             var selection = Vbe.ActiveCodePane.GetSelection();
             var targetInterface = _state.AllUserDeclarations.FindInterface(selection);

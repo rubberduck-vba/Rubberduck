@@ -28,7 +28,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var target = _state.FindSelecteDeclaration(pane);
+            var target = _state.FindSelectedDeclaration(pane);
 
             var canExecute = target != null 
                 && target.DeclarationType == DeclarationType.Variable

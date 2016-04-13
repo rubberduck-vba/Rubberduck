@@ -142,9 +142,10 @@ namespace Rubberduck
                 UiDispatcher.Invoke(() =>
                 {
                     _parser.State.OnParseRequested(this);
-                    _hooks.HookHotkeys();
                 });
             }, new StaTaskScheduler()).ConfigureAwait(false);
+
+            _hooks.HookHotkeys();
         }
 
         #region sink handlers. todo: move to another class
