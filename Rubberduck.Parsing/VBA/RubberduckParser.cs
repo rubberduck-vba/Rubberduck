@@ -72,6 +72,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void ReparseRequested(object sender, ParseRequestEventArgs e)
         {
+            _force = false;
             if (e.IsFullReparseRequest)
             {
                 Cancel();
@@ -84,8 +85,10 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        private bool _force;
         public void Parse()
         {
+            _force = true;
             if (!_state.Projects.Any())
             {
                 foreach (var project in _vbe.VBProjects.Cast<VBProject>())
@@ -142,6 +145,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         private void ParseAll()
         {
+            _force = false;
             var projects = _state.Projects
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
                 .ToList();
@@ -283,9 +287,9 @@ namespace Rubberduck.Parsing.VBA
             foreach (var kvp in _state.ParseTrees)
             {
                 var qualifiedName = kvp.Key;
-                if (_state.IsModified(qualifiedName))
+                if (_force || _state.IsModified(qualifiedName))
                 {
-                    Debug.WriteLine(string.Format("Module '{0}' was modified since last parse. Walking parse tree for declarations...", kvp.Key.ComponentName));
+                    Debug.WriteLine(string.Format("Module '{0}' is new or was modified since last parse. Walking parse tree for declarations...", kvp.Key.ComponentName));
                     // modified module; walk parse tree and re-acquire all declarations
                     if (token.IsCancellationRequested) return;
                     ResolveDeclarations(qualifiedName.Component, kvp.Value);
