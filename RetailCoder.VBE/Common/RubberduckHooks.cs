@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -91,7 +92,7 @@ namespace Rubberduck.Common
 
                 IsAttached = true;
             }
-            catch (Exception exception)
+            catch (Win32Exception exception)
             {
                 Debug.WriteLine(exception);
             }
@@ -111,13 +112,12 @@ namespace Rubberduck.Common
                     hook.Detach();
                     hook.MessageReceived -= hook_MessageReceived;
                 }
-
-                IsAttached = false;
             }
-            catch (Exception exception)
+            catch (Win32Exception exception)
             {
                 Debug.WriteLine(exception);
             }
+            IsAttached = false;
         }
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
@@ -166,9 +166,9 @@ namespace Rubberduck.Common
                             suppress = HandleHotkeyMessage(wParam);
                             break;
 
-                        //case WM.ACTIVATEAPP:
-                        //    HandleActivateAppMessage(wParam);
-                        //    break;
+                        case WM.ACTIVATEAPP:
+                            HandleActivateAppMessage(wParam);
+                            break;
                     }
                 }
 

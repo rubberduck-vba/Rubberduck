@@ -41,7 +41,7 @@ namespace Rubberduck.Common
                 Debug.WriteLine(exception);
             }
 
-            return IntPtr.Zero;
+            return User32.CallNextHookEx(_hookId, nCode, wParam, lParam);
         }
 
         private void OnMessageReceived()
@@ -85,12 +85,14 @@ namespace Rubberduck.Common
                 return;
             }
 
+            IsAttached = false;
             if (!User32.UnhookWindowsHookEx(_hookId))
             {
+                _hookId = IntPtr.Zero;
                 throw new Win32Exception();
             }
 
-            IsAttached = false;
+            _hookId = IntPtr.Zero;
             Debug.WriteLine("{0}: {1}", GetType().Name, IsAttached ? "Attached" : "Detached");
         }
     }

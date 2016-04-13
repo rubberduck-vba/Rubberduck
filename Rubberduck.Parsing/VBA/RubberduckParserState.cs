@@ -487,11 +487,19 @@ namespace Rubberduck.Parsing.VBA
 
             if (!selection.Equals(default(QualifiedSelection)))
             {
-                _selectedDeclaration = AllDeclarations
-                    .SingleOrDefault(item => item.DeclarationType != DeclarationType.Project &&
-                        item.DeclarationType != DeclarationType.ModuleOption &&
-                        (IsSelectedDeclaration(selection, item) ||
-                        item.References.Any(reference => IsSelectedReference(selection, reference))));
+                var matches = AllDeclarations
+                    .Where(item => item.DeclarationType != DeclarationType.Project &&
+                                   item.DeclarationType != DeclarationType.ModuleOption &&
+                                   (IsSelectedDeclaration(selection, item) ||
+                                    item.References.Any(reference => IsSelectedReference(selection, reference))));
+                try
+                {
+                    _selectedDeclaration = matches.SingleOrDefault();
+                }
+                catch (InvalidOperationException exception)
+                {
+                    Debug.WriteLine(exception);
+                }
             }
 
             if (_selectedDeclaration != null)

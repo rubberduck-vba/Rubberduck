@@ -104,6 +104,7 @@ namespace Rubberduck
 
         private void HandleMouseMessage()
         {
+            _stateBar.SetSelectionText(_parser.State.FindSelectedDeclaration(_vbe.ActiveCodePane));
             _appMenus.EvaluateCanExecute(_parser.State);
         }
 
