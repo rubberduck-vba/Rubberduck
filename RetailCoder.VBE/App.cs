@@ -18,6 +18,7 @@ using Rubberduck.UI.Command.MenuItems;
 using Infralution.Localization.Wpf;
 using Rubberduck.Common.Dispatch;
 using Rubberduck.Common.Hotkeys;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck
 {
@@ -325,7 +326,7 @@ namespace Rubberduck
             }
             catch (CultureNotFoundException exception)
             {
-                _logger.Error(exception, "Error Setting Culture for RubberDuck");
+                _logger.Error(exception, "Error Setting Culture for Rubberduck");
                 _messageBox.Show(exception.Message, "Rubberduck", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);

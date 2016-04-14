@@ -292,7 +292,7 @@ namespace Rubberduck.Parsing.VBA
                 var qualifiedName = kvp.Key;
                 if (/*_force || _state.IsModified(qualifiedName)*/ true)
                 {
-                    Debug.WriteLine(string.Format("Module '{0}' is new or was modified since last parse. Walking parse tree for declarations...", kvp.Key.ComponentName));
+                    Debug.WriteLine("Module '{0}' {1}", qualifiedName.ComponentName, _state.IsModified(qualifiedName) ? "was modified" : "was NOT modified");
                     // modified module; walk parse tree and re-acquire all declarations
                     if (token.IsCancellationRequested) return;
                     ResolveDeclarations(qualifiedName.Component, kvp.Value);

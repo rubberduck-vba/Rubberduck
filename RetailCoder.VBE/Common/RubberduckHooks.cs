@@ -109,8 +109,8 @@ namespace Rubberduck.Common
             {
                 foreach (var hook in Hooks)
                 {
-                    hook.Detach();
                     hook.MessageReceived -= hook_MessageReceived;
+                    hook.Detach();
                 }
             }
             catch (Win32Exception exception)
