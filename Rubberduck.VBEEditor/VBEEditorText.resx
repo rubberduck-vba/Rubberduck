@@ -97,7 +97,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="SelectionLocationInfo" xml:space="preserve">
+  <data name="SelectionLocationRange" xml:space="preserve">
     <value>L{0}C{1} - L{2}C{3}</value>
+  </data>
+  <data name="SelectionLocationPosition" xml:space="preserve">
+    <value>L{0}C{1}</value>
   </data>
 </root>

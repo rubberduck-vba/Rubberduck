@@ -61,11 +61,20 @@ namespace Rubberduck.VBEditor {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die L{0}C{1} ähnelt.
+        /// </summary>
+        internal static string SelectionLocationPosition {
+            get {
+                return ResourceManager.GetString("SelectionLocationPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die L{0}C{1} - L{2}C{3} ähnelt.
         /// </summary>
-        internal static string SelectionLocationInfo {
+        internal static string SelectionLocationRange {
             get {
-                return ResourceManager.GetString("SelectionLocationInfo", resourceCulture);
+                return ResourceManager.GetString("SelectionLocationRange", resourceCulture);
             }
         }
     }
