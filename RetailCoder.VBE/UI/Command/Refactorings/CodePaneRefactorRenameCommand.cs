@@ -33,7 +33,7 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
-            return _state.Status == ParserState.Ready && target != null;
+            return _state.Status == ParserState.Ready && target != null && !target.IsBuiltIn;
         }
 
         public override void Execute(object parameter)

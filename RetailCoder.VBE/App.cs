@@ -85,7 +85,7 @@ namespace Rubberduck
             _hookActions = new Dictionary<Type, Action>
             {
                 { typeof(MouseHook), HandleMouseMessage },
-                //{ typeof(KeyboardHook), HandleKeyboardMessage },
+                { typeof(KeyboardHook), HandleKeyboardMessage },
             };
             
             
@@ -104,17 +104,18 @@ namespace Rubberduck
 
         private void HandleMouseMessage()
         {
-            _appMenus.EvaluateCanExecute(_parser.State);
+            RefreshSelection();
         }
 
         private void HandleKeyboardMessage()
         {
-            var pane = _vbe.ActiveCodePane;
-            if (pane == null)
-            {
-                return;
-            }
-            _parser.State.OnParseRequested(this, pane.CodeModule.Parent);
+            RefreshSelection();
+        }
+
+        private void RefreshSelection()
+        {
+            _stateBar.SetSelectionText(_parser.State.FindSelectedDeclaration(_vbe.ActiveCodePane));
+            _appMenus.EvaluateCanExecute(_parser.State);
         }
 
         private void _configService_SettingsChanged(object sender, EventArgs e)

@@ -415,7 +415,16 @@ namespace Rubberduck.Parsing.VBA
 
         public IEnumerable<KeyValuePair<QualifiedModuleName, IParseTree>> ParseTrees { get { return _parseTrees; } }
 
-        public bool HasAllParseTrees { get { return _moduleStates.Count == _parseTrees.Count; } }
+        public bool HasAllParseTrees(IReadOnlyList<VBComponent> expected)
+        {
+            var expectedModules = expected.Select(module => new QualifiedModuleName(module));
+            foreach (var module in _moduleStates.Keys.Where(item => !expectedModules.Contains(item)))
+            {
+                ClearDeclarations(module.Component);
+            }
+
+            return _parseTrees.Count == expected.Count;
+        }        
 
         public TokenStreamRewriter GetRewriter(VBComponent component)
         {
@@ -487,11 +496,19 @@ namespace Rubberduck.Parsing.VBA
 
             if (!selection.Equals(default(QualifiedSelection)))
             {
-                _selectedDeclaration = AllDeclarations
-                    .SingleOrDefault(item => item.DeclarationType != DeclarationType.Project &&
-                        item.DeclarationType != DeclarationType.ModuleOption &&
-                        (IsSelectedDeclaration(selection, item) ||
-                        item.References.Any(reference => IsSelectedReference(selection, reference))));
+                var matches = AllDeclarations
+                    .Where(item => item.DeclarationType != DeclarationType.Project &&
+                                   item.DeclarationType != DeclarationType.ModuleOption &&
+                                   (IsSelectedDeclaration(selection, item) ||
+                                    item.References.Any(reference => IsSelectedReference(selection, reference))));
+                try
+                {
+                    _selectedDeclaration = matches.SingleOrDefault();
+                }
+                catch (InvalidOperationException exception)
+                {
+                    Debug.WriteLine(exception);
+                }
             }
 
             if (_selectedDeclaration != null)
