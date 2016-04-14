@@ -415,7 +415,16 @@ namespace Rubberduck.Parsing.VBA
 
         public IEnumerable<KeyValuePair<QualifiedModuleName, IParseTree>> ParseTrees { get { return _parseTrees; } }
 
-        public bool HasAllParseTrees { get { return _moduleStates.Count == _parseTrees.Count; } }
+        public bool HasAllParseTrees(IReadOnlyList<VBComponent> expected)
+        {
+            var expectedModules = expected.Select(module => new QualifiedModuleName(module));
+            foreach (var module in _moduleStates.Keys.Where(item => !expectedModules.Contains(item)))
+            {
+                ClearDeclarations(module.Component);
+            }
+
+            return _parseTrees.Count == expected.Count;
+        }        
 
         public TokenStreamRewriter GetRewriter(VBComponent component)
         {

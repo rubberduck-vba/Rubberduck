@@ -279,7 +279,10 @@ namespace Rubberduck.Parsing.VBA
 
         private void ResolveInternal(CancellationToken token)
         {
-            if (!_state.HasAllParseTrees)
+            var components = _state.Projects
+                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
+                .SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
+            if (!_state.HasAllParseTrees(components))
             {
                 return;
             }
@@ -287,7 +290,7 @@ namespace Rubberduck.Parsing.VBA
             foreach (var kvp in _state.ParseTrees)
             {
                 var qualifiedName = kvp.Key;
-                if (_force || _state.IsModified(qualifiedName))
+                if (/*_force || _state.IsModified(qualifiedName)*/ true)
                 {
                     Debug.WriteLine(string.Format("Module '{0}' is new or was modified since last parse. Walking parse tree for declarations...", kvp.Key.ComponentName));
                     // modified module; walk parse tree and re-acquire all declarations

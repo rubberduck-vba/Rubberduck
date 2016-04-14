@@ -1,6 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common.WinAPI;
 
@@ -19,13 +23,29 @@ namespace Rubberduck.Common
             _callback = HookCallback;
         }
 
+        // keys that don't modify anything in the code pane but the current selection
+        private static readonly IReadOnlyList<Keys> NavigationKeys = new[]
+        {
+            Keys.Down,
+            Keys.Up,
+            Keys.Left,
+            Keys.Right,
+            Keys.PageDown,
+            Keys.PageUp,
+            Keys.Home,
+            Keys.End,
+        };
+
         private int _lastLineIndex;
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
             try
             {
                 var pane = _vbe.ActiveCodePane;
-                if (User32.IsVbeWindowActive((IntPtr)_vbe.MainWindow.HWnd) && pane != null && (WM)wParam == WM.KEYUP)
+                if ((WM)wParam == WM.KEYDOWN
+                    && pane != null
+                    && NavigationKeys.Contains((Keys)Marshal.ReadInt32(lParam)) 
+                    && User32.IsVbeWindowActive((IntPtr)_vbe.MainWindow.HWnd))
                 {
                     int startLine;
                     int endLine;
@@ -36,11 +56,9 @@ namespace Rubberduck.Common
                     pane.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
                     if (startLine != _lastLineIndex)
                     {
-                        // if the current line has changed, let the KEYDOWN be written to the IDE, and notify on KEYUP:
                         _lastLineIndex = startLine;
                         if (nCode >= 0)
                         {
-                            //var key = (Keys)Marshal.ReadInt32(lParam);
                             OnMessageReceived();
                         }
                     }
