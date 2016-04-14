@@ -63,7 +63,7 @@ namespace Rubberduck.Common.Hotkeys
         {
             if (!IsAttached)
             {
-                throw new InvalidOperationException(Rubberduck.UI.RubberduckUI.CommonHotkey_HookDetached);
+                return;
             }
 
             User32.UnregisterHotKey(_hWndVbe, HotkeyInfo.HookId);
@@ -76,7 +76,7 @@ namespace Rubberduck.Common.Hotkeys
         {
             if (IsAttached)
             {
-                throw new InvalidOperationException(Rubberduck.UI.RubberduckUI.CommonHotkey_HookAttached);
+                return;
             }
 
             var hookId = (IntPtr)Kernel32.GlobalAddAtom(Guid.NewGuid().ToString());
