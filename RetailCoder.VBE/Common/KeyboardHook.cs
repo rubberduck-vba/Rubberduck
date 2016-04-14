@@ -36,13 +36,12 @@ namespace Rubberduck.Common
             Keys.End,
         };
 
-        private int _lastLineIndex;
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
             try
             {
                 var pane = _vbe.ActiveCodePane;
-                if ((WM)wParam == WM.KEYDOWN
+                if ((WM)wParam == WM.KEYUP
                     && pane != null
                     && NavigationKeys.Contains((Keys)Marshal.ReadInt32(lParam)) 
                     && User32.IsVbeWindowActive((IntPtr)_vbe.MainWindow.HWnd))
@@ -54,13 +53,9 @@ namespace Rubberduck.Common
 
                     // not using extension method because a QualifiedSelection would be overkill:
                     pane.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
-                    if (startLine != _lastLineIndex)
+                    if (nCode >= 0)
                     {
-                        _lastLineIndex = startLine;
-                        if (nCode >= 0)
-                        {
-                            OnMessageReceived();
-                        }
+                        OnMessageReceived();
                     }
                 }
 

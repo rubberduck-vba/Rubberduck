@@ -135,6 +135,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     // ghost component shouldn't even exist
                     ClearDeclarations(component);
+                    Status = EvaluateParserState();
                     return;
                 }
             }
@@ -499,11 +500,16 @@ namespace Rubberduck.Parsing.VBA
                 var matches = AllDeclarations
                     .Where(item => item.DeclarationType != DeclarationType.Project &&
                                    item.DeclarationType != DeclarationType.ModuleOption &&
+                                   item.DeclarationType != DeclarationType.Class &&
+                                   item.DeclarationType != DeclarationType.Module &&
                                    (IsSelectedDeclaration(selection, item) ||
                                     item.References.Any(reference => IsSelectedReference(selection, reference))));
                 try
                 {
-                    _selectedDeclaration = matches.SingleOrDefault();
+                    var match = matches.SingleOrDefault() ?? AllUserDeclarations
+                        .SingleOrDefault(item => (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module)
+                                && item.QualifiedName.QualifiedModuleName.Equals(selection.QualifiedName));
+                    _selectedDeclaration = match;
                 }
                 catch (InvalidOperationException exception)
                 {
@@ -522,7 +528,7 @@ namespace Rubberduck.Parsing.VBA
         private static bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
         {
             return declaration.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName)
-                   && declaration.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Selection);
+                   && (declaration.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Selection));
         }
 
         private static bool IsSelectedReference(QualifiedSelection selection, IdentifierReference reference)

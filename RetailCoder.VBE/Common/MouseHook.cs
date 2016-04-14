@@ -26,7 +26,7 @@ namespace Rubberduck.Common
                 if (User32.IsVbeWindowActive((IntPtr)_vbe.MainWindow.HWnd) && nCode >= 0 && pane != null)
                 {
                     var button = (WM)wParam;
-                    if (button == WM.RBUTTONDOWN || button == WM.LBUTTONDOWN)
+                    if (button == WM.RBUTTONUP || button == WM.LBUTTONUP)
                     {
                         // handle right-click to evaluate commands' CanExecute before the context menu is shown;
                         // handle left-click to do the same before the Rubberduck menu is drawn, too.

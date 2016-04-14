@@ -46,22 +46,28 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public void SetSelectionText(Declaration declaration)
         {
-            UiDispatcher.Invoke(() =>
+            if (declaration == null && _vbe.ActiveCodePane != null)
             {
-                if (declaration == null && _vbe.ActiveCodePane != null)
-                {
-                    var selection = _vbe.ActiveCodePane.GetSelection();
-                    SetSelectionText(selection);
-                }
-                else if (declaration != null)
-                {
-                    _selectionButton.Caption = string.Format("{0} ({1}): {2} ({3})", 
-                        declaration.QualifiedName.QualifiedModuleName,
-                        declaration.QualifiedSelection.Selection,
-                        declaration.IdentifierName,
-                        RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType));
-                }
-            });
+                var selection = _vbe.ActiveCodePane.GetSelection();
+                SetSelectionText(selection);
+            }
+            else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.Class && declaration.DeclarationType != DeclarationType.Module)
+            {
+                _selectionButton.Caption = string.Format("{0} ({1}): {2} ({3})", 
+                    declaration.QualifiedName.QualifiedModuleName,
+                    declaration.QualifiedSelection.Selection,
+                    declaration.IdentifierName,
+                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType));
+            }
+            else if (declaration != null)
+            {
+                var selection = _vbe.ActiveCodePane.GetSelection();
+                _selectionButton.Caption = string.Format("{0}: {1} ({2}) {3}",
+                    declaration.QualifiedName.QualifiedModuleName,
+                    declaration.IdentifierName,
+                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType),
+                    selection.Selection);
+            }
         }
 
         private void SetSelectionText(QualifiedSelection selection)
