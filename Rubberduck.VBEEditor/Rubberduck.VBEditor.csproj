@@ -103,6 +103,11 @@
     <Compile Include="Extensions\VBComponentExtensions.cs" />
     <Compile Include="Extensions\VBComponentsExtensions.cs" />
     <Compile Include="Extensions\VbeExtensions.cs" />
+    <Compile Include="VBEEditorText.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VBEEditorText.resx</DependentUpon>
+    </Compile>
     <Compile Include="VBEHost\AccessApp.cs" />
     <Compile Include="VBEHost\CorelDRAWApp.cs" />
     <Compile Include="VBEHost\ExcelApp.cs" />
@@ -121,6 +126,16 @@
     <Compile Include="VBEInterfaces\RubberduckCodePane\ICodePaneWrapperFactory.cs" />
     <Compile Include="VBEInterfaces\RubberduckCodePane\CodePaneWrapperFactory.cs" />
     <Compile Include="VBEInterfaces\RubberduckCodePane\CodePaneWrapper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="VBEEditorText.de.resx" />
+    <EmbeddedResource Include="VBEEditorText.fr.resx" />
+    <EmbeddedResource Include="VBEEditorText.ja.resx" />
+    <EmbeddedResource Include="VBEEditorText.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>VBEEditorText.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VBEEditorText.sv.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
