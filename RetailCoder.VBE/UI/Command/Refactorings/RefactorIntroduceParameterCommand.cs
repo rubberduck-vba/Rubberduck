@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Command.Refactorings
             var selection = Vbe.ActiveCodePane.GetSelection();
             var target = _state.AllUserDeclarations.FindTarget(selection, new []{DeclarationType.Variable, DeclarationType.Constant});
 
-            var canExecute = target != null && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
+            var canExecute = target != null && target.ParentScopeDeclaration != null && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
 
             Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;

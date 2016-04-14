@@ -112,6 +112,8 @@ namespace Rubberduck.Common
 
             if (!User32.UnhookWindowsHookEx(_hookId))
             {
+                IsAttached = false;
+                _hookId = IntPtr.Zero;
                 throw new Win32Exception();
             }
 
