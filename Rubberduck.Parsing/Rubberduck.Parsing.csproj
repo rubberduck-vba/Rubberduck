@@ -84,6 +84,11 @@
     <Compile Include="Grammar\VBAParserVisitor.cs" />
     <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IRubberduckParser.cs" />
+    <Compile Include="ParsingText.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ParsingText.resx</DependentUpon>
+    </Compile>
     <Compile Include="Preprocessing\AbsLibraryFunctionExpression.cs" />
     <Compile Include="Preprocessing\BinaryMinusExpression.cs" />
     <Compile Include="Preprocessing\BinaryPlusExpression.cs" />
@@ -233,7 +238,16 @@
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="ParsingText.de.resx" />
+    <EmbeddedResource Include="ParsingText.fr.resx" />
+    <EmbeddedResource Include="ParsingText.ja.resx" />
+    <EmbeddedResource Include="ParsingText.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ParsingText.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParsingText.sv.resx" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
