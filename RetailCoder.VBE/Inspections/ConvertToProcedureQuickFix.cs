@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections
             var context = functionContext ?? propertyGetContext;
             if (context == null)
             {
-                throw new InvalidOperationException(string.Format("Context type '{0}' is not valid for {1}.", Context.GetType(), GetType()));
+                throw new InvalidOperationException(string.Format(InspectionsUI.InvalidContextTypeInspectionFix, Context.GetType(), GetType()));
             }
 
             string token = functionContext != null
