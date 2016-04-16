@@ -82,6 +82,16 @@ namespace Rubberduck.VBEditor
                 : string.Format("L{0}C{1} - L{2}C{3}", _startLine, _startColumn, _endLine, _endColumn);
         }
 
+        public static bool operator ==(Selection selection1, Selection selection2)
+        {
+            return selection1.Equals(selection2);
+        }
+
+        public static bool operator !=(Selection selection1, Selection selection2)
+        {
+            return !(selection1 == selection2);
+        }
+
         public override bool Equals(object obj)
         {
             return Equals((Selection) obj);

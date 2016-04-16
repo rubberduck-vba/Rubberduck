@@ -131,14 +131,14 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
             pane.Show();
 
             var mainWindowHandle = pane.VBE.MainWindow.Handle();
-            var childWindowFinder = new NativeWindowMethods.ChildWindowFinder(pane.Window.Caption);
+            var childWindowFinder = new NativeMethods.ChildWindowFinder(pane.Window.Caption);
 
-            NativeWindowMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
+            NativeMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
             var handle = childWindowFinder.ResultHandle;
 
             if (handle != IntPtr.Zero)
             {
-                NativeWindowMethods.ActivateWindow(handle, mainWindowHandle);
+                NativeMethods.ActivateWindow(handle, mainWindowHandle);
             }
         }
 

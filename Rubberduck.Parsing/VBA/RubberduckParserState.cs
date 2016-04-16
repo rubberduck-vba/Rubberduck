@@ -47,7 +47,7 @@ namespace Rubberduck.Parsing.VBA
         public event EventHandler<ParseRequestEventArgs> ParseRequest;
 
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
-        private readonly IDictionary<string,VBProject> _projects = new Dictionary<string,VBProject>();
+        private readonly IDictionary<string,Func<VBProject>> _projects = new Dictionary<string,Func<VBProject>>();
 
         private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>> _declarations =
             new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>>();
@@ -81,20 +81,35 @@ namespace Rubberduck.Parsing.VBA
             var name = project.ProjectName();
             if (!_projects.ContainsKey(name))
             {
-                _projects.Add(name, project);
+                _projects.Add(name, () => project);
             }
         }
 
-        public void RemoveProject(VBProject project)
+        public void RemoveProject(string name)
         {
-            var name = project.ProjectName();
             if (_projects.ContainsKey(name))
             {
                 _projects.Remove(name);
             }
         }
 
-        public IReadOnlyList<VBProject> Projects { get { return _projects.Values.ToList(); } }
+        public void RemoveProject(VBProject project)
+        {
+            var name = project.ProjectName();
+            RemoveProject(name);
+
+            // note: attempt to fix ghost projects
+            name = project.Name;
+            RemoveProject(name);
+        }
+
+        public IEnumerable<VBProject> Projects
+        {
+            get
+            {
+                return _projects.Values.Select(project => project.Invoke());
+            }
+        }
 
         public IReadOnlyList<Tuple<VBComponent, SyntaxErrorException>> ModuleExceptions
         {

@@ -101,9 +101,6 @@ namespace Rubberduck.Parsing.Symbols
                 result = value;
             }
             _customFolder = result;
-            _isArray = IsArray();
-            _hasTypeHint = HasTypeHint();
-            _isTypeSpecified = IsTypeSpecified();
         }
 
         private readonly bool _isBuiltIn;

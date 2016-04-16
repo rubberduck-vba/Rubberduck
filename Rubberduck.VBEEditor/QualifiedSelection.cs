@@ -30,6 +30,16 @@
             } 
         }
 
+        public static bool operator ==(QualifiedSelection selection1, QualifiedSelection selection2)
+        {
+            return selection1.Equals(selection2);
+        }
+
+        public static bool operator !=(QualifiedSelection selection1, QualifiedSelection selection2)
+        {
+            return !(selection1 == selection2);
+        }
+
         public override bool Equals(object obj)
         {
             var other = (QualifiedSelection) obj;
