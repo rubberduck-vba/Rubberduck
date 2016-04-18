@@ -138,6 +138,19 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public void SetModuleState(ParserState state)
+        {
+            var projects = Projects
+                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
+                .ToList();
+
+            var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
+            foreach (var component in components)
+            {
+                SetModuleState(component, state);
+            }
+        }
+
         public void SetModuleState(VBComponent component, ParserState state, SyntaxErrorException parserError = null)
         {
             if (AllUserDeclarations.Any())
@@ -550,6 +563,18 @@ namespace Rubberduck.Parsing.VBA
         {
             return reference.QualifiedModuleName.Equals(selection.QualifiedName)
                    && reference.Selection.ContainsFirstCharacter(selection.Selection);
+        }
+
+        public void RemoveBuiltInDeclarations(Reference reference)
+        {
+            var projectName = reference.Name;
+            var key = new QualifiedModuleName(projectName, projectName);
+
+            ConcurrentDictionary<Declaration, byte> items;
+            if (!_declarations.TryRemove(key, out items))
+            {
+                Debug.WriteLine("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, reference.Guid);
+            }
         }
     }
 }

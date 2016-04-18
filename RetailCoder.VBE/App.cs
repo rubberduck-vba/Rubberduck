@@ -93,6 +93,20 @@ namespace Rubberduck
             UiDispatcher.Initialize();
         }
 
+        private void ReferencesEvents_ItemAdded(Reference reference)
+        {
+            var state = _parser.State.Status;
+            _parser.LoadComReference(reference);
+            _parser.State.SetModuleState(state);
+        }
+
+        private void ReferencesEvents_ItemRemoved(Reference reference)
+        {
+            var state = _parser.State.Status;
+            _parser.UnloadComReference(reference);
+            _parser.State.SetModuleState(state);
+        }
+
         private void _hooks_MessageReceived(object sender, HookEventArgs e)
         {
             var hookType = sender.GetType();
@@ -145,7 +159,7 @@ namespace Rubberduck
                 {
                     _parser.State.OnParseRequested(this);
                 });
-            }, new StaTaskScheduler()).ConfigureAwait(false);
+            }).ConfigureAwait(false);
 
             _hooks.HookHotkeys();
         }
@@ -153,6 +167,7 @@ namespace Rubberduck
         #region sink handlers. todo: move to another class
         async void sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
+            _vbe.Events.ReferencesEvents[e.Item].ItemAdded -= ReferencesEvents_ItemAdded;
             _parser.State.RemoveProject(e.Item);
 
             Debug.WriteLine(string.Format("Project '{0}' was removed.", e.Item.Name));
@@ -168,6 +183,8 @@ namespace Rubberduck
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
+            _vbe.Events.ReferencesEvents[e.Item].ItemAdded += ReferencesEvents_ItemAdded;
+            _vbe.Events.ReferencesEvents[e.Item].ItemRemoved += ReferencesEvents_ItemRemoved;
             _parser.State.AddProject(e.Item);
 
             if (!_parser.State.AllDeclarations.Any())
