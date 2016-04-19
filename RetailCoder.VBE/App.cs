@@ -153,7 +153,9 @@ namespace Rubberduck
         #region sink handlers. todo: move to another class
         async void sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
-            _vbe.Events.ReferencesEvents[e.Item].ItemAdded -= ReferencesEvents_ItemAdded;
+            var sink = (VBProjectsEventsSink)sender;
+            _componentsEventSinks.Remove(sink);
+            _referencesEventsSinks.Remove(sink);
             _parser.State.RemoveProject(e.Item);
 
             Debug.WriteLine(string.Format("Project '{0}' was removed.", e.Item.Name));
@@ -167,8 +169,15 @@ namespace Rubberduck
             }
         }
 
+        private readonly IDictionary<VBProjectsEventsSink, VBComponentsEventsSink> _componentsEventSinks = 
+            new Dictionary<VBProjectsEventsSink, VBComponentsEventsSink>();
+
+        private readonly IDictionary<VBProjectsEventsSink, ReferencesEventsSink> _referencesEventsSinks = 
+            new Dictionary<VBProjectsEventsSink, ReferencesEventsSink>();
+
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
+            var sink = (VBProjectsEventsSink)sender;
             _parser.State.AddProject(e.Item);
 
             if (!_parser.State.AllDeclarations.Any())
@@ -193,10 +202,12 @@ namespace Rubberduck
             componentsSink.ComponentRemoved += sink_ComponentRemoved;
             componentsSink.ComponentRenamed += sink_ComponentRenamed;
             componentsSink.ComponentSelected += sink_ComponentSelected;
+            _componentsEventSinks.Add(sink, componentsSink);
 
             var referencesSink = new ReferencesEventsSink();
             referencesSink.ReferenceAdded += referencesSink_ReferenceAdded;
             referencesSink.ReferenceRemoved += referencesSink_ReferenceRemoved;
+            _referencesEventsSinks.Add(sink, referencesSink);
 
             int cookie;
             connectionPoint.Advise(componentsSink, out cookie);
