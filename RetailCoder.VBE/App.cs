@@ -93,20 +93,6 @@ namespace Rubberduck
             UiDispatcher.Initialize();
         }
 
-        private void ReferencesEvents_ItemAdded(Reference reference)
-        {
-            var state = _parser.State.Status;
-            _parser.LoadComReference(reference);
-            _parser.State.SetModuleState(state);
-        }
-
-        private void ReferencesEvents_ItemRemoved(Reference reference)
-        {
-            var state = _parser.State.Status;
-            _parser.UnloadComReference(reference);
-            _parser.State.SetModuleState(state);
-        }
-
         private void _hooks_MessageReceived(object sender, HookEventArgs e)
         {
             var hookType = sender.GetType();
@@ -183,8 +169,6 @@ namespace Rubberduck
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
-            _vbe.Events.ReferencesEvents[e.Item].ItemAdded += ReferencesEvents_ItemAdded;
-            _vbe.Events.ReferencesEvents[e.Item].ItemRemoved += ReferencesEvents_ItemRemoved;
             _parser.State.AddProject(e.Item);
 
             if (!_parser.State.AllDeclarations.Any())
@@ -202,19 +186,37 @@ namespace Rubberduck
             IConnectionPoint connectionPoint;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out connectionPoint);
 
-            var sink = new VBComponentsEventsSink();
-            sink.ComponentActivated += sink_ComponentActivated;
-            sink.ComponentAdded += sink_ComponentAdded;
-            sink.ComponentReloaded += sink_ComponentReloaded;
-            sink.ComponentRemoved += sink_ComponentRemoved;
-            sink.ComponentRenamed += sink_ComponentRenamed;
-            sink.ComponentSelected += sink_ComponentSelected;
+            var componentsSink = new VBComponentsEventsSink();
+            componentsSink.ComponentActivated += sink_ComponentActivated;
+            componentsSink.ComponentAdded += sink_ComponentAdded;
+            componentsSink.ComponentReloaded += sink_ComponentReloaded;
+            componentsSink.ComponentRemoved += sink_ComponentRemoved;
+            componentsSink.ComponentRenamed += sink_ComponentRenamed;
+            componentsSink.ComponentSelected += sink_ComponentSelected;
+
+            var referencesSink = new ReferencesEventsSink();
+            referencesSink.ReferenceAdded += referencesSink_ReferenceAdded;
+            referencesSink.ReferenceRemoved += referencesSink_ReferenceRemoved;
 
             int cookie;
-            connectionPoint.Advise(sink, out cookie);
+            connectionPoint.Advise(componentsSink, out cookie);
 
             _componentsEventsConnectionPoints.Add(e.Item.VBComponents, Tuple.Create(connectionPoint, cookie));
             _parser.State.OnParseRequested(sender);
+        }
+
+        private void referencesSink_ReferenceRemoved(object sender, DispatcherEventArgs<Reference> e)
+        {
+            var state = _parser.State.Status;
+            _parser.UnloadComReference(e.Item);
+            _parser.State.SetModuleState(state);
+        }
+
+        private void referencesSink_ReferenceAdded(object sender, DispatcherEventArgs<Reference> e)
+        {
+            var state = _parser.State.Status;
+            _parser.LoadComReference(e.Item);
+            _parser.State.SetModuleState(state);
         }
 
         async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
