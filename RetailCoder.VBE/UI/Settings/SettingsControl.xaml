@@ -143,8 +143,8 @@
                     </Grid.ColumnDefinitions>
                     <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings_ResetSettings}"
                             Height="20"
-                            Margin="10,0"
-                            Padding="5,0"
+                            Margin="5,0"
+                            Padding="10,0"
                             Command="{Binding ResetButtonCommand}" />
                     <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
                             Grid.Column="1"

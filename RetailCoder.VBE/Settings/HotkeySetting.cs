@@ -34,9 +34,9 @@ namespace Rubberduck.Settings
         public string ToMenuHotkeyString()
         {
             return string.Format("{0}{1}{2}+{3}",
-                HasCtrlModifier ? "Ctrl" : string.Empty,
-                HasShiftModifier ? (HasCtrlModifier ? "+" : string.Empty) + "Shift" : string.Empty,
-                HasAltModifier ? (HasCtrlModifier | HasShiftModifier ? "+" : string.Empty) + "Alt" : string.Empty,
+                HasCtrlModifier ? RubberduckUI.GeneralSettings_HotkeyCtrl : string.Empty,
+                HasShiftModifier ? (HasCtrlModifier ? "+" : string.Empty) + RubberduckUI.GeneralSettings_HotkeyShift : string.Empty,
+                HasAltModifier ? (HasCtrlModifier | HasShiftModifier ? "+" : string.Empty) + RubberduckUI.GeneralSettings_HotkeyAlt : string.Empty,
                 Key1);
         }
 

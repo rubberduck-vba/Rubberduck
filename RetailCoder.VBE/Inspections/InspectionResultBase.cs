@@ -100,7 +100,7 @@ namespace Rubberduck.Inspections
         {
             var module = QualifiedSelection.QualifiedName;
             return string.Format(
-                "{0}: {1} - {2}.{3}, line {4}",
+                InspectionsUI.QualifiedSelectionInspection,
                 Inspection.Severity,
                 Description,
                 module.ProjectName,

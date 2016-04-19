@@ -318,7 +318,7 @@
   </data>
   <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
     <value>Re&amp;order Parameters</value>
-  </data>
+  <comment>TC: different hotkey</comment></data>
   <data name="RubberduckMenu" xml:space="preserve">
     <value>Ru&amp;bberduck</value>
   </data>
@@ -378,7 +378,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="ResolutionProgress" xml:space="preserve">
     <value>Resolving...</value>
-  </data>
+  <comment>TC: deleted {0}</comment></data>
   <data name="RubberduckLoadFailure" xml:space="preserve">
     <value>Rubberduck Add-In could not be loaded</value>
   </data>
@@ -735,7 +735,7 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="SourceControl_AttributesFile" xml:space="preserve">
     <value>'.gitattributes' File</value>
-  </data>
+  <comment>TC</comment></data>
   <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -750,7 +750,7 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="SourceControl_IgnoreFile" xml:space="preserve">
     <value>'.gitignore' File</value>
-  </data>
+  <comment>TC</comment></data>
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
     <value>Init New Repo from this Project</value>
   </data>
@@ -765,7 +765,7 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="SourceControl_UserNameLabel" xml:space="preserve">
     <value>User Name:</value>
-  </data>
+  <comment>TC: added colon</comment></data>
   <data name="SourceControl_Changes" xml:space="preserve">
     <value>Changes</value>
   </data>

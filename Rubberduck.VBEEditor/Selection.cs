@@ -78,8 +78,8 @@ namespace Rubberduck.VBEditor
         public override string ToString()
         {
             return (_startLine == _endLine && _startColumn == _endColumn)
-                ? string.Format("L{0}C{1}", _startLine, _startColumn)
-                : string.Format("L{0}C{1} - L{2}C{3}", _startLine, _startColumn, _endLine, _endColumn);
+                ? string.Format(Rubberduck.VBEditor.VBEEditorText.SelectionLocationPosition, _startLine, _startColumn)
+                : string.Format(Rubberduck.VBEditor.VBEEditorText.SelectionLocationRange, _startLine, _startColumn, _endLine, _endColumn);
         }
 
         public static bool operator ==(Selection selection1, Selection selection2)
