@@ -41,8 +41,10 @@ namespace Rubberduck
         private readonly IConnectionPoint _projectsEventsConnectionPoint;
         private readonly int _projectsEventsCookie;
 
-        private readonly IDictionary<VBComponents, Tuple<IConnectionPoint, int>>  _componentsEventsConnectionPoints = 
-            new Dictionary<VBComponents, Tuple<IConnectionPoint, int>>();
+        private readonly IDictionary<VBProjectsEventsSink, Tuple<IConnectionPoint, int>>  _componentsEventsConnectionPoints = 
+            new Dictionary<VBProjectsEventsSink, Tuple<IConnectionPoint, int>>();
+        private readonly IDictionary<VBProjectsEventsSink, Tuple<IConnectionPoint, int>> _referencesEventsConnectionPoints =
+            new Dictionary<VBProjectsEventsSink, Tuple<IConnectionPoint, int>>();
 
         private readonly IDictionary<Type, Action> _hookActions;
 
@@ -159,14 +161,21 @@ namespace Rubberduck
             _parser.State.RemoveProject(e.Item);
 
             Debug.WriteLine(string.Format("Project '{0}' was removed.", e.Item.Name));
-            Tuple<IConnectionPoint, int> value;
-            if (_componentsEventsConnectionPoints.TryGetValue(e.Item.VBComponents, out value))
+            Tuple<IConnectionPoint, int> componentsTuple;
+            if (_componentsEventsConnectionPoints.TryGetValue(sink, out componentsTuple))
             {
-                value.Item1.Unadvise(value.Item2);
-                _componentsEventsConnectionPoints.Remove(e.Item.VBComponents);
-
-                _parser.State.ClearDeclarations(e.Item);
+                componentsTuple.Item1.Unadvise(componentsTuple.Item2);
+                _componentsEventsConnectionPoints.Remove(sink);
             }
+
+            Tuple<IConnectionPoint, int> referencesTuple;
+            if (_referencesEventsConnectionPoints.TryGetValue(sink, out referencesTuple))
+            {
+                referencesTuple.Item1.Unadvise(referencesTuple.Item2);
+                _referencesEventsConnectionPoints.Remove(sink);
+            }
+
+            _parser.State.ClearDeclarations(e.Item);
         }
 
         private readonly IDictionary<VBProjectsEventsSink, VBComponentsEventsSink> _componentsEventSinks = 
@@ -189,9 +198,17 @@ namespace Rubberduck
             }
 
             Debug.WriteLine(string.Format("Project '{0}' was added.", e.Item.Name));
-            var connectionPointContainer = (IConnectionPointContainer)e.Item.VBComponents;
-            var interfaceId = typeof(_dispVBComponentsEvents).GUID;
-            
+            RegisterComponentsEventSink(e, sink);
+            RegisterReferencesEventsSink(e, sink);
+
+            _parser.State.OnParseRequested(sender);
+        }
+
+        private void RegisterComponentsEventSink(DispatcherEventArgs<VBProject> e, VBProjectsEventsSink sink)
+        {
+            var connectionPointContainer = (IConnectionPointContainer) e.Item.VBComponents;
+            var interfaceId = typeof (_dispVBComponentsEvents).GUID;
+
             IConnectionPoint connectionPoint;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out connectionPoint);
 
@@ -204,16 +221,28 @@ namespace Rubberduck
             componentsSink.ComponentSelected += sink_ComponentSelected;
             _componentsEventSinks.Add(sink, componentsSink);
 
+            int cookie;
+            connectionPoint.Advise(componentsSink, out cookie);
+
+            _componentsEventsConnectionPoints.Add(sink, Tuple.Create(connectionPoint, cookie));
+        }
+
+        private void RegisterReferencesEventsSink(DispatcherEventArgs<VBProject> e, VBProjectsEventsSink sink)
+        {
+            var connectionPointContainer = (IConnectionPointContainer)e.Item.References;
+            var interfaceId = typeof(_dispReferencesEvents).GUID;
+
+            IConnectionPoint connectionPoint;
+            connectionPointContainer.FindConnectionPoint(ref interfaceId, out connectionPoint);
+
             var referencesSink = new ReferencesEventsSink();
             referencesSink.ReferenceAdded += referencesSink_ReferenceAdded;
             referencesSink.ReferenceRemoved += referencesSink_ReferenceRemoved;
             _referencesEventsSinks.Add(sink, referencesSink);
 
             int cookie;
-            connectionPoint.Advise(componentsSink, out cookie);
-
-            _componentsEventsConnectionPoints.Add(e.Item.VBComponents, Tuple.Create(connectionPoint, cookie));
-            _parser.State.OnParseRequested(sender);
+            connectionPoint.Advise(referencesSink, out cookie);
+            _referencesEventsConnectionPoints.Add(sink, Tuple.Create(connectionPoint, cookie));
         }
 
         private void referencesSink_ReferenceRemoved(object sender, DispatcherEventArgs<Reference> e)
