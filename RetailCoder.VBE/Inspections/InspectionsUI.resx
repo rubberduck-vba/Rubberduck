@@ -503,4 +503,10 @@
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Disable this inspection</value>
   </data>
+  <data name="InvalidContextTypeInspectionFix" xml:space="preserve">
+    <value>Context type '{0}' is not valid for {1}.</value>
+  </data>
+  <data name="QualifiedSelectionInspection" xml:space="preserve">
+    <value>{0}: {1} - {2}.{3}, line {4}</value>
+  </data>
 </root>

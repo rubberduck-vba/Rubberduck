@@ -503,4 +503,10 @@
   <data name="EmptyStringLiteralInspectionResultFormat" xml:space="preserve">
     <value>vbNullString' sollte statt einem leeren String-Literal verwendet werden.</value>
   </data>
+  <data name="InvalidContextTypeInspectionFix" xml:space="preserve">
+    <value>Kontexttyp '{0}' ist nicht gültig für {1}.</value>
+  </data>
+  <data name="QualifiedSelectionInspection" xml:space="preserve">
+    <value>{0}: {1} - {2}.{3}, Zeile {4}</value>
+  </data>
 </root>
