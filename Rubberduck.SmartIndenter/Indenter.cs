@@ -699,7 +699,7 @@ namespace Rubberduck.SmartIndenter
                 atFirstProcLine = true;
 
                 // don't indent within type or enum constructs
-                if (value.EndsWith("Type") || value.EndsWith("Enum"))
+                if (value.EndsWith("Type ") || value.EndsWith("Enum "))
                 {
                     ins++;
                     noIndent = true;
@@ -714,7 +714,7 @@ namespace Rubberduck.SmartIndenter
                                                                  (line.Substring(value.Length, 1) == " " || 
                                                                   (line.Substring(value.Length, 1) == ":" && 
                                                                    line.Substring(value.Length + 1, 1) != "=")
-                                                                 )).Count(value => !value.EndsWith("Type ") && !value.EndsWith("Enum"));
+                                                                 )).Count(value => !value.EndsWith("Type ") && !value.EndsWith("Enum "));
 
             outs += outMatches;
             if (outMatches > 0)
