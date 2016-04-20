@@ -247,6 +247,7 @@ namespace Rubberduck
 
         private void referencesSink_ReferenceRemoved(object sender, DispatcherEventArgs<Reference> e)
         {
+            Debug.WriteLine(string.Format("Reference '{0}' was removed.", e.Item.Name));
             var state = _parser.State.Status;
             _parser.UnloadComReference(e.Item);
             _parser.State.SetModuleState(state);
@@ -254,6 +255,7 @@ namespace Rubberduck
 
         private void referencesSink_ReferenceAdded(object sender, DispatcherEventArgs<Reference> e)
         {
+            Debug.WriteLine(string.Format("Reference '{0}' was added.", e.Item.Name));
             var state = _parser.State.Status;
             _parser.LoadComReference(e.Item);
             _parser.State.SetModuleState(state);
