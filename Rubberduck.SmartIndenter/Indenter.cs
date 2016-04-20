@@ -26,7 +26,7 @@ namespace Rubberduck.SmartIndenter
                 {
                     foreach (var token in ProcedureLevelTypeTokens)
                     {
-                        _inProcedure.Add(string.Join(" ", (new [] {scope, modifier, token}).Where(x => !string.IsNullOrEmpty(x))));
+                        _inProcedure.Add(string.Join(" ", new [] {scope, modifier, token}.Where(x => !string.IsNullOrEmpty(x))));
                     }
                 }
             }
@@ -48,21 +48,22 @@ namespace Rubberduck.SmartIndenter
         public void IndentCurrentProcedure()
         {
             var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             var selection = GetSelection(pane);
 
             vbext_ProcKind procKind;
-            var procName = pane.CodeModule.get_ProcOfLine(selection.StartLine, out procKind);
+            var procName = module.ProcOfLine[selection.StartLine, out procKind];
 
             if (string.IsNullOrEmpty(procName))
             {
                 return;
             }
 
-            var startLine = pane.CodeModule.get_ProcStartLine(procName, procKind);
-            var endLine = startLine + pane.CodeModule.get_ProcCountLines(procName, procKind);
+            var startLine = module.ProcStartLine[procName, procKind];
+            var endLine = startLine + module.ProcCountLines[procName, procKind];
 
             selection = new Selection(startLine, 1, endLine, 1);
-            Indent(pane.CodeModule.Parent, procName, selection);
+            Indent(module.Parent, procName, selection);
         }
 
         public void IndentCurrentModule()
@@ -107,7 +108,7 @@ namespace Rubberduck.SmartIndenter
             lineCount += module.CountOfLines;
             for (var i = 0; i < module.CountOfLines; i++)
             {
-                if (!string.IsNullOrWhiteSpace(module.get_Lines(i, 1)))
+                if (!string.IsNullOrWhiteSpace(module.Lines[i, 1]))
                 {
                     return true;
                 }
@@ -119,7 +120,7 @@ namespace Rubberduck.SmartIndenter
         {
             for (var i = 0; i < module.CountOfLines; i++)
             {
-                if (!string.IsNullOrWhiteSpace(module.get_Lines(i, 1)))
+                if (!string.IsNullOrWhiteSpace(module.Lines[i, 1]))
                 {
                     return true;
                 }
@@ -138,42 +139,44 @@ namespace Rubberduck.SmartIndenter
             return new Selection(startLine, startColumn, endLine, endColumn);
         }
 
-        public void Indent(VBComponent module, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        public void Indent(VBComponent component, bool reportProgress = true, int linesAlreadyRebuilt = 0)
         {
-            var lineCount = module.CodeModule.CountOfLines;
+            var module = component.CodeModule;
+            var lineCount = module.CountOfLines;
             if (lineCount == 0)
             {
                 return;
             }
 
-            var codeLines = module.CodeModule.get_Lines(1, lineCount).Replace("\r", string.Empty).Split('\n');
-            Indent(codeLines, module.Name, reportProgress, linesAlreadyRebuilt);
+            var codeLines = module.Lines[1, lineCount].Replace("\r", string.Empty).Split('\n');
+            Indent(codeLines, component.Name, reportProgress, linesAlreadyRebuilt);
 
             for (var i = 0; i < lineCount; i++)
             {
-                if (module.CodeModule.get_Lines(i + 1, 1) != codeLines[i])
+                if (module.Lines[i + 1, 1] != codeLines[i])
                 {
-                    module.CodeModule.ReplaceLine(i + 1, codeLines[i]);
+                    component.CodeModule.ReplaceLine(i + 1, codeLines[i]);
                 }
             }
         }
 
-        public void Indent(VBComponent module, string procedureName, Selection selection, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        public void Indent(VBComponent component, string procedureName, Selection selection, bool reportProgress = true, int linesAlreadyRebuilt = 0)
         {
-            var lineCount = module.CodeModule.CountOfLines;
+            var module = component.CodeModule;
+            var lineCount = module.CountOfLines;
             if (lineCount == 0)
             {
                 return;
             }
 
-            var codeLines = module.CodeModule.get_Lines(selection.StartLine, selection.LineCount).Replace("\r", string.Empty).Split('\n');
+            var codeLines = module.Lines[selection.StartLine, selection.LineCount].Replace("\r", string.Empty).Split('\n');
             Indent(codeLines, procedureName, reportProgress, linesAlreadyRebuilt);
 
             for (var i = 0; i < selection.EndLine - selection.StartLine; i++)
             {
-                if (module.CodeModule.get_Lines(selection.StartLine + i, 1) != codeLines[i])
+                if (module.Lines[selection.StartLine + i, 1] != codeLines[i])
                 {
-                    module.CodeModule.ReplaceLine(selection.StartLine + i, codeLines[i]);
+                    component.CodeModule.ReplaceLine(selection.StartLine + i, codeLines[i]);
                 }
             }
         }
