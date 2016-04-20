@@ -9,13 +9,13 @@ namespace Rubberduck.SmartIndenter
     public class Indenter : IIndenter
     {
         private readonly VBE _vbe;
-        private readonly IIndenterSettings _settings;
+        private readonly Func<IIndenterSettings> _settings;
 
         private readonly HashSet<string> _inProcedure = new HashSet<string>();
         private List<string> _inCode = new List<string>();
         private List<string> _outCode = new List<string>();
 
-        public Indenter(VBE vbe, IIndenterSettings settings)
+        public Indenter(VBE vbe, Func<IIndenterSettings> settings)
         {
             _vbe = vbe;
             _settings = settings;
@@ -26,7 +26,7 @@ namespace Rubberduck.SmartIndenter
                 {
                     foreach (var token in ProcedureLevelTypeTokens)
                     {
-                        _inProcedure.Add(string.Join(" ", (new [] {scope, modifier, token}).Where(x => !string.IsNullOrEmpty(x))));
+                        _inProcedure.Add(string.Join(" ", new [] {scope, modifier, token}.Where(x => !string.IsNullOrEmpty(x))));
                     }
                 }
             }
@@ -48,21 +48,22 @@ namespace Rubberduck.SmartIndenter
         public void IndentCurrentProcedure()
         {
             var pane = _vbe.ActiveCodePane;
+            var module = pane.CodeModule;
             var selection = GetSelection(pane);
 
             vbext_ProcKind procKind;
-            var procName = pane.CodeModule.get_ProcOfLine(selection.StartLine, out procKind);
+            var procName = module.get_ProcOfLine(selection.StartLine, out procKind);
 
             if (string.IsNullOrEmpty(procName))
             {
                 return;
             }
 
-            var startLine = pane.CodeModule.get_ProcStartLine(procName, procKind);
-            var endLine = startLine + pane.CodeModule.get_ProcCountLines(procName, procKind);
+            var startLine = module.ProcStartLine[procName, procKind];
+            var endLine = startLine + module.ProcCountLines[procName, procKind];
 
             selection = new Selection(startLine, 1, endLine, 1);
-            Indent(pane.CodeModule.Parent, procName, selection);
+            Indent(module.Parent, procName, selection);
         }
 
         public void IndentCurrentModule()
@@ -107,7 +108,7 @@ namespace Rubberduck.SmartIndenter
             lineCount += module.CountOfLines;
             for (var i = 0; i < module.CountOfLines; i++)
             {
-                if (!string.IsNullOrWhiteSpace(module.get_Lines(i, 1)))
+                if (!string.IsNullOrWhiteSpace(module.Lines[i, 1]))
                 {
                     return true;
                 }
@@ -119,7 +120,7 @@ namespace Rubberduck.SmartIndenter
         {
             for (var i = 0; i < module.CountOfLines; i++)
             {
-                if (!string.IsNullOrWhiteSpace(module.get_Lines(i, 1)))
+                if (!string.IsNullOrWhiteSpace(module.Lines[i, 1]))
                 {
                     return true;
                 }
@@ -138,49 +139,53 @@ namespace Rubberduck.SmartIndenter
             return new Selection(startLine, startColumn, endLine, endColumn);
         }
 
-        public void Indent(VBComponent module, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        public void Indent(VBComponent component, bool reportProgress = true, int linesAlreadyRebuilt = 0)
         {
-            var lineCount = module.CodeModule.CountOfLines;
+            var module = component.CodeModule;
+            var lineCount = module.CountOfLines;
             if (lineCount == 0)
             {
                 return;
             }
 
-            var codeLines = module.CodeModule.get_Lines(1, lineCount).Replace("\r", string.Empty).Split('\n');
-            Indent(codeLines, module.Name, reportProgress, linesAlreadyRebuilt);
+            var codeLines = module.Lines[1, lineCount].Replace("\r", string.Empty).Split('\n');
+            Indent(codeLines, component.Name, reportProgress, linesAlreadyRebuilt);
 
             for (var i = 0; i < lineCount; i++)
             {
-                if (module.CodeModule.get_Lines(i + 1, 1) != codeLines[i])
+                if (module.Lines[i + 1, 1] != codeLines[i])
                 {
-                    module.CodeModule.ReplaceLine(i + 1, codeLines[i]);
+                    component.CodeModule.ReplaceLine(i + 1, codeLines[i]);
                 }
             }
         }
 
-        public void Indent(VBComponent module, string procedureName, Selection selection, bool reportProgress = true, int linesAlreadyRebuilt = 0)
+        public void Indent(VBComponent component, string procedureName, Selection selection, bool reportProgress = true, int linesAlreadyRebuilt = 0)
         {
-            var lineCount = module.CodeModule.CountOfLines;
+            var module = component.CodeModule;
+            var lineCount = module.CountOfLines;
             if (lineCount == 0)
             {
                 return;
             }
 
-            var codeLines = module.CodeModule.get_Lines(selection.StartLine, selection.LineCount).Replace("\r", string.Empty).Split('\n');
+            var codeLines = module.Lines[selection.StartLine, selection.LineCount].Replace("\r", string.Empty).Split('\n');
             Indent(codeLines, procedureName, reportProgress, linesAlreadyRebuilt);
 
             for (var i = 0; i < selection.EndLine - selection.StartLine; i++)
             {
-                if (module.CodeModule.get_Lines(selection.StartLine + i, 1) != codeLines[i])
+                if (module.Lines[selection.StartLine + i, 1] != codeLines[i])
                 {
-                    module.CodeModule.ReplaceLine(selection.StartLine + i, codeLines[i]);
+                    component.CodeModule.ReplaceLine(selection.StartLine + i, codeLines[i]);
                 }
             }
         }
 
         public void Indent(string[] codeLines, string moduleName, bool reportProgress = true, int linesAlreadyRebuilt = 0)
         {
-            if (_settings.EnableUndo)
+            var settings = _settings.Invoke();
+
+            if (settings.EnableUndo)
             {
                 // todo: store undo info
             }
@@ -190,9 +195,9 @@ namespace Rubberduck.SmartIndenter
             var isInsideIfBlock = false;
             var isInsideComment = false;
 
-            var indentCase = _settings.IndentCase;
+            var indentCase = settings.IndentCase;
 
-            if (_settings.IndentCompilerDirectives)
+            if (settings.IndentCompilerDirectives)
             {
                 _inCode = InsideProcedureIndentingMatch.Union(InsideProcedureIndentingCompilerStuffMatch).ToList();
                 _outCode = InsideProcedureOutdentingMatch.Union(InsideProcedureOutdentingCompilerStuffMatch).ToList();
@@ -277,15 +282,15 @@ namespace Rubberduck.SmartIndenter
                     var start = 1;
                     var scan = 0;
 
-                    if (inOnContinuedLine && _settings.AlignContinuations)
+                    if (inOnContinuedLine && settings.AlignContinuations)
                     {
-                        if (_settings.IgnoreOperatorsInContinuations && currentLine.StartsWith(", "))
+                        if (settings.IgnoreOperatorsInContinuations && currentLine.StartsWith(", "))
                         {
                             parameterStart = functionStart - 2;
                         }
 
                         // todo: test this logic. VB6 logical operator precedence might not match that of C#.
-                        if (_settings.IgnoreOperatorsInContinuations && !currentLine.StartsWith(", ")
+                        if (settings.IgnoreOperatorsInContinuations && !currentLine.StartsWith(", ")
                             && (currentLine.Substring(1, 1) == " " || currentLine.StartsWith(":=")))
                         {
                             currentLine = new string(' ', parameterStart - 3) + currentLine;
@@ -319,7 +324,7 @@ namespace Rubberduck.SmartIndenter
                                 {
                                     currentLine = currentLine.Substring(0, scan + 1) + currentLine.Substring(scan + 2);
                                     // check the indenting for the line segment
-                                    CheckLine(currentLine, ref noIndent, out ins, out outs, ref atProcedureStart, ref atFirstProcLine, ref isInsideIfBlock);
+                                    CheckLine(settings, currentLine, ref noIndent, out ins, out outs, ref atProcedureStart, ref atFirstProcLine, ref isInsideIfBlock);
                                     if (atProcedureStart)
                                     {
                                         atFirstDim = true;
@@ -339,7 +344,7 @@ namespace Rubberduck.SmartIndenter
 
                             case " As ":
 
-                                if (_settings.AlignDims)
+                                if (settings.AlignDims)
                                 {
                                     var align = noIndent;
                                     if (!align)
@@ -352,15 +357,15 @@ namespace Rubberduck.SmartIndenter
                                         if (!currentLine.Substring(scan + 2).Contains(" As "))
                                         {
                                             //If mbIndentProc And bFirstDim And Not mbIndentDim And Not mbNoIndent Then
-                                            if (!noIndent && atFirstDim && _settings.IndentEntireProcedureBody &&
-                                                _settings.IndentFirstDeclarationBlock)
+                                            if (!noIndent && atFirstDim && settings.IndentEntireProcedureBody &&
+                                                settings.IndentFirstDeclarationBlock)
                                             {
-                                                gap = _settings.AlignDimColumn - currentLine.Substring(0, scan).TrimEnd().Length;
+                                                gap = settings.AlignDimColumn - currentLine.Substring(0, scan).TrimEnd().Length;
 
                                                 // adjust for a line number at the start of the line:
-                                                if (numberedLine > -1 && lineNumber.Length >= indents*_settings.IndentSpaces)
+                                                if (numberedLine > -1 && lineNumber.Length >= indents*settings.IndentSpaces)
                                                 {
-                                                    gap -= lineNumber.Length - indents*_settings.IndentSpaces - 1;
+                                                    gap -= lineNumber.Length - indents*settings.IndentSpaces - 1;
                                                 }
                                             }
                                             gap = Math.Min(gap, 1);
@@ -392,17 +397,17 @@ namespace Rubberduck.SmartIndenter
                                 // start of a comment: handle end-of-line properly
                                 if (scan == 1)
                                 {
-                                    if (noIndent || atProcedureStart || _settings.IndentFirstCommentBlock)
+                                    if (noIndent || atProcedureStart || settings.IndentFirstCommentBlock)
                                     {
                                         // inside procedure: indent to align with code
-                                        currentLine = new string(' ', indents*_settings.IndentSpaces) + currentLine;
-                                        commentStart = scan + _settings.IndentSpaces*indents;
+                                        currentLine = new string(' ', indents*settings.IndentSpaces) + currentLine;
+                                        commentStart = scan + settings.IndentSpaces*indents;
                                     }
-                                    else if (!atProcedureStart && indents > 0 && _settings.IndentEntireProcedureBody)
+                                    else if (!atProcedureStart && indents > 0 && settings.IndentEntireProcedureBody)
                                     {
                                         // at the top of the procedure, so indent once if required
-                                        currentLine = new string(' ', _settings.IndentSpaces) + currentLine;
-                                        commentStart = scan + _settings.IndentSpaces;
+                                        currentLine = new string(' ', settings.IndentSpaces) + currentLine;
+                                        commentStart = scan + settings.IndentSpaces;
                                     }
                                 }
                                 else
@@ -412,7 +417,7 @@ namespace Rubberduck.SmartIndenter
                                         break;
                                     }
 
-                                    CheckLine(currentLine.Substring(start, scan - 1), ref noIndent, out ins,out outs, ref atProcedureStart, ref atFirstProcLine, ref isInsideIfBlock);
+                                    CheckLine(settings, currentLine.Substring(start, scan - 1), ref noIndent, out ins,out outs, ref atProcedureStart, ref atFirstProcLine, ref isInsideIfBlock);
                                     if (atProcedureStart)
                                     {
                                         atFirstDim = true;
@@ -432,7 +437,7 @@ namespace Rubberduck.SmartIndenter
                                     var right = currentLine.Substring(scan);
 
                                     // indent the code part of the line
-                                    if (inOnContinuedLine && _settings.AlignContinuations)
+                                    if (inOnContinuedLine && settings.AlignContinuations)
                                     {
                                         currentLine = currentLine.Substring(0, scan - 1).TrimEnd();
                                     }
@@ -440,23 +445,23 @@ namespace Rubberduck.SmartIndenter
                                     {
                                         if (inOnContinuedLine)
                                         {
-                                            currentLine = new string(' ', (indents + 2) * _settings.IndentSpaces) + left;
+                                            currentLine = new string(' ', (indents + 2) * settings.IndentSpaces) + left;
                                         }
                                         else
                                         {
-                                            if (atFirstDim && _settings.IndentEntireProcedureBody && _settings.AlignDims)
+                                            if (atFirstDim && settings.IndentEntireProcedureBody && settings.AlignDims)
                                             {
                                                 currentLine = left;
                                             }
                                             else
                                             {
-                                                currentLine = new string(' ', indents*_settings.IndentSpaces) + left;
+                                                currentLine = new string(' ', indents*settings.IndentSpaces) + left;
                                             }
                                         }
                                     }
                                     inOnContinuedLine = currentLine.Trim().EndsWith(" _");
 
-                                    switch (_settings.EndOfLineCommentStyle)
+                                    switch (settings.EndOfLineCommentStyle)
                                     {
                                         case EndOfLineCommentStyle.Absolute:
                                             scan = scan - lineAdjust + originalLine.Length - originalLine.Trim().Length;
@@ -467,25 +472,25 @@ namespace Rubberduck.SmartIndenter
                                             gap = scan - originalLine.Substring(0, scan - 1).TrimEnd().Length - 1;
                                             break;
                                         case EndOfLineCommentStyle.StandardGap:
-                                            gap = _settings.IndentSpaces*2;
+                                            gap = settings.IndentSpaces*2;
                                             break;
                                         case EndOfLineCommentStyle.AlignInColumn:
-                                            gap = _settings.EndOfLineCommentColumnSpaceAlignment - currentLine.Length - 1;
+                                            gap = settings.EndOfLineCommentColumnSpaceAlignment - currentLine.Length - 1;
                                             break;
                                         default:
                                             throw new ArgumentOutOfRangeException();
                                     }
 
                                     // adjust for a numbered line
-                                    if (numberedLine > -1 && lineNumber.Length >= indents*_settings.IndentSpaces &&
-                                        (_settings.EndOfLineCommentStyle == EndOfLineCommentStyle.Absolute ||
-                                         _settings.EndOfLineCommentStyle == EndOfLineCommentStyle.AlignInColumn))
+                                    if (numberedLine > -1 && lineNumber.Length >= indents*settings.IndentSpaces &&
+                                        (settings.EndOfLineCommentStyle == EndOfLineCommentStyle.Absolute ||
+                                         settings.EndOfLineCommentStyle == EndOfLineCommentStyle.AlignInColumn))
                                     {
-                                        gap -= lineNumber.Length - indents*_settings.IndentSpaces - 1;
+                                        gap -= lineNumber.Length - indents*settings.IndentSpaces - 1;
                                     }
                                     if (gap < 2)
                                     {
-                                        gap = _settings.IndentSpaces;
+                                        gap = settings.IndentSpaces;
                                     }
 
                                     commentStart = currentLine.Length + gap;
@@ -508,9 +513,9 @@ namespace Rubberduck.SmartIndenter
                                 commentStart -= 1;
 
                                 // adjust for a line number at the start of the line
-                                if (numberedLine > -1 && lineNumber.Length >= indents*_settings.IndentSpaces)
+                                if (numberedLine > -1 && lineNumber.Length >= indents*settings.IndentSpaces)
                                 {
-                                    commentStart += lineNumber.Length - indents*_settings.IndentSpaces + 1;
+                                    commentStart += lineNumber.Length - indents*settings.IndentSpaces + 1;
                                 }
 
                                 isInsideComment = currentLine.Trim().EndsWith(" _");
@@ -518,7 +523,7 @@ namespace Rubberduck.SmartIndenter
                             case "Stop ":
                             case "Debug.Print ":
                             case "Debug.Assert ":
-                                if (start == 1 && scan == 1 && _settings.ForceDebugStatementsInColumn1)
+                                if (start == 1 && scan == 1 && settings.ForceDebugStatementsInColumn1)
                                 {
                                     // note: original code seems to subtract the length of originalLine implicitly converted to a string, and trimmed
                                     lineAdjust -= (originalLine.Length - originalLine.TrimStart().Length);
@@ -532,7 +537,7 @@ namespace Rubberduck.SmartIndenter
                             case "#Else ":
                             case "#End If":
                             case "#Const ":
-                                if (start == 1 && scan == 1 && _settings.ForceCompilerDirectivesInColumn1)
+                                if (start == 1 && scan == 1 && settings.ForceCompilerDirectivesInColumn1)
                                 {
                                     // note: original code seems to subtract the length of originalLine implicitly converted to a string, and trimmed
                                     lineAdjust -= (originalLine.Length - originalLine.TrimStart().Length);
@@ -554,7 +559,7 @@ namespace Rubberduck.SmartIndenter
                             atProcedureStart = false;
                         }
 
-                        CheckLine(currentLine.Substring(start - 1, scan - 1), ref noIndent, out ins, out outs, ref atProcedureStart, ref atFirstProcLine, ref isInsideIfBlock);
+                        CheckLine(settings, currentLine.Substring(start - 1, scan - 1), ref noIndent, out ins, out outs, ref atProcedureStart, ref atFirstProcLine, ref isInsideIfBlock);
                         if (atProcedureStart)
                         {
                             atFirstDim = true;
@@ -579,16 +584,16 @@ namespace Rubberduck.SmartIndenter
                     // line continuations
                     if (inOnContinuedLine)
                     {
-                        if (!_settings.AlignContinuations)
+                        if (!settings.AlignContinuations)
                         {
-                            currentLine = new string(' ', (indents + 2)*_settings.IndentSpaces) + currentLine;
+                            currentLine = new string(' ', (indents + 2)*settings.IndentSpaces) + currentLine;
                         }
                     }
                     else
                     {
                         // check if we start with a declaration item
                         var align = false;
-                        if (_settings.IndentEntireProcedureBody && atFirstDim && !_settings.IndentFirstDeclarationBlock && !atProcedureStart)
+                        if (settings.IndentEntireProcedureBody && atFirstDim && !settings.IndentFirstDeclarationBlock && !atProcedureStart)
                         {
                             if (DeclarationLevelMatch.Any(declaration => currentLine.StartsWith(declaration + ' ')))
                             {
@@ -603,7 +608,7 @@ namespace Rubberduck.SmartIndenter
                             {
                                 atFirstDim = false;
                             }
-                            currentLine = new string(' ', indents*_settings.IndentSpaces) + currentLine;
+                            currentLine = new string(' ', indents*settings.IndentSpaces) + currentLine;
                         }                        
                     }
                     inOnContinuedLine = currentLine.EndsWith(" _");               
@@ -638,17 +643,17 @@ namespace Rubberduck.SmartIndenter
                     {
                         // a continued line, so if we're not in a comment and we want smart continuing,
                         // work out which to continue from
-                        if (_settings.AlignContinuations && !isInsideComment)
+                        if (settings.AlignContinuations && !isInsideComment)
                         {
                             if (currentLine.Trim().StartsWith("& ") || currentLine.Trim().StartsWith("+ "))
                             {
                                 currentLine = "  " + currentLine;
                             }
 
-                            functionStart = FunctionAlign(currentLine, atFirstCont, out parameterStart);
+                            functionStart = FunctionAlign(settings, currentLine, atFirstCont, out parameterStart);
                             if (functionStart == 0)
                             {
-                                functionStart = (indents + 2) * _settings.IndentSpaces;
+                                functionStart = (indents + 2) * settings.IndentSpaces;
                                 parameterStart = functionStart;
                             }
                         }
@@ -675,7 +680,7 @@ namespace Rubberduck.SmartIndenter
             return numberedLine;
         }
 
-        private void CheckLine(string code, ref bool noIndent, out int ins, out int outs, ref bool atProcedureStart, ref bool atFirstProcLine, ref bool insideIf)
+        private void CheckLine(IIndenterSettings settings, string code, ref bool noIndent, out int ins, out int outs, ref bool atProcedureStart, ref bool atFirstProcLine, ref bool insideIf)
         {
 
             ins = 0;
@@ -694,12 +699,12 @@ namespace Rubberduck.SmartIndenter
                 atFirstProcLine = true;
 
                 // don't indent within type or enum constructs
-                if (value.EndsWith("Type") || value.EndsWith("Enum"))
+                if (value.EndsWith("Type ") || value.EndsWith("Enum "))
                 {
                     ins++;
                     noIndent = true;
                 }
-                else if (!noIndent && _settings.IndentEntireProcedureBody)
+                else if (!noIndent && settings.IndentEntireProcedureBody)
                 {
                     ins++;
                 }
@@ -709,7 +714,7 @@ namespace Rubberduck.SmartIndenter
                                                                  (line.Substring(value.Length, 1) == " " || 
                                                                   (line.Substring(value.Length, 1) == ":" && 
                                                                    line.Substring(value.Length + 1, 1) != "=")
-                                                                 )).Count(value => !value.EndsWith("Type ") && !value.EndsWith("Enum"));
+                                                                 )).Count(value => !value.EndsWith("Type ") && !value.EndsWith("Enum "));
 
             outs += outMatches;
             if (outMatches > 0)
@@ -769,7 +774,7 @@ namespace Rubberduck.SmartIndenter
 
         private static readonly Stack<Tuple<string, int>> CurrentAlignment = new Stack<Tuple<string, int>>();
 
-        private int FunctionAlign(string line, bool firstLine, out int paramOffset)
+        private int FunctionAlign(IIndenterSettings settings, string line, bool firstLine, out int paramOffset)
         {
             if (firstLine)
             {
@@ -895,7 +900,7 @@ namespace Rubberduck.SmartIndenter
             {
                 if (!CurrentAlignment.Any() && firstLine)
                 {
-                    skip = _settings.IndentSpaces * 2 + leftPadding;
+                    skip = settings.IndentSpaces * 2 + leftPadding;
                 }
                 else
                 {

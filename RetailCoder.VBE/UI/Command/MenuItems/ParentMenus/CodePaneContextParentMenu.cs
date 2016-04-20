@@ -10,5 +10,16 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         }
 
         public override bool BeginGroup { get { return true; } }
+
+    }
+
+    public enum CodePaneContextMenuItemDisplayOrder
+    {
+        Refactorings,
+        Indenter,
+        RegexSearchReplace,
+        FindSymbol,
+        FindAllReferences,
+        FindAllImplementations,
     }
 }

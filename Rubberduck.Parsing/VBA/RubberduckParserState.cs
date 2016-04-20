@@ -47,7 +47,7 @@ namespace Rubberduck.Parsing.VBA
         public event EventHandler<ParseRequestEventArgs> ParseRequest;
 
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
-        private readonly IDictionary<string,VBProject> _projects = new Dictionary<string,VBProject>();
+        private readonly IDictionary<string,Func<VBProject>> _projects = new Dictionary<string,Func<VBProject>>();
 
         private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>> _declarations =
             new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>>();
@@ -78,23 +78,42 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddProject(VBProject project)
         {
-            var name = project.ProjectName();
-            if (!_projects.ContainsKey(name))
+            if (string.IsNullOrEmpty(project.HelpFile))
             {
-                _projects.Add(name, project);
+                project.HelpFile = project.GetHashCode().ToString();
+            }
+            var projectId = project.HelpFile;
+            if (!_projects.ContainsKey(projectId))
+            {
+                _projects.Add(projectId, () => project);
+            }
+        }
+
+        public void RemoveProject(string projectId)
+        {
+            if (_projects.ContainsKey(projectId))
+            {
+                _projects.Remove(projectId);
             }
         }
 
         public void RemoveProject(VBProject project)
         {
-            var name = project.ProjectName();
-            if (_projects.ContainsKey(name))
-            {
-                _projects.Remove(name);
-            }
+            var projectId = project.HelpFile;
+            RemoveProject(projectId);
+
+            // note: attempt to fix ghost projects
+            projectId = project.Name;
+            RemoveProject(projectId);
         }
 
-        public IReadOnlyList<VBProject> Projects { get { return _projects.Values.ToList(); } }
+        public IEnumerable<VBProject> Projects
+        {
+            get
+            {
+                return _projects.Values.Select(project => project.Invoke());
+            }
+        }
 
         public IReadOnlyList<Tuple<VBComponent, SyntaxErrorException>> ModuleExceptions
         {
@@ -123,13 +142,26 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public void SetModuleState(ParserState state)
+        {
+            var projects = Projects
+                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
+                .ToList();
+
+            var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
+            foreach (var component in components)
+            {
+                SetModuleState(component, state);
+            }
+        }
+
         public void SetModuleState(VBComponent component, ParserState state, SyntaxErrorException parserError = null)
         {
             if (AllUserDeclarations.Any())
             {
-                var projectName = component.ProjectName();
+                var projectId = component.Collection.Parent.HelpFile;
                 var project = AllUserDeclarations.SingleOrDefault(item =>
-                    item.DeclarationType == DeclarationType.Project && item.ProjectName == projectName);
+                    item.DeclarationType == DeclarationType.Project && item.ProjectId == projectId);
 
                 if (project == null)
                 {
@@ -535,6 +567,18 @@ namespace Rubberduck.Parsing.VBA
         {
             return reference.QualifiedModuleName.Equals(selection.QualifiedName)
                    && reference.Selection.ContainsFirstCharacter(selection.Selection);
+        }
+
+        public void RemoveBuiltInDeclarations(Reference reference)
+        {
+            var projectName = reference.Name;
+            var key = new QualifiedModuleName(projectName, projectName);
+
+            ConcurrentDictionary<Declaration, byte> items;
+            if (!_declarations.TryRemove(key, out items))
+            {
+                Debug.WriteLine("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, reference.Guid);
+            }
         }
     }
 }

@@ -995,7 +995,7 @@ End Sub
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.UserDefinedType);
 
-            if (declaration.ProjectName != declaration.IdentifierName)
+            if (declaration.Project.Name != declaration.IdentifierName)
             {
                 Assert.Inconclusive("UDT should be named after project.");
             }
@@ -1027,7 +1027,7 @@ End Sub
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.UserDefinedType);
 
-            if (declaration.ProjectName != declaration.IdentifierName)
+            if (declaration.Project.Name != declaration.IdentifierName)
             {
                 Assert.Inconclusive("UDT should be named after project.");
             }
@@ -1057,7 +1057,7 @@ End Sub
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable);
 
-            if (declaration.ProjectName != declaration.AsTypeName)
+            if (declaration.Project.Name != declaration.AsTypeName)
             {
                 Assert.Inconclusive("variable should be named after project.");
             } 
@@ -1117,7 +1117,7 @@ End Sub
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.UserDefinedTypeMember
                 && item.IdentifierName == "Foo"
-                && item.AsTypeName == item.ProjectName
+                && item.AsTypeName == item.Project.Name
                 && item.IdentifierName == item.ParentDeclaration.IdentifierName);
 
             var usages = declaration.References.Where(item => 
@@ -1336,7 +1336,7 @@ End Sub
 
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Project
-                && item.IdentifierName == item.ProjectName);
+                && item.IdentifierName == item.Project.Name);
 
             var usages = declaration.References.Where(item =>
                 item.ParentScoping.IdentifierName == "DoSomething");

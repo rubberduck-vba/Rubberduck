@@ -61,7 +61,7 @@ namespace Rubberduck.UI.Command.Refactorings
                     return _state.AllUserDeclarations
                         .FirstOrDefault(item => item.IdentifierName == control.Name &&
                                                 item.ComponentName == Vbe.SelectedVBComponent.Name &&
-                                                Vbe.ActiveVBProject.ProjectName() == item.ProjectName);
+                                                Vbe.ActiveVBProject.HelpFile == item.ProjectId);
                 }
             }
 

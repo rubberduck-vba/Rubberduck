@@ -6,7 +6,7 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
-    public class FallbackApp : IHostApplication
+    public sealed class FallbackApp : IHostApplication
     {
         private readonly VBE _vbe;
         private readonly CommandBarButton _runButton;

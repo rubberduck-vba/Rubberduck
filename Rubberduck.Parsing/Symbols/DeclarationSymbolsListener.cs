@@ -71,11 +71,9 @@ namespace Rubberduck.Parsing.Symbols
 
         private static Declaration CreateProjectDeclaration(QualifiedModuleName projectQualifiedName, VBProject project)
         {
-            var projectName = project.ProjectName();
-
             var declaration = new Declaration(
-                projectQualifiedName.QualifyMemberName(projectName),
-                null, (Declaration) null, projectName, false, false, Accessibility.Implicit, DeclarationType.Project, null,
+                projectQualifiedName.QualifyMemberName(project.Name),
+                null, (Declaration) null, project.Name, false, false, Accessibility.Implicit, DeclarationType.Project, null,
                 Selection.Home, false);
             return declaration;
         }

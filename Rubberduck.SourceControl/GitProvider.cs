@@ -10,7 +10,7 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.SourceControl
 {
-    public class GitProvider : SourceControlProviderBase
+    public class GitProvider : SourceControlProviderBase // note: why not : IDisposable?
     {
         private readonly LibGit2Sharp.Repository _repo;
         private readonly LibGit2Sharp.Credentials _credentials;

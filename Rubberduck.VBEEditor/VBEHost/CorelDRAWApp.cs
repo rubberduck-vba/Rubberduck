@@ -16,7 +16,7 @@ namespace Rubberduck.VBEditor.VBEHost
 		
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {
-            var projectName = qualifiedMemberName.QualifiedModuleName.ProjectName;
+            var projectName = qualifiedMemberName.QualifiedModuleName.ProjectId;
             var memberName = qualifiedMemberName.QualifiedModuleName.ComponentName + "." + qualifiedMemberName.MemberName;
 
             if (Application != null)

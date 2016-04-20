@@ -102,23 +102,9 @@ namespace Rubberduck.Parsing.VBA
                 .ToList();
 
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
-            foreach (var component in components)
-            {
-                _state.SetModuleState(component, ParserState.LoadingReference);
-            }
+            _state.SetModuleState(ParserState.LoadingReference);
 
-            if (!_state.AllDeclarations.Any(item => item.IsBuiltIn))
-            {
-                var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
-                foreach (var reference in references)
-                {
-                    var items = _comReflector.GetDeclarationsForReference(reference);
-                    foreach (var declaration in items)
-                    {
-                        _state.AddDeclaration(declaration);
-                    }
-                }
-            }
+            LoadComReferences(projects);
 
             foreach (var component in components)
             {
@@ -152,7 +138,9 @@ namespace Rubberduck.Parsing.VBA
 
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
             var modified = components.Where(_state.IsModified).ToList();
-            LoadComReferences(components, projects);
+
+            _state.SetModuleState(ParserState.LoadingReference);
+            LoadComReferences(projects);
 
             foreach (var component in modified)
             {
@@ -173,26 +161,51 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void LoadComReferences(IEnumerable<VBComponent> components, IEnumerable<VBProject> projects)
+        private readonly HashSet<Guid> _loadedReferences = new HashSet<Guid>();
+        private void LoadComReferences(IEnumerable<VBProject> projects)
         {
-            if (_state.AllDeclarations.Any(item => item.IsBuiltIn))
+            var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
+            var newReferences = references
+                .Select(reference => new {Guid = new Guid(reference.Guid), Reference = reference})
+                .Where(item => !_loadedReferences.Contains(item.Guid));
+
+            foreach (var item in newReferences)
+            {
+                LoadComReference(item.Reference);
+            }
+        }
+
+        public void LoadComReference(Reference item)
+        {
+            var guid = new Guid(item.Guid);
+            if (_loadedReferences.Contains(guid))
             {
                 return;
             }
 
-            foreach (var component in components)
+            var items = _comReflector.GetDeclarationsForReference(item).ToList();
+            foreach (var declaration in items)
             {
-                _state.SetModuleState(component, ParserState.LoadingReference);
+                _state.AddDeclaration(declaration);
             }
 
+            _loadedReferences.Add(new Guid(item.Guid));
+        }
+
+        public void UnloadComReference(Reference reference)
+        {
+            var projects = _state.Projects
+                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
+                .ToList();
+
             var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
-            foreach (var reference in references)
+            var target = references
+                .Select(item => new { Guid = new Guid(item.Guid), Reference = item })
+                .SingleOrDefault(item =>  _loadedReferences.Contains(item.Guid) && reference.Guid == item.Guid.ToString());
+
+            if (target != null)
             {
-                var items = _comReflector.GetDeclarationsForReference(reference).ToList();
-                foreach (var declaration in items)
-                {
-                    _state.AddDeclaration(declaration);
-                }
+                _state.RemoveBuiltInDeclarations(target.Reference);
             }
         }
 

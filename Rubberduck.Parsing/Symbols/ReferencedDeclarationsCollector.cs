@@ -42,8 +42,9 @@ namespace Rubberduck.Parsing.Symbols
             REGKIND_NONE = 2
         }
 
+
         [DllImport("oleaut32.dll", CharSet = CharSet.Unicode)]
-        private static extern void LoadTypeLibEx(string strTypeLibName, REGKIND regKind, out ITypeLib TypeLib);
+        private static extern Int32 LoadTypeLibEx(string strTypeLibName, REGKIND regKind, out ITypeLib TypeLib);
 
         private static readonly IDictionary<VarEnum, string> TypeNames = new Dictionary<VarEnum, string>
         {

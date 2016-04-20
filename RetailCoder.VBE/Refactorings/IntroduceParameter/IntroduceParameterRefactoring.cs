@@ -148,7 +148,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             UpdateSignature(interfaceImplementation, targetVariable);
 
             var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
-                                                    .Where(item => item.ProjectName == interfaceImplementation.ProjectName
+                                                    .Where(item => item.ProjectId == interfaceImplementation.ProjectId
                                                            && item.IdentifierName == interfaceImplementation.ComponentName + "_" + interfaceImplementation.IdentifierName
                                                            && !item.Equals(functionDeclaration));
 

@@ -6,6 +6,7 @@ using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
+using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
@@ -15,11 +16,13 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorExtractMethodCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly IIndenter _indenter;
 
-        public RefactorExtractMethodCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor)
+        public RefactorExtractMethodCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, IIndenter indenter)
             : base (vbe, editor)
         {
             _state = state;
+            _indenter = indenter;
         }
 
         public override bool CanExecute(object parameter)
@@ -44,7 +47,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         public override void Execute(object parameter)
         {
-            var factory = new ExtractMethodPresenterFactory(Editor, _state.AllDeclarations);
+            var factory = new ExtractMethodPresenterFactory(Editor, _state.AllDeclarations, _indenter);
             var refactoring = new ExtractMethodRefactoring(factory, Editor);
             refactoring.InvalidSelection += HandleInvalidSelection;
             refactoring.Refactor();
