@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -15,11 +16,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
     {
         private readonly IExtractMethodDialog _view;
         private readonly ExtractMethodModel _model;
+        private readonly IIndenter _indenter;
 
-        public ExtractMethodPresenter(IExtractMethodDialog view, ExtractMethodModel model)
+        public ExtractMethodPresenter(IExtractMethodDialog view, ExtractMethodModel model, IIndenter indenter)
         {
             _view = view;
             _model = model;
+            _indenter = indenter;
         }
 
         public ExtractMethodModel Show()
@@ -92,7 +95,10 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _model.Method.ReturnValue = _view.ReturnValue;
             _model.Method.SetReturnValue = _view.SetReturnValue;
 
-            _view.Preview = ExtractMethodRefactoring.GetExtractedMethod(_model);
+            var code = ExtractMethodRefactoring.GetExtractedMethod(_model).Split(new[]{Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+            _indenter.Indent(code, "Preview", false);
+
+            _view.Preview = string.Join(Environment.NewLine, code);
         }
     }
 }
