@@ -71,12 +71,12 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindModuleDeclaration(VBComponent component)
         {
-            var projectName = component.ProjectName();
+            var projectId = component.Collection.Parent.HelpFile;
 
             var project = _state.AllUserDeclarations.SingleOrDefault(item => 
-                item.DeclarationType == DeclarationType.Project && item.ProjectName == projectName);
+                item.DeclarationType == DeclarationType.Project && item.ProjectId == projectId);
 
-            var result = _state.AllUserDeclarations.SingleOrDefault(item => item.ProjectName == component.Collection.Parent.ProjectName()
+            var result = _state.AllUserDeclarations.SingleOrDefault(item => item.ProjectId == component.Collection.Parent.HelpFile
                                                              && item.QualifiedName.QualifiedModuleName.ComponentName == component.Name
                                                              && (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module));
 

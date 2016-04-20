@@ -49,7 +49,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             InterfaceName = "I" + TargetDeclaration.IdentifierName;
 
             _members = declarations.Where(item => !item.IsBuiltIn
-                                                  && item.ProjectName == _targetDeclaration.ProjectName
+                                                  && item.ProjectId == _targetDeclaration.ProjectId
                                                   && item.ComponentName == _targetDeclaration.ComponentName
                                                   && (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Implicit)
                                                   && MemberTypes.Contains(item.DeclarationType))

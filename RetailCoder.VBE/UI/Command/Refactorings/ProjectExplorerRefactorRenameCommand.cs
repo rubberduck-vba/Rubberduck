@@ -51,7 +51,7 @@ namespace Rubberduck.UI.Command.Refactorings
             
             return _state.AllUserDeclarations.SingleOrDefault(
                     t => t.IdentifierName == Vbe.SelectedVBComponent.Name &&
-                            t.ProjectName == Vbe.ActiveVBProject.ProjectName() &&
+                            t.ProjectId == Vbe.ActiveVBProject.HelpFile &&
                             new[]
                                 {
                                     DeclarationType.Class,

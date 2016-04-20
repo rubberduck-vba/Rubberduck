@@ -78,29 +78,33 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddProject(VBProject project)
         {
-            var name = project.ProjectName();
-            if (!_projects.ContainsKey(name))
+            if (string.IsNullOrEmpty(project.HelpFile))
             {
-                _projects.Add(name, () => project);
+                project.HelpFile = project.GetHashCode().ToString();
+            }
+            var projectId = project.HelpFile;
+            if (!_projects.ContainsKey(projectId))
+            {
+                _projects.Add(projectId, () => project);
             }
         }
 
-        public void RemoveProject(string name)
+        public void RemoveProject(string projectId)
         {
-            if (_projects.ContainsKey(name))
+            if (_projects.ContainsKey(projectId))
             {
-                _projects.Remove(name);
+                _projects.Remove(projectId);
             }
         }
 
         public void RemoveProject(VBProject project)
         {
-            var name = project.ProjectName();
-            RemoveProject(name);
+            var projectId = project.HelpFile;
+            RemoveProject(projectId);
 
             // note: attempt to fix ghost projects
-            name = project.Name;
-            RemoveProject(name);
+            projectId = project.Name;
+            RemoveProject(projectId);
         }
 
         public IEnumerable<VBProject> Projects
@@ -155,9 +159,9 @@ namespace Rubberduck.Parsing.VBA
         {
             if (AllUserDeclarations.Any())
             {
-                var projectName = component.ProjectName();
+                var projectId = component.Collection.Parent.HelpFile;
                 var project = AllUserDeclarations.SingleOrDefault(item =>
-                    item.DeclarationType == DeclarationType.Project && item.ProjectName == projectName);
+                    item.DeclarationType == DeclarationType.Project && item.ProjectId == projectId);
 
                 if (project == null)
                 {

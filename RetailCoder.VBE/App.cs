@@ -335,8 +335,8 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine("Project '{0}' was renamed to '{1}'.", e.OldName, e.Item.Name);
-            _parser.State.RemoveProject(e.OldName);
+            Debug.WriteLine("Project '{0}' (ID {1}) was renamed to '{2}'.", e.OldName, e.Item.HelpFile, e.Item.Name);
+            _parser.State.RemoveProject(e.Item.HelpFile);
             _parser.State.OnParseRequested(sender);
         }
 

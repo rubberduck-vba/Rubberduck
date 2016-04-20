@@ -10,50 +10,6 @@ namespace Rubberduck.VBEditor.Extensions
 {
     public static class ProjectExtensions
     {
-        public static string ProjectName(this VBProject project)
-        {
-            var projectName = string.Empty;
-            try
-            {
-                projectName = project.Name;
-                if (project.Protection == vbext_ProjectProtection.vbext_pp_none)
-                {
-                    var documentModule = project
-                        .VBComponents.Cast<VBComponent>()
-                        .FirstOrDefault(item => item.Type == vbext_ComponentType.vbext_ct_Document);
-
-                    if (documentModule != null)
-                    {
-                        var nameProperty = documentModule.Properties.Item("Name");
-                        if (nameProperty != null)
-                        {
-                            projectName += string.Format(" ({0})", nameProperty.Value);
-                        }
-                    }
-                }
-            }
-            catch (COMException)
-            {
-                // component is stale, corrupted, or is a document module without a "Name" property
-            }
-            return projectName;
-        }
-
-        public static string ProjectName(this VBComponent component)
-        {
-            try
-            {
-                var guard = component.Name;
-                var project = component.Collection.Parent;
-                return project.ProjectName();
-            }
-            catch (COMException)
-            {
-                // if merely accessing the component's name and parent collection blows up, return null and remove from parser state
-                return null;
-            }
-        }
-
         public static IEnumerable<string> ComponentNames(this VBProject project)
         {
             return project.VBComponents.Cast<VBComponent>().Select(component => component.Name);

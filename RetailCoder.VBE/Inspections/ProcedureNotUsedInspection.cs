@@ -83,7 +83,7 @@ namespace Rubberduck.Inspections
                 return false;
             }
 
-            var parent = modules.Where(item => item.ProjectName == procedure.ProjectName)
+            var parent = modules.Where(item => item.ProjectId == procedure.ProjectId)
                         .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
 
             return parent != null;
@@ -102,7 +102,7 @@ namespace Rubberduck.Inspections
                 return false;
             }
 
-            var parent = classes.Where(item => item.ProjectName == procedure.ProjectName)
+            var parent = classes.Where(item => item.ProjectId == procedure.ProjectId)
                         .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
 
             return parent != null;
@@ -118,7 +118,7 @@ namespace Rubberduck.Inspections
         {
             // get the procedure's parent module
             var enumerable = classes as IList<Declaration> ?? classes.ToList();
-            var parent = enumerable.Where(item => item.ProjectName == procedure.ProjectName)
+            var parent = enumerable.Where(item => item.ProjectId == procedure.ProjectId)
                         .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
 
             if (parent == null)

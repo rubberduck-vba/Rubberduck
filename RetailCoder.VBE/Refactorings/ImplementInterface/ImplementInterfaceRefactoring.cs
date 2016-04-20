@@ -206,7 +206,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         private IEnumerable<Declaration> GetImplementedMembers()
         {
             return _declarations.FindInterfaceImplementationMembers()
-                                .Where(item => item.ProjectName == _targetInterface.ProjectName
+                                .Where(item => item.ProjectId == _targetInterface.ProjectId
                                         && item.ComponentName == _targetClass.IdentifierName
                                         && item.IdentifierName.StartsWith(_targetInterface.ComponentName + "_")
                                         && !item.Equals(_targetClass))

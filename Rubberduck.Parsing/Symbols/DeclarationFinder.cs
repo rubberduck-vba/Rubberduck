@@ -101,7 +101,7 @@ namespace Rubberduck.Parsing.Symbols
             try
             {
                 result = MatchName(name).SingleOrDefault(project => project.DeclarationType == DeclarationType.Project 
-                    && (currentScope == null || project.ProjectName == currentScope.ProjectName));
+                    && (currentScope == null || project.ProjectId == currentScope.ProjectId));
             }
             catch (InvalidOperationException exception)
             {

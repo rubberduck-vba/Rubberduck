@@ -9,14 +9,24 @@ namespace Rubberduck.VBEditor
     /// </summary>
     public struct QualifiedModuleName
     {
-        public QualifiedModuleName(VBProject project)  
+        private static string GetProjectId(VBProject project)
+        {
+            if (project == null)
+            {
+                return string.Empty;
+            }
+            return string.IsNullOrEmpty(project.HelpFile) ? project.GetHashCode().ToString() : project.HelpFile;
+        }
+
+        public QualifiedModuleName(VBProject project)
         {
             _component = null;
             _componentName = null;
             _project = project;
-            _projectName = project.ProjectName();
-            _contentHashCode = 0;  
-       }
+            _projectName = project.Name;
+            _projectId = GetProjectId(project);
+            _contentHashCode = 0;
+        }
 
         public QualifiedModuleName(VBComponent component)
         {
@@ -25,7 +35,8 @@ namespace Rubberduck.VBEditor
             _component = component;
             _componentName = component == null ? string.Empty : component.Name;
             _project = component == null ? null : component.Collection.Parent;
-            _projectName = component == null ? string.Empty : component.ProjectName();
+            _projectName = _project == null ? string.Empty : _project.Name;
+            _projectId = GetProjectId(_project);
 
             _contentHashCode = 0;
             if (component == null)
@@ -48,6 +59,7 @@ namespace Rubberduck.VBEditor
         {
             _project = null;
             _projectName = projectName;
+            _projectId = projectName.GetHashCode().ToString();
             _componentName = componentName;
             _component = null;
             _contentHashCode = 0;
@@ -67,13 +79,14 @@ namespace Rubberduck.VBEditor
         private readonly int _contentHashCode;
         public int ContentHashCode { get { return _contentHashCode; } }
 
-        private readonly string _projectName;
-        public string ProjectName { get { return _projectName;} }
+        private readonly string _projectId;
+        public string ProjectId { get { return _projectId;} }
 
         private readonly string _componentName;
         public string ComponentName { get { return _componentName ?? string.Empty; } }
 
         public string Name { get { return ToString(); } }
+        private readonly string _projectName;
 
         public override string ToString()
         {
@@ -85,7 +98,7 @@ namespace Rubberduck.VBEditor
             unchecked
             {
                 var hash = 17;
-                hash = hash*23 + _projectName.GetHashCode();
+                hash = hash*23 + _projectId.GetHashCode();
                 hash = hash*23 + (_componentName ?? string.Empty).GetHashCode();
                 return hash;
             }
@@ -98,7 +111,7 @@ namespace Rubberduck.VBEditor
             try
             {
                 var other = (QualifiedModuleName)obj;
-                var result = other.ProjectName == ProjectName && other.ComponentName == ComponentName;
+                var result = other.ProjectId == ProjectId && other.ComponentName == ComponentName;
                 return result;
             }
             catch (InvalidCastException)

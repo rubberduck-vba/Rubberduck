@@ -20,25 +20,26 @@ namespace Rubberduck.Parsing.Symbols
     public class Declaration : IEquatable<Declaration>
     {
         public Declaration(
-            QualifiedMemberName qualifiedName, 
-            Declaration parentDeclaration, 
+            QualifiedMemberName qualifiedName,
+            Declaration parentDeclaration,
             Declaration parentScope,
-            string asTypeName, 
+            string asTypeName,
             bool isSelfAssigned,
             bool isWithEvents,
-            Accessibility accessibility, 
-            DeclarationType declarationType, 
-            ParserRuleContext context, 
-            Selection selection, 
+            Accessibility accessibility,
+            DeclarationType declarationType,
+            ParserRuleContext context,
+            Selection selection,
             bool isBuiltIn = true,
-            IEnumerable<IAnnotation> annotations = null, 
+            IEnumerable<IAnnotation> annotations = null,
             Attributes attributes = null)
             : this(
-                qualifiedName, parentDeclaration, parentScope == null ? null : parentScope.Scope, asTypeName, isSelfAssigned, isWithEvents,
+                qualifiedName, parentDeclaration, parentScope == null ? null : parentScope.Scope, asTypeName,
+                isSelfAssigned, isWithEvents,
                 accessibility, declarationType, context, selection, isBuiltIn, annotations, attributes)
         {
             _parentScopeDeclaration = parentScope;
-       }
+        }
 
         public Declaration(
             QualifiedMemberName qualifiedName, 
@@ -85,14 +86,14 @@ namespace Rubberduck.Parsing.Symbols
             _annotations = annotations;
             _attributes = attributes ?? new Attributes();
 
-            _projectName = _qualifiedName.QualifiedModuleName.ProjectName;
+            _projectId = _qualifiedName.QualifiedModuleName.ProjectId;
 
             var @namespace = Annotations.FirstOrDefault(annotation => annotation.AnnotationType == AnnotationType.Folder);
             string result;
             if (@namespace == null)
             {
                 result = _qualifiedName.QualifiedModuleName.Project == null
-                    ? _projectName
+                    ? _projectId
                     : _qualifiedName.QualifiedModuleName.Project.Name;
             }
             else
@@ -305,11 +306,11 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         public VBProject Project { get { return _qualifiedName.QualifiedModuleName.Project; } }
 
-        private readonly string _projectName;
+        private readonly string _projectId;
         /// <summary>
-        /// Gets the name of the VBProject the declaration is made in.
+        /// Gets a unique identifier for the VBProject the declaration is made in.
         /// </summary>
-        public string ProjectName { get { return _projectName; } }
+        public string ProjectId { get { return _projectId; } }
 
         /// <summary>
         /// Gets the name of the VBComponent the declaration is made in.
@@ -560,7 +561,7 @@ namespace Rubberduck.Parsing.Symbols
         public bool Equals(Declaration other)
         {
             return other != null
-                && other.ProjectName == ProjectName
+                && other.ProjectId == ProjectId
                 && other.IdentifierName == IdentifierName
                 && other.DeclarationType == DeclarationType
                 && other.Scope == Scope

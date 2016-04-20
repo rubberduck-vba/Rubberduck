@@ -354,7 +354,7 @@ namespace Rubberduck.Common
             var handlerNames = events.Select(e => withEventsDeclaration.IdentifierName + '_' + e.IdentifierName);
 
             return items.Where(item => item.Project != null 
-                                               && item.ProjectName == withEventsDeclaration.ProjectName
+                                               && item.ProjectId == withEventsDeclaration.ProjectId
                                                && item.ParentScope == withEventsDeclaration.ParentScope
                                                && item.DeclarationType == DeclarationType.Procedure
                                                && handlerNames.Any(name => item.IdentifierName == name))
@@ -363,7 +363,7 @@ namespace Rubberduck.Common
 
         private static IEnumerable<Declaration> GetTypeMembers(this IEnumerable<Declaration> declarations, Declaration type)
         {
-            return declarations.Where(item => item.Project != null && item.ProjectName == type.ProjectName && item.ParentScope == type.Scope);
+            return declarations.Where(item => item.Project != null && item.ProjectId == type.ProjectId && item.ParentScope == type.Scope);
         }
 
             /// <summary>
@@ -394,7 +394,7 @@ namespace Rubberduck.Common
             var matches = members.Where(m => !m.IsBuiltIn && implementation.IdentifierName == m.ComponentName + '_' + m.IdentifierName).ToList();
 
             return matches.Count > 1 
-                ? matches.SingleOrDefault(m => m.ProjectName == implementation.ProjectName) 
+                ? matches.SingleOrDefault(m => m.ProjectId == implementation.ProjectId) 
                 : matches.First();
         }
 
