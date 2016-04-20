@@ -52,7 +52,7 @@ namespace Rubberduck.SmartIndenter
             var selection = GetSelection(pane);
 
             vbext_ProcKind procKind;
-            var procName = module.ProcOfLine[selection.StartLine, out procKind];
+            var procName = module.get_ProcOfLine(selection.StartLine, out procKind);
 
             if (string.IsNullOrEmpty(procName))
             {
