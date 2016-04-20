@@ -169,6 +169,11 @@ namespace Rubberduck.Parsing.VBA
                 .Select(reference => new {Guid = new Guid(reference.Guid), Reference = reference})
                 .Where(item => !_loadedReferences.Contains(item.Guid));
 
+            for (var i = 0; i < references.Count; i++)
+            {
+                
+            }
+
             foreach (var item in newReferences)
             {
                 LoadComReference(item.Reference);
@@ -206,6 +211,8 @@ namespace Rubberduck.Parsing.VBA
             if (target != null)
             {
                 _state.RemoveBuiltInDeclarations(target.Reference);
+                var guid = new Guid(reference.Guid);
+                _loadedReferences.Remove(guid);
             }
         }
 
