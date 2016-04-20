@@ -80,6 +80,8 @@ namespace Rubberduck.Root
             
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();
+            Bind<Func<IIndenterSettings>>().ToMethod(t => () => _kernel.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
+
             Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>().InSingletonScope();
             Rebind<IRubberduckParser>().To<RubberduckParser>().InSingletonScope();
 
