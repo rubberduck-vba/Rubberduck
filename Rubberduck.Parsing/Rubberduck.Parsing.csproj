@@ -74,6 +74,12 @@
     <Compile Include="Annotations\TestMethodAnnotation.cs" />
     <Compile Include="Annotations\TestModuleAnnotation.cs" />
     <Compile Include="Annotations\VBAParserAnnotationFactory.cs" />
+    <Compile Include="GrammarNext\VBALexerNext.cs" />
+    <Compile Include="GrammarNext\VBAParserNext.cs" />
+    <Compile Include="GrammarNext\VBAParserNextBaseListener.cs" />
+    <Compile Include="GrammarNext\VBAParserNextBaseVisitor.cs" />
+    <Compile Include="GrammarNext\VBAParserNextListener.cs" />
+    <Compile Include="GrammarNext\VBAParserNextVisitor.cs" />
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
@@ -218,6 +224,8 @@
     <Compile Include="VBComponentExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GrammarNext\VBALexerNext.g4" />
+    <None Include="GrammarNext\VBAParserNext.g4" />
     <None Include="Grammar\VBAParser.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
