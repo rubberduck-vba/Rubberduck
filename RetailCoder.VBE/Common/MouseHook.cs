@@ -71,6 +71,7 @@ namespace Rubberduck.Common
             _hookId = User32.SetWindowsHookEx(WindowsHook.MOUSE_LL, _callback, handle, 0);
             if (_hookId == IntPtr.Zero)
             {
+                IsAttached = false;
                 throw new Win32Exception();
             }
             
@@ -86,7 +87,7 @@ namespace Rubberduck.Common
             }
 
             IsAttached = false;
-            if (!User32.UnhookWindowsHookEx(_hookId))
+            if (_hookId != IntPtr.Zero && !User32.UnhookWindowsHookEx(_hookId))
             {
                 _hookId = IntPtr.Zero;
                 throw new Win32Exception();
