@@ -135,13 +135,23 @@ namespace Rubberduck.Parsing.VBA
 
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
             var modified = components.Where(_state.IsModified).ToList();
+            var unchanged = components.Where(c => !_state.IsModified(c)).ToList();
 
-            _state.SetModuleState(ParserState.LoadingReference);
+            _state.SetModuleState(ParserState.LoadingReference); // todo: change that to a simple statusbar text update
             LoadComReferences(projects);
+
+            if (!modified.Any())
+            {
+                return;
+            }
 
             foreach (var component in modified)
             {
                 _state.SetModuleState(component, ParserState.Pending);
+            }
+            foreach (var component in unchanged)
+            {
+                _state.SetModuleState(component, ParserState.Parsed);
             }
 
             // invalidation cleanup should go into ParseAsync?
@@ -152,8 +162,6 @@ namespace Rubberduck.Parsing.VBA
 
             foreach (var vbComponent in modified)
             {
-                while (!_state.ClearDeclarations(vbComponent)) { }
-
                 ParseAsync(vbComponent, CancellationToken.None);
             }
         }
@@ -192,11 +200,6 @@ namespace Rubberduck.Parsing.VBA
                     }
                 }
             }
-        }
-
-        public void LoadNewComReferences()
-        {
-            LoadComReferences(_state.Projects);
         }
 
         public void UnloadComReference(Reference reference)
