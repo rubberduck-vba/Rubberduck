@@ -12,9 +12,9 @@ using Rubberduck.VBEditor;
 using System.Globalization;
 using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -27,6 +27,7 @@ namespace Rubberduck.Parsing.VBA
                 return _state;
             }
         }
+
         private CancellationTokenSource _central = new CancellationTokenSource();
         private CancellationTokenSource _resolverTokenSource; // linked to _central later
         private readonly ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks = 
@@ -72,7 +73,6 @@ namespace Rubberduck.Parsing.VBA
 
         private void ReparseRequested(object sender, ParseRequestEventArgs e)
         {
-            _force = false;
             if (e.IsFullReparseRequest)
             {
                 Cancel();
@@ -85,10 +85,8 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private bool _force;
         public void Parse()
         {
-            _force = true;
             if (!_state.Projects.Any())
             {
                 foreach (var project in _vbe.VBProjects.Cast<VBProject>())
@@ -131,20 +129,29 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         private void ParseAll()
         {
-            _force = false;
             var projects = _state.Projects
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
                 .ToList();
 
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
             var modified = components.Where(_state.IsModified).ToList();
+            var unchanged = components.Where(c => !_state.IsModified(c)).ToList();
 
-            _state.SetModuleState(ParserState.LoadingReference);
+            _state.SetModuleState(ParserState.LoadingReference); // todo: change that to a simple statusbar text update
             LoadComReferences(projects);
+
+            if (!modified.Any())
+            {
+                return;
+            }
 
             foreach (var component in modified)
             {
                 _state.SetModuleState(component, ParserState.Pending);
+            }
+            foreach (var component in unchanged)
+            {
+                _state.SetModuleState(component, ParserState.Parsed);
             }
 
             // invalidation cleanup should go into ParseAsync?
@@ -155,57 +162,64 @@ namespace Rubberduck.Parsing.VBA
 
             foreach (var vbComponent in modified)
             {
-                while (!_state.ClearDeclarations(vbComponent)) { }
-
                 ParseAsync(vbComponent, CancellationToken.None);
             }
         }
 
-        private readonly HashSet<Guid> _loadedReferences = new HashSet<Guid>();
+        private readonly HashSet<ReferencePriorityMap> _references = new HashSet<ReferencePriorityMap>();
+
         private void LoadComReferences(IEnumerable<VBProject> projects)
         {
-            var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
-            var newReferences = references
-                .Select(reference => new {Guid = new Guid(reference.Guid), Reference = reference})
-                .Where(item => !_loadedReferences.Contains(item.Guid));
-
-            foreach (var item in newReferences)
+            foreach (var vbProject in projects)
             {
-                LoadComReference(item.Reference);
-            }
-        }
+                var projectId = vbProject.ProjectId();
+                for (var priority = 1; priority <= vbProject.References.Count; priority++)
+                {
+                    var reference = vbProject.References.Item(priority);
+                    var referenceId = reference.ReferenceId();
 
-        public void LoadComReference(Reference item)
-        {
-            var guid = new Guid(item.Guid);
-            if (_loadedReferences.Contains(guid))
-            {
-                return;
-            }
+                    var map = _references.SingleOrDefault(r => r.ReferenceId == referenceId);
+                    if (map == null)
+                    {
+                        map = new ReferencePriorityMap(referenceId) {{projectId, priority}};
+                        _references.Add(map);
+                    }
+                    else
+                    {
+                        map[projectId] = priority;
+                    }
 
-            var items = _comReflector.GetDeclarationsForReference(item).ToList();
-            foreach (var declaration in items)
-            {
-                _state.AddDeclaration(declaration);
+                    if (!map.IsLoaded)
+                    {
+                        var items = _comReflector.GetDeclarationsForReference(reference).ToList();
+                        foreach (var declaration in items)
+                        {
+                            _state.AddDeclaration(declaration);
+                        }
+                        map.IsLoaded = true;
+                    }
+                }
             }
-
-            _loadedReferences.Add(new Guid(item.Guid));
         }
 
         public void UnloadComReference(Reference reference)
         {
-            var projects = _state.Projects
-                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
-                .ToList();
-
-            var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
-            var target = references
-                .Select(item => new { Guid = new Guid(item.Guid), Reference = item })
-                .SingleOrDefault(item =>  _loadedReferences.Contains(item.Guid) && reference.Guid == item.Guid.ToString());
-
-            if (target != null)
+            var referenceId = reference.ReferenceId();
+            var map = _references.SingleOrDefault(r => r.ReferenceId == referenceId);
+            if (map == null || !map.IsLoaded)
             {
-                _state.RemoveBuiltInDeclarations(target.Reference);
+                // we're removing a reference we weren't tracking? ...this shouldn't happen.
+                Debug.Assert(false);
+                return;
+            }
+
+            var projectId = reference.Collection.Parent.ProjectId();
+            map.Remove(projectId);
+
+            if (!map.Any())
+            {
+                _references.Remove(map);
+                _state.RemoveBuiltInDeclarations(reference);
             }
         }
 

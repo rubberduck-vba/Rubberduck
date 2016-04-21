@@ -187,6 +187,7 @@ namespace Rubberduck
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
             var sink = (VBProjectsEventsSink)sender;
+            RegisterComponentsEventSink(e, sink);
             _parser.State.AddProject(e.Item);
 
             if (!_parser.State.AllDeclarations.Any())
@@ -198,9 +199,6 @@ namespace Rubberduck
             }
 
             Debug.WriteLine(string.Format("Project '{0}' was added.", e.Item.Name));
-            RegisterComponentsEventSink(e, sink);
-            RegisterReferencesEventsSink(e, sink);
-
             _parser.State.OnParseRequested(sender);
         }
 
@@ -225,40 +223,6 @@ namespace Rubberduck
             connectionPoint.Advise(componentsSink, out cookie);
 
             _componentsEventsConnectionPoints.Add(sink, Tuple.Create(connectionPoint, cookie));
-        }
-
-        private void RegisterReferencesEventsSink(DispatcherEventArgs<VBProject> e, VBProjectsEventsSink sink)
-        {
-            var connectionPointContainer = (IConnectionPointContainer)e.Item.References;
-            var interfaceId = typeof(_dispReferencesEvents).GUID;
-
-            IConnectionPoint connectionPoint;
-            connectionPointContainer.FindConnectionPoint(ref interfaceId, out connectionPoint);
-
-            var referencesSink = new ReferencesEventsSink();
-            referencesSink.ReferenceAdded += referencesSink_ReferenceAdded;
-            referencesSink.ReferenceRemoved += referencesSink_ReferenceRemoved;
-            _referencesEventsSinks.Add(sink, referencesSink);
-
-            int cookie;
-            connectionPoint.Advise(referencesSink, out cookie);
-            _referencesEventsConnectionPoints.Add(sink, Tuple.Create(connectionPoint, cookie));
-        }
-
-        private void referencesSink_ReferenceRemoved(object sender, DispatcherEventArgs<Reference> e)
-        {
-            Debug.WriteLine(string.Format("Reference '{0}' was removed.", e.Item.Name));
-            var state = _parser.State.Status;
-            _parser.UnloadComReference(e.Item);
-            _parser.State.SetModuleState(state);
-        }
-
-        private void referencesSink_ReferenceAdded(object sender, DispatcherEventArgs<Reference> e)
-        {
-            Debug.WriteLine(string.Format("Reference '{0}' was added.", e.Item.Name));
-            var state = _parser.State.Status;
-            _parser.LoadComReference(e.Item);
-            _parser.State.SetModuleState(state);
         }
 
         async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)

@@ -99,12 +99,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void RemoveProject(VBProject project)
         {
-            var projectId = project.HelpFile;
-            RemoveProject(projectId);
-
-            // note: attempt to fix ghost projects
-            projectId = project.Name;
-            RemoveProject(projectId);
+            RemoveProject(project.ProjectId());
         }
 
         public IEnumerable<VBProject> Projects
@@ -577,7 +572,7 @@ namespace Rubberduck.Parsing.VBA
             ConcurrentDictionary<Declaration, byte> items;
             if (!_declarations.TryRemove(key, out items))
             {
-                Debug.WriteLine("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, reference.Guid);
+                Debug.WriteLine("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, reference.ReferenceId());
             }
         }
     }

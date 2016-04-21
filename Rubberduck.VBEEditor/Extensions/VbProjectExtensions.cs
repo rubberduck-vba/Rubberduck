@@ -10,6 +10,18 @@ namespace Rubberduck.VBEditor.Extensions
 {
     public static class ProjectExtensions
     {
+        public static string ProjectId(this VBProject project)
+        {
+            return project.HelpFile;
+        }
+
+        public static string ReferenceId(this Reference reference)
+        {
+            return string.IsNullOrEmpty(reference.Guid)
+                ? reference.FullPath
+                : reference.Guid;
+        }
+
         public static IEnumerable<string> ComponentNames(this VBProject project)
         {
             return project.VBComponents.Cast<VBComponent>().Select(component => component.Name);
