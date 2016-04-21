@@ -102,7 +102,7 @@ namespace Rubberduck.Parsing.VBA
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
             _state.SetModuleState(ParserState.LoadingReference);
 
-            LoadComReferences(projects);
+            SyncComReferences(projects);
 
             foreach (var component in components)
             {
@@ -138,7 +138,7 @@ namespace Rubberduck.Parsing.VBA
             var unchanged = components.Where(c => !_state.IsModified(c)).ToList();
 
             _state.SetModuleState(ParserState.LoadingReference); // todo: change that to a simple statusbar text update
-            LoadComReferences(projects);
+            SyncComReferences(projects);
 
             if (!modified.Any())
             {
@@ -168,7 +168,7 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly HashSet<ReferencePriorityMap> _references = new HashSet<ReferencePriorityMap>();
 
-        private void LoadComReferences(IEnumerable<VBProject> projects)
+        private void SyncComReferences(IReadOnlyList<VBProject> projects)
         {
             foreach (var vbProject in projects)
             {
@@ -200,9 +200,17 @@ namespace Rubberduck.Parsing.VBA
                     }
                 }
             }
+
+            var mappedIds = _references.Select(map => map.ReferenceId);
+            var unmapped = projects.SelectMany(project => project.References.Cast<Reference>())
+                .Where(reference => !mappedIds.Contains(reference.ReferenceId()));
+            foreach (var reference in unmapped)
+            {
+                UnloadComReference(reference);
+            }
         }
 
-        public void UnloadComReference(Reference reference)
+        private void UnloadComReference(Reference reference)
         {
             var referenceId = reference.ReferenceId();
             var map = _references.SingleOrDefault(r => r.ReferenceId == referenceId);
