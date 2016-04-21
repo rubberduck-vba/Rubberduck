@@ -10,7 +10,7 @@ namespace Rubberduck.Parsing
     public interface IRubberduckParser
     {
         RubberduckParserState State { get; }
-        void LoadComReference(Reference item);
+        void LoadNewComReferences();
         void UnloadComReference(Reference reference);
         void ParseComponent(VBComponent component, TokenStreamRewriter rewriter = null);
         Task ParseAsync(VBComponent component, CancellationToken token,  TokenStreamRewriter rewriter = null);

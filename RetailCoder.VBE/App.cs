@@ -257,7 +257,7 @@ namespace Rubberduck
         {
             Debug.WriteLine(string.Format("Reference '{0}' was added.", e.Item.Name));
             var state = _parser.State.Status;
-            _parser.LoadComReference(e.Item);
+            _parser.LoadNewComReferences();
             _parser.State.SetModuleState(state);
         }
 

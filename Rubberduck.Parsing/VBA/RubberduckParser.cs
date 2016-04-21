@@ -12,9 +12,9 @@ using Rubberduck.VBEditor;
 using System.Globalization;
 using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -27,6 +27,7 @@ namespace Rubberduck.Parsing.VBA
                 return _state;
             }
         }
+
         private CancellationTokenSource _central = new CancellationTokenSource();
         private CancellationTokenSource _resolverTokenSource; // linked to _central later
         private readonly ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks = 
@@ -72,7 +73,6 @@ namespace Rubberduck.Parsing.VBA
 
         private void ReparseRequested(object sender, ParseRequestEventArgs e)
         {
-            _force = false;
             if (e.IsFullReparseRequest)
             {
                 Cancel();
@@ -85,10 +85,8 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private bool _force;
         public void Parse()
         {
-            _force = true;
             if (!_state.Projects.Any())
             {
                 foreach (var project in _vbe.VBProjects.Cast<VBProject>())
@@ -131,7 +129,6 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         private void ParseAll()
         {
-            _force = false;
             var projects = _state.Projects
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
                 .ToList();
@@ -161,58 +158,65 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private readonly HashSet<Guid> _loadedReferences = new HashSet<Guid>();
+        private readonly HashSet<ReferencePriorityMap> _references = new HashSet<ReferencePriorityMap>();
+
         private void LoadComReferences(IEnumerable<VBProject> projects)
         {
-            var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
-            var newReferences = references
-                .Select(reference => new {Guid = new Guid(reference.Guid), Reference = reference})
-                .Where(item => !_loadedReferences.Contains(item.Guid));
-
-            for (var i = 0; i < references.Count; i++)
+            foreach (var vbProject in projects)
             {
-                
-            }
+                var projectId = vbProject.ProjectId();
+                for (var priority = 0; priority < vbProject.References.Count; priority++)
+                {
+                    var reference = vbProject.References.Item(priority);
+                    var referenceId = reference.ReferenceId();
 
-            foreach (var item in newReferences)
-            {
-                LoadComReference(item.Reference);
+                    var map = _references.SingleOrDefault(r => r.ReferenceId == referenceId);
+                    if (map == null)
+                    {
+                        map = new ReferencePriorityMap(referenceId) {{projectId, priority}};
+                        _references.Add(map);
+                    }
+                    else
+                    {
+                        map[projectId] = priority;
+                    }
+
+                    if (!map.IsLoaded)
+                    {
+                        var items = _comReflector.GetDeclarationsForReference(reference).ToList();
+                        foreach (var declaration in items)
+                        {
+                            _state.AddDeclaration(declaration);
+                        }
+                        map.IsLoaded = true;
+                    }
+                }
             }
         }
 
-        public void LoadComReference(Reference item)
+        public void LoadNewComReferences()
         {
-            var guid = new Guid(item.Guid);
-            if (_loadedReferences.Contains(guid))
-            {
-                return;
-            }
-
-            var items = _comReflector.GetDeclarationsForReference(item).ToList();
-            foreach (var declaration in items)
-            {
-                _state.AddDeclaration(declaration);
-            }
-
-            _loadedReferences.Add(new Guid(item.Guid));
+            LoadComReferences(_state.Projects);
         }
 
         public void UnloadComReference(Reference reference)
         {
-            var projects = _state.Projects
-                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
-                .ToList();
-
-            var references = projects.SelectMany(p => p.References.Cast<Reference>()).ToList();
-            var target = references
-                .Select(item => new { Guid = new Guid(item.Guid), Reference = item })
-                .SingleOrDefault(item =>  _loadedReferences.Contains(item.Guid) && reference.Guid == item.Guid.ToString());
-
-            if (target != null)
+            var referenceId = reference.ReferenceId();
+            var map = _references.SingleOrDefault(r => r.ReferenceId == referenceId);
+            if (map == null || !map.IsLoaded)
             {
-                _state.RemoveBuiltInDeclarations(target.Reference);
-                var guid = new Guid(reference.Guid);
-                _loadedReferences.Remove(guid);
+                // we're removing a reference we weren't tracking? ...this shouldn't happen.
+                Debug.Assert(false);
+                return;
+            }
+
+            var projectId = reference.Collection.Parent.ProjectId();
+            map.Remove(projectId);
+
+            if (!map.Any())
+            {
+                _references.Remove(map);
+                _state.RemoveBuiltInDeclarations(reference);
             }
         }
 
