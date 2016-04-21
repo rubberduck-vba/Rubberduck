@@ -165,7 +165,7 @@ namespace Rubberduck.Parsing.VBA
             foreach (var vbProject in projects)
             {
                 var projectId = vbProject.ProjectId();
-                for (var priority = 0; priority < vbProject.References.Count; priority++)
+                for (var priority = 1; priority <= vbProject.References.Count; priority++)
                 {
                     var reference = vbProject.References.Item(priority);
                     var referenceId = reference.ReferenceId();
