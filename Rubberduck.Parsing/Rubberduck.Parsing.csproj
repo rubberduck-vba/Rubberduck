@@ -183,6 +183,8 @@
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
     <Compile Include="Symbols\MemberProcessedEventArgs.cs" />
     <Compile Include="Symbols\ParameterDeclaration.cs" />
+    <Compile Include="Symbols\ProjectDeclaration.cs" />
+    <Compile Include="Symbols\ProjectReference.cs" />
     <Compile Include="Symbols\ReferencedDeclarationsCollector.cs" />
     <Compile Include="Symbols\SyntaxErrorException.cs" />
     <Compile Include="Nodes\CommentNode.cs" />

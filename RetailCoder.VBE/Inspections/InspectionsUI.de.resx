@@ -423,7 +423,7 @@
     <value>Deklariere explizit als 'Variant'</value>
   </data>
   <data name="ImplicitByRefParameterQuickFix" xml:space="preserve">
-    <value>Über gebe den Parameter explizit als Referenz</value>
+    <value>Parameter explizit als Referenz angeben</value>
   </data>
   <data name="Inspections_DeclarationOf" xml:space="preserve">
     <value>Deklaration von</value>
