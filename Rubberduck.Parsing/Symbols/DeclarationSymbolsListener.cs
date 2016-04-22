@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
-using Rubberduck.Parsing.Annotations;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -26,14 +24,16 @@ namespace Rubberduck.Parsing.Symbols
         private readonly IEnumerable<CommentNode> _comments;
         private readonly IEnumerable<IAnnotation> _annotations;
         private readonly IDictionary<Tuple<string, DeclarationType>, Attributes> _attributes;
+        private readonly HashSet<ReferencePriorityMap> _projectReferences;
 
         public DeclarationSymbolsListener(
-            QualifiedModuleName qualifiedName, 
-            Accessibility componentAccessibility, 
-            vbext_ComponentType type, 
+            QualifiedModuleName qualifiedName,
+            Accessibility componentAccessibility,
+            vbext_ComponentType type,
             IEnumerable<CommentNode> comments,
             IEnumerable<IAnnotation> annotations,
-            IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
+            IDictionary<Tuple<string, DeclarationType>, Attributes> attributes,
+            HashSet<ReferencePriorityMap> projectReferences)
         {
             _qualifiedName = qualifiedName;
             _comments = comments;
@@ -46,6 +46,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var project = _qualifiedName.Component.Collection.Parent;
             var projectQualifiedName = new QualifiedModuleName(project);
+            _projectReferences = projectReferences;
 
             _projectDeclaration = CreateProjectDeclaration(projectQualifiedName, project);
 
@@ -59,7 +60,7 @@ namespace Rubberduck.Parsing.Symbols
                 _projectDeclaration,
                 _projectDeclaration,
                 _qualifiedName.Component.Name,
-                false, 
+                false,
                 false,
                 componentAccessibility,
                 declarationType,
@@ -69,13 +70,18 @@ namespace Rubberduck.Parsing.Symbols
             SetCurrentScope();
         }
 
-        private static Declaration CreateProjectDeclaration(QualifiedModuleName projectQualifiedName, VBProject project)
+        private Declaration CreateProjectDeclaration(QualifiedModuleName projectQualifiedName, VBProject project)
         {
-            var declaration = new Declaration(
-                projectQualifiedName.QualifyMemberName(project.Name),
-                null, (Declaration) null, project.Name, false, false, Accessibility.Implicit, DeclarationType.Project, null,
-                Selection.Home, false);
-            return declaration;
+            var qualifiedName = projectQualifiedName.QualifyMemberName(project.Name);
+            var projectId = qualifiedName.QualifiedModuleName.ProjectId;
+            var projectDeclaration = new ProjectDeclaration(qualifiedName, project.Name);
+            var references = _projectReferences.Where(projectContainingReference => projectContainingReference.ContainsKey(projectId));
+            foreach (var reference in references)
+            {
+                int priority = reference[projectId];
+                projectDeclaration.AddProjectReference(reference.ReferencedProjectId, priority);
+            }
+            return projectDeclaration;
         }
 
         private IEnumerable<IAnnotation> FindAnnotations()
@@ -156,7 +162,7 @@ namespace Rubberduck.Parsing.Symbols
             Declaration result;
             if (declarationType == DeclarationType.Parameter)
             {
-                var argContext = (VBAParser.ArgContext) context;
+                var argContext = (VBAParser.ArgContext)context;
                 var isOptional = argContext.OPTIONAL() != null;
                 var isByRef = argContext.BYREF() != null;
                 var isParamArray = argContext.PARAMARRAY() != null;
@@ -277,8 +283,8 @@ namespace Rubberduck.Parsing.Symbols
             var name = identifier.GetText();
 
             var asTypeClause = context.asTypeClause();
-            var asTypeName = asTypeClause == null 
-                ? Tokens.Variant 
+            var asTypeName = asTypeClause == null
+                ? Tokens.Variant
                 : asTypeClause.type().GetText();
 
             var declaration = CreateDeclaration(name, asTypeName, accessibility, DeclarationType.Function, context, context.ambiguousIdentifier().GetSelection());
@@ -392,10 +398,10 @@ namespace Rubberduck.Parsing.Symbols
             var hasReturnType = context.FUNCTION() != null;
 
             var asTypeClause = context.asTypeClause();
-            var asTypeName = hasReturnType 
+            var asTypeName = hasReturnType
                                 ? asTypeClause == null
                                     ? Tokens.Variant
-                                    : asTypeClause.type().GetText() 
+                                    : asTypeClause.type().GetText()
                                 : null;
 
             var selection = nameContext.GetSelection();
@@ -457,7 +463,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var withEvents = parent.WITHEVENTS() != null;
             var selfAssigned = asTypeClause != null && asTypeClause.NEW() != null;
-            
+
             OnNewDeclaration(CreateDeclaration(name, asTypeName, accessibility, DeclarationType.Variable, context, context.ambiguousIdentifier().GetSelection(), selfAssigned, withEvents));
         }
 

@@ -90,11 +90,10 @@ namespace Rubberduck.Parsing.Symbols
         {
             var projectName = reference.Name;
             var path = reference.FullPath;
-
-            var projectQualifiedModuleName = new QualifiedModuleName(projectName, projectName);
+            var projectQualifiedModuleName = new QualifiedModuleName(projectName, path, projectName);
             var projectQualifiedMemberName = new QualifiedMemberName(projectQualifiedModuleName, projectName);
 
-            var projectDeclaration = new Declaration(projectQualifiedMemberName, null, null, projectName, false, false, Accessibility.Global, DeclarationType.Project);
+            var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName);
             yield return projectDeclaration;
 
             ITypeLib typeLibrary;
@@ -134,7 +133,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 else
                 {
-                    typeQualifiedModuleName = new QualifiedModuleName(projectName, typeName);
+                    typeQualifiedModuleName = new QualifiedModuleName(projectName, path, typeName);
                     typeQualifiedMemberName = new QualifiedMemberName(typeQualifiedModuleName, typeName);
                 }
 
