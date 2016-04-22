@@ -375,17 +375,13 @@ namespace Rubberduck.Parsing.Preprocessing
             {
                 return VisitDateLiteral(context);
             }
-            else if (context.DOUBLELITERAL() != null)
+            else if (context.FLOATLITERAL() != null)
             {
-                return VisitDoubleLiteral(context);
+                return VisitFloatLiteral(context);
             }
             else if (context.INTEGERLITERAL() != null)
             {
                 return VisitIntegerLiteral(context);
-            }
-            else if (context.SHORTLITERAL() != null)
-            {
-                return VisitShortLiteral(context);
             }
             else if (context.STRINGLITERAL() != null)
             {
@@ -415,19 +411,14 @@ namespace Rubberduck.Parsing.Preprocessing
             return new StringLiteralExpression(new ConstantExpression(new StringValue(context.STRINGLITERAL().GetText())));
         }
 
-        private IExpression VisitShortLiteral(VBAConditionalCompilationParser.LiteralContext context)
-        {
-            return new NumberLiteralExpression(new ConstantExpression(new StringValue(context.SHORTLITERAL().GetText())));
-        }
-
         private IExpression VisitIntegerLiteral(VBAConditionalCompilationParser.LiteralContext context)
         {
             return new NumberLiteralExpression(new ConstantExpression(new StringValue(context.INTEGERLITERAL().GetText())));
         }
 
-        private IExpression VisitDoubleLiteral(VBAConditionalCompilationParser.LiteralContext context)
+        private IExpression VisitFloatLiteral(VBAConditionalCompilationParser.LiteralContext context)
         {
-            return new NumberLiteralExpression(new ConstantExpression(new StringValue(context.DOUBLELITERAL().GetText())));
+            return new NumberLiteralExpression(new ConstantExpression(new StringValue(context.FLOATLITERAL().GetText())));
         }
 
         private IExpression VisitDateLiteral(VBAConditionalCompilationParser.LiteralContext context)
