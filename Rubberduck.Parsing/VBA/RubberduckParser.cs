@@ -172,16 +172,15 @@ namespace Rubberduck.Parsing.VBA
         {
             foreach (var vbProject in projects)
             {
-                var projectId = vbProject.ProjectId();
+                var projectId = QualifiedModuleName.GetProjectId(vbProject);
                 for (var priority = 1; priority <= vbProject.References.Count; priority++)
                 {
                     var reference = vbProject.References.Item(priority);
-                    var referenceId = reference.ReferenceId();
-
-                    var map = _references.SingleOrDefault(r => r.ReferenceId == referenceId);
+                    var referencedProjectId = QualifiedModuleName.GetProjectId(reference);
+                    var map = _references.SingleOrDefault(r => r.ReferencedProjectId == referencedProjectId);
                     if (map == null)
                     {
-                        map = new ReferencePriorityMap(referenceId) {{projectId, priority}};
+                        map = new ReferencePriorityMap(referencedProjectId) {{projectId, priority}};
                         _references.Add(map);
                     }
                     else
@@ -201,9 +200,9 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            var mappedIds = _references.Select(map => map.ReferenceId);
+            var mappedIds = _references.Select(map => map.ReferencedProjectId);
             var unmapped = projects.SelectMany(project => project.References.Cast<Reference>())
-                .Where(reference => !mappedIds.Contains(reference.ReferenceId()));
+                .Where(reference => !mappedIds.Contains(QualifiedModuleName.GetProjectId(reference)));
             foreach (var reference in unmapped)
             {
                 UnloadComReference(reference);
@@ -212,18 +211,15 @@ namespace Rubberduck.Parsing.VBA
 
         private void UnloadComReference(Reference reference)
         {
-            var referenceId = reference.ReferenceId();
-            var map = _references.SingleOrDefault(r => r.ReferenceId == referenceId);
+            var referencedProjectId = QualifiedModuleName.GetProjectId(reference);
+            var map = _references.SingleOrDefault(r => r.ReferencedProjectId == referencedProjectId);
             if (map == null || !map.IsLoaded)
             {
                 // we're removing a reference we weren't tracking? ...this shouldn't happen.
                 Debug.Assert(false);
                 return;
             }
-
-            var projectId = reference.Collection.Parent.ProjectId();
-            map.Remove(projectId);
-
+            map.Remove(referencedProjectId);
             if (!map.Any())
             {
                 _references.Remove(map);
@@ -379,7 +375,7 @@ namespace Rubberduck.Parsing.VBA
                 // cannot locate declarations in one pass *the way it's currently implemented*,
                 // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
                 // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
-                var declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, Accessibility.Implicit, component.Type, _state.GetModuleComments(component), _state.GetModuleAnnotations(component),_state.GetModuleAttributes(component));
+                var declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, Accessibility.Implicit, component.Type, _state.GetModuleComments(component), _state.GetModuleAnnotations(component),_state.GetModuleAttributes(component), _references);
                 // TODO: should we unify the API? consider working like the other listeners instead of event-based
                 declarationsListener.NewDeclaration += (sender, e) => _state.AddDeclaration(e.Declaration);
                 declarationsListener.CreateModuleDeclarations();
@@ -401,8 +397,7 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
             _state.SetModuleState(component, ParserState.Resolving);
-            Debug.WriteLine("Resolving '{0}'... (thread {1})", component.Name, Thread.CurrentThread.ManagedThreadId);
-
+            Debug.WriteLine("Resolving '{0}'... (thread {1})", component.Name, Thread.CurrentThread.ManagedThreadId);            
             var qualifiedName = new QualifiedModuleName(component);
             var resolver = new IdentifierReferenceResolver(qualifiedName, finder);
             var listener = new IdentifierReferenceListener(resolver);
