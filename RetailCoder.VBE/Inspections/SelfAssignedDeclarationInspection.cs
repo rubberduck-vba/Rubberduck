@@ -39,9 +39,8 @@ namespace Rubberduck.Inspections
                     && declaration.IsTypeSpecified()
                     && !ValueTypes.Contains(declaration.AsTypeName)
                     && declaration.DeclarationType == DeclarationType.Variable
-                    && declaration.ParentScope == declaration.QualifiedName.QualifiedModuleName.ToString()
-                    && declaration.ParentDeclaration != null
-                    && declaration.ParentDeclaration.DeclarationType == DeclarationType.Class)
+                    && declaration.ParentScopeDeclaration != null
+                    && declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
                 .Select(issue => new SelfAssignedDeclarationInspectionResult(this, issue));
         }
     }
