@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.SelfAssignedDeclarationInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        private static readonly IEnumerable<string> ValueTypes = new[]
+        private static readonly IReadOnlyList<string> ValueTypes = new[]
         {
             Tokens.Boolean,
             Tokens.Byte,
