@@ -9,13 +9,20 @@ namespace Rubberduck.VBEditor
     /// </summary>
     public struct QualifiedModuleName
     {
-        private static string GetProjectId(VBProject project)
+        public static string GetProjectId(VBProject project)
         {
             if (project == null)
             {
                 return string.Empty;
             }
             return string.IsNullOrEmpty(project.HelpFile) ? project.GetHashCode().ToString() : project.HelpFile;
+        }
+
+        public static string GetProjectId(Reference reference)
+        {
+            var projectName = reference.Name;
+            var path = reference.FullPath;
+            return new QualifiedModuleName(projectName, path, projectName).ProjectId;
         }
 
         public QualifiedModuleName(VBProject project)
@@ -55,11 +62,11 @@ namespace Rubberduck.VBEditor
         /// Creates a QualifiedModuleName for a built-in declaration.
         /// Do not use this overload for user declarations.
         /// </summary>
-        public QualifiedModuleName(string projectName, string componentName)
+        public QualifiedModuleName(string projectName, string projectPath, string componentName)
         {
             _project = null;
-            _projectName = projectName;
-            _projectId = projectName.GetHashCode().ToString();
+            _projectName = projectName + ";" + projectPath;
+            _projectId = _projectName.GetHashCode().ToString();
             _componentName = componentName;
             _component = null;
             _contentHashCode = 0;
@@ -80,7 +87,7 @@ namespace Rubberduck.VBEditor
         public int ContentHashCode { get { return _contentHashCode; } }
 
         private readonly string _projectId;
-        public string ProjectId { get { return _projectId;} }
+        public string ProjectId { get { return _projectId; } }
 
         private readonly string _componentName;
         public string ComponentName { get { return _componentName ?? string.Empty; } }
@@ -98,8 +105,8 @@ namespace Rubberduck.VBEditor
             unchecked
             {
                 var hash = 17;
-                hash = hash*23 + _projectId.GetHashCode();
-                hash = hash*23 + (_componentName ?? string.Empty).GetHashCode();
+                hash = hash * 23 + _projectId.GetHashCode();
+                hash = hash * 23 + (_componentName ?? string.Empty).GetHashCode();
                 return hash;
             }
         }

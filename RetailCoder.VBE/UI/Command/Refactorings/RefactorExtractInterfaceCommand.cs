@@ -44,7 +44,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 item.QualifiedName.QualifiedModuleName.Equals(selection.QualifiedName)
                 && item.IdentifierName == selection.QualifiedName.ComponentName
                 && (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Document || item.DeclarationType == DeclarationType.UserForm));
-            var hasMembers = _state.AllUserDeclarations.Any(item => item.DeclarationType.HasFlag(DeclarationType.Member) && item.ParentDeclaration.Equals(target));
+            var hasMembers = _state.AllUserDeclarations.Any(item => item.DeclarationType.HasFlag(DeclarationType.Member) && item.ParentDeclaration != null && item.ParentDeclaration.Equals(target));
 
             // true if active code pane is for a class/document/form module
             var canExecute = ModuleTypes.Contains(Vbe.ActiveCodePane.CodeModule.Parent.Type) && target != null && hasMembers;
