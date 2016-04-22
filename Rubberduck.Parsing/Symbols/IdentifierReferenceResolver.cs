@@ -7,6 +7,7 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Binding;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -35,6 +36,8 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration _currentScope;
         private Declaration _currentParent;
+
+        private readonly BindingService _bindingService;
 
         public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, DeclarationFinder finder)
         {
@@ -72,6 +75,8 @@ namespace Rubberduck.Parsing.Symbols
                 && item.QualifiedName.QualifiedModuleName.Equals(_qualifiedModuleName));
 
             SetCurrentScope();
+
+            _bindingService = new BindingService(new TypeBindingContext(_declarationFinder));
         }
 
         public void SetCurrentScope()
@@ -971,11 +976,10 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ImplementsStmtContext context)
         {
-            var target = ResolveInScopeType(context.ambiguousIdentifier().GetText(), _currentScope);
-            if (target != null)
+            var boundExpression = _bindingService.Resolve(_moduleDeclaration, _currentScope, context.valueStmt().GetText());
+            if (boundExpression != null)
             {
-                target.AddReference(CreateReference(context.ambiguousIdentifier(), target));
-                _alreadyResolved.Add(context.ambiguousIdentifier());
+                boundExpression.ReferencedDeclaration.AddReference(CreateReference(context.valueStmt(), boundExpression.ReferencedDeclaration));
             }
         }
 

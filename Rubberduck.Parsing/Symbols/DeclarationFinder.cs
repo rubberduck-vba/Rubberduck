@@ -186,5 +186,103 @@ namespace Rubberduck.Parsing.Symbols
 
             return result;
         }
+
+        public Declaration Find(Declaration parentScope, string name, DeclarationType type)
+        {
+            var results = MatchName(name).ToList();
+            return MatchName(name).Where(declaration => parentScope.Equals(declaration.ParentScopeDeclaration) && declaration.DeclarationType.HasFlag(type)).FirstOrDefault();
+        }
+
+        public Declaration Find(string name, DeclarationType type)
+        {
+            var results = MatchName(name).ToList();
+            return MatchName(name).Where(declaration => declaration.DeclarationType.HasFlag(type)).FirstOrDefault();
+        }
+
+        public Declaration FindReferencedProject(Declaration enclosingProject, string name)
+        {
+            var results = MatchName(name).ToList();
+            return MatchName(name).Where(declaration => declaration.DeclarationType == DeclarationType.Project && !declaration.Equals(enclosingProject)).FirstOrDefault();
+        }
+
+        public Declaration FindAccessible(Declaration project, Declaration enclosingModule, string name, DeclarationType type)
+        {
+            var results = MatchName(name).ToList();
+            return MatchName(name).Where(declaration =>
+                declaration.ParentScopeDeclaration != null
+                && !enclosingModule.Equals(declaration.ParentScopeDeclaration)
+                && project.Equals(declaration.ParentScopeDeclaration.ParentScopeDeclaration)
+                && (declaration.Accessibility == Accessibility.Public || declaration.Accessibility == Accessibility.Friend || declaration.Accessibility == Accessibility.Global)
+                && declaration.DeclarationType.HasFlag(type)).FirstOrDefault();
+        }
+
+        public Declaration FindAccessibleEnumMember(Declaration project, Declaration enclosingModule, string name)
+        {
+            var results = MatchName(name).ToList();
+            return MatchName(name).Where(declaration =>
+                declaration.ParentScopeDeclaration != null
+                && !enclosingModule.Equals(declaration.ParentScopeDeclaration)
+                && project.Equals(declaration.ParentScopeDeclaration.ParentScopeDeclaration)
+                && (declaration.ParentDeclaration.Accessibility == Accessibility.Public || declaration.ParentDeclaration.Accessibility == Accessibility.Global)
+                && declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember)).FirstOrDefault();
+        }
+
+        public Declaration FindInReferencedProject(Declaration project, string name, DeclarationType type)
+        {
+            var results = MatchName(name).ToList();
+            return MatchName(name).Where(declaration =>
+                declaration.ParentScopeDeclaration != null
+                && declaration.ParentScopeDeclaration.DeclarationType == DeclarationType.Module
+                && !project.Equals(declaration.ParentScopeDeclaration.ParentScopeDeclaration)
+                && (declaration.Accessibility == Accessibility.Public || declaration.Accessibility == Accessibility.Friend || declaration.Accessibility == Accessibility.Global)
+                && declaration.DeclarationType.HasFlag(type)).FirstOrDefault();
+        }
+
+        public Declaration FindInReferencedProject(Declaration project, string name, DeclarationType type, DeclarationType parentType)
+        {
+            var results = MatchName(name).ToList();
+            return MatchName(name).Where(declaration =>
+                declaration.ParentScopeDeclaration != null
+                && declaration.ParentScopeDeclaration.DeclarationType.HasFlag(parentType)
+                && !project.Equals(declaration.ParentScopeDeclaration.ParentScopeDeclaration)
+                && (declaration.Accessibility == Accessibility.Public || declaration.Accessibility == Accessibility.Friend || declaration.Accessibility == Accessibility.Global)
+                && declaration.DeclarationType.HasFlag(type)).FirstOrDefault();
+        }
+
+        public Declaration FindInReferencedProjectEnumMember(Declaration project, string name)
+        {
+            var results = MatchName(name).ToList();
+            return MatchName(name).Where(declaration =>
+                declaration.ParentScopeDeclaration != null
+                && declaration.ParentScopeDeclaration.DeclarationType == DeclarationType.Enumeration
+                && !project.Equals(declaration.ParentScopeDeclaration.ParentScopeDeclaration)
+                && (declaration.ParentDeclaration.Accessibility == Accessibility.Public || declaration.ParentDeclaration.Accessibility == Accessibility.Global)
+                && declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember)).FirstOrDefault();
+        }
+
+        public Declaration FindInReferencedProjectModule(Declaration project, string name)
+        {
+            var results = MatchName(name).ToList();
+            return MatchName(name).Where(declaration =>
+                declaration.DeclarationType == DeclarationType.Module
+                && !project.Equals(declaration.ParentScopeDeclaration)
+                && !IsPrivateModule(declaration)).FirstOrDefault();
+        }
+
+        private bool IsPrivateModule(Declaration module)
+        {
+            // TODO: Create ProceduralModuleDeclaration.
+            return _declarationsByName
+                .Where(kv => kv.Value.Any(d => module.Equals(d.ParentDeclaration) && d.DeclarationType == DeclarationType.ModuleOption && d.IdentifierName == "Option Private Module"))
+                .Any();
+        }
+
+        public Declaration FindInReferencedProjectClass(Declaration project, string name)
+        {
+            var results = MatchName(name).ToList();
+            return MatchName(name).Where(declaration =>
+                declaration.DeclarationType == DeclarationType.Class
+                && !project.Equals(declaration.ParentScopeDeclaration)).FirstOrDefault();
+        }
     }
 }

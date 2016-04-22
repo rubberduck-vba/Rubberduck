@@ -52,10 +52,29 @@ ccEol : (SINGLEQUOTE ~NEWLINE*)? NEWLINE?;
 
 intrinsicFunction : intrinsicFunctionName LPAREN WS* ccExpression WS* RPAREN;
 
-intrinsicFunctionName : IDENTIFIER;
+intrinsicFunctionName :
+    INT |
+    FIX |
+    ABS |
+    SGN |
+    LEN |
+    LENB |
+    CBOOL |
+    CBYTE |
+    CCUR |
+    CDATE |
+    CDBL |
+    CINT |
+    CLNG |
+    CLNGLNG |
+    CLNGPTR |
+    CSNG |
+    CSTR |
+    CVAR
+;
 
 name : IDENTIFIER typeHint?;
 
 typeHint : PERCENT | AMPERSAND | POW | EXCLAMATIONPOINT | HASH | AT | DOLLAR;
 
-literal : HEXLITERAL | OCTLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | SHORTLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL | EMPTY;
+literal : DATELITERAL | HEXLITERAL | OCTLITERAL | FLOATLITERAL | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL | EMPTY;

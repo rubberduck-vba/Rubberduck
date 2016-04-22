@@ -74,6 +74,21 @@
     <Compile Include="Annotations\TestMethodAnnotation.cs" />
     <Compile Include="Annotations\TestModuleAnnotation.cs" />
     <Compile Include="Annotations\VBAParserAnnotationFactory.cs" />
+    <Compile Include="Binding\BindingService.cs" />
+    <Compile Include="Binding\BoundExpression.cs" />
+    <Compile Include="Binding\TypeBindingContext.cs" />
+    <Compile Include="Binding\ExpressionClassification.cs" />
+    <Compile Include="Binding\ExpressionName.cs" />
+    <Compile Include="Binding\IBindingContext.cs" />
+    <Compile Include="Binding\IBoundExpression.cs" />
+    <Compile Include="Binding\IExpressionBinding.cs" />
+    <Compile Include="Binding\SimpleNameExpression.cs" />
+    <Compile Include="Binding\SimpleNameTypeBinding.cs" />
+    <Compile Include="Binding\VBAExpressionParser.cs" />
+    <Compile Include="Binding\VBAExpressionParserBaseListener.cs" />
+    <Compile Include="Binding\VBAExpressionParserBaseVisitor.cs" />
+    <Compile Include="Binding\VBAExpressionParserListener.cs" />
+    <Compile Include="Binding\VBAExpressionParserVisitor.cs" />
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
@@ -218,6 +233,7 @@
     <Compile Include="VBComponentExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Binding\VBAExpressionParser.g4" />
     <None Include="Grammar\VBAParser.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
