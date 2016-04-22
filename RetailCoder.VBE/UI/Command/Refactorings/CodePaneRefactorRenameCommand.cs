@@ -47,8 +47,7 @@ namespace Rubberduck.UI.Command.Refactorings
             }
             else
             {
-                var selection = Vbe.ActiveCodePane.GetSelection();
-                target = _state.AllUserDeclarations.FindTarget(selection);
+                target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
             }
 
             if (target == null)

@@ -424,7 +424,7 @@
                 <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Stretch">
                     <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center" 
                            Source="{Binding SelectedItem.Inspection.Severity, Converter={StaticResource SeverityIconConverter}}"/>
-                    <TextBlock Margin="4" Text="{Binding SelectedItem.Inspection.Description}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
+                    <TextBlock Margin="4" Text="{Binding SelectedItem.Description}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
                 </StackPanel>
 
                 <TextBlock Margin="4" Text="{Binding SelectedItem.Inspection.Meta}" FontSize="10" TextWrapping="WrapWithOverflow"/>
