@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\TestProj\TestProj\Grammar\VBAParser.g4 by ANTLR 4.3
+// Generated from C:\Users\Splinter\Documents\Visual Studio 2015\Projects\RubberduckParserTest\RubberduckParserTest\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -30,7 +30,7 @@ using DFA = Antlr4.Runtime.Dfa.DFA;
 public partial class VBAParser : Parser {
 	public const int
 		PRINT=129, ELSEIF=56, CLOSE=31, STATIC=159, MINUS=193, OPTION_EXPLICIT=122, 
-		L_SQUARE_BRACKET=204, SETATTR=155, HASHENDIF=203, DATELITERAL=212, ERROR=70, 
+		L_SQUARE_BRACKET=204, SETATTR=155, HASHENDIF=203, DATELITERAL=211, ERROR=70, 
 		NOTHING=114, EACH=54, SUB=163, FILECOPY=78, STOP=161, LPAREN=191, MID=107, 
 		BEEP=20, AS=18, END_PROPERTY=61, AT=7, DATABASE=34, GOSUB=84, HASHCONST=199, 
 		CHDIR=28, POW=197, DOLLAR=9, PROPERTY_LET=132, THEN=166, XOR=183, EXIT_FOR=73, 
@@ -40,31 +40,30 @@ public partial class VBAParser : Parser {
 		END_SELECT=62, STRING=162, HASHELSEIF=201, REM=143, TO=168, DEFDBL=40, 
 		BYVAL=23, FRIEND=79, LOOP=97, DELETESETTING=50, CLASS=30, DO=52, VARIANT=175, 
 		END_WITH=65, DEFBOOL=37, OPTIONAL=120, ADDRESSOF=12, CONST=33, RSET=148, 
-		INTEGER=92, REMCOMMENT=214, ATTRIBUTE=15, OUTPUT=126, FOR=80, PTRSAFE=134, 
+		INTEGER=92, REMCOMMENT=213, ATTRIBUTE=15, OUTPUT=126, FOR=80, PTRSAFE=134, 
 		EQ=187, BOOLEAN=22, NAME=110, END_FUNCTION=59, DEFSNG=47, DEFBYTE=38, 
-		NOT=113, DOUBLELITERAL=211, SAVESETTING=150, END=66, PRESERVE=128, ON_LOCAL_ERROR=118, 
+		NOT=113, SAVESETTING=150, END=66, PRESERVE=128, ON_LOCAL_ERROR=118, FLOATLITERAL=209, 
 		HASHELSE=202, LOAD=94, BINARY=21, RETURN=146, EXCLAMATIONPOINT=4, NEXT=111, 
-		GLOBAL=83, IDENTIFIER=219, WS=218, EMPTY=57, MOD=109, WITHEVENTS=181, 
+		GLOBAL=83, IDENTIFIER=218, WS=217, EMPTY=57, MOD=109, WITHEVENTS=181, 
 		COLON=2, DEFLNGLNG=44, STEP=160, TIME=167, OPTION_BASE=121, GT=189, PUT=136, 
-		WITH=180, LOCK_WRITE=103, LINE_CONTINUATION=220, TYPEOF=171, DEFVAR=49, 
-		RMDIR=147, DEFLNG=43, FALSE=77, ERRORCHAR=222, UNDERSCORE=217, INTEGERLITERAL=210, 
-		END_IF=60, LOCK=95, TEXT=165, SINGLEQUOTE=216, SAVEPICTURE=149, MULT=194, 
+		WITH=180, LOCK_WRITE=103, LINE_CONTINUATION=219, TYPEOF=171, DEFVAR=49, 
+		RMDIR=147, DEFLNG=43, FALSE=77, ERRORCHAR=221, UNDERSCORE=216, INTEGERLITERAL=210, 
+		END_IF=60, LOCK=95, TEXT=165, SINGLEQUOTE=215, SAVEPICTURE=149, MULT=194, 
 		SEMICOLON=3, BYTE=25, HEXLITERAL=208, ELSE=55, IF=86, TYPE=170, AMPERSAND=10, 
 		DEFLNGPTR=45, ENUM=67, DEFOBJ=46, IN=89, CHDRIVE=29, DOT=5, EXIT_DO=72, 
-		GUIDLITERAL=221, IS=91, EQV=68, WEND=177, FUNCTION=81, HASH=6, CASE=27, 
+		GUIDLITERAL=220, IS=91, EQV=68, WEND=177, FUNCTION=81, HASH=6, CASE=27, 
 		GEQ=188, GET=82, PUBLIC=135, ON_ERROR=117, END_ENUM=58, GOTO=85, INTDIV=186, 
-		WIDTH=179, BEGIN=19, EXIT_SUB=76, ASSIGN=184, COMMENT=215, WRITE=182, 
+		WIDTH=179, BEGIN=19, EXIT_SUB=76, ASSIGN=184, COMMENT=214, WRITE=182, 
 		RANDOMIZE=138, DOUBLE=53, EXIT_PROPERTY=75, COMMA=1, RANDOM=137, PROPERTY_GET=131, 
 		SELECT=152, PRIVATE=130, ERASE=69, TAB=164, BYREF=24, VERSION=176, NEQ=195, 
 		END_TYPE=64, KILL=93, COLLECTION=32, NEW=112, INPUT=90, SINGLE=157, UNLOAD=172, 
 		ALIAS=13, SPC=158, LT=192, RESET=144, END_SUB=63, EVENT=71, READ_WRITE=141, 
-		OPTION_COMPARE=123, ME=106, NULL=115, NEWLINE=213, TRUE=169, RPAREN=198, 
+		OPTION_COMPARE=123, ME=106, NULL=115, NEWLINE=212, TRUE=169, RPAREN=198, 
 		APPACTIVATE=16, IMP=87, STRINGLITERAL=206, OCTLITERAL=207, READ=140, DATE=35, 
-		LIKE=100, AND=14, OPTION_PRIVATE_MODULE=124, SHORTLITERAL=209, PLUS=196, 
-		RESUME=145, SHARED=156, EXIT_FUNCTION=74, ACCESS=11, LINE_INPUT=101, ON=116, 
-		OR=125, PARAMARRAY=127, R_SQUARE_BRACKET=205, IMPLEMENTS=88, UNTIL=174, 
-		DEFCUR=41, DECLARE=36, DEFDATE=39, REDIM=142, LEQ=190, DEFSTR=48, LET=98, 
-		WHILE=178, LEN=223;
+		LIKE=100, AND=14, OPTION_PRIVATE_MODULE=124, PLUS=196, RESUME=145, SHARED=156, 
+		EXIT_FUNCTION=74, ACCESS=11, LINE_INPUT=101, ON=116, OR=125, PARAMARRAY=127, 
+		R_SQUARE_BRACKET=205, IMPLEMENTS=88, UNTIL=174, DEFCUR=41, DECLARE=36, 
+		DEFDATE=39, REDIM=142, LEQ=190, DEFSTR=48, LET=98, WHILE=178, LEN=222;
 	public static readonly string[] tokenNames = {
 		"<INVALID>", "','", "':'", "';'", "'!'", "'.'", "'#'", "'@'", "'%'", "'$'", 
 		"'&'", "ACCESS", "ADDRESSOF", "ALIAS", "AND", "ATTRIBUTE", "APPACTIVATE", 
@@ -90,13 +89,12 @@ public partial class VBAParser : Parser {
 		"SETATTR", "SHARED", "SINGLE", "SPC", "STATIC", "STEP", "STOP", "STRING", 
 		"SUB", "TAB", "TEXT", "THEN", "TIME", "TO", "TRUE", "TYPE", "TYPEOF", 
 		"UNLOAD", "UNLOCK", "UNTIL", "VARIANT", "VERSION", "WEND", "WHILE", "WIDTH", 
-		"WITH", "WITHEVENTS", "WRITE", "XOR", "':='", "'/'", "'\\'", "'='", "'>='", 
-		"'>'", "'<='", "'('", "'<'", "'-'", "'*'", "'<>'", "'+'", "'^'", "')'", 
+		"WITH", "WITHEVENTS", "WRITE", "XOR", "':='", "'/'", "'\\'", "'='", "GEQ", 
+		"'>'", "LEQ", "'('", "'<'", "'-'", "'*'", "NEQ", "'+'", "'^'", "')'", 
 		"HASHCONST", "HASHIF", "HASHELSEIF", "HASHELSE", "HASHENDIF", "'['", "']'", 
-		"STRINGLITERAL", "OCTLITERAL", "HEXLITERAL", "SHORTLITERAL", "INTEGERLITERAL", 
-		"DOUBLELITERAL", "DATELITERAL", "NEWLINE", "REMCOMMENT", "COMMENT", "'''", 
-		"'_'", "WS", "IDENTIFIER", "LINE_CONTINUATION", "GUIDLITERAL", "ERRORCHAR", 
-		"LEN"
+		"STRINGLITERAL", "OCTLITERAL", "HEXLITERAL", "FLOATLITERAL", "INTEGERLITERAL", 
+		"DATELITERAL", "NEWLINE", "REMCOMMENT", "COMMENT", "'''", "'_'", "WS", 
+		"IDENTIFIER", "LINE_CONTINUATION", "GUIDLITERAL", "ERRORCHAR", "LEN"
 	};
 	public const int
 		RULE_startRule = 0, RULE_module = 1, RULE_moduleHeader = 2, RULE_moduleConfig = 3, 
@@ -373,10 +371,12 @@ public partial class VBAParser : Parser {
 		public WhiteSpaceContext whiteSpace(int i) {
 			return GetRuleContext<WhiteSpaceContext>(i);
 		}
+		public NumberLiteralContext numberLiteral() {
+			return GetRuleContext<NumberLiteralContext>(0);
+		}
 		public IReadOnlyList<WhiteSpaceContext> whiteSpace() {
 			return GetRuleContexts<WhiteSpaceContext>();
 		}
-		public ITerminalNode DOUBLELITERAL() { return GetToken(VBAParser.DOUBLELITERAL, 0); }
 		public EndOfStatementContext endOfStatement() {
 			return GetRuleContext<EndOfStatementContext>(0);
 		}
@@ -410,7 +410,7 @@ public partial class VBAParser : Parser {
 			{
 			State = 327; Match(VERSION);
 			State = 328; whiteSpace();
-			State = 329; Match(DOUBLELITERAL);
+			State = 329; numberLiteral();
 			State = 331;
 			switch ( Interpreter.AdaptivePredict(_input,7,_ctx) ) {
 			case 1:
@@ -556,6 +556,9 @@ public partial class VBAParser : Parser {
 		public LiteralContext literal() {
 			return GetRuleContext<LiteralContext>(0);
 		}
+		public NumberLiteralContext numberLiteral() {
+			return GetRuleContext<NumberLiteralContext>(0);
+		}
 		public IReadOnlyList<WhiteSpaceContext> whiteSpace() {
 			return GetRuleContexts<WhiteSpaceContext>();
 		}
@@ -563,7 +566,6 @@ public partial class VBAParser : Parser {
 		public EndOfStatementContext endOfStatement() {
 			return GetRuleContext<EndOfStatementContext>(0);
 		}
-		public ITerminalNode SHORTLITERAL() { return GetToken(VBAParser.SHORTLITERAL, 0); }
 		public ModuleConfigElementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -626,7 +628,7 @@ public partial class VBAParser : Parser {
 			case 1:
 				{
 				State = 371; Match(COLON);
-				State = 372; Match(SHORTLITERAL);
+				State = 372; numberLiteral();
 				}
 				break;
 			}
@@ -821,10 +823,12 @@ public partial class VBAParser : Parser {
 	}
 	public partial class OptionBaseStmtContext : ModuleOptionContext {
 		public ITerminalNode OPTION_BASE() { return GetToken(VBAParser.OPTION_BASE, 0); }
+		public NumberLiteralContext numberLiteral() {
+			return GetRuleContext<NumberLiteralContext>(0);
+		}
 		public WhiteSpaceContext whiteSpace() {
 			return GetRuleContext<WhiteSpaceContext>(0);
 		}
-		public ITerminalNode SHORTLITERAL() { return GetToken(VBAParser.SHORTLITERAL, 0); }
 		public OptionBaseStmtContext(ModuleOptionContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IVBAParserListener typedListener = listener as IVBAParserListener;
@@ -895,7 +899,7 @@ public partial class VBAParser : Parser {
 				{
 				State = 395; Match(OPTION_BASE);
 				State = 396; whiteSpace();
-				State = 397; Match(SHORTLITERAL);
+				State = 397; numberLiteral();
 				}
 				break;
 			case OPTION_COMPARE:
@@ -4249,7 +4253,7 @@ public partial class VBAParser : Parser {
 			State = 932; endOfStatement();
 			State = 934;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (EXIT_DO - 66)) | (1L << (EXIT_FOR - 66)) | (1L << (EXIT_FUNCTION - 66)) | (1L << (EXIT_PROPERTY - 66)) | (1L << (EXIT_SUB - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LINE_INPUT - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (ON_ERROR - 66)) | (1L << (ON_LOCAL_ERROR - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)))) != 0) || ((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (SHORTLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (DOUBLELITERAL - 207)) | (1L << (WS - 207)) | (1L << (IDENTIFIER - 207)) | (1L << (LINE_CONTINUATION - 207)) | (1L << (LEN - 207)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (EXIT_DO - 66)) | (1L << (EXIT_FOR - 66)) | (1L << (EXIT_FUNCTION - 66)) | (1L << (EXIT_PROPERTY - 66)) | (1L << (EXIT_SUB - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LINE_INPUT - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (ON_ERROR - 66)) | (1L << (ON_LOCAL_ERROR - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)))) != 0) || ((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (FLOATLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (WS - 207)) | (1L << (IDENTIFIER - 207)) | (1L << (LINE_CONTINUATION - 207)) | (1L << (LEN - 207)))) != 0)) {
 				{
 				State = 933; block();
 				}
@@ -4859,7 +4863,7 @@ public partial class VBAParser : Parser {
 			State = 1017; endOfStatement();
 			State = 1019;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (EXIT_DO - 66)) | (1L << (EXIT_FOR - 66)) | (1L << (EXIT_FUNCTION - 66)) | (1L << (EXIT_PROPERTY - 66)) | (1L << (EXIT_SUB - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LINE_INPUT - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (ON_ERROR - 66)) | (1L << (ON_LOCAL_ERROR - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)))) != 0) || ((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (SHORTLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (DOUBLELITERAL - 207)) | (1L << (WS - 207)) | (1L << (IDENTIFIER - 207)) | (1L << (LINE_CONTINUATION - 207)) | (1L << (LEN - 207)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (EXIT_DO - 66)) | (1L << (EXIT_FOR - 66)) | (1L << (EXIT_FUNCTION - 66)) | (1L << (EXIT_PROPERTY - 66)) | (1L << (EXIT_SUB - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LINE_INPUT - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (ON_ERROR - 66)) | (1L << (ON_LOCAL_ERROR - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)))) != 0) || ((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (FLOATLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (WS - 207)) | (1L << (IDENTIFIER - 207)) | (1L << (LINE_CONTINUATION - 207)) | (1L << (LEN - 207)))) != 0)) {
 				{
 				State = 1018; block();
 				}
@@ -6577,7 +6581,7 @@ public partial class VBAParser : Parser {
 			State = 1313; endOfStatement();
 			State = 1315;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (EXIT_DO - 66)) | (1L << (EXIT_FOR - 66)) | (1L << (EXIT_FUNCTION - 66)) | (1L << (EXIT_PROPERTY - 66)) | (1L << (EXIT_SUB - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LINE_INPUT - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (ON_ERROR - 66)) | (1L << (ON_LOCAL_ERROR - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)))) != 0) || ((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (SHORTLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (DOUBLELITERAL - 207)) | (1L << (WS - 207)) | (1L << (IDENTIFIER - 207)) | (1L << (LINE_CONTINUATION - 207)) | (1L << (LEN - 207)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (EXIT_DO - 66)) | (1L << (EXIT_FOR - 66)) | (1L << (EXIT_FUNCTION - 66)) | (1L << (EXIT_PROPERTY - 66)) | (1L << (EXIT_SUB - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LINE_INPUT - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (ON_ERROR - 66)) | (1L << (ON_LOCAL_ERROR - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)))) != 0) || ((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (FLOATLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (WS - 207)) | (1L << (IDENTIFIER - 207)) | (1L << (LINE_CONTINUATION - 207)) | (1L << (LEN - 207)))) != 0)) {
 				{
 				State = 1314; block();
 				}
@@ -6690,7 +6694,7 @@ public partial class VBAParser : Parser {
 			State = 1337; endOfStatement();
 			State = 1339;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (EXIT_DO - 66)) | (1L << (EXIT_FOR - 66)) | (1L << (EXIT_FUNCTION - 66)) | (1L << (EXIT_PROPERTY - 66)) | (1L << (EXIT_SUB - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LINE_INPUT - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (ON_ERROR - 66)) | (1L << (ON_LOCAL_ERROR - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)))) != 0) || ((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (SHORTLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (DOUBLELITERAL - 207)) | (1L << (WS - 207)) | (1L << (IDENTIFIER - 207)) | (1L << (LINE_CONTINUATION - 207)) | (1L << (LEN - 207)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (EXIT_DO - 66)) | (1L << (EXIT_FOR - 66)) | (1L << (EXIT_FUNCTION - 66)) | (1L << (EXIT_PROPERTY - 66)) | (1L << (EXIT_SUB - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LINE_INPUT - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (ON_ERROR - 66)) | (1L << (ON_LOCAL_ERROR - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)))) != 0) || ((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (FLOATLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (WS - 207)) | (1L << (IDENTIFIER - 207)) | (1L << (LINE_CONTINUATION - 207)) | (1L << (LEN - 207)))) != 0)) {
 				{
 				State = 1338; block();
 				}
@@ -6803,7 +6807,7 @@ public partial class VBAParser : Parser {
 			State = 1361; endOfStatement();
 			State = 1363;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (EXIT_DO - 66)) | (1L << (EXIT_FOR - 66)) | (1L << (EXIT_FUNCTION - 66)) | (1L << (EXIT_PROPERTY - 66)) | (1L << (EXIT_SUB - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LINE_INPUT - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (ON_ERROR - 66)) | (1L << (ON_LOCAL_ERROR - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)))) != 0) || ((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (SHORTLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (DOUBLELITERAL - 207)) | (1L << (WS - 207)) | (1L << (IDENTIFIER - 207)) | (1L << (LINE_CONTINUATION - 207)) | (1L << (LEN - 207)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (EXIT_DO - 66)) | (1L << (EXIT_FOR - 66)) | (1L << (EXIT_FUNCTION - 66)) | (1L << (EXIT_PROPERTY - 66)) | (1L << (EXIT_SUB - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LINE_INPUT - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (ON_ERROR - 66)) | (1L << (ON_LOCAL_ERROR - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)))) != 0) || ((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (FLOATLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (WS - 207)) | (1L << (IDENTIFIER - 207)) | (1L << (LINE_CONTINUATION - 207)) | (1L << (LEN - 207)))) != 0)) {
 				{
 				State = 1362; block();
 				}
@@ -8664,7 +8668,7 @@ public partial class VBAParser : Parser {
 			State = 1648; endOfStatement();
 			State = 1650;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (EXIT_DO - 66)) | (1L << (EXIT_FOR - 66)) | (1L << (EXIT_FUNCTION - 66)) | (1L << (EXIT_PROPERTY - 66)) | (1L << (EXIT_SUB - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LINE_INPUT - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (ON_ERROR - 66)) | (1L << (ON_LOCAL_ERROR - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)))) != 0) || ((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (SHORTLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (DOUBLELITERAL - 207)) | (1L << (WS - 207)) | (1L << (IDENTIFIER - 207)) | (1L << (LINE_CONTINUATION - 207)) | (1L << (LEN - 207)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (EXIT_DO - 66)) | (1L << (EXIT_FOR - 66)) | (1L << (EXIT_FUNCTION - 66)) | (1L << (EXIT_PROPERTY - 66)) | (1L << (EXIT_SUB - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LINE_INPUT - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (ON_ERROR - 66)) | (1L << (ON_LOCAL_ERROR - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)))) != 0) || ((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (FLOATLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (WS - 207)) | (1L << (IDENTIFIER - 207)) | (1L << (LINE_CONTINUATION - 207)) | (1L << (LEN - 207)))) != 0)) {
 				{
 				State = 1649; block();
 				}
@@ -10581,7 +10585,7 @@ public partial class VBAParser : Parser {
 				}
 				State = 1937;
 				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << EMPTY))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)) | (1L << (LPAREN - 130)) | (1L << (MINUS - 130)))) != 0) || ((((_la - 206)) & ~0x3f) == 0 && ((1L << (_la - 206)) & ((1L << (STRINGLITERAL - 206)) | (1L << (OCTLITERAL - 206)) | (1L << (HEXLITERAL - 206)) | (1L << (SHORTLITERAL - 206)) | (1L << (INTEGERLITERAL - 206)) | (1L << (DOUBLELITERAL - 206)) | (1L << (DATELITERAL - 206)) | (1L << (WS - 206)) | (1L << (IDENTIFIER - 206)) | (1L << (LINE_CONTINUATION - 206)) | (1L << (LEN - 206)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << EMPTY))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)) | (1L << (LPAREN - 130)) | (1L << (MINUS - 130)))) != 0) || ((((_la - 206)) & ~0x3f) == 0 && ((1L << (_la - 206)) & ((1L << (STRINGLITERAL - 206)) | (1L << (OCTLITERAL - 206)) | (1L << (HEXLITERAL - 206)) | (1L << (FLOATLITERAL - 206)) | (1L << (INTEGERLITERAL - 206)) | (1L << (DATELITERAL - 206)) | (1L << (WS - 206)) | (1L << (IDENTIFIER - 206)) | (1L << (LINE_CONTINUATION - 206)) | (1L << (LEN - 206)))) != 0)) {
 					{
 					State = 1933; subscripts();
 					State = 1935;
@@ -10855,7 +10859,7 @@ public partial class VBAParser : Parser {
 			State = 1983; endOfStatement();
 			State = 1985;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (EXIT_DO - 66)) | (1L << (EXIT_FOR - 66)) | (1L << (EXIT_FUNCTION - 66)) | (1L << (EXIT_PROPERTY - 66)) | (1L << (EXIT_SUB - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LINE_INPUT - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (ON_ERROR - 66)) | (1L << (ON_LOCAL_ERROR - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)))) != 0) || ((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (SHORTLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (DOUBLELITERAL - 207)) | (1L << (WS - 207)) | (1L << (IDENTIFIER - 207)) | (1L << (LINE_CONTINUATION - 207)) | (1L << (LEN - 207)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFLNGLNG) | (1L << DEFLNGPTR) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (END - 66)) | (1L << (ENUM - 66)) | (1L << (EQV - 66)) | (1L << (ERASE - 66)) | (1L << (ERROR - 66)) | (1L << (EVENT - 66)) | (1L << (EXIT_DO - 66)) | (1L << (EXIT_FOR - 66)) | (1L << (EXIT_FUNCTION - 66)) | (1L << (EXIT_PROPERTY - 66)) | (1L << (EXIT_SUB - 66)) | (1L << (FALSE - 66)) | (1L << (FILECOPY - 66)) | (1L << (FRIEND - 66)) | (1L << (FOR - 66)) | (1L << (FUNCTION - 66)) | (1L << (GET - 66)) | (1L << (GLOBAL - 66)) | (1L << (GOSUB - 66)) | (1L << (GOTO - 66)) | (1L << (IF - 66)) | (1L << (IMP - 66)) | (1L << (IMPLEMENTS - 66)) | (1L << (IN - 66)) | (1L << (INPUT - 66)) | (1L << (IS - 66)) | (1L << (INTEGER - 66)) | (1L << (KILL - 66)) | (1L << (LOAD - 66)) | (1L << (LOCK - 66)) | (1L << (LONG - 66)) | (1L << (LOOP - 66)) | (1L << (LET - 66)) | (1L << (LIB - 66)) | (1L << (LIKE - 66)) | (1L << (LINE_INPUT - 66)) | (1L << (LSET - 66)) | (1L << (ME - 66)) | (1L << (MID - 66)) | (1L << (MKDIR - 66)) | (1L << (MOD - 66)) | (1L << (NAME - 66)) | (1L << (NEXT - 66)) | (1L << (NEW - 66)) | (1L << (NOT - 66)) | (1L << (NOTHING - 66)) | (1L << (NULL - 66)) | (1L << (ON - 66)) | (1L << (ON_ERROR - 66)) | (1L << (ON_LOCAL_ERROR - 66)) | (1L << (OPEN - 66)) | (1L << (OPTIONAL - 66)) | (1L << (OR - 66)) | (1L << (OUTPUT - 66)) | (1L << (PARAMARRAY - 66)) | (1L << (PRESERVE - 66)) | (1L << (PRINT - 66)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (PRIVATE - 130)) | (1L << (PUBLIC - 130)) | (1L << (PUT - 130)) | (1L << (RANDOM - 130)) | (1L << (RANDOMIZE - 130)) | (1L << (RAISEEVENT - 130)) | (1L << (READ - 130)) | (1L << (REDIM - 130)) | (1L << (REM - 130)) | (1L << (RESET - 130)) | (1L << (RESUME - 130)) | (1L << (RETURN - 130)) | (1L << (RMDIR - 130)) | (1L << (RSET - 130)) | (1L << (SAVEPICTURE - 130)) | (1L << (SAVESETTING - 130)) | (1L << (SEEK - 130)) | (1L << (SELECT - 130)) | (1L << (SENDKEYS - 130)) | (1L << (SET - 130)) | (1L << (SETATTR - 130)) | (1L << (SHARED - 130)) | (1L << (SINGLE - 130)) | (1L << (SPC - 130)) | (1L << (STATIC - 130)) | (1L << (STEP - 130)) | (1L << (STOP - 130)) | (1L << (STRING - 130)) | (1L << (SUB - 130)) | (1L << (TAB - 130)) | (1L << (TEXT - 130)) | (1L << (THEN - 130)) | (1L << (TIME - 130)) | (1L << (TO - 130)) | (1L << (TRUE - 130)) | (1L << (TYPE - 130)) | (1L << (TYPEOF - 130)) | (1L << (UNLOAD - 130)) | (1L << (UNLOCK - 130)) | (1L << (UNTIL - 130)) | (1L << (VARIANT - 130)) | (1L << (VERSION - 130)) | (1L << (WEND - 130)) | (1L << (WHILE - 130)) | (1L << (WIDTH - 130)) | (1L << (WITH - 130)) | (1L << (WITHEVENTS - 130)) | (1L << (WRITE - 130)) | (1L << (XOR - 130)))) != 0) || ((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (FLOATLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (WS - 207)) | (1L << (IDENTIFIER - 207)) | (1L << (LINE_CONTINUATION - 207)) | (1L << (LEN - 207)))) != 0)) {
 				{
 				State = 1984; block();
 				}
@@ -14299,9 +14303,8 @@ public partial class VBAParser : Parser {
 			switch (_input.La(1)) {
 			case OCTLITERAL:
 			case HEXLITERAL:
-			case SHORTLITERAL:
+			case FLOATLITERAL:
 			case INTEGERLITERAL:
-			case DOUBLELITERAL:
 				{
 				State = 2447; numberLiteral();
 				}
@@ -14742,9 +14745,8 @@ public partial class VBAParser : Parser {
 				break;
 			case OCTLITERAL:
 			case HEXLITERAL:
-			case SHORTLITERAL:
+			case FLOATLITERAL:
 			case INTEGERLITERAL:
-			case DOUBLELITERAL:
 				{
 				State = 2463; numberLiteral();
 				}
@@ -14806,9 +14808,8 @@ public partial class VBAParser : Parser {
 			switch (_input.La(1)) {
 			case OCTLITERAL:
 			case HEXLITERAL:
-			case SHORTLITERAL:
+			case FLOATLITERAL:
 			case INTEGERLITERAL:
-			case DOUBLELITERAL:
 				EnterOuterAlt(_localctx, 1);
 				{
 				State = 2468; numberLiteral();
@@ -14873,9 +14874,8 @@ public partial class VBAParser : Parser {
 
 	public partial class NumberLiteralContext : ParserRuleContext {
 		public ITerminalNode INTEGERLITERAL() { return GetToken(VBAParser.INTEGERLITERAL, 0); }
+		public ITerminalNode FLOATLITERAL() { return GetToken(VBAParser.FLOATLITERAL, 0); }
 		public ITerminalNode HEXLITERAL() { return GetToken(VBAParser.HEXLITERAL, 0); }
-		public ITerminalNode DOUBLELITERAL() { return GetToken(VBAParser.DOUBLELITERAL, 0); }
-		public ITerminalNode SHORTLITERAL() { return GetToken(VBAParser.SHORTLITERAL, 0); }
 		public ITerminalNode OCTLITERAL() { return GetToken(VBAParser.OCTLITERAL, 0); }
 		public NumberLiteralContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -14907,7 +14907,7 @@ public partial class VBAParser : Parser {
 			{
 			State = 2478;
 			_la = _input.La(1);
-			if ( !(((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (SHORTLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)) | (1L << (DOUBLELITERAL - 207)))) != 0)) ) {
+			if ( !(((((_la - 207)) & ~0x3f) == 0 && ((1L << (_la - 207)) & ((1L << (OCTLITERAL - 207)) | (1L << (HEXLITERAL - 207)) | (1L << (FLOATLITERAL - 207)) | (1L << (INTEGERLITERAL - 207)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
 			}
 			Consume();
@@ -16090,9 +16090,8 @@ public partial class VBAParser : Parser {
 			case STRINGLITERAL:
 			case OCTLITERAL:
 			case HEXLITERAL:
-			case SHORTLITERAL:
+			case FLOATLITERAL:
 			case INTEGERLITERAL:
-			case DOUBLELITERAL:
 			case DATELITERAL:
 				EnterOuterAlt(_localctx, 2);
 				{
@@ -16225,7 +16224,7 @@ public partial class VBAParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xE1\xA42\x4\x2"+
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xE0\xA42\x4\x2"+
 		"\t\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4"+
 		"\t\t\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x4\xF\t\xF\x4\x10"+
 		"\t\x10\x4\x11\t\x11\x4\x12\t\x12\x4\x13\t\x13\x4\x14\t\x14\x4\x15\t\x15"+
@@ -16466,8 +16465,8 @@ public partial class VBAParser : Parser {
 		"\xA6\xA6\x4\x2\xBB\xBB\xC4\xC4\x4\x2\xC3\xC3\xC6\xC6\a\x2]]\x66\x66\xBD"+
 		"\xC0\xC2\xC2\xC5\xC5\x3\x2\x6\a\x4\x2\x19\x1A\x81\x81\x3\x2\x19\x1A\f"+
 		"\x2\x18\x18\x1B\x1B\"\"%%\x37\x37^^\x62\x62\x9F\x9F\xA4\xA4\xB1\xB1\x3"+
-		"\x2\xD1\xD5\x5\x2\x6\x6\b\f\xC7\xC7\x6\x2QQUU\x84\x84\x89\x89\v\x2\r:"+
-		"\x44IO\x66kvyz\x7F\x84\x89\x8E\x90\xB9\xE1\xE1\x4\x2\xDC\xDC\xDE\xDE\xBD9"+
+		"\x2\xD1\xD4\x5\x2\x6\x6\b\f\xC7\xC7\x6\x2QQUU\x84\x84\x89\x89\v\x2\r:"+
+		"\x44IO\x66kvyz\x7F\x84\x89\x8E\x90\xB9\xE0\xE0\x4\x2\xDB\xDB\xDD\xDD\xBD9"+
 		"\x2\x12A\x3\x2\x2\x2\x4\x12E\x3\x2\x2\x2\x6\x149\x3\x2\x2\x2\b\x154\x3"+
 		"\x2\x2\x2\n\x166\x3\x2\x2\x2\f\x17E\x3\x2\x2\x2\xE\x182\x3\x2\x2\x2\x10"+
 		"\x197\x3\x2\x2\x2\x12\x1A1\x3\x2\x2\x2\x14\x1A3\x3\x2\x2\x2\x16\x1B3\x3"+
@@ -16523,12 +16522,12 @@ public partial class VBAParser : Parser {
 		"\x118\x8D\x2\x142\x144\x5\x14\v\x2\x143\x142\x3\x2\x2\x2\x143\x144\x3"+
 		"\x2\x2\x2\x144\x145\x3\x2\x2\x2\x145\x147\x5\x118\x8D\x2\x146\x148\x5"+
 		"\x128\x95\x2\x147\x146\x3\x2\x2\x2\x147\x148\x3\x2\x2\x2\x148\x5\x3\x2"+
-		"\x2\x2\x149\x14A\a\xB2\x2\x2\x14A\x14B\x5\x128\x95\x2\x14B\x14D\a\xD5"+
-		"\x2\x2\x14C\x14E\x5\x128\x95\x2\x14D\x14C\x3\x2\x2\x2\x14D\x14E\x3\x2"+
+		"\x2\x2\x149\x14A\a\xB2\x2\x2\x14A\x14B\x5\x128\x95\x2\x14B\x14D\x5\x10C"+
+		"\x87\x2\x14C\x14E\x5\x128\x95\x2\x14D\x14C\x3\x2\x2\x2\x14D\x14E\x3\x2"+
 		"\x2\x2\x14E\x150\x3\x2\x2\x2\x14F\x151\a \x2\x2\x150\x14F\x3\x2\x2\x2"+
 		"\x150\x151\x3\x2\x2\x2\x151\x152\x3\x2\x2\x2\x152\x153\x5\x118\x8D\x2"+
 		"\x153\a\x3\x2\x2\x2\x154\x15C\a\x15\x2\x2\x155\x156\x5\x128\x95\x2\x156"+
-		"\x157\a\xDF\x2\x2\x157\x158\x5\x128\x95\x2\x158\x15A\x5\xF8}\x2\x159\x15B"+
+		"\x157\a\xDE\x2\x2\x157\x158\x5\x128\x95\x2\x158\x15A\x5\xF8}\x2\x159\x15B"+
 		"\x5\x128\x95\x2\x15A\x159\x3\x2\x2\x2\x15A\x15B\x3\x2\x2\x2\x15B\x15D"+
 		"\x3\x2\x2\x2\x15C\x155\x3\x2\x2\x2\x15C\x15D\x3\x2\x2\x2\x15D\x15E\x3"+
 		"\x2\x2\x2\x15E\x160\x5\x118\x8D\x2\x15F\x161\x5\n\x6\x2\x160\x15F\x3\x2"+
@@ -16539,31 +16538,31 @@ public partial class VBAParser : Parser {
 		"\x2\x2\x2\x16C\x16A\x3\x2\x2\x2\x16D\x171\a\xBD\x2\x2\x16E\x170\x5\x128"+
 		"\x95\x2\x16F\x16E\x3\x2\x2\x2\x170\x173\x3\x2\x2\x2\x171\x16F\x3\x2\x2"+
 		"\x2\x171\x172\x3\x2\x2\x2\x172\x174\x3\x2\x2\x2\x173\x171\x3\x2\x2\x2"+
-		"\x174\x177\x5\x10A\x86\x2\x175\x176\a\x4\x2\x2\x176\x178\a\xD3\x2\x2\x177"+
-		"\x175\x3\x2\x2\x2\x177\x178\x3\x2\x2\x2\x178\x179\x3\x2\x2\x2\x179\x17A"+
-		"\x5\x118\x8D\x2\x17A\v\x3\x2\x2\x2\x17B\x17C\x5\x18\r\x2\x17C\x17D\x5"+
-		"\x118\x8D\x2\x17D\x17F\x3\x2\x2\x2\x17E\x17B\x3\x2\x2\x2\x17F\x180\x3"+
-		"\x2\x2\x2\x180\x17E\x3\x2\x2\x2\x180\x181\x3\x2\x2\x2\x181\r\x3\x2\x2"+
-		"\x2\x182\x188\x5\x12\n\x2\x183\x184\x5\x118\x8D\x2\x184\x185\x5\x12\n"+
-		"\x2\x185\x187\x3\x2\x2\x2\x186\x183\x3\x2\x2\x2\x187\x18A\x3\x2\x2\x2"+
+		"\x174\x177\x5\x10A\x86\x2\x175\x176\a\x4\x2\x2\x176\x178\x5\x10C\x87\x2"+
+		"\x177\x175\x3\x2\x2\x2\x177\x178\x3\x2\x2\x2\x178\x179\x3\x2\x2\x2\x179"+
+		"\x17A\x5\x118\x8D\x2\x17A\v\x3\x2\x2\x2\x17B\x17C\x5\x18\r\x2\x17C\x17D"+
+		"\x5\x118\x8D\x2\x17D\x17F\x3\x2\x2\x2\x17E\x17B\x3\x2\x2\x2\x17F\x180"+
+		"\x3\x2\x2\x2\x180\x17E\x3\x2\x2\x2\x180\x181\x3\x2\x2\x2\x181\r\x3\x2"+
+		"\x2\x2\x182\x188\x5\x12\n\x2\x183\x184\x5\x118\x8D\x2\x184\x185\x5\x12"+
+		"\n\x2\x185\x187\x3\x2\x2\x2\x186\x183\x3\x2\x2\x2\x187\x18A\x3\x2\x2\x2"+
 		"\x188\x186\x3\x2\x2\x2\x188\x189\x3\x2\x2\x2\x189\x18B\x3\x2\x2\x2\x18A"+
 		"\x188\x3\x2\x2\x2\x18B\x18C\x5\x118\x8D\x2\x18C\xF\x3\x2\x2\x2\x18D\x18E"+
-		"\a{\x2\x2\x18E\x18F\x5\x128\x95\x2\x18F\x190\a\xD3\x2\x2\x190\x198\x3"+
-		"\x2\x2\x2\x191\x192\a}\x2\x2\x192\x193\x5\x128\x95\x2\x193\x194\t\x2\x2"+
-		"\x2\x194\x198\x3\x2\x2\x2\x195\x198\a|\x2\x2\x196\x198\a~\x2\x2\x197\x18D"+
-		"\x3\x2\x2\x2\x197\x191\x3\x2\x2\x2\x197\x195\x3\x2\x2\x2\x197\x196\x3"+
-		"\x2\x2\x2\x198\x11\x3\x2\x2\x2\x199\x1A2\x5.\x18\x2\x19A\x1A2\x5\x38\x1D"+
-		"\x2\x19B\x1A2\x5@!\x2\x19C\x1A2\x5(\x15\x2\x19D\x1A2\x5\\/\x2\x19E\x1A2"+
-		"\x5\xC0\x61\x2\x19F\x1A2\x5\x10\t\x2\x1A0\x1A2\x5\xB4[\x2\x1A1\x199\x3"+
-		"\x2\x2\x2\x1A1\x19A\x3\x2\x2\x2\x1A1\x19B\x3\x2\x2\x2\x1A1\x19C\x3\x2"+
-		"\x2\x2\x1A1\x19D\x3\x2\x2\x2\x1A1\x19E\x3\x2\x2\x2\x1A1\x19F\x3\x2\x2"+
-		"\x2\x1A1\x1A0\x3\x2\x2\x2\x1A2\x13\x3\x2\x2\x2\x1A3\x1A9\x5\x16\f\x2\x1A4"+
-		"\x1A5\x5\x118\x8D\x2\x1A5\x1A6\x5\x16\f\x2\x1A6\x1A8\x3\x2\x2\x2\x1A7"+
-		"\x1A4\x3\x2\x2\x2\x1A8\x1AB\x3\x2\x2\x2\x1A9\x1A7\x3\x2\x2\x2\x1A9\x1AA"+
-		"\x3\x2\x2\x2\x1AA\x1AC\x3\x2\x2\x2\x1AB\x1A9\x3\x2\x2\x2\x1AC\x1AD\x5"+
-		"\x118\x8D\x2\x1AD\x15\x3\x2\x2\x2\x1AE\x1B4\x5J&\x2\x1AF\x1B4\x5\x80\x41"+
-		"\x2\x1B0\x1B4\x5\x82\x42\x2\x1B1\x1B4\x5\x84\x43\x2\x1B2\x1B4\x5\xB0Y"+
-		"\x2\x1B3\x1AE\x3\x2\x2\x2\x1B3\x1AF\x3\x2\x2\x2\x1B3\x1B0\x3\x2\x2\x2"+
+		"\a{\x2\x2\x18E\x18F\x5\x128\x95\x2\x18F\x190\x5\x10C\x87\x2\x190\x198"+
+		"\x3\x2\x2\x2\x191\x192\a}\x2\x2\x192\x193\x5\x128\x95\x2\x193\x194\t\x2"+
+		"\x2\x2\x194\x198\x3\x2\x2\x2\x195\x198\a|\x2\x2\x196\x198\a~\x2\x2\x197"+
+		"\x18D\x3\x2\x2\x2\x197\x191\x3\x2\x2\x2\x197\x195\x3\x2\x2\x2\x197\x196"+
+		"\x3\x2\x2\x2\x198\x11\x3\x2\x2\x2\x199\x1A2\x5.\x18\x2\x19A\x1A2\x5\x38"+
+		"\x1D\x2\x19B\x1A2\x5@!\x2\x19C\x1A2\x5(\x15\x2\x19D\x1A2\x5\\/\x2\x19E"+
+		"\x1A2\x5\xC0\x61\x2\x19F\x1A2\x5\x10\t\x2\x1A0\x1A2\x5\xB4[\x2\x1A1\x199"+
+		"\x3\x2\x2\x2\x1A1\x19A\x3\x2\x2\x2\x1A1\x19B\x3\x2\x2\x2\x1A1\x19C\x3"+
+		"\x2\x2\x2\x1A1\x19D\x3\x2\x2\x2\x1A1\x19E\x3\x2\x2\x2\x1A1\x19F\x3\x2"+
+		"\x2\x2\x1A1\x1A0\x3\x2\x2\x2\x1A2\x13\x3\x2\x2\x2\x1A3\x1A9\x5\x16\f\x2"+
+		"\x1A4\x1A5\x5\x118\x8D\x2\x1A5\x1A6\x5\x16\f\x2\x1A6\x1A8\x3\x2\x2\x2"+
+		"\x1A7\x1A4\x3\x2\x2\x2\x1A8\x1AB\x3\x2\x2\x2\x1A9\x1A7\x3\x2\x2\x2\x1A9"+
+		"\x1AA\x3\x2\x2\x2\x1AA\x1AC\x3\x2\x2\x2\x1AB\x1A9\x3\x2\x2\x2\x1AC\x1AD"+
+		"\x5\x118\x8D\x2\x1AD\x15\x3\x2\x2\x2\x1AE\x1B4\x5J&\x2\x1AF\x1B4\x5\x80"+
+		"\x41\x2\x1B0\x1B4\x5\x82\x42\x2\x1B1\x1B4\x5\x84\x43\x2\x1B2\x1B4\x5\xB0"+
+		"Y\x2\x1B3\x1AE\x3\x2\x2\x2\x1B3\x1AF\x3\x2\x2\x2\x1B3\x1B0\x3\x2\x2\x2"+
 		"\x1B3\x1B1\x3\x2\x2\x2\x1B3\x1B2\x3\x2\x2\x2\x1B4\x17\x3\x2\x2\x2\x1B5"+
 		"\x1B6\a\x11\x2\x2\x1B6\x1B7\x5\x128\x95\x2\x1B7\x1B9\x5\xDCo\x2\x1B8\x1BA"+
 		"\x5\x128\x95\x2\x1B9\x1B8\x3\x2\x2\x2\x1B9\x1BA\x3\x2\x2\x2\x1BA\x1BB"+
@@ -16865,7 +16864,7 @@ public partial class VBAParser : Parser {
 		"\x95\x2\x4B1\x4B2\t\t\x2\x2\x4B2\x4B4\x3\x2\x2\x2\x4B3\x4B0\x3\x2\x2\x2"+
 		"\x4B3\x4B4\x3\x2\x2\x2\x4B4\x4B5\x3\x2\x2\x2\x4B5\x4B6\x5\x128\x95\x2"+
 		"\x4B6\x4B7\a\x14\x2\x2\x4B7\x4B8\x5\x128\x95\x2\x4B8\x4C4\x5\xCEh\x2\x4B9"+
-		"\x4BA\x5\x128\x95\x2\x4BA\x4BC\a\xE1\x2\x2\x4BB\x4BD\x5\x128\x95\x2\x4BC"+
+		"\x4BA\x5\x128\x95\x2\x4BA\x4BC\a\xE0\x2\x2\x4BB\x4BD\x5\x128\x95\x2\x4BC"+
 		"\x4BB\x3\x2\x2\x2\x4BC\x4BD\x3\x2\x2\x2\x4BD\x4BE\x3\x2\x2\x2\x4BE\x4C0"+
 		"\a\xBD\x2\x2\x4BF\x4C1\x5\x128\x95\x2\x4C0\x4BF\x3\x2\x2\x2\x4C0\x4C1"+
 		"\x3\x2\x2\x2\x4C1\x4C2\x3\x2\x2\x2\x4C2\x4C3\x5\xBE`\x2\x4C3\x4C5\x3\x2"+
@@ -17328,7 +17327,7 @@ public partial class VBAParser : Parser {
 		"\x2\x2\x952\x953\x5\xBE`\x2\x953\x954\x5\x128\x95\x2\x954\x955\a\xAA\x2"+
 		"\x2\x955\x956\x5\x128\x95\x2\x956\x958\x3\x2\x2\x2\x957\x952\x3\x2\x2"+
 		"\x2\x957\x958\x3\x2\x2\x2\x958\x959\x3\x2\x2\x2\x959\x95A\x5\xBE`\x2\x95A"+
-		"\xF7\x3\x2\x2\x2\x95B\x95E\a\xDD\x2\x2\x95C\x95E\x5\x114\x8B\x2\x95D\x95B"+
+		"\xF7\x3\x2\x2\x2\x95B\x95E\a\xDC\x2\x2\x95C\x95E\x5\x114\x8B\x2\x95D\x95B"+
 		"\x3\x2\x2\x2\x95D\x95C\x3\x2\x2\x2\x95E\x95F\x3\x2\x2\x2\x95F\x95D\x3"+
 		"\x2\x2\x2\x95F\x960\x3\x2\x2\x2\x960\xF9\x3\x2\x2\x2\x961\x963\a\x14\x2"+
 		"\x2\x962\x964\x5\x128\x95\x2\x963\x962\x3\x2\x2\x2\x963\x964\x3\x2\x2"+
@@ -17337,11 +17336,11 @@ public partial class VBAParser : Parser {
 		"\x96E\x5\x10E\x88\x2\x96A\x96C\x5\x128\x95\x2\x96B\x96A\x3\x2\x2\x2\x96B"+
 		"\x96C\x3\x2\x2\x2\x96C\x96D\x3\x2\x2\x2\x96D\x96F\x5\x104\x83\x2\x96E"+
 		"\x96B\x3\x2\x2\x2\x96E\x96F\x3\x2\x2\x2\x96F\xFB\x3\x2\x2\x2\x970\x971"+
-		"\t\x12\x2\x2\x971\xFD\x3\x2\x2\x2\x972\x977\a\xDD\x2\x2\x973\x976\x5\x114"+
-		"\x8B\x2\x974\x976\a\xDD\x2\x2\x975\x973\x3\x2\x2\x2\x975\x974\x3\x2\x2"+
+		"\t\x12\x2\x2\x971\xFD\x3\x2\x2\x2\x972\x977\a\xDC\x2\x2\x973\x976\x5\x114"+
+		"\x8B\x2\x974\x976\a\xDC\x2\x2\x975\x973\x3\x2\x2\x2\x975\x974\x3\x2\x2"+
 		"\x2\x976\x979\x3\x2\x2\x2\x977\x975\x3\x2\x2\x2\x977\x978\x3\x2\x2\x2"+
 		"\x978\x982\x3\x2\x2\x2\x979\x977\x3\x2\x2\x2\x97A\x97D\x5\x114\x8B\x2"+
-		"\x97B\x97E\x5\x114\x8B\x2\x97C\x97E\a\xDD\x2\x2\x97D\x97B\x3\x2\x2\x2"+
+		"\x97B\x97E\x5\x114\x8B\x2\x97C\x97E\a\xDC\x2\x2\x97D\x97B\x3\x2\x2\x2"+
 		"\x97D\x97C\x3\x2\x2\x2\x97E\x97F\x3\x2\x2\x2\x97F\x97D\x3\x2\x2\x2\x97F"+
 		"\x980\x3\x2\x2\x2\x980\x982\x3\x2\x2\x2\x981\x972\x3\x2\x2\x2\x981\x97A"+
 		"\x3\x2\x2\x2\x982\xFF\x3\x2\x2\x2\x983\x984\t\xE\x2\x2\x984\x101\x3\x2"+
@@ -17358,7 +17357,7 @@ public partial class VBAParser : Parser {
 		"\x99E\x99F\x3\x2\x2\x2\x99F\x107\x3\x2\x2\x2\x9A0\x9A3\x5\xF8}\x2\x9A1"+
 		"\x9A3\x5\x10C\x87\x2\x9A2\x9A0\x3\x2\x2\x2\x9A2\x9A1\x3\x2\x2\x2\x9A3"+
 		"\x9A4\x3\x2\x2\x2\x9A4\x9A5\a\x4\x2\x2\x9A5\x109\x3\x2\x2\x2\x9A6\x9AF"+
-		"\x5\x10C\x87\x2\x9A7\x9AF\a\xD6\x2\x2\x9A8\x9AF\a\xD0\x2\x2\x9A9\x9AF"+
+		"\x5\x10C\x87\x2\x9A7\x9AF\a\xD5\x2\x2\x9A8\x9AF\a\xD0\x2\x2\x9A9\x9AF"+
 		"\a\xAB\x2\x2\x9AA\x9AF\aO\x2\x2\x9AB\x9AF\at\x2\x2\x9AC\x9AF\au\x2\x2"+
 		"\x9AD\x9AF\a;\x2\x2\x9AE\x9A6\x3\x2\x2\x2\x9AE\x9A7\x3\x2\x2\x2\x9AE\x9A8"+
 		"\x3\x2\x2\x2\x9AE\x9A9\x3\x2\x2\x2\x9AE\x9AA\x3\x2\x2\x2\x9AE\x9AB\x3"+
@@ -17372,7 +17371,7 @@ public partial class VBAParser : Parser {
 		"\x9BF\x3\x2\x2\x2\x9BF\x10F\x3\x2\x2\x2\x9C0\x9C1\t\x14\x2\x2\x9C1\x111"+
 		"\x3\x2\x2\x2\x9C2\x9C3\t\x15\x2\x2\x9C3\x113\x3\x2\x2\x2\x9C4\x9C5\t\x16"+
 		"\x2\x2\x9C5\x115\x3\x2\x2\x2\x9C6\x9C8\x5\x128\x95\x2\x9C7\x9C6\x3\x2"+
-		"\x2\x2\x9C7\x9C8\x3\x2\x2\x2\x9C8\x9D0\x3\x2\x2\x2\x9C9\x9CB\a\xD7\x2"+
+		"\x2\x2\x9C7\x9C8\x3\x2\x2\x2\x9C8\x9D0\x3\x2\x2\x2\x9C9\x9CB\a\xD6\x2"+
 		"\x2\x9CA\x9C9\x3\x2\x2\x2\x9CB\x9CC\x3\x2\x2\x2\x9CC\x9CA\x3\x2\x2\x2"+
 		"\x9CC\x9CD\x3\x2\x2\x2\x9CD\x9D1\x3\x2\x2\x2\x9CE\x9D1\x5\x11C\x8F\x2"+
 		"\x9CF\x9D1\x5\x11A\x8E\x2\x9D0\x9CA\x3\x2\x2\x2\x9D0\x9CE\x3\x2\x2\x2"+
@@ -17386,12 +17385,12 @@ public partial class VBAParser : Parser {
 		"\x3\x2\x2\x2\x9E1\x9E2\x3\x2\x2\x2\x9E2\x9E4\x3\x2\x2\x2\x9E3\x9DB\x3"+
 		"\x2\x2\x2\x9E3\x9DD\x3\x2\x2\x2\x9E4\x9E7\x3\x2\x2\x2\x9E5\x9E3\x3\x2"+
 		"\x2\x2\x9E5\x9E6\x3\x2\x2\x2\x9E6\x119\x3\x2\x2\x2\x9E7\x9E5\x3\x2\x2"+
-		"\x2\x9E8\x9E9\a\xD8\x2\x2\x9E9\x11B\x3\x2\x2\x2\x9EA\x9EB\a\xD9\x2\x2"+
-		"\x9EB\x11D\x3\x2\x2\x2\x9EC\x9EE\a\xDA\x2\x2\x9ED\x9EF\x5\x120\x91\x2"+
+		"\x2\x9E8\x9E9\a\xD7\x2\x2\x9E9\x11B\x3\x2\x2\x2\x9EA\x9EB\a\xD8\x2\x2"+
+		"\x9EB\x11D\x3\x2\x2\x2\x9EC\x9EE\a\xD9\x2\x2\x9ED\x9EF\x5\x120\x91\x2"+
 		"\x9EE\x9ED\x3\x2\x2\x2\x9EF\x9F0\x3\x2\x2\x2\x9F0\x9EE\x3\x2\x2\x2\x9F0"+
 		"\x9F1\x3\x2\x2\x2\x9F1\x11F\x3\x2\x2\x2\x9F2\x9F3\a\t\x2\x2\x9F3\x9F5"+
 		"\x5\x122\x92\x2\x9F4\x9F6\x5\x124\x93\x2\x9F5\x9F4\x3\x2\x2\x2\x9F5\x9F6"+
-		"\x3\x2\x2\x2\x9F6\x121\x3\x2\x2\x2\x9F7\x9F8\a\xDD\x2\x2\x9F8\x123\x3"+
+		"\x3\x2\x2\x2\x9F6\x121\x3\x2\x2\x2\x9F7\x9F8\a\xDC\x2\x2\x9F8\x123\x3"+
 		"\x2\x2\x2\x9F9\x9FA\x5\x128\x95\x2\x9FA\x9FC\x5\x126\x94\x2\x9FB\x9FD"+
 		"\x5\x128\x95\x2\x9FC\x9FB\x3\x2\x2\x2\x9FC\x9FD\x3\x2\x2\x2\x9FD\xA37"+
 		"\x3\x2\x2\x2\x9FE\x9FF\x5\x128\x95\x2\x9FF\xA08\x5\x126\x94\x2\xA00\xA02"+
@@ -17418,7 +17417,7 @@ public partial class VBAParser : Parser {
 		"\xA31\xA32\x3\x2\x2\x2\xA32\xA34\a\xC8\x2\x2\xA33\xA35\x5\x128\x95\x2"+
 		"\xA34\xA33\x3\x2\x2\x2\xA34\xA35\x3\x2\x2\x2\xA35\xA37\x3\x2\x2\x2\xA36"+
 		"\x9F9\x3\x2\x2\x2\xA36\x9FE\x3\x2\x2\x2\xA36\xA10\x3\x2\x2\x2\xA36\xA1F"+
-		"\x3\x2\x2\x2\xA37\x125\x3\x2\x2\x2\xA38\xA3B\a\xDD\x2\x2\xA39\xA3B\x5"+
+		"\x3\x2\x2\x2\xA37\x125\x3\x2\x2\x2\xA38\xA3B\a\xDC\x2\x2\xA39\xA3B\x5"+
 		"\x10A\x86\x2\xA3A\xA38\x3\x2\x2\x2\xA3A\xA39\x3\x2\x2\x2\xA3B\x127\x3"+
 		"\x2\x2\x2\xA3C\xA3E\t\x17\x2\x2\xA3D\xA3C\x3\x2\x2\x2\xA3E\xA3F\x3\x2"+
 		"\x2\x2\xA3F\xA3D\x3\x2\x2\x2\xA3F\xA40\x3\x2\x2\x2\xA40\x129\x3\x2\x2"+

@@ -34,7 +34,7 @@ module :
 	whiteSpace?
 ;
 
-moduleHeader : VERSION whiteSpace DOUBLELITERAL whiteSpace? CLASS? endOfStatement;
+moduleHeader : VERSION whiteSpace numberLiteral whiteSpace? CLASS? endOfStatement;
 
 moduleConfig :
 	BEGIN (whiteSpace GUIDLITERAL whiteSpace ambiguousIdentifier whiteSpace?)? endOfStatement
@@ -43,7 +43,7 @@ moduleConfig :
 ;
 
 moduleConfigElement :
-	ambiguousIdentifier whiteSpace* EQ whiteSpace* literal (COLON SHORTLITERAL)? endOfStatement
+	ambiguousIdentifier whiteSpace* EQ whiteSpace* literal (COLON numberLiteral)? endOfStatement
 ;
 
 moduleAttributes : (attributeStmt endOfStatement)+;
@@ -51,10 +51,10 @@ moduleAttributes : (attributeStmt endOfStatement)+;
 moduleDeclarations : moduleDeclarationsElement (endOfStatement moduleDeclarationsElement)* endOfStatement;
 
 moduleOption : 
-	OPTION_BASE whiteSpace SHORTLITERAL 					# optionBaseStmt
+	OPTION_BASE whiteSpace numberLiteral 					# optionBaseStmt
 	| OPTION_COMPARE whiteSpace (BINARY | TEXT | DATABASE) 	# optionCompareStmt
-	| OPTION_EXPLICIT 								# optionExplicitStmt
-	| OPTION_PRIVATE_MODULE 						# optionPrivateModuleStmt
+	| OPTION_EXPLICIT 								        # optionExplicitStmt
+	| OPTION_PRIVATE_MODULE 						        # optionPrivateModuleStmt
 ;
 
 moduleDeclarationsElement :
@@ -365,7 +365,7 @@ selectCaseStmt :
 sC_Selection :
     IS whiteSpace? comparisonOperator whiteSpace? valueStmt                       # caseCondIs
     | valueStmt whiteSpace TO whiteSpace valueStmt                                # caseCondTo
-    | valueStmt                                                   # caseCondValue
+    | valueStmt                                                                   # caseCondValue
 ;
 
 sC_Case : 
@@ -374,8 +374,8 @@ sC_Case :
 ;
 
 sC_Cond :
-    ELSE                                                            # caseCondElse
-    | sC_Selection (whiteSpace? COMMA whiteSpace? sC_Selection)*                      # caseCondSelection
+    ELSE                                                                           # caseCondElse
+    | sC_Selection (whiteSpace? COMMA whiteSpace? sC_Selection)*                   # caseCondSelection
 ;
 
 sendkeysStmt : SENDKEYS whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)?;
@@ -533,7 +533,7 @@ lineLabel : (ambiguousIdentifier | numberLiteral) COLON;
 
 literal : numberLiteral | DATELITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL | EMPTY;
 
-numberLiteral : HEXLITERAL | OCTLITERAL | DOUBLELITERAL | INTEGERLITERAL | SHORTLITERAL;
+numberLiteral : HEXLITERAL | OCTLITERAL | FLOATLITERAL | INTEGERLITERAL;
 
 type : (baseType | complexType) (whiteSpace? LPAREN whiteSpace? RPAREN)?;
 
