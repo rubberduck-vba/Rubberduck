@@ -1271,7 +1271,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Parsing powered by ANTLR
 GitHub integration powered by LibGit2Sharp
-Windows hooks powered by EventHook
 Fugue icons by Yusuke Kamiyamane</value>
   </data>
   <data name="AboutWindow_GeneralThanks" xml:space="preserve">
