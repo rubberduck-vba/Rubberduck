@@ -126,10 +126,18 @@ namespace Rubberduck
             RefreshSelection();
         }
 
+        private ParserState _lastStatus;
         private void RefreshSelection()
         {
             _stateBar.SetSelectionText(_parser.State.FindSelectedDeclaration(_vbe.ActiveCodePane));
-            _appMenus.EvaluateCanExecute(_parser.State);
+
+            var currentStatus = _parser.State.Status;
+            if (_lastStatus != currentStatus)
+            {
+                _appMenus.EvaluateCanExecute(_parser.State);
+            }
+
+            _lastStatus = currentStatus;
         }
 
         private void _configService_SettingsChanged(object sender, EventArgs e)
