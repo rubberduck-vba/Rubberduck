@@ -89,15 +89,13 @@ namespace Rubberduck.Parsing.VBA
         {
             if (!_state.Projects.Any())
             {
-                foreach (var project in _vbe.VBProjects.Cast<VBProject>())
+                foreach (var project in _vbe.VBProjects.UnprotectedProjects())
                 {
                     _state.AddProject(project);
                 }
             }
 
-            var projects = _state.Projects
-                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
-                .ToList();
+            var projects = _state.Projects.ToList();
 
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
             SyncComReferences(projects);
@@ -115,7 +113,7 @@ namespace Rubberduck.Parsing.VBA
 
             foreach (var vbComponent in components)
             {
-                while (!_state.ClearDeclarations(vbComponent)) { }
+                while (!_state.ClearStateCache(vbComponent)) { }
                 
                 // expects synchronous parse :/
                 ParseComponent(vbComponent);
@@ -127,14 +125,19 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         private void ParseAll()
         {
-            var projects = _state.Projects
-                // accessing the code of a protected VBComponent throws a COMException:
-                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
-                .ToList();
+            if (!_state.Projects.Any())
+            {
+                foreach (var project in _vbe.VBProjects.UnprotectedProjects())
+                {
+                    _state.AddProject(project);
+                }
+            }
+
+            var projects = _state.Projects.ToList();
 
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
-            var modified = components.Where(_state.IsModified).ToList();
-            var unchanged = components.Where(c => !_state.IsModified(c)).ToList();
+            var modified = components.Where(c => _state.IsNewOrModified(c)).ToList();
+            var unchanged = components.Where(c => !_state.IsNewOrModified(c)).ToList();
 
             SyncComReferences(projects);
 
@@ -228,7 +231,7 @@ namespace Rubberduck.Parsing.VBA
 
         public Task ParseAsync(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
-            _state.ClearDeclarations(component);            
+            _state.ClearStateCache(component);            
             _state.SetModuleState(component, ParserState.Pending); // also clears module-exceptions
 
             var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token, token);
@@ -322,7 +325,7 @@ namespace Rubberduck.Parsing.VBA
                 var qualifiedName = kvp.Key;
                 if (true /*_state.IsModified(qualifiedName)*/)
                 {
-                    Debug.WriteLine("Module '{0}' {1}", qualifiedName.ComponentName, _state.IsModified(qualifiedName) ? "was modified" : "was NOT modified");
+                    Debug.WriteLine("Module '{0}' {1}", qualifiedName.ComponentName, _state.IsNewOrModified(qualifiedName) ? "was modified" : "was NOT modified");
                     // modified module; walk parse tree and re-acquire all declarations
                     if (token.IsCancellationRequested) return;
                     ResolveDeclarations(qualifiedName.Component, kvp.Value);
