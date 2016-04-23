@@ -31,8 +31,6 @@ namespace Rubberduck.Parsing.Symbols
                             : declaration.IdentifierName
             })
             .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
-
-            var enm = declarations.Where(d => d.IdentifierName == "TestEnum").FirstOrDefault();
         }
 
         private readonly HashSet<Accessibility> _projectScopePublicModifiers =

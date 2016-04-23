@@ -171,12 +171,6 @@ namespace Rubberduck.Parsing.VBA
 
         private string GetReferenceProjectId(Reference reference, IReadOnlyList<VBProject> projects)
         {
-            var firstProj = projects.FirstOrDefault();
-            try
-            {
-                var name = firstProj.FileName;
-            }
-            catch { }
             var id = projects.FirstOrDefault(project =>
             {
                 try
