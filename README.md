@@ -2,13 +2,11 @@
 
 | Branch     | Build Status |
 |------------|--------------|
-| **master** | [![master branch build status][masterBuildStatus]][masterBuild] |
-| **next**   | [![next branch build status][nextBuildStatus]][nextBuild] |
+| **master** | ![master branch build status][masterBuildStatus] |
+| **next**   | ![next branch build status][nextBuildStatus] |
 
-[nextBuild]:https://ci.appveyor.com/project/ckuhn203/rubberduck-3v9qv/branch/next
-[nextBuildStatus]:https://ci.appveyor.com/api/projects/status/bfwl1pwu9eeqd11o/branch/next?svg=true
-[masterBuild]:https://ci.appveyor.com/project/ckuhn203/rubberduck-3v9qv/branch/master
-[masterBuildStatus]:https://ci.appveyor.com/api/projects/status/bfwl1pwu9eeqd11o/branch/master?svg=true
+[nextBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/next?svg=true
+[masterBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/master?svg=true
 
 Rubberduck is a COM Add-In for the VBA IDE that makes VBA development even more enjoyable, by extending the Visual Basic Editor (VBE) with menus, toolbars and toolwindows that enable things we didn't even think were possible when we first started this project.
 
@@ -20,7 +18,7 @@ If you're learning VBA, Rubberduck can help you avoid a few common beginner mist
 
 ---
 
-#[Contributing](https://github.com/rubberduck-vba/Rubberduck/wiki/Contibuting)
+#[Contributing](https://github.com/rubberduck-vba/Rubberduck/wiki/Contributing)
 
 If you're a C# developer looking for a fun project to contribute to, feel free to fork the project and 
 [come meet the devs in Code Review's "VBA Rubberducking" chatroom][chat] - we'll be happy to answer your questions and help you help us!
@@ -87,6 +85,12 @@ LibGit2Sharp is the library that has allowed us to integrate Git right into the 
 > libgit2 is a portable, pure C implementation of the Git core methods provided as a re-entrant linkable library with a solid API, allowing you to write native speed custom Git applications in any language which supports C bindings.
 
 Which basically means it's a reimplementation of Git in C. It also [happens to be the technology Microsoft uses for their own Git integration with Visual Studio](http://www.hanselman.com/blog/GitSupportForVisualStudioGitTFSAndVSPutIntoContext.aspx).
+
+###[WPF Localization Using RESX Files](http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files)
+
+This library makes localizing WPF applications at runtime using resx files a breeze. Thank you [Grant Frisken](http://www.codeproject.com/script/Membership/View.aspx?mid=1079060)!
+
+> Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx).
 
 ##Icons
 
