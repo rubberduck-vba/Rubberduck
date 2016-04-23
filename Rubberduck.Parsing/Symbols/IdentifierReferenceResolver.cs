@@ -38,6 +38,7 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _currentParent;
 
         private readonly BindingService _bindingService;
+        private readonly BoundExpressionVisitor _boundExpressionVisitor;
 
         public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, DeclarationFinder finder)
         {
@@ -77,6 +78,7 @@ namespace Rubberduck.Parsing.Symbols
             SetCurrentScope();
 
             _bindingService = new BindingService(new TypeBindingContext(_declarationFinder));
+            _boundExpressionVisitor = new BoundExpressionVisitor();
         }
 
         public void SetCurrentScope()
@@ -979,7 +981,7 @@ namespace Rubberduck.Parsing.Symbols
             var boundExpression = _bindingService.Resolve(_moduleDeclaration, _currentScope, context.valueStmt().GetText());
             if (boundExpression != null)
             {
-                boundExpression.ReferencedDeclaration.AddReference(CreateReference(context.valueStmt(), boundExpression.ReferencedDeclaration));
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.valueStmt(), declaration));                
             }
         }
 

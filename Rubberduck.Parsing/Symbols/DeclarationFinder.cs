@@ -1,10 +1,10 @@
+using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Nodes;
+using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Rubberduck.Parsing.Nodes;
-using Rubberduck.VBEditor;
-using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -186,94 +186,121 @@ namespace Rubberduck.Parsing.Symbols
             return result;
         }
 
-        public Declaration Find(Declaration parentScope, string name, DeclarationType type)
+        public Declaration FindReferencedProject(Declaration callingProject, string referencedProjectName)
         {
-            var results = MatchName(name).ToList();
-            return MatchName(name).Where(declaration => parentScope.Equals(declaration.ParentScopeDeclaration) && declaration.DeclarationType.HasFlag(type)).FirstOrDefault();
+            return FindInReferencedProjectByPriority(callingProject, referencedProjectName, p => p.DeclarationType == DeclarationType.Project);
         }
 
-        public Declaration Find(string name, DeclarationType type)
+        public Declaration FindModuleEnclosingProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, string calleeModuleName, DeclarationType moduleType)
         {
-            var results = MatchName(name).ToList();
-            return MatchName(name).Where(declaration => declaration.DeclarationType.HasFlag(type)).FirstOrDefault();
+            var nameMatches = MatchName(calleeModuleName);
+            var moduleMatches = nameMatches.Where(m => 
+                m.DeclarationType.HasFlag(moduleType)
+                && Declaration.GetMemberProject(m).Equals(callingProject)
+                && !m.Equals(callingModule));
+            var accessibleModules = moduleMatches.Where(calledModule => AccessibilityCheck.IsModuleAccessible(callingProject, callingModule, calledModule));
+            var match = accessibleModules.FirstOrDefault();
+            return match;
         }
 
-        public Declaration FindAccessibleInEnclosingProject(Declaration project, Declaration enclosingModule, string name, DeclarationType type)
+        public Declaration FindModuleReferencedProject(Declaration callingProject, Declaration callingModule, string calleeModuleName, DeclarationType moduleType)
         {
-            var results = MatchName(name).ToList();
-            return MatchName(name).Where(declaration =>
-                declaration.ParentScopeDeclaration != null
-                && !enclosingModule.Equals(declaration.ParentScopeDeclaration)
-                && project.Equals(declaration.ParentScopeDeclaration.ParentScopeDeclaration)
-                && (declaration.Accessibility == Accessibility.Public || declaration.Accessibility == Accessibility.Friend || declaration.Accessibility == Accessibility.Global)
-                && declaration.DeclarationType.HasFlag(type)).FirstOrDefault();
+            var moduleMatches = FindAllInReferencedProjectByPriority(callingProject, calleeModuleName, p => p.DeclarationType.HasFlag(moduleType));
+            var accessibleModules = moduleMatches.Where(calledModule => AccessibilityCheck.IsModuleAccessible(callingProject, callingModule, calledModule));
+            var match = accessibleModules.FirstOrDefault();
+            return match;
         }
 
-        public Declaration FindReferencedProject(Declaration enclosingProject, string name)
+        public Declaration FindModuleReferencedProject(Declaration callingProject, Declaration callingModule, Declaration referencedProject, string calleeModuleName, DeclarationType moduleType)
         {
-            return FindInReferencedProjectByPriority(
-                enclosingProject,
-                name,
-                project => project.DeclarationType == DeclarationType.Project && !enclosingProject.Equals(project));
+            var moduleMatches = FindAllInReferencedProjectByPriority(callingProject, calleeModuleName, p => referencedProject.Equals(Declaration.GetMemberProject(p)) && p.DeclarationType.HasFlag(moduleType));
+            var accessibleModules = moduleMatches.Where(calledModule => AccessibilityCheck.IsModuleAccessible(callingProject, callingModule, calledModule));
+            var match = accessibleModules.FirstOrDefault();
+            return match;
         }
 
-        public Declaration FindTypeInReferencedProject(Declaration enclosingProject, string name, DeclarationType type)
+        public Declaration FindMemberEnclosingModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
         {
-            return FindInReferencedProjectByPriority(
-                enclosingProject,
-                name,
-                declaration =>
-                    declaration.ParentScopeDeclaration != null
-                    && (declaration.ParentScopeDeclaration.DeclarationType == DeclarationType.ProceduralModule || declaration.ParentScopeDeclaration.DeclarationType == DeclarationType.ClassModule)
-                    && !IsPrivateModule(declaration.ParentScopeDeclaration)
-                    && (declaration.Accessibility == Accessibility.Public || declaration.Accessibility == Accessibility.Friend || declaration.Accessibility == Accessibility.Global)
-                    && declaration.DeclarationType.HasFlag(type));
+            var allMatches = MatchName(memberName);
+            var memberMatches = allMatches.Where(m =>
+                m.DeclarationType.HasFlag(memberType)
+                && Declaration.GetMemberProject(m).Equals(callingProject)
+                && callingModule.Equals(Declaration.GetMemberModule(m)));
+            var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
+            var match = accessibleMembers.FirstOrDefault();
+            return match;
         }
 
-        public Declaration FindProceduralModuleInReferencedProject(Declaration enclosingProject, string name)
+        public Declaration FindMemberEnclosedProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
         {
-            return FindInReferencedProjectByPriority(
-                enclosingProject,
-                name,
-                declaration =>
-                    declaration.DeclarationType == DeclarationType.ProceduralModule
-                    && !IsPrivateModule(declaration));
+            var allMatches = MatchName(memberName);
+            var memberMatches = allMatches.Where(m =>
+                m.DeclarationType.HasFlag(memberType)
+                && Declaration.GetMemberProject(m).Equals(callingProject)
+                && !callingModule.Equals(Declaration.GetMemberModule(m)));
+            var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
+            var match = accessibleMembers.FirstOrDefault();
+            return match;
         }
 
-        private bool IsPrivateModule(Declaration module)
+        public Declaration FindMemberEnclosedProjectInModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration memberModule, string memberName, DeclarationType memberType)
         {
-            return _declarationsByName
-                .Where(kv => kv.Value.Any(d => module.Equals(d.ParentDeclaration) && d.DeclarationType == DeclarationType.ModuleOption && d.IdentifierName == "Option Private Module"))
-                .Any();
+            var allMatches = MatchName(memberName);
+            var memberMatches = allMatches.Where(m =>
+                m.DeclarationType.HasFlag(memberType)
+                && Declaration.GetMemberProject(m).Equals(callingProject)
+                && memberModule.Equals(Declaration.GetMemberModule(m)));
+            var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
+            var match = accessibleMembers.FirstOrDefault();
+            return match;
         }
 
-        public Declaration FindClassModuleInReferencedProject(Declaration enclosingProject, string name)
+        public Declaration FindMemberReferencedProject(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
         {
-            return FindInReferencedProjectByPriority(
-                enclosingProject,
-                name,
-                declaration =>
-                    declaration.DeclarationType == DeclarationType.ClassModule
-                    && declaration.IsExposed);
+            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType));
+            var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
+            var match = accessibleMembers.FirstOrDefault();
+            return match;
+        }
+
+        public Declaration FindMemberReferencedProjectInModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration memberModule, string memberName, DeclarationType memberType)
+        {
+            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => memberModule.Equals(Declaration.GetMemberModule(p)) && p.DeclarationType.HasFlag(memberType));
+            var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
+            var match = accessibleMembers.FirstOrDefault();
+            return match;
+        }
+
+        public Declaration FindMemberReferencedProject(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration referencedProject, string memberName, DeclarationType memberType)
+        {
+            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => referencedProject.Equals(Declaration.GetMemberProject(p)) && p.DeclarationType.HasFlag(memberType));
+            var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
+            var match = accessibleMembers.FirstOrDefault();
+            return match;
         }
 
         private Declaration FindInReferencedProjectByPriority(Declaration enclosingProject, string name, Func<Declaration, bool> predicate)
+        {
+            return FindAllInReferencedProjectByPriority(enclosingProject, name, predicate).FirstOrDefault();
+        }
+
+        private IEnumerable<Declaration> FindAllInReferencedProjectByPriority(Declaration enclosingProject, string name, Func<Declaration, bool> predicate)
         {
             var interprojectMatches = MatchName(name).Where(predicate).ToList();
             var projectReferences = ((ProjectDeclaration)enclosingProject).ProjectReferences.ToList();
             if (interprojectMatches.Count == 0)
             {
-                return null;
+                yield break;
             }
             foreach (var projectReference in projectReferences)
             {
                 var match = interprojectMatches.FirstOrDefault(interprojectMatch => interprojectMatch.ProjectId == projectReference.ReferencedProjectId);
                 if (match != null)
                 {
-                    return match;
+                    yield return match;
                 }
             }
-            return null;
+            yield break;
         }
     }
 }

@@ -18,6 +18,7 @@ using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -148,7 +149,15 @@ namespace Rubberduck.Parsing.Symbols
                     attributes.AddPredeclaredIdTypeAttribute();
                 }
 
-                var moduleDeclaration = new Declaration(typeQualifiedMemberName, projectDeclaration, projectDeclaration, typeName, false, false, Accessibility.Global, typeDeclarationType, null, Selection.Home, true, null, attributes);
+                Declaration moduleDeclaration;
+                if (typeDeclarationType == DeclarationType.ProceduralModule)
+                {
+                    moduleDeclaration = new ProceduralModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
+                }
+                else
+                {
+                    moduleDeclaration = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
+                }
                 yield return moduleDeclaration;
                 
                 for (var memberIndex = 0; memberIndex < typeAttributes.cFuncs; memberIndex++)

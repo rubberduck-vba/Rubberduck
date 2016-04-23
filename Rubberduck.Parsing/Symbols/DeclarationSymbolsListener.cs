@@ -53,17 +53,26 @@ namespace Rubberduck.Parsing.Symbols
                 ? attributes[key]
                 : new Attributes();
 
-            _moduleDeclaration = new Declaration(
-                _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
-                _projectDeclaration,
-                _projectDeclaration,
-                _qualifiedName.Component.Name,
-                false,
-                false,
-                componentAccessibility,
-                declarationType,
-                null, Selection.Home, false,
-                FindAnnotations(), moduleAttributes);
+            if (declarationType == DeclarationType.ProceduralModule)
+            {
+                _moduleDeclaration = new ProceduralModuleDeclaration(
+                    _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
+                    _projectDeclaration,
+                    _qualifiedName.Component.Name,
+                    false,
+                    FindAnnotations(),
+                    moduleAttributes);
+            }
+            else
+            {
+                _moduleDeclaration = new ClassModuleDeclaration(
+                    _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
+                    _projectDeclaration,
+                    _qualifiedName.Component.Name,
+                    false,
+                    FindAnnotations(),
+                    moduleAttributes);
+            }
 
             SetCurrentScope();
         }
@@ -99,7 +108,6 @@ namespace Rubberduck.Parsing.Symbols
 
         public void CreateModuleDeclarations()
         {
-            OnNewDeclaration(_projectDeclaration);
             OnNewDeclaration(_moduleDeclaration);
 
             var component = _moduleDeclaration.QualifiedName.QualifiedModuleName.Component;
@@ -233,6 +241,10 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void ExitOptionPrivateModuleStmt(VBAParser.OptionPrivateModuleStmtContext context)
         {
+            if (_moduleDeclaration.DeclarationType == DeclarationType.ProceduralModule)
+            {
+                ((ProceduralModuleDeclaration)_moduleDeclaration).IsPrivateModule = true;
+            }
             OnNewDeclaration(CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection()));
         }
 

@@ -400,12 +400,12 @@ namespace Rubberduck.Parsing.VBA
                 {
                     projectDeclaration = CreateProjectDeclaration(projectQualifiedName, project);
                     _projectDeclarations.Add(projectQualifiedName.ProjectId, projectDeclaration);
+                    _state.AddDeclaration(projectDeclaration);
                 }
                 var declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, Accessibility.Implicit, component.Type, _state.GetModuleComments(component), _state.GetModuleAnnotations(component), _state.GetModuleAttributes(component), _projectReferences, projectDeclaration);
                 // TODO: should we unify the API? consider working like the other listeners instead of event-based
                 declarationsListener.NewDeclaration += (sender, e) => _state.AddDeclaration(e.Declaration);
                 declarationsListener.CreateModuleDeclarations();
-                // rewalk parse tree for second declaration level
                 ParseTreeWalker.Default.Walk(declarationsListener, tree);
             }
             catch (Exception exception)

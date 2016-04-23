@@ -1,5 +1,4 @@
 ﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.Binding
@@ -15,12 +14,8 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression)
         {
-            var lexpr = ((VBAExpressionParser.LExprContext)expression).lExpression();
-            IExpressionBinding bindingTree = null;
-            if (lexpr is VBAExpressionParser.SimpleNameExprContext)
-            {
-                bindingTree = ResolveSimpleNameExpression(module, parent, ((VBAExpressionParser.SimpleNameExprContext)lexpr).simpleNameExpression());
-            }
+            dynamic dynamicExpression = expression;
+            IExpressionBinding bindingTree = Visit(module, parent, dynamicExpression);
             if (bindingTree != null)
             {
                 return bindingTree.Resolve();
@@ -28,9 +23,35 @@ namespace Rubberduck.Parsing.Binding
             return null;
         }
 
-        private IExpressionBinding ResolveSimpleNameExpression(Declaration module, Declaration parent, VBAExpressionParser.SimpleNameExpressionContext expression)
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.LExprContext expression)
         {
-            return new SimpleNameTypeBinding(_declarationFinder, module, expression);
+            dynamic lexpr = expression.lExpression();
+            return Visit(module, parent, lexpr);
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.SimpleNameExprContext expression)
+        {
+            var simpleNameExpression = expression.simpleNameExpression();
+            return Visit(module, parent, simpleNameExpression);
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.SimpleNameExpressionContext expression)
+        {
+            return new SimpleNameTypeBinding(_declarationFinder, module, parent, expression);
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.MemberAccessExprContext expression)
+        {
+            dynamic lExpression = expression.lExpression();
+            var lExpressionBinding = Visit(module, parent, lExpression);
+            return new MemberAccessTypeBinding(_declarationFinder, module, parent, expression, lExpressionBinding);
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.MemberAccessExpressionContext expression)
+        {
+            dynamic lExpression = expression.lExpression();
+            var lExpressionBinding = Visit(module, parent, lExpression);
+            return new MemberAccessTypeBinding(_declarationFinder, module, parent, expression, lExpressionBinding);
         }
     }
 }
