@@ -90,18 +90,17 @@ namespace Rubberduck.Parsing.Symbols
         {
             var projectName = reference.Name;
             var path = reference.FullPath;
-            var projectQualifiedModuleName = new QualifiedModuleName(projectName, path, projectName);
-            var projectQualifiedMemberName = new QualifiedMemberName(projectQualifiedModuleName, projectName);
-
-            var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName);
-            yield return projectDeclaration;
-
             ITypeLib typeLibrary;
+            // Failure to load might mean that it's a "normal" VBProject that will get parsed by us anyway.
             LoadTypeLibEx(path, REGKIND.REGKIND_NONE, out typeLibrary);
             if (typeLibrary == null)
             {
                 yield break;
             }
+            var projectQualifiedModuleName = new QualifiedModuleName(projectName, path, projectName);
+            var projectQualifiedMemberName = new QualifiedMemberName(projectQualifiedModuleName, projectName);
+            var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName);
+            yield return projectDeclaration;
 
             var typeCount = typeLibrary.GetTypeInfoCount();
             for (var i = 0; i < typeCount; i++)

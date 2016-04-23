@@ -136,10 +136,10 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return _references.Union(_memberCalls);
             }
-            set
-            {
-                _references = new ConcurrentBag<IdentifierReference>(value);
-            }
+            //set
+            //{
+            //    _references = new ConcurrentBag<IdentifierReference>(value);
+            //}
         }
 
         private ConcurrentBag<IdentifierReference> _memberCalls = new ConcurrentBag<IdentifierReference>();

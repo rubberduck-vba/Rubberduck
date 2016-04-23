@@ -33,7 +33,8 @@ namespace Rubberduck.Parsing.Symbols
             IEnumerable<CommentNode> comments,
             IEnumerable<IAnnotation> annotations,
             IDictionary<Tuple<string, DeclarationType>, Attributes> attributes,
-            HashSet<ReferencePriorityMap> projectReferences)
+            HashSet<ReferencePriorityMap> projectReferences,
+            Declaration projectDeclaration)
         {
             _qualifiedName = qualifiedName;
             _comments = comments;
@@ -44,11 +45,8 @@ namespace Rubberduck.Parsing.Symbols
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
 
-            var project = _qualifiedName.Component.Collection.Parent;
-            var projectQualifiedName = new QualifiedModuleName(project);
             _projectReferences = projectReferences;
-
-            _projectDeclaration = CreateProjectDeclaration(projectQualifiedName, project);
+            _projectDeclaration = projectDeclaration;
 
             var key = Tuple.Create(_qualifiedName.ComponentName, declarationType);
             var moduleAttributes = attributes.ContainsKey(key)
@@ -68,20 +66,6 @@ namespace Rubberduck.Parsing.Symbols
                 FindAnnotations(), moduleAttributes);
 
             SetCurrentScope();
-        }
-
-        private Declaration CreateProjectDeclaration(QualifiedModuleName projectQualifiedName, VBProject project)
-        {
-            var qualifiedName = projectQualifiedName.QualifyMemberName(project.Name);
-            var projectId = qualifiedName.QualifiedModuleName.ProjectId;
-            var projectDeclaration = new ProjectDeclaration(qualifiedName, project.Name);
-            var references = _projectReferences.Where(projectContainingReference => projectContainingReference.ContainsKey(projectId));
-            foreach (var reference in references)
-            {
-                int priority = reference[projectId];
-                projectDeclaration.AddProjectReference(reference.ReferencedProjectId, priority);
-            }
-            return projectDeclaration;
         }
 
         private IEnumerable<IAnnotation> FindAnnotations()

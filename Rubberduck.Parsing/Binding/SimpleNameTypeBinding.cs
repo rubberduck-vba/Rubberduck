@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing.Binding
         {
             IBoundExpression boundExpression = null;
             string name = ExpressionName.GetName(_expression.name());
-            boundExpression = ResolveEnclodingModule(name);
+            boundExpression = ResolveEnclosingModule(name);
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -39,10 +39,11 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            return ResolveModuleInReferencedProject(name);            
+            boundExpression = ResolveModuleInReferencedProject(name);
+            return boundExpression;
         }
 
-        private IBoundExpression ResolveEnclodingModule(string name)
+        private IBoundExpression ResolveEnclosingModule(string name)
         {            
             /*  Namespace tier 1:
                 Enclosing Module namespace: A UDT or Enum type defined at the module-level in the 
