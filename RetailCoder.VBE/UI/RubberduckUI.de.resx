@@ -1483,4 +1483,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="HotkeyDescription_ParseAll" xml:space="preserve">
     <value>Aktualisierung des Parserstatus</value>
   </data>
+  <data name="GroupingStyle_ByMarker" xml:space="preserve">
+    <value>Nach Markierung</value>
+  </data>
 </root>

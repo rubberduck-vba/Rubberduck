@@ -101,8 +101,6 @@ namespace Rubberduck.Parsing.VBA
                 .ToList();
 
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
-            _state.SetModuleState(ParserState.LoadingReference);
-
             SyncComReferences(projects);
 
             foreach (var component in components)
@@ -131,6 +129,7 @@ namespace Rubberduck.Parsing.VBA
         private void ParseAll()
         {
             var projects = _state.Projects
+                // accessing the code of a protected VBComponent throws a COMException:
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
                 .ToList();
 
@@ -138,7 +137,6 @@ namespace Rubberduck.Parsing.VBA
             var modified = components.Where(_state.IsModified).ToList();
             var unchanged = components.Where(c => !_state.IsModified(c)).ToList();
 
-            _state.SetModuleState(ParserState.LoadingReference); // todo: change that to a simple statusbar text update
             SyncComReferences(projects);
 
             if (!modified.Any())
@@ -212,6 +210,7 @@ namespace Rubberduck.Parsing.VBA
 
                     if (!map.IsLoaded)
                     {
+                        _state.OnStatusMessageUpdate(ParserState.LoadingReference.ToString());
                         var items = _comReflector.GetDeclarationsForReference(reference).ToList();
                         foreach (var declaration in items)
                         {
@@ -317,12 +316,12 @@ namespace Rubberduck.Parsing.VBA
             parser.Start(token);
         }
 
-        public void ParseComponent(VBComponent component, TokenStreamRewriter rewriter = null)
+        private void ParseComponent(VBComponent component, TokenStreamRewriter rewriter = null)
         {
             ParseAsync(component, CancellationToken.None, rewriter).Wait();
         }
 
-        public void Resolve(CancellationToken token)
+        private void Resolve(CancellationToken token)
         {
             var sharedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_resolverTokenSource.Token, token);
             // tests expect this to be synchronous :/
@@ -343,7 +342,7 @@ namespace Rubberduck.Parsing.VBA
             foreach (var kvp in _state.ParseTrees)
             {
                 var qualifiedName = kvp.Key;
-                if (/*_force || _state.IsModified(qualifiedName)*/ true)
+                if (true /*_state.IsModified(qualifiedName)*/)
                 {
                     Debug.WriteLine("Module '{0}' {1}", qualifiedName.ComponentName, _state.IsModified(qualifiedName) ? "was modified" : "was NOT modified");
                     // modified module; walk parse tree and re-acquire all declarations
@@ -388,7 +387,7 @@ namespace Rubberduck.Parsing.VBA
                     emptyStringLiteralListener,
                     argListWithOneByRefParamListener,
                 }), tree);
-                // FIXME these are actually (almost) isnpection results.. we should handle them as such
+                // TODO: these are actually (almost) isnpection results.. we should handle them as such
                 _state.ArgListsWithOneByRefParam = argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
                 _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
                 _state.ObsoleteLetContexts = obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
@@ -415,11 +414,11 @@ namespace Rubberduck.Parsing.VBA
         private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)
         {
             var state = _state.GetModuleState(component);
-            if (_state.Status == ParserState.ResolverError || state != ParserState.Parsed)
+            if (_state.Status == ParserState.ResolverError || (state != ParserState.Parsed))
             {
                 return;
             }
-            _state.SetModuleState(component, ParserState.Resolving);
+
             Debug.WriteLine("Resolving '{0}'... (thread {1})", component.Name, Thread.CurrentThread.ManagedThreadId);
             var qualifiedName = new QualifiedModuleName(component);
             var resolver = new IdentifierReferenceResolver(qualifiedName, finder);

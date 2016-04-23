@@ -42,10 +42,20 @@ namespace Rubberduck.Parsing.VBA
         public bool IsFullReparseRequest { get { return _component == null; } }
     }
 
+    public class RubberduckStatusMessageEventArgs : EventArgs
+    {
+        private readonly string _message;
+
+        public RubberduckStatusMessageEventArgs(string message)
+        {
+            _message = message;
+        }
+
+        public string Message { get { return _message; } }
+    }
+
     public sealed class RubberduckParserState
     {
-        public event EventHandler<ParseRequestEventArgs> ParseRequest;
-
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
         private readonly IDictionary<string,Func<VBProject>> _projects = new Dictionary<string,Func<VBProject>>();
 
@@ -75,6 +85,19 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly ConcurrentDictionary<QualifiedModuleName, IDictionary<Tuple<string, DeclarationType>, Attributes>> _moduleAttributes =
             new ConcurrentDictionary<QualifiedModuleName, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
+
+        public event EventHandler<ParseRequestEventArgs> ParseRequest;
+        public event EventHandler<RubberduckStatusMessageEventArgs> StatusMessageUpdate;
+
+        public void OnStatusMessageUpdate(string message)
+        {
+            var handler = StatusMessageUpdate;
+            if (handler != null)
+            {
+                var args=  new RubberduckStatusMessageEventArgs(message);
+                handler.Invoke(this, args);
+            }
+        }
 
         public void AddProject(VBProject project)
         {

@@ -41,6 +41,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public void SetStatusText(string value = null)
         {
+            Debug.WriteLine(string.Format("RubberduckCommandBar status text changes to '{0}'.", value));
             UiDispatcher.Invoke(() => _statusButton.Caption = value ?? RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status));
         }
 
@@ -50,6 +51,7 @@ namespace Rubberduck.UI.Command.MenuItems
             {
                 var selection = _vbe.ActiveCodePane.GetSelection();
                 SetSelectionText(selection);
+                _selectionButton.TooltipText = _selectionButton.Caption;
             }
             else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.ClassModule && declaration.DeclarationType != DeclarationType.ProceduralModule)
             {
@@ -58,6 +60,9 @@ namespace Rubberduck.UI.Command.MenuItems
                     declaration.QualifiedSelection.Selection,
                     declaration.IdentifierName,
                     RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType));
+                _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
+                    ? _selectionButton.Caption
+                    : declaration.DescriptionString;
             }
             else if (declaration != null)
             {
@@ -67,6 +72,9 @@ namespace Rubberduck.UI.Command.MenuItems
                     declaration.IdentifierName,
                     RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType),
                     selection.Selection);
+                _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
+                    ? _selectionButton.Caption
+                    : declaration.DescriptionString;
             }
         }
 

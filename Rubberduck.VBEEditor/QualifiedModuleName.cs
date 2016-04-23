@@ -31,6 +31,7 @@ namespace Rubberduck.VBEditor
             _componentName = null;
             _project = project;
             _projectName = project.Name;
+            _projectPath = string.Empty;
             _projectId = GetProjectId(project);
             _contentHashCode = 0;
         }
@@ -43,6 +44,7 @@ namespace Rubberduck.VBEditor
             _componentName = component == null ? string.Empty : component.Name;
             _project = component == null ? null : component.Collection.Parent;
             _projectName = _project == null ? string.Empty : _project.Name;
+            _projectPath = string.Empty;
             _projectId = GetProjectId(_project);
 
             _contentHashCode = 0;
@@ -62,11 +64,12 @@ namespace Rubberduck.VBEditor
         /// Creates a QualifiedModuleName for a built-in declaration.
         /// Do not use this overload for user declarations.
         /// </summary>
-        public QualifiedModuleName(string projectName, string projectFullpath, string componentName)
+        public QualifiedModuleName(string projectName, string projectPath, string componentName)
         {
             _project = null;
-            _projectName = projectName + ";" + projectFullpath;
-            _projectId = _projectName.GetHashCode().ToString();
+            _projectName = projectName;
+            _projectPath = projectPath;
+            _projectId = (_projectName + ";" + _projectPath).GetHashCode().ToString();
             _componentName = componentName;
             _component = null;
             _contentHashCode = 0;
@@ -94,10 +97,14 @@ namespace Rubberduck.VBEditor
 
         public string Name { get { return ToString(); } }
         private readonly string _projectName;
+        private readonly string _projectPath;
 
         public override string ToString()
         {
-            return _component == null && string.IsNullOrEmpty(_projectName) ? string.Empty : _projectName + "." + _componentName;
+            return _component == null && string.IsNullOrEmpty(_projectName)
+                ? string.Empty
+                : (string.IsNullOrEmpty(_projectPath) ? string.Empty : _projectPath + ";") 
+                     + _projectName + "." + _componentName;
         }
 
         public override int GetHashCode()

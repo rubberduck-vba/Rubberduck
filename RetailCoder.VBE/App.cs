@@ -44,8 +44,6 @@ namespace Rubberduck
         private readonly IDictionary<VBProjectsEventsSink, Tuple<IConnectionPoint, int>> _referencesEventsConnectionPoints =
             new Dictionary<VBProjectsEventsSink, Tuple<IConnectionPoint, int>>();
 
-        private readonly IDictionary<Type, Action> _hookActions;
-
         public App(VBE vbe, IMessageBox messageBox,
             IRubberduckParser parser,
             IGeneralConfigService configService,
@@ -69,6 +67,7 @@ namespace Rubberduck
             _configService.SettingsChanged += _configService_SettingsChanged;
             _configService.LanguageChanged += ConfigServiceLanguageChanged;
             _parser.State.StateChanged += Parser_StateChanged;
+            _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
             _stateBar.Refresh += _stateBar_Refresh;
 
             var sink = new VBProjectsEventsSink();
@@ -83,40 +82,38 @@ namespace Rubberduck
 
             _projectsEventsConnectionPoint.Advise(sink, out _projectsEventsCookie);
 
-            _hookActions = new Dictionary<Type, Action>
-            {
-                { typeof(MouseHook), HandleMouseMessage },
-                { typeof(KeyboardHook), HandleKeyboardMessage },
-            };
-            
-            
             UiDispatcher.Initialize();
+        }
+
+        private void State_StatusMessageUpdate(object sender, RubberduckStatusMessageEventArgs e)
+        {
+            var message = e.Message;
+            if (message == ParserState.LoadingReference.ToString())
+            {
+                // note: ugly hack to enable Rubberduck.Parsing assembly to do this
+                message = RubberduckUI.ParserState_LoadingReference;
+            }
+
+            _stateBar.SetStatusText(message);
         }
 
         private void _hooks_MessageReceived(object sender, HookEventArgs e)
         {
-            var hookType = sender.GetType();
-            Action action;
-            if (_hookActions.TryGetValue(hookType, out action))
-            {
-                action.Invoke();
-            }
-        }
-
-        private void HandleMouseMessage()
-        {
             RefreshSelection();
         }
 
-        private void HandleKeyboardMessage()
-        {
-            RefreshSelection();
-        }
-
+        private ParserState _lastStatus;
         private void RefreshSelection()
         {
             _stateBar.SetSelectionText(_parser.State.FindSelectedDeclaration(_vbe.ActiveCodePane));
-            _appMenus.EvaluateCanExecute(_parser.State);
+
+            var currentStatus = _parser.State.Status;
+            if (_lastStatus != currentStatus)
+            {
+                _appMenus.EvaluateCanExecute(_parser.State);
+            }
+
+            _lastStatus = currentStatus;
         }
 
         private void _configService_SettingsChanged(object sender, EventArgs e)

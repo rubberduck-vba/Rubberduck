@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -449,12 +450,16 @@ namespace Rubberduck.Common
                 foreach (var reference in declaration.References)
                 {
                     var proc = (dynamic)reference.Context.Parent;
-                    VBAParser.ArgsCallContext paramList;
+                    var paramList = proc ;
 
                     // This is to prevent throws when this statement fails:
                     // (VBAParser.ArgsCallContext)proc.argsCall();
-                    try { paramList = (VBAParser.ArgsCallContext)proc.argsCall(); }
-                    catch { continue; }
+                    var method = ((Type) proc.GetType()).GetMethod("argsCall");
+                    if (method != null)
+                    {
+                        try { paramList = method.Invoke(proc, null); }
+                        catch { continue; }
+                    }
 
                     if (paramList == null) { continue; }
 
