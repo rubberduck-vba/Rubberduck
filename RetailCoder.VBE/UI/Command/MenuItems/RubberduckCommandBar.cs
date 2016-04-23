@@ -51,7 +51,7 @@ namespace Rubberduck.UI.Command.MenuItems
                 var selection = _vbe.ActiveCodePane.GetSelection();
                 SetSelectionText(selection);
             }
-            else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.Class && declaration.DeclarationType != DeclarationType.Module)
+            else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.ClassModule && declaration.DeclarationType != DeclarationType.ProceduralModule)
             {
                 _selectionButton.Caption = string.Format("{0} ({1}): {2} ({3})", 
                     declaration.QualifiedName.QualifiedModuleName,

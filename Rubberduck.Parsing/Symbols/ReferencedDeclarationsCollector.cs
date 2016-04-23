@@ -321,7 +321,7 @@ namespace Rubberduck.Parsing.Symbols
             else if (typeKind == TYPEKIND.TKIND_COCLASS || typeKind == TYPEKIND.TKIND_INTERFACE ||
                      typeKind == TYPEKIND.TKIND_ALIAS || typeKind == TYPEKIND.TKIND_DISPATCH)
             {
-                typeDeclarationType = DeclarationType.Class;
+                typeDeclarationType = DeclarationType.ClassModule;
             }
             else if (typeKind == TYPEKIND.TKIND_RECORD)
             {
@@ -329,7 +329,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             else if (typeKind == TYPEKIND.TKIND_MODULE)
             {
-                typeDeclarationType = DeclarationType.Module;
+                typeDeclarationType = DeclarationType.ProceduralModule;
             }
             return typeDeclarationType;
         }

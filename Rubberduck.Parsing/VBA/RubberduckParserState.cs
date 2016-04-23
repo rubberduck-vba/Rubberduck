@@ -527,14 +527,14 @@ namespace Rubberduck.Parsing.VBA
                 var matches = AllDeclarations
                     .Where(item => item.DeclarationType != DeclarationType.Project &&
                                    item.DeclarationType != DeclarationType.ModuleOption &&
-                                   item.DeclarationType != DeclarationType.Class &&
-                                   item.DeclarationType != DeclarationType.Module &&
+                                   item.DeclarationType != DeclarationType.ClassModule &&
+                                   item.DeclarationType != DeclarationType.ProceduralModule &&
                                    (IsSelectedDeclaration(selection, item) ||
                                     item.References.Any(reference => IsSelectedReference(selection, reference))));
                 try
                 {
                     var match = matches.SingleOrDefault() ?? AllUserDeclarations
-                        .SingleOrDefault(item => (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module)
+                        .SingleOrDefault(item => (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule)
                                 && item.QualifiedName.QualifiedModuleName.Equals(selection.QualifiedName));
                     _selectedDeclaration = match;
                 }
@@ -567,8 +567,7 @@ namespace Rubberduck.Parsing.VBA
         public void RemoveBuiltInDeclarations(Reference reference)
         {
             var projectName = reference.Name;
-            var path = reference.FullPath;
-            var key = new QualifiedModuleName(projectName, path, projectName);
+            var key = new QualifiedModuleName(projectName,reference.FullPath, projectName);
             ConcurrentDictionary<Declaration, byte> items;
             if (!_declarations.TryRemove(key, out items))
             {

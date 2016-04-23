@@ -62,10 +62,10 @@ namespace Rubberduck.VBEditor
         /// Creates a QualifiedModuleName for a built-in declaration.
         /// Do not use this overload for user declarations.
         /// </summary>
-        public QualifiedModuleName(string projectName, string projectPath, string componentName)
+        public QualifiedModuleName(string projectName, string projectFullpath, string componentName)
         {
             _project = null;
-            _projectName = projectName + ";" + projectPath;
+            _projectName = projectName + ";" + projectFullpath;
             _projectId = _projectName.GetHashCode().ToString();
             _componentName = componentName;
             _component = null;

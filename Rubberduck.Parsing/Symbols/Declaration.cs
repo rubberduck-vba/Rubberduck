@@ -349,7 +349,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly IReadOnlyList<DeclarationType> _neverArray = new[]
         {
-            DeclarationType.Class, 
+            DeclarationType.ClassModule, 
             DeclarationType.Control, 
             DeclarationType.Document, 
             DeclarationType.Enumeration, 
@@ -359,7 +359,7 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.LibraryFunction, 
             DeclarationType.LibraryProcedure, 
             DeclarationType.LineLabel, 
-            DeclarationType.Module, 
+            DeclarationType.ProceduralModule, 
             DeclarationType.ModuleOption, 
             DeclarationType.Project, 
             DeclarationType.Procedure, 
@@ -400,7 +400,7 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.PropertyLet, 
             DeclarationType.PropertySet, 
             DeclarationType.UserDefinedType, 
-            DeclarationType.Class, 
+            DeclarationType.ClassModule, 
             DeclarationType.Control, 
             DeclarationType.Enumeration, 
             DeclarationType.EnumerationMember, 
@@ -451,7 +451,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly IReadOnlyList<DeclarationType> _neverHinted = new[]
         {
-            DeclarationType.Class, 
+            DeclarationType.ClassModule, 
             DeclarationType.LineLabel, 
             DeclarationType.ModuleOption, 
             DeclarationType.Project, 
@@ -532,8 +532,8 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     case DeclarationType.Project:
                         return "VBE";
-                    case DeclarationType.Class:
-                    case DeclarationType.Module:
+                    case DeclarationType.ClassModule:
+                    case DeclarationType.ProceduralModule:
                         return _qualifiedName.QualifiedModuleName.ToString();
                     case DeclarationType.Procedure:
                     case DeclarationType.Function:

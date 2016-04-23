@@ -284,7 +284,7 @@ Option Explicit
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Class && item.IdentifierName == "Class2");
+                item.DeclarationType == DeclarationType.ClassModule && item.IdentifierName == "Class2");
 
             Assert.IsNotNull(declaration.References.SingleOrDefault());
         }
@@ -490,7 +490,7 @@ End Sub
 
             var fieldDeclaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable
-                && item.ParentScopeDeclaration.DeclarationType == DeclarationType.Module
+                && item.ParentScopeDeclaration.DeclarationType == DeclarationType.ProceduralModule
                 && item.IdentifierName == "foo");
 
             Assert.IsNull(fieldDeclaration.References.SingleOrDefault());
@@ -514,7 +514,7 @@ End Sub
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Class && item.IdentifierName == "Class1");
+                item.DeclarationType == DeclarationType.ClassModule && item.IdentifierName == "Class1");
 
             Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
                 item.ParentScoping.IdentifierName == "Class2"));
@@ -1361,7 +1361,7 @@ End Sub
             var state = Resolve(code);
 
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Module
+                item.DeclarationType == DeclarationType.ProceduralModule
                 && item.IdentifierName == item.ComponentName);
 
             var usages = declaration.References.Where(item =>

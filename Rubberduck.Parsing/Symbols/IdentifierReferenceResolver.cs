@@ -50,8 +50,8 @@ namespace Rubberduck.Parsing.Symbols
 
             _moduleTypes = new[]
             {
-                DeclarationType.Module, 
-                DeclarationType.Class,
+                DeclarationType.ProceduralModule, 
+                DeclarationType.ClassModule,
             };
 
             _memberTypes = new[]
@@ -71,7 +71,7 @@ namespace Rubberduck.Parsing.Symbols
 
             _moduleDeclaration = finder.MatchName(_qualifiedModuleName.ComponentName)
                 .SingleOrDefault(item => 
-                    (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module)
+                    (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule)
                 && item.QualifiedName.QualifiedModuleName.Equals(_qualifiedModuleName));
 
             SetCurrentScope();
@@ -122,7 +122,7 @@ namespace Rubberduck.Parsing.Symbols
                     {
                         // object variable is a built-in Collection class instance
                         qualifier = _declarationFinder.MatchName(collectionContext.GetText())
-                            .Single(item => item.IsBuiltIn && item.DeclarationType == DeclarationType.Class);
+                            .Single(item => item.IsBuiltIn && item.DeclarationType == DeclarationType.ClassModule);
                         reference = CreateReference(baseTypeContext, qualifier);
                     }
                 }
@@ -378,8 +378,8 @@ namespace Rubberduck.Parsing.Symbols
             if (parent != null && (parent.DeclarationType == DeclarationType.UserDefinedType 
                                 || parent.DeclarationType == DeclarationType.Enumeration
                                 || parent.DeclarationType == DeclarationType.Project
-                                || parent.DeclarationType == DeclarationType.Module
-                                || (parent.DeclarationType == DeclarationType.Class && (parent.IsBuiltIn || parent.HasPredeclaredId))))
+                                || parent.DeclarationType == DeclarationType.ProceduralModule
+                                || (parent.DeclarationType == DeclarationType.ClassModule && (parent.IsBuiltIn || parent.HasPredeclaredId))))
             {
                 return parent;
             }
@@ -908,7 +908,7 @@ namespace Rubberduck.Parsing.Symbols
                 if (collection != null)
                 {
                     // bug: this code assumes user code has no Collection class...
-                    type = _declarationFinder.MatchName(collection.GetText()).SingleOrDefault(item => item.IsBuiltIn && item.DeclarationType == DeclarationType.Class);
+                    type = _declarationFinder.MatchName(collection.GetText()).SingleOrDefault(item => item.IsBuiltIn && item.DeclarationType == DeclarationType.ClassModule);
                     reference = CreateReference(baseType, type);
                 }
             }
@@ -1086,7 +1086,7 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            if (identifierName == "Me" && _moduleDeclaration.DeclarationType == DeclarationType.Class)
+            if (identifierName == "Me" && _moduleDeclaration.DeclarationType == DeclarationType.ClassModule)
             {
                 return _moduleDeclaration;
             }
@@ -1149,13 +1149,13 @@ namespace Rubberduck.Parsing.Symbols
         private bool IsStdModuleMember(Declaration declaration)
         {
             return declaration.ParentDeclaration != null
-                   && declaration.ParentDeclaration.DeclarationType == DeclarationType.Module;
+                   && declaration.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule;
         }
 
         private bool IsStaticClass(Declaration declaration)
         {
             return declaration.ParentDeclaration != null
-                   && declaration.ParentDeclaration.DeclarationType == DeclarationType.Class
+                   && declaration.ParentDeclaration.DeclarationType == DeclarationType.ClassModule
                    && (declaration.ParentDeclaration.HasPredeclaredId || declaration.IsBuiltIn);
         }
 
@@ -1187,7 +1187,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             var matches = _declarationFinder.MatchName(identifierName).Where(item => 
                 item.DeclarationType == DeclarationType.Project
-                || item.DeclarationType == DeclarationType.Module
+                || item.DeclarationType == DeclarationType.ProceduralModule
                 || IsStaticClass(item)
                 || IsStdModuleMember(item)
                 || (item.ParentScopeDeclaration != null && item.ParentScopeDeclaration.Equals(localScope))).ToList();

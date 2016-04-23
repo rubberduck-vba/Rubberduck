@@ -6,8 +6,8 @@ namespace Rubberduck.Parsing.Symbols
     public enum DeclarationType
     {
         Project = 1 << 0,
-        Module = 1 << 1,
-        Class = 1 << 2,
+        ProceduralModule = 1 << 1,
+        ClassModule = 1 << 2,
         Control = 1 << 3,
         UserForm = 1 << 4,
         Document = 1 << 5,

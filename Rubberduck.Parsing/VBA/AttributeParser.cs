@@ -35,8 +35,8 @@ namespace Rubberduck.Parsing.VBA
             File.Delete(path);
 
             var type = component.Type == vbext_ComponentType.vbext_ct_StdModule
-                ? DeclarationType.Module
-                : DeclarationType.Class;
+                ? DeclarationType.ProceduralModule
+                : DeclarationType.ClassModule;
             var listener = new AttributeListener(Tuple.Create(component.Name, type));
 
             var stream = new AntlrInputStream(code);

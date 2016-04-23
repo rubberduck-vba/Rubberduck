@@ -122,8 +122,8 @@ namespace Rubberduck.Refactorings.Rename
 
         private static readonly DeclarationType[] ModuleDeclarationTypes =
         {
-            DeclarationType.Class,
-            DeclarationType.Module
+            DeclarationType.ClassModule,
+            DeclarationType.ProceduralModule
         };
 
         private void Rename()

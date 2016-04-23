@@ -41,8 +41,8 @@ namespace Rubberduck.Parsing.Symbols
             _attributes = attributes;
 
             var declarationType = type == vbext_ComponentType.vbext_ct_StdModule
-                ? DeclarationType.Module
-                : DeclarationType.Class;
+                ? DeclarationType.ProceduralModule
+                : DeclarationType.ClassModule;
 
             var project = _qualifiedName.Component.Collection.Parent;
             var projectQualifiedName = new QualifiedModuleName(project);

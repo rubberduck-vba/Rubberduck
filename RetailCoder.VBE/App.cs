@@ -215,12 +215,12 @@ namespace Rubberduck
             componentsSink.ComponentRemoved += sink_ComponentRemoved;
             componentsSink.ComponentRenamed += sink_ComponentRenamed;
             componentsSink.ComponentSelected += sink_ComponentSelected;
-            _componentsEventSinks.Add(sink, componentsSink);
+            //_componentsEventSinks.Add(sink, componentsSink);
 
-            int cookie;
-            connectionPoint.Advise(componentsSink, out cookie);
+            //int cookie;
+            //connectionPoint.Advise(componentsSink, out cookie);
 
-            _componentsEventsConnectionPoints.Add(sink, Tuple.Create(connectionPoint, cookie));
+            //_componentsEventsConnectionPoints.Add(sink, Tuple.Create(connectionPoint, cookie));
         }
 
         async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)

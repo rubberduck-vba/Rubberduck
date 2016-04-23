@@ -46,14 +46,14 @@ namespace Rubberduck.Parsing.Binding
         {            
             /*  Namespace tier 1:
                 Enclosing Module namespace: A UDT or Enum type defined at the module-level in the 
-                enclosing module.  
+                enclosing module.
             */
             var udt = _declarationFinder.Find(_module, name, DeclarationType.UserDefinedType);
             if (udt != null)
             {
                 return new SimpleNameExpression(udt, ExpressionClassification.Type, _expression);
             }
-            var enumType = _declarationFinder.Find(_module, name, DeclarationType.UserDefinedType);
+            var enumType = _declarationFinder.Find(_module, name, DeclarationType.Enumeration);
             if (enumType != null)
             {
                 return new SimpleNameExpression(enumType, ExpressionClassification.Type, _expression);
@@ -77,12 +77,12 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(referencedProject, ExpressionClassification.Type, _expression);
             }
-            var proceduralModuleEnclosingProject = _declarationFinder.Find(enclosingProjectDeclaration, name, DeclarationType.Module);
+            var proceduralModuleEnclosingProject = _declarationFinder.Find(enclosingProjectDeclaration, name, DeclarationType.ProceduralModule);
             if (proceduralModuleEnclosingProject != null)
             {
                 return new SimpleNameExpression(proceduralModuleEnclosingProject, ExpressionClassification.ProceduralModule, _expression);
             }
-            var classEnclosingProject = _declarationFinder.Find(enclosingProjectDeclaration, name, DeclarationType.Class);
+            var classEnclosingProject = _declarationFinder.Find(enclosingProjectDeclaration, name, DeclarationType.ClassModule);
             if (classEnclosingProject != null)
             {
                 return new SimpleNameExpression(classEnclosingProject, ExpressionClassification.Type, _expression);
@@ -97,12 +97,12 @@ namespace Rubberduck.Parsing.Binding
                 procedural module or class module within the enclosing project other than the enclosing module.  
             */
             Declaration enclosingProjectDeclaration = _module.ParentDeclaration;
-            var accessibleUdt = _declarationFinder.FindAccessible(enclosingProjectDeclaration, _module, name, DeclarationType.UserDefinedType);
+            var accessibleUdt = _declarationFinder.FindAccessibleInEnclosingProject(enclosingProjectDeclaration, _module, name, DeclarationType.UserDefinedType);
             if (accessibleUdt != null)
             {
                 return new SimpleNameExpression(accessibleUdt, ExpressionClassification.Type, _expression);
             }
-            var accessibleType = _declarationFinder.FindAccessible(enclosingProjectDeclaration, _module, name, DeclarationType.Enumeration);
+            var accessibleType = _declarationFinder.FindAccessibleInEnclosingProject(enclosingProjectDeclaration, _module, name, DeclarationType.Enumeration);
             if (accessibleType != null)
             {
                 return new SimpleNameExpression(accessibleType, ExpressionClassification.Type, _expression);
@@ -117,12 +117,12 @@ namespace Rubberduck.Parsing.Binding
                 a referenced project.
             */
             var enclosingProjectDeclaration = _module.ParentDeclaration;
-            var accessibleModule = _declarationFinder.FindInReferencedProjectModule(enclosingProjectDeclaration, name);
+            var accessibleModule = _declarationFinder.FindProceduralModuleInReferencedProject(enclosingProjectDeclaration, name);
             if (accessibleModule != null)
             {
                 return new SimpleNameExpression(accessibleModule, ExpressionClassification.ProceduralModule, _expression);
             }
-            var accessibleClass = _declarationFinder.FindInReferencedProjectClass(enclosingProjectDeclaration, name);
+            var accessibleClass = _declarationFinder.FindClassModuleInReferencedProject(enclosingProjectDeclaration, name);
             if (accessibleClass != null)
             {
                 return new SimpleNameExpression(accessibleClass, ExpressionClassification.Type, _expression);
@@ -137,12 +137,12 @@ namespace Rubberduck.Parsing.Binding
                 procedural module or class module within a referenced project.  
             */
             var enclosingProjectDeclaration = _module.ParentDeclaration;
-            var referencedProjectUdt = _declarationFinder.FindInReferencedProject(enclosingProjectDeclaration, name, DeclarationType.UserDefinedType, DeclarationType.Module | DeclarationType.Class);
+            var referencedProjectUdt = _declarationFinder.FindTypeInReferencedProject(enclosingProjectDeclaration, name, DeclarationType.UserDefinedType);
             if (referencedProjectUdt != null)
             {
                 return new SimpleNameExpression(referencedProjectUdt, ExpressionClassification.Type, _expression);
             }
-            var referencedProjectEnumType = _declarationFinder.FindInReferencedProject(enclosingProjectDeclaration, name, DeclarationType.Enumeration, DeclarationType.Module | DeclarationType.Class);
+            var referencedProjectEnumType = _declarationFinder.FindTypeInReferencedProject(enclosingProjectDeclaration, name, DeclarationType.Enumeration);
             if (referencedProjectEnumType != null)
             {
                 return new SimpleNameExpression(referencedProjectEnumType, ExpressionClassification.Type, _expression);
