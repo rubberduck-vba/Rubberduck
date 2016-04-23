@@ -100,8 +100,6 @@ namespace Rubberduck.Parsing.VBA
                 .ToList();
 
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
-            _state.SetModuleState(ParserState.LoadingReference);
-
             SyncComReferences(projects);
 
             foreach (var component in components)
@@ -137,7 +135,6 @@ namespace Rubberduck.Parsing.VBA
             var modified = components.Where(_state.IsModified).ToList();
             var unchanged = components.Where(c => !_state.IsModified(c)).ToList();
 
-            _state.SetModuleState(ParserState.LoadingReference); // todo: change that to a simple statusbar text update
             SyncComReferences(projects);
 
             if (!modified.Any())
@@ -190,6 +187,7 @@ namespace Rubberduck.Parsing.VBA
 
                     if (!map.IsLoaded)
                     {
+                        _state.OnStatusMessageUpdate(ParserState.LoadingReference.ToString());
                         var items = _comReflector.GetDeclarationsForReference(reference).ToList();
                         foreach (var declaration in items)
                         {

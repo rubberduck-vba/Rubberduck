@@ -69,6 +69,7 @@ namespace Rubberduck
             _configService.SettingsChanged += _configService_SettingsChanged;
             _configService.LanguageChanged += ConfigServiceLanguageChanged;
             _parser.State.StateChanged += Parser_StateChanged;
+            _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
             _stateBar.Refresh += _stateBar_Refresh;
 
             var sink = new VBProjectsEventsSink();
@@ -91,6 +92,18 @@ namespace Rubberduck
             
             
             UiDispatcher.Initialize();
+        }
+
+        private void State_StatusMessageUpdate(object sender, RubberduckStatusMessageEventArgs e)
+        {
+            var message = e.Message;
+            if (message == ParserState.LoadingReference.ToString())
+            {
+                // note: ugly hack to enable Rubberduck.Parsing assembly to do this
+                message = RubberduckUI.ParserState_LoadingReference;
+            }
+
+            _stateBar.SetStatusText(message);
         }
 
         private void _hooks_MessageReceived(object sender, HookEventArgs e)
