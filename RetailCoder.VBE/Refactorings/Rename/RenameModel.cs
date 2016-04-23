@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -13,8 +15,8 @@ namespace Rubberduck.Refactorings.Rename
         private readonly VBE _vbe;
         public VBE VBE { get { return _vbe; } }
         
-        private readonly Declarations _declarations;
-        public Declarations Declarations { get { return _declarations; } }
+        private readonly IList<Declaration> _declarations;
+        public IEnumerable<Declaration> Declarations { get { return _declarations; } }
 
         private Declaration _target;
         public Declaration Target
@@ -26,27 +28,30 @@ namespace Rubberduck.Refactorings.Rename
         private readonly QualifiedSelection _selection;
         public QualifiedSelection Selection { get { return _selection; } }
 
-        private readonly VBProjectParseResult _parseResult;
-        public VBProjectParseResult ParseResult { get { return _parseResult; } }
+        private readonly RubberduckParserState _parseResult;
+        public RubberduckParserState ParseResult { get { return _parseResult; } }
 
         public string NewName { get; set; }
 
-        public RenameModel(VBE vbe, VBProjectParseResult parseResult, QualifiedSelection selection)
+        private readonly IMessageBox _messageBox;
+
+        public RenameModel(VBE vbe, RubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {
             _vbe = vbe;
             _parseResult = parseResult;
-            _declarations = parseResult.Declarations;
+            _declarations = parseResult.AllDeclarations.ToList();
             _selection = selection;
+            _messageBox = messageBox;
 
             AcquireTarget(out _target, Selection);
         }
 
         private void AcquireTarget(out Declaration target, QualifiedSelection selection)
         {
-            target = _declarations.Items
+            target = _declarations
                 .Where(item => !item.IsBuiltIn && item.DeclarationType != DeclarationType.ModuleOption)
-                .FirstOrDefault(item => item.IsSelectedDeclaration(selection)
-                                      || item.References.Any(r => r.IsSelectedReference(selection)));
+                .FirstOrDefault(item => item.IsSelected(selection)
+                                      || item.References.Any(r => r.IsSelected(selection)));
 
             PromptIfTargetImplementsInterface(ref target);
         }
@@ -63,7 +68,7 @@ namespace Rubberduck.Refactorings.Rename
             var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
             var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, target.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
 
-            var confirm = MessageBox.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            var confirm = _messageBox.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (confirm == DialogResult.No)
             {
                 target = null;

@@ -9,27 +9,27 @@ namespace Rubberduck.UnitTesting
     {
         private static readonly string TestModuleEmptyTemplate = String.Concat(
                  "'@TestModule\n"
-                , "'' uncomment for late-binding:\n"
+                , "'' ", Rubberduck.UI.RubberduckUI.UnitTest_NewModule_UncommentLateBinding, ":\n"
                 , "'Private Assert As Object\n"
-                , "'' early-binding requires reference to Rubberduck.UnitTesting.tlb:\n"
+                , "'' ", Rubberduck.UI.RubberduckUI.UnitTest_NewModule_CommentEarlyBinding, ":\n"
                 , "Private Assert As New Rubberduck.AssertClass\n\n"
                 , "'@ModuleInitialize\n"
                 ,"Public Sub ModuleInitialize()\n"
-                ,"    'this method runs once per module.\n"
-                ,"    '' uncomment for late-binding:\n"
+                ,"    '", Rubberduck.UI.RubberduckUI.UnitTest_NewModule_RunOnce, ".\n"
+                ,"    '' ", Rubberduck.UI.RubberduckUI.UnitTest_NewModule_UncommentLateBinding, ":\n"
                 ,"    'Set Assert = CreateObject(\"Rubberduck.AssertClass\")\n"
                 ,"End Sub\n\n"
                 , "'@ModuleCleanup\n"
                 , "Public Sub ModuleCleanup()\n"
-                , "    'this method runs once per module.\n"
+                , "    '", Rubberduck.UI.RubberduckUI.UnitTest_NewModule_RunOnce, ".\n"
                 , "End Sub\n\n"
                 , "'@TestInitialize\n"
                 , "Public Sub TestInitialize()\n"
-                , "    'this method runs before every test in the module.\n"
+                , "    '", Rubberduck.UI.RubberduckUI.UnitTest_NewModule_RunBeforeTest, ".\n"
                 , "End Sub\n\n"
                 , "'@TestCleanup\n"
                 , "Public Sub TestCleanup()\n"
-                , "    'this method runs afer every test in the module.\n"
+                , "    '", Rubberduck.UI.RubberduckUI.UnitTest_NewModule_RunAfterTest, ".\n"
                 , "End Sub\n\n"
             );
 
@@ -51,7 +51,7 @@ namespace Rubberduck.UnitTesting
                     hasOptionExplicit = module.CodeModule.Lines[1, module.CodeModule.CountOfDeclarationLines].Contains("Option Explicit");
                 }
 
-                var options = String.Concat(hasOptionExplicit ? String.Empty : "Option Explicit\n", "Option Private Module\n\n");
+                var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\n", "Option Private Module\n\n");
 
                 module.CodeModule.AddFromString(options + TestModuleEmptyTemplate);
                 module.Activate();
@@ -67,7 +67,7 @@ namespace Rubberduck.UnitTesting
             var names = project.ComponentNames();
             var index = names.Count(n => n.StartsWith(TestModuleBaseName)) + 1;
 
-            return String.Concat(TestModuleBaseName, index);
+            return string.Concat(TestModuleBaseName, index);
         }
     }
 }

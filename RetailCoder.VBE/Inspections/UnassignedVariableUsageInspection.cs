@@ -1,36 +1,36 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public class UnassignedVariableUsageInspection //: IInspection // disabled
+    public sealed class UnassignedVariableUsageInspection : InspectionBase
     {
-        public UnassignedVariableUsageInspection()
+        public UnassignedVariableUsageInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Error)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return RubberduckUI.UnassignedVariableUsage_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Meta { get { return InspectionsUI.UnassignedVariableUsageInspectionMeta; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override string Description { get { return InspectionsUI.UnassignedVariableUsageInspectionName; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var usages = parseResult.Declarations.Items.Where(declaration => !declaration.IsBuiltIn 
-                && declaration.DeclarationType == DeclarationType.Variable
+            var usages = UserDeclarations.Where(declaration => 
+                declaration.DeclarationType == DeclarationType.Variable
+                && !UserDeclarations.Any(d => d.DeclarationType == DeclarationType.UserDefinedType
+                    && d.IdentifierName == declaration.AsTypeName)
+                && !declaration.IsSelfAssigned
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .SelectMany(declaration => declaration.References);
+                .SelectMany(declaration => declaration.References)
+                .Where(usage => !usage.IsInspectionDisabled(AnnotationName));
 
             foreach (var issue in usages)
             {
-                //todo: add context to IdentifierReference
-                //yield return new UnassignedVariableUsageInspectionResult(string.Format(Name, issue.Context.GetText()), Severity, issue.Context, issue.QualifiedName);
+                yield return new UnassignedVariableUsageInspectionResult(this, issue.Context, issue.QualifiedModuleName, issue.Declaration);
             }
-
-            return null;
         }
     }
 }

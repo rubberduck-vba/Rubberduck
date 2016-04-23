@@ -1,21 +1,19 @@
-using System;
-using System.Collections.Generic;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class OptionBaseInspectionResult : CodeInspectionResultBase
+    public class OptionBaseInspectionResult : InspectionResultBase
     {
-        public OptionBaseInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName)
-            : base(inspection, type, new CommentNode("", new QualifiedSelection(qualifiedName, Selection.Home)))
+        public OptionBaseInspectionResult(IInspection inspection, QualifiedModuleName qualifiedName)
+            : base(inspection, new CommentNode(string.Empty, Tokens.CommentMarker, new QualifiedSelection(qualifiedName, Selection.Home)))
         {
         }
 
-        public override IDictionary<string, Action> GetQuickFixes()
+        public override string Description
         {
-            // removing or changing option statement could break the code.
-            return new Dictionary<string, Action>(); 
+            get { return Inspection.Name; }
         }
     }
 }

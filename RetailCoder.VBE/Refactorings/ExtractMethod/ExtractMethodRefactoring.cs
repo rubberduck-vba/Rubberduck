@@ -15,9 +15,9 @@ namespace Rubberduck.Refactorings.ExtractMethod
     public class ExtractMethodRefactoring : IRefactoring
     {
         private readonly IActiveCodePaneEditor _editor;
-        private readonly IRefactoringPresenterFactory<ExtractMethodPresenter> _factory;
+        private readonly IRefactoringPresenterFactory<IExtractMethodPresenter> _factory;
 
-        public ExtractMethodRefactoring(IRefactoringPresenterFactory<ExtractMethodPresenter> factory, IActiveCodePaneEditor editor)
+        public ExtractMethodRefactoring(IRefactoringPresenterFactory<IExtractMethodPresenter> factory, IActiveCodePaneEditor editor)
         {
             _factory = factory;
             _editor = editor;
@@ -43,7 +43,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public void Refactor(QualifiedSelection target)
         {
-            target.Select();
+            _editor.SetSelection(target);
             Refactor();
         }
 

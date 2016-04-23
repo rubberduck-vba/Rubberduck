@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\LibGit2Sharp.0.22.0-pre20150516171636\build\net40\LibGit2Sharp.props" Condition="Exists('..\packages\LibGit2Sharp.0.22.0-pre20150516171636\build\net40\LibGit2Sharp.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{10B55A38-F43B-47ED-8DEA-8435647DA2D5}</ProjectGuid>
+    <ProjectGuid>{ADADE971-75E3-40C4-8C19-AB7409372F2E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RubberduckTests</RootNamespace>
@@ -17,7 +16,6 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
-    <NuGetPackageImportStamp>ab916ae1</NuGetPackageImportStamp>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -29,6 +27,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -38,134 +37,32 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\DebugAccess\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\DebugAccess\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\DebugAccess\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release64|AnyCPU'">
-    <OutputPath>bin\Release64\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release64|x64'">
-    <OutputPath>bin\x64\Release64\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release64|x86'">
-    <OutputPath>bin\x86\Release64\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime.net45, Version=4.3.0.0, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Antlr4.Runtime.net45">
       <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
     </Reference>
     <Reference Include="LibGit2Sharp">
       <HintPath>..\packages\LibGit2Sharp.0.22.0-pre20150516171636\lib\net40\LibGit2Sharp.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+    <Reference Include="Microsoft.Vbe.Interop, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
     </Reference>
-    <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.2.1409.1722\lib\net40\Moq.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject">
-      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NLog, Version=3.2.1.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.3.2.1\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Office, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+    <Reference Include="Microsoft.Vbe.Interop.Forms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\libs\Office.dll</HintPath>
+      <HintPath>..\libs\Microsoft.Vbe.Interop.Forms.dll</HintPath>
     </Reference>
-    <Reference Include="Rubberduck">
-      <HintPath>..\RetailCoder.VBE\obj\Debug\Rubberduck.dll</HintPath>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
     </Reference>
-    <Reference Include="Rubberduck.Parsing">
-      <HintPath>..\Rubberduck.Parsing\obj\Debug\Rubberduck.Parsing.dll</HintPath>
-    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -180,46 +77,183 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Mocks\MockFactory.cs" />
-    <Compile Include="Mocks\MockWindowsCollection.cs" />
-    <Compile Include="Refactoring\RemoveParametersTests.cs" />
-    <Compile Include="SourceControl\ChangesPresenterTests.cs" />
-    <Compile Include="SourceControl\BranchesPresenterTests.cs" />
-    <Compile Include="SourceControl\SCPresenterTests.cs" />
-    <Compile Include="SourceControl\SettingsPresenterTests.cs" />
-    <Compile Include="SourceControl\UnsyncedCommitsPresenterTests.cs" />
-    <Compile Include="StringExtensionsTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ConfigurationTests.cs" />
-    <Compile Include="UnitTesting\AssertTests.cs" />
-    <Compile Include="CodeInspectionTests.cs" />
-    <Compile Include="TodoControllerTests.cs" />
     <Compile Include="ComponentTypeExtensionTests.cs" />
-    <Compile Include="UI\Refactorings\Rename\RenamePresenterTests.cs" />
-    <Compile Include="SourceControl\SourceControlTests.cs" />
+    <Compile Include="ConfigurationTests.cs" />
+    <Compile Include="Grammar\ResolverTests.cs" />
+    <Compile Include="Grammar\VBAParserTests.cs" />
+    <Compile Include="Grammar\VBAParserValidityTests.cs" />
+    <Compile Include="Inspections\EncapsulatePublicFieldInspectionTests.cs" />
+    <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionTests.cs" />
+    <Compile Include="MockParser.cs" />
+    <Compile Include="Inspections\MoveFieldCloserToUsageInspectionTests.cs" />
+    <Compile Include="Inspections\AssignedByValParameterInspectionTests.cs" />
+    <Compile Include="Inspections\ConstantNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteTypeHintInspectionTests.cs" />
+    <Compile Include="Inspections\OptionBaseInspectionTests.cs" />
+    <Compile Include="Inspections\ProcedureShouldBeFunctionInspectionTests.cs" />
+    <Compile Include="Inspections\UseMeaningfulNameInspectionTests.cs" />
+    <Compile Include="Inspections\DefaultProjectNameInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyStringLiteralInspectionTests.cs" />
+    <Compile Include="Inspections\ImplicitByRefParameterInspectionTests.cs" />
+    <Compile Include="Inspections\ImplicitPublicMemberInspectionTests.cs" />
+    <Compile Include="Inspections\ImplicitVariantReturnTypeInspectionTests.cs" />
+    <Compile Include="Inspections\MultilineParameterInspectionTests.cs" />
+    <Compile Include="Inspections\MultipleDeclarationsInspectionTests.cs" />
+    <Compile Include="Inspections\NonReturningFunctionInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteCallStatementInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteCommentSyntaxInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteGlobalInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteLetStatementInspectionTests.cs" />
+    <Compile Include="Inspections\OptionExplicitInspectionTests.cs" />
+    <Compile Include="Inspections\ParameterCanBeByValInspectionTests.cs" />
+    <Compile Include="Inspections\ParameterNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\ProcedureNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\VariableIsNeverAssignedInspectionTests.cs" />
+    <Compile Include="Inspections\VariableNeverUsedInspectionTests.cs" />
+    <Compile Include="Inspections\VariableTypeNotDeclaredInspectionTests.cs" />
+    <Compile Include="Mocks\MockFactory.cs" />
+    <Compile Include="Mocks\MockProjectBuilder.cs" />
+    <Compile Include="Mocks\MockUserFormBuilder.cs" />
+    <Compile Include="Mocks\MockVbeBuilder.cs" />
+    <Compile Include="Mocks\MockWindowsCollection.cs" />
+    <Compile Include="MultiAssert.cs" />
+    <Compile Include="Preprocessing\VBAPreprocessorTests.cs" />
+    <Compile Include="Preprocessing\VBAPreprocessorVisitorTests.cs" />
+    <Compile Include="Refactoring\EncapsulateFieldTests.cs" />
+    <Compile Include="Refactoring\ExtractMethodTests.cs" />
+    <Compile Include="Refactoring\IntroduceFieldTests.cs" />
+    <Compile Include="Refactoring\MoveCloserToUsageTests.cs" />
+    <Compile Include="Refactoring\IntroduceParameterTests.cs" />
+    <Compile Include="Refactoring\RemoveParametersTests.cs" />
+    <Compile Include="Refactoring\RenameTests.cs" />
+    <Compile Include="Refactoring\ReorderParametersTests.cs" />
+    <Compile Include="Settings\InspectionSettingsTests.cs" />
+    <Compile Include="Settings\GeneralSettingsTests.cs" />
+    <Compile Include="Settings\IndenterSettingsTests.cs" />
+    <Compile Include="Settings\SettingsControlTests.cs" />
+    <Compile Include="Settings\TodoSettingsTests.cs" />
+    <Compile Include="Settings\UnitTestSettingsTests.cs" />
     <Compile Include="SourceControlConfig.cs" />
-    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersRefactoringTests.cs" />
+    <Compile Include="SourceControl\BranchesViewModelTests.cs" />
+    <Compile Include="SourceControl\ChangesViewModelTests.cs" />
+    <Compile Include="SourceControl\SettingsViewModelTests.cs" />
+    <Compile Include="SourceControl\SourceControlTests.cs" />
+    <Compile Include="SourceControl\SourceControlViewModelTests.cs" />
+    <Compile Include="SourceControl\UnsyncedCommitsViewModelTests.cs" />
+    <Compile Include="StringExtensionsTests.cs" />
+    <Compile Include="TodoControllerTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitTesting\AssertTests.cs" />
     <Compile Include="UnitTesting\EngineTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
-      <Project>{20589de8-432e-4359-9232-69eb070b7185}</Project>
-      <Name>Rubberduck</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
-      <Project>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</Project>
-      <Name>Rubberduck.VBEditor</Name>
-    </ProjectReference>
+    <Compile Include="VbeTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
+      <Project>{20589DE8-432E-4359-9232-69EB070B7185}</Project>
+      <Name>Rubberduck</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
+      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
+      <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
+      <Project>{b9c0bf22-4d8a-4bf4-89f9-e789c0063deb}</Project>
+      <Name>Rubberduck.SmartIndenter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
       <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
       <Name>Rubberduck.SourceControl</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
+      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
+      <Name>Rubberduck.VBEditor</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Testfiles\Grammar\Reference_Module_1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_10.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_2_Processed.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_3_Processed.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_4_Processed.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_4.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_3.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_11.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_12.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_13.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_14.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_15.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_16.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_17.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_18.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_3.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_4.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_5.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_6.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_7.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_8.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_9.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_1_Processed.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
@@ -240,14 +274,13 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\LibGit2Sharp.0.22.0-pre20150516171636\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.22.0-pre20150516171636\build\net40\LibGit2Sharp.props'))" />
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

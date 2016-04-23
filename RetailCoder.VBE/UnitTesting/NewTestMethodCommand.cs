@@ -1,7 +1,11 @@
+using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
-using Rubberduck.Reflection;
+using Rubberduck.Parsing.Reflection;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UnitTesting
 {
@@ -12,7 +16,7 @@ namespace Rubberduck.UnitTesting
 
         private static readonly string TestMethodTemplate = string.Concat(
             "'@TestMethod\n",
-            "Public Sub ", NamePlaceholder, "() 'TODO: Rename test\n",
+            "Public Sub ", NamePlaceholder, "() 'TODO ", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_Rename, "\n",
             "    On Error GoTo TestFail\n",
             "    \n",
             "    'Arrange:\n\n",
@@ -22,20 +26,20 @@ namespace Rubberduck.UnitTesting
             "TestExit:\n",
             "    Exit Sub\n",
             "TestFail:\n",
-            "    Assert.Fail \"Test raised an error: #\" & Err.Number & \" - \" & Err.Description\n",
+            "    Assert.Fail \"", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_RaisedTestError, ": #\" & Err.Number & \" - \" & Err.Description\n",
             "End Sub\n"
             );
 
         private static readonly string TestMethodExpectedErrorTemplate = string.Concat(
             "'@TestMethod\n",
-            "Public Sub ", NamePlaceholder, "() 'TODO: Rename test\n",
-            "    Const ExpectedError As Long = 0 'TODO: Change to expected error number\n",
+            "Public Sub ", NamePlaceholder, "() 'TODO ", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_Rename, "\n",
+            "    Const ExpectedError As Long = 0 'TODO ", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_ChangeErrorNo, "\n",
             "    On Error GoTo TestFail\n",
             "    \n",
             "    'Arrange:\n\n",
             "    'Act:\n\n",
             "Assert:\n",
-            "    Assert.Fail \"Expected error was not raised.\"\n\n",
+            "    Assert.Fail \"", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_ErrorNotRaised, ".\"\n\n",
             "TestExit:\n",
             "    Exit Sub\n",
             "TestFail:\n",
@@ -47,26 +51,58 @@ namespace Rubberduck.UnitTesting
             "End Sub\n"
             );
 
-        public static void NewTestMethod(VBE vbe)
+        public static TestMethod NewTestMethod(VBE vbe)
         {
-            if (vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
+            if (vbe.ActiveCodePane == null)
             {
-                var module = vbe.ActiveCodePane.CodeModule;
-                var name = GetNextTestMethodName(module.Parent);
-                var method = TestMethodTemplate.Replace(NamePlaceholder, name);
-                module.InsertLines(module.CountOfLines, method);
+                return null;
             }
-        }
 
-        public static void NewExpectedErrorTestMethod(VBE vbe)
-        {
-            if (vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
+            try
             {
-                var module = vbe.ActiveCodePane.CodeModule;
-                var name = GetNextTestMethodName(module.Parent);
-                var method = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
-                module.InsertLines(module.CountOfLines, method);
+                if (vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
+                {
+                    var module = vbe.ActiveCodePane.CodeModule;
+                    var name = GetNextTestMethodName(module.Parent);
+                    var body = TestMethodTemplate.Replace(NamePlaceholder, name);
+                    module.InsertLines(module.CountOfLines, body);
+
+                    var qualifiedModuleName = new QualifiedModuleName(module.Parent);
+                    return new TestMethod(new QualifiedMemberName(qualifiedModuleName, name), vbe);
+                }
             }
+            catch (COMException)
+            {
+            }
+
+            return null;
+        }
+    
+        public static TestMethod NewExpectedErrorTestMethod(VBE vbe)
+        {
+            if (vbe.ActiveCodePane == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                if (vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
+                {
+                    var module = vbe.ActiveCodePane.CodeModule;
+                    var name = GetNextTestMethodName(module.Parent);
+                    var body = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
+                    module.InsertLines(module.CountOfLines, body);
+
+                    var qualifiedModuleName = new QualifiedModuleName(module.Parent);
+                    return new TestMethod(new QualifiedMemberName(qualifiedModuleName, name), vbe);
+                }
+            }
+            catch (COMException)
+            {
+            }
+
+            return null;
         }
 
         private static string GetNextTestMethodName(VBComponent component)

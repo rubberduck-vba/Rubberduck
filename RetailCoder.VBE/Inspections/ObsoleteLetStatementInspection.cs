@@ -2,31 +2,25 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
-using Rubberduck.UI;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteLetStatementInspection : IInspection
+    public sealed class ObsoleteLetStatementInspection : InspectionBase
     {
-        public ObsoleteLetStatementInspection()
+        public ObsoleteLetStatementInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
-            Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return "ObsoleteLetStatementInspection"; } }
-        public string Description { get { return RubberduckUI.ObsoleteLet; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Meta { get { return InspectionsUI.ObsoleteLetStatementInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ObsoleteLetStatementInspectionName; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var issues = parseResult.Declarations.Items
-                .Where(item => !item.IsBuiltIn)
-                .SelectMany(item =>
-                item.References.Where(reference => reference.HasExplicitLetStatement))
-                .Select(issue => new ObsoleteLetStatementUsageInspectionResult(Description, Severity, new QualifiedContext<ParserRuleContext>(issue.QualifiedModuleName, issue.Context)));
-
-            return issues;
+            return State.ObsoleteLetContexts.Select(context =>
+                new ObsoleteLetStatementUsageInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }
     }
 }

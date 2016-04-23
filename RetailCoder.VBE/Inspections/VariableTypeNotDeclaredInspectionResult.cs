@@ -1,36 +1,54 @@
-using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableTypeNotDeclaredInspectionResult : CodeInspectionResultBase
+    public class VariableTypeNotDeclaredInspectionResult : InspectionResultBase
     {
-        public VariableTypeNotDeclaredInspectionResult(string inspection, CodeInspectionSeverity type, ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, type, qualifiedName, context)
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
+
+        public VariableTypeNotDeclaredInspectionResult(IInspection inspection, Declaration target)
+            : base(inspection, target)
+        {
+            _quickFixes = new CodeInspectionQuickFix[]
+            {
+                new DeclareAsExplicitVariantQuickFix(Context, QualifiedSelection), 
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
+            };
+        }
+
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.ImplicitVariantDeclarationInspectionResultFormat, 
+                    Target.DeclarationType,
+                    Target.IdentifierName);
+            }
+        }
+
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get {return _quickFixes; } }
+    }
+
+    public class DeclareAsExplicitVariantQuickFix : CodeInspectionQuickFix 
+    {
+        public DeclareAsExplicitVariantQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, InspectionsUI.DeclareAsExplicitVariantQuickFix)
         {
         }
 
-        public override IDictionary<string, Action> GetQuickFixes()
+        public override void Fix()
         {
-            return
-                new Dictionary<string, Action>
-                {
-                    {RubberduckUI.Inspections_DeclareAsExplicitVariant, DeclareAsExplicitVariant}
-                };
-        }
-
-        private void DeclareAsExplicitVariant()
-        {
-            var codeModule = QualifiedSelection.QualifiedName.Component.CodeModule;
-            var codeLine = codeModule.Lines[QualifiedSelection.Selection.StartLine, QualifiedSelection.Selection.LineCount];
+            var codeModule = Selection.QualifiedName.Component.CodeModule;
+            var codeLine = codeModule.Lines[Selection.Selection.StartLine, Selection.Selection.LineCount];
 
             // methods return empty string if soft-cast context is null - just concat results:
             string originalInstruction;
-            var fix = DeclareExplicitVariant(Context.Parent as VBAParser.VariableSubStmtContext, out originalInstruction);
+            
+            var fix = DeclareExplicitVariant(Context as VBAParser.VariableSubStmtContext, out originalInstruction);
 
             if (string.IsNullOrEmpty(originalInstruction))
             {
@@ -39,11 +57,16 @@ namespace Rubberduck.Inspections
 
             if (string.IsNullOrEmpty(originalInstruction))
             {
-                fix = DeclareExplicitVariant(Context.Parent as VBAParser.ArgContext, out originalInstruction);
+                fix = DeclareExplicitVariant(Context as VBAParser.ArgContext, out originalInstruction);
             }
-            
+
+            if (string.IsNullOrEmpty(originalInstruction))
+            {
+                return;
+            }
+
             var fixedCodeLine = codeLine.Replace(originalInstruction, fix);
-            codeModule.ReplaceLine(QualifiedSelection.Selection.StartLine, fixedCodeLine);
+            codeModule.ReplaceLine(Selection.Selection.StartLine, fixedCodeLine);
         }
 
         private string DeclareExplicitVariant(VBAParser.VariableSubStmtContext context, out string instruction)
@@ -78,7 +101,7 @@ namespace Rubberduck.Inspections
                 return null;
             }
 
-            var parent = (VBAParser.ConstStmtContext) context.Parent;
+            var parent = (VBAParser.ConstStmtContext)context.Parent;
             instruction = parent.GetText();
 
             var constant = context.GetText();

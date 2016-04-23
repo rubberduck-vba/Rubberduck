@@ -1,11 +1,10 @@
 ﻿using System;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
-namespace Rubberduck.VBA.Nodes
+namespace Rubberduck.Parsing.VBA.Nodes
 {
     // todo: remove usages of this obsolete class.
     public class ProcedureNode : Node

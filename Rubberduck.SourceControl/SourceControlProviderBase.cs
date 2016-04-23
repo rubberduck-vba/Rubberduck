@@ -5,22 +5,25 @@ using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.SourceControl
 {
     public abstract class SourceControlProviderBase : ISourceControlProvider
     {
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
         protected VBProject Project;
 
         protected SourceControlProviderBase(VBProject project)
         {
-            this.Project = project;
+            Project = project;
         }
 
-        protected SourceControlProviderBase(VBProject project, IRepository repository)
+        protected SourceControlProviderBase(VBProject project, IRepository repository, ICodePaneWrapperFactory wrapperFactory)
             :this(project)
         {
-            this.CurrentRepository = repository;
+            CurrentRepository = repository;
+            _wrapperFactory = wrapperFactory;
         }
 
         public IRepository CurrentRepository { get; private set; }
@@ -37,11 +40,18 @@ namespace Rubberduck.SourceControl
         public abstract void DeleteBranch(string branch);
         public abstract IRepository Init(string directory, bool bare = false);
         public abstract void Commit(string message);
+        public abstract void Publish(string branch);
+        public abstract void Unpublish(string branch);
+
+        public virtual void CreateBranch(string sourceBranch, string branch)
+        {
+            Refresh();
+        }
 
         public virtual IRepository InitVBAProject(string directory)
         {
             var projectName = GetProjectNameFromDirectory(directory);
-            if (projectName != string.Empty && projectName != this.Project.Name)
+            if (projectName != string.Empty && projectName != Project.Name)
             {
                 directory = Path.Combine(directory, Project.Name);
             }
@@ -51,10 +61,12 @@ namespace Rubberduck.SourceControl
                 Directory.CreateDirectory(directory);
             }
 
-            this.Project.ExportSourceFiles(directory);
-            this.CurrentRepository = new Repository(Project.Name, directory, directory);
-            return this.CurrentRepository;
+            Project.ExportSourceFiles(directory);
+            CurrentRepository = new Repository(Project.Name, directory, directory);
+            return CurrentRepository;
         }
+
+        public virtual event EventHandler<EventArgs> BranchChanged;
 
         public virtual void Pull()
         {
@@ -63,12 +75,12 @@ namespace Rubberduck.SourceControl
 
         public virtual void Stage(string filePath)
         {
-            this.Project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
+            Project.ExportSourceFiles(CurrentRepository.LocalLocation);
         }
 
         public virtual void Stage(IEnumerable<string> filePaths)
         {
-            this.Project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
+            Project.ExportSourceFiles(CurrentRepository.LocalLocation);
         }
 
         public virtual void Merge(string sourceBranch, string destinationBranch)
@@ -79,21 +91,23 @@ namespace Rubberduck.SourceControl
         public virtual void Checkout(string branch)
         {
             Refresh();
+
+            var handler = BranchChanged;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         public virtual void Undo(string filePath)
         {
-            //this might need to cherry pick from the tip instead.
+            var componentName = Path.GetFileNameWithoutExtension(filePath);
 
-           var componentName = Path.GetFileNameWithoutExtension(filePath);
-
-           //GetFileNameWithoutExtension returns empty string if it's not a file
-           //https://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx
-            if (componentName != String.Empty)
+            if (!File.Exists(filePath))
             {
-                var component = this.Project.VBComponents.Item(componentName);
-                this.Project.VBComponents.RemoveSafely(component);
-                this.Project.VBComponents.ImportSourceFile(filePath);
+                var component = Project.VBComponents.Item(componentName);
+                Project.VBComponents.RemoveSafely(component);
+                Project.VBComponents.ImportSourceFile(filePath);
             }
         }
 
@@ -104,7 +118,7 @@ namespace Rubberduck.SourceControl
 
         public virtual IEnumerable<IFileStatusEntry> Status()
         {
-            this.Project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
+            Project.ExportSourceFiles(CurrentRepository.LocalLocation);
             return null;
         }
 
@@ -119,17 +133,30 @@ namespace Rubberduck.SourceControl
         {
             //Because refreshing removes all components, we need to store the current selection,
             // so we can correctly reset it once the files are imported from the repository.
-            var selection = Project.VBE.ActiveCodePane.GetSelection();
-            string name = null;
-            if (selection.QualifiedName.Component != null)
+
+            var codePane = Project.VBE.ActiveCodePane;
+
+            if (codePane != null)
             {
-                name = selection.QualifiedName.Component.Name;
+                var codePaneWrapper = _wrapperFactory.Create(codePane);
+                var selection = new QualifiedSelection(new QualifiedModuleName(codePaneWrapper.CodeModule.Parent),
+                    codePaneWrapper.Selection);
+                string name = null;
+                if (selection.QualifiedName.Component != null)
+                {
+                    name = selection.QualifiedName.Component.Name;
+                }
+
+                Project.RemoveAllComponents();
+                Project.ImportSourceFiles(CurrentRepository.LocalLocation);
+
+                Project.VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name, _wrapperFactory);
             }
-
-            Project.RemoveAllComponents();
-            Project.ImportSourceFiles(CurrentRepository.LocalLocation);
-
-            Project.VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name);
+            else
+            {
+                Project.RemoveAllComponents();
+                Project.ImportSourceFiles(CurrentRepository.LocalLocation);
+            }
         }
     }
 }

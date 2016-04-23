@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using Rubberduck.Reflection;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Reflection

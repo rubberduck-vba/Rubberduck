@@ -1,48 +1,59 @@
-using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteLetStatementUsageInspectionResult : CodeInspectionResultBase
+    public class ObsoleteLetStatementUsageInspectionResult : InspectionResultBase
     {
-        public ObsoleteLetStatementUsageInspectionResult(string inspection, CodeInspectionSeverity type, 
-            QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
-        {
-        }
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        private new VBAParser.LetStmtContext Context { get { return base.Context as VBAParser.LetStmtContext; } }
-
-        public override IDictionary<string, Action> GetQuickFixes()
+        public ObsoleteLetStatementUsageInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            return new Dictionary<string, Action>
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                {RubberduckUI.Inspections_RemoveObsoleteStatement, RemoveObsoleteStatement}
+                new RemoveExplicitLetStatementQuickFix(Context, QualifiedSelection), 
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 
-        private void RemoveObsoleteStatement()
+        public override string Description
         {
-            var module = QualifiedName.Component.CodeModule;
+            get { return Inspection.Name; }
+        }
+
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get {return _quickFixes; } }
+    }
+
+    public class RemoveExplicitLetStatementQuickFix : CodeInspectionQuickFix
+    {
+        public RemoveExplicitLetStatementQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, InspectionsUI.RemoveObsoleteStatementQuickFix)
+        {
+        }
+
+        public override void Fix()
+        {
+            var module = Selection.QualifiedName.Component.CodeModule;
             if (module == null)
             {
                 return;
             }
 
             var selection = Context.GetSelection();
-            
-            // remove line continuations to compare against Context:
+            var context = (VBAParser.LetStmtContext) Context;
+
+            // remove line continuations to compare against context:
             var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount)
                                           .Replace("\r\n", " ")
                                           .Replace("_", string.Empty);
             var originalInstruction = Context.GetText();
 
-            var identifier = Context.implicitCallStmt_InStmt().GetText();
-            var value = Context.valueStmt().GetText();
+            var identifier = context.implicitCallStmt_InStmt().GetText();
+            var value = context.valueStmt().GetText();
 
             module.DeleteLines(selection.StartLine, selection.LineCount);
 

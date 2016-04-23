@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -11,19 +11,22 @@ namespace Rubberduck.Refactorings.RemoveParameters
 {
     public class RemoveParametersModel
     {
-        private readonly VBProjectParseResult _parseResult;
-        public VBProjectParseResult ParseResult { get { return _parseResult; } }
+        private readonly RubberduckParserState _parseResult;
+        public RubberduckParserState ParseResult { get { return _parseResult; } }
 
-        private readonly Declarations _declarations;
-        public Declarations Declarations { get { return _declarations; } }
+        private readonly IList<Declaration> _declarations;
+        public IEnumerable<Declaration> Declarations { get { return _declarations; } }
 
         public Declaration TargetDeclaration { get; private set; }
         public List<Parameter> Parameters { get; set; }
 
-        public RemoveParametersModel(VBProjectParseResult parseResult, QualifiedSelection selection)
+        private readonly IMessageBox _messageBox;
+
+        public RemoveParametersModel(RubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {
             _parseResult = parseResult;
-            _declarations = parseResult.Declarations;
+            _declarations = parseResult.AllDeclarations.ToList();
+            _messageBox = messageBox;
 
             AcquireTarget(selection);
 
@@ -33,30 +36,39 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private void AcquireTarget(QualifiedSelection selection)
         {
-            TargetDeclaration = Declarations.FindSelection(selection, ValidDeclarationTypes);
+            TargetDeclaration = Declarations.FindTarget(selection, ValidDeclarationTypes);
             TargetDeclaration = PromptIfTargetImplementsInterface();
+            TargetDeclaration = GetEvent();
             TargetDeclaration = GetGetter();
         }
 
         private void LoadParameters()
         {
+            if (TargetDeclaration == null) { return; }
+
             Parameters.Clear();
 
             var index = 0;
-            Parameters = GetParameters(TargetDeclaration).Select(arg => new Parameter(arg, index++)).ToList();
+            Parameters = GetParameters().Select(arg => new Parameter(arg, index++)).ToList();
+
+            if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
+                TargetDeclaration.DeclarationType == DeclarationType.PropertySet)
+            {
+                Parameters.Remove(Parameters.Last());
+            }
         }
 
-        private IEnumerable<Declaration> GetParameters(Declaration method)
+        private IEnumerable<Declaration> GetParameters()
         {
-            return Declarations.Items
-                              .Where(d => d.DeclarationType == DeclarationType.Parameter
-                                       && d.ComponentName == method.ComponentName
-                                       && d.Project.Equals(method.Project)
-                                       && method.Context.GetSelection().Contains(
-                                                         new Selection(d.Selection.StartLine,
-                                                                       d.Selection.StartColumn,
-                                                                       d.Selection.EndLine,
-                                                                       d.Selection.EndColumn)))
+            var targetSelection = new Selection(TargetDeclaration.Context.Start.Line,
+                TargetDeclaration.Context.Start.Column,
+                TargetDeclaration.Context.Stop.Line,
+                TargetDeclaration.Context.Stop.Column);
+
+            return Declarations.Where(d => d.DeclarationType == DeclarationType.Parameter
+                                       && d.ComponentName == TargetDeclaration.ComponentName
+                                       && d.ProjectId == TargetDeclaration.ProjectId
+                                       && targetSelection.Contains(d.Selection))
                               .OrderBy(item => item.Selection.StartLine)
                               .ThenBy(item => item.Selection.StartColumn);
         }
@@ -83,19 +95,33 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var interfaceMember = Declarations.FindInterfaceMember(interfaceImplementation);
             var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
 
-            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            var confirm = _messageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             return confirm == DialogResult.No ? null : interfaceMember;
+        }
+
+        private Declaration GetEvent()
+        {
+            foreach (var events in Declarations.Where(item => item.DeclarationType == DeclarationType.Event))
+            {
+                if (Declarations.FindHandlersForEvent(events).Any(reference => Equals(reference.Item2, TargetDeclaration)))
+                {
+                    return events;
+                }
+            }
+            return TargetDeclaration;
         }
 
         private Declaration GetGetter()
         {
+            if (TargetDeclaration == null) { return null; }
+
             if (TargetDeclaration.DeclarationType != DeclarationType.PropertyLet &&
                 TargetDeclaration.DeclarationType != DeclarationType.PropertySet)
             {
                 return TargetDeclaration;
             }
 
-            var getter = _declarations.Items.FirstOrDefault(item => item.Scope == TargetDeclaration.Scope &&
+            var getter = Declarations.FirstOrDefault(item => item.Scope == TargetDeclaration.Scope &&
                                           item.IdentifierName == TargetDeclaration.IdentifierName &&
                                           item.DeclarationType == DeclarationType.PropertyGet);
 

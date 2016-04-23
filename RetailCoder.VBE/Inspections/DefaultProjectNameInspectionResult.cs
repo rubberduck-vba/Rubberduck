@@ -1,42 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
-using Rubberduck.Parsing;
+﻿using System.Collections.Generic;
+using System.Windows.Forms;
+using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using MessageBox = Rubberduck.UI.MessageBox;
 
 namespace Rubberduck.Inspections
 {
-    public class GenericProjectNameInspectionResult : CodeInspectionResultBase
+    public class DefaultProjectNameInspectionResult : InspectionResultBase
     {
-        private readonly VBProjectParseResult _parseResult;
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
 
-        public GenericProjectNameInspectionResult(string inspection, CodeInspectionSeverity type, Declaration target, VBProjectParseResult parseResult) 
-            : base(inspection, type, target)
+        public DefaultProjectNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
+            : base(inspection, target)
         {
-            _parseResult = parseResult;
-        }
-
-        public override IDictionary<string, Action> GetQuickFixes()
-        {
-            var project = RubberduckUI.ResourceManager.GetString("DeclarationType_" + DeclarationType.Project, RubberduckUI.Culture);
-            return new Dictionary<string, Action>
+            _quickFixes = new[]
             {
-                { string.Format(RubberduckUI.Rename_DeclarationType, project), RenameProject }
+                new RenameProjectQuickFix(target.Context, target.QualifiedSelection, target, parseResult, wrapperFactory),
             };
         }
 
-        private void RenameProject()
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
         {
-            var vbe = QualifiedSelection.QualifiedName.Project.VBE;
+            get { return Inspection.Description; }
+        }
+    }
+
+    /// <summary>
+    /// A code inspection quickfix that addresses a VBProject bearing the default name.
+    /// </summary>
+    public class RenameProjectQuickFix : CodeInspectionQuickFix
+    {
+        private readonly Declaration _target;
+        private readonly RubberduckParserState _state;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
+
+        public RenameProjectQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory)
+            : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + DeclarationType.Project, RubberduckUI.Culture)))
+        {
+            _target = target;
+            _state = state;
+            _wrapperFactory = wrapperFactory;
+        }
+
+        public override void Fix()
+        {
+            var vbe = Selection.QualifiedName.Project.VBE;
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(vbe, view, _parseResult);
-                var refactoring = new RenameRefactoring(factory);
-                refactoring.Refactor(Target);
+                var factory = new RenamePresenterFactory(vbe, view, _state, new MessageBox(), _wrapperFactory);
+                var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory), new MessageBox(), _state);
+                refactoring.Refactor(_target);
+                IsCancelled = view.DialogResult == DialogResult.Cancel;
             }
         }
+
+        public override bool CanFixInModule { get { return false; } }
+        public override bool CanFixInProject { get { return false; } }
     }
 }

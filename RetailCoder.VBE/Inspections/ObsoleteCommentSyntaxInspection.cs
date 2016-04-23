@@ -1,36 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteCommentSyntaxInspection : IInspection
+    public sealed class ObsoleteCommentSyntaxInspection : InspectionBase
     {
         /// <summary>
         /// Parameterless constructor required for discovery of implemented code inspections.
         /// </summary>
-        public ObsoleteCommentSyntaxInspection()
+        public ObsoleteCommentSyntaxInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
-            Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return "ObsoleteCommentSyntaxInspection"; } }
-        public string Description { get { return RubberduckUI.ObsoleteComment; } }
-        public CodeInspectionType InspectionType { get {return CodeInspectionType.LanguageOpportunities; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Meta { get { return InspectionsUI.ObsoleteCommentSyntaxInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.ObsoleteCommentSyntaxInspectionName; } }
+        public override CodeInspectionType InspectionType { get {return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var modules = parseResult.ComponentParseResults.ToList();
-            foreach (var comment in modules.SelectMany(module => module.Comments))
-            {
-                if (comment.Marker == Tokens.Rem)
-                {
-                    yield return new ObsoleteCommentSyntaxInspectionResult(Description, Severity, comment);
-                }
-            }
+            return State.AllComments.Where(comment => comment.Marker == Tokens.Rem)
+                .Select(comment => new ObsoleteCommentSyntaxInspectionResult(this, comment));
         }
     }
 }

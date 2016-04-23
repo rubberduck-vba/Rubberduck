@@ -31,6 +31,7 @@ namespace Rubberduck.UI.Refactorings
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExtractMethodDialog));
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.CancelDialogButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
@@ -65,18 +66,18 @@ namespace Rubberduck.UI.Refactorings
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 539);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
+            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(11, 10, 0, 10);
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(768, 53);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(800, 53);
             this.flowLayoutPanel2.TabIndex = 1;
             // 
             // CancelDialogButton
             // 
             this.CancelDialogButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.CancelDialogButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelDialogButton.Location = new System.Drawing.Point(653, 14);
-            this.CancelDialogButton.Margin = new System.Windows.Forms.Padding(4);
+            this.CancelDialogButton.Location = new System.Drawing.Point(685, 14);
+            this.CancelDialogButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.CancelDialogButton.Name = "CancelDialogButton";
             this.CancelDialogButton.Size = new System.Drawing.Size(100, 28);
             this.CancelDialogButton.TabIndex = 0;
@@ -87,8 +88,8 @@ namespace Rubberduck.UI.Refactorings
             // 
             this.OkButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.OkButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OkButton.Location = new System.Drawing.Point(545, 14);
-            this.OkButton.Margin = new System.Windows.Forms.Padding(4);
+            this.OkButton.Location = new System.Drawing.Point(577, 14);
+            this.OkButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.OkButton.Name = "OkButton";
             this.OkButton.Size = new System.Drawing.Size(100, 28);
             this.OkButton.TabIndex = 1;
@@ -102,9 +103,9 @@ namespace Rubberduck.UI.Refactorings
             this.panel2.Controls.Add(this.InstructionsLabel);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
-            this.panel2.Margin = new System.Windows.Forms.Padding(4);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(768, 84);
+            this.panel2.Size = new System.Drawing.Size(800, 84);
             this.panel2.TabIndex = 13;
             // 
             // TitleLabel
@@ -121,12 +122,10 @@ namespace Rubberduck.UI.Refactorings
             // 
             // InstructionsLabel
             // 
-            this.InstructionsLabel.AutoSize = true;
-            this.InstructionsLabel.Location = new System.Drawing.Point(16, 37);
-            this.InstructionsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.InstructionsLabel.Location = new System.Drawing.Point(20, 30);
             this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(5);
-            this.InstructionsLabel.Size = new System.Drawing.Size(609, 27);
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.InstructionsLabel.Size = new System.Drawing.Size(549, 34);
             this.InstructionsLabel.TabIndex = 3;
             this.InstructionsLabel.Text = "Please specify method name, return type and/or parameters (if applicable), and ot" +
     "her options.";
@@ -146,16 +145,16 @@ namespace Rubberduck.UI.Refactorings
             this.panel1.Controls.Add(this.MethodNameBox);
             this.panel1.Controls.Add(this.NameLabel);
             this.panel1.Location = new System.Drawing.Point(0, 87);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(768, 458);
+            this.panel1.Size = new System.Drawing.Size(800, 458);
             this.panel1.TabIndex = 14;
             // 
             // SetReturnValueCheck
             // 
             this.SetReturnValueCheck.AutoSize = true;
-            this.SetReturnValueCheck.Location = new System.Drawing.Point(340, 46);
-            this.SetReturnValueCheck.Margin = new System.Windows.Forms.Padding(4);
+            this.SetReturnValueCheck.Location = new System.Drawing.Point(367, 46);
+            this.SetReturnValueCheck.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.SetReturnValueCheck.Name = "SetReturnValueCheck";
             this.SetReturnValueCheck.Size = new System.Drawing.Size(51, 21);
             this.SetReturnValueCheck.TabIndex = 11;
@@ -165,8 +164,8 @@ namespace Rubberduck.UI.Refactorings
             // InvalidNameValidationIcon
             // 
             this.InvalidNameValidationIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
-            this.InvalidNameValidationIcon.Location = new System.Drawing.Point(743, 4);
-            this.InvalidNameValidationIcon.Margin = new System.Windows.Forms.Padding(4);
+            this.InvalidNameValidationIcon.Location = new System.Drawing.Point(769, 1);
+            this.InvalidNameValidationIcon.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
             this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);
             this.InvalidNameValidationIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -180,12 +179,12 @@ namespace Rubberduck.UI.Refactorings
             this.PreviewBox.BackColor = System.Drawing.Color.White;
             this.PreviewBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PreviewBox.Location = new System.Drawing.Point(24, 254);
-            this.PreviewBox.Margin = new System.Windows.Forms.Padding(4);
+            this.PreviewBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.PreviewBox.Multiline = true;
             this.PreviewBox.Name = "PreviewBox";
             this.PreviewBox.ReadOnly = true;
             this.PreviewBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.PreviewBox.Size = new System.Drawing.Size(727, 181);
+            this.PreviewBox.Size = new System.Drawing.Size(759, 181);
             this.PreviewBox.TabIndex = 9;
             this.PreviewBox.WordWrap = false;
             // 
@@ -208,7 +207,7 @@ namespace Rubberduck.UI.Refactorings
             this.MethodParametersGrid.Location = new System.Drawing.Point(24, 101);
             this.MethodParametersGrid.Margin = new System.Windows.Forms.Padding(11, 4, 11, 4);
             this.MethodParametersGrid.Name = "MethodParametersGrid";
-            this.MethodParametersGrid.Size = new System.Drawing.Size(728, 119);
+            this.MethodParametersGrid.Size = new System.Drawing.Size(760, 119);
             this.MethodParametersGrid.TabIndex = 7;
             // 
             // ParametersLabel
@@ -224,8 +223,8 @@ namespace Rubberduck.UI.Refactorings
             // MethodAccessibilityCombo
             // 
             this.MethodAccessibilityCombo.FormattingEnabled = true;
-            this.MethodAccessibilityCombo.Location = new System.Drawing.Point(547, 42);
-            this.MethodAccessibilityCombo.Margin = new System.Windows.Forms.Padding(4);
+            this.MethodAccessibilityCombo.Location = new System.Drawing.Point(573, 42);
+            this.MethodAccessibilityCombo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MethodAccessibilityCombo.Name = "MethodAccessibilityCombo";
             this.MethodAccessibilityCombo.Size = new System.Drawing.Size(205, 24);
             this.MethodAccessibilityCombo.TabIndex = 5;
@@ -233,7 +232,7 @@ namespace Rubberduck.UI.Refactorings
             // AccessibilityLabel
             // 
             this.AccessibilityLabel.AutoSize = true;
-            this.AccessibilityLabel.Location = new System.Drawing.Point(448, 46);
+            this.AccessibilityLabel.Location = new System.Drawing.Point(475, 46);
             this.AccessibilityLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.AccessibilityLabel.Name = "AccessibilityLabel";
             this.AccessibilityLabel.Size = new System.Drawing.Size(88, 17);
@@ -243,8 +242,8 @@ namespace Rubberduck.UI.Refactorings
             // MethodReturnValueCombo
             // 
             this.MethodReturnValueCombo.FormattingEnabled = true;
-            this.MethodReturnValueCombo.Location = new System.Drawing.Point(84, 42);
-            this.MethodReturnValueCombo.Margin = new System.Windows.Forms.Padding(4);
+            this.MethodReturnValueCombo.Location = new System.Drawing.Point(111, 42);
+            this.MethodReturnValueCombo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MethodReturnValueCombo.Name = "MethodReturnValueCombo";
             this.MethodReturnValueCombo.Size = new System.Drawing.Size(245, 24);
             this.MethodReturnValueCombo.TabIndex = 3;
@@ -261,8 +260,8 @@ namespace Rubberduck.UI.Refactorings
             // 
             // MethodNameBox
             // 
-            this.MethodNameBox.Location = new System.Drawing.Point(84, 9);
-            this.MethodNameBox.Margin = new System.Windows.Forms.Padding(4);
+            this.MethodNameBox.Location = new System.Drawing.Point(111, 9);
+            this.MethodNameBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MethodNameBox.Name = "MethodNameBox";
             this.MethodNameBox.Size = new System.Drawing.Size(667, 22);
             this.MethodNameBox.TabIndex = 1;
@@ -283,16 +282,17 @@ namespace Rubberduck.UI.Refactorings
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelDialogButton;
-            this.ClientSize = new System.Drawing.Size(768, 592);
+            this.ClientSize = new System.Drawing.Size(800, 592);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.flowLayoutPanel2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = global::Rubberduck.UI.RubberduckUI.Ducky;
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ExtractMethodDialog";
+            this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Rubberduck - Extract Method";
             this.flowLayoutPanel2.ResumeLayout(false);

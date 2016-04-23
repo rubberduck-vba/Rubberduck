@@ -2,25 +2,34 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Input;
+using Microsoft.Win32;
 using Rubberduck.Inspections;
-using Rubberduck.ToDoItems;
 using Rubberduck.UI;
+using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.Refactorings;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Rubberduck.Settings
 {
     public interface IGeneralConfigService : IConfigurationService<Configuration>
     {
-        CodeInspectionSetting[] GetDefaultCodeInspections();
         Configuration GetDefaultConfiguration();
-        ToDoMarker[] GetDefaultTodoMarkers();
-        IList<IInspection> GetImplementedCodeInspections();
     }
 
     public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IGeneralConfigService
     {
+        private readonly IEnumerable<IInspection> _inspections;
+        private readonly IEnumerable<ICommand> _commands;
+
+        public ConfigurationLoader(IEnumerable<IInspection> inspections, IEnumerable<ICommand> commands)
+        {
+            _inspections = inspections;
+            _commands = commands;
+        }
+
         protected override string ConfigFile
         {
             get { return Path.Combine(rootPath, "rubberduck.config"); }
@@ -39,9 +48,13 @@ namespace Rubberduck.Settings
 
             var config = base.LoadConfiguration();
 
-            if (config.UserSettings.LanguageSetting == null)
+            if (config.UserSettings.GeneralSettings == null)
             {
-                config.UserSettings.LanguageSetting = new DisplayLanguageSetting("en-US");
+                config.UserSettings.GeneralSettings = GetDefaultGeneralSettings();
+            }
+            else
+            {
+                AssociateHotkeyCommands(config);
             }
 
             if (config.UserSettings.ToDoListSettings == null)
@@ -54,13 +67,58 @@ namespace Rubberduck.Settings
                 config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
             }
 
-            var implementedInspections = GetImplementedCodeInspections();
+            if (config.UserSettings.UnitTestSettings == null)
+            {
+                config.UserSettings.UnitTestSettings = new UnitTestSettings();
+            }
+
+            if (config.UserSettings.IndenterSettings == null)
+            {
+                config.UserSettings.IndenterSettings = GetDefaultIndenterSettings();
+            }
+
             var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
             
-            configInspections = MergeImplementedInspectionsNotInConfig(configInspections, implementedInspections);
+            configInspections = MergeImplementedInspectionsNotInConfig(configInspections, _inspections);
             config.UserSettings.CodeInspectionSettings.CodeInspections = configInspections.ToArray();
 
             return config;
+        }
+
+        private IDictionary<RubberduckHotkey, ICommand> GetCommandMappings()
+        {
+            return new Dictionary<RubberduckHotkey, ICommand>
+            {
+                { RubberduckHotkey.ParseAll, Command<ReparseCommand>() },
+                { RubberduckHotkey.CodeExplorer, Command<CodeExplorerCommand>() },
+                { RubberduckHotkey.IndentModule, Command<IndentCurrentModuleCommand>() },
+                { RubberduckHotkey.IndentProcedure, Command<IndentCurrentProcedureCommand>() },
+                { RubberduckHotkey.FindSymbol, Command<FindSymbolCommand>() },
+                { RubberduckHotkey.RefactorMoveCloserToUsage, Command<RefactorMoveCloserToUsageCommand>() },
+                { RubberduckHotkey.InspectionResults, Command<InspectionResultsCommand>() },
+                { RubberduckHotkey.RefactorExtractMethod, Command<RefactorExtractMethodCommand>() },
+                { RubberduckHotkey.RefactorRename, Command<CodePaneRefactorRenameCommand>() },
+                { RubberduckHotkey.TestExplorer, Command<TestExplorerCommand>() }
+            };
+        }
+
+        private ICommand Command<TCommand>() where TCommand : ICommand
+        {
+            return _commands.OfType<TCommand>().SingleOrDefault();
+        }
+
+        private void AssociateHotkeyCommands(Configuration config)
+        {
+            var mappings = GetCommandMappings();
+            foreach (var setting in config.UserSettings.GeneralSettings.HotkeySettings)
+            {
+                RubberduckHotkey hotkey;
+                if (Enum.TryParse(setting.Name, out hotkey))
+                {
+                    setting.Command = mappings[hotkey];
+                    ((CommandBase)setting.Command).ShortcutText = setting.ToMenuHotkeyString(); // yuck
+                }
+            }
         }
 
         protected override Configuration HandleIOException(IOException ex)
@@ -90,7 +148,7 @@ namespace Rubberduck.Settings
             return config;
         }
 
-        private List<CodeInspectionSetting> MergeImplementedInspectionsNotInConfig(List<CodeInspectionSetting> configInspections, IList<IInspection> implementedInspections)
+        private List<CodeInspectionSetting> MergeImplementedInspectionsNotInConfig(List<CodeInspectionSetting> configInspections, IEnumerable<IInspection> implementedInspections)
         {
             foreach (var implementedInspection in implementedInspections)
             {
@@ -111,19 +169,40 @@ namespace Rubberduck.Settings
         public Configuration GetDefaultConfiguration()
         {
             var userSettings = new UserSettings(
-                                    new DisplayLanguageSetting("en-US"), 
+                                    GetDefaultGeneralSettings(), 
                                     new ToDoListSettings(GetDefaultTodoMarkers()),
-                                    new CodeInspectionSettings(GetDefaultCodeInspections())
-                               );
+                                    new CodeInspectionSettings(GetDefaultCodeInspections()),
+                                    new UnitTestSettings(),
+                                    GetDefaultIndenterSettings());
 
             return new Configuration(userSettings);
         }
 
+        private GeneralSettings GetDefaultGeneralSettings()
+        {
+            var commandMappings = GetCommandMappings();
+            return new GeneralSettings(new DisplayLanguageSetting("en-US"),
+                new[]
+                {
+                    new HotkeySetting{Name=RubberduckHotkey.ParseAll.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="`", Command = commandMappings[RubberduckHotkey.ParseAll]},
+                    new HotkeySetting{Name=RubberduckHotkey.IndentProcedure.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="P", Command = commandMappings[RubberduckHotkey.IndentProcedure]},
+                    new HotkeySetting{Name=RubberduckHotkey.IndentModule.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="M", Command = commandMappings[RubberduckHotkey.IndentModule]},
+                    new HotkeySetting{Name=RubberduckHotkey.CodeExplorer.ToString(), IsEnabled=false, HasCtrlModifier = true, Key1="R", Command = commandMappings[RubberduckHotkey.CodeExplorer]},
+                    new HotkeySetting{Name=RubberduckHotkey.FindSymbol.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="T", Command = commandMappings[RubberduckHotkey.InspectionResults]},
+                    new HotkeySetting{Name=RubberduckHotkey.InspectionResults.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="I", Command = commandMappings[RubberduckHotkey.InspectionResults]},
+                    new HotkeySetting{Name=RubberduckHotkey.TestExplorer.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="T", Command = commandMappings[RubberduckHotkey.TestExplorer]},
+                    new HotkeySetting{Name=RubberduckHotkey.RefactorMoveCloserToUsage.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="C", Command = commandMappings[RubberduckHotkey.RefactorMoveCloserToUsage]},
+                    new HotkeySetting{Name=RubberduckHotkey.RefactorRename.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="R", Command = commandMappings[RubberduckHotkey.RefactorRename]},
+                    new HotkeySetting{Name=RubberduckHotkey.RefactorExtractMethod.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="M", Command = commandMappings[RubberduckHotkey.RefactorExtractMethod]}
+                },
+                false, 10);
+        }
+
         public ToDoMarker[] GetDefaultTodoMarkers()
         {
-            var note = new ToDoMarker(RubberduckUI.ToDoMarkerNote, TodoPriority.Low);
-            var todo = new ToDoMarker(RubberduckUI.ToDoMarkerToDo, TodoPriority.Medium);
-            var bug = new ToDoMarker(RubberduckUI.ToDoMarkerBug, TodoPriority.High);
+            var note = new ToDoMarker(RubberduckUI.TodoMarkerNote);
+            var todo = new ToDoMarker(RubberduckUI.TodoMarkerTodo);
+            var bug = new ToDoMarker(RubberduckUI.TodoMarkerBug);
 
             return new[] { note, todo, bug };
         }
@@ -132,27 +211,39 @@ namespace Rubberduck.Settings
         /// <returns>   An array of Config.CodeInspection. </returns>
         public CodeInspectionSetting[] GetDefaultCodeInspections()
         {
-            return GetImplementedCodeInspections()
-                    .Select(x => new CodeInspectionSetting(x))
-                    .ToArray();
+            return _inspections.Select(x =>
+                        new CodeInspectionSetting(x.Name, x.Description, x.InspectionType, x.DefaultSeverity,
+                            x.DefaultSeverity)).ToArray();
         }
 
-        /// <summary>   Gets all implemented code inspections via reflection </summary>
-        public IList<IInspection> GetImplementedCodeInspections()
+        public IndenterSettings GetDefaultIndenterSettings()
         {
-            var inspections = Assembly.GetExecutingAssembly()
-                                  .GetTypes()
-                                  .Where(type => type.GetInterfaces().Contains(typeof(IInspection)))
-                                  .Select(type =>
-                                  {
-                                      var constructor = type.GetConstructor(Type.EmptyTypes);
-                                      return constructor != null ? constructor.Invoke(Type.EmptyTypes) : null;
-                                  })
-                                 .Where(inspection => inspection != null)
-                                  .Cast<IInspection>()
-                                  .ToList();
-
-            return inspections;
+            var tabWidth = 4;
+            var reg = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\6.0\Common", false) ??
+                      Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\7.0\Common", false);
+            if (reg != null)
+            {
+                tabWidth = Convert.ToInt32(reg.GetValue("TabWidth") ?? tabWidth);
+            }
+            return new IndenterSettings
+            {
+                IndentEntireProcedureBody = true,
+                IndentFirstCommentBlock = true,
+                IndentFirstDeclarationBlock = true,
+                AlignCommentsWithCode = true,
+                AlignContinuations = true,
+                IgnoreOperatorsInContinuations = true,
+                IndentCase = false,
+                ForceDebugStatementsInColumn1 = false,
+                ForceCompilerDirectivesInColumn1 = false,
+                IndentCompilerDirectives = true,
+                AlignDims = false,
+                AlignDimColumn = 15,
+                EnableUndo = true,
+                EndOfLineCommentStyle = SmartIndenter.EndOfLineCommentStyle.AlignInColumn,
+                EndOfLineCommentColumnSpaceAlignment = 50,
+                IndentSpaces = tabWidth
+            };
         }
     }
 }

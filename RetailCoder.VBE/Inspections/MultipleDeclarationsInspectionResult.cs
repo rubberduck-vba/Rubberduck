@@ -1,31 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class MultipleDeclarationsInspectionResult : CodeInspectionResultBase
+    public class MultipleDeclarationsInspectionResult : InspectionResultBase
     {
-        public MultipleDeclarationsInspectionResult(string inspection, CodeInspectionSeverity type, 
-            QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
-        {
-        }
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public override IDictionary<string, Action> GetQuickFixes()
+        public MultipleDeclarationsInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            return new Dictionary<string, Action>
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                {RubberduckUI.Inspections_SplitDeclarations, SplitDeclarations},
+                new SplitMultipleDeclarationsQuickFix(Context, QualifiedSelection), 
+                new IgnoreOnceQuickFix(qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 
-        public override QualifiedSelection QualifiedSelection
+        public override string Description
+        {
+            get { return Inspection.Description; }
+        }
+
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get {return _quickFixes; } }
+
+        private new QualifiedSelection QualifiedSelection
         {
             get
             {
@@ -42,12 +45,20 @@ namespace Rubberduck.Inspections
                 return new QualifiedSelection(QualifiedName, selection);
             }
         }
+    }
 
-        private void SplitDeclarations()
+    public class SplitMultipleDeclarationsQuickFix : CodeInspectionQuickFix
+    {
+        public SplitMultipleDeclarationsQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, InspectionsUI.SplitMultipleDeclarationsQuickFix)
+        {
+        }
+
+        public override void Fix()
         {
             var newContent = new StringBuilder();
-            var selection = QualifiedSelection.Selection;
-            string keyword = string.Empty;
+            var selection = Selection.Selection;
+            var keyword = string.Empty;
 
             var variables = Context.Parent as VBAParser.VariableStmtContext;
             if (variables != null)
@@ -56,9 +67,9 @@ namespace Rubberduck.Inspections
                 {
                     keyword += Tokens.Dim + ' ';
                 }
-                else if(variables.visibility() != null)
+                else if (variables.visibility() != null)
                 {
-                    keyword += variables.visibility().GetText() + ' '; 
+                    keyword += variables.visibility().GetText() + ' ';
                 }
                 else if (variables.STATIC() != null)
                 {
@@ -89,7 +100,7 @@ namespace Rubberduck.Inspections
                 }
             }
 
-            var module = QualifiedName.Component.CodeModule;
+            var module = Selection.QualifiedName.Component.CodeModule;
             module.ReplaceLine(selection.StartLine, newContent.ToString());
         }
     }

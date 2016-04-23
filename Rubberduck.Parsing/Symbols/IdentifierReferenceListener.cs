@@ -2,64 +2,94 @@ using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public class IdentifierReferenceListener : VBABaseListener
+    public class IdentifierReferenceListener : VBAParserBaseListener
     {
         private readonly IdentifierReferenceResolver _resolver;
 
         public IdentifierReferenceListener(IdentifierReferenceResolver resolver)
         {
             _resolver = resolver;
+            SetCurrentScope();
+        }
+
+        private void SetCurrentScope()
+        {
             _resolver.SetCurrentScope();
+        }
+
+        private void SetCurrentScope(string identifier, DeclarationType type)
+        {
+            _resolver.SetCurrentScope(identifier, type);
         }
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
-            _resolver.SetCurrentScope(context.ambiguousIdentifier().GetText());
+            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.Procedure);
         }
 
         public override void ExitSubStmt(VBAParser.SubStmtContext context)
         {
-            _resolver.SetCurrentScope();
+            SetCurrentScope();
         }
 
         public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
-            _resolver.SetCurrentScope(context.ambiguousIdentifier().GetText());
+            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.Function);
         }
 
         public override void ExitFunctionStmt(VBAParser.FunctionStmtContext context)
         {
-            _resolver.SetCurrentScope();
+            SetCurrentScope();
         }
 
         public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
-            _resolver.SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyGet);
+            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyGet);
         }
 
         public override void ExitPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
-            _resolver.SetCurrentScope();
+            SetCurrentScope();
         }
 
         public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
-            _resolver.SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyLet);
+            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyLet);
         }
 
         public override void ExitPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
-            _resolver.SetCurrentScope();
+            SetCurrentScope();
         }
 
         public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
-            _resolver.SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertySet);
+            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertySet);
         }
 
         public override void ExitPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
-            _resolver.SetCurrentScope();
+            SetCurrentScope();
+        }
+
+        public override void EnterEnumerationStmt(VBAParser.EnumerationStmtContext context)
+        {
+            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.Enumeration);
+        }
+
+        public override void ExitEnumerationStmt(VBAParser.EnumerationStmtContext context)
+        {
+            SetCurrentScope();
+        }
+
+        public override void EnterTypeStmt(VBAParser.TypeStmtContext context)
+        {
+            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.UserDefinedType);
+        }
+
+        public override void ExitTypeStmt(VBAParser.TypeStmtContext context)
+        {
+            SetCurrentScope();
         }
 
         public override void EnterWithStmt(VBAParser.WithStmtContext context)
@@ -84,7 +114,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterICS_S_VariableOrProcedureCall(VBAParser.ICS_S_VariableOrProcedureCallContext context)
         {
-            if (context.Parent.GetType() != typeof (VBAParser.ICS_S_MemberCallContext))
+            if (context.Parent.GetType() != typeof(VBAParser.ICS_S_MemberCallContext))
             {
                 _resolver.Resolve(context);
             }
@@ -147,16 +177,6 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public override void EnterResumeStmt(VBAParser.ResumeStmtContext context)
-        {
-            _resolver.Resolve(context);
-        }
-
-        public override void EnterFileNumber(VBAParser.FileNumberContext context)
-        {
-            _resolver.Resolve(context);
-        }
-
-        public override void EnterArgDefaultValue(VBAParser.ArgDefaultValueContext context)
         {
             _resolver.Resolve(context);
         }

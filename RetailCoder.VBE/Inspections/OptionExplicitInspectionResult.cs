@@ -1,36 +1,51 @@
 using System;
 using System.Collections.Generic;
+using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class OptionExplicitInspectionResult : CodeInspectionResultBase
+    public class OptionExplicitInspectionResult : InspectionResultBase
     {
-        public OptionExplicitInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName) 
-            : base(inspection, type, new CommentNode("", new QualifiedSelection(qualifiedName, Selection.Home)))
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
+
+        public OptionExplicitInspectionResult(IInspection inspection, QualifiedModuleName qualifiedName) 
+            : base(inspection, new CommentNode(string.Empty, Tokens.CommentMarker, new QualifiedSelection(qualifiedName, Selection.Home)))
+        {
+            _quickFixes = new[]
+            {
+                new OptionExplicitQuickFix(Context, QualifiedSelection), 
+            };
+        }
+
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
+        {
+            get { return string.Format(InspectionsUI.OptionExplicitInspectionResultFormat, QualifiedName.ComponentName); }
+        }
+    }
+
+    public class OptionExplicitQuickFix : CodeInspectionQuickFix
+    {
+        public OptionExplicitQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, InspectionsUI.OptionExplicitQuickFix)
         {
         }
 
-        public override IDictionary<string, Action> GetQuickFixes()
+        public override void Fix()
         {
-            return
-                new Dictionary<string, Action>
-                {
-                    {"Specify Option Explicit", SpecifyOptionExplicit}
-                };
-        }
-
-        private void SpecifyOptionExplicit()
-        {
-            var module = QualifiedName.Component.CodeModule;
+            var module = Selection.QualifiedName.Component.CodeModule;
             if (module == null)
             {
                 return;
             }
 
-            module.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + "\n");
+            module.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
         }
+
+        public override bool CanFixInModule { get { return false; } }
     }
 }

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.props" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -28,6 +28,7 @@
     <DocumentationFile>bin\Debug\Rubberduck.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -39,6 +40,7 @@
     <RegisterForComInterop>true</RegisterForComInterop>
     <DocumentationFile>bin\Release\Rubberduck.XML</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -50,6 +52,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -62,6 +66,8 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -74,6 +80,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -85,6 +92,8 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -97,6 +106,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -109,6 +120,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -120,6 +132,8 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
@@ -135,6 +149,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -147,6 +163,8 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -159,19 +177,20 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release64|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Release64\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
     <Optimize>true</Optimize>
     <RegisterForComInterop>true</RegisterForComInterop>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release64|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -184,6 +203,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release64|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -196,46 +216,223 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime.net45">
       <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Castle.Core">
+      <HintPath>..\packages\Castle.Core.3.2.0\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
+    <Reference Include="Infralution.Localization.Wpf">
+      <HintPath>..\libs\Infralution.Localization.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Microsoft.Bcl.Build.Tasks">
+      <HintPath>..\..\Windows-User-Action-Hook\EventHook\bin\Debug\Microsoft.Bcl.Build.Tasks.dll</HintPath>
     </Reference>
-    <Reference Include="Office, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+    <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\libs\Office.dll</HintPath>
+      <HintPath>..\..\Windows-User-Action-Hook\EventHook\bin\Debug\Microsoft.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions">
+      <HintPath>..\..\Windows-User-Action-Hook\EventHook\bin\Debug\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop">
+      <HintPath>..\..\Windows-User-Action-Hook\EventHook\bin\Debug\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Conventions">
+      <HintPath>..\packages\ninject.extensions.conventions.3.2.0.0\lib\net45-full\Ninject.Extensions.Conventions.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Factory">
+      <HintPath>..\packages\Ninject.Extensions.Factory.3.2.1.0\lib\net45-full\Ninject.Extensions.Factory.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.NamedScope">
+      <HintPath>..\packages\Ninject.Extensions.NamedScope.3.2.0.0\lib\net45-full\Ninject.Extensions.NamedScope.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="Microsoft.Vbe.Interop">
+      <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="office">
+      <HintPath>..\libs\Office.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7">
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
+      <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Accessibility.cs" />
+    <Compile Include="API\Declaration.cs" />
+    <Compile Include="API\DeclarationType.cs" />
+    <Compile Include="API\IdentifierReference.cs" />
+    <Compile Include="API\ParserState.cs" />
+    <Compile Include="AppMenu.cs" />
+    <Compile Include="AutoSave\AutoSave.cs" />
+    <Compile Include="Common\ExportFormatter.cs" />
+    <Compile Include="Common\ClipboardWriter.cs" />
+    <Compile Include="Common\DeclarationExtensions.cs" />
+    <Compile Include="Common\Dispatch\DispatcherEventArgs.cs" />
+    <Compile Include="Common\Dispatch\DispatcherRenamedEventArgs.cs" />
+    <Compile Include="Common\Dispatch\ReferencesEventsSink.cs" />
+    <Compile Include="Common\Dispatch\VBComponentsEventsSink.cs" />
+    <Compile Include="Common\Dispatch\VBProjectsEventsSink.cs" />
+    <Compile Include="Common\Dispatch\VBProjectsEventsWrapper.cs" />
+    <Compile Include="Common\HookEventArgs.cs" />
+    <Compile Include="Common\Hotkeys\HotkeyInfo.cs" />
+    <Compile Include="Common\Hotkeys\Hotkey.cs" />
+    <Compile Include="Common\IAttachable.cs" />
+    <Compile Include="Common\Hotkeys\IHotkey.cs" />
+    <Compile Include="Common\ILowLevelKeyboardHook.cs" />
+    <Compile Include="Common\IRubberduckHooks.cs" />
+    <Compile Include="Common\KeyboardHook.cs" />
+    <Compile Include="Common\ModuleExporter.cs" />
+    <Compile Include="Common\MouseHook.cs" />
+    <Compile Include="Common\RubberduckHooks.cs" />
+    <Compile Include="Common\TimerHook.cs" />
+    <Compile Include="Common\WinAPI\KBDLLHOOKSTRUCT.cs" />
+    <Compile Include="Common\WinAPI\KBDLLHOOKSTRUCTFlags.cs" />
+    <Compile Include="Common\WinAPI\MSLLHOOKSTRUCT.cs" />
+    <Compile Include="Common\WinAPI\POINT.cs" />
+    <Compile Include="Common\WinAPI\WindowsHook.cs" />
+    <Compile Include="Common\WinAPI\Kernel32.cs" />
+    <Compile Include="Common\KeyHookEventArgs.cs" />
+    <Compile Include="Common\WinAPI\User32.cs" />
+    <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
+    <Compile Include="Common\WinAPI\WM.cs" />
+    <Compile Include="Inspections\InspectionsUI.de.Designer.cs">
+      <DependentUpon>InspectionsUI.de.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Inspections\InspectionsUI.fr.Designer.cs">
+      <DependentUpon>InspectionsUI.fr.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Inspections\InspectionsUI.sv.Designer.cs">
+      <DependentUpon>InspectionsUI.sv.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Inspections\InspectionsUI.ja.Designer.cs">
+      <DependentUpon>InspectionsUI.ja.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
+    <Compile Include="Inspections\ObjectVariableNotSetInspection.cs" />
+    <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
+    <Compile Include="Settings\RubberduckHotkey.cs" />
+    <Compile Include="UI\About\AboutControl.xaml.cs">
+      <DependentUpon>AboutControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\About\AboutControlViewModel.cs" />
+    <Compile Include="UI\About\AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\About\AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Command\IndentCurrentModuleCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\InspectionResultsCommandMenuItem.cs" />
+    <Compile Include="UI\Command\ReparseCommand.cs" />
+    <Compile Include="UI\Command\ShowParserErrorsCommand.cs" />
+    <Compile Include="UI\Command\SyntaxErrorExtensions.cs" />
+    <Compile Include="UI\Controls\DeclarationTypeToStringConverter.cs" />
+    <Compile Include="UI\Controls\SearchResultPresenterInstanceManager.cs" />
+    <Compile Include="UI\Controls\ISearchResultsWindowViewModel.cs" />
+    <Compile Include="UI\Controls\MenuItemGroup.cs" />
+    <Compile Include="UI\Controls\GroupingGrid.xaml.cs">
+      <DependentUpon>GroupingGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\NumberPicker.xaml.cs">
+      <DependentUpon>NumberPicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
+    <Compile Include="Inspections\CompositeCodeInspectionFix.cs" />
+    <Compile Include="Inspections\ConvertToProcedureQuickFix.cs" />
+    <Compile Include="Inspections\FunctionReturnValueNotUsedInspection.cs" />
+    <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionResult.cs" />
+    <Compile Include="Inspections\IInspection.cs" />
+    <Compile Include="Inspections\IInspectionModel.cs" />
+    <Compile Include="Inspections\InspectionsUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InspectionsUI.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Inspections\SelfAssignedDeclarationInspection.cs" />
+    <Compile Include="Inspections\SelfAssignedDeclarationInspectionResult.cs" />
+    <Compile Include="Inspections\MoveFieldCloserToUsageInspection.cs" />
+    <Compile Include="Inspections\EncapsulatePublicFieldInspection.cs" />
+    <Compile Include="Inspections\MoveFieldCloserToUsageInspectionResult.cs" />
+    <Compile Include="Inspections\EncapsulatePublicFieldInspectionResult.cs" />
+    <Compile Include="Inspections\EmptyStringLiteralInspection.cs" />
+    <Compile Include="Inspections\EmptyStringLiteralInspectionResult.cs" />
+    <Compile Include="Inspections\IgnoreOnceQuickFix.cs" />
+    <Compile Include="Inspections\ImplicitActiveSheetReferenceInspection.cs" />
+    <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspection.cs" />
+    <Compile Include="Inspections\InspectionBase.cs" />
+    <Compile Include="Inspections\MultipleFolderAnnotationsInspection.cs" />
+    <Compile Include="Inspections\ProcedureCanBeWrittenAsFunctionInspection.cs" />
+    <Compile Include="Inspections\ProcedureShouldBeFunctionInspectionResult.cs" />
+    <Compile Include="Inspections\UntypedFunctionUsageInspectionResult.cs" />
+    <Compile Include="Inspections\UseMeaningfulNameInspection.cs" />
+    <Compile Include="Inspections\UseMeaningfulNameInspectionResult.cs" />
+    <Compile Include="Inspections\WriteOnlyPropertyInspection.cs" />
+    <Compile Include="Inspections\UntypedFunctionUsageInspection.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerCustomFolderViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerItemViewModel.cs" />
+    <Compile Include="Inspections\MultilineParameterInspectionResult.cs" />
+    <Compile Include="Navigation\RegexSearchReplace\IRegexSearchReplace.cs" />
+    <Compile Include="Navigation\RegexSearchReplace\IRegexSearchReplaceDialog.cs" />
+    <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplace.cs" />
+    <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplaceModel.cs" />
+    <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplacePresenter.cs" />
+    <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplaceScope.cs" />
+    <Compile Include="Navigation\RegexSearchReplace\RegexSearchResult.cs" />
+    <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldModel.cs" />
+    <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldPresenter.cs" />
+    <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldPresenterFactory.cs" />
+    <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldRefactoring.cs" />
+    <Compile Include="Refactorings\EncapsulateField\IEncapsulateFieldView.cs" />
+    <Compile Include="Refactorings\ExtractInterface\ExtractInterfaceRefactoring.cs" />
+    <Compile Include="Refactorings\ExtractInterface\ExtractInterfaceModel.cs" />
+    <Compile Include="Refactorings\ExtractInterface\ExtractInterfacePresenter.cs" />
+    <Compile Include="Refactorings\ExtractInterface\ExtractInterfacePresenterFactory.cs" />
+    <Compile Include="Refactorings\ExtractInterface\IExtractInterfaceView.cs" />
+    <Compile Include="Refactorings\ExtractInterface\InterfaceMember.cs" />
+    <Compile Include="Refactorings\ImplementInterface\ImplementInterfaceRefactoring.cs" />
+    <Compile Include="Refactorings\ImplementInterface\Parameter.cs" />
+    <Compile Include="Refactorings\IntroduceField\IntroduceFieldRefactoring.cs" />
+    <Compile Include="Refactorings\IntroduceParameter\IntroduceParameterRefactoring.cs" />
+    <Compile Include="Refactorings\MoveCloserToUsage\MoveCloserToUsageRefactoring.cs" />
     <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
@@ -248,9 +445,14 @@
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersRefactoring.cs" />
+    <Compile Include="Root\RubberduckModule.cs" />
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
+    <Compile Include="Settings\GeneralSettings.cs" />
+    <Compile Include="Settings\HotkeySetting.cs" />
+    <Compile Include="Settings\IndenterSettings.cs" />
     <Compile Include="Settings\SourceControlConfiguration.cs" />
     <Compile Include="Settings\SourceControlConfigurationService.cs" />
+    <Compile Include="Settings\UnitTestSettings.cs" />
     <Compile Include="Settings\XmlConfigurationServiceBase.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspection.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionResult.cs" />
@@ -258,7 +460,6 @@
     <Compile Include="Inspections\DefaultProjectNameInspection.cs" />
     <Compile Include="Inspections\DefaultProjectNameInspectionResult.cs" />
     <Compile Include="Inspections\ICodeInspectionResult.cs" />
-    <Compile Include="Inspections\IInspectionModel.cs" />
     <Compile Include="Inspections\IInspector.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionResult.cs" />
@@ -287,15 +488,187 @@
     <Compile Include="Inspections\IdentifierNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
+    <Compile Include="UI\Controls\BusyIndicator.xaml.cs">
+      <DependentUpon>BusyIndicator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerComponentViewModel.cs" />
+    <Compile Include="UI\CodeExplorer\CodeExplorer.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CodeExplorer.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\CodeExplorer\CodeExplorerControl.xaml.cs">
+      <DependentUpon>CodeExplorerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerMemberViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerProjectViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerViewModel.cs" />
+    <Compile Include="UI\CodeInspections\InspectionDescriptionConverter.cs" />
+    <Compile Include="UI\CodeInspections\InspectionImageSourceConverter.cs" />
+    <Compile Include="UI\CodeInspections\InspectionResultsControl.xaml.cs">
+      <DependentUpon>InspectionResultsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\CodeInspections\InspectionResultsViewModel.cs" />
+    <Compile Include="UI\CodeInspections\InspectionSeverityImageSourceConverter.cs" />
+    <Compile Include="UI\Command\AboutCommand.cs" />
+    <Compile Include="UI\Command\AddTestMethodExpectedErrorCommand.cs" />
+    <Compile Include="UI\Command\AddTestMethodCommand.cs" />
+    <Compile Include="UI\Command\AddTestModuleCommand.cs" />
+    <Compile Include="UI\Command\CommandBase.cs" />
+    <Compile Include="UI\Command\DelegateCommand.cs" />
+    <Compile Include="UI\Command\IndentCurrentProcedureCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\AddTestMethodCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\AddTestMethodExpectedErrorCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\AddTestModuleCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\ProjectExplorerRefactorRenameCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\FormDesignerRefactorRenameCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\FindAllReferencesCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\FindSymbolCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\FindAllImplementationsCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\CodeExplorerCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\AboutCommandMenuItem.cs" />
+    <Compile Include="UI\Command\CodeExplorerCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\IAppMenu.cs" />
+    <Compile Include="UI\Command\MenuItems\IndentCurrentProcedureCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\IParentMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\CodePaneContextParentMenu.cs" />
+    <Compile Include="UI\Command\MenuItems\CommandMenuItemBase.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\FormDesignerContextParentMenu.cs" />
+    <Compile Include="UI\Command\IMenuItem.cs" />
+    <Compile Include="UI\Command\FindAllImplementationsCommand.cs" />
+    <Compile Include="UI\Command\FindSymbolCommand.cs" />
+    <Compile Include="UI\Command\FindAllReferencesCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\NavigateParentMenu.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\NavigationMenuItemDisplayOrder.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\SmartIndenterParentMenu.cs" />
+    <Compile Include="UI\Command\MenuItems\RubberduckCommandBar.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorEncapsulateFieldCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorImplementInterfaceCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorExtractInterfaceCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorIntroduceFieldCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorIntroduceParameterCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorMoveCloserToUsageCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RegexSearchReplaceCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\UiDispatcher.cs" />
+    <Compile Include="UI\Command\NavigateCommand.cs" />
+    <Compile Include="UI\Command\SettingsCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\SettingsCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\ParentMenuItemBase.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\ProjectWindowContextParentMenu.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorExtractMethodCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\RefactoringsParentMenu.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorRemoveParametersCommandMenuItem.cs" />
+    <Compile Include="UI\Command\Refactorings\FormDesignerRefactorRenameCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\ProjectExplorerRefactorRenameCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorEncapsulateFieldCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorImplementInterfaceCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorExtractInterfaceCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorIntroduceFieldCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorIntroduceParameterCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorMoveCloserToUsageCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\CodePaneRefactorRenameCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\CodePaneRefactorRenameCommandMenuItem.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorReorderParametersCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorReorderParametersCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\RubberduckParentMenu.cs" />
+    <Compile Include="UI\Command\RegexSearchReplaceCommand.cs" />
+    <Compile Include="UI\Command\RunAllTestsCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\RunAllTestsCommandMenuItem.cs" />
+    <Compile Include="UI\Command\InspectionResultsCommand.cs" />
+    <Compile Include="UI\Command\ShowSourceControlPanelCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\ShowSourceControlPanelCommandMenuItem.cs" />
+    <Compile Include="UI\Command\TestExplorerCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\TestExplorerCommandMenuItem.cs" />
+    <Compile Include="UI\Command\ToDoExplorerCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\ToDoExplorerCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\UnitTestingParentMenu.cs" />
+    <Compile Include="UI\Controls\SearchResultItem.cs" />
+    <Compile Include="UI\Controls\SearchResultsDockablePresenter.cs" />
+    <Compile Include="UI\Controls\SearchResultsViewModel.cs" />
+    <Compile Include="UI\Controls\SearchResultsWindowViewModel.cs" />
+    <Compile Include="UI\Controls\SearchResultWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\SearchResultWindow.Designer.cs">
+      <DependentUpon>SearchResultWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\SearchView.xaml.cs">
+      <DependentUpon>SearchView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\FolderBrowser.cs" />
-    <Compile Include="UI\Settings\AddMarkerForm.cs">
+    <Compile Include="UI\IMessageBox.cs" />
+    <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
+    <Compile Include="UI\Refactorings\EncapsulateFieldDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Settings\AddMarkerForm.Designer.cs">
-      <DependentUpon>AddMarkerForm.cs</DependentUpon>
+    <Compile Include="UI\Refactorings\EncapsulateFieldDialog.Designer.cs">
+      <DependentUpon>EncapsulateFieldDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Settings\IAddTodoSettingsView.cs" />
-    <Compile Include="UI\SourceControl\ActionFailedEventArgs.cs" />
+    <Compile Include="UI\Refactorings\ExtractInterfaceDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\ExtractInterfaceDialog.Designer.cs">
+      <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RubberduckUI.de.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RubberduckUI.de.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RubberduckUI.ja.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RubberduckUI.ja.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RubberduckUI.sv.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RubberduckUI.sv.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleValueTextToEnumValueConverter.cs" />
+    <Compile Include="UI\Settings\Converters\AssertModeToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\AssertModeValueToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\BindingModeValueToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\BindingModeToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleToVisibilityConverter.cs" />
+    <Compile Include="UI\Settings\Converters\CodeInspectionSeverityEnumToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\SelectedItemToBooleanConverter.cs" />
+    <Compile Include="UI\Settings\GeneralSettings.xaml.cs">
+      <DependentUpon>GeneralSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\GeneralSettingsViewModel.cs" />
+    <Compile Include="UI\Settings\IndenterSettings.xaml.cs">
+      <DependentUpon>IndenterSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\IndenterSettingsViewModel.cs" />
+    <Compile Include="UI\Settings\InspectionSettings.xaml.cs">
+      <DependentUpon>InspectionSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\InspectionSettingsViewModel.cs" />
+    <Compile Include="UI\Settings\ISettingsView.cs" />
+    <Compile Include="UI\Settings\ISettingsViewModel.cs" />
+    <Compile Include="UI\Settings\SettingsControl.xaml.cs">
+      <DependentUpon>SettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Settings\SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\SettingsControlViewModel.cs" />
+    <Compile Include="UI\Settings\SettingsView.cs" />
+    <Compile Include="UI\Settings\SettingsViews.cs" />
+    <Compile Include="UI\Settings\Converters\SettingsViewToPageConverter.cs" />
+    <Compile Include="UI\Settings\TodoSettings.xaml.cs">
+      <DependentUpon>TodoSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\UnitTestSettingsViewModel.cs" />
+    <Compile Include="UI\Settings\TodoSettingsViewModel.cs" />
+    <Compile Include="UI\Settings\UnitTestSettings.xaml.cs">
+      <DependentUpon>UnitTestSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -309,9 +682,6 @@
     <Compile Include="Refactorings\Rename\RenamePresenterFactory.cs" />
     <Compile Include="Refactorings\Rename\RenameRefactoring.cs" />
     <Compile Include="Refactorings\ReorderParameters\Parameter.cs" />
-    <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
-    <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
-    <Compile Include="UI\CodeInspections\ICodeInspectionsWindow.cs" />
     <Compile Include="UI\FindSymbol\FindSymbolControl.xaml.cs">
       <DependentUpon>FindSymbolControl.xaml</DependentUpon>
     </Compile>
@@ -323,8 +693,7 @@
     </Compile>
     <Compile Include="UI\FindSymbol\FindSymbolViewModel.cs" />
     <Compile Include="UI\FindSymbol\SearchResult.cs" />
-    <Compile Include="UI\FindSymbol\SearchResultIconCache.cs" />
-    <Compile Include="UI\FormContextMenu.cs" />
+    <Compile Include="Common\DeclarationIconCache.cs" />
     <Compile Include="UI\GridViewSort.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
     <Compile Include="UI\IdentifierReferences\ImplementationListItem.cs" />
@@ -332,7 +701,6 @@
     <Compile Include="UI\IdentifierReferences\ListItemActionEventArgs.cs" />
     <Compile Include="UI\ParserErrors\ParserErrorsPresenter.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodModel.cs" />
-    <Compile Include="UI\ProjectExplorerContextMenu.cs" />
     <Compile Include="UI\SimpleListControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -340,13 +708,6 @@
       <DependentUpon>SimpleListControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListDockablePresenter.cs" />
-    <Compile Include="UI\ProgressDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\ProgressDialog.Designer.cs">
-      <DependentUpon>ProgressDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ParsingProgressPresenter.cs" />
     <Compile Include="UI\Refactorings\RemoveParametersDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -379,67 +740,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\BranchesControl.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="UI\SourceControl\BranchesView.xaml.cs">
+      <DependentUpon>BranchesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\BranchesControl.Designer.cs">
-      <DependentUpon>BranchesControl.cs</DependentUpon>
+    <Compile Include="UI\SourceControl\BranchesViewViewModel.cs" />
+    <Compile Include="UI\SourceControl\ChangesView.xaml.cs">
+      <DependentUpon>ChangesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\BranchesPresenter.cs" />
-    <Compile Include="UI\SourceControl\ChangesControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\ChangesControl.Designer.cs">
-      <DependentUpon>ChangesControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\ChangesPresenter.cs" />
-    <Compile Include="UI\SourceControl\CreateBranchForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\CreateBranchForm.Designer.cs">
-      <DependentUpon>CreateBranchForm.cs</DependentUpon>
-    </Compile>
+    <Compile Include="UI\SourceControl\ChangesViewViewModel.cs" />
+    <Compile Include="UI\SourceControl\CommitAction.cs" />
+    <Compile Include="UI\SourceControl\Converters\CommitActionsToTextConverter.cs" />
+    <Compile Include="UI\SourceControl\Converters\CommitActionTextToEnum.cs" />
     <Compile Include="UI\FileBrowserDialogFactory.cs" />
-    <Compile Include="UI\SourceControl\DeleteBranchForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\DeleteBranchForm.Designer.cs">
-      <DependentUpon>DeleteBranchForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\FailedActionControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\FailedActionControl.Designer.cs">
-      <DependentUpon>FailedActionControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\IBranchesView.cs" />
-    <Compile Include="UI\SourceControl\IChangesView.cs" />
-    <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
-    <Compile Include="UI\SourceControl\IDeleteBranchView.cs" />
-    <Compile Include="UI\SourceControl\IMergeView.cs" />
-    <Compile Include="UI\SourceControl\LoginControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\LoginControl.Designer.cs">
-      <DependentUpon>LoginControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\ProviderPresenter.cs" />
-    <Compile Include="UI\SourceControl\IRefreshableView.cs" />
-    <Compile Include="UI\SourceControl\ISettingsView.cs" />
-    <Compile Include="UI\SourceControl\ISourceControlView.cs" />
-    <Compile Include="UI\SourceControl\IUnSyncedCommitsView.cs" />
-    <Compile Include="UI\SourceControl\MergeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\MergeForm.Designer.cs">
-      <DependentUpon>MergeForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\SettingsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\SettingsControl.Designer.cs">
-      <DependentUpon>SettingsControl.cs</DependentUpon>
-    </Compile>
+    <Compile Include="UI\SourceControl\IControlView.cs" />
+    <Compile Include="UI\SourceControl\IControlViewModel.cs" />
     <Compile Include="Refactorings\Rename\IRenameView.cs" />
     <Compile Include="UI\Refactorings\RenameDialog.cs">
       <SubType>Form</SubType>
@@ -448,39 +762,33 @@
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Refactorings\Rename\RenamePresenter.cs" />
-    <Compile Include="UI\Settings\GeneralSettingsControl.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="UI\SourceControl\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Settings\GeneralSettingsControl.Designer.cs">
-      <DependentUpon>GeneralSettingsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\SettingsPresenter.cs" />
-    <Compile Include="UI\SourceControl\SourceControlBindings.cs" />
+    <Compile Include="UI\SourceControl\SettingsViewViewModel.cs" />
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\SourceControl\SourceControlPanel.Designer.cs">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\SourceControlPresenter.cs" />
     <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
-    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="UI\SourceControl\SourceControlView.xaml.cs" />
+    <Compile Include="UI\SourceControl\SourceControlViewViewModel.cs" />
+    <Compile Include="UI\SourceControl\SourceControlDockablePresenter.cs" />
+    <Compile Include="UI\Controls\INavigateSelection.cs" />
+    <Compile Include="UI\SourceControl\UnsyncedCommitsView.xaml.cs">
+      <DependentUpon>UnsyncedCommitsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.Designer.cs">
-      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\UnsyncedCommitsPresenter.cs" />
+    <Compile Include="UI\SourceControl\UnsyncedCommitsViewViewModel.cs" />
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="Settings\IConfigurationService.cs" />
-    <Compile Include="UI\Settings\ITodoSettingsView.cs" />
     <Compile Include="Settings\ConfigurationLoader.cs" />
     <Compile Include="Settings\UserSettings.cs" />
     <Compile Include="Settings\CodeInspectionSettings.cs" />
-    <Compile Include="Inspections\CodeInspectionResultBase.cs" />
+    <Compile Include="Inspections\InspectionResultBase.cs" />
     <Compile Include="Inspections\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\CodeInspectionType.cs" />
-    <Compile Include="Inspections\IInspection.cs" />
     <Compile Include="Inspections\ImplicitByRefParameterInspection.cs" />
     <Compile Include="Inspections\ImplicitByRefParameterInspectionResult.cs" />
     <Compile Include="Inspections\ImplicitVariantReturnTypeInspection.cs" />
@@ -493,26 +801,15 @@
     <Compile Include="Inspections\OptionExplicitInspectionResult.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspection.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspectionResult.cs" />
-    <Compile Include="ToDoItems\TodoPriority.cs" />
-    <Compile Include="UI\AboutWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\AboutWindow.Designer.cs">
-      <DependentUpon>AboutWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="App.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerDockablePresenter.cs" />
-    <Compile Include="UI\CodeExplorer\CodeExplorerMenu.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\CodeExplorer\CodeExplorerWindow.Designer.cs">
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\CodeInspections\CodeInspectionResultGridViewItem.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsDockablePresenter.cs" />
-    <Compile Include="UI\CodeInspections\CodeInspectionsMenu.cs" />
-    <Compile Include="UI\CodeInspections\CodeInspectionsToolbar.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -521,47 +818,27 @@
     </Compile>
     <Compile Include="UI\NavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeInspections\QuickFixEventArgs.cs" />
-    <Compile Include="UI\DockablePresenterBase.cs" />
+    <Compile Include="UI\DockableToolwindowPresenter.cs" />
     <Compile Include="Settings\Configuration.cs" />
     <Compile Include="Settings\ToDoListSettings.cs" />
     <Compile Include="Settings\ToDoMarkers.cs" />
     <Compile Include="UI\IDockableUserControl.cs" />
-    <Compile Include="UI\Menu.cs" />
-    <Compile Include="UI\Settings\CodeInspectionSettingsControl.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="UI\ToDoItems\ToDoExplorerControl.xaml.cs">
+      <DependentUpon>ToDoExplorerControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Settings\CodeInspectionSettingsControl.Designer.cs">
-      <DependentUpon>CodeInspectionSettingsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Settings\ConfigurationTreeView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Settings\ConfigurationTreeView.Designer.cs">
-      <DependentUpon>ConfigurationTreeView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Settings\SettingsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Settings\SettingsDialog.Designer.cs">
-      <DependentUpon>SettingsDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Settings\TodoListSettingsUserControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Settings\TodoListSettingsUserControl.Designer.cs">
-      <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Settings\TodoSettingPresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
+    <Compile Include="UI\ToDoItems\ToDoExplorerViewModel.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
-    <Compile Include="UI\UnitTesting\ITestExplorerWindow.cs" />
+    <Compile Include="UI\Controls\BindableSelectedItemBehavior.cs" />
+    <Compile Include="UI\UnitTesting\StandardModuleTestExplorerModel.cs" />
+    <Compile Include="UI\UnitTesting\TestExplorerControl.xaml.cs">
+      <DependentUpon>TestExplorerControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\UnitTesting\TestExplorerDockablePresenter.cs" />
-    <Compile Include="UI\UnitTesting\SelectedTestEventArgs.cs" />
-    <Compile Include="UI\UnitTesting\TestExplorerItem.cs" />
+    <Compile Include="UI\UnitTesting\TestExplorerModelBase.cs" />
+    <Compile Include="UI\UnitTesting\TestExplorerViewModel.cs" />
     <Compile Include="UI\UnitTesting\TestResultExtensions.cs" />
-    <Compile Include="UI\RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
-    <Compile Include="UI\ToDoItems\ToDoItemsMenu.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -574,7 +851,6 @@
     <Compile Include="UI\DockableWindowHost.Designer.cs">
       <DependentUpon>DockableWindowHost.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\RefactorMenu.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -583,7 +859,7 @@
     </Compile>
     <Compile Include="Extension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\UnitTesting\TestMenu.cs" />
+    <Compile Include="UI\ViewModelBase.cs" />
     <Compile Include="UnitTesting\AssertClass.cs" />
     <Compile Include="UnitTesting\AssertCompletedEventArgs.cs" />
     <Compile Include="UnitTesting\AssertHandler.cs" />
@@ -596,12 +872,47 @@
     <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="UnitTesting\TestMethod.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
+    <Compile Include="UI\UnitTesting\TestOutcomeImageSourceConverter.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
+    <Compile Include="UI\UnitTesting\TestResultToOutcomeTextConverter.cs" />
     <Compile Include="UnitTesting\TestRunner.cs" />
+    <Compile Include="UnitTesting\PermissiveAssertClass.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorCommandBase.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorExtractMethodCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorRemoveParametersCommand.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\AboutWindow.resx">
-      <DependentUpon>AboutWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Inspections\InspectionsUI.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\InspectionsUI.de.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI.de.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\InspectionsUI.fr.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI.fr.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\InspectionsUI.sv.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI.sv.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\InspectionsUI.ja.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI.ja.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\About\AboutDialog.resx">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\CodeExplorer\CodeExplorer.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CodeExplorer.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\CodeExplorer\CodeExplorerWindow.resx">
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
@@ -614,18 +925,38 @@
     <EmbeddedResource Include="UI\CodeInspections\CodeInspectionsWindow.resx">
       <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Controls\SearchResultWindow.resx">
+      <DependentUpon>SearchResultWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\RubberduckUI.sv.resx" />
-    <EmbeddedResource Include="UI\Settings\AddMarkerForm.resx">
-      <DependentUpon>AddMarkerForm.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Refactorings\EncapsulateFieldDialog.resx">
+      <DependentUpon>EncapsulateFieldDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Refactorings\ExtractInterfaceDialog.resx">
+      <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RubberduckUI.de.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RubberduckUI.ja.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.ja.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RubberduckUI.sv.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.sv.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Settings\SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SimpleListControl.resx">
       <DependentUpon>SimpleListControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\ProgressDialog.resx">
-      <DependentUpon>ProgressDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ExtractMethodDialog.resx">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
@@ -640,109 +971,75 @@
       <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.fr.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.fr.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\CodeInspectionSettingsControl.resx">
-      <DependentUpon>CodeInspectionSettingsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\ConfigurationTreeView.resx">
-      <DependentUpon>ConfigurationTreeView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\GeneralSettingsControl.resx">
-      <DependentUpon>GeneralSettingsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\SettingsDialog.resx">
-      <DependentUpon>SettingsDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\TodoListSettingsUserControl.resx">
-      <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\BranchesControl.resx">
-      <DependentUpon>BranchesControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\ChangesControl.resx">
-      <DependentUpon>ChangesControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\CreateBranchForm.resx">
-      <DependentUpon>CreateBranchForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\DeleteBranchForm.resx">
-      <DependentUpon>DeleteBranchForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\FailedActionControl.resx">
-      <DependentUpon>FailedActionControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\LoginControl.resx">
-      <DependentUpon>LoginControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\MergeForm.resx">
-      <DependentUpon>MergeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\SettingsControl.resx">
-      <DependentUpon>SettingsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\SourceControlPanel.resx">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\UnSyncedCommitsControl.resx">
-      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\ToDoItems\ToDoExplorerWindow.resx">
       <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\UnitTesting\TestExplorerWindow.resx">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="NLog.dll.nlog">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\minus-circle.png" />
+    <Resource Include="Resources\minus-circle.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\exclamation-circle.png" />
+    <Resource Include="Resources\exclamation-circle.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\arrow-circle-double.png" />
+    <Resource Include="Resources\arrow-circle-double.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\control.png" />
+    <Resource Include="Resources\control.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\arrow-repeat.png" />
+    <Resource Include="Resources\arrow-repeat.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\arrow-repeat1.png" />
+    <Resource Include="Resources\arrow-repeat1.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\flask--pencil.png" />
+    <Resource Include="Resources\flask--pencil.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\magnifier--arrow.png" />
+    <Resource Include="Resources\magnifier--arrow.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
+    <Folder Include="UI\ParserProgress\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\rubberduck.config" />
-    <None Include="Resources\rubberduck_adsize.png" />
+    <Resource Include="Resources\rubberduck.config" />
+    <Resource Include="Resources\rubberduck_adsize.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\plus-circle.png" />
+    <Resource Include="Resources\plus-circle.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Rubberduck.png" />
-    <None Include="Resources\hourglass.png" />
-    <None Include="Resources\arrow-090.png" />
-    <None Include="Resources\arrow-270.png" />
+    <Resource Include="Resources\Rubberduck.png" />
+    <Resource Include="Resources\hourglass.png" />
+    <Resource Include="Resources\arrow-090.png" />
+    <Resource Include="Resources\arrow-270.png" />
     <Resource Include="Resources\Microsoft\PNG\AddClass_5561_32.png" />
     <Resource Include="Resources\Microsoft\PNG\AddEvent_5539_32.png" />
     <Resource Include="Resources\Microsoft\PNG\AddForm_369_32.png" />
@@ -856,77 +1153,105 @@
     <Resource Include="Resources\Microsoft\PNG\VSObject_ValueType_Shortcut.png" />
     <Resource Include="Resources\Microsoft\PNG\VSProject_form.png" />
     <Resource Include="Resources\Microsoft\PNG\VSProject_reference.png" />
-    <None Include="Resources\arrow1.png" />
-    <None Include="Resources\Ducky.ico" />
-    <None Include="Resources\arrow-return-180-left.png" />
-    <None Include="Resources\cross-script.png" />
+    <Resource Include="Resources\arrow1.png" />
+    <Resource Include="Resources\Ducky.ico" />
+    <Resource Include="Resources\arrow-return-180-left.png" />
+    <Resource Include="Resources\cross-script.png" />
+    <Resource Include="Resources\flask_exclamation_mask.png" />
+    <Resource Include="Resources\flask_mask.png" />
+    <Resource Include="Resources\disk.png" />
+    <Resource Include="Resources\arrow-circle-left.png" />
+    <Content Include="Resources\arrow_circle_double_mask.bmp" />
+    <Content Include="Resources\balloon_ellipsis.bmp" />
+    <Content Include="Resources\balloon_mask.bmp" />
+    <Content Include="Resources\balloon_prohibition.bmp" />
+    <Content Include="Resources\balloon_smiley.bmp" />
+    <Resource Include="Resources\blue-folder-horizontal-open.png" />
+    <Resource Include="Resources\blue-folder-horizontal.png" />
+    <Resource Include="Resources\lock--exclamation.png" />
+    <None Include="Resources\document-smiley-sad.png" />
+    <None Include="Resources\document-word.png" />
+    <None Include="Resources\document-office.png" />
+    <None Include="Resources\document-outlook.png" />
+    <None Include="Resources\document-powerpoint.png" />
+    <None Include="Resources\document-excel.png" />
+    <Resource Include="Resources\folder--pencil.png" />
+    <Resource Include="Resources\folder--plus.png" />
+    <Resource Include="Resources\folder-rename.png" />
+    <Resource Include="Resources\cross-button.png" />
+    <Resource Include="Resources\init-repo.png" />
+    <Content Include="Resources\Microsoft\Mask\AddProperty_5538_32.bmp" />
+    <None Include="Resources\Microsoft\Mask\AddVariable_5541_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
+    <None Include="Resources\Microsoft\Mask\ExtractInterface_6778_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
     <None Include="Resources\Microsoft\Mask\RemoveParameters_6781_32.bmp" />
+    <None Include="Resources\Microsoft\Mask\ImplementInterface_5540_32.bmp" />
+    <None Include="Resources\Microsoft\Mask\PromoteLocal_6784_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\ReorderParameters_6780_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\TestManager_8590_32.bmp" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
-    <None Include="Resources\RD-AboutWindow.png" />
-    <None Include="Resources\twitter_circle_black-512.png" />
-    <None Include="Resources\RD-InstallWindow.png" />
-    <None Include="Resources\minus-circle1.png" />
-    <None Include="Resources\plus-circle1.png" />
-    <None Include="Resources\question-white.png" />
-    <None Include="Resources\tick-circle.png" />
-    <None Include="Resources\navigation-180.png" />
-    <None Include="Resources\navigation.png" />
-    <None Include="Resources\tick.png" />
-    <None Include="Resources\Step-RunTest_8814_32.bmp" />
-    <None Include="Resources\Warning.bmp" />
-    <None Include="Resources\Serious.bmp" />
-    <None Include="Resources\OK.bmp" />
-    <None Include="Resources\GoLtrHS.bmp" />
-    <None Include="Resources\Critical.bmp" />
-    <None Include="Resources\ListsofTests_8643_24.bmp" />
-    <None Include="Resources\applycodechanges_6548_321.bmp" />
-    <None Include="Resources\Alert.bmp" />
-    <None Include="Resources\Information.bmp" />
-    <None Include="Resources\Collapse_large.bmp" />
-    <None Include="Resources\Expand_large.bmp" />
-    <None Include="Resources\112_LeftArrowLong_Blue_16x16_72.png" />
-    <None Include="Resources\112_RightArrowLong_Blue_16x16_72.png" />
-    <None Include="Resources\cross-circle.png" />
-    <None Include="Resources\exclamation-diamond.png" />
+    <Resource Include="Resources\RD-AboutWindow.png" />
+    <Resource Include="Resources\twitter_circle_black-512.png" />
+    <Resource Include="Resources\RD-InstallWindow.png" />
+    <Resource Include="Resources\minus-circle1.png" />
+    <Resource Include="Resources\plus-circle1.png" />
+    <Resource Include="Resources\question-white.png" />
+    <Resource Include="Resources\tick-circle.png" />
+    <Resource Include="Resources\navigation-180.png" />
+    <Resource Include="Resources\navigation.png" />
+    <Resource Include="Resources\tick.png" />
+    <Resource Include="Resources\Step-RunTest_8814_32.bmp" />
+    <Resource Include="Resources\Warning.bmp" />
+    <Resource Include="Resources\Serious.bmp" />
+    <Resource Include="Resources\OK.bmp" />
+    <Resource Include="Resources\GoLtrHS.bmp" />
+    <Resource Include="Resources\Critical.bmp" />
+    <Resource Include="Resources\ListsofTests_8643_24.bmp" />
+    <Resource Include="Resources\applycodechanges_6548_321.bmp" />
+    <Resource Include="Resources\Alert.bmp" />
+    <Resource Include="Resources\Information.bmp" />
+    <Resource Include="Resources\Collapse_large.bmp" />
+    <Resource Include="Resources\Expand_large.bmp" />
+    <Resource Include="Resources\112_LeftArrowLong_Blue_16x16_72.png" />
+    <Resource Include="Resources\112_RightArrowLong_Blue_16x16_72.png" />
+    <Resource Include="Resources\cross-circle.png" />
+    <Resource Include="Resources\exclamation-diamond.png" />
     <Resource Include="Resources\arrow.png" />
-    <None Include="Resources\document-copy.png" />
-    <None Include="Resources\information-white.png" />
-    <None Include="Resources\exclamation-white.png" />
-    <None Include="Resources\exclamation.png" />
-    <None Include="Resources\information.png" />
-    <None Include="Resources\flask.png" />
-    <None Include="Resources\flask--arrow.png" />
-    <None Include="Resources\flask--exclamation.png" />
-    <None Include="Resources\flask--plus.png" />
-    <None Include="Resources\flask-empty.png" />
-    <None Include="Resources\creative-commons.png" />
-    <None Include="Resources\gear.png" />
-    <None Include="Resources\control-000-small.png" />
-    <None Include="Resources\git.png" />
-    <None Include="Resources\arrow-merge-090.png" />
-    <None Include="Resources\arrow-split.png" />
-    <None Include="Resources\drive-download.png" />
-    <None Include="Resources\drive-upload.png" />
-    <None Include="Resources\arrow-step.png" />
-    <None Include="Resources\github-alt.png" />
-    <None Include="Resources\icon-github.png" />
-    <None Include="Resources\arrow-branch-090.png" />
-    <None Include="Resources\folder-horizontal-open.png" />
-    <None Include="Resources\folder-horizontal.png" />
-    <None Include="Resources\application-resize.png" />
-    <None Include="Resources\light-bulb-code.png" />
+    <Resource Include="Resources\document-copy.png" />
+    <Resource Include="Resources\information-white.png" />
+    <Resource Include="Resources\exclamation-white.png" />
+    <Resource Include="Resources\exclamation.png" />
+    <Resource Include="Resources\information.png" />
+    <Resource Include="Resources\flask.png" />
+    <Resource Include="Resources\flask--arrow.png" />
+    <Resource Include="Resources\flask--exclamation.png" />
+    <Resource Include="Resources\flask--plus.png" />
+    <Resource Include="Resources\flask-empty.png" />
+    <Resource Include="Resources\creative-commons.png" />
+    <Resource Include="Resources\gear.png" />
+    <Resource Include="Resources\control-000-small.png" />
+    <Resource Include="Resources\git.png" />
+    <Resource Include="Resources\arrow-merge-090.png" />
+    <Resource Include="Resources\arrow-split.png" />
+    <Resource Include="Resources\drive-download.png" />
+    <Resource Include="Resources\drive-upload.png" />
+    <Resource Include="Resources\arrow-step.png" />
+    <Resource Include="Resources\github-alt.png" />
+    <Resource Include="Resources\icon-github.png" />
+    <Resource Include="Resources\arrow-branch-090.png" />
+    <Resource Include="Resources\folder-horizontal-open.png" />
+    <Resource Include="Resources\folder-horizontal.png" />
+    <Resource Include="Resources\application-resize.png" />
+    <Resource Include="Resources\light-bulb-code.png" />
     <Content Include="Ducky.ico" />
-    <None Include="Resources\facebook-icon.png" />
-    <None Include="Resources\github_circle_black-128.png" />
-    <None Include="Resources\facebook-circle-256.png" />
-    <None Include="Resources\google-circle-512.png" />
+    <Resource Include="Resources\facebook-icon.png" />
+    <Resource Include="Resources\github_circle_black-128.png" />
+    <Resource Include="Resources\facebook-circle-256.png" />
+    <Resource Include="Resources\google-circle-512.png" />
     <Resource Include="Resources\Microsoft\AddClass_5561_32.bmp" />
     <Resource Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
     <Resource Include="Resources\Microsoft\AddForm_369_32.bmp" />
@@ -1043,20 +1368,108 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
-      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
+      <Project>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</Project>
       <Name>Rubberduck.Parsing</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
+      <Project>{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}</Project>
+      <Name>Rubberduck.SmartIndenter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
-      <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
+      <Project>{0040E129-1AA2-459F-A59A-129FA4035E01}</Project>
       <Name>Rubberduck.SourceControl</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
-      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
+      <Project>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\About\AboutControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Controls\GroupingGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Controls\NumberPicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Controls\BusyIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\CodeExplorer\CodeExplorerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\CodeInspections\InspectionResultsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Controls\SearchView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\NoOverflowToolbarStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\GeneralSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\IndenterSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\InspectionSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\SettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\TodoSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings\UnitTestSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\BranchesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\ChangesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\SourceControlView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\SourceControl\UnsyncedCommitsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToDoItems\ToDoExplorerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UnitTesting\TestExplorerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1072,12 +1485,10 @@
   </Target>
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>eventcreate /ID 1 /L APPLICATION /T INFORMATION  /SO RubberDuck.VBE /D "Successfully deployed Rubberduck from Visual Studio Build"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>eventcreate /ID 1 /L APPLICATION /T INFORMATION  /SO RubberDuck.VBE /D "Deploying Rubberduck from Visual Studio Build"</PreBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

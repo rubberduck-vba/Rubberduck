@@ -39,5 +39,7 @@ namespace Rubberduck.UI
         {
             get { return _caption; }
         }
+
+        public ViewModelBase ViewModel { get; set; }
     }
 }

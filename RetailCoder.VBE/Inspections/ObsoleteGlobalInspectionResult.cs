@@ -1,30 +1,47 @@
-using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteGlobalInspectionResult : CodeInspectionResultBase
+    public class ObsoleteGlobalInspectionResult : InspectionResultBase
     {
-        public ObsoleteGlobalInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<ParserRuleContext> context)
-            : base(inspection, type, context.ModuleName, context.Context)
-        {
-        }
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public override IDictionary<string, Action> GetQuickFixes()
+        public ObsoleteGlobalInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> context)
+            : base(inspection, context.ModuleName, context.Context)
         {
-            return new Dictionary<string, Action>
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                {RubberduckUI.Inspections_ChangeGlobalAccessModifierToPublic, ChangeAccessModifier}
+                new ReplaceGlobalModifierQuickFix(Context, QualifiedSelection),
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 
-        private void ChangeAccessModifier()
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
         {
-            var module = QualifiedName.Component.CodeModule;
+            get
+            {
+                return string.Format(InspectionsUI.ObsoleteGlobalInspectionResultFormat, Target.DeclarationType.ToLocalizedString(), Target.IdentifierName);
+            }
+        }
+    }
+
+    public class ReplaceGlobalModifierQuickFix : CodeInspectionQuickFix
+    {
+        public ReplaceGlobalModifierQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, InspectionsUI.ObsoleteGlobalInspectionQuickFix)
+        {
+        }
+
+        public override void Fix()
+        {
+            var module = Selection.QualifiedName.Component.CodeModule;
             if (module == null)
             {
                 return;
@@ -32,18 +49,8 @@ namespace Rubberduck.Inspections
 
             var selection = Context.GetSelection();
 
-            // remove line continuations to compare against Context:
-            var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount)
-                                          .Replace("\r\n", " ")
-                                          .Replace("_", string.Empty);
-            var originalInstruction = Context.GetText();
-
-            module.DeleteLines(selection.StartLine, selection.LineCount);
-
-            var newInstruction = Tokens.Public + ' ' + Context.GetText().Replace(Tokens.Global + ' ', string.Empty);
-            var newCodeLines = originalCodeLines.Replace(originalInstruction, newInstruction);
-
-            module.InsertLines(selection.StartLine, newCodeLines);
+            // bug: this should make a test fail somewhere - what if identifier is one of many declarations on a line?
+            module.ReplaceLine(selection.StartLine, Tokens.Public + ' ' + Context.GetText());
         }
     }
 }

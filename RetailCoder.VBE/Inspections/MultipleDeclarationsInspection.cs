@@ -3,31 +3,30 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public class MultipleDeclarationsInspection : IInspection
+    public sealed class MultipleDeclarationsInspection : InspectionBase
     {
-        public MultipleDeclarationsInspection()
+        public MultipleDeclarationsInspection(RubberduckParserState state)
+            : base(state)
         {
-            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "MultipleDeclarationsInspection"; } }
-        public string Description { get { return RubberduckUI.MultipleDeclarations; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Meta { get { return InspectionsUI.MultipleDeclarationsInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.MultipleDeclarationsInspectionName; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var issues = parseResult.Declarations.Items
-                .Where(item => !item.IsBuiltIn)
+            var issues = UserDeclarations
+                .Where(item => !item.IsInspectionDisabled(AnnotationName))
                 .Where(item => item.DeclarationType == DeclarationType.Variable
                             || item.DeclarationType == DeclarationType.Constant)
                 .GroupBy(variable => variable.Context.Parent as ParserRuleContext)
                 .Where(grouping => grouping.Count() > 1)
-                .Select(grouping => new MultipleDeclarationsInspectionResult(Description, Severity, new QualifiedContext<ParserRuleContext>(grouping.First().QualifiedName.QualifiedModuleName, grouping.Key)));
+                .Select(grouping => new MultipleDeclarationsInspectionResult(this, new QualifiedContext<ParserRuleContext>(grouping.First().QualifiedName.QualifiedModuleName, grouping.Key)));
 
             return issues;
         }

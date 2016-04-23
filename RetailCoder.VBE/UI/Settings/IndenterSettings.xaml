@@ -1,0 +1,190 @@
+﻿<UserControl x:Class="Rubberduck.UI.Settings.IndenterSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+             xmlns:core="clr-namespace:System;assembly=mscorlib"
+             xmlns:smartIndenter="clr-namespace:Rubberduck.SmartIndenter;assembly=Rubberduck.SmartIndenter"
+             mc:Ignorable="d" 
+             d:DesignHeight="550" d:DesignWidth="500"
+             d:DataContext="{d:DesignInstance {x:Type settings:IndenterSettingsViewModel}, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+        <converters:EndOfLineCommentStyleToVisibilityConverter x:Key="EndOfLineCommentStyleToVisibility" />
+        <converters:EndOfLineCommentStyleToTextConverter x:Key="LocalizedEndOfLineCommentStyles" />
+        <converters:EndOfLineCommentStyleValueTextToEnumValueConverter x:Key="EndOfLineCommentStyleTextToEnumValue" />
+
+        <ObjectDataProvider x:Key="CommentStyles"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="smartIndenter:EndOfLineCommentStyle"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="100" />
+        </Grid.RowDefinitions>
+        <ScrollViewer>
+            <StackPanel Margin="5">
+                <Label DockPanel.Dock="Top"
+                       Background="DarkGray"
+                       Foreground="White"
+                       FontWeight="SemiBold"
+                       Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_IndenterSettings}"
+                       Margin="0,0,0,3">
+                    <Label.Style>
+                        <Style>
+                            <Style.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="5"/>
+                                </Style>
+                            </Style.Resources>
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition  />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_AlignmentOptionsLabel}"
+                               FontWeight="SemiBold" />
+                        <CheckBox IsChecked="{Binding AlignCommentsWithCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="5,0,0,5"
+                                  HorizontalAlignment="Left">
+                            <AccessText Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_AlignCommentsWithCode}"
+                                        TextWrapping="WrapWithOverflow" />
+                        </CheckBox>
+                        <CheckBox Name="AlignContinuationsCheckBox"
+                                  IsChecked="{Binding AlignContinuations, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="5,0,0,5"
+                                  HorizontalAlignment="Left">
+                            <AccessText Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_AlignContinuations}"
+                                        TextWrapping="WrapWithOverflow" />
+                        </CheckBox>
+                        <CheckBox IsEnabled="{Binding ElementName=AlignContinuationsCheckBox, Path=IsChecked}"
+                                  IsChecked="{Binding IgnoreOperatorsInContinuations, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="25,0,0,5"
+                                  HorizontalAlignment="Left">
+                            <AccessText Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_IgnoreOperators}"
+                                        TextWrapping="WrapWithOverflow" />
+                        </CheckBox>
+                        <WrapPanel Orientation="Horizontal">
+                            <CheckBox Name="AlignDimColumn"
+                                      IsChecked="{Binding AlignDims, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      Margin="5,0,0,5"
+                                      HorizontalAlignment="Left">
+                                <AccessText Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_AlignDims}"
+                                            TextWrapping="WrapWithOverflow" />
+                            </CheckBox>
+                            <controls:NumberPicker Margin="0,-6,0,0"
+                                                   IsEnabled="{Binding ElementName=AlignDimColumn, Path=IsChecked}"
+                                                   NumValue="{Binding AlignDimColumn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                   HorizontalAlignment="Left"
+                                                   MinNumber="0"/>
+                        </WrapPanel>
+                        <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_SpecialOptionsLabel}"
+                               FontWeight="SemiBold" />
+                        <CheckBox IsChecked="{Binding ForceDebugStatementsInColumn1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="5,0,0,5"
+                                  HorizontalAlignment="Left">
+                            <AccessText Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_ForceDebugDirectivesToColumn1}"
+                                        TextWrapping="WrapWithOverflow" />
+                        </CheckBox>
+                        <CheckBox IsChecked="{Binding ForceCompilerDirectivesInColumn1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="5,0,0,5"
+                                  HorizontalAlignment="Left">
+                            <AccessText Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_ForceCompilerDirectivesToColumn1}"
+                                        TextWrapping="WrapWithOverflow" />
+                        </CheckBox>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+                        <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_IndentOptionsLabel}"
+                               FontWeight="SemiBold" />
+                        <CheckBox Name="IndentProcedureCheckBox"
+                                  IsChecked="{Binding IndentEntireProcedureBody, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="5,0,0,5"
+                                  HorizontalAlignment="Left">
+                            <AccessText Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_IndentEntireProcedureBody}"
+                                        TextWrapping="WrapWithOverflow" />
+                        </CheckBox>
+                        <CheckBox IsEnabled="{Binding ElementName=IndentProcedureCheckBox, Path=IsChecked}"
+                                  IsChecked="{Binding IndentFirstCommentBlock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="25,0,0,5"
+                                  HorizontalAlignment="Left">
+                            <AccessText Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_IndentFirstCommentBlock}"
+                                        TextWrapping="WrapWithOverflow" />
+                        </CheckBox>
+                        <CheckBox IsEnabled="{Binding ElementName=IndentProcedureCheckBox, Path=IsChecked}"
+                                  IsChecked="{Binding IndentFirstDeclarationBlock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="25,0,0,5"
+                                  HorizontalAlignment="Left">
+                            <AccessText Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_IndentFirstDeclarationBlock}"
+                                        TextWrapping="WrapWithOverflow" />
+                        </CheckBox>
+                        <CheckBox IsChecked="{Binding IndentCase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="5,0,0,5"
+                                  HorizontalAlignment="Left">
+                            <AccessText Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_IndentCase}"
+                                        TextWrapping="WrapWithOverflow" />
+                        </CheckBox>
+                        <CheckBox IsChecked="{Binding IndentCompilerDirectives, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="5,0,0,5"
+                                  HorizontalAlignment="Left">
+                            <AccessText Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_IndentCompilerDirectives}"
+                                        TextWrapping="WrapWithOverflow" />
+                        </CheckBox>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_IndentSpaces}"
+                                       Margin="5,0,0,5"
+                                       HorizontalAlignment="Left"
+                                       TextWrapping="WrapWithOverflow" />
+                            <controls:NumberPicker Margin="0,-6,0,0"
+                                                   NumValue="{Binding IndentSpaces, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                   MinNumber="0"/>
+                        </StackPanel>
+                        <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_EnableOptionsLabel}"
+                               FontWeight="SemiBold" />
+                        <CheckBox IsChecked="{Binding EnableUndo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="5,0,0,5"
+                                  HorizontalAlignment="Left">
+                            <AccessText Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_EnableUndo}"
+                                        TextWrapping="WrapWithOverflow" />
+                        </CheckBox>
+                    </StackPanel>
+                </Grid>
+                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=IndenterSettings_EndOfLineCommentStyle}"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Left" />
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox Margin="5,0,0,5"
+                              Width="210"
+                              HorizontalAlignment="Left"
+                              ItemsSource="{Binding Source={StaticResource CommentStyles}, Converter={StaticResource LocalizedEndOfLineCommentStyles}, UpdateSourceTrigger=PropertyChanged}"
+                              SelectedItem="{Binding EndOfLineCommentStyle, Mode=TwoWay, Converter={StaticResource EndOfLineCommentStyleTextToEnumValue}, UpdateSourceTrigger=PropertyChanged}" />
+                    <controls:NumberPicker Margin="0,-4,0,0"
+                                           NumValue="{Binding EndOfLineCommentColumnSpaceAlignment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           Visibility="{Binding EndOfLineCommentStyle, Converter={StaticResource EndOfLineCommentStyleToVisibility}}"
+                                           HorizontalAlignment="Left"
+                                           MinNumber="0" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <TextBlock Grid.Row="1"
+                   Background="White"
+                   Height="100"
+                   xml:space="preserve"
+                   Margin="5,0"
+                   FontFamily="Consolas"
+                   VerticalAlignment="Bottom"
+                   Text="{Binding PreviewSampleCode}"/>
+    </Grid>
+</UserControl>

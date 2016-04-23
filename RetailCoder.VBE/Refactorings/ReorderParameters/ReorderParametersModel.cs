@@ -1,41 +1,45 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.Parsing;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
     public class ReorderParametersModel
     {
-        private readonly VBProjectParseResult _parseResult;
-        public VBProjectParseResult ParseResult { get { return _parseResult; } }
+        private readonly RubberduckParserState _parseResult;
+        public RubberduckParserState ParseResult { get { return _parseResult; } }
 
-        private readonly Declarations _declarations;
-        public Declarations Declarations { get { return _declarations; } }
+        private readonly IEnumerable<Declaration> _declarations;
+        public IEnumerable<Declaration> Declarations { get { return _declarations; } }
 
         public Declaration TargetDeclaration { get; private set; }
         public List<Parameter> Parameters { get; set; }
+
+        private readonly IMessageBox _messageBox;
             
-        public ReorderParametersModel(VBProjectParseResult parseResult, QualifiedSelection selection)
+        public ReorderParametersModel(RubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {
             _parseResult = parseResult;
-            _declarations = parseResult.Declarations;
+            _declarations = parseResult.AllUserDeclarations;
+            _messageBox = messageBox;
 
-            AcquireTaget(selection);
+            AcquireTarget(selection);
 
             Parameters = new List<Parameter>();
             LoadParameters();
         }
 
-        private void AcquireTaget(QualifiedSelection selection)
+        private void AcquireTarget(QualifiedSelection selection)
         {
-            TargetDeclaration = Declarations.FindSelection(selection, ValidDeclarationTypes);
+            TargetDeclaration = Declarations.FindTarget(selection, ValidDeclarationTypes);
             TargetDeclaration = PromptIfTargetImplementsInterface();
+            TargetDeclaration = GetEvent();
             TargetDeclaration = GetGetter();
         }
 
@@ -50,7 +54,13 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var args = argList.arg();
 
             var index = 0;
-            Parameters = args.Select(arg => new Parameter(arg.GetText().RemoveExtraSpaces(), index++)).ToList();
+            Parameters = args.Select(arg => new Parameter(arg.GetText().RemoveExtraSpacesLeavingIndentation(), index++)).ToList();
+
+            if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
+                TargetDeclaration.DeclarationType == DeclarationType.PropertySet)
+            {
+                Parameters.Remove(Parameters.Last());
+            }
         }
 
         public static readonly DeclarationType[] ValidDeclarationTypes =
@@ -75,19 +85,36 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var interfaceMember = Declarations.FindInterfaceMember(interfaceImplementation);
             var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
 
-            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            var confirm = _messageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             return confirm == DialogResult.No ? null : interfaceMember;
+        }
+
+        private Declaration GetEvent()
+        {
+            foreach (var events in Declarations.Where(item => item.DeclarationType == DeclarationType.Event))
+            {
+                if (Declarations.FindHandlersForEvent(events).Any(reference => Equals(reference.Item2, TargetDeclaration)))
+                {
+                    return events;
+                }
+            }
+            return TargetDeclaration;
         }
 
         private Declaration GetGetter()
         {
+            if (TargetDeclaration == null)
+            {
+                return null;
+            }
+
             if (TargetDeclaration.DeclarationType != DeclarationType.PropertyLet &&
                 TargetDeclaration.DeclarationType != DeclarationType.PropertySet)
             {
                 return TargetDeclaration;
             }
 
-            var getter = _declarations.Items.FirstOrDefault(item => item.Scope == TargetDeclaration.Scope &&
+            var getter = _declarations.FirstOrDefault(item => item.Scope == TargetDeclaration.Scope &&
                                           item.IdentifierName == TargetDeclaration.IdentifierName &&
                                           item.DeclarationType == DeclarationType.PropertyGet);
 

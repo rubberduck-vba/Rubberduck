@@ -1,60 +1,28 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteCallStatementUsageInspectionResult : CodeInspectionResultBase
+    public class ObsoleteCallStatementUsageInspectionResult : InspectionResultBase
     {
-        public ObsoleteCallStatementUsageInspectionResult(string inspection, CodeInspectionSeverity type,
-            QualifiedContext<VBAParser.ExplicitCallStmtContext> qualifiedContext)
-            : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
-        {
-        }
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        private new VBAParser.ExplicitCallStmtContext Context { get { return base.Context as VBAParser.ExplicitCallStmtContext;} }
-
-        public override IDictionary<string, Action> GetQuickFixes()
+        public ObsoleteCallStatementUsageInspectionResult(IInspection inspection, QualifiedContext<VBAParser.ExplicitCallStmtContext> qualifiedContext)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            return new Dictionary<string, Action>
+            _quickFixes = new CodeInspectionQuickFix[]
             {
-                {RubberduckUI.Inspections_RemoveObsoleteStatement, RemoveObsoleteStatement}
+                new RemoveExplicitCallStatmentQuickFix(Context, QualifiedSelection), 
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 
-        private void RemoveObsoleteStatement()
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+
+        public override string Description
         {
-            var module = QualifiedName.Component.CodeModule;
-
-            var selection = Context.GetSelection();
-            var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount);
-            var originalInstruction = Context.GetText();
-
-            string procedure;
-            VBAParser.ArgsCallContext arguments;
-            if (Context.eCS_MemberProcedureCall() != null)
-            {
-                procedure = Context.eCS_MemberProcedureCall().ambiguousIdentifier().GetText();
-                arguments = Context.eCS_MemberProcedureCall().argsCall();
-            }
-            else
-            {
-                procedure = Context.eCS_ProcedureCall().ambiguousIdentifier().GetText();
-                arguments = Context.eCS_ProcedureCall().argsCall();
-            }
-
-            module.DeleteLines(selection.StartLine, selection.LineCount);
-
-            var argsList = arguments == null
-                ? new[] { string.Empty }
-                : arguments.argCall().Select(e => e.GetText());
-            var newInstruction = procedure + ' ' + string.Join(", ", argsList);
-            var newCodeLines = originalCodeLines.Replace(originalInstruction, newInstruction);
-
-            module.InsertLines(selection.StartLine, newCodeLines);
+            get { return Inspection.Name; }
         }
     }
 }

@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Reflection;
-using Rubberduck.Reflection;
 using Rubberduck.VBEditor.Extensions;
 using System.Reflection;
 using System.IO;
@@ -36,28 +35,26 @@ namespace Rubberduck.UnitTesting
 
         public static IEnumerable<TestMethod> TestMethods(this VBProject project)
         {
-            var hostApp = project.VBE.HostApplication();
 
             var result = project.VBComponents
                           .Cast<VBComponent>()
                           .Where(component => component.CodeModule.HasAttribute<TestModuleAttribute>())
                           .Select(component => new { Component = component, Members = component.GetMembers().Where(IsTestMethod)})
                           .SelectMany(component => component.Members.Select(method => 
-                              new TestMethod(method.QualifiedMemberName, hostApp)));
+                              new TestMethod(method.QualifiedMemberName, project.VBE)));
 
             return result;
         }
 
         public static IEnumerable<TestMethod> TestMethods(this VBComponent component)
         {
-            var hostApp = component.VBE.HostApplication();
 
             if (component.Type == vbext_ComponentType.vbext_ct_StdModule 
                 && component.CodeModule.HasAttribute<TestModuleAttribute>())
             {
                 return component.GetMembers()
                                 .Where(IsTestMethod)
-                                .Select(member => new TestMethod(member.QualifiedMemberName, hostApp));
+                                .Select(member => new TestMethod(member.QualifiedMemberName, component.VBE));
             }
 
             return new List<TestMethod>();

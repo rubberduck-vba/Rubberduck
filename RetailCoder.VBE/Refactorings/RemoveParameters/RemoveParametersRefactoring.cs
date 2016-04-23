@@ -1,12 +1,14 @@
-﻿using Microsoft.Vbe.Interop;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime.Misc;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBA;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.RemoveParameters
@@ -14,11 +16,13 @@ namespace Rubberduck.Refactorings.RemoveParameters
     public class RemoveParametersRefactoring : IRefactoring
     {
         private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
+        private readonly IActiveCodePaneEditor _editor;
         private RemoveParametersModel _model;
 
-        public RemoveParametersRefactoring(IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
+        public RemoveParametersRefactoring(IRefactoringPresenterFactory<IRemoveParametersPresenter> factory, IActiveCodePaneEditor editor)
         {
             _factory = factory;
+            _editor = editor;
         }
 
         public void Refactor()
@@ -40,7 +44,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public void Refactor(QualifiedSelection target)
         {
-            target.Select();
+            _editor.SetSelection(target);
             Refactor();
         }
 
@@ -51,14 +55,14 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            target.QualifiedSelection.Select();
+            _editor.SetSelection(target.QualifiedSelection);
             Refactor();
         }
 
-        public void QuickFix(VBProjectParseResult parseResult, QualifiedSelection selection)
+        public void QuickFix(RubberduckParserState parseResult, QualifiedSelection selection)
         {
-            _model = new RemoveParametersModel(parseResult, selection);
-            var target = _model.Declarations.FindSelection(selection, new[] { DeclarationType.Parameter });
+            _model = new RemoveParametersModel(parseResult, selection, new MessageBox());
+            var target = _model.Declarations.FindTarget(selection, new[] { DeclarationType.Parameter });
 
             // ReSharper disable once PossibleUnintendedReferenceComparison
             _model.Parameters.Find(param => param.Declaration == target).IsRemoved = true;
@@ -67,7 +71,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private void RemoveParameters()
         {
-            if (_model.TargetDeclaration == null) { throw new NullReferenceException("Parameter is null."); }
+            if (_model.TargetDeclaration == null) { throw new NullReferenceException("Parameter is null"); }
 
             AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration);
             AdjustSignatures();
@@ -97,7 +101,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
-            var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _", "").RemoveExtraSpaces();
+            var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _" + Environment.NewLine, string.Empty).RemoveExtraSpacesLeavingIndentation();
             var currentStringIndex = 0;
 
             foreach (
@@ -139,21 +143,17 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             module.ReplaceLine(paramList.Start.Line, newContent);
-            for (var line = paramList.Start.Line + 1; line < paramList.Start.Line + lineCount; line++)
-            {
-                module.ReplaceLine(line, "");
-            }
+            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
         }
 
         private string GetOldSignature(Declaration target)
         {
-            var targetModule = _model.ParseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == target.QualifiedName.QualifiedModuleName);
-            if (targetModule == null)
+            var module = target.QualifiedName.QualifiedModuleName.Component;
+            if (module == null)
             {
-                return null;
+                throw new InvalidOperationException("Component is null for specified target.");
             }
-
-            var rewriter = targetModule.GetRewriter();
+            var rewriter = _model.ParseResult.GetRewriter(module);
 
             var context = target.Context;
             var firstTokenIndex = context.Start.TokenIndex;
@@ -262,17 +262,18 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             RemoveSignatureParameters(_model.TargetDeclaration, paramList, module);
 
-            foreach (var withEvents in _model.Declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName))
+            var eventImplementations =
+                _model.Declarations.Where(
+                    item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName)
+                    .SelectMany(withEvents => _model.Declarations.FindEventProcedures(withEvents));
+            foreach (var eventImplementation in eventImplementations)
             {
-                foreach (var reference in _model.Declarations.FindEventProcedures(withEvents))
-                {
-                    AdjustReferences(reference.References, reference);
-                    AdjustSignatures(reference);
-                }
+                AdjustReferences(eventImplementation.References, eventImplementation);
+                AdjustSignatures(eventImplementation);
             }
 
             var interfaceImplementations = _model.Declarations.FindInterfaceImplementationMembers()
-                                                        .Where(item => item.Project.Equals(_model.TargetDeclaration.Project) &&
+                                                        .Where(item => item.ProjectId == _model.TargetDeclaration.ProjectId &&
                                                                item.IdentifierName == _model.TargetDeclaration.ComponentName + "_" + _model.TargetDeclaration.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
@@ -283,7 +284,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
         {
-            return _model.Declarations.Items.FirstOrDefault(item => item.Scope == declaration.Scope &&
+            return _model.Declarations.FirstOrDefault(item => item.Scope == declaration.Scope &&
                               item.IdentifierName == declaration.IdentifierName &&
                               item.DeclarationType == declarationType);
         }
@@ -318,7 +319,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             {
                 try
                 {
-                    signature = ReplaceCommas(signature.Replace(paramNames.ElementAt(param.Index).GetText(), ""), _model.Parameters.FindIndex(item => item == param) - paramsRemoved.FindIndex(item => item == param));
+                    signature = ReplaceCommas(signature.Replace(paramNames.ElementAt(param.Index).GetText(), string.Empty), _model.Parameters.FindIndex(item => item == param) - paramsRemoved.FindIndex(item => item == param));
                 }
                 catch (ArgumentOutOfRangeException)
                 {
@@ -326,11 +327,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
             var lineNum = paramList.GetSelection().LineCount;
 
-            module.ReplaceLine(paramList.Start.Line, signature);
-            for (var line = paramList.Start.Line + 1; line < paramList.Start.Line + lineNum; line++)
-            {
-                module.ReplaceLine(line, "");
-            }
+            module.ReplaceLine(paramList.Start.Line, signature.Replace(" _" + Environment.NewLine, string.Empty));
+            module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
         }
     }
 }

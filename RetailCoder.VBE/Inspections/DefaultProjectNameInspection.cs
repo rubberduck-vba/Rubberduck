@@ -1,30 +1,31 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    class GenericProjectNameInspection : IInspection
+    public sealed class DefaultProjectNameInspection : InspectionBase
     {
-        public GenericProjectNameInspection()
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
+
+        public DefaultProjectNameInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
-            Severity = CodeInspectionSeverity.Suggestion;
+            _wrapperFactory = new CodePaneWrapperFactory();
         }
 
-        public string Name { get { return "GenericProjectNameInspection"; } }
-        public string Description { get { return RubberduckUI.GenericProjectName_; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
-        public CodeInspectionSeverity Severity { get; set; }
+        public override string Meta { get { return InspectionsUI.DefaultProjectNameInspectionMeta; } }
+        public override string Description { get { return InspectionsUI.DefaultProjectNameInspectionName; } }
+        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
+        public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var issues = parseResult.Declarations.Items
-                            .Where(declaration => !declaration.IsBuiltIn 
-                                                && declaration.DeclarationType == DeclarationType.Project
+            var issues = UserDeclarations
+                            .Where(declaration => declaration.DeclarationType == DeclarationType.Project
                                                 && declaration.IdentifierName.StartsWith("VBAProject"))
-                            .Select(issue => new GenericProjectNameInspectionResult(string.Format(Description, issue.IdentifierName), Severity, issue, parseResult))
+                            .Select(issue => new DefaultProjectNameInspectionResult(this, issue, State, _wrapperFactory))
                             .ToList();
 
             return issues;

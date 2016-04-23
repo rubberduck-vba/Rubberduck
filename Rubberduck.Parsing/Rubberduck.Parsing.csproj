@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -49,27 +50,143 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.3.2.1\lib\net45\NLog.dll</HintPath>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Annotations\AnnotationBase.cs" />
+    <Compile Include="Annotations\AnnotationListener.cs" />
+    <Compile Include="Annotations\AnnotationType.cs" />
+    <Compile Include="Annotations\FolderAnnotation.cs" />
+    <Compile Include="Annotations\IAnnotation.cs" />
+    <Compile Include="Annotations\IAnnotationFactory.cs" />
+    <Compile Include="Annotations\IgnoreAnnotation.cs" />
+    <Compile Include="Annotations\InvalidAnnotationArgumentException.cs" />
+    <Compile Include="Annotations\ModuleCleanupAnnotation.cs" />
+    <Compile Include="Annotations\ModuleInitializeAnnotation.cs" />
+    <Compile Include="Annotations\TestCleanupAnnotation.cs" />
+    <Compile Include="Annotations\TestInitializeAnnotation.cs" />
+    <Compile Include="Annotations\TestMethodAnnotation.cs" />
+    <Compile Include="Annotations\TestModuleAnnotation.cs" />
+    <Compile Include="Annotations\VBAParserAnnotationFactory.cs" />
+    <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
-    <Compile Include="Grammar\VBABaseListener.cs" />
-    <Compile Include="Grammar\VBABaseVisitor.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
-    <Compile Include="Grammar\VBAListener.cs" />
     <Compile Include="Grammar\VBAParser.cs" />
-    <Compile Include="Grammar\VBAVisitor.cs" />
+    <Compile Include="Grammar\VBAParserBaseListener.cs" />
+    <Compile Include="Grammar\VBAParserBaseVisitor.cs" />
+    <Compile Include="Grammar\VBAParserListener.cs" />
+    <Compile Include="Grammar\VBAParserVisitor.cs" />
     <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IRubberduckParser.cs" />
+    <Compile Include="ParsingText.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ParsingText.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Preprocessing\AbsLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\BinaryMinusExpression.cs" />
+    <Compile Include="Preprocessing\BinaryPlusExpression.cs" />
+    <Compile Include="Preprocessing\BoolValue.cs" />
+    <Compile Include="Preprocessing\ByteValue.cs" />
+    <Compile Include="Preprocessing\CBoolLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\CCurLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\CByteLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\CDateLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\ConditionalCompilationBlockExpression.cs" />
+    <Compile Include="Preprocessing\ConditionalCompilationConstantExpression.cs" />
+    <Compile Include="Preprocessing\ConditionalCompilationIfExpression.cs" />
+    <Compile Include="Preprocessing\DateLiteralExpression.cs" />
+    <Compile Include="Preprocessing\Expression.cs" />
+    <Compile Include="Preprocessing\HexNumberLiteralExpression.cs" />
+    <Compile Include="Preprocessing\LivelinessExpression.cs" />
+    <Compile Include="Preprocessing\ModExpression.cs" />
+    <Compile Include="Preprocessing\BinaryIntDivExpression.cs" />
+    <Compile Include="Preprocessing\BinaryDivisionExpression.cs" />
+    <Compile Include="Preprocessing\BinaryMultiplicationExpression.cs" />
+    <Compile Include="Preprocessing\NameExpression.cs" />
+    <Compile Include="Preprocessing\NumberLiteralExpression.cs" />
+    <Compile Include="Preprocessing\OctNumberLiteralExpression.cs" />
+    <Compile Include="Preprocessing\PowExpression.cs" />
+    <Compile Include="Preprocessing\CSngLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\CLngPtrLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\CLngLngLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\CLngLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\CIntLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\CDblLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\ConstantExpression.cs" />
+    <Compile Include="Preprocessing\CStrLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\CVarLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\DateValue.cs" />
+    <Compile Include="Preprocessing\DecimalValue.cs" />
+    <Compile Include="Preprocessing\EmptyValue.cs" />
+    <Compile Include="Preprocessing\FixLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\IExpression.cs" />
+    <Compile Include="Preprocessing\IntLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\IsExpression.cs" />
+    <Compile Include="Preprocessing\IValue.cs" />
+    <Compile Include="Preprocessing\LenBLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\LenLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\LikeExpression.cs" />
+    <Compile Include="Preprocessing\LogicalEqualsExpression.cs" />
+    <Compile Include="Preprocessing\LogicalGreaterThanExpression.cs" />
+    <Compile Include="Preprocessing\LogicalGreaterOrEqualsExpression.cs" />
+    <Compile Include="Preprocessing\ConcatExpression.cs" />
+    <Compile Include="Preprocessing\LogicalNotEqualsExpression.cs" />
+    <Compile Include="Preprocessing\LogicalLessOrEqualsExpression.cs" />
+    <Compile Include="Preprocessing\LogicalLessThanExpression.cs" />
+    <Compile Include="Preprocessing\LogicalAndExpression.cs" />
+    <Compile Include="Preprocessing\LogicalEqvExpression.cs" />
+    <Compile Include="Preprocessing\LogicalImpExpression.cs" />
+    <Compile Include="Preprocessing\LogicalOrExpression.cs" />
+    <Compile Include="Preprocessing\LogicalXorExpression.cs" />
+    <Compile Include="Preprocessing\SgnLibraryFunctionExpression.cs" />
+    <Compile Include="Preprocessing\StringLiteralExpression.cs" />
+    <Compile Include="Preprocessing\StringValue.cs" />
+    <Compile Include="Preprocessing\UnaryMinusExpression.cs" />
+    <Compile Include="Preprocessing\UnaryNotExpression.cs" />
+    <Compile Include="Preprocessing\ValueType.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParser.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParserBaseListener.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParserBaseVisitor.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParserListener.cs" />
+    <Compile Include="Preprocessing\VBAConditionalCompilationParserVisitor.cs" />
+    <Compile Include="Preprocessing\VBALibrary.cs" />
+    <Compile Include="Preprocessing\VBALikeBaseListener.cs" />
+    <Compile Include="Preprocessing\VBALikeBaseVisitor.cs" />
+    <Compile Include="Preprocessing\VBALikeLexer.cs" />
+    <Compile Include="Preprocessing\VBALikeListener.cs" />
+    <Compile Include="Preprocessing\VBALikeParser.cs" />
+    <Compile Include="Preprocessing\VBALikeVisitor.cs" />
+    <Compile Include="Preprocessing\VBAPreprocessorException.cs" />
+    <Compile Include="Preprocessing\VBADateConstants.cs" />
+    <Compile Include="Preprocessing\SymbolTable.cs" />
+    <Compile Include="Preprocessing\VBADateBaseListener.cs" />
+    <Compile Include="Preprocessing\VBADateBaseVisitor.cs" />
+    <Compile Include="Preprocessing\VBADateLexer.cs" />
+    <Compile Include="Preprocessing\VBADateListener.cs" />
+    <Compile Include="Preprocessing\VBADateParser.cs" />
+    <Compile Include="Preprocessing\VBADateVisitor.cs" />
+    <Compile Include="Preprocessing\VBAPredefinedCompilationConstants.cs" />
+    <Compile Include="Preprocessing\VBAPreprocessor.cs" />
+    <Compile Include="Preprocessing\VBAPreprocessorVisitor.cs" />
+    <Compile Include="StaTaskScheduler.cs" />
+    <Compile Include="Symbols\CommentExtensions.cs" />
+    <Compile Include="Symbols\DeclarationEventArgs.cs" />
+    <Compile Include="Symbols\DeclarationFinder.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
+    <Compile Include="Symbols\MemberProcessedEventArgs.cs" />
+    <Compile Include="Symbols\ParameterDeclaration.cs" />
+    <Compile Include="Symbols\ProjectDeclaration.cs" />
+    <Compile Include="Symbols\ProjectReference.cs" />
+    <Compile Include="Symbols\ReferencedDeclarationsCollector.cs" />
     <Compile Include="Symbols\SyntaxErrorException.cs" />
-    <Compile Include="Logging\LoggingConfigurator.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -80,35 +197,59 @@
     <Compile Include="Symbols\Accessibility.cs" />
     <Compile Include="Symbols\DeclarationSymbolsListener.cs" />
     <Compile Include="Symbols\DeclarationType.cs" />
-    <Compile Include="Symbols\Declarations.cs" />
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
-    <Compile Include="Symbols\MsFormsLib.cs" />
     <Compile Include="Symbols\ValuedDeclaration.cs" />
-    <Compile Include="Symbols\VbaStandardLib.cs" />
+    <Compile Include="VBA\AttributeParser.cs" />
+    <Compile Include="VBA\Attributes.cs" />
+    <Compile Include="VBA\CombinedParseTreeListener.cs" />
+    <Compile Include="VBA\ComponentParseTask.cs" />
+    <Compile Include="VBA\EnumerableExtensions.cs" />
+    <Compile Include="VBA\IAttributeParser.cs" />
+    <Compile Include="VBA\IModuleExporter.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
     <Compile Include="VBA\ParseErrorEventArgs.cs" />
+    <Compile Include="VBA\ParserState.cs" />
+    <Compile Include="VBA\ReferencePriorityMap.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
+    <Compile Include="VBA\RubberduckParserState.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
     <Compile Include="VBA\WalkerCancelledException.cs" />
     <Compile Include="VBComponentExtensions.cs" />
-    <Compile Include="VBComponentParseResult.cs" />
-    <Compile Include="VBProjectParseResult.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="Grammar\VBA.g4">
+    <None Include="Grammar\VBAParser.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
+    <None Include="Grammar\VBALexer.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Preprocessing\VBAConditionalCompilationParser.g4" />
+    <None Include="Preprocessing\VBADate.g4" />
+    <None Include="Preprocessing\VBALike.g4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ParsingText.de.resx" />
+    <EmbeddedResource Include="ParsingText.fr.resx" />
+    <EmbeddedResource Include="ParsingText.ja.resx" />
+    <EmbeddedResource Include="ParsingText.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ParsingText.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParsingText.sv.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

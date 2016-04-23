@@ -3,23 +3,32 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
-    public class ReorderParametersPresenter
+    public interface IReorderParametersPresenter
+    {
+        ReorderParametersModel Show();
+    }
+
+    public class ReorderParametersPresenter : IReorderParametersPresenter
     {
         private readonly IReorderParametersView _view;
         private readonly ReorderParametersModel _model;
+        private readonly IMessageBox _messageBox;
 
-        public ReorderParametersPresenter(IReorderParametersView view, ReorderParametersModel model)
+        public ReorderParametersPresenter(IReorderParametersView view, ReorderParametersModel model, IMessageBox messageBox)
         {
             _view = view;
             _model = model;
+            _messageBox = messageBox;
         }
 
         public ReorderParametersModel Show()
         {
+            if (_model.TargetDeclaration == null) { return null; }
+
             if (_model.Parameters.Count < 2)
             {
                 var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, _model.TargetDeclaration.IdentifierName);
-                MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                _messageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return null;
             }
 

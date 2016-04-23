@@ -1,6 +1,6 @@
 using System;
 
-namespace Rubberduck.VBA
+namespace Rubberduck.Parsing.VBA
 {
     /// <summary>
     /// An exception thrown by an <c>IParseTreeListener</c> implementation 

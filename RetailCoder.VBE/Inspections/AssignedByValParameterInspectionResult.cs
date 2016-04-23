@@ -1,37 +1,52 @@
-using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public class AssignedByValParameterInspectionResult : CodeInspectionResultBase
+    public class AssignedByValParameterInspectionResult : InspectionResultBase
     {
-        public AssignedByValParameterInspectionResult(string inspection, CodeInspectionSeverity type,
-            ParserRuleContext context, QualifiedMemberName qualifiedName)
-            : base(inspection, type, qualifiedName.QualifiedModuleName, context)
-        {
-        }
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public override IDictionary<string, Action> GetQuickFixes()
+        public AssignedByValParameterInspectionResult(IInspection inspection, Declaration target)
+            : base(inspection, target)
         {
-            return new Dictionary<string, Action>
+            _quickFixes = new[]
             {
-                {RubberduckUI.Inspections_PassParamByReference, PassParameterByReference}
-                //,{RubberduckUI.InspectionsIntroduceLocalVariable, IntroduceLocalVariable}
+                new PassParameterByReferenceQuickFix(target.Context, QualifiedSelection),
             };
         }
 
-        //note: vbe parameter is not used
-        private void PassParameterByReference()
+        public override string Description
+        {
+            get
+            {
+                return string.Format(InspectionsUI.AssignedByValParameterInspectionResultFormat, Target.IdentifierName);
+            }
+        }
+
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+    }
+
+    /// <summary>
+    /// Encapsulates a code inspection quickfix that changes a ByVal parameter into an explicit ByRef parameter.
+    /// </summary>
+    public class PassParameterByReferenceQuickFix : CodeInspectionQuickFix
+    {
+        public PassParameterByReferenceQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, InspectionsUI.PassParameterByReferenceQuickFix)
+        {
+        }
+
+        public override void Fix()
         {
             var parameter = Context.GetText();
             var newContent = string.Concat(Tokens.ByRef, " ", parameter.Replace(Tokens.ByVal, string.Empty).Trim());
-            var selection = QualifiedSelection.Selection;
+            var selection = Selection.Selection;
 
-            var module = QualifiedName.Component.CodeModule;
+            var module = Selection.QualifiedName.Component.CodeModule;
             var lines = module.get_Lines(selection.StartLine, selection.LineCount);
 
             var result = lines.Replace(parameter, newContent);

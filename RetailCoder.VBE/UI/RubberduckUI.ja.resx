@@ -1,0 +1,1049 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="OK_AllCaps" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="DeclarationType_Class" xml:space="preserve">
+    <value>クラス</value>
+  </data>
+  <data name="DeclarationType_Constant" xml:space="preserve">
+    <value>定数</value>
+  </data>
+  <data name="DeclarationType_Event" xml:space="preserve">
+    <value>イベント</value>
+  </data>
+  <data name="DeclarationType_Function" xml:space="preserve">
+    <value>ファンクション</value>
+  </data>
+  <data name="DeclarationType_Module" xml:space="preserve">
+    <value>モジュール</value>
+  </data>
+  <data name="DeclarationType_Parameter" xml:space="preserve">
+    <value>パラメーター</value>
+  </data>
+  <data name="DeclarationType_Procedure" xml:space="preserve">
+    <value>プロシージャー</value>
+  </data>
+  <data name="DeclarationType_PropertyGet" xml:space="preserve">
+    <value>プロパーティーgetアクセサー</value>
+  </data>
+  <data name="DeclarationType_PropertyLet" xml:space="preserve">
+    <value>プロパーティーletアクセサー</value>
+  </data>
+  <data name="DeclarationType_PropertySet" xml:space="preserve">
+    <value>プロパーティーsetアクセサー</value>
+  </data>
+  <data name="DeclarationType_UserDefinedType" xml:space="preserve">
+    <value>ユーザー定義型</value>
+  </data>
+  <data name="DeclarationType_Variable" xml:space="preserve">
+    <value>変数</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
+    <value>一般設定</value>
+  </data>
+  <data name="RenameDialog_ProjectRenameError" xml:space="preserve">
+    <value>オブジェクト名を変更出来ませんでした。</value>
+  </data>
+  <data name="RenameDialog_ModuleRenameError" xml:space="preserve">
+    <value>モジュール名を変更出来ませんでした。</value>
+  </data>
+  <data name="DeclarationType_LineLabel" xml:space="preserve">
+    <value>line label</value>
+  </data>
+  <data name="ExtractMethod_OutputNone" xml:space="preserve">
+    <value>（なし）</value>
+  </data>
+  <data name="Parsing" xml:space="preserve">
+    <value>（解析中です…）</value>
+  </data>
+  <data name="CodeInspections_Inspecting" xml:space="preserve">
+    <value>検査中です…</value>
+  </data>
+  <data name="ReorderParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - パラメーター再配置</value>
+  </data>
+  <data name="ReorderParamsDialog_MoveDownButtonText" xml:space="preserve">
+    <value>下へ移動</value>
+  </data>
+  <data name="ReorderParamsDialog_MoveUpButtonText" xml:space="preserve">
+    <value>上へ移動</value>
+  </data>
+  <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
+    <value>パラメーター再配置</value>
+  </data>
+  <data name="DeclarationType_Control" xml:space="preserve">
+    <value>コントロール</value>
+  </data>
+  <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
+    <value>省略可能パラメータは、パラメータリストの最後に指定しなければなりません。</value>
+  </data>
+  <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
+    <value>ParamArrayパラメーターの定義は最後でなければなりません。</value>
+  </data>
+  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
+    <value>パラメーターを削除する</value>
+  </data>
+  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
+    <value>メソッド「{0}」にパラメーターが見付かりませんでした。</value>
+  </data>
+  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
+    <value>set・letの最後のパラメーターを削除できませんでした。</value>
+  </data>
+  <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
+    <value>現在のセレクションは無効です。</value>
+  </data>
+  <data name="DeclarationType_LibraryFunction" xml:space="preserve">
+    <value>ライブラリ関数</value>
+  </data>
+  <data name="DeclarationType_UserDefinedTypeMember" xml:space="preserve">
+    <value>ユーザー定義型のメンバー</value>
+  </data>
+  <data name="DeclarationType_Enumeration" xml:space="preserve">
+    <value>列挙型</value>
+  </data>
+  <data name="DeclarationType_EnumerationMember" xml:space="preserve">
+    <value>列挙型のメンバー</value>
+  </data>
+  <data name="RenameDialog_InstructionsLabelText" xml:space="preserve">
+    <value>{0} '{1}'に新しい名前を定義してください。</value>
+  </data>
+  <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
+    <value>パラメーター：</value>
+  </data>
+  <data name="ExtractMethod_PreviewLabel" xml:space="preserve">
+    <value>プレビュー：</value>
+  </data>
+  <data name="ExtractMethod_ReturnLabel" xml:space="preserve">
+    <value>戻り値</value>
+  </data>
+  <data name="ExtractMethod_SetBoxLabel" xml:space="preserve">
+    <value>set</value>
+  </data>
+  <data name="ExtractMethod_AccessibilityLabel" xml:space="preserve">
+    <value>接近性：</value>
+  </data>
+  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
+    <value>メソッド「{0}」のパラメーターが2つ以下です。</value>
+  </data>
+  <data name="SettingsInstructions_TodoSettings" xml:space="preserve">
+    <value>コメントで認識されるマーカーを設定してください。</value>
+  </data>
+  <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
+    <value>「OK」をクリックでウインドウを閉じ、変更を保存します。「キャンセル」で変更を廃棄します。</value>
+  </data>
+  <data name="SettingsInstructions_InspectionSettings" xml:space="preserve">
+    <value>検査の重要度設定。検査を無効にするには、「DoNotShow」を使用します。</value>
+  </data>
+  <data name="ExtractMethod_Caption" xml:space="preserve">
+    <value>Rubberduck - メソッド抽出</value>
+  </data>
+  <data name="ExtractMethod_InstructionsText" xml:space="preserve">
+    <value>メソッド名、戻り値、パラメーター等を指定してください。</value>
+  </data>
+  <data name="ExtractMethod_TitleText" xml:space="preserve">
+    <value>メソッド抽出</value>
+  </data>
+  <data name="AllImplementations_NoneFound" xml:space="preserve">
+    <value>クラスかメンバー「{0}」は実装されていません。</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>ホーム</value>
+  </data>
+  <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
+    <value>パラメーター削除</value>
+  </data>
+  <data name="RenameDialog_TitleText" xml:space="preserve">
+    <value>識別子の名前を変更</value>
+  </data>
+  <data name="RenameDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - 名前の変更</value>
+  </data>
+  <data name="NameLabelText" xml:space="preserve">
+    <value>名前:</value>
+  </data>
+  <data name="AllReferences_Caption" xml:space="preserve">
+    <value>全ての参照「{0}」</value>
+  </data>
+  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>メソッド「{0}」は「{1}.{2}」を実装しています。インターフェース署名を変更しますか？（全ての実装に反映されます）</value>
+  </data>
+  <data name="CancelButtonText" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>テキスト</value>
+  </data>
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
+    <value>テキスト：</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Rubberduck コード検査 - {0}
+{1}問題を発見。</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
+    <value>{0}問題</value>
+  </data>
+  <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
+    <value>{0}（{1}問題）</value>
+  </data>
+  <data name="SourceControl_DeleteBranchTitleLable" xml:space="preserve">
+    <value>ブランチ削除</value>
+  </data>
+  <data name="SourceControl_DeleteBranchInstructionsLabel" xml:space="preserve">
+    <value>ブランチ名を削除</value>
+  </data>
+  <data name="SourceControl_DeleteBranchCaption" xml:space="preserve">
+    <value>Rubberduck - ブランチ削除</value>
+  </data>
+  <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
+    <value>{1}に{0}が正常にマージされました。</value>
+  </data>
+  <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
+    <value>ヒント</value>
+  </data>
+  <data name="CodeInspectionSeverity_Error" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
+    <value>非表示</value>
+  </data>
+  <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
+    <value>提案」</value>
+  </data>
+  <data name="SourceControl_NoRepoFound" xml:space="preserve">
+    <value>リポジトリが見付かりませんでした。</value>
+  </data>
+  <data name="SourceControl_MergeFormTitle" xml:space="preserve">
+    <value>ブランチをマージ</value>
+  </data>
+  <data name="SourceControl_CreateNewBranchTitle" xml:space="preserve">
+    <value>新しいブランチ</value>
+  </data>
+  <data name="SourceControl_CreateNewBranchInstructions" xml:space="preserve">
+    <value>ブランチ名を定義してください。</value>
+  </data>
+  <data name="SourceControl_CreateNewBranchCaption" xml:space="preserve">
+    <value>Rubberduck - ブランチ作成</value>
+  </data>
+  <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
+    <value>ブランチ：</value>
+  </data>
+  <data name="LoadConfigError" xml:space="preserve">
+    <value>Rubberduck設定のロード中にエラーが発生しました</value>
+  </data>
+  <data name="ParseProgress" xml:space="preserve">
+    <value>「{0}」を解析中...</value>
+  </data>
+  <data name="ParseStarted" xml:space="preserve">
+    <value>プロジェクトコンポーネントを解析中...</value>
+  </data>
+  <data name="ResolutionProgress" xml:space="preserve">
+    <value>「{0}」解決中...</value>
+  </data>
+  <data name="RubberduckLoadFailure" xml:space="preserve">
+    <value>Rubberduckアドインをロードできませんでした</value>
+  </data>
+  <data name="Rubberduck_AboutBuild" xml:space="preserve">
+    <value>「0」（「1」）をビルド</value>
+  </data>
+  <data name="TodoMarkerBug" xml:space="preserve">
+    <value>BUG </value>
+  </data>
+  <data name="TodoMarkerNote" xml:space="preserve">
+    <value>NOTE </value>
+  </data>
+  <data name="TodoMarkerTodo" xml:space="preserve">
+    <value>TODO </value>
+  </data>
+  <data name="AllImplementations_Caption" xml:space="preserve">
+    <value>「{0}」の実装</value>
+  </data>
+  <data name="CodeInspections" xml:space="preserve">
+    <value>コード検査</value>
+  </data>
+  <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
+    <value>{0} （問題数：{1}）</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
+    <value>問題数：{0}</value>
+  </data>
+  <data name="CodeInspections_Run" xml:space="preserve">
+    <value>コード検査を実行</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>次</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="Issue" xml:space="preserve">
+    <value>問題</value>
+  </data>
+  <data name="Fix" xml:space="preserve">
+    <value>修正</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>オフライン</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>オンライン</value>
+  </data>
+  <data name="Parameter" xml:space="preserve">
+    <value>パラメーター</value>
+  </data>
+  <data name="Passed" xml:space="preserve">
+    <value>合格</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>前</value>
+  </data>
+  <data name="Severity" xml:space="preserve">
+    <value>重大度</value>
+  </data>
+  <data name="SourceControl_CreateNewRepo" xml:space="preserve">
+    <value>新しいリポジトリを作成する</value>
+  </data>
+  <data name="SourceControl_OpenWorkingDirectory" xml:space="preserve">
+    <value>作業ダイレクトリーを開く</value>
+  </data>
+  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
+    <value>不合格：{0}</value>
+  </data>
+  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
+    <value>不決定的：{0}</value>
+  </data>
+  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
+    <value>合格：{0}</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>型</value>
+  </data>
+  <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
+    <value>2つ以上のテストメソッドを含むプロジェクトはプロジェクト名とテスト名が同じです。続行するには同じであるプロジェクトやテスト名を変更してください。</value>
+  </data>
+  <data name="TestExplorerWindow_Caption" xml:space="preserve">
+    <value>テストエクスプローラー</value>
+  </data>
+  <data name="TodoExplorer_Caption" xml:space="preserve">
+    <value>TODOエクスプローラー</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="EasterEgg_Continuator" xml:space="preserve">
+    <value>「継続者」バッジを獲得しました！</value>
+  </data>
+  <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
+    <value>モジュールオプションは最初に指定しなければなりません</value>
+  </data>
+  <data name="Component" xml:space="preserve">
+    <value>コンポーネント</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>結果</value>
+  </data>
+  <data name="Outcome" xml:space="preserve">
+    <value>結果</value>
+  </data>
+  <data name="Language_EN" xml:space="preserve">
+    <value>英語</value>
+  </data>
+  <data name="Language_FR" xml:space="preserve">
+    <value>フランス語</value>
+  </data>
+  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - パラメーター削除</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>レストア</value>
+  </data>
+  <data name="ParseErrors_Caption" xml:space="preserve">
+    <value>Rubberduck - 解析エラー</value>
+  </data>
+  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
+    <value>メンバー名を表示する</value>
+  </data>
+  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
+    <value>署名を完全に表示する</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>リフレッシュ</value>
+  </data>
+  <data name="Inspect" xml:space="preserve">
+    <value>検査</value>
+  </data>
+  <data name="Navigate" xml:space="preserve">
+    <value>ナビゲート</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>名前の変更</value>
+  </data>
+  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
+    <value>デザイナーを開く</value>
+  </data>
+  <data name="CodeInspections_CopyToolTip" xml:space="preserve">
+    <value>検査結果をクリップボードにコピーする</value>
+  </data>
+  <data name="Go" xml:space="preserve">
+    <value>実行</value>
+  </data>
+  <data name="CodeInspections_NextToolTip" xml:space="preserve">
+    <value>次の問題へ移動</value>
+  </data>
+  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
+    <value>前の問題へ移動</value>
+  </data>
+  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
+    <value>問題を解決する</value>
+  </data>
+  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
+    <value>コード検査を実行する</value>
+  </data>
+  <data name="TodoExplorer_Description" xml:space="preserve">
+    <value>説明</value>
+  </data>
+  <data name="TodoExplorer_LineNumber" xml:space="preserve">
+    <value>行数</value>
+  </data>
+  <data name="ProjectName" xml:space="preserve">
+    <value>プロジェクト名</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>実行</value>
+  </data>
+  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
+    <value>最後の実行を繰り返す</value>
+  </data>
+  <data name="Line" xml:space="preserve">
+    <value>線</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>プロジェクト</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>変更</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="Settings_Caption" xml:space="preserve">
+    <value>Rubberduck設定</value>
+  </data>
+  <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
+    <value>コード品質問題</value>
+  </data>
+  <data name="TodoSettings_Caption" xml:space="preserve">
+    <value>TODOエクスプローラー</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
+    <value>Rubberduckコード検査 - {0}
+問題数：{1}。</value>
+  </data>
+  <data name="Settings_ResetSettings" xml:space="preserve">
+    <value>リセット</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>新規</value>
+  </data>
+  <data name="Settings_ResetSettingsConfirmation" xml:space="preserve">
+    <value>設定を初期化しますか？</value>
+  </data>
+  <data name="Language_SV" xml:space="preserve">
+    <value>スウェーデン語</value>
+  </data>
+  <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
+    <value>コードエクスプローラー</value>
+  </data>
+  <data name="Rename_DeclarationType" xml:space="preserve">
+    <value>「{0}」の名前を変更</value>
+  </data>
+  <data name="SourceControlPanel_Caption" xml:space="preserve">
+    <value>ソースコントロール</value>
+  </data>
+  <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="SourceControl_EmailAddressLabel" xml:space="preserve">
+    <value>メールアドレス</value>
+  </data>
+  <data name="SourceControl_GlobalSettings" xml:space="preserve">
+    <value>グローバル設定</value>
+  </data>
+  <data name="SourceControl_RespositorySettings" xml:space="preserve">
+    <value>リポジトリ設定</value>
+  </data>
+  <data name="SourceControl_UpdateGlobalSettings" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="SourceControl_UserNameLabel" xml:space="preserve">
+    <value>ユーザー名</value>
+  </data>
+  <data name="SourceControl_Changes" xml:space="preserve">
+    <value>変更</value>
+  </data>
+  <data name="SourceControl_Branches" xml:space="preserve">
+    <value>ブランチ</value>
+  </data>
+  <data name="SourceControl_Commit" xml:space="preserve">
+    <value>コミット</value>
+  </data>
+  <data name="SourceControl_CommitButtonLabel" xml:space="preserve">
+    <value>実行</value>
+  </data>
+  <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
+    <value>コミットメモ：</value>
+  </data>
+  <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
+    <value>プル</value>
+  </data>
+  <data name="SourceControl_PushCommitsLabel" xml:space="preserve">
+    <value>プッシュ</value>
+  </data>
+  <data name="SourceControl_Settings" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="SourceControl_SourceLabel" xml:space="preserve">
+    <value>ソース</value>
+  </data>
+  <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
+    <value>同期</value>
+  </data>
+  <data name="SourceControl_NewBranch" xml:space="preserve">
+    <value>新しいブランチ</value>
+  </data>
+  <data name="SourceControl_MergeFormCaption" xml:space="preserve">
+    <value>Rubberduck - マージ</value>
+  </data>
+  <data name="SourceControl_MergeBranch" xml:space="preserve">
+    <value>マージ</value>
+  </data>
+  <data name="SourceControl_FetchCommitsLabel" xml:space="preserve">
+    <value>フェッチ</value>
+  </data>
+  <data name="ModuleName" xml:space="preserve">
+    <value>モジュール名</value>
+  </data>
+  <data name="TestExplorer_MethodName" xml:space="preserve">
+    <value>メソッド名</value>
+  </data>
+  <data name="TestExplorer_Message" xml:space="preserve">
+    <value>メッセージ</value>
+  </data>
+  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
+    <value>選択中項目へ移動</value>
+  </data>
+  <data name="TestExplorer_Duration" xml:space="preserve">
+    <value>自足時間</value>
+  </data>
+  <data name="TestExplorer_AddTestModule" xml:space="preserve">
+    <value>テストモジュール</value>
+  </data>
+  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>テストメソッド（エラー予想）</value>
+  </data>
+  <data name="RefactorMenu_Rename" xml:space="preserve">
+    <value>&amp;R名前の変更</value>
+  </data>
+  <data name="RefactorMenu_ExtractMethod" xml:space="preserve">
+    <value>&amp;Mメソッド抽出</value>
+  </data>
+  <data name="ContextMenu_GoToImplementation" xml:space="preserve">
+    <value>&amp;i実装へ移動...</value>
+  </data>
+  <data name="ContextMenu_FindSymbol" xml:space="preserve">
+    <value>&amp;sシンボルを検索...</value>
+  </data>
+  <data name="ContextMenu_FindAllReferences" xml:space="preserve">
+    <value>&amp;F全ての参照を検索...</value>
+  </data>
+  <data name="CodeExplorer_Inspect" xml:space="preserve">
+    <value>&amp;I検査</value>
+  </data>
+  <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
+    <value>&amp;Pパラメーター再配置</value>
+  </data>
+  <data name="RubberduckMenu" xml:space="preserve">
+    <value>Ru&amp;bberduck</value>
+  </data>
+  <data name="RubberduckMenu_About" xml:space="preserve">
+    <value>&amp;Aアバウト</value>
+  </data>
+  <data name="RubberduckMenu_CodeExplorer" xml:space="preserve">
+    <value>&amp;Cコードエクスプローラー</value>
+  </data>
+  <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
+    <value>&amp;Iコード検査</value>
+  </data>
+  <data name="RubberduckMenu_Refactor" xml:space="preserve">
+    <value>&amp;Rリファクタリング</value>
+  </data>
+  <data name="RubberduckMenu_SourceControl" xml:space="preserve">
+    <value>&amp;Sソース管理</value>
+  </data>
+  <data name="RubberduckMenu_TodoItems" xml:space="preserve">
+    <value>&amp;DTODO項目</value>
+  </data>
+  <data name="RubberduckMenu_UnitTests" xml:space="preserve">
+    <value>&amp;Tユニットテスト</value>
+  </data>
+  <data name="TestMenu_RunAllTests" xml:space="preserve">
+    <value>&amp;R全てのテストを実行</value>
+  </data>
+  <data name="TestMenu_TextExplorer" xml:space="preserve">
+    <value>&amp;Tテストエクスプローラー</value>
+  </data>
+  <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
+    <value>{0} （解析中...）</value>
+  </data>
+  <data name="FormContextMenu_Rename" xml:space="preserve">
+    <value>&amp;n名前の変更</value>
+  </data>
+  <data name="CodeExplorer_Refresh" xml:space="preserve">
+    <value>&amp;eリフレッシュ</value>
+  </data>
+  <data name="CodeExplorer_New" xml:space="preserve">
+    <value>&amp;N新規</value>
+  </data>
+  <data name="CodeExplorer_AddFormText" xml:space="preserve">
+    <value>&amp;fユーザーフォーム</value>
+  </data>
+  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
+    <value>&amp;S標準モジュール（.bas）</value>
+  </data>
+  <data name="CodeExplorer_AddClassText" xml:space="preserve">
+    <value>&amp;Cクラスモジュール（.cls）</value>
+  </data>
+  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
+    <value>&amp;Tテストモジュール</value>
+  </data>
+  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
+    <value>&amp;A全ての実装を検索...</value>
+  </data>
+  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
+    <value>&amp;F全ての参照を検索...</value>
+  </data>
+  <data name="CodeExplorer_ShowDesignerText" xml:space="preserve">
+    <value>&amp;Sデザイナーを表示する</value>
+  </data>
+  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
+    <value>&amp;Tテストを全て実行する</value>
+  </data>
+  <data name="TestExplorer_AddButtonText" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="TestExplorer_RunAllTests" xml:space="preserve">
+    <value>全てのテスト</value>
+  </data>
+  <data name="TestExplorer_RunButtonText" xml:space="preserve">
+    <value>実行</value>
+  </data>
+  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
+    <value>不合格テスト</value>
+  </data>
+  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
+    <value>実行されていないテスト</value>
+  </data>
+  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
+    <value>合格テスト</value>
+  </data>
+  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
+    <value>選択中のテスト</value>
+  </data>
+  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
+    <value>Tテストメソッド</value>
+  </data>
+  <data name="SourceControl_AttributesFile" xml:space="preserve">
+    <value>属性ファイル</value>
+  </data>
+  <data name="SourceControl_DefaultRepoLocationLabel" xml:space="preserve">
+    <value>リポジトリのデフォルトパス</value>
+  </data>
+  <data name="SourceControl_ExcludedChanges" xml:space="preserve">
+    <value>無視されている変更項目</value>
+  </data>
+  <data name="Navigation" xml:space="preserve">
+    <value>ナビゲーション</value>
+  </data>
+  <data name="PromptLoadDefaultConfig" xml:space="preserve">
+    <value>{0}
+{1}
+
+{2}
+
+デフォールト設定を回復しますか？
+注意：カスタム設定が全て上書きされます。 古い設定ファイルは「{3}」に保存されます。</value>
+  </data>
+  <data name="SourceControl_MergeFormInstructions" xml:space="preserve">
+    <value>ソースとデスティネーションブランチを選択してください。</value>
+  </data>
+  <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
+    <value>未同期コミット</value>
+  </data>
+  <data name="SourceControl_UntrackedFiles" xml:space="preserve">
+    <value>追跡されていないブランチ</value>
+  </data>
+  <data name="SourceControl_DestinationLabel" xml:space="preserve">
+    <value>デスティネーション</value>
+  </data>
+  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>メソッド「{0}」は「{1}.{2}」を実装しています。インターフェースメンバーの名前を変更しますか？</value>
+  </data>
+  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>選択したパラメーターをダブルクリックやボタン操作で削除か回復することが出来ます。</value>
+  </data>
+  <data name="SettingsCaption_TodoSettings" xml:space="preserve">
+    <value>TODO設定</value>
+  </data>
+  <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>パラメーターを選択し、ドラッグやボタンで並び替えます。</value>
+  </data>
+  <data name="AllReferences_NoneFound" xml:space="preserve">
+    <value>識別子「{0}」は参照されていません。</value>
+  </data>
+  <data name="TodoSettings_TokenLabel" xml:space="preserve">
+    <value>文字列：</value>
+  </data>
+  <data name="CodeExplorer_Navigate" xml:space="preserve">
+    <value>&amp;vナビゲート</value>
+  </data>
+  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
+    <value>フォルダの切り替え</value>
+  </data>
+  <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
+    <value>言語チャンス</value>
+  </data>
+  <data name="SourceControl_PublishedBranchesLabel" xml:space="preserve">
+    <value>公開ブランチ</value>
+  </data>
+  <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
+    <value>未公開ブランチ</value>
+  </data>
+  <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
+    <value>現在のプロジェクトから新規リポジトリを作成する</value>
+  </data>
+  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
+    <value>リスト：</value>
+  </data>
+  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
+    <value>名前「{0}」は同じスコープ内にある「{1}」を同じです。それでも名前の変更を実行しますか？</value>
+  </data>
+  <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
+    <value>保留中の変更を更新します</value>
+  </data>
+  <data name="SourceControl_IncludedChanges" xml:space="preserve">
+    <value>含まれている変更項目</value>
+  </data>
+  <data name="SourceControl_IncomingCommits" xml:space="preserve">
+    <value>入コミット</value>
+  </data>
+  <data name="SourceControl_OutgoingCommits" xml:space="preserve">
+    <value>出コミット</value>
+  </data>
+  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
+    <value>保守性と読みやすさに関する問題</value>
+  </data>
+  <data name="SourceControl_IgnoreFile" xml:space="preserve">
+    <value>Ignoreファイル</value>
+  </data>
+  <data name="DeclarationType_Project" xml:space="preserve">
+    <value>プロジェクト</value>
+  </data>
+  <data name="CodeInspections_GoToolTip" xml:space="preserve">
+    <value>選択中の問題へ移動</value>
+  </data>
+  <data name="RubberduckMenu_Navigate" xml:space="preserve">
+    <value>&amp;vナビゲート</value>
+  </data>
+  <data name="Language_DE" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SourceControl_DeleteButton" xml:space="preserve">
+    <value>ブランチ削除</value>
+  </data>
+  <data name="EncapsulateField_ParameterName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SelectAll_Button" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SmartIndenterMenu" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IndentCurrentProject" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ExtractInterface_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RefactorMenu_IntroduceField" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EncapsulateField_TitleText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IntroduceParameter_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DeselectAll_Button" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplace_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ImplementInterface_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EncapsulateField_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Language_JA" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ParserProgress_ShowDetails" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EncapsulateField_PropertyName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplace_FindButtonLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RefactorMenu_EncapsulateField" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IndentCurrentProcedure" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EncapsulateField_InstructionText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IndentCurrentModule" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FindSymbolDialog_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EncapsulateField_Preview" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EncapsulateField_SetterType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IntroduceField_Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
+    <value />
+  </data>
+</root>

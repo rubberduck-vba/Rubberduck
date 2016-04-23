@@ -1,22 +1,26 @@
 using System;
+using System.Collections.Generic;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
-    public class ExtractMethodPresenterFactory : IRefactoringPresenterFactory<ExtractMethodPresenter>
+    public class ExtractMethodPresenterFactory : IRefactoringPresenterFactory<IExtractMethodPresenter>
     {
         private readonly IActiveCodePaneEditor _editor;
-        private readonly Declarations _declarations;
+        private readonly IEnumerable<Declaration> _declarations;
+        private readonly IIndenter _indenter;
 
-        public ExtractMethodPresenterFactory(IActiveCodePaneEditor editor, Declarations declarations)
+        public ExtractMethodPresenterFactory(IActiveCodePaneEditor editor, IEnumerable<Declaration> declarations, IIndenter indenter)
         {
             _editor = editor;
             _declarations = declarations;
+            _indenter = indenter;
         }
 
-        public ExtractMethodPresenter Create()
+        public IExtractMethodPresenter Create()
         {
             var selection = _editor.GetSelection();
             if (selection == null)
@@ -35,7 +39,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
 
             var view = new ExtractMethodDialog();
-            return new ExtractMethodPresenter(view, model);
+            return new ExtractMethodPresenter(view, model, _indenter);
         }
     }
 }
