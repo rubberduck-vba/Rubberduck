@@ -385,11 +385,13 @@ namespace Rubberduck.Parsing.Symbols
             var rParenMethod = Context.GetType().GetMethod("RPAREN");
             if (rParenMethod == null)
             {
-                return false;
+                _isArray = false;
+                return _isArray.Value;
             }
 
             var declaration = (dynamic)Context;
-            return declaration.LPAREN() != null && declaration.RPAREN() != null;
+            _isArray = declaration.LPAREN() != null && declaration.RPAREN() != null;
+            return _isArray.Value;
         }
 
         private bool? _isTypeSpecified;
@@ -425,15 +427,18 @@ namespace Rubberduck.Parsing.Symbols
             var method = Context.GetType().GetMethod("asTypeClause");
             if (method == null)
             {
+                _isTypeSpecified = false;
                 return false;
             }
 
             if (HasTypeHint())
             {
+                _isTypeSpecified = false;
                 return true;
             }
 
-            return ((dynamic)Context).asTypeClause() is VBAParser.AsTypeClauseContext;
+            _isTypeSpecified = ((dynamic)Context).asTypeClause() is VBAParser.AsTypeClauseContext;
+            return _isTypeSpecified.Value;
         }
 
         private bool? _hasTypeHint;
@@ -471,19 +476,22 @@ namespace Rubberduck.Parsing.Symbols
             if (Context == null || _neverHinted.Any(item => DeclarationType.HasFlag(item)))
             {
                 token = null;
-                return false;
+                _hasTypeHint = false;
+                return _hasTypeHint.Value;
             }
 
             try
             {
                 var hint = ((dynamic) Context).typeHint();
                 token = hint == null ? null : hint.GetText();
-                return hint != null;
+                _hasTypeHint = hint != null;
+                return _hasTypeHint.Value;
             }
             catch (RuntimeBinderException)
             {
                 token = null;
-                return false;
+                _hasTypeHint = false;
+                return _hasTypeHint.Value;
             }
         }
 
