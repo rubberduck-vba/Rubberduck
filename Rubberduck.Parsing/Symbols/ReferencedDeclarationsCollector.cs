@@ -156,7 +156,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 else
                 {
-                    moduleDeclaration = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
+                    moduleDeclaration = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes, isExposed: true);
                 }
                 yield return moduleDeclaration;
                 

@@ -83,12 +83,20 @@ namespace Rubberduck.Parsing.Binding
             var referencedProject = _declarationFinder.FindReferencedProject(_project, name);
             if (referencedProject != null)
             {
-                return new SimpleNameExpression(referencedProject, ExpressionClassification.Type, _expression);
+                return new SimpleNameExpression(referencedProject, ExpressionClassification.Project, _expression);
+            }
+            if (_module.DeclarationType == DeclarationType.ProceduralModule && _module.IdentifierName == name)
+            {
+                return new SimpleNameExpression(_module, ExpressionClassification.ProceduralModule, _expression);
             }
             var proceduralModuleEnclosingProject = _declarationFinder.FindModuleEnclosingProjectWithoutEnclosingModule(_project, _module, name, DeclarationType.ProceduralModule);
             if (proceduralModuleEnclosingProject != null)
             {
                 return new SimpleNameExpression(proceduralModuleEnclosingProject, ExpressionClassification.ProceduralModule, _expression);
+            }
+            if (_module.DeclarationType == DeclarationType.ClassModule && _module.IdentifierName == name)
+            {
+                return new SimpleNameExpression(_module, ExpressionClassification.Type, _expression);
             }
             var classEnclosingProject = _declarationFinder.FindModuleEnclosingProjectWithoutEnclosingModule(_project, _module, name, DeclarationType.ClassModule);
             if (classEnclosingProject != null)

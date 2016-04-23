@@ -51,27 +51,27 @@ namespace Rubberduck.Parsing.Symbols
 
             _moduleTypes = new[]
             {
-                DeclarationType.ProceduralModule, 
+                DeclarationType.ProceduralModule,
                 DeclarationType.ClassModule,
             };
 
             _memberTypes = new[]
             {
-                DeclarationType.Procedure, 
-                DeclarationType.Function, 
-                DeclarationType.PropertyGet, 
-                DeclarationType.PropertyLet, 
-                DeclarationType.PropertySet, 
+                DeclarationType.Procedure,
+                DeclarationType.Function,
+                DeclarationType.PropertyGet,
+                DeclarationType.PropertyLet,
+                DeclarationType.PropertySet,
             };
 
             _returningMemberTypes = new[]
             {
                 DeclarationType.Function,
-                DeclarationType.PropertyGet, 
+                DeclarationType.PropertyGet,
             };
 
             _moduleDeclaration = finder.MatchName(_qualifiedModuleName.ComponentName)
-                .SingleOrDefault(item => 
+                .SingleOrDefault(item =>
                     (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule)
                 && item.QualifiedName.QualifiedModuleName.Equals(_qualifiedModuleName));
 
@@ -91,10 +91,10 @@ namespace Rubberduck.Parsing.Symbols
         public void SetCurrentScope(string memberName, DeclarationType type)
         {
             Debug.WriteLine("Setting current scope: {0} ({1}) in thread {2}", memberName, type, Thread.CurrentThread.ManagedThreadId);
-            
-            _currentParent = _declarationFinder.MatchName(memberName).SingleOrDefault(item => 
+
+            _currentParent = _declarationFinder.MatchName(memberName).SingleOrDefault(item =>
                 item.QualifiedName.QualifiedModuleName == _qualifiedModuleName && item.DeclarationType == type);
-            
+
             _currentScope = _declarationFinder.MatchName(memberName).SingleOrDefault(item =>
                 item.QualifiedName.QualifiedModuleName == _qualifiedModuleName && item.DeclarationType == type) ?? _moduleDeclaration;
 
@@ -175,7 +175,7 @@ namespace Rubberduck.Parsing.Symbols
         private void ResolveType(VBAParser.ICS_S_MembersCallContext context)
         {
             var first = context.iCS_S_VariableOrProcedureCall().ambiguousIdentifier();
-            var identifiers = new[] {first}.Concat(context.iCS_S_MemberCall()
+            var identifiers = new[] { first }.Concat(context.iCS_S_MemberCall()
                         .Select(member => member.iCS_S_VariableOrProcedureCall().ambiguousIdentifier()))
                         .ToList();
             ResolveType(identifiers);
@@ -310,7 +310,7 @@ namespace Rubberduck.Parsing.Symbols
             // if there are 3 identifiers, type isn't in current project.
             if (identifiers.Count != 3)
             {
-                
+
                 var moduleMatch = _declarationFinder.FindStdModule(projectMatch, identifiers[0].GetText());
                 if (moduleMatch != null)
                 {
@@ -369,15 +369,15 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return sameScopeUdt.Single();
             }
-            
+
             // todo: try to resolve identifier using referenced projects
 
             return null;
         }
-        
+
         private Declaration ResolveType(Declaration parent)
         {
-            if (parent != null && (parent.DeclarationType == DeclarationType.UserDefinedType 
+            if (parent != null && (parent.DeclarationType == DeclarationType.UserDefinedType
                                 || parent.DeclarationType == DeclarationType.Enumeration
                                 || parent.DeclarationType == DeclarationType.Project
                                 || parent.DeclarationType == DeclarationType.ProceduralModule
@@ -415,7 +415,7 @@ namespace Rubberduck.Parsing.Symbols
                 result = matches.Where(item =>
                     _moduleTypes.Contains(item.DeclarationType)
                     && item.ProjectId == _currentScope.ProjectId)
-                .ToList();                
+                .ToList();
             }
 
             if (!result.Any())
@@ -425,7 +425,7 @@ namespace Rubberduck.Parsing.Symbols
                 .ToList();
             }
 
-            return result.Count == 1 ? result.SingleOrDefault() : 
+            return result.Count == 1 ? result.SingleOrDefault() :
                 matches.Count == 1 ? matches.First() : null;
         }
 
@@ -527,6 +527,10 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return null;
             }
+            if (ComesFromImplementsStmt(context))
+            {
+                return null;
+            }
 
             var identifierContext = context.ambiguousIdentifier();
             var fieldCall = context.dictionaryCallStmt();
@@ -543,6 +547,19 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             return result;
+        }
+
+        private bool ComesFromImplementsStmt(RuleContext context)
+        {
+            if (context == null)
+            {
+                return false;
+            }
+            if (context.Parent is VBAParser.ImplementsStmtContext)
+            {
+                return true;
+            }
+            return ComesFromImplementsStmt(context.Parent);
         }
 
         private Declaration ResolveInternal(VBAParser.DictionaryCallStmtContext fieldCall, Declaration parent, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
@@ -632,7 +649,7 @@ namespace Rubberduck.Parsing.Symbols
                 // if we're on the left side of an assignment, only the last memberCall is the assignment target.
                 var isLast = memberCall.Equals(lastCall);
                 var accessor = isLast
-                    ? accessorType 
+                    ? accessorType
                     : ContextAccessorType.GetValueOrReference;
                 var isTarget = isLast && isAssignmentTarget;
 
@@ -744,7 +761,7 @@ namespace Rubberduck.Parsing.Symbols
                 member.AddReference(reference);
                 _alreadyResolved.Add(reference.Context);
             }
-            
+
             var fieldCall = context.dictionaryCallStmt();
             ResolveInternal(fieldCall, member);
         }
@@ -803,7 +820,7 @@ namespace Rubberduck.Parsing.Symbols
 
             if (parent == null)
             {
-                
+
 
                 return;
             }
@@ -981,7 +998,7 @@ namespace Rubberduck.Parsing.Symbols
             var boundExpression = _bindingService.Resolve(_moduleDeclaration, _currentScope, context.valueStmt().GetText());
             if (boundExpression != null)
             {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.valueStmt(), declaration));                
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.valueStmt(), declaration));
             }
         }
 
@@ -1031,7 +1048,7 @@ namespace Rubberduck.Parsing.Symbols
             return parent;
         }
 
-        private Declaration FindLocalScopeDeclaration(string identifierName, Declaration localScope = null, bool parentContextIsVariableOrProcedureCall = false, bool isAssignmentTarget= false)
+        private Declaration FindLocalScopeDeclaration(string identifierName, Declaration localScope = null, bool parentContextIsVariableOrProcedureCall = false, bool isAssignmentTarget = false)
         {
             if (localScope == null)
             {
@@ -1048,7 +1065,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var results = matches.Where(item =>
                 ((localScope.Equals(item.ParentDeclaration)
-                || (item.DeclarationType == DeclarationType.Parameter && localScope.Equals(item.ParentScopeDeclaration))) 
+                || (item.DeclarationType == DeclarationType.Parameter && localScope.Equals(item.ParentScopeDeclaration)))
                 || (isAssignmentTarget && item.Scope == localScope.Scope))
                 && localScope.Context.GetSelection().Contains(item.Selection)
                 && !_moduleTypes.Contains(item.DeclarationType))
@@ -1106,7 +1123,7 @@ namespace Rubberduck.Parsing.Symbols
 
             if (matches.Any() && !result.Any())
             {
-                result = matches.Where(item => 
+                result = matches.Where(item =>
                     (localScope != null && localScope.Equals(item.ParentScopeDeclaration))
                     && !item.DeclarationType.HasFlag(DeclarationType.Member)
                     && !_moduleTypes.Contains(item.DeclarationType)
@@ -1187,7 +1204,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasStringQualifier = false)
         {
-            var matches = _declarationFinder.MatchName(identifierName).Where(item => 
+            var matches = _declarationFinder.MatchName(identifierName).Where(item =>
                 item.DeclarationType == DeclarationType.Project
                 || item.DeclarationType == DeclarationType.ProceduralModule
                 || IsStaticClass(item)
@@ -1227,7 +1244,7 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     if (localScope == null)
                     {
-                        var names = new[] {"Global", "_Global"};
+                        var names = new[] { "Global", "_Global" };
                         var appGlobals = temp.Where(item => names.Contains(item.ParentDeclaration.IdentifierName)).ToList();
                         if (appGlobals.Count == 1)
                         {
@@ -1276,7 +1293,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private bool IsUserDeclarationInProjectScope(Declaration item)
         {
-            var isNonMemberUserDeclaration = !item.IsBuiltIn 
+            var isNonMemberUserDeclaration = !item.IsBuiltIn
                 && !item.DeclarationType.HasFlag(DeclarationType.Member)
                 // events can't be called outside the class they're declared in, exclude them as well:
                 && item.DeclarationType != DeclarationType.Event;
@@ -1288,7 +1305,7 @@ namespace Rubberduck.Parsing.Symbols
         private static bool IsBuiltInDeclarationInScope(Declaration item, Declaration localScope)
         {
             var isBuiltInNonEvent = item.IsBuiltIn && item.DeclarationType != DeclarationType.Event;
-            
+
             // if localScope is null, we can only resolve to a global:
             // note: built-in declarations are designed that way
             var isBuiltInGlobal = localScope == null && item.Accessibility == Accessibility.Global;
@@ -1296,7 +1313,7 @@ namespace Rubberduck.Parsing.Symbols
             // if localScope is not null, we can resolve to any public or global in that scope:
             var isInLocalScope = (localScope != null && item.Accessibility == Accessibility.Global
                 && localScope.IdentifierName == item.ParentDeclaration.IdentifierName)
-                || (localScope != null && localScope.QualifiedName.QualifiedModuleName.Component != null 
+                || (localScope != null && localScope.QualifiedName.QualifiedModuleName.Component != null
                     && localScope.QualifiedName.QualifiedModuleName.Component.Type == Microsoft.Vbe.Interop.vbext_ComponentType.vbext_ct_Document
                  && item.Accessibility == Accessibility.Public && item.ParentDeclaration.DeclarationType == localScope.DeclarationType);
 

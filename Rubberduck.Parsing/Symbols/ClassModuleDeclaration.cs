@@ -8,13 +8,16 @@ namespace Rubberduck.Parsing.Symbols
 {
     public sealed class ClassModuleDeclaration : Declaration
     {
+        private readonly bool _isExposed;
+
         public ClassModuleDeclaration(
                   QualifiedMemberName qualifiedName,
                   Declaration projectDeclaration,
                   string name,
                   bool isBuiltIn,
                   IEnumerable<IAnnotation> annotations,
-                  Attributes attributes)
+                  Attributes attributes,
+                  bool isExposed = false)
             : base(
                   qualifiedName,
                   projectDeclaration,
@@ -30,6 +33,7 @@ namespace Rubberduck.Parsing.Symbols
                   annotations,
                   attributes)
         {
+            _isExposed = isExposed;
         }
 
         /// <summary>
@@ -40,12 +44,13 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
+                bool attributeIsExposed = false;
                 IEnumerable<string> value;
                 if (Attributes.TryGetValue("VB_Exposed", out value))
                 {
-                    return value.Single() == "True";
+                    attributeIsExposed = value.Single() == "True";
                 }
-                return false;
+                return _isExposed || attributeIsExposed;
             }
         }
     }

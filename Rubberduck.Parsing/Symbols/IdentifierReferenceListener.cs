@@ -1,3 +1,4 @@
+using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
@@ -130,7 +131,26 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterICS_S_MembersCall(VBAParser.ICS_S_MembersCallContext context)
         {
+            // Implement statements are handled separately and directly through new binding expressions.
+            // Prevent duplicate references.
+            if (ComesFromImplementsStmt(context))
+            {
+                return;
+            }
             _resolver.Resolve(context);
+        }
+
+        private bool ComesFromImplementsStmt(RuleContext context)
+        {
+            if (context == null)
+            {
+                return false;
+            }
+            if (context.Parent is VBAParser.ImplementsStmtContext)
+            {
+                return true;
+            }
+            return ComesFromImplementsStmt(context.Parent);
         }
 
         public override void EnterICS_S_DictionaryCall(VBAParser.ICS_S_DictionaryCallContext context)

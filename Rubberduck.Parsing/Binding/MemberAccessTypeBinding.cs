@@ -152,7 +152,7 @@ namespace Rubberduck.Parsing.Binding
             }
             else
             {
-                var proceduralModuleInReferencedProject = _declarationFinder.FindModuleReferencedProject(_project, referencedProject, _module, name, DeclarationType.ClassModule);
+                var proceduralModuleInReferencedProject = _declarationFinder.FindModuleReferencedProject(_project, _module, referencedProject, name, DeclarationType.ProceduralModule);
                 if (proceduralModuleInReferencedProject != null)
                 {
                     return new MemberAccessExpression(proceduralModuleInReferencedProject, ExpressionClassification.ProceduralModule, GetExpressionContext(), lExpression);

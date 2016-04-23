@@ -106,6 +106,10 @@ namespace Rubberduck.Parsing.Symbols
 
         public static Declaration GetMemberModule(Declaration member)
         {
+            if (member.ParentDeclaration == null)
+            {
+                return null;
+            }
             if (member.ParentDeclaration.DeclarationType == DeclarationType.ClassModule || member.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule)
             {
                 return member.ParentDeclaration;
@@ -115,6 +119,10 @@ namespace Rubberduck.Parsing.Symbols
 
         public static Declaration GetMemberProject(Declaration declaration)
         {
+            if (declaration.ParentDeclaration == null)
+            {
+                return null;
+            }
             if (declaration.ParentDeclaration.DeclarationType == DeclarationType.Project)
             {
                 return declaration.ParentDeclaration;
