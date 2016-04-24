@@ -923,7 +923,12 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                ResolveType(asType.complexType());
+                string typeExpression = asType.complexType().GetText();
+                var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentScope, typeExpression);
+                if (boundExpression != null)
+                {
+                    _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(asType.complexType(), declaration));
+                }
             }
 
             if (type != null && reference != null)

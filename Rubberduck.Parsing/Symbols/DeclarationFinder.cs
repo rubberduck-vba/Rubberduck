@@ -27,8 +27,8 @@ namespace Rubberduck.Parsing.Symbols
             {
                 IdentifierName = declaration.Project != null &&
                         declaration.DeclarationType.HasFlag(DeclarationType.Project)
-                            ? declaration.Project.Name
-                            : declaration.IdentifierName
+                            ? declaration.Project.Name.ToLower()
+                            : declaration.IdentifierName.ToLower()
             })
             .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
         }
@@ -72,22 +72,28 @@ namespace Rubberduck.Parsing.Symbols
                 declaration.DeclarationType.HasFlag(DeclarationType.Enumeration));
         }
 
+        public bool IsMatch(string declarationName, string potentialMatchName)
+        {
+            return string.Equals(declarationName, potentialMatchName, StringComparison.OrdinalIgnoreCase);
+        }
+
         public IEnumerable<Declaration> MatchName(string name)
         {
+            string normalizedName = name.ToLower();
             Declaration[] result;
-            if (_declarationsByName.TryGetValue(name, out result))
+            if (_declarationsByName.TryGetValue(normalizedName, out result))
             {
                 return result;
             }
-            if (_declarationsByName.TryGetValue("_" + name, out result))
+            if (_declarationsByName.TryGetValue("_" + normalizedName, out result))
             {
                 return result;
             }
-            if (_declarationsByName.TryGetValue("I" + name, out result))
+            if (_declarationsByName.TryGetValue("i" + normalizedName, out result))
             {
                 return result;
             }
-            if (_declarationsByName.TryGetValue("_I" + name, out result))
+            if (_declarationsByName.TryGetValue("_i" + normalizedName, out result))
             {
                 return result;
             }
@@ -240,9 +246,8 @@ namespace Rubberduck.Parsing.Symbols
         {
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m =>
-                m.ParentScopeDeclaration != null
+                m.DeclarationType.HasFlag(memberType)
                 && Declaration.GetMemberModule(m).DeclarationType.HasFlag(moduleType)
-                && m.DeclarationType.HasFlag(memberType)
                 && Declaration.GetMemberProject(m).Equals(callingProject)
                 && !callingModule.Equals(Declaration.GetMemberModule(m)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
@@ -272,7 +277,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberReferencedProjectInModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration memberModule, string memberName, DeclarationType memberType)
         {
-            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => memberModule.Equals(Declaration.GetMemberModule(p)) && p.DeclarationType.HasFlag(memberType));
+            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType) && memberModule.Equals(Declaration.GetMemberModule(p)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
             return match;
@@ -280,7 +285,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberReferencedProject(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration referencedProject, string memberName, DeclarationType memberType)
         {
-            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => referencedProject.Equals(Declaration.GetMemberProject(p)) && p.DeclarationType.HasFlag(memberType));
+            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType) && referencedProject.Equals(Declaration.GetMemberProject(p)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
             return match;

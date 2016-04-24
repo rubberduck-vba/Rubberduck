@@ -123,7 +123,7 @@ namespace Rubberduck.Parsing.Binding
                 the enclosing project or a referenced project. In this case, the member access expression is 
                 classified as a project and refers to the specified project. 
              */
-            if (_project.Project.Name == name)
+            if (_declarationFinder.IsMatch(_project.Project.Name, name))
             {
                 return new MemberAccessExpression(_project, ExpressionClassification.Project, GetExpressionContext(), lExpression);
             }
@@ -144,7 +144,7 @@ namespace Rubberduck.Parsing.Binding
              */
             if (lExpressionIsEnclosingProject)
             {
-                if (_module.DeclarationType == DeclarationType.ProceduralModule && _module.IdentifierName == name)
+                if (_module.DeclarationType == DeclarationType.ProceduralModule && _declarationFinder.IsMatch(_module.IdentifierName, name))
                 {
                     return new MemberAccessExpression(_module, ExpressionClassification.ProceduralModule, GetExpressionContext(), lExpression);
                 }
@@ -173,7 +173,7 @@ namespace Rubberduck.Parsing.Binding
              */
             if (lExpressionIsEnclosingProject)
             {
-                if (_module.DeclarationType == DeclarationType.ClassModule && _module.IdentifierName == name)
+                if (_module.DeclarationType == DeclarationType.ClassModule && _declarationFinder.IsMatch(_module.IdentifierName, name))
                 {
                     return new MemberAccessExpression(_module, ExpressionClassification.Type, GetExpressionContext(), lExpression);
                 }

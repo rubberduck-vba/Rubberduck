@@ -71,11 +71,11 @@ namespace Rubberduck.Parsing.Binding
                 Enclosing Project namespace: The enclosing project itself or a procedural module contained in 
                 the enclosing project.  
             */
-            if (_project.Project.Name == name)
+            if (_declarationFinder.IsMatch(_project.Project.Name, name))
             {
                 return new SimpleNameExpression(_project, ExpressionClassification.Project, _expression);
             }
-            if (_module.DeclarationType == DeclarationType.ProceduralModule && _module.IdentifierName == name)
+            if (_module.DeclarationType == DeclarationType.ProceduralModule && _declarationFinder.IsMatch(_module.IdentifierName, name))
             {
                 return new SimpleNameExpression(_module, ExpressionClassification.ProceduralModule, _expression);
             }

@@ -512,7 +512,8 @@ identifier : IDENTIFIER | keyword;
 
 asTypeClause : AS whiteSpace? (NEW whiteSpace)? type (whiteSpace? fieldLength)?;
 
-baseType : BOOLEAN | BYTE | COLLECTION | DATE | DOUBLE | INTEGER | LONG | SINGLE | STRING | VARIANT;
+// Why include COLLECTION? That's not a base type?
+baseType : BOOLEAN | BYTE | CURRENCY | COLLECTION | DATE | DOUBLE | INTEGER | LONG | LONGLONG | LONGPTR | SINGLE | STRING | VARIANT;
 
 comparisonOperator : LT | LEQ | GT | GEQ | EQ | NEQ | IS | LIKE;
 
