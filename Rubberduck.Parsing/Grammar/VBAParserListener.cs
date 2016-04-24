@@ -1938,6 +1938,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitBlockStmt([NotNull] VBAParser.BlockStmtContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.withStmtExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWithStmtExpression([NotNull] VBAParser.WithStmtExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.withStmtExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWithStmtExpression([NotNull] VBAParser.WithStmtExpressionContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.eraseStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

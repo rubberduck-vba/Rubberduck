@@ -20,5 +20,12 @@ namespace Rubberduck.Parsing.Symbols
             Visit((dynamic)expression.LExpression, referenceCreator);
             expression.ReferencedDeclaration.AddReference(referenceCreator(expression.ReferencedDeclaration));
         }
+
+        private void Visit(NewExpression expression, Func<Declaration, IdentifierReference> referenceCreator)
+        {
+            // We don't need to add a reference to the NewExpression's referenced declaration since that's covered
+            // with its TypeExpression.
+            Visit((dynamic)expression.TypeExpression, referenceCreator);
+        }
     }
 }

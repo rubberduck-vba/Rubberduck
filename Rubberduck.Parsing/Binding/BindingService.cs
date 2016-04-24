@@ -6,13 +6,24 @@ namespace Rubberduck.Parsing.Binding
 {
     public sealed class BindingService
     {
+        private readonly IBindingContext _defaultBindingContext;
         private readonly IBindingContext _typedBindingContext;
         private readonly IBindingContext _procedurePointerBindingContext;
 
-        public BindingService(IBindingContext typedBindingContext, IBindingContext procedurePointerBindingContext)
+        public BindingService(
+            IBindingContext defaultBindingContext,
+            IBindingContext typedBindingContext, 
+            IBindingContext procedurePointerBindingContext)
         {
+            _defaultBindingContext = defaultBindingContext;
             _typedBindingContext = typedBindingContext;
             _procedurePointerBindingContext = procedurePointerBindingContext;
+        }
+
+        public IBoundExpression ResolveDefault(Declaration module, Declaration parent, string expression)
+        {
+            var expr = Parse(expression);
+            return _defaultBindingContext.Resolve(module, parent, expr);
         }
 
         public IBoundExpression ResolveType(Declaration module, Declaration parent, string expression)

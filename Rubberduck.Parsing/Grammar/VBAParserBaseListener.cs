@@ -2218,6 +2218,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitBlockStmt([NotNull] VBAParser.BlockStmtContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.withStmtExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterWithStmtExpression([NotNull] VBAParser.WithStmtExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.withStmtExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitWithStmtExpression([NotNull] VBAParser.WithStmtExpressionContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.eraseStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

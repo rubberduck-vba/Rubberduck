@@ -77,7 +77,10 @@ namespace Rubberduck.Parsing.Symbols
 
             SetCurrentScope();
 
-            _bindingService = new BindingService(new TypeBindingContext(_declarationFinder), new ProcedurePointerBindingContext(_declarationFinder));
+            _bindingService = new BindingService(
+                new DefaultBindingContext(_declarationFinder),
+                new TypeBindingContext(_declarationFinder),
+                new ProcedurePointerBindingContext(_declarationFinder));
             _boundExpressionVisitor = new BoundExpressionVisitor();
         }
 
@@ -104,42 +107,30 @@ namespace Rubberduck.Parsing.Symbols
         public void EnterWithBlock(VBAParser.WithStmtContext context)
         {
             Declaration qualifier = null;
-            IdentifierReference reference = null;
+            var expr = context.withStmtExpression();
 
-            if (context.NEW() == null)
+            if (expr.NEW() == null)
             {
-                // with block is using an identifier declared elsewhere.
-                qualifier = ResolveInternal(context.implicitCallStmt_InStmt(), _currentScope, ContextAccessorType.GetValueOrReference);
+                // TODO: Use valueStmt and resolve expression.
+                qualifier = ResolveInternal(expr.implicitCallStmt_InStmt(), _currentScope, ContextAccessorType.GetValueOrReference);
             }
             else
             {
-                // with block is using an anonymous declaration.
-                // i.e. object variable reference is held by the with block itself.
-                var typeContext = context.type();
-                var baseTypeContext = typeContext.baseType();
-                if (baseTypeContext != null)
+                var type = expr.type();
+                var baseType = type.baseType();
+                if (baseType == null)
                 {
-                    var collectionContext = baseTypeContext.COLLECTION();
-                    if (collectionContext != null)
+                    string typeExpression = expr.GetText();
+                    var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentScope, typeExpression);
+                    if (boundExpression != null)
                     {
-                        // object variable is a built-in Collection class instance
-                        qualifier = _declarationFinder.MatchName(collectionContext.GetText())
-                            .Single(item => item.IsBuiltIn && item.DeclarationType == DeclarationType.ClassModule);
-                        reference = CreateReference(baseTypeContext, qualifier);
+                        _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(type.complexType(), declaration));
+                        qualifier = boundExpression.ReferencedDeclaration;
                     }
                 }
-                else
-                {
-                    qualifier = ResolveType(typeContext.complexType());
-                }
             }
-
-            if (qualifier != null && reference != null)
-            {
-                qualifier.AddReference(reference);
-                _alreadyResolved.Add(reference.Context);
-            }
-            _withBlockQualifiers.Push(qualifier); // note: pushes null if unresolved
+            // note: pushes null if unresolved
+            _withBlockQualifiers.Push(qualifier);
         }
 
         public void ExitWithBlock()
@@ -906,35 +897,16 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-
-            Declaration type = null;
-            IdentifierReference reference = null;
-
             var baseType = asType.baseType();
             if (baseType != null)
             {
-                var collection = baseType.COLLECTION();
-                if (collection != null)
-                {
-                    // bug: this code assumes user code has no Collection class...
-                    type = _declarationFinder.MatchName(collection.GetText()).SingleOrDefault(item => item.IsBuiltIn && item.DeclarationType == DeclarationType.ClassModule);
-                    reference = CreateReference(baseType, type);
-                }
+                return;
             }
-            else
+            string typeExpression = asType.complexType().GetText();
+            var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentScope, typeExpression);
+            if (boundExpression != null)
             {
-                string typeExpression = asType.complexType().GetText();
-                var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentScope, typeExpression);
-                if (boundExpression != null)
-                {
-                    _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(asType.complexType(), declaration));
-                }
-            }
-
-            if (type != null && reference != null)
-            {
-                type.AddReference(reference);
-                _alreadyResolved.Add(reference.Context);
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(asType.complexType(), declaration));
             }
         }
 

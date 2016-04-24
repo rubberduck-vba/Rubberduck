@@ -447,11 +447,14 @@ whileWendStmt :
 
 widthStmt : WIDTH whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt;
 
-withStmt : 
-	WITH whiteSpace (implicitCallStmt_InStmt | (NEW whiteSpace type)) endOfStatement 
+withStmt :
+    // TODO: withStmtExpression should actually be an expression, i.e. a valueStmt.
+	WITH whiteSpace withStmtExpression endOfStatement 
 	block? 
 	END_WITH
 ;
+
+withStmtExpression : (implicitCallStmt_InStmt | (NEW whiteSpace type));
 
 writeStmt : WRITE whiteSpace fileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
 
@@ -512,8 +515,7 @@ identifier : IDENTIFIER | keyword;
 
 asTypeClause : AS whiteSpace? (NEW whiteSpace)? type (whiteSpace? fieldLength)?;
 
-// Why include COLLECTION? That's not a base type?
-baseType : BOOLEAN | BYTE | CURRENCY | COLLECTION | DATE | DOUBLE | INTEGER | LONG | LONGLONG | LONGPTR | SINGLE | STRING | VARIANT;
+baseType : BOOLEAN | BYTE | CURRENCY | DATE | DOUBLE | INTEGER | LONG | LONGLONG | LONGPTR | SINGLE | STRING | VARIANT;
 
 comparisonOperator : LT | LEQ | GT | GEQ | EQ | NEQ | IS | LIKE;
 
