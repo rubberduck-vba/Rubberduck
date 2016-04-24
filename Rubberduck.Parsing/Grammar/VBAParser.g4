@@ -402,8 +402,6 @@ typeStmt :
 
 typeStmt_Element : identifier (whiteSpace? LPAREN (whiteSpace? subscripts)? whiteSpace? RPAREN)? (whiteSpace asTypeClause)? endOfStatement;
 
-typeOfStmt : TYPEOF whiteSpace valueStmt (whiteSpace IS whiteSpace type)?;
-
 unloadStmt : UNLOAD whiteSpace valueStmt;
 
 unlockStmt : UNLOCK whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? valueStmt (whiteSpace TO whiteSpace valueStmt)?)?;
@@ -413,7 +411,7 @@ valueStmt :
 	| implicitCallStmt_InStmt                                                                       # vsICS
 	| LPAREN whiteSpace? valueStmt whiteSpace? RPAREN                                               # vsStruct
 	| NEW whiteSpace? valueStmt                                                                     # vsNew
-	| typeOfStmt                                                                                    # vsTypeOf
+	| typeOfIsExpression                                                                            # vsTypeOf
 	| midStmt                                                                                       # vsMid
 	| ADDRESSOF whiteSpace? valueStmt                                                               # vsAddressOf
 	| implicitCallStmt_InStmt whiteSpace? ASSIGN whiteSpace? valueStmt                              # vsAssign
@@ -432,6 +430,8 @@ valueStmt :
 	| valueStmt whiteSpace? EQV whiteSpace? valueStmt                                               # vsEqv
 	| valueStmt whiteSpace? IMP whiteSpace? valueStmt                                               # vsImp
 ;
+
+typeOfIsExpression : TYPEOF whiteSpace valueStmt (whiteSpace IS whiteSpace type)?;
 
 variableStmt : (DIM | STATIC | visibility) whiteSpace (WITHEVENTS whiteSpace)? variableListStmt;
 

@@ -301,6 +301,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitImplicitCallStmt_InStmt([NotNull] VBAParser.ImplicitCallStmt_InStmtContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.typeOfIsExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTypeOfIsExpression([NotNull] VBAParser.TypeOfIsExpressionContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.moduleDeclarations"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -812,13 +819,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitOutputList_Expression([NotNull] VBAParser.OutputList_ExpressionContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.typeOfStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitTypeOfStmt([NotNull] VBAParser.TypeOfStmtContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>optionPrivateModuleStmt</c>

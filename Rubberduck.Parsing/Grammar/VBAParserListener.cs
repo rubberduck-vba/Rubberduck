@@ -456,6 +456,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitImplicitCallStmt_InStmt([NotNull] VBAParser.ImplicitCallStmt_InStmtContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.typeOfIsExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTypeOfIsExpression([NotNull] VBAParser.TypeOfIsExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.typeOfIsExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTypeOfIsExpression([NotNull] VBAParser.TypeOfIsExpressionContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.moduleDeclarations"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1267,17 +1278,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitOutputList_Expression([NotNull] VBAParser.OutputList_ExpressionContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.typeOfStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterTypeOfStmt([NotNull] VBAParser.TypeOfStmtContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.typeOfStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitTypeOfStmt([NotNull] VBAParser.TypeOfStmtContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>optionPrivateModuleStmt</c>
