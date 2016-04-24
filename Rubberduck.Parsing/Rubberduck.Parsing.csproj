@@ -77,7 +77,10 @@
     <Compile Include="Binding\BindingService.cs" />
     <Compile Include="Binding\BoundExpression.cs" />
     <Compile Include="Binding\MemberAccessExpression.cs" />
+    <Compile Include="Binding\MemberAccessProcedurePointerBinding.cs" />
     <Compile Include="Binding\MemberAccessTypeBinding.cs" />
+    <Compile Include="Binding\ProcedurePointerBindingContext.cs" />
+    <Compile Include="Binding\SimpleNameProcedurePointerBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
     <Compile Include="Binding\ExpressionName.cs" />
@@ -194,6 +197,7 @@
     <Compile Include="Preprocessing\VBAPreprocessorVisitor.cs" />
     <Compile Include="StaTaskScheduler.cs" />
     <Compile Include="Symbols\AccessibilityCheck.cs" />
+    <Compile Include="Symbols\BindingMigrationHelper.cs" />
     <Compile Include="Symbols\BoundExpressionVisitor.cs" />
     <Compile Include="Symbols\ClassModuleDeclaration.cs" />
     <Compile Include="Symbols\CommentExtensions.cs" />

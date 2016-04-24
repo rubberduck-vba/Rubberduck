@@ -65,6 +65,10 @@ namespace Rubberduck.Parsing.Binding
         {
             IBoundExpression boundExpression = null;
             var lExpression = _lExpressionBinding.Resolve();
+            if (lExpression == null)
+            {
+                return null;
+            }
             string unrestrictedName = GetUnrestrictedName();
             boundExpression = ResolveLExpressionIsProject(lExpression, unrestrictedName);
             if (boundExpression != null)

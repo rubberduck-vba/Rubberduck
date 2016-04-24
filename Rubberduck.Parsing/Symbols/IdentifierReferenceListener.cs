@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
@@ -133,24 +134,11 @@ namespace Rubberduck.Parsing.Symbols
         {
             // Implement statements are handled separately and directly through new binding expressions.
             // Prevent duplicate references.
-            if (ComesFromImplementsStmt(context))
+            if (BindingMigrationHelper.HasParent<VBAParser.ImplementsStmtContext>(context))
             {
                 return;
             }
             _resolver.Resolve(context);
-        }
-
-        private bool ComesFromImplementsStmt(RuleContext context)
-        {
-            if (context == null)
-            {
-                return false;
-            }
-            if (context.Parent is VBAParser.ImplementsStmtContext)
-            {
-                return true;
-            }
-            return ComesFromImplementsStmt(context.Parent);
         }
 
         public override void EnterICS_S_DictionaryCall(VBAParser.ICS_S_DictionaryCallContext context)
@@ -188,6 +176,11 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterImplementsStmt(VBAParser.ImplementsStmtContext context)
         {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterVsAddressOf(VBAParser.VsAddressOfContext context)
+        {        
             _resolver.Resolve(context);
         }
 

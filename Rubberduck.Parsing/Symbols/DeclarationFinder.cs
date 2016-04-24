@@ -26,7 +26,7 @@ namespace Rubberduck.Parsing.Symbols
             _declarationsByName = declarations.GroupBy(declaration => new
             {
                 IdentifierName = declaration.Project != null &&
-                        declaration.DeclarationType == DeclarationType.Project
+                        declaration.DeclarationType.HasFlag(DeclarationType.Project)
                             ? declaration.Project.Name
                             : declaration.IdentifierName
             })
@@ -67,9 +67,9 @@ namespace Rubberduck.Parsing.Symbols
         public IEnumerable<Declaration> MatchTypeName(string name)
         {
             return MatchName(name).Where(declaration =>
-                declaration.DeclarationType == DeclarationType.ClassModule ||
-                declaration.DeclarationType == DeclarationType.UserDefinedType ||
-                declaration.DeclarationType == DeclarationType.Enumeration);
+                declaration.DeclarationType.HasFlag(DeclarationType.ClassModule) ||
+                declaration.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ||
+                declaration.DeclarationType.HasFlag(DeclarationType.Enumeration));
         }
 
         public IEnumerable<Declaration> MatchName(string name)
@@ -99,7 +99,7 @@ namespace Rubberduck.Parsing.Symbols
             Declaration result = null;
             try
             {
-                result = MatchName(name).SingleOrDefault(project => project.DeclarationType == DeclarationType.Project
+                result = MatchName(name).SingleOrDefault(project => project.DeclarationType.HasFlag(DeclarationType.Project)
                     && (currentScope == null || project.ProjectId == currentScope.ProjectId));
             }
             catch (InvalidOperationException exception)
@@ -116,7 +116,7 @@ namespace Rubberduck.Parsing.Symbols
             try
             {
                 var matches = MatchName(name);
-                result = matches.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.ProceduralModule
+                result = matches.SingleOrDefault(declaration => declaration.DeclarationType.HasFlag(DeclarationType.ProceduralModule)
                     && (parent == null || parent.Equals(declaration.ParentDeclaration))
                     && (includeBuiltIn || !declaration.IsBuiltIn));
             }
@@ -134,7 +134,7 @@ namespace Rubberduck.Parsing.Symbols
             try
             {
                 var matches = MatchName(name);
-                result = matches.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.UserDefinedType
+                result = matches.SingleOrDefault(declaration => declaration.DeclarationType.HasFlag(DeclarationType.UserDefinedType)
                     && (parent == null || parent.Equals(declaration.ParentDeclaration))
                     && (includeBuiltIn || !declaration.IsBuiltIn));
             }
@@ -152,7 +152,7 @@ namespace Rubberduck.Parsing.Symbols
             try
             {
                 var matches = MatchName(name);
-                result = matches.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Enumeration
+                result = matches.SingleOrDefault(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Enumeration)
                     && (parent == null || parent.Equals(declaration.ParentDeclaration))
                     && (includeBuiltIn || !declaration.IsBuiltIn));
             }
@@ -174,7 +174,7 @@ namespace Rubberduck.Parsing.Symbols
             Declaration result = null;
             try
             {
-                result = MatchName(name).SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.ClassModule
+                result = MatchName(name).SingleOrDefault(declaration => declaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
                     && parent.Equals(declaration.ParentDeclaration)
                     && (includeBuiltIn || !declaration.IsBuiltIn));
             }
@@ -188,7 +188,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindReferencedProject(Declaration callingProject, string referencedProjectName)
         {
-            return FindInReferencedProjectByPriority(callingProject, referencedProjectName, p => p.DeclarationType == DeclarationType.Project);
+            return FindInReferencedProjectByPriority(callingProject, referencedProjectName, p => p.DeclarationType.HasFlag(DeclarationType.Project));
         }
 
         public Declaration FindModuleEnclosingProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, string calleeModuleName, DeclarationType moduleType)
@@ -233,9 +233,16 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberEnclosedProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
         {
+            return FindMemberEnclosedProjectWithoutEnclosingModule(callingProject, callingModule, callingParent, memberName, memberType, DeclarationType.Module);
+        }
+
+        public Declaration FindMemberEnclosedProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType, DeclarationType moduleType)
+        {
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m =>
-                m.DeclarationType.HasFlag(memberType)
+                m.ParentScopeDeclaration != null
+                && Declaration.GetMemberModule(m).DeclarationType.HasFlag(moduleType)
+                && m.DeclarationType.HasFlag(memberType)
                 && Declaration.GetMemberProject(m).Equals(callingProject)
                 && !callingModule.Equals(Declaration.GetMemberModule(m)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));

@@ -103,6 +103,31 @@ namespace RubberduckTests.Binding
                 Assert.AreEqual(1, declaration.References.Count());
             }
 
+            [TestMethod]
+            public void ReferencedProjectType()
+            {
+                var builder = new MockVbeBuilder();
+                const string REFERENCED_PROJECT_NAME = "AnyReferencedProjectName";
+
+                var referencedProjectBuilder = builder.ProjectBuilder(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH, vbext_ProjectProtection.vbext_pp_none);
+                referencedProjectBuilder.AddComponent("AnyName", vbext_ComponentType.vbext_ct_StdModule, CreateEnumType(BINDING_TARGET_NAME));
+                var referencedProject = referencedProjectBuilder.Build();
+                builder.AddProject(referencedProject);
+
+                var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", vbext_ProjectProtection.vbext_pp_none);
+                enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, REFERENCED_PROJECT_FILEPATH);
+                enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, "Implements " + BINDING_TARGET_NAME);
+                var enclosingProject = enclosingProjectBuilder.Build();
+                builder.AddProject(enclosingProject);
+
+                var vbe = builder.Build();
+                var state = Parse(vbe);
+
+                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Enumeration && d.IdentifierName == BINDING_TARGET_NAME);
+
+                Assert.AreEqual(1, declaration.References.Count());
+            }
+
             private static RubberduckParserState Parse(Moq.Mock<VBE> vbe)
             {
                 var parser = MockParser.Create(vbe.Object, new RubberduckParserState());

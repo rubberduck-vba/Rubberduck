@@ -7,16 +7,24 @@ namespace Rubberduck.Parsing.Binding
     public sealed class BindingService
     {
         private readonly IBindingContext _typedBindingContext;
+        private readonly IBindingContext _procedurePointerBindingContext;
 
-        public BindingService(IBindingContext typedBindingContext)
+        public BindingService(IBindingContext typedBindingContext, IBindingContext procedurePointerBindingContext)
         {
             _typedBindingContext = typedBindingContext;
+            _procedurePointerBindingContext = procedurePointerBindingContext;
         }
 
-        public IBoundExpression Resolve(Declaration module, Declaration parent, string expression)
+        public IBoundExpression ResolveType(Declaration module, Declaration parent, string expression)
         {
             var expr = Parse(expression);
             return _typedBindingContext.Resolve(module, parent, expr);
+        }
+
+        public IBoundExpression ResolveProcedurePointer(Declaration module, Declaration parent, string expression)
+        {
+            var expr = Parse(expression);
+            return _procedurePointerBindingContext.Resolve(module, parent, expr);
         }
 
         private VBAExpressionParser.ExpressionContext Parse(string expression)

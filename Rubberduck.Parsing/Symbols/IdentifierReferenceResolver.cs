@@ -77,7 +77,7 @@ namespace Rubberduck.Parsing.Symbols
 
             SetCurrentScope();
 
-            _bindingService = new BindingService(new TypeBindingContext(_declarationFinder));
+            _bindingService = new BindingService(new TypeBindingContext(_declarationFinder), new ProcedurePointerBindingContext(_declarationFinder));
             _boundExpressionVisitor = new BoundExpressionVisitor();
         }
 
@@ -527,7 +527,11 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return null;
             }
-            if (ComesFromImplementsStmt(context))
+            if (BindingMigrationHelper.HasParent<VBAParser.ImplementsStmtContext>(context))
+            {
+                return null;
+            }
+            if (BindingMigrationHelper.HasParent<VBAParser.VsAddressOfContext>(context))
             {
                 return null;
             }
@@ -547,19 +551,6 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             return result;
-        }
-
-        private bool ComesFromImplementsStmt(RuleContext context)
-        {
-            if (context == null)
-            {
-                return false;
-            }
-            if (context.Parent is VBAParser.ImplementsStmtContext)
-            {
-                return true;
-            }
-            return ComesFromImplementsStmt(context.Parent);
         }
 
         private Declaration ResolveInternal(VBAParser.DictionaryCallStmtContext fieldCall, Declaration parent, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
@@ -995,7 +986,16 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ImplementsStmtContext context)
         {
-            var boundExpression = _bindingService.Resolve(_moduleDeclaration, _currentScope, context.valueStmt().GetText());
+            var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentScope, context.valueStmt().GetText());
+            if (boundExpression != null)
+            {
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.valueStmt(), declaration));
+            }
+        }
+
+        public void Resolve(VBAParser.VsAddressOfContext context)
+        {
+            var boundExpression = _bindingService.ResolveProcedurePointer(_moduleDeclaration, _currentScope, context.valueStmt().GetText());
             if (boundExpression != null)
             {
                 _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.valueStmt(), declaration));
@@ -1042,7 +1042,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var matches = _declarationFinder.MatchName(identifierName);
             var parent = matches.SingleOrDefault(item =>
-                (item.DeclarationType == DeclarationType.Function || item.DeclarationType == DeclarationType.PropertyGet)
+                (item.DeclarationType.HasFlag(DeclarationType.Function) || item.DeclarationType.HasFlag(DeclarationType.PropertyGet))
                 && item.Equals(localScope));
 
             return parent;
@@ -1055,7 +1055,7 @@ namespace Rubberduck.Parsing.Symbols
                 localScope = _currentScope;
             }
 
-            if (_moduleTypes.Contains(localScope.DeclarationType) || localScope.DeclarationType == DeclarationType.Project)
+            if (_moduleTypes.Contains(localScope.DeclarationType) || localScope.DeclarationType.HasFlag(DeclarationType.Project))
             {
                 // "local scope" is not intended to be module level.
                 return null;
@@ -1065,7 +1065,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var results = matches.Where(item =>
                 ((localScope.Equals(item.ParentDeclaration)
-                || (item.DeclarationType == DeclarationType.Parameter && localScope.Equals(item.ParentScopeDeclaration)))
+                || (item.DeclarationType.HasFlag(DeclarationType.Parameter) && localScope.Equals(item.ParentScopeDeclaration)))
                 || (isAssignmentTarget && item.Scope == localScope.Scope))
                 && localScope.Context.GetSelection().Contains(item.Selection)
                 && !_moduleTypes.Contains(item.DeclarationType))
@@ -1100,12 +1100,12 @@ namespace Rubberduck.Parsing.Symbols
                 localScope = _currentScope;
             }
 
-            if (localScope.DeclarationType == DeclarationType.Project)
+            if (localScope.DeclarationType.HasFlag(DeclarationType.Project))
             {
                 return null;
             }
 
-            if (identifierName == "Me" && _moduleDeclaration.DeclarationType == DeclarationType.ClassModule)
+            if (identifierName == "Me" && _moduleDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule))
             {
                 return _moduleDeclaration;
             }

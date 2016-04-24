@@ -4,11 +4,11 @@
     {
         public static bool IsAccessible(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration callee)
         {
-            if (callee.DeclarationType == DeclarationType.Project)
+            if (callee.DeclarationType.HasFlag(DeclarationType.Project))
             {
                 return true;
             }
-            if (callee.DeclarationType == DeclarationType.ClassModule || callee.DeclarationType == DeclarationType.ProceduralModule)
+            if (callee.DeclarationType.HasFlag(DeclarationType.Module))
             {
                 return IsModuleAccessible(callingProject, callingModule, callee);
             }
@@ -28,7 +28,7 @@
             {
                 return validAccessibility;
             }
-            if (calleeModule.DeclarationType == DeclarationType.ProceduralModule)
+            if (calleeModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule))
             {
                 bool isPrivate = ((ProceduralModuleDeclaration)calleeModule).IsPrivateModule;
                 return validAccessibility && !isPrivate;
@@ -56,17 +56,17 @@
                 return true;
             }
             var callerIsSubroutineOrProperty = callingParent.DeclarationType.HasFlag(DeclarationType.Property)
-                || callingParent.DeclarationType == DeclarationType.Function
-                || callingParent.DeclarationType == DeclarationType.Procedure;
+                || callingParent.DeclarationType.HasFlag(DeclarationType.Function)
+                || callingParent.DeclarationType.HasFlag(DeclarationType.Procedure);
             var calleeHasSameParent = callingParent.Equals(callingParent.ParentScopeDeclaration);
-            if (callerIsSubroutineOrProperty)
+            if (callerIsSubroutineOrProperty && calleeHasSameParent)
             {
                 return calleeHasSameParent;
             }
             var memberModule = Declaration.GetMemberModule(calleeMember);
-            if (IsModuleAccessible(callingProject, callingModule, memberModule))
+            if (IsModuleAccessible(callingProject, callingModule, memberModule) && calleeMember.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
             {
-                if (calleeMember.DeclarationType == DeclarationType.EnumerationMember || calleeMember.DeclarationType == DeclarationType.UserDefinedTypeMember)
+                if (calleeMember.DeclarationType.HasFlag(DeclarationType.EnumerationMember) || calleeMember.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember))
                 {
                     return IsValidAccessibility(calleeMember.ParentDeclaration);
                 }
