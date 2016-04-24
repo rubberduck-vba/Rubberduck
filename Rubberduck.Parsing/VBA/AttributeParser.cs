@@ -36,8 +36,8 @@ namespace Rubberduck.Parsing.VBA
             File.Delete(path);
 
             var type = component.Type == vbext_ComponentType.vbext_ct_StdModule
-                ? DeclarationType.Module
-                : DeclarationType.Class;
+                ? DeclarationType.ProceduralModule
+                : DeclarationType.ClassModule;
             var listener = new AttributeListener(Tuple.Create(component.Name, type));
 
             var stream = new AntlrInputStream(code);
@@ -88,7 +88,7 @@ namespace Rubberduck.Parsing.VBA
                 {typeof(VBAParser.PropertySetStmtContext), DeclarationType.PropertySet}
             };
 
-            public override void EnterAmbiguousIdentifier(VBAParser.AmbiguousIdentifierContext context)
+            public override void EnterIdentifier(VBAParser.IdentifierContext context)
             {
                 DeclarationType type;
                 if (!ScopingContextTypes.TryGetValue(context.Parent.GetType(), out type))
@@ -102,7 +102,7 @@ namespace Rubberduck.Parsing.VBA
             public override void EnterSubStmt(VBAParser.SubStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
-                _currentScope = Tuple.Create(context.ambiguousIdentifier().GetText(), DeclarationType.Procedure);
+                _currentScope = Tuple.Create(context.identifier().GetText(), DeclarationType.Procedure);
             }
 
             public override void ExitSubStmt(VBAParser.SubStmtContext context)
@@ -116,7 +116,7 @@ namespace Rubberduck.Parsing.VBA
             public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
-                _currentScope = Tuple.Create(context.ambiguousIdentifier().GetText(), DeclarationType.Function);
+                _currentScope = Tuple.Create(context.identifier().GetText(), DeclarationType.Function);
             }
 
             public override void ExitFunctionStmt(VBAParser.FunctionStmtContext context)
@@ -130,7 +130,7 @@ namespace Rubberduck.Parsing.VBA
             public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
-                _currentScope = Tuple.Create(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyGet);
+                _currentScope = Tuple.Create(context.identifier().GetText(), DeclarationType.PropertyGet);
             }
 
             public override void ExitPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
@@ -144,7 +144,7 @@ namespace Rubberduck.Parsing.VBA
             public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
-                _currentScope = Tuple.Create(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyLet);
+                _currentScope = Tuple.Create(context.identifier().GetText(), DeclarationType.PropertyLet);
             }
 
             public override void ExitPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
@@ -158,7 +158,7 @@ namespace Rubberduck.Parsing.VBA
             public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
             {
                 _currentScopeAttributes = new Attributes();
-                _currentScope = Tuple.Create(context.ambiguousIdentifier().GetText(), DeclarationType.PropertySet);
+                _currentScope = Tuple.Create(context.identifier().GetText(), DeclarationType.PropertySet);
             }
 
             public override void ExitPropertySetStmt(VBAParser.PropertySetStmtContext context)
@@ -178,7 +178,7 @@ namespace Rubberduck.Parsing.VBA
 
             public override void ExitModuleConfigElement(VBAParser.ModuleConfigElementContext context)
             {
-                var name = context.ambiguousIdentifier().GetText();
+                var name = context.identifier().GetText();
                 var literal = context.literal();
                 var values = new[] { literal == null ? string.Empty : literal.GetText()};
                 _currentScopeAttributes.Add(name, values);

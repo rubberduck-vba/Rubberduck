@@ -54,9 +54,9 @@ namespace Rubberduck.UI.Command.Refactorings
                             t.ProjectId == Vbe.ActiveVBProject.HelpFile &&
                             new[]
                                 {
-                                    DeclarationType.Class,
+                                    DeclarationType.ClassModule,
                                     DeclarationType.Document,
-                                    DeclarationType.Module,
+                                    DeclarationType.ProceduralModule,
                                     DeclarationType.UserForm
                                 }.Contains(t.DeclarationType));
         }

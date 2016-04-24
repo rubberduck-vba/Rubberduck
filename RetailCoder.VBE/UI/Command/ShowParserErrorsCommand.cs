@@ -78,9 +78,9 @@ namespace Rubberduck.UI.Command
 
             var result = _state.AllUserDeclarations.SingleOrDefault(item => item.ProjectId == component.Collection.Parent.HelpFile
                                                              && item.QualifiedName.QualifiedModuleName.ComponentName == component.Name
-                                                             && (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module));
+                                                             && (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule));
 
-            var declaration = new Declaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name), project, project.Scope, component.Name, false, false, Accessibility.Global, DeclarationType.Module, false);
+            var declaration = new Declaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name), project, project.Scope, component.Name, false, false, Accessibility.Global, DeclarationType.ProceduralModule, false);
             return result ?? declaration; // module isn't in parser state - give it a dummy declaration, just so the ViewModel has something to chew on
         }
     }

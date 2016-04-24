@@ -26,7 +26,7 @@ namespace Rubberduck.Parsing.VBA
             _state = state;
         }
 
-        public ParserState State { get {return _state; } }
+        public ParserState State { get { return _state; } }
     }
 
     public class ParseRequestEventArgs : EventArgs
@@ -57,7 +57,7 @@ namespace Rubberduck.Parsing.VBA
     public sealed class RubberduckParserState
     {
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
-        private readonly IDictionary<string,Func<VBProject>> _projects = new Dictionary<string,Func<VBProject>>();
+        private readonly IDictionary<string, Func<VBProject>> _projects = new Dictionary<string, Func<VBProject>>();
 
         private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>> _declarations =
             new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<Declaration, byte>>();
@@ -79,7 +79,7 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly ConcurrentDictionary<QualifiedModuleName, IList<IAnnotation>> _annotations =
             new ConcurrentDictionary<QualifiedModuleName, IList<IAnnotation>>();
-        
+
         private readonly ConcurrentDictionary<QualifiedModuleName, SyntaxErrorException> _moduleExceptions =
             new ConcurrentDictionary<QualifiedModuleName, SyntaxErrorException>();
 
@@ -94,7 +94,7 @@ namespace Rubberduck.Parsing.VBA
             var handler = StatusMessageUpdate;
             if (handler != null)
             {
-                var args=  new RubberduckStatusMessageEventArgs(message);
+                var args = new RubberduckStatusMessageEventArgs(message);
                 handler.Invoke(this, args);
             }
         }
@@ -175,27 +175,11 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleState(VBComponent component, ParserState state, SyntaxErrorException parserError = null)
         {
-            if (AllUserDeclarations.Any())
-            {
-                var projectId = component.Collection.Parent.HelpFile;
-                var project = AllUserDeclarations.SingleOrDefault(item =>
-                    item.DeclarationType == DeclarationType.Project && item.ProjectId == projectId);
-
-                if (project == null)
-                {
-                    // ghost component shouldn't even exist
-                    ClearDeclarations(component);
-                    Status = EvaluateParserState();
-                    return;
-                }
-            }
             var key = new QualifiedModuleName(component);
             _moduleStates.AddOrUpdate(key, state, (c, s) => state);
             _moduleExceptions.AddOrUpdate(key, parserError, (c, e) => parserError);
-
             Debug.WriteLine("Module '{0}' state is changing to '{1}' (thread {2})", key.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
             OnModuleStateChanged(component, state);
-
             Status = EvaluateParserState();
         }
 
@@ -203,6 +187,10 @@ namespace Rubberduck.Parsing.VBA
         private ParserState EvaluateParserState()
         {
             var moduleStates = _moduleStates.Values.ToList();
+            if (moduleStates.Count == 0)
+            {
+                return default(ParserState);
+            }
             if (States.Any(state => moduleStates.All(module => module == state)))
             {
                 // all modules have the same state - we're done here:
@@ -219,7 +207,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 // any module not ready means at least one of them has work in progress;
                 // report the least advanced of them, except if that's 'Pending':
-                return moduleStates.Except(new[]{ParserState.Pending}).Min();
+                return moduleStates.Except(new[] { ParserState.Pending }).Min();
             }
 
             return default(ParserState); // default value is 'Pending'.
@@ -231,18 +219,18 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private ParserState _status;
-        public ParserState Status 
-        { 
+        public ParserState Status
+        {
             get { return _status; }
             private set
             {
                 if (_status != value)
                 {
-                    _status = value; 
+                    _status = value;
                     Debug.WriteLine("ParserState changed to '{0}', raising OnStateChanged", value);
                     OnStateChanged(_status);
                 }
-            } 
+            }
         }
 
         private IEnumerable<QualifiedContext> _obsoleteCallContexts = new List<QualifiedContext>();
@@ -339,12 +327,12 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// Gets a copy of the collected declarations, including the built-in ones.
         /// </summary>
-        public IReadOnlyList<Declaration> AllDeclarations 
+        public IReadOnlyList<Declaration> AllDeclarations
         {
             get
             {
                 return _declarations.Values.SelectMany(declarations => declarations.Keys).ToList();
-            } 
+            }
         }
 
         /// <summary>
@@ -354,7 +342,7 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                return _declarations.Values.Where(declarations => 
+                return _declarations.Values.Where(declarations =>
                         !declarations.Any(declaration => declaration.Key.IsBuiltIn))
                     .SelectMany(declarations => declarations.Keys)
                     .ToList();
@@ -417,7 +405,7 @@ namespace Rubberduck.Parsing.VBA
         public bool ClearDeclarations(VBComponent component)
         {
             var match = new QualifiedModuleName(component);
-            var keys = _declarations.Keys.Where(kvp => kvp.Equals(match)); 
+            var keys = _declarations.Keys.Where(kvp => kvp.Equals(match));
 
             var success = true;
             var declarationsRemoved = 0;
@@ -475,7 +463,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             return _parseTrees.Count == expected.Count;
-        }        
+        }
 
         public TokenStreamRewriter GetRewriter(VBComponent component)
         {
@@ -519,7 +507,7 @@ namespace Rubberduck.Parsing.VBA
             var key = new QualifiedModuleName(component);
             return IsModified(key);
         }
-        
+
         public bool IsModified(QualifiedModuleName key)
         {
             int current;
@@ -550,14 +538,14 @@ namespace Rubberduck.Parsing.VBA
                 var matches = AllDeclarations
                     .Where(item => item.DeclarationType != DeclarationType.Project &&
                                    item.DeclarationType != DeclarationType.ModuleOption &&
-                                   item.DeclarationType != DeclarationType.Class &&
-                                   item.DeclarationType != DeclarationType.Module &&
+                                   item.DeclarationType != DeclarationType.ClassModule &&
+                                   item.DeclarationType != DeclarationType.ProceduralModule &&
                                    (IsSelectedDeclaration(selection, item) ||
                                     item.References.Any(reference => IsSelectedReference(selection, reference))));
                 try
                 {
                     var match = matches.SingleOrDefault() ?? AllUserDeclarations
-                        .SingleOrDefault(item => (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module)
+                        .SingleOrDefault(item => (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule)
                                 && item.QualifiedName.QualifiedModuleName.Equals(selection.QualifiedName));
                     _selectedDeclaration = match;
                 }
@@ -590,8 +578,7 @@ namespace Rubberduck.Parsing.VBA
         public void RemoveBuiltInDeclarations(Reference reference)
         {
             var projectName = reference.Name;
-            var path = reference.FullPath;
-            var key = new QualifiedModuleName(projectName, path, projectName);
+            var key = new QualifiedModuleName(projectName, reference.FullPath, projectName);
             ConcurrentDictionary<Declaration, byte> items;
             if (!_declarations.TryRemove(key, out items))
             {

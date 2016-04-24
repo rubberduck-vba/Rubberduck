@@ -1266,7 +1266,7 @@ End Sub";
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = newName };
-            model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.Class && i.IdentifierName == "Class1");
+            model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "Class1");
 
             //SetupFactory
             var factory = SetupFactory(model);

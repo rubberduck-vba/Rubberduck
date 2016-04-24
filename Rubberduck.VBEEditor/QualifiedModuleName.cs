@@ -69,7 +69,7 @@ namespace Rubberduck.VBEditor
             _project = null;
             _projectName = projectName;
             _projectPath = projectPath;
-            _projectId = _projectName.GetHashCode().ToString();
+            _projectId = (_projectName + ";" + _projectPath).GetHashCode().ToString();
             _componentName = componentName;
             _component = null;
             _contentHashCode = 0;
