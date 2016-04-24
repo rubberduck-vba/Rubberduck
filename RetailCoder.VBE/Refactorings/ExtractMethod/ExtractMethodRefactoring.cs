@@ -135,7 +135,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 .Where(e => model.Method.Parameters.All(param => param.Name != e.IdentifierName))
                 .Select(e => e.Context)
                 .Cast<VBAParser.VariableSubStmtContext>()
-                .Select(e => "    " + Tokens.Dim + ' ' + e.ambiguousIdentifier().GetText() +
+                .Select(e => "    " + Tokens.Dim + ' ' + e.identifier().GetText() +
                     (e.LPAREN() == null
                         ? string.Empty
                         : e.LPAREN().GetText() + (e.subscripts() == null ? string.Empty : e.subscripts().GetText()) + e.RPAREN().GetText()) + ' ' +

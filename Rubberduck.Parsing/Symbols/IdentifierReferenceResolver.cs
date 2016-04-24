@@ -174,9 +174,9 @@ namespace Rubberduck.Parsing.Symbols
 
         private void ResolveType(VBAParser.ICS_S_MembersCallContext context)
         {
-            var first = context.iCS_S_VariableOrProcedureCall().ambiguousIdentifier();
+            var first = context.iCS_S_VariableOrProcedureCall().identifier();
             var identifiers = new[] { first }.Concat(context.iCS_S_MemberCall()
-                        .Select(member => member.iCS_S_VariableOrProcedureCall().ambiguousIdentifier()))
+                        .Select(member => member.iCS_S_VariableOrProcedureCall().identifier()))
                         .ToList();
             ResolveType(identifiers);
         }
@@ -188,7 +188,7 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var identifiers = context.ambiguousIdentifier()
+            var identifiers = context.identifier()
                 .Select(identifier => identifier)
                 .ToList();
 
@@ -208,7 +208,7 @@ namespace Rubberduck.Parsing.Symbols
             return ResolveType(identifiers);
         }
 
-        private Declaration ResolveType(IList<VBAParser.AmbiguousIdentifierContext> identifiers)
+        private Declaration ResolveType(IList<VBAParser.IdentifierContext> identifiers)
         {
             var first = identifiers[0].GetText();
             var projectMatch = _declarationFinder.FindProject(_currentScope, first);
@@ -431,8 +431,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private static readonly Type[] IdentifierContexts =
         {
-            typeof (VBAParser.AmbiguousIdentifierContext),
-            typeof (VBAParser.CertainIdentifierContext)
+            typeof (VBAParser.IdentifierContext),
         };
 
         private Declaration ResolveInternal(ParserRuleContext callSiteContext, Declaration localScope, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, VBAParser.DictionaryCallStmtContext fieldCall = null, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
@@ -536,13 +535,13 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var identifierContext = context.ambiguousIdentifier();
+            var identifierContext = context.identifier();
             var fieldCall = context.dictionaryCallStmt();
 
             var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
             if (result != null && localScope != null /*&& !localScope.DeclarationType.HasFlag(DeclarationType.Member)*/)
             {
-                var reference = CreateReference(context.ambiguousIdentifier(), result, isAssignmentTarget);
+                var reference = CreateReference(context.identifier(), result, isAssignmentTarget);
                 if (reference != null)
                 {
                     result.AddReference(reference);
@@ -566,14 +565,14 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var fieldName = fieldCall.ambiguousIdentifier().GetText();
+            var fieldName = fieldCall.identifier().GetText();
             var result = _declarationFinder.MatchName(fieldName).SingleOrDefault(declaration => declaration.ParentScope == parentType.Scope);
             if (result == null)
             {
                 return null;
             }
 
-            var identifierContext = fieldCall.ambiguousIdentifier();
+            var identifierContext = fieldCall.identifier();
             var reference = CreateReference(identifierContext, result, isAssignmentTarget, hasExplicitLetStatement);
             result.AddReference(reference);
             _alreadyResolved.Add(reference.Context);
@@ -588,7 +587,7 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var identifierContext = context.ambiguousIdentifier();
+            var identifierContext = context.identifier();
             var fieldCall = context.dictionaryCallStmt();
             // todo: understand WTF [baseType] is doing in that grammar rule...
 
@@ -600,7 +599,7 @@ namespace Rubberduck.Parsing.Symbols
             var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
             if (result != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
             {
-                localScope.AddMemberCall(CreateReference(context.ambiguousIdentifier(), result));
+                localScope.AddMemberCall(CreateReference(context.identifier(), result));
             }
 
             return result;
@@ -691,7 +690,7 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var identifierContext = context.certainIdentifier();
+            var identifierContext = context.identifier();
             var callee = ResolveInternal(identifierContext, _currentScope);
             if (callee == null)
             {
@@ -731,7 +730,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 parentType = ResolveType(_withBlockQualifiers.Peek());
                 parentScope = ResolveInternal(context.implicitCallStmt_InStmt(), parentType, ContextAccessorType.GetValueOrReference)
-                              ?? ResolveInternal(context.ambiguousIdentifier(), parentType);
+                              ?? ResolveInternal(context.identifier(), parentType);
                 parentType = ResolveType(parentScope);
             }
             if (parentType == null)
@@ -739,7 +738,7 @@ namespace Rubberduck.Parsing.Symbols
                 return;
             }
 
-            var identifierContext = context.ambiguousIdentifier();
+            var identifierContext = context.identifier();
             var member = _declarationFinder.MatchName(identifierContext.GetText())
                 .SingleOrDefault(item => item.QualifiedName.QualifiedModuleName == parentType.QualifiedName.QualifiedModuleName
                 && item.DeclarationType != DeclarationType.Event);
@@ -748,7 +747,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var reference = CreateReference(identifierContext, member);
 
-                parentScope.AddMemberCall(CreateReference(context.ambiguousIdentifier(), member));
+                parentScope.AddMemberCall(CreateReference(context.identifier(), member));
                 member.AddReference(reference);
                 _alreadyResolved.Add(reference.Context);
             }
@@ -799,7 +798,7 @@ namespace Rubberduck.Parsing.Symbols
 
             if (parent != null && parent.Context != null)
             {
-                var identifierContext = ((dynamic)parent.Context).ambiguousIdentifier() as VBAParser.AmbiguousIdentifierContext;
+                var identifierContext = ((dynamic)parent.Context).identifier() as VBAParser.IdentifierContext;
 
                 var parentReference = CreateReference(identifierContext, parent);
                 if (parentReference != null)
@@ -850,7 +849,7 @@ namespace Rubberduck.Parsing.Symbols
             _alreadyResolved.Add(context);
         }
 
-        private VBAParser.AmbiguousIdentifierContext GetMemberCallIdentifierContext(VBAParser.ICS_S_MemberCallContext callContext)
+        private VBAParser.IdentifierContext GetMemberCallIdentifierContext(VBAParser.ICS_S_MemberCallContext callContext)
         {
             if (callContext == null)
             {
@@ -860,13 +859,13 @@ namespace Rubberduck.Parsing.Symbols
             var procedureOrArrayCall = callContext.iCS_S_ProcedureOrArrayCall();
             if (procedureOrArrayCall != null)
             {
-                return procedureOrArrayCall.ambiguousIdentifier();
+                return procedureOrArrayCall.identifier();
             }
 
             var variableOrProcedureCall = callContext.iCS_S_VariableOrProcedureCall();
             if (variableOrProcedureCall != null)
             {
-                return variableOrProcedureCall.ambiguousIdentifier();
+                return variableOrProcedureCall.identifier();
             }
 
             return null;
@@ -936,7 +935,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ForNextStmtContext context)
         {
-            var identifiers = context.ambiguousIdentifier();
+            var identifiers = context.identifier();
             var identifier = ResolveInternal(identifiers[0], _currentScope, ContextAccessorType.AssignValue, null, false, true);
             if (identifier == null)
             {
@@ -960,7 +959,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ForEachStmtContext context)
         {
-            var identifiers = context.ambiguousIdentifier();
+            var identifiers = context.identifier();
             var identifier = ResolveInternal(identifiers[0], _currentScope, ContextAccessorType.AssignValue, null, false, true);
             if (identifier == null)
             {
@@ -1004,17 +1003,17 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.RaiseEventStmtContext context)
         {
-            ResolveInternal(context.ambiguousIdentifier(), _currentScope);
+            ResolveInternal(context.identifier(), _currentScope);
         }
 
         public void Resolve(VBAParser.ResumeStmtContext context)
         {
-            ResolveInternal(context.ambiguousIdentifier(), _currentScope);
+            ResolveInternal(context.identifier(), _currentScope);
         }
 
         public void Resolve(VBAParser.FieldLengthContext context)
         {
-            ResolveInternal(context.ambiguousIdentifier(), _currentScope);
+            ResolveInternal(context.identifier(), _currentScope);
         }
 
         public void Resolve(VBAParser.VsAssignContext context)

@@ -26,7 +26,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
-            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.Procedure);
+            SetCurrentScope(context.identifier().GetText(), DeclarationType.Procedure);
         }
 
         public override void ExitSubStmt(VBAParser.SubStmtContext context)
@@ -36,7 +36,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
-            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.Function);
+            SetCurrentScope(context.identifier().GetText(), DeclarationType.Function);
         }
 
         public override void ExitFunctionStmt(VBAParser.FunctionStmtContext context)
@@ -46,7 +46,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
-            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyGet);
+            SetCurrentScope(context.identifier().GetText(), DeclarationType.PropertyGet);
         }
 
         public override void ExitPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
@@ -56,7 +56,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
-            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyLet);
+            SetCurrentScope(context.identifier().GetText(), DeclarationType.PropertyLet);
         }
 
         public override void ExitPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
@@ -66,7 +66,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
-            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertySet);
+            SetCurrentScope(context.identifier().GetText(), DeclarationType.PropertySet);
         }
 
         public override void ExitPropertySetStmt(VBAParser.PropertySetStmtContext context)
@@ -76,7 +76,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterEnumerationStmt(VBAParser.EnumerationStmtContext context)
         {
-            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.Enumeration);
+            SetCurrentScope(context.identifier().GetText(), DeclarationType.Enumeration);
         }
 
         public override void ExitEnumerationStmt(VBAParser.EnumerationStmtContext context)
@@ -86,7 +86,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterTypeStmt(VBAParser.TypeStmtContext context)
         {
-            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.UserDefinedType);
+            SetCurrentScope(context.identifier().GetText(), DeclarationType.UserDefinedType);
         }
 
         public override void ExitTypeStmt(VBAParser.TypeStmtContext context)

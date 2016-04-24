@@ -239,7 +239,6 @@ statementKeyword :
     | END_SELECT
     | END_WITH
     | ON_ERROR
-    | RESUME_NEXT
     | ERROR
     | APPEND
     | BINARY

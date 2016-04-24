@@ -251,14 +251,14 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
             var accessibility = GetProcedureAccessibility(context.visibility());
-            var identifier = context.ambiguousIdentifier();
+            var identifier = context.identifier();
             if (identifier == null)
             {
                 return;
             }
 
-            var name = context.ambiguousIdentifier().GetText();
-            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.Procedure, context, context.ambiguousIdentifier().GetSelection());
+            var name = context.identifier().GetText();
+            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.Procedure, context, context.identifier().GetSelection());
             OnNewDeclaration(declaration);
             SetCurrentScope(declaration, name);
         }
@@ -271,7 +271,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
             var accessibility = GetProcedureAccessibility(context.visibility());
-            var identifier = context.ambiguousIdentifier();
+            var identifier = context.identifier();
             if (identifier == null)
             {
                 return;
@@ -283,7 +283,7 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
 
-            var declaration = CreateDeclaration(name, asTypeName, accessibility, DeclarationType.Function, context, context.ambiguousIdentifier().GetSelection());
+            var declaration = CreateDeclaration(name, asTypeName, accessibility, DeclarationType.Function, context, context.identifier().GetSelection());
             OnNewDeclaration(declaration);
             SetCurrentScope(declaration, name);
         }
@@ -296,7 +296,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
             var accessibility = GetProcedureAccessibility(context.visibility());
-            var identifier = context.ambiguousIdentifier();
+            var identifier = context.identifier();
             if (identifier == null)
             {
                 return;
@@ -308,7 +308,7 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
 
-            var declaration = CreateDeclaration(name, asTypeName, accessibility, DeclarationType.PropertyGet, context, context.ambiguousIdentifier().GetSelection());
+            var declaration = CreateDeclaration(name, asTypeName, accessibility, DeclarationType.PropertyGet, context, context.identifier().GetSelection());
 
             OnNewDeclaration(declaration);
             SetCurrentScope(declaration, name);
@@ -322,14 +322,14 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
             var accessibility = GetProcedureAccessibility(context.visibility());
-            var identifier = context.ambiguousIdentifier();
+            var identifier = context.identifier();
             if (identifier == null)
             {
                 return;
             }
             var name = identifier.GetText();
 
-            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.PropertyLet, context, context.ambiguousIdentifier().GetSelection());
+            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.PropertyLet, context, context.identifier().GetSelection());
             OnNewDeclaration(declaration);
             SetCurrentScope(declaration, name);
         }
@@ -342,14 +342,14 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
             var accessibility = GetProcedureAccessibility(context.visibility());
-            var identifier = context.ambiguousIdentifier();
+            var identifier = context.identifier();
             if (identifier == null)
             {
                 return;
             }
             var name = identifier.GetText();
 
-            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.PropertySet, context, context.ambiguousIdentifier().GetSelection());
+            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.PropertySet, context, context.identifier().GetSelection());
 
             OnNewDeclaration(declaration);
             SetCurrentScope(declaration, name);
@@ -363,14 +363,14 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterEventStmt(VBAParser.EventStmtContext context)
         {
             var accessibility = GetMemberAccessibility(context.visibility());
-            var identifier = context.ambiguousIdentifier();
+            var identifier = context.identifier();
             if (identifier == null)
             {
                 return;
             }
             var name = identifier.GetText();
 
-            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.Event, context, context.ambiguousIdentifier().GetSelection());
+            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.Event, context, context.identifier().GetSelection());
 
             OnNewDeclaration(declaration);
             SetCurrentScope(declaration, name);
@@ -384,7 +384,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterDeclareStmt(VBAParser.DeclareStmtContext context)
         {
             var accessibility = GetMemberAccessibility(context.visibility());
-            var nameContext = context.ambiguousIdentifier();
+            var nameContext = context.identifier();
             if (nameContext == null)
             {
                 return;
@@ -427,7 +427,7 @@ namespace Rubberduck.Parsing.Symbols
                     ? Tokens.Variant
                     : asTypeClause.type().GetText();
 
-                var identifier = argContext.ambiguousIdentifier();
+                var identifier = argContext.identifier();
                 if (identifier == null)
                 {
                     return;
@@ -438,14 +438,14 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterLineLabel(VBAParser.LineLabelContext context)
         {
-            OnNewDeclaration(CreateDeclaration(context.ambiguousIdentifier().GetText(), null, Accessibility.Private, DeclarationType.LineLabel, context, context.ambiguousIdentifier().GetSelection(), true));
+            OnNewDeclaration(CreateDeclaration(context.identifier().GetText(), null, Accessibility.Private, DeclarationType.LineLabel, context, context.identifier().GetSelection(), true));
         }
 
         public override void EnterVariableSubStmt(VBAParser.VariableSubStmtContext context)
         {
             var parent = (VBAParser.VariableStmtContext)context.Parent.Parent;
             var accessibility = GetMemberAccessibility(parent.visibility());
-            var identifier = context.ambiguousIdentifier();
+            var identifier = context.identifier();
             if (identifier == null)
             {
                 return;
@@ -460,7 +460,7 @@ namespace Rubberduck.Parsing.Symbols
             var withEvents = parent.WITHEVENTS() != null;
             var selfAssigned = asTypeClause != null && asTypeClause.NEW() != null;
 
-            OnNewDeclaration(CreateDeclaration(name, asTypeName, accessibility, DeclarationType.Variable, context, context.ambiguousIdentifier().GetSelection(), selfAssigned, withEvents));
+            OnNewDeclaration(CreateDeclaration(name, asTypeName, accessibility, DeclarationType.Variable, context, context.identifier().GetSelection(), selfAssigned, withEvents));
         }
 
         public override void EnterConstSubStmt(VBAParser.ConstSubStmtContext context)
@@ -473,7 +473,7 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
 
-            var identifier = context.ambiguousIdentifier();
+            var identifier = context.identifier();
             if (identifier == null)
             {
                 return;
@@ -488,14 +488,14 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterTypeStmt(VBAParser.TypeStmtContext context)
         {
             var accessibility = GetMemberAccessibility(context.visibility());
-            var identifier = context.ambiguousIdentifier();
+            var identifier = context.identifier();
             if (identifier == null)
             {
                 return;
             }
             var name = identifier.GetText();
 
-            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.UserDefinedType, context, context.ambiguousIdentifier().GetSelection());
+            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.UserDefinedType, context, context.identifier().GetSelection());
 
             OnNewDeclaration(declaration);
             _parentDeclaration = declaration; // treat members as child declarations, but keep them scoped to module
@@ -513,20 +513,20 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
 
-            OnNewDeclaration(CreateDeclaration(context.ambiguousIdentifier().GetText(), asTypeName, Accessibility.Implicit, DeclarationType.UserDefinedTypeMember, context, context.ambiguousIdentifier().GetSelection()));
+            OnNewDeclaration(CreateDeclaration(context.identifier().GetText(), asTypeName, Accessibility.Implicit, DeclarationType.UserDefinedTypeMember, context, context.identifier().GetSelection()));
         }
 
         public override void EnterEnumerationStmt(VBAParser.EnumerationStmtContext context)
         {
             var accessibility = GetMemberAccessibility(context.visibility());
-            var identifier = context.ambiguousIdentifier();
+            var identifier = context.identifier();
             if (identifier == null)
             {
                 return;
             }
             var name = identifier.GetText();
 
-            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.Enumeration, context, context.ambiguousIdentifier().GetSelection());
+            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.Enumeration, context, context.identifier().GetSelection());
 
             OnNewDeclaration(declaration);
             _parentDeclaration = declaration; // treat members as child declarations, but keep them scoped to module
@@ -539,7 +539,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterEnumerationStmt_Constant(VBAParser.EnumerationStmt_ConstantContext context)
         {
-            OnNewDeclaration(CreateDeclaration(context.ambiguousIdentifier().GetText(), null, Accessibility.Implicit, DeclarationType.EnumerationMember, context, context.ambiguousIdentifier().GetSelection()));
+            OnNewDeclaration(CreateDeclaration(context.identifier().GetText(), null, Accessibility.Implicit, DeclarationType.EnumerationMember, context, context.identifier().GetSelection()));
         }
     }
 }

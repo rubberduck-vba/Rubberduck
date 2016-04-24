@@ -37,13 +37,13 @@ module :
 moduleHeader : VERSION whiteSpace numberLiteral whiteSpace? CLASS? endOfStatement;
 
 moduleConfig :
-	BEGIN (whiteSpace GUIDLITERAL whiteSpace ambiguousIdentifier whiteSpace?)? endOfStatement
+	BEGIN (whiteSpace GUIDLITERAL whiteSpace identifier whiteSpace?)? endOfStatement
 	moduleConfigElement+
 	END
 ;
 
 moduleConfigElement :
-	ambiguousIdentifier whiteSpace* EQ whiteSpace* literal (COLON numberLiteral)? endOfStatement
+	identifier whiteSpace* EQ whiteSpace* literal (COLON numberLiteral)? endOfStatement
 ;
 
 moduleAttributes : (attributeStmt endOfStatement)+;
@@ -164,11 +164,11 @@ closeStmt : CLOSE (whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? fileNumb
 
 constStmt : (visibility whiteSpace)? CONST whiteSpace constSubStmt (whiteSpace? COMMA whiteSpace? constSubStmt)*;
 
-constSubStmt : ambiguousIdentifier typeHint? (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? valueStmt;
+constSubStmt : identifier typeHint? (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? valueStmt;
 
 dateStmt : DATE whiteSpace? EQ whiteSpace? valueStmt;
 
-declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? ((FUNCTION typeHint?) | SUB) whiteSpace ambiguousIdentifier typeHint? whiteSpace LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)?;
+declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? ((FUNCTION typeHint?) | SUB) whiteSpace identifier typeHint? whiteSpace LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)?;
 
 deftypeStmt : 
 	(
@@ -201,37 +201,37 @@ doLoopStmt :
 endStmt : END;
 
 enumerationStmt: 
-	(visibility whiteSpace)? ENUM whiteSpace ambiguousIdentifier endOfStatement 
+	(visibility whiteSpace)? ENUM whiteSpace identifier endOfStatement 
 	enumerationStmt_Constant* 
 	END_ENUM
 ;
 
-enumerationStmt_Constant : ambiguousIdentifier (whiteSpace? EQ whiteSpace? valueStmt)? endOfStatement;
+enumerationStmt_Constant : identifier (whiteSpace? EQ whiteSpace? valueStmt)? endOfStatement;
 
 eraseStmt : ERASE whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)*;
 
 errorStmt : ERROR whiteSpace valueStmt;
 
-eventStmt : (visibility whiteSpace)? EVENT whiteSpace ambiguousIdentifier whiteSpace? argList;
+eventStmt : (visibility whiteSpace)? EVENT whiteSpace identifier whiteSpace? argList;
 
 exitStmt : EXIT_DO | EXIT_FOR | EXIT_FUNCTION | EXIT_PROPERTY | EXIT_SUB;
 
 filecopyStmt : FILECOPY whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt;
 
 forEachStmt : 
-	FOR whiteSpace EACH whiteSpace ambiguousIdentifier typeHint? whiteSpace IN whiteSpace valueStmt endOfStatement
+	FOR whiteSpace EACH whiteSpace identifier typeHint? whiteSpace IN whiteSpace valueStmt endOfStatement
 	block?
-	NEXT (whiteSpace ambiguousIdentifier)?
+	NEXT (whiteSpace identifier)?
 ;
 
 forNextStmt : 
-	FOR whiteSpace ambiguousIdentifier typeHint? (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? valueStmt whiteSpace TO whiteSpace valueStmt (whiteSpace STEP whiteSpace valueStmt)? endOfStatement 
+	FOR whiteSpace identifier typeHint? (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? valueStmt whiteSpace TO whiteSpace valueStmt (whiteSpace STEP whiteSpace valueStmt)? endOfStatement 
 	block?
-	NEXT (whiteSpace ambiguousIdentifier typeHint?)?
+	NEXT (whiteSpace identifier typeHint?)?
 ; 
 
 functionStmt :
-	(visibility whiteSpace)? (STATIC whiteSpace)? FUNCTION whiteSpace? ambiguousIdentifier typeHint? (whiteSpace? argList)? (whiteSpace? asTypeClause)? endOfStatement
+	(visibility whiteSpace)? (STATIC whiteSpace)? FUNCTION whiteSpace? identifier typeHint? (whiteSpace? argList)? (whiteSpace? asTypeClause)? endOfStatement
 	block?
 	END_FUNCTION
 ;
@@ -313,26 +313,26 @@ outputList_Expression :
 printStmt : PRINT whiteSpace fileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
 
 propertyGetStmt : 
-	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_GET whiteSpace ambiguousIdentifier typeHint? (whiteSpace? argList)? (whiteSpace asTypeClause)? endOfStatement 
+	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_GET whiteSpace identifier typeHint? (whiteSpace? argList)? (whiteSpace asTypeClause)? endOfStatement 
 	block? 
 	END_PROPERTY
 ;
 
 propertySetStmt : 
-	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_SET whiteSpace ambiguousIdentifier (whiteSpace? argList)? endOfStatement 
+	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_SET whiteSpace identifier (whiteSpace? argList)? endOfStatement 
 	block? 
 	END_PROPERTY
 ;
 
 propertyLetStmt : 
-	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_LET whiteSpace ambiguousIdentifier (whiteSpace? argList)? endOfStatement 
+	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_LET whiteSpace identifier (whiteSpace? argList)? endOfStatement 
 	block? 
 	END_PROPERTY
 ;
 
 putStmt : PUT whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt? whiteSpace? COMMA whiteSpace? valueStmt;
 
-raiseEventStmt : RAISEEVENT whiteSpace ambiguousIdentifier (whiteSpace? LPAREN whiteSpace? (argsCall whiteSpace?)? RPAREN)?;
+raiseEventStmt : RAISEEVENT whiteSpace identifier (whiteSpace? LPAREN whiteSpace? (argsCall whiteSpace?)? RPAREN)?;
 
 randomizeStmt : RANDOMIZE (whiteSpace valueStmt)?;
 
@@ -342,7 +342,7 @@ redimSubStmt : implicitCallStmt_InStmt whiteSpace? LPAREN whiteSpace? subscripts
 
 resetStmt : RESET;
 
-resumeStmt : RESUME (whiteSpace (NEXT | ambiguousIdentifier))?;
+resumeStmt : RESUME (whiteSpace (NEXT | identifier))?;
 
 returnStmt : RETURN;
 
@@ -387,7 +387,7 @@ setStmt : SET whiteSpace implicitCallStmt_InStmt whiteSpace? EQ whiteSpace? valu
 stopStmt : STOP;
 
 subStmt : 
-	(visibility whiteSpace)? (STATIC whiteSpace)? SUB whiteSpace? ambiguousIdentifier (whiteSpace? argList)? endOfStatement
+	(visibility whiteSpace)? (STATIC whiteSpace)? SUB whiteSpace? identifier (whiteSpace? argList)? endOfStatement
 	block? 
 	END_SUB
 ;
@@ -395,12 +395,12 @@ subStmt :
 timeStmt : TIME whiteSpace? EQ whiteSpace? valueStmt;
 
 typeStmt : 
-	(visibility whiteSpace)? TYPE whiteSpace ambiguousIdentifier endOfStatement
+	(visibility whiteSpace)? TYPE whiteSpace identifier endOfStatement
 	typeStmt_Element*
 	END_TYPE
 ;
 
-typeStmt_Element : ambiguousIdentifier (whiteSpace? LPAREN (whiteSpace? subscripts)? whiteSpace? RPAREN)? (whiteSpace asTypeClause)? endOfStatement;
+typeStmt_Element : identifier (whiteSpace? LPAREN (whiteSpace? subscripts)? whiteSpace? RPAREN)? (whiteSpace asTypeClause)? endOfStatement;
 
 typeOfStmt : TYPEOF whiteSpace valueStmt (whiteSpace IS whiteSpace type)?;
 
@@ -437,7 +437,7 @@ variableStmt : (DIM | STATIC | visibility) whiteSpace (WITHEVENTS whiteSpace)? v
 
 variableListStmt : variableSubStmt (whiteSpace? COMMA whiteSpace? variableSubStmt)*;
 
-variableSubStmt : ambiguousIdentifier (whiteSpace? LPAREN whiteSpace? (subscripts whiteSpace?)? RPAREN whiteSpace?)? typeHint? (whiteSpace asTypeClause)?;
+variableSubStmt : identifier (whiteSpace? LPAREN whiteSpace? (subscripts whiteSpace?)? RPAREN whiteSpace?)? typeHint? (whiteSpace asTypeClause)?;
 
 whileWendStmt : 
 	WHILE whiteSpace valueStmt endOfStatement 
@@ -462,18 +462,18 @@ explicitCallStmt :
 	| eCS_MemberProcedureCall 
 ;
 
-eCS_ProcedureCall : CALL whiteSpace ambiguousIdentifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*;
+eCS_ProcedureCall : CALL whiteSpace identifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
-eCS_MemberProcedureCall : CALL whiteSpace implicitCallStmt_InStmt? DOT ambiguousIdentifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*;
+eCS_MemberProcedureCall : CALL whiteSpace implicitCallStmt_InStmt? DOT identifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
 implicitCallStmt_InBlock :
 	iCS_B_MemberProcedureCall 
 	| iCS_B_ProcedureCall
 ;
 
-iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? whiteSpace? DOT whiteSpace? ambiguousIdentifier typeHint? (whiteSpace argsCall)? (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
+iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? whiteSpace? DOT whiteSpace? identifier typeHint? (whiteSpace argsCall)? (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
-iCS_B_ProcedureCall : certainIdentifier (whiteSpace argsCall)? (whiteSpace? LPAREN subscripts RPAREN)*;
+iCS_B_ProcedureCall : identifier (whiteSpace argsCall)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
 implicitCallStmt_InStmt :
 	iCS_S_MembersCall
@@ -482,9 +482,9 @@ implicitCallStmt_InStmt :
 	| iCS_S_DictionaryCall
 ;
 
-iCS_S_VariableOrProcedureCall : ambiguousIdentifier typeHint? (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
+iCS_S_VariableOrProcedureCall : identifier typeHint? (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
-iCS_S_ProcedureOrArrayCall : (ambiguousIdentifier | baseType) typeHint? whiteSpace? LPAREN whiteSpace? (argsCall whiteSpace?)? RPAREN (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
+iCS_S_ProcedureOrArrayCall : (identifier | baseType) typeHint? whiteSpace? LPAREN whiteSpace? (argsCall whiteSpace?)? RPAREN (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
 iCS_S_MembersCall : (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall)? (iCS_S_MemberCall whiteSpace?)+ (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
@@ -496,11 +496,11 @@ argsCall : (argCall? whiteSpace? (COMMA | SEMICOLON) whiteSpace?)* argCall (whit
 
 argCall : LPAREN? ((BYVAL | BYREF | PARAMARRAY) whiteSpace)? RPAREN? valueStmt;
 
-dictionaryCallStmt : EXCLAMATIONPOINT whiteSpace? ambiguousIdentifier typeHint?;
+dictionaryCallStmt : EXCLAMATIONPOINT whiteSpace? identifier typeHint?;
 
 argList : LPAREN (whiteSpace? arg (whiteSpace? COMMA whiteSpace? arg)*)? whiteSpace? RPAREN;
 
-arg : (OPTIONAL whiteSpace)? ((BYVAL | BYREF) whiteSpace)? (PARAMARRAY whiteSpace)? ambiguousIdentifier typeHint? (whiteSpace? LPAREN whiteSpace? RPAREN)? (whiteSpace? asTypeClause)? (whiteSpace? argDefaultValue)?;
+arg : (OPTIONAL whiteSpace)? ((BYVAL | BYREF) whiteSpace)? (PARAMARRAY whiteSpace)? identifier typeHint? (whiteSpace? LPAREN whiteSpace? RPAREN)? (whiteSpace? asTypeClause)? (whiteSpace? argDefaultValue)?;
 
 argDefaultValue : EQ whiteSpace? valueStmt;
 
@@ -508,28 +508,21 @@ subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 
 subscript : (valueStmt whiteSpace TO whiteSpace)? valueStmt;
 
-ambiguousIdentifier : 
-	(IDENTIFIER | ambiguousKeyword)+
-;
+identifier : IDENTIFIER | keyword;
 
 asTypeClause : AS whiteSpace? (NEW whiteSpace)? type (whiteSpace? fieldLength)?;
 
 baseType : BOOLEAN | BYTE | COLLECTION | DATE | DOUBLE | INTEGER | LONG | SINGLE | STRING | VARIANT;
 
-certainIdentifier : 
-	IDENTIFIER (ambiguousKeyword | IDENTIFIER)*
-	| ambiguousKeyword (ambiguousKeyword | IDENTIFIER)+
-;
-
 comparisonOperator : LT | LEQ | GT | GEQ | EQ | NEQ | IS | LIKE;
 
-complexType : ambiguousIdentifier ((DOT | EXCLAMATIONPOINT) ambiguousIdentifier)*;
+complexType : identifier ((DOT | EXCLAMATIONPOINT) identifier)*;
 
-fieldLength : MULT whiteSpace? (numberLiteral | ambiguousIdentifier);
+fieldLength : MULT whiteSpace? (numberLiteral | identifier);
 
-letterrange : certainIdentifier (whiteSpace? MINUS whiteSpace? certainIdentifier)?;
+letterrange : identifier (whiteSpace? MINUS whiteSpace? identifier)?;
 
-lineLabel : (ambiguousIdentifier | numberLiteral) COLON;
+lineLabel : (identifier | numberLiteral) COLON;
 
 literal : numberLiteral | DATELITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL | EMPTY;
 
@@ -541,7 +534,7 @@ typeHint : PERCENT | AMPERSAND | POW | EXCLAMATIONPOINT | HASH | AT | DOLLAR;
 
 visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 
-ambiguousKeyword : 
+keyword : 
 	ACCESS | ADDRESSOF | ALIAS | AND | ATTRIBUTE | APPACTIVATE | APPEND | AS |
 	BEEP | BEGIN | BINARY | BOOLEAN | BYVAL | BYREF | BYTE | 
 	CALL | CASE | CLASS | CLOSE | CHDIR | CHDRIVE | COLLECTION | CONST | 
@@ -565,7 +558,7 @@ ambiguousKeyword :
 	XOR | ABS | ANY | ARRAY | CBOOL | CBYTE | CCUR | 
     CDATE |  CDBL | CDEC | CINT | CIRCLE | CLNG | CLNGLNG | CLNGPTR | CSNG | CSTR | CURRENCY | CVAR | 
     CVERR | DEBUG | DOEVENTS | END_IF | EXIT | FIX | INPUTB | INT | LBOUND | 
-    LEN | LENB | LONGLONG | LONGPTR | MIDB | MIDBTYPESUFFIX | MIDTYPESUFFIX | OPTION | PSET | RESUME_NEXT | SCALE | SGN | UBOUND
+    LEN | LENB | LONGLONG | LONGPTR | MIDB | MIDBTYPESUFFIX | MIDTYPESUFFIX | OPTION | PSET | SCALE | SGN | UBOUND
 ;
 
 endOfLine :

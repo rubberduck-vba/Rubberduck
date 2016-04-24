@@ -333,6 +333,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.identifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIdentifier([NotNull] VBAParser.IdentifierContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.identifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIdentifier([NotNull] VBAParser.IdentifierContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.dictionaryCallStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1004,17 +1015,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitVsAmp([NotNull] VBAParser.VsAmpContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.ambiguousKeyword"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterAmbiguousKeyword([NotNull] VBAParser.AmbiguousKeywordContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.ambiguousKeyword"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitAmbiguousKeyword([NotNull] VBAParser.AmbiguousKeywordContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.forNextStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1037,17 +1037,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitCaseCondTo([NotNull] VBAParser.CaseCondToContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.certainIdentifier"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterCertainIdentifier([NotNull] VBAParser.CertainIdentifierContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.certainIdentifier"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitCertainIdentifier([NotNull] VBAParser.CertainIdentifierContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>vsImp</c>
@@ -1291,17 +1280,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitTypeOfStmt([NotNull] VBAParser.TypeOfStmtContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.ambiguousIdentifier"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterAmbiguousIdentifier([NotNull] VBAParser.AmbiguousIdentifierContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.ambiguousIdentifier"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitAmbiguousIdentifier([NotNull] VBAParser.AmbiguousIdentifierContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by the <c>optionPrivateModuleStmt</c>
 	/// labeled alternative in <see cref="VBAParser.moduleOption"/>.
 	/// </summary>
@@ -1324,6 +1302,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitPutStmt([NotNull] VBAParser.PutStmtContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.keyword"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterKeyword([NotNull] VBAParser.KeywordContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.keyword"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitKeyword([NotNull] VBAParser.KeywordContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.iCS_S_DictionaryCall"/>.
