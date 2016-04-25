@@ -12,6 +12,7 @@ using Rubberduck.VBEditor;
 using System.Globalization;
 using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor.Extensions;
@@ -33,10 +34,6 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>> _currentTasks = 
             new ConcurrentDictionary<VBComponent, Tuple<Task, CancellationTokenSource>>();
 
-        private readonly Dictionary<VBComponent, IParseTree> _parseTrees = new Dictionary<VBComponent, IParseTree>();
-        private readonly Dictionary<QualifiedModuleName, Dictionary<Declaration, byte>> _declarations = new Dictionary<QualifiedModuleName, Dictionary<Declaration, byte>>();
-        private readonly Dictionary<VBComponent, ITokenStream> _tokenStreams = new Dictionary<VBComponent, ITokenStream>();
-        private readonly Dictionary<VBComponent, IList<CommentNode>> _comments = new Dictionary<VBComponent, IList<CommentNode>>();
         private readonly IDictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
             = new Dictionary<VBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
 
@@ -134,25 +131,26 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var projects = _state.Projects.ToList();
-
             var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
-            var modified = components.Where(c => _state.IsNewOrModified(c)).ToList();
+
+            var toParse = components.Where(c => _state.IsNewOrModified(c)).ToList();
             var unchanged = components.Where(c => !_state.IsNewOrModified(c)).ToList();
 
-            SyncComReferences(projects);
+            AddBuiltInDeclarations(projects);
 
-            if (!modified.Any())
+            if (!toParse.Any())
             {
                 return;
             }
 
-            foreach (var component in modified)
+            foreach (var component in toParse)
             {
                 _state.SetModuleState(component, ParserState.Pending);
             }
             foreach (var component in unchanged)
             {
-                _state.SetModuleState(component, ParserState.Parsed);
+                // note: seting to 'Parsed' would include them in the resolver walk. 'Ready' excludes them.
+                _state.SetModuleState(component, ParserState.Ready); 
             }
 
             // invalidation cleanup should go into ParseAsync?
@@ -161,10 +159,44 @@ namespace Rubberduck.Parsing.VBA
                 _componentAttributes.Remove(invalidated);
             }
 
-            foreach (var vbComponent in modified)
+            foreach (var vbComponent in toParse)
             {
                 ParseAsync(vbComponent, CancellationToken.None);
             }
+        }
+
+        private void AddBuiltInDeclarations(IReadOnlyList<VBProject> projects)
+        {
+            SyncComReferences(projects);
+
+            var finder = new DeclarationFinder(_state.AllDeclarations, new CommentNode[]{}, new IAnnotation[]{});
+            if (finder.MatchName(Tokens.Err).Any(item => item.IsBuiltIn 
+                && item.DeclarationType == DeclarationType.Variable 
+                && item.Accessibility == Accessibility.Global))
+            {
+                return;
+            }
+            
+            var vba = finder.FindProject("VBA");
+            Debug.Assert(vba != null);
+            
+            var errObject = finder.FindClass(vba, "ErrObject", true);
+            Debug.Assert(errObject != null);
+
+            var qualifiedName = new QualifiedModuleName(vba.IdentifierName, vba.IdentifierName, errObject.IdentifierName);
+            var err = new Declaration(new QualifiedMemberName(qualifiedName, Tokens.Err), vba, "Global", errObject.IdentifierName, true, false, Accessibility.Global, DeclarationType.Variable);
+            _state.AddDeclaration(err);
+
+            var debugClassName = new QualifiedModuleName(vba.IdentifierName, vba.IdentifierName, "DebugClass");
+            var debugClass = new Declaration(new QualifiedMemberName(debugClassName, "DebugClass"), vba, "Global", "DebugClass", false, false, Accessibility.Global, DeclarationType.Class);
+            var debugObject = new Declaration(new QualifiedMemberName(debugClassName, "Debug"), vba, "Global", "DebugClass", true, false, Accessibility.Global, DeclarationType.Variable);
+            var debugAssert = new Declaration(new QualifiedMemberName(debugClassName, "Assert"), debugObject, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
+            var debugPrint = new Declaration(new QualifiedMemberName(debugClassName, "Print"), debugObject, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
+
+            _state.AddDeclaration(debugClass);
+            _state.AddDeclaration(debugObject);
+            _state.AddDeclaration(debugAssert);
+            _state.AddDeclaration(debugPrint);
         }
 
         private readonly HashSet<ReferencePriorityMap> _references = new HashSet<ReferencePriorityMap>();
@@ -174,6 +206,8 @@ namespace Rubberduck.Parsing.VBA
             foreach (var vbProject in projects)
             {
                 var projectId = QualifiedModuleName.GetProjectId(vbProject);
+                // use a 'for' loop to store the order of references as a 'priority'.
+                // reference resolver needs this to know which declaration to prioritize when a global identifier exists in multiple libraries.
                 for (var priority = 1; priority <= vbProject.References.Count; priority++)
                 {
                     var reference = vbProject.References.Item(priority);
@@ -368,7 +402,7 @@ namespace Rubberduck.Parsing.VBA
                     emptyStringLiteralListener,
                     argListWithOneByRefParamListener,
                 }), tree);
-                // TODO: these are actually (almost) isnpection results.. we should handle them as such
+                // TODO: these are actually (almost) inspection results.. we should handle them as such
                 _state.ArgListsWithOneByRefParam = argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
                 _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
                 _state.ObsoleteLetContexts = obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
@@ -382,10 +416,13 @@ namespace Rubberduck.Parsing.VBA
                 declarationsListener.NewDeclaration += (sender, e) => _state.AddDeclaration(e.Declaration);
                 declarationsListener.CreateModuleDeclarations();
                 // rewalk parse tree for second declaration level
+                
+                Debug.WriteLine("Walking parse tree for '{0}'... (acquiring declarations)", qualifiedModuleName.Name);
                 ParseTreeWalker.Default.Walk(declarationsListener, tree);
+
             } catch (Exception exception)
             {
-                Debug.Print("Exception thrown resolving '{0}' (thread {2}): {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
+                Debug.Print("Exception thrown acquiring declarations for '{0}' (thread {2}): {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
                 _state.SetModuleState(component, ParserState.ResolverError);
             }
 
@@ -399,8 +436,8 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            Debug.WriteLine("Resolving '{0}'... (thread {1})", component.Name, Thread.CurrentThread.ManagedThreadId);            
             var qualifiedName = new QualifiedModuleName(component);
+            Debug.WriteLine("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
             var resolver = new IdentifierReferenceResolver(qualifiedName, finder);
             var listener = new IdentifierReferenceListener(resolver);
             if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))

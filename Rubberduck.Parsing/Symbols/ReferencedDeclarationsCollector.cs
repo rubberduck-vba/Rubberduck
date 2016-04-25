@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Microsoft.Vbe.Interop;
@@ -74,6 +75,39 @@ namespace Rubberduck.Parsing.Symbols
             {VarEnum.VT_R4, "Single"},
             {VarEnum.VT_R8, "Double"},
         };
+
+        private string GetTypeName(TYPEDESC desc, ITypeInfo info)
+        {
+            var vt = (VarEnum)desc.vt;
+            TYPEDESC tdesc;
+
+            switch (vt)
+            {
+                case VarEnum.VT_PTR:
+                    tdesc = (TYPEDESC) Marshal.PtrToStructure(desc.lpValue, typeof (TYPEDESC));
+                    return GetTypeName(tdesc, info);
+                case VarEnum.VT_USERDEFINED:
+                    unchecked
+                    {
+                        var href = desc.lpValue.ToInt32();
+                        ITypeInfo refTypeInfo;
+                        info.GetRefTypeInfo(href, out refTypeInfo);
+                        return GetTypeName(refTypeInfo);
+                    }
+                case VarEnum.VT_CARRAY:
+                    tdesc = (TYPEDESC) Marshal.PtrToStructure(desc.lpValue, typeof (TYPEDESC));
+                    return GetTypeName(tdesc, info) + "()";
+                default:
+                    string result;
+                    if (TypeNames.TryGetValue(vt, out result))
+                    {
+                        return result;
+                    }
+                    break;
+            }
+
+            return "UNKNOWN";
+        }
 
         private string GetTypeName(ITypeInfo info)
         {
@@ -203,7 +237,22 @@ namespace Rubberduck.Parsing.Symbols
             var asTypeName = string.Empty;
             if (memberDeclarationType != DeclarationType.Procedure && !TypeNames.TryGetValue(funcValueType, out asTypeName))
             {
-                asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
+                if (funcValueType == VarEnum.VT_PTR)
+                {
+                    try
+                    {
+                        var asTypeDesc = (TYPEDESC) Marshal.PtrToStructure(memberDescriptor.elemdescFunc.tdesc.lpValue, typeof (TYPEDESC));
+                        asTypeName = GetTypeName(asTypeDesc, info);
+                    }
+                    catch
+                    {
+                        asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
+                    }
+                }
+                else
+                {
+                    asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
+                }
             }
 
             var attributes = new Attributes();
@@ -214,7 +263,7 @@ namespace Rubberduck.Parsing.Symbols
             else if (memberDescriptor.memid == 0)
             {
                 attributes.AddDefaultMemberAttribute(memberName);
-                Debug.WriteLine("Default member found: {0}.{1} ({2} / {3})", moduleDeclaration.IdentifierName, memberName, memberDeclarationType, (VarEnum)memberDescriptor.elemdescFunc.tdesc.vt);
+                //Debug.WriteLine("Default member found: {0}.{1} ({2} / {3})", moduleDeclaration.IdentifierName, memberName, memberDeclarationType, (VarEnum)memberDescriptor.elemdescFunc.tdesc.vt);
             }
             else if (((FUNCFLAGS)memberDescriptor.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FHIDDEN))
             {

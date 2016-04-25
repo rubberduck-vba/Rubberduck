@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Antlr4.Runtime;
 
 namespace Rubberduck.Parsing.Symbols
@@ -16,6 +17,8 @@ namespace Rubberduck.Parsing.Symbols
             _token = offendingSymbol;
             _line = line;
             _position = position;
+            Debug.WriteLine(innerException.ToString());
+            Debug.WriteLine("Token: {0} (L{1}C{2})", offendingSymbol.Text, line, position);
         }
 
         private readonly IToken _token;

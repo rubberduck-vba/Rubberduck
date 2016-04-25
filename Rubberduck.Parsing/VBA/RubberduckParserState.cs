@@ -235,8 +235,7 @@ namespace Rubberduck.Parsing.VBA
             if (moduleStates.Any(module => module != ParserState.Ready))
             {
                 // now any module not ready means at least one of them has work in progress;
-                // report the least advanced of them, except if that's 'Pending':
-                return moduleStates.Except(new[]{ParserState.Pending}).Min();
+                return moduleStates.Min();
             }
 
             return default(ParserState); // default value is 'Pending'.
@@ -560,7 +559,7 @@ namespace Rubberduck.Parsing.VBA
         private QualifiedSelection _lastSelection;
         private Declaration _selectedDeclaration;
 
-        public Declaration FindSelectedDeclaration(CodePane activeCodePane)
+        public Declaration FindSelectedDeclaration(CodePane activeCodePane, bool procedureLevelOnly = false)
         {
             var selection = activeCodePane.GetSelection();
             if (selection.Equals(_lastSelection))
@@ -588,10 +587,17 @@ namespace Rubberduck.Parsing.VBA
                     }
                     else
                     {
+                        Declaration match = null;
+                        if (procedureLevelOnly)
+                        {
+                            match = matches.SingleOrDefault(item => item.DeclarationType.HasFlag(DeclarationType.Member));
+                        }
+
                         // ambiguous (?), or no match - make the module be the current selection
-                        var match = AllUserDeclarations.SingleOrDefault(item =>
+                        match = match ?? AllUserDeclarations.SingleOrDefault(item =>
                                     (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module)
                                     && item.QualifiedName.QualifiedModuleName.Equals(selection.QualifiedName));
+
                         _selectedDeclaration = match;
                     }
                 }
