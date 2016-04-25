@@ -122,7 +122,7 @@ namespace Rubberduck.UI.Command
         {
             var items = _state.AllDeclarations;
             string name;
-            var implementations = (target.DeclarationType == DeclarationType.Class
+            var implementations = (target.DeclarationType == DeclarationType.ClassModule
                 ? FindAllImplementationsOfClass(target, items, out name)
                 : FindAllImplementationsOfMember(target, items, out name)) ?? new List<Declaration>();
 
@@ -131,7 +131,7 @@ namespace Rubberduck.UI.Command
 
         private IEnumerable<Declaration> FindAllImplementationsOfClass(Declaration target, IEnumerable<Declaration> declarations, out string name)
         {
-            if (target.DeclarationType != DeclarationType.Class)
+            if (target.DeclarationType != DeclarationType.ClassModule)
             {
                 name = string.Empty;
                 return null;

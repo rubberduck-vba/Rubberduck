@@ -16,9 +16,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private static readonly DeclarationType[] ComponentTypes =
         {
-            DeclarationType.Class, 
+            DeclarationType.ClassModule, 
             DeclarationType.Document, 
-            DeclarationType.Module, 
+            DeclarationType.ProceduralModule, 
             DeclarationType.UserForm, 
         };
 

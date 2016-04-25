@@ -17,6 +17,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using Infralution.Localization.Wpf;
 using Rubberduck.Common.Dispatch;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck
 {
@@ -39,10 +40,10 @@ namespace Rubberduck
         private readonly IConnectionPoint _projectsEventsConnectionPoint;
         private readonly int _projectsEventsCookie;
 
-        private readonly IDictionary<VBProjectsEventsSink, Tuple<IConnectionPoint, int>>  _componentsEventsConnectionPoints = 
-            new Dictionary<VBProjectsEventsSink, Tuple<IConnectionPoint, int>>();
-        private readonly IDictionary<VBProjectsEventsSink, Tuple<IConnectionPoint, int>> _referencesEventsConnectionPoints =
-            new Dictionary<VBProjectsEventsSink, Tuple<IConnectionPoint, int>>();
+        private readonly IDictionary<string, Tuple<IConnectionPoint, int>>  _componentsEventsConnectionPoints = 
+            new Dictionary<string, Tuple<IConnectionPoint, int>>();
+        private readonly IDictionary<string, Tuple<IConnectionPoint, int>> _referencesEventsConnectionPoints =
+            new Dictionary<string, Tuple<IConnectionPoint, int>>();
 
         public App(VBE vbe, IMessageBox messageBox,
             IRubberduckParser parser,
@@ -127,11 +128,6 @@ namespace Rubberduck
         {
             CleanReloadConfig();
 
-            foreach (var project in _vbe.VBProjects.Cast<VBProject>())
-            {
-                _parser.State.AddProject(project);
-            }
-
             _appMenus.Initialize();
             _appMenus.Localize();
 
@@ -150,40 +146,51 @@ namespace Rubberduck
         #region sink handlers. todo: move to another class
         async void sink_ProjectRemoved(object sender, DispatcherEventArgs<VBProject> e)
         {
-            var sink = (VBProjectsEventsSink)sender;
-            _componentsEventSinks.Remove(sink);
-            _referencesEventsSinks.Remove(sink);
+            if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
+            {
+                Debug.WriteLine(string.Format("Locked project '{0}' was removed.", e.Item.Name));
+                return;
+            }
+
+            var projectId = e.Item.HelpFile;
+            _componentsEventsSinks.Remove(projectId);
+            _referencesEventsSinks.Remove(projectId);
             _parser.State.RemoveProject(e.Item);
 
             Debug.WriteLine(string.Format("Project '{0}' was removed.", e.Item.Name));
             Tuple<IConnectionPoint, int> componentsTuple;
-            if (_componentsEventsConnectionPoints.TryGetValue(sink, out componentsTuple))
+            if (_componentsEventsConnectionPoints.TryGetValue(projectId, out componentsTuple))
             {
                 componentsTuple.Item1.Unadvise(componentsTuple.Item2);
-                _componentsEventsConnectionPoints.Remove(sink);
+                _componentsEventsConnectionPoints.Remove(projectId);
             }
 
             Tuple<IConnectionPoint, int> referencesTuple;
-            if (_referencesEventsConnectionPoints.TryGetValue(sink, out referencesTuple))
+            if (_referencesEventsConnectionPoints.TryGetValue(projectId, out referencesTuple))
             {
                 referencesTuple.Item1.Unadvise(referencesTuple.Item2);
-                _referencesEventsConnectionPoints.Remove(sink);
+                _referencesEventsConnectionPoints.Remove(projectId);
             }
-
-            _parser.State.ClearDeclarations(e.Item);
         }
 
-        private readonly IDictionary<VBProjectsEventsSink, VBComponentsEventsSink> _componentsEventSinks = 
-            new Dictionary<VBProjectsEventsSink, VBComponentsEventsSink>();
+        private readonly IDictionary<string,VBComponentsEventsSink> _componentsEventsSinks =
+            new Dictionary<string,VBComponentsEventsSink>();
 
-        private readonly IDictionary<VBProjectsEventsSink, ReferencesEventsSink> _referencesEventsSinks = 
-            new Dictionary<VBProjectsEventsSink, ReferencesEventsSink>();
+        private readonly IDictionary<string,ReferencesEventsSink> _referencesEventsSinks = 
+            new Dictionary<string, ReferencesEventsSink>();
 
         async void sink_ProjectAdded(object sender, DispatcherEventArgs<VBProject> e)
         {
-            var sink = (VBProjectsEventsSink)sender;
-            RegisterComponentsEventSink(e, sink);
-            _parser.State.AddProject(e.Item);
+            Debug.WriteLine(string.Format("Project '{0}' was added.", e.Item.Name));
+            if (e.Item.Protection == vbext_ProjectProtection.vbext_pp_locked)
+            {
+                Debug.WriteLine("Project is protected and will not be added to parser state.");
+                return;
+            }
+
+            _parser.State.AddProject(e.Item); // note side-effect: assigns ProjectId/HelpFile
+            var projectId = e.Item.HelpFile;
+            RegisterComponentsEventSink(e.Item.VBComponents, projectId);
 
             if (!_parser.State.AllDeclarations.Any())
             {
@@ -193,13 +200,19 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Project '{0}' was added.", e.Item.Name));
             _parser.State.OnParseRequested(sender);
         }
 
-        private void RegisterComponentsEventSink(DispatcherEventArgs<VBProject> e, VBProjectsEventsSink sink)
+        private void RegisterComponentsEventSink(VBComponents components, string projectId)
         {
-            var connectionPointContainer = (IConnectionPointContainer) e.Item.VBComponents;
+            if (_componentsEventsSinks.ContainsKey(projectId))
+        {
+                // already registered - this is caused by the initial load+rename of a project in the VBE
+                Debug.WriteLine("Components sink already registered.");
+                return;
+            }
+
+            var connectionPointContainer = (IConnectionPointContainer)components;
             var interfaceId = typeof (_dispVBComponentsEvents).GUID;
 
             IConnectionPoint connectionPoint;
@@ -212,12 +225,13 @@ namespace Rubberduck
             componentsSink.ComponentRemoved += sink_ComponentRemoved;
             componentsSink.ComponentRenamed += sink_ComponentRenamed;
             componentsSink.ComponentSelected += sink_ComponentSelected;
-            _componentsEventSinks.Add(sink, componentsSink);
+            _componentsEventsSinks.Add(projectId, componentsSink);
 
             int cookie;
             connectionPoint.Advise(componentsSink, out cookie);
 
-            _componentsEventsConnectionPoints.Add(sink, Tuple.Create(connectionPoint, cookie));
+            _componentsEventsConnectionPoints.Add(projectId, Tuple.Create(connectionPoint, cookie));
+            Debug.WriteLine("Components sink registered and advising.");
         }
 
         async void sink_ComponentSelected(object sender, DispatcherEventArgs<VBComponent> e)
@@ -251,7 +265,7 @@ namespace Rubberduck
             }
 
             Debug.WriteLine(string.Format("Component '{0}' was removed.", e.Item.Name));
-            _parser.State.ClearDeclarations(e.Item);
+            _parser.State.ClearStateCache(e.Item);
         }
 
         async void sink_ComponentReloaded(object sender, DispatcherEventArgs<VBComponent> e)
@@ -364,7 +378,10 @@ namespace Rubberduck
             {
                 item.Value.Item1.Unadvise(item.Value.Item2);
             }
-
+            foreach (var item in _referencesEventsConnectionPoints)
+            {
+                item.Value.Item1.Unadvise(item.Value.Item2);
+            }
             _hooks.Dispose();
         }
     }

@@ -69,7 +69,7 @@ namespace Rubberduck.VBEditor
             _project = null;
             _projectName = projectName;
             _projectPath = projectPath;
-            _projectId = _projectName.GetHashCode().ToString();
+            _projectId = (_projectName + ";" + _projectPath).GetHashCode().ToString();
             _componentName = componentName;
             _component = null;
             _contentHashCode = 0;
@@ -103,7 +103,7 @@ namespace Rubberduck.VBEditor
         {
             return _component == null && string.IsNullOrEmpty(_projectName)
                 ? string.Empty
-                : (string.IsNullOrEmpty(_projectPath) ? string.Empty : _projectPath + ";") 
+                : (string.IsNullOrEmpty(_projectPath) ? string.Empty : System.IO.Path.GetFileName(_projectPath) + ";")
                      + _projectName + "." + _componentName;
         }
 

@@ -52,7 +52,26 @@ ccEol : (SINGLEQUOTE ~NEWLINE*)? NEWLINE?;
 
 intrinsicFunction : intrinsicFunctionName LPAREN WS* ccExpression WS* RPAREN;
 
-intrinsicFunctionName : IDENTIFIER;
+intrinsicFunctionName :
+    INT |
+    FIX |
+    ABS |
+    SGN |
+    LEN |
+    LENB |
+    CBOOL |
+    CBYTE |
+    CCUR |
+    CDATE |
+    CDBL |
+    CINT |
+    CLNG |
+    CLNGLNG |
+    CLNGPTR |
+    CSNG |
+    CSTR |
+    CVAR
+;
 
 name : IDENTIFIER typeHint?;
 

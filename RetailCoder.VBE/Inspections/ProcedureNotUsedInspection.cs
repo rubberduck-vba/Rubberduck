@@ -24,8 +24,8 @@ namespace Rubberduck.Inspections
         {
             var declarations = UserDeclarations.ToList();
 
-            var classes = declarations.Where(item => item.DeclarationType == DeclarationType.Class).ToList();
-            var modules = declarations.Where(item => item.DeclarationType == DeclarationType.Module).ToList();
+            var classes = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule).ToList();
+            var modules = declarations.Where(item => item.DeclarationType == DeclarationType.ProceduralModule).ToList();
 
             var handlers = declarations.Where(item => item.DeclarationType == DeclarationType.Control)
                 .SelectMany(control => declarations.FindEventHandlers(control)).ToList();
@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections
             var withEventFields = declarations.Where(item => item.DeclarationType == DeclarationType.Variable && item.IsWithEvents);
             handlers.AddRange(withEventFields.SelectMany(field => declarations.FindEventProcedures(field)));
 
-            var forms = declarations.Where(item => item.DeclarationType == DeclarationType.Class
+            var forms = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule
                         && item.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_MSForm)
                 .ToList();
 

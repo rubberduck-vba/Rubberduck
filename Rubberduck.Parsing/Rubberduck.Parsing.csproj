@@ -74,6 +74,29 @@
     <Compile Include="Annotations\TestMethodAnnotation.cs" />
     <Compile Include="Annotations\TestModuleAnnotation.cs" />
     <Compile Include="Annotations\VBAParserAnnotationFactory.cs" />
+    <Compile Include="Binding\BindingService.cs" />
+    <Compile Include="Binding\BoundExpression.cs" />
+    <Compile Include="Binding\MemberAccessExpression.cs" />
+    <Compile Include="Binding\MemberAccessProcedurePointerBinding.cs" />
+    <Compile Include="Binding\MemberAccessTypeBinding.cs" />
+    <Compile Include="Binding\NewExpression.cs" />
+    <Compile Include="Binding\ProcedurePointerBindingContext.cs" />
+    <Compile Include="Binding\SimpleNameProcedurePointerBinding.cs" />
+    <Compile Include="Binding\NewTypeBinding.cs" />
+    <Compile Include="Binding\DefaultBindingContext.cs" />
+    <Compile Include="Binding\TypeBindingContext.cs" />
+    <Compile Include="Binding\ExpressionClassification.cs" />
+    <Compile Include="Binding\ExpressionName.cs" />
+    <Compile Include="Binding\IBindingContext.cs" />
+    <Compile Include="Binding\IBoundExpression.cs" />
+    <Compile Include="Binding\IExpressionBinding.cs" />
+    <Compile Include="Binding\SimpleNameExpression.cs" />
+    <Compile Include="Binding\SimpleNameTypeBinding.cs" />
+    <Compile Include="Binding\VBAExpressionParser.cs" />
+    <Compile Include="Binding\VBAExpressionParserBaseListener.cs" />
+    <Compile Include="Binding\VBAExpressionParserBaseVisitor.cs" />
+    <Compile Include="Binding\VBAExpressionParserListener.cs" />
+    <Compile Include="Binding\VBAExpressionParserVisitor.cs" />
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
@@ -176,6 +199,10 @@
     <Compile Include="Preprocessing\VBAPreprocessor.cs" />
     <Compile Include="Preprocessing\VBAPreprocessorVisitor.cs" />
     <Compile Include="StaTaskScheduler.cs" />
+    <Compile Include="Symbols\AccessibilityCheck.cs" />
+    <Compile Include="Symbols\BindingMigrationHelper.cs" />
+    <Compile Include="Symbols\BoundExpressionVisitor.cs" />
+    <Compile Include="Symbols\ClassModuleDeclaration.cs" />
     <Compile Include="Symbols\CommentExtensions.cs" />
     <Compile Include="Symbols\DeclarationEventArgs.cs" />
     <Compile Include="Symbols\DeclarationFinder.cs" />
@@ -183,6 +210,7 @@
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
     <Compile Include="Symbols\MemberProcessedEventArgs.cs" />
     <Compile Include="Symbols\ParameterDeclaration.cs" />
+    <Compile Include="Symbols\ProceduralModuleDeclaration.cs" />
     <Compile Include="Symbols\ProjectDeclaration.cs" />
     <Compile Include="Symbols\ProjectReference.cs" />
     <Compile Include="Symbols\ReferencedDeclarationsCollector.cs" />
@@ -220,6 +248,7 @@
     <Compile Include="VBComponentExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Binding\VBAExpressionParser.g4" />
     <None Include="Grammar\VBAParser.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>

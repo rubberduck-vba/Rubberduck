@@ -18,7 +18,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         private static readonly DeclarationType[] ModuleTypes =
         {
-            DeclarationType.Class,
+            DeclarationType.ClassModule,
             DeclarationType.Document,
             DeclarationType.UserForm
         };

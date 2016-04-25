@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Microsoft.Vbe.Interop;
@@ -18,6 +19,7 @@ using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -75,6 +77,39 @@ namespace Rubberduck.Parsing.Symbols
             {VarEnum.VT_R8, "Double"},
         };
 
+        private string GetTypeName(TYPEDESC desc, ITypeInfo info)
+        {
+            var vt = (VarEnum)desc.vt;
+            TYPEDESC tdesc;
+
+            switch (vt)
+            {
+                case VarEnum.VT_PTR:
+                    tdesc = (TYPEDESC) Marshal.PtrToStructure(desc.lpValue, typeof (TYPEDESC));
+                    return GetTypeName(tdesc, info);
+                case VarEnum.VT_USERDEFINED:
+                    unchecked
+                    {
+                        var href = desc.lpValue.ToInt32();
+                        ITypeInfo refTypeInfo;
+                        info.GetRefTypeInfo(href, out refTypeInfo);
+                        return GetTypeName(refTypeInfo);
+                    }
+                case VarEnum.VT_CARRAY:
+                    tdesc = (TYPEDESC) Marshal.PtrToStructure(desc.lpValue, typeof (TYPEDESC));
+                    return GetTypeName(tdesc, info) + "()";
+                default:
+                    string result;
+                    if (TypeNames.TryGetValue(vt, out result))
+                    {
+                        return result;
+                    }
+                    break;
+            }
+
+            return "UNKNOWN";
+        }
+
         private string GetTypeName(ITypeInfo info)
         {
             string typeName;
@@ -90,18 +125,17 @@ namespace Rubberduck.Parsing.Symbols
         {
             var projectName = reference.Name;
             var path = reference.FullPath;
-            var projectQualifiedModuleName = new QualifiedModuleName(projectName, path, projectName);
-            var projectQualifiedMemberName = new QualifiedMemberName(projectQualifiedModuleName, projectName);
-
-            var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName);
-            yield return projectDeclaration;
-
             ITypeLib typeLibrary;
+            // Failure to load might mean that it's a "normal" VBProject that will get parsed by us anyway.
             LoadTypeLibEx(path, REGKIND.REGKIND_NONE, out typeLibrary);
             if (typeLibrary == null)
             {
                 yield break;
             }
+            var projectQualifiedModuleName = new QualifiedModuleName(projectName, path, projectName);
+            var projectQualifiedMemberName = new QualifiedMemberName(projectQualifiedModuleName, projectName);
+            var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName);
+            yield return projectDeclaration;
 
             var typeCount = typeLibrary.GetTypeInfoCount();
             for (var i = 0; i < typeCount; i++)
@@ -149,7 +183,15 @@ namespace Rubberduck.Parsing.Symbols
                     attributes.AddPredeclaredIdTypeAttribute();
                 }
 
-                var moduleDeclaration = new Declaration(typeQualifiedMemberName, projectDeclaration, projectDeclaration, typeName, false, false, Accessibility.Global, typeDeclarationType, null, Selection.Home, true, null, attributes);
+                Declaration moduleDeclaration;
+                if (typeDeclarationType == DeclarationType.ProceduralModule)
+                {
+                    moduleDeclaration = new ProceduralModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
+                }
+                else
+                {
+                    moduleDeclaration = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes, isExposed: true);
+                }
                 yield return moduleDeclaration;
                 
                 for (var memberIndex = 0; memberIndex < typeAttributes.cFuncs; memberIndex++)
@@ -203,7 +245,22 @@ namespace Rubberduck.Parsing.Symbols
             var asTypeName = string.Empty;
             if (memberDeclarationType != DeclarationType.Procedure && !TypeNames.TryGetValue(funcValueType, out asTypeName))
             {
-                asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
+                if (funcValueType == VarEnum.VT_PTR)
+                {
+                    try
+                    {
+                        var asTypeDesc = (TYPEDESC) Marshal.PtrToStructure(memberDescriptor.elemdescFunc.tdesc.lpValue, typeof (TYPEDESC));
+                        asTypeName = GetTypeName(asTypeDesc, info);
+                    }
+                    catch
+                    {
+                        asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
+                    }
+                }
+                else
+                {
+                    asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
+                }
             }
 
             var attributes = new Attributes();
@@ -214,7 +271,7 @@ namespace Rubberduck.Parsing.Symbols
             else if (memberDescriptor.memid == 0)
             {
                 attributes.AddDefaultMemberAttribute(memberName);
-                Debug.WriteLine("Default member found: {0}.{1} ({2} / {3})", moduleDeclaration.IdentifierName, memberName, memberDeclarationType, (VarEnum)memberDescriptor.elemdescFunc.tdesc.vt);
+                //Debug.WriteLine("Default member found: {0}.{1} ({2} / {3})", moduleDeclaration.IdentifierName, memberName, memberDeclarationType, (VarEnum)memberDescriptor.elemdescFunc.tdesc.vt);
             }
             else if (((FUNCFLAGS)memberDescriptor.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FHIDDEN))
             {
@@ -321,7 +378,7 @@ namespace Rubberduck.Parsing.Symbols
             else if (typeKind == TYPEKIND.TKIND_COCLASS || typeKind == TYPEKIND.TKIND_INTERFACE ||
                      typeKind == TYPEKIND.TKIND_ALIAS || typeKind == TYPEKIND.TKIND_DISPATCH)
             {
-                typeDeclarationType = DeclarationType.Class;
+                typeDeclarationType = DeclarationType.ClassModule;
             }
             else if (typeKind == TYPEKIND.TKIND_RECORD)
             {
@@ -329,7 +386,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             else if (typeKind == TYPEKIND.TKIND_MODULE)
             {
-                typeDeclarationType = DeclarationType.Module;
+                typeDeclarationType = DeclarationType.ProceduralModule;
             }
             return typeDeclarationType;
         }
