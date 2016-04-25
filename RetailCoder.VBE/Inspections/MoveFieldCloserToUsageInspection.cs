@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
                 {
 
                     if (declaration.DeclarationType != DeclarationType.Variable ||
-                        !new[] {DeclarationType.Class, DeclarationType.Module}.Contains(declaration.ParentDeclaration.DeclarationType))
+                        !new[] {DeclarationType.ClassModule, DeclarationType.ProceduralModule}.Contains(declaration.ParentDeclaration.DeclarationType))
                     {
                         return false;
                     }

@@ -45,7 +45,7 @@ namespace Rubberduck.Inspections
                 : Tokens.Property;
 
             string visibility = context.visibility() == null ? string.Empty : context.visibility().GetText() + ' ';
-            string name = ' ' + context.ambiguousIdentifier().GetText();
+            string name = ' ' + context.identifier().GetText();
             bool hasTypeHint = context.typeHint() != null;
 
             string args = context.argList().GetText();

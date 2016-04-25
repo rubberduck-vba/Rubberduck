@@ -20,8 +20,8 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = UserDeclarations.Where(declaration =>
-                 (declaration.DeclarationType == DeclarationType.Class
-                || declaration.DeclarationType == DeclarationType.Module)
+                 (declaration.DeclarationType == DeclarationType.ClassModule
+                || declaration.DeclarationType == DeclarationType.ProceduralModule)
                 && declaration.Annotations.Count(annotation => annotation.AnnotationType == AnnotationType.Folder) > 1);
             return issues.Select(issue =>
                 new MultipleFolderAnnotationsInspectionResult(this, issue));

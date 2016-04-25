@@ -104,6 +104,32 @@ namespace Rubberduck.Parsing.Symbols
             _customFolder = result;
         }
 
+        public static Declaration GetMemberModule(Declaration member)
+        {
+            if (member.ParentDeclaration == null)
+            {
+                return null;
+            }
+            if (member.ParentDeclaration.DeclarationType == DeclarationType.ClassModule || member.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule)
+            {
+                return member.ParentDeclaration;
+            }
+            return GetMemberModule(member.ParentDeclaration);
+        }
+
+        public static Declaration GetMemberProject(Declaration declaration)
+        {
+            if (declaration.ParentDeclaration == null)
+            {
+                return null;
+            }
+            if (declaration.ParentDeclaration.DeclarationType == DeclarationType.Project)
+            {
+                return declaration.ParentDeclaration;
+            }
+            return GetMemberProject(declaration.ParentDeclaration);
+        }
+
         private readonly bool _isBuiltIn;
         /// <summary>
         /// Marks a declaration as non-user code, e.g. the <see cref="VbaStandardLib"/> or <see cref="ExcelObjectModel"/>.
@@ -171,24 +197,6 @@ namespace Rubberduck.Parsing.Symbols
             {
                 IEnumerable<string> value;
                 if (_attributes.TryGetValue("VB_PredeclaredId", out value))
-                {
-                    return value.Single() == "True";
-                }
-
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets an attribute value indicating whether a class is exposed to other projects.
-        /// If this value is false, any public types and members cannot be accessed from outside the project they're declared in.
-        /// </summary>
-        public bool IsExposed
-        {
-            get
-            {
-                IEnumerable<string> value;
-                if (_attributes.TryGetValue("VB_Exposed", out value))
                 {
                     return value.Single() == "True";
                 }
@@ -349,7 +357,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly IReadOnlyList<DeclarationType> _neverArray = new[]
         {
-            DeclarationType.Class, 
+            DeclarationType.ClassModule, 
             DeclarationType.Control, 
             DeclarationType.Document, 
             DeclarationType.Enumeration, 
@@ -359,7 +367,7 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.LibraryFunction, 
             DeclarationType.LibraryProcedure, 
             DeclarationType.LineLabel, 
-            DeclarationType.Module, 
+            DeclarationType.ProceduralModule, 
             DeclarationType.ModuleOption, 
             DeclarationType.Project, 
             DeclarationType.Procedure, 
@@ -402,7 +410,7 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.PropertyLet, 
             DeclarationType.PropertySet, 
             DeclarationType.UserDefinedType, 
-            DeclarationType.Class, 
+            DeclarationType.ClassModule, 
             DeclarationType.Control, 
             DeclarationType.Enumeration, 
             DeclarationType.EnumerationMember, 
@@ -456,7 +464,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly IReadOnlyList<DeclarationType> _neverHinted = new[]
         {
-            DeclarationType.Class, 
+            DeclarationType.ClassModule, 
             DeclarationType.LineLabel, 
             DeclarationType.ModuleOption, 
             DeclarationType.Project, 
@@ -540,8 +548,8 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     case DeclarationType.Project:
                         return "VBE";
-                    case DeclarationType.Class:
-                    case DeclarationType.Module:
+                    case DeclarationType.ClassModule:
+                    case DeclarationType.ProceduralModule:
                         return _qualifiedName.QualifiedModuleName.ToString();
                     case DeclarationType.Procedure:
                     case DeclarationType.Function:

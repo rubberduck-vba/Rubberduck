@@ -147,7 +147,7 @@ End Sub";
             {
                 refactoring.Refactor(
                     model.Declarations.FirstOrDefault(
-                        i => i.DeclarationType == Rubberduck.Parsing.Symbols.DeclarationType.Module));
+                        i => i.DeclarationType == Rubberduck.Parsing.Symbols.DeclarationType.ProceduralModule));
             }
             catch (ArgumentException e)
             {
