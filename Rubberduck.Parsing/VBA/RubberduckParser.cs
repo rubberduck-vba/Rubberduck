@@ -144,14 +144,18 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            foreach (var component in toParse)
+
+            lock (_state)
             {
-                _state.SetModuleState(component, ParserState.Pending);
-            }
-            foreach (var component in unchanged)
-            {
-                // note: seting to 'Parsed' would include them in the resolver walk. 'Ready' excludes them.
-                _state.SetModuleState(component, ParserState.Ready); 
+                foreach (var component in toParse)
+                {
+                    _state.SetModuleState(component, ParserState.Pending);
+                }
+                foreach (var component in unchanged)
+                {
+                    // note: seting to 'Parsed' would include them in the resolver walk. 'Ready' excludes them.
+                    _state.SetModuleState(component, ParserState.Ready);
+                }
             }
 
             // invalidation cleanup should go into ParseAsync?
@@ -186,18 +190,21 @@ namespace Rubberduck.Parsing.VBA
 
             var qualifiedName = new QualifiedModuleName(vba.IdentifierName, vba.IdentifierName, errObject.IdentifierName);
             var err = new Declaration(new QualifiedMemberName(qualifiedName, Tokens.Err), vba, "Global", errObject.IdentifierName, true, false, Accessibility.Global, DeclarationType.Variable);
-            _state.AddDeclaration(err);
-
             var debugClassName = new QualifiedModuleName(vba.IdentifierName, vba.IdentifierName, "DebugClass");
             var debugClass = new Declaration(new QualifiedMemberName(debugClassName, "DebugClass"), vba, "Global", "DebugClass", false, false, Accessibility.Global, DeclarationType.ClassModule);
             var debugObject = new Declaration(new QualifiedMemberName(debugClassName, "Debug"), vba, "Global", "DebugClass", true, false, Accessibility.Global, DeclarationType.Variable);
             var debugAssert = new Declaration(new QualifiedMemberName(debugClassName, "Assert"), debugObject, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
             var debugPrint = new Declaration(new QualifiedMemberName(debugClassName, "Print"), debugObject, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
 
-            _state.AddDeclaration(debugClass);
-            _state.AddDeclaration(debugObject);
-            _state.AddDeclaration(debugAssert);
-            _state.AddDeclaration(debugPrint);
+
+            lock (_state)
+            {
+                _state.AddDeclaration(err);
+                _state.AddDeclaration(debugClass);
+                _state.AddDeclaration(debugObject);
+                _state.AddDeclaration(debugAssert);
+                _state.AddDeclaration(debugPrint);
+            }
         }
 
         private readonly HashSet<ReferencePriorityMap> _projectReferences = new HashSet<ReferencePriorityMap>();
@@ -287,8 +294,12 @@ namespace Rubberduck.Parsing.VBA
 
         public Task ParseAsync(VBComponent component, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
-            _state.ClearStateCache(component);            
-            _state.SetModuleState(component, ParserState.Pending); // also clears module-exceptions
+            lock (_state)
+            lock(component)
+            {
+                _state.ClearStateCache(component);
+                _state.SetModuleState(component, ParserState.Pending); // also clears module-exceptions
+            }
 
             var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token, token);
 
@@ -336,20 +347,34 @@ namespace Rubberduck.Parsing.VBA
         {
             var preprocessor = new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
             var parser = new ComponentParseTask(component, preprocessor, _attributeParser, rewriter);
-            parser.ParseFailure += (sender, e) => _state.SetModuleState(component, ParserState.Error, e.Cause as SyntaxErrorException);
+            parser.ParseFailure += (sender, e) =>
+            {
+                lock (_state)
+                lock (component)
+                {
+                    _state.SetModuleState(component, ParserState.Error, e.Cause as SyntaxErrorException);
+                }
+            };
             parser.ParseCompleted += (sender, e) =>
             {
-                // possibly lock _state
-                _state.SetModuleAttributes(component, e.Attributes);
-                _state.AddParseTree(component, e.ParseTree);
-                _state.AddTokenStream(component, e.Tokens);
-                _state.SetModuleComments(component, e.Comments);
-                _state.SetModuleAnnotations(component, e.Annotations);
+                lock (_state)
+                lock (component)
+                {
+                    _state.SetModuleAttributes(component, e.Attributes);
+                    _state.AddParseTree(component, e.ParseTree);
+                    _state.AddTokenStream(component, e.Tokens);
+                    _state.SetModuleComments(component, e.Comments);
+                    _state.SetModuleAnnotations(component, e.Annotations);
 
-                // This really needs to go last
-                _state.SetModuleState(component, ParserState.Parsed);
+                    // This really needs to go last
+                    _state.SetModuleState(component, ParserState.Parsed);
+                }
             };
-            _state.SetModuleState(component, ParserState.Parsing);
+            lock (_state)
+            lock (component)
+            {
+                _state.SetModuleState(component, ParserState.Parsing);
+            }
             parser.Start(token);
         }
 
@@ -426,10 +451,15 @@ namespace Rubberduck.Parsing.VBA
                     argListWithOneByRefParamListener,
                 }), tree);
                 // TODO: these are actually (almost) inspection results.. we should handle them as such
-                _state.ArgListsWithOneByRefParam = argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-                _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-                _state.ObsoleteLetContexts = obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-                _state.ObsoleteCallContexts = obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
+                lock (_state)
+                lock (component)
+                {
+                    _state.ArgListsWithOneByRefParam = argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
+                    _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
+                    _state.ObsoleteLetContexts = obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
+                    _state.ObsoleteCallContexts = obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
+                }
+
                 var project = component.Collection.Parent;
                 var projectQualifiedName = new QualifiedModuleName(project);
                 Declaration projectDeclaration;
@@ -437,7 +467,10 @@ namespace Rubberduck.Parsing.VBA
                 {
                     projectDeclaration = CreateProjectDeclaration(projectQualifiedName, project);
                     _projectDeclarations.Add(projectQualifiedName.ProjectId, projectDeclaration);
-                    _state.AddDeclaration(projectDeclaration);
+                    lock(_state)
+                    {
+                        _state.AddDeclaration(projectDeclaration);
+                    }
                 }
                 var declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, Accessibility.Implicit, component.Type, _state.GetModuleComments(component), _state.GetModuleAnnotations(component), _state.GetModuleAttributes(component), _projectReferences, projectDeclaration);
                 // TODO: should we unify the API? consider working like the other listeners instead of event-based
@@ -451,7 +484,10 @@ namespace Rubberduck.Parsing.VBA
             } catch (Exception exception)
             {
                 Debug.Print("Exception thrown acquiring declarations for '{0}' (thread {2}): {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
-                _state.SetModuleState(component, ParserState.ResolverError);
+                lock (_state)
+                {
+                    _state.SetModuleState(component, ParserState.ResolverError);
+                }
             }
         }
 
