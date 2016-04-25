@@ -191,7 +191,7 @@ namespace Rubberduck.Common
 
         public static IEnumerable<Declaration> FindInterfaces(this IEnumerable<Declaration> declarations)
         {
-            var classes = declarations.Where(item => item.DeclarationType == DeclarationType.Class);
+            var classes = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule);
             var interfaces = classes.Where(item => item.References.Any(reference =>
                 reference.Context.Parent is VBAParser.ImplementsStmtContext));
 
@@ -279,7 +279,7 @@ namespace Rubberduck.Common
         {
             var items = declarations.ToList();
 
-            var forms = items.Where(item => item.DeclarationType == DeclarationType.Class
+            var forms = items.Where(item => item.DeclarationType == DeclarationType.ClassModule
                 && item.QualifiedName.QualifiedModuleName.Component != null
                 && item.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_MSForm)
                 .ToList();
@@ -318,7 +318,7 @@ namespace Rubberduck.Common
             .Select(item => new
             {
                 WithEventDeclaration = item, 
-                EventProvider = items.SingleOrDefault(type => type.DeclarationType == DeclarationType.Class && type.QualifiedName.QualifiedModuleName == item.QualifiedName.QualifiedModuleName)
+                EventProvider = items.SingleOrDefault(type => type.DeclarationType == DeclarationType.ClassModule && type.QualifiedName.QualifiedModuleName == item.QualifiedName.QualifiedModuleName)
             })
             .Select(item => new
             {
@@ -341,7 +341,7 @@ namespace Rubberduck.Common
             }
 
             var items = declarations as IList<Declaration> ?? declarations.ToList();
-            var type = items.SingleOrDefault(item => item.DeclarationType == DeclarationType.Class
+            var type = items.SingleOrDefault(item => item.DeclarationType == DeclarationType.ClassModule
                                                              && item.Project != null
                                                              && item.IdentifierName == withEventsDeclaration.AsTypeName.Split('.').Last());
 

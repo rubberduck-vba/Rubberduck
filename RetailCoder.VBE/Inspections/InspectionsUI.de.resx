@@ -509,4 +509,16 @@
   <data name="QualifiedSelectionInspection" xml:space="preserve">
     <value>{0}: {1} - {2}.{3}, Zeile {4}</value>
   </data>
+  <data name="SetObjectVariableQuickFix" xml:space="preserve">
+    <value>Benutze das Schlüsselwort 'Set'</value>
+  </data>
+  <data name="ObjectVariableNotSetInspectionResultFormat" xml:space="preserve">
+    <value>Objektvariable '{0}' wird ohne das 'Set' Schlüsselwort zugewiesen</value>
+  </data>
+  <data name="ObjectVariableNotSetInspectionMeta" xml:space="preserve">
+    <value>Rubberduck hat festgestellt, dass die Variable eine Objektvaribale ist, die ohne 'Set' Schlüsselwort zugewiesen wird. Dies führt zu dem Laufzeitfehler 91 'Objekt oder With Block Variable wurden nicht gesetzt'.</value>
+  </data>
+  <data name="ObjectVariableNotSetInspectionName" xml:space="preserve">
+    <value>Zuweiseung in eine Objektvariable benötigt das 'Set'-Schlüsselwort.</value>
+  </data>
 </root>

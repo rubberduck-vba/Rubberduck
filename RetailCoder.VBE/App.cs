@@ -206,7 +206,7 @@ namespace Rubberduck
         private void RegisterComponentsEventSink(VBComponents components, string projectId)
         {
             if (_componentsEventsSinks.ContainsKey(projectId))
-            {
+        {
                 // already registered - this is caused by the initial load+rename of a project in the VBE
                 Debug.WriteLine("Components sink already registered.");
                 return;

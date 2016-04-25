@@ -20,20 +20,20 @@ namespace RubberduckTests.Mocks
         private readonly Mock<References> _vbReferences;
 
         private readonly List<VBComponent> _components = new List<VBComponent>();
-        private readonly List<Reference> _references = new List<Reference>(); 
+        private readonly List<Reference> _references = new List<Reference>();
 
-        public MockProjectBuilder(string name, vbext_ProjectProtection protection, Func<VBE> getVbe, MockVbeBuilder mockVbeBuilder)
+        public MockProjectBuilder(string name, string filename, vbext_ProjectProtection protection, Func<VBE> getVbe, MockVbeBuilder mockVbeBuilder)
         {
             _getVbe = getVbe;
             _mockVbeBuilder = mockVbeBuilder;
 
-            _project = CreateProjectMock(name, protection);
+            _project = CreateProjectMock(name, filename, protection);
 
             _project.SetupProperty(m => m.HelpFile);
 
             _vbComponents = CreateComponentsMock();
             _project.SetupGet(m => m.VBComponents).Returns(_vbComponents.Object);
-            
+
             _vbReferences = CreateReferencesMock();
             _project.SetupGet(m => m.References).Returns(_vbReferences.Object);
         }
@@ -62,7 +62,7 @@ namespace RubberduckTests.Mocks
         {
             _components.Add(component.Object);
             _getVbe().ActiveCodePane = component.Object.CodeModule.CodePane;
-            return this;            
+            return this;
         }
 
         /// <summary>
@@ -110,11 +110,12 @@ namespace RubberduckTests.Mocks
             return _project;
         }
 
-        private Mock<VBProject> CreateProjectMock(string name, vbext_ProjectProtection protection)
+        private Mock<VBProject> CreateProjectMock(string name, string filename, vbext_ProjectProtection protection)
         {
             var result = new Mock<VBProject>();
 
             result.SetupProperty(m => m.Name, name);
+            result.SetupGet(m => m.FileName).Returns(() => filename);
             result.SetupGet(m => m.Protection).Returns(() => protection);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
 
@@ -124,10 +125,10 @@ namespace RubberduckTests.Mocks
         private Mock<VBComponents> CreateComponentsMock()
         {
             var result = new Mock<VBComponents>();
-            
+
             result.SetupGet(m => m.Parent).Returns(() => _project.Object);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
-            
+
             result.Setup(c => c.GetEnumerator()).Returns(() => _components.GetEnumerator());
             result.As<IEnumerable>().Setup(c => c.GetEnumerator()).Returns(() => _components.GetEnumerator());
 
@@ -141,16 +142,12 @@ namespace RubberduckTests.Mocks
         private Mock<References> CreateReferencesMock()
         {
             var result = new Mock<References>();
-            
             result.SetupGet(m => m.Parent).Returns(() => _project.Object);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
-
             result.Setup(m => m.GetEnumerator()).Returns(() => _references.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _references.GetEnumerator());
-
-            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _references.ElementAt(index));
-            result.SetupGet(m => m.Count).Returns(_references.Count);
-
+            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _references.ElementAt(index - 1));
+            result.SetupGet(m => m.Count).Returns(() => _references.Count);
             return result;
         }
 
@@ -248,7 +245,7 @@ namespace RubberduckTests.Mocks
 
             codePane.SetupGet(p => p.VBE).Returns(_getVbe);
             codePane.SetupGet(p => p.Window).Returns(() => window);
-            
+
             return codePane;
         }
     }

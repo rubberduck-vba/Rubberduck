@@ -105,7 +105,7 @@ namespace Rubberduck.Inspections
             instruction = parent.GetText();
 
             var constant = context.GetText();
-            var replacement = context.ambiguousIdentifier().GetText() + ' '
+            var replacement = context.identifier().GetText() + ' '
                          + Tokens.As + ' ' + Tokens.Variant + ' '
                          + context.EQ().GetText() + ' '
                          + context.valueStmt().GetText();

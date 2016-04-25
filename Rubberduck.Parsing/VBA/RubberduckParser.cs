@@ -16,6 +16,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor.Extensions;
+using System.IO;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -188,7 +189,7 @@ namespace Rubberduck.Parsing.VBA
             _state.AddDeclaration(err);
 
             var debugClassName = new QualifiedModuleName(vba.IdentifierName, vba.IdentifierName, "DebugClass");
-            var debugClass = new Declaration(new QualifiedMemberName(debugClassName, "DebugClass"), vba, "Global", "DebugClass", false, false, Accessibility.Global, DeclarationType.Class);
+            var debugClass = new Declaration(new QualifiedMemberName(debugClassName, "DebugClass"), vba, "Global", "DebugClass", false, false, Accessibility.Global, DeclarationType.ClassModule);
             var debugObject = new Declaration(new QualifiedMemberName(debugClassName, "Debug"), vba, "Global", "DebugClass", true, false, Accessibility.Global, DeclarationType.Variable);
             var debugAssert = new Declaration(new QualifiedMemberName(debugClassName, "Assert"), debugObject, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
             var debugPrint = new Declaration(new QualifiedMemberName(debugClassName, "Print"), debugObject, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
@@ -199,7 +200,28 @@ namespace Rubberduck.Parsing.VBA
             _state.AddDeclaration(debugPrint);
         }
 
-        private readonly HashSet<ReferencePriorityMap> _references = new HashSet<ReferencePriorityMap>();
+        private readonly HashSet<ReferencePriorityMap> _projectReferences = new HashSet<ReferencePriorityMap>();
+
+        private string GetReferenceProjectId(Reference reference, IReadOnlyList<VBProject> projects)
+        {
+            var id = projects.FirstOrDefault(project =>
+            {
+                try
+                {
+                    return project.FileName == reference.FullPath;
+                }
+                catch(IOException)
+                {
+                    // Filename throws exception if unsaved.
+                    return false;
+                }
+            });
+            if (id != null)
+            {
+                return QualifiedModuleName.GetProjectId(id);
+            }
+            return QualifiedModuleName.GetProjectId(reference);
+        }
 
         private void SyncComReferences(IReadOnlyList<VBProject> projects)
         {
@@ -211,12 +233,12 @@ namespace Rubberduck.Parsing.VBA
                 for (var priority = 1; priority <= vbProject.References.Count; priority++)
                 {
                     var reference = vbProject.References.Item(priority);
-                    var referencedProjectId = QualifiedModuleName.GetProjectId(reference);
-                    var map = _references.SingleOrDefault(r => r.ReferencedProjectId == referencedProjectId);
+                    var referencedProjectId = GetReferenceProjectId(reference, projects);
+                    var map = _projectReferences.SingleOrDefault(r => r.ReferencedProjectId == referencedProjectId);
                     if (map == null)
                     {
-                        map = new ReferencePriorityMap(referencedProjectId) {{projectId, priority}};
-                        _references.Add(map);
+                        map = new ReferencePriorityMap(referencedProjectId) { { projectId, priority } };
+                        _projectReferences.Add(map);
                     }
                     else
                     {
@@ -236,19 +258,19 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            var mappedIds = _references.Select(map => map.ReferencedProjectId);
+            var mappedIds = _projectReferences.Select(map => map.ReferencedProjectId);
             var unmapped = projects.SelectMany(project => project.References.Cast<Reference>())
-                .Where(reference => !mappedIds.Contains(QualifiedModuleName.GetProjectId(reference)));
+                .Where(reference => !mappedIds.Contains(GetReferenceProjectId(reference, projects)));
             foreach (var reference in unmapped)
             {
-                UnloadComReference(reference);
+                UnloadComReference(reference, projects);
             }
         }
 
-        private void UnloadComReference(Reference reference)
+        private void UnloadComReference(Reference reference, IReadOnlyList<VBProject> projects)
         {
-            var referencedProjectId = QualifiedModuleName.GetProjectId(reference);
-            var map = _references.SingleOrDefault(r => r.ReferencedProjectId == referencedProjectId);
+            var referencedProjectId = GetReferenceProjectId(reference, projects);
+            var map = _projectReferences.SingleOrDefault(r => r.ReferencedProjectId == referencedProjectId);
             if (map == null || !map.IsLoaded)
             {
                 // we're removing a reference we weren't tracking? ...this shouldn't happen.
@@ -258,7 +280,7 @@ namespace Rubberduck.Parsing.VBA
             map.Remove(referencedProjectId);
             if (!map.Any())
             {
-                _references.Remove(map);
+                _projectReferences.Remove(map);
                 _state.RemoveBuiltInDeclarations(reference);
             }
         }
@@ -353,7 +375,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 return;
             }
-
+            _projectDeclarations.Clear();
             foreach (var kvp in _state.ParseTrees)
             {
                 var qualifiedName = kvp.Key;
@@ -385,6 +407,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        private readonly Dictionary<string, Declaration> _projectDeclarations = new Dictionary<string, Declaration>(); 
         private void ResolveDeclarations(VBComponent component, IParseTree tree)
         {
             var qualifiedModuleName = new QualifiedModuleName(component);
@@ -407,11 +430,16 @@ namespace Rubberduck.Parsing.VBA
                 _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
                 _state.ObsoleteLetContexts = obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
                 _state.ObsoleteCallContexts = obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-
-                // cannot locate declarations in one pass *the way it's currently implemented*,
-                // because the context in EnterSubStmt() doesn't *yet* have child nodes when the context enters.
-                // so we need to EnterAmbiguousIdentifier() and evaluate the parent instead - this *might* work.
-                var declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, Accessibility.Implicit, component.Type, _state.GetModuleComments(component), _state.GetModuleAnnotations(component),_state.GetModuleAttributes(component), _references);
+                var project = component.Collection.Parent;
+                var projectQualifiedName = new QualifiedModuleName(project);
+                Declaration projectDeclaration;
+                if (!_projectDeclarations.TryGetValue(projectQualifiedName.ProjectId, out projectDeclaration))
+                {
+                    projectDeclaration = CreateProjectDeclaration(projectQualifiedName, project);
+                    _projectDeclarations.Add(projectQualifiedName.ProjectId, projectDeclaration);
+                    _state.AddDeclaration(projectDeclaration);
+                }
+                var declarationsListener = new DeclarationSymbolsListener(qualifiedModuleName, Accessibility.Implicit, component.Type, _state.GetModuleComments(component), _state.GetModuleAnnotations(component), _state.GetModuleAttributes(component), _projectReferences, projectDeclaration);
                 // TODO: should we unify the API? consider working like the other listeners instead of event-based
                 declarationsListener.NewDeclaration += (sender, e) => _state.AddDeclaration(e.Declaration);
                 declarationsListener.CreateModuleDeclarations();
@@ -425,7 +453,20 @@ namespace Rubberduck.Parsing.VBA
                 Debug.Print("Exception thrown acquiring declarations for '{0}' (thread {2}): {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
                 _state.SetModuleState(component, ParserState.ResolverError);
             }
+        }
 
+        private Declaration CreateProjectDeclaration(QualifiedModuleName projectQualifiedName, VBProject project)
+        {
+            var qualifiedName = projectQualifiedName.QualifyMemberName(project.Name);
+            var projectId = qualifiedName.QualifiedModuleName.ProjectId;
+            var projectDeclaration = new ProjectDeclaration(qualifiedName, project.Name);
+            var references = _projectReferences.Where(projectContainingReference => projectContainingReference.ContainsKey(projectId));
+            foreach (var reference in references)
+            {
+                int priority = reference[projectId];
+                projectDeclaration.AddProjectReference(reference.ReferencedProjectId, priority);
+            }
+            return projectDeclaration;
         }
         
         private void ResolveReferences(DeclarationFinder finder, VBComponent component, IParseTree tree)

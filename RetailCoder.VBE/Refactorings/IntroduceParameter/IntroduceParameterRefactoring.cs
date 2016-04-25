@@ -87,7 +87,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
-            if (new[] { DeclarationType.Class, DeclarationType.Module }.Contains(target.ParentDeclaration.DeclarationType))
+            if (new[] { DeclarationType.ClassModule, DeclarationType.ProceduralModule }.Contains(target.ParentDeclaration.DeclarationType))
             {
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);

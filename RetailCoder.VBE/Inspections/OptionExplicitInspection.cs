@@ -19,8 +19,8 @@ namespace Rubberduck.Inspections
 
         private static readonly DeclarationType[] ModuleTypes =
         {
-            DeclarationType.Module,
-            DeclarationType.Class
+            DeclarationType.ProceduralModule,
+            DeclarationType.ClassModule
         };
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()

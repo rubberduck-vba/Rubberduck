@@ -54,7 +54,7 @@ namespace Rubberduck.UI.Command.MenuItems
                 SetSelectionText(selection);
                 _selectionButton.TooltipText = _selectionButton.Caption;
             }
-            else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.Class && declaration.DeclarationType != DeclarationType.Module)
+            else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.ClassModule && declaration.DeclarationType != DeclarationType.ProceduralModule)
             {
                 _selectionButton.Caption = string.Format("{0} ({1}): {2} ({3})", 
                     declaration.QualifiedName.QualifiedModuleName,
