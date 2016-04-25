@@ -41,8 +41,9 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public void SetStatusText(string value = null)
         {
-            Debug.WriteLine(string.Format("RubberduckCommandBar status text changes to '{0}'.", value));
-            UiDispatcher.Invoke(() => _statusButton.Caption = value ?? RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status));
+            var text = value ?? RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status);
+            Debug.WriteLine(string.Format("RubberduckCommandBar status text changes to '{0}'.", text));
+            UiDispatcher.Invoke(() => _statusButton.Caption = text);
         }
 
         public void SetSelectionText(Declaration declaration)

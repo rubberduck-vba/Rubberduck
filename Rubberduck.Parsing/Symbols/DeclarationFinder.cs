@@ -97,10 +97,11 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return result;
             }
+
             return new List<Declaration>();
         }
 
-        public Declaration FindProject(Declaration currentScope, string name)
+        public Declaration FindProject(string name, Declaration currentScope = null)
         {
             Declaration result = null;
             try

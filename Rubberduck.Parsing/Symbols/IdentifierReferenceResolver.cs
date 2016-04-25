@@ -202,7 +202,7 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration ResolveType(IList<VBAParser.IdentifierContext> identifiers)
         {
             var first = identifiers[0].GetText();
-            var projectMatch = _declarationFinder.FindProject(_currentScope, first);
+            var projectMatch = _declarationFinder.FindProject(first, _currentScope);
 
             if (projectMatch != null)
             {
@@ -1108,7 +1108,7 @@ namespace Rubberduck.Parsing.Symbols
                 .ToList();
             }
 
-            return result.Count == 1 ? result.SingleOrDefault() : null;
+            return result.Count == 1 ? result.SingleOrDefault() : null; // return null for multiple matches
         }
 
         private bool IsLocalEvent(Declaration item, Declaration localScope)

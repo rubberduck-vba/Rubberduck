@@ -7,6 +7,11 @@ namespace Rubberduck.VBEditor.Extensions
 {
     public static class ProjectExtensions
     {
+        public static IEnumerable<VBProject> UnprotectedProjects(this VBProjects projects)
+        {
+            return projects.Cast<VBProject>().Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none);
+        }
+
         public static IEnumerable<string> ComponentNames(this VBProject project)
         {
             return project.VBComponents.Cast<VBComponent>().Select(component => component.Name);
