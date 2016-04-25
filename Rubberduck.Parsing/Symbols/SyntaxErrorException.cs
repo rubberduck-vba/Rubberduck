@@ -17,7 +17,7 @@ namespace Rubberduck.Parsing.Symbols
             _token = offendingSymbol;
             _line = line;
             _position = position;
-            Debug.WriteLine(innerException.ToString());
+            Debug.WriteLine(innerException == null ? "" : innerException.ToString());
             Debug.WriteLine("Token: {0} (L{1}C{2})", offendingSymbol.Text, line, position);
         }
 

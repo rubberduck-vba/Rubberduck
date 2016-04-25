@@ -213,30 +213,43 @@ namespace Rubberduck.Parsing.VBA
         private ParserState EvaluateParserState()
         {
             var moduleStates = _moduleStates.Values.ToList();
-            if (moduleStates.Count == 0)
+            var state = States.SingleOrDefault(value => moduleStates.All(ps => ps == value));
+
+            if (state != default(ParserState))
             {
-                return default(ParserState);
-            }
-            if (States.Any(state => moduleStates.All(module => module == state)))
-            {
-                // all modules have the same state - we're done here:
-                return moduleStates.First();
+                // if all modules are in the same state, we have our result.
+                Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", state, Thread.CurrentThread.ManagedThreadId);
+                return state;
             }
 
-            if (moduleStates.Any(module => module > ParserState.Ready)) // only states beyond "ready" are error states
+            // error state takes precedence over every other state
+            if (moduleStates.Any(ms => ms == ParserState.Error))
             {
-                // any error state seals the deal:
-                return moduleStates.Max();
+                Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", ParserState.Error,
+                Thread.CurrentThread.ManagedThreadId);
+                return ParserState.Error;
+            }
+            if (moduleStates.Any(ms => ms == ParserState.ResolverError))
+            {
+                Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", ParserState.ResolverError,
+                Thread.CurrentThread.ManagedThreadId);
+                return ParserState.ResolverError;
             }
 
-            if (moduleStates.Any(module => module != ParserState.Ready))
+            // intermediate states are toggled when *any* module has them.
+            var result = moduleStates.Min();
+            if (moduleStates.Any(ms => ms == ParserState.Parsing))
             {
-                // any module not ready means at least one of them has work in progress;
-                // report the least advanced of them, except if that's 'Pending':
-                return moduleStates.Except(new[] { ParserState.Pending }).Min();
+                result = ParserState.Parsing;
+            }
+            if (moduleStates.Any(ms => ms == ParserState.Resolving))
+            {
+                result = ParserState.Resolving;
             }
 
-            return default(ParserState); // default value is 'Pending'.
+            Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", result,
+            Thread.CurrentThread.ManagedThreadId);
+            return result;
         }
 
         public ParserState GetModuleState(VBComponent component)
