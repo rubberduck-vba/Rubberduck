@@ -20,7 +20,7 @@ namespace Rubberduck.Parsing
             var startLine = context.Start.Line == 0 ? 1 : context.Start.Line;
             var startCol = context.Start.Column + 1;
             var endLine = context.Stop.Line == 0 ? 1 : context.Stop.Line;
-            var endCol = startCol + context.Stop.Text.Length;
+            var endCol = context.Stop.Column + context.Stop.Text.Length;
 
             return new Selection(
                 startLine,
