@@ -507,6 +507,14 @@ namespace Rubberduck.Parsing.VBA
 
         public IEnumerable<KeyValuePair<QualifiedModuleName, IParseTree>> ParseTrees { get { return _parseTrees; } }
 
+        public bool IsDirty()
+        {
+            var projects = Projects.ToList();
+            var components = projects.SelectMany(p => p.VBComponents.Cast<VBComponent>()).ToList();
+
+            return components.Where(IsNewOrModified).Any();
+        }
+
         public bool HasAllParseTrees(IReadOnlyList<VBComponent> expected)
         {
             var expectedModules = expected.Select(module => new QualifiedModuleName(module));
