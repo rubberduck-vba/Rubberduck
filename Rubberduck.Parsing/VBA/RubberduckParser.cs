@@ -100,7 +100,7 @@ namespace Rubberduck.Parsing.VBA
 
             foreach (var component in components)
             {
-                _state.SetModuleState(component, ParserState.Pending);
+                  _state.SetModuleState(component, ParserState.Pending);
             }
 
             // invalidation cleanup should go into ParseAsync?
@@ -111,9 +111,7 @@ namespace Rubberduck.Parsing.VBA
 
             foreach (var vbComponent in components)
             {
-                while (!_state.ClearStateCache(vbComponent)) { }
-                
-                // expects synchronous parse :/
+                _state.ClearStateCache(vbComponent);
                 ParseComponent(vbComponent);
             }
         }
@@ -145,7 +143,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
 
-            lock (_state)
+            lock (_state)  // note, method is invoked from UI thread... really need the lock here?
             {
                 foreach (var component in toParse)
                 {
@@ -156,6 +154,9 @@ namespace Rubberduck.Parsing.VBA
                     // note: seting to 'Parsed' would include them in the resolver walk. 'Ready' excludes them.
                     _state.SetModuleState(component, ParserState.Ready);
                 }
+
+                Debug.Assert(unchanged.All(component => _state.GetModuleState(component) == ParserState.Ready));
+                Debug.Assert(toParse.All(component => _state.GetModuleState(component) == ParserState.Pending));
             }
 
             // invalidation cleanup should go into ParseAsync?
@@ -476,14 +477,13 @@ namespace Rubberduck.Parsing.VBA
                 // TODO: should we unify the API? consider working like the other listeners instead of event-based
                 declarationsListener.NewDeclaration += (sender, e) => _state.AddDeclaration(e.Declaration);
                 declarationsListener.CreateModuleDeclarations();
-                // rewalk parse tree for second declaration level
                 
-                Debug.WriteLine("Walking parse tree for '{0}'... (acquiring declarations)", qualifiedModuleName.Name);
+                Debug.WriteLine(string.Format("Walking parse tree for '{0}'... (acquiring declarations)", qualifiedModuleName.Name));
                 ParseTreeWalker.Default.Walk(declarationsListener, tree);
-
-            } catch (Exception exception)
+            } 
+            catch (Exception exception)
             {
-                Debug.Print("Exception thrown acquiring declarations for '{0}' (thread {2}): {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
+                Debug.WriteLine("Exception thrown acquiring declarations for '{0}' (thread {2}): {1}", component.Name, exception, Thread.CurrentThread.ManagedThreadId);
                 lock (_state)
                 {
                     _state.SetModuleState(component, ParserState.ResolverError);
@@ -533,7 +533,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             _state.SetModuleState(component, state);
-            Debug.Print("'{0}' is {1}. Resolver took {2}ms to complete (thread {3})", component.Name, _state.GetModuleState(component), /*_resolverTimer[component].ElapsedMilliseconds*/0, Thread.CurrentThread.ManagedThreadId);
+            Debug.WriteLine("'{0}' is {1} (thread {2})", component.Name, _state.GetModuleState(component), Thread.CurrentThread.ManagedThreadId);
         }
 
         #region Listener classes

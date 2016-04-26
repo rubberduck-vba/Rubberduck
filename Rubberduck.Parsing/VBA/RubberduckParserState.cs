@@ -247,6 +247,13 @@ namespace Rubberduck.Parsing.VBA
                 result = ParserState.Resolving;
             }
 
+            if (result == ParserState.Ready && moduleStates.Any(item => item != ParserState.Ready))
+            {
+                result = moduleStates.Except(new[] {ParserState.Ready}).Max();
+            }
+
+            Debug.Assert(result != ParserState.Ready || moduleStates.All(item => item == ParserState.Ready));
+
             Debug.WriteLine("ParserState evaluates to '{0}' (thread {1})", result,
             Thread.CurrentThread.ManagedThreadId);
             return result;
