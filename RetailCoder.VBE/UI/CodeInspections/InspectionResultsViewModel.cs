@@ -137,7 +137,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private async void ExecuteRefreshCommandAsync(object parameter)
         {
-            CanRefresh = _vbe.HostApplication() != null;
+            CanRefresh = _vbe.HostApplication() != null && _state.IsDirty();
             if (!CanRefresh)
             {
                 return;
