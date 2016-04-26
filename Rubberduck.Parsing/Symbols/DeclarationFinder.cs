@@ -27,8 +27,8 @@ namespace Rubberduck.Parsing.Symbols
             {
                 IdentifierName = declaration.Project != null &&
                         declaration.DeclarationType.HasFlag(DeclarationType.Project)
-                            ? declaration.Project.Name.ToLower()
-                            : declaration.IdentifierName.ToLower()
+                            ? declaration.Project.Name.ToLowerInvariant()
+                            : declaration.IdentifierName.ToLowerInvariant()
             })
             .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
         }
@@ -79,7 +79,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> MatchName(string name)
         {
-            string normalizedName = name.ToLower();
+            var normalizedName = name.ToLowerInvariant();
             Declaration[] result;
             if (_declarationsByName.TryGetValue(normalizedName, out result))
             {
@@ -117,7 +117,7 @@ namespace Rubberduck.Parsing.Symbols
             return result;
         }
 
-        public Declaration FindStdModule(Declaration parent, string name, bool includeBuiltIn = false)
+        public Declaration FindStdModule(string name, Declaration parent = null, bool includeBuiltIn = false)
         {
             Declaration result = null;
             try
@@ -135,7 +135,7 @@ namespace Rubberduck.Parsing.Symbols
             return result;
         }
 
-        public Declaration FindUserDefinedType(Declaration parent, string name, bool includeBuiltIn = false)
+        public Declaration FindUserDefinedType(string name, Declaration parent = null, bool includeBuiltIn = false)
         {
             Declaration result = null;
             try
@@ -153,7 +153,7 @@ namespace Rubberduck.Parsing.Symbols
             return result;
         }
 
-        public Declaration FindEnum(Declaration parent, string name, bool includeBuiltIn = false)
+        public Declaration FindEnum(string name, Declaration parent = null, bool includeBuiltIn = false)
         {
             Declaration result = null;
             try
