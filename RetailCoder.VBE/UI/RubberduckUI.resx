@@ -1509,4 +1509,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>By marker</value>
   </data>
+  <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
+    <value>Library procedure</value>
+  </data>
 </root>

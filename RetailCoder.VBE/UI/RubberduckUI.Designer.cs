@@ -787,6 +787,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Library procedure.
+        /// </summary>
+        public static string DeclarationType_LibraryProcedure {
+            get {
+                return ResourceManager.GetString("DeclarationType_LibraryProcedure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to line label.
         /// </summary>
         public static string DeclarationType_LineLabel {
