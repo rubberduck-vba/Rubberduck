@@ -100,10 +100,10 @@ namespace Rubberduck.Inspections
         {
             var module = QualifiedSelection.QualifiedName;
             return string.Format(
-                "{0}: {1} - {2}.{3}, line {4}",
+                InspectionsUI.QualifiedSelectionInspection,
                 Inspection.Severity,
                 Description,
-                module.ProjectName,
+                module.ProjectId,
                 module.ComponentName,
                 QualifiedSelection.Selection.StartLine);
         }
@@ -121,7 +121,7 @@ namespace Rubberduck.Inspections
         public object[] ToArray()
         {
             var module = QualifiedSelection.QualifiedName;
-            return new object[] {Inspection.Severity.ToString(), Description, module.ProjectName, module.ComponentName, QualifiedSelection.Selection.StartLine };
+            return new object[] {Inspection.Severity.ToString(), Description, module.ProjectId, module.ComponentName, QualifiedSelection.Selection.StartLine };
         }
 
         public string ToCsvString()
@@ -131,7 +131,7 @@ namespace Rubberduck.Inspections
                 "\"{0}\",\"{1}\",\"{2}\",\"{3}\",{4}",
                 Inspection.Severity,
                 Description,
-                module.ProjectName,
+                module.ProjectId,
                 module.ComponentName,
                 QualifiedSelection.Selection.StartLine);
         }

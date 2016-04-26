@@ -503,4 +503,23 @@
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Disable this inspection</value>
   </data>
+  <data name="InvalidContextTypeInspectionFix" xml:space="preserve">
+    <value>Context type '{0}' is not valid for {1}.</value>
+  </data>
+  <data name="QualifiedSelectionInspection" xml:space="preserve">
+    <value>{0}: {1} - {2}.{3}, line {4}</value>
+  </data>
+  <data name="ObjectVariableNotSetInspectionMeta" xml:space="preserve">
+    <value>As far as Rubberduck can tell, this variable is an object variable, assigned without the 'Set' keyword. This causes run-time error 91 'Object or With block variable not set'.</value>
+  </data>
+  <data name="ObjectVariableNotSetInspectionResultFormat" xml:space="preserve">
+    <value>Object variable '{0}' is assigned without the 'Set' keyword</value>
+    <comment>{0} Variable name</comment>
+  </data>
+  <data name="SetObjectVariableQuickFix" xml:space="preserve">
+    <value>Use 'Set' keyword</value>
+  </data>
+  <data name="ObjectVariableNotSetInspectionName" xml:space="preserve">
+    <value>Object variable assignment requires 'Set' keyword</value>
+  </data>
 </root>

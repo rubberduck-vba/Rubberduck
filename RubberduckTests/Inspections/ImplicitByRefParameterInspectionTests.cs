@@ -200,7 +200,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void ImplicitByRefParameter_QuickFixWorks_ParamArrayMustBePassedByRef()
+        public void ImplicitByRefParameter_QuickFixWorks_ParamArrayIsIgnored()
         {
             const string inputCode =
 @"Sub Foo(ParamArray arg1 As Integer)
@@ -220,7 +220,7 @@ End Sub";
             var inspection = new ImplicitByRefParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(2, inspectionResults.First().QuickFixes.Count());
+            Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [TestMethod]

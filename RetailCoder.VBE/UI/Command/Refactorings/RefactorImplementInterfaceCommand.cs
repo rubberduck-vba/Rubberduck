@@ -29,11 +29,13 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
+            //var target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane); // nope. logic is a bit more complex here.
+
             var selection = Vbe.ActiveCodePane.GetSelection();
             var targetInterface = _state.AllUserDeclarations.FindInterface(selection);
 
             var targetClass = _state.AllUserDeclarations.SingleOrDefault(d =>
-                        !d.IsBuiltIn && d.DeclarationType == DeclarationType.Class &&
+                        !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
                         d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
 
             var canExecute = targetInterface != null && targetClass != null;

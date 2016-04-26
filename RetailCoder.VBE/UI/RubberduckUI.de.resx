@@ -120,7 +120,7 @@
   <data name="CancelButtonText" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
-  <data name="DeclarationType_Class" xml:space="preserve">
+  <data name="DeclarationType_ClassModule" xml:space="preserve">
     <value>Klasse</value>
   </data>
   <data name="DeclarationType_Constant" xml:space="preserve">
@@ -141,7 +141,7 @@
   <data name="DeclarationType_LibraryFunction" xml:space="preserve">
     <value>Bibliotheks-Funktion</value>
   </data>
-  <data name="DeclarationType_Module" xml:space="preserve">
+  <data name="DeclarationType_ProceduralModule" xml:space="preserve">
     <value>Modul</value>
   </data>
   <data name="DeclarationType_Parameter" xml:space="preserve">
@@ -259,7 +259,7 @@
     <value>Parameter entfernen</value>
   </data>
   <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>Die Metode '{0}' implementiert '{1}.{2}'. Signatur Ändern? (Wird auf alle Implementierungen angewendet)</value>
+    <value>Die Methode '{0}' implementiert '{1}.{2}'. Signatur Ändern? (Wird auf alle Implementierungen angewendet)</value>
     <comment>0: Gewähltes Ziel; 1: Name des Interfaces; 2: Name des Interfacemembers</comment>
   </data>
   <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
@@ -314,7 +314,7 @@
     <value>&amp;Umbenennen</value>
   </data>
   <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
-    <value>Parameter &amp;Umordnen</value>
+    <value>Parameter Um&amp;ordnen</value>
   </data>
   <data name="RubberduckMenu" xml:space="preserve">
     <value>Ru&amp;bberduck</value>
@@ -724,7 +724,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Aktualisieren</value>
   </data>
   <data name="SourceControl_UserNameLabel" xml:space="preserve">
-    <value>Nutzername</value>
+    <value>Nutzername:</value>
   </data>
   <data name="SourceControl_Changes" xml:space="preserve">
     <value>Änderungen</value>
@@ -1470,5 +1470,20 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>Hotkey ({0}) ist nicht registriert.</value>
+  </data>
+  <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
+    <value>Rege&amp;x Suchen/Ersetzen</value>
+  </data>
+  <data name="HotkeyDescription_FindSymbol" xml:space="preserve">
+    <value>Suche Symbol</value>
+  </data>
+  <data name="HotkeyDescription_RefactorMoveCloserToUsage" xml:space="preserve">
+    <value>Ziehe die Deklaration näher an die Nutzung. </value>
+  </data>
+  <data name="HotkeyDescription_ParseAll" xml:space="preserve">
+    <value>Aktualisierung des Parserstatus</value>
+  </data>
+  <data name="GroupingStyle_ByMarker" xml:space="preserve">
+    <value>Nach Markierung</value>
   </data>
 </root>

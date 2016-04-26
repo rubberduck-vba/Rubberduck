@@ -1,13 +1,11 @@
 ﻿using System.Diagnostics;
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -30,10 +28,11 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = pane.GetSelection();
-            var target = _state.AllUserDeclarations.FindTarget(selection, new[] {DeclarationType.Variable,});
+            var target = _state.FindSelectedDeclaration(pane);
 
-            var canExecute = target != null && !target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
+            var canExecute = target != null 
+                && target.DeclarationType == DeclarationType.Variable
+                && !target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
 
             Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;

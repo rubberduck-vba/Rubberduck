@@ -2,9 +2,13 @@
 using System.Diagnostics;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using ParserState = Rubberduck.Parsing.VBA.ParserState;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -16,6 +20,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         private CommandBarButton _refreshButton;
         private CommandBarButton _statusButton;
+        private CommandBarButton _selectionButton;
 
         public RubberduckCommandBar(RubberduckParserState state, VBE vbe, IShowParserErrorsCommand command)
         {
@@ -36,13 +41,53 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public void SetStatusText(string value = null)
         {
-            _statusButton.Caption = value ?? RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status);
+            var text = value ?? RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status);
+            Debug.WriteLine(string.Format("RubberduckCommandBar status text changes to '{0}'.", text));
+            UiDispatcher.Invoke(() => _statusButton.Caption = text);
+        }
+
+        public void SetSelectionText(Declaration declaration)
+        {
+            if (declaration == null && _vbe.ActiveCodePane != null)
+            {
+                var selection = _vbe.ActiveCodePane.GetSelection();
+                SetSelectionText(selection);
+                _selectionButton.TooltipText = _selectionButton.Caption;
+            }
+            else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.ClassModule && declaration.DeclarationType != DeclarationType.ProceduralModule)
+            {
+                _selectionButton.Caption = string.Format("{0} ({1}): {2} ({3})", 
+                    declaration.QualifiedName.QualifiedModuleName,
+                    declaration.QualifiedSelection.Selection,
+                    declaration.IdentifierName,
+                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType));
+                _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
+                    ? _selectionButton.Caption
+                    : declaration.DescriptionString;
+            }
+            else if (declaration != null)
+            {
+                var selection = _vbe.ActiveCodePane.GetSelection();
+                _selectionButton.Caption = string.Format("{0}: {1} ({2}) {3}",
+                    declaration.QualifiedName.QualifiedModuleName,
+                    declaration.IdentifierName,
+                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType),
+                    selection.Selection);
+                _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
+                    ? _selectionButton.Caption
+                    : declaration.DescriptionString;
+            }
+        }
+
+        private void SetSelectionText(QualifiedSelection selection)
+        {
+            UiDispatcher.Invoke(() => _selectionButton.Caption = selection.ToString());
         }
 
         private void State_StateChanged(object sender, EventArgs e)
         {
             Debug.WriteLine("RubberduckCommandBar handles StateChanged...");
-            UiDispatcher.Invoke(() => SetStatusText(RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status)));
+            SetStatusText(RubberduckUI.ResourceManager.GetString("ParserState_" + _state.Status));
         }
 
         public event EventHandler Refresh;
@@ -71,6 +116,11 @@ namespace Rubberduck.UI.Command.MenuItems
             _statusButton.Style = MsoButtonStyle.msoButtonCaption;
             _statusButton.Tag = "Status";
             _statusButton.Click += _statusButton_Click;
+
+            _selectionButton = (CommandBarButton)commandbar.Controls.Add(MsoControlType.msoControlButton);
+            _selectionButton.Style = MsoButtonStyle.msoButtonCaption;
+            _selectionButton.BeginGroup = true;
+            _selectionButton.Enabled = false;
 
             commandbar.Visible = true;
         }

@@ -12,8 +12,6 @@ namespace Rubberduck.Common
         private IntPtr _timerId;
         private bool _isAttached;
 
-        public event EventHandler Tick;
-
         public TimerHook(IntPtr mainWindowHandle)
         {
             _mainWindowHandle = mainWindowHandle;
@@ -66,10 +64,10 @@ namespace Rubberduck.Common
 
         private void OnTick()
         {
-            var handler = Tick;
+            var handler = MessageReceived;
             if (handler != null)
             {
-                handler.Invoke(this, EventArgs.Empty);
+                handler.Invoke(this, HookEventArgs.Empty);
             }
         }
 

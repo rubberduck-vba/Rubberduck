@@ -87,7 +87,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
-            if (new[] { DeclarationType.Class, DeclarationType.Module }.Contains(target.ParentDeclaration.DeclarationType))
+            if (new[] { DeclarationType.ClassModule, DeclarationType.ProceduralModule }.Contains(target.ParentDeclaration.DeclarationType))
             {
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -148,7 +148,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             UpdateSignature(interfaceImplementation, targetVariable);
 
             var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
-                                                    .Where(item => item.ProjectName == interfaceImplementation.ProjectName
+                                                    .Where(item => item.ProjectId == interfaceImplementation.ProjectId
                                                            && item.IdentifierName == interfaceImplementation.ComponentName + "_" + interfaceImplementation.IdentifierName
                                                            && !item.Equals(functionDeclaration));
 

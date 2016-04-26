@@ -80,6 +80,8 @@ namespace Rubberduck.Root
             
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();
+            Bind<Func<IIndenterSettings>>().ToMethod(t => () => _kernel.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
+
             Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>().InSingletonScope();
             Rebind<IRubberduckParser>().To<RubberduckParser>().InSingletonScope();
 
@@ -360,7 +362,7 @@ namespace Rubberduck.Root
             {
                 _kernel.Get<CodeExplorerCommandMenuItem>(),
                 _kernel.Get<ToDoExplorerCommandMenuItem>(),
-                _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
+                //_kernel.Get<RegexSearchReplaceCommandMenuItem>(),
                 _kernel.Get<FindSymbolCommandMenuItem>(),
                 _kernel.Get<FindAllReferencesCommandMenuItem>(),
                 _kernel.Get<FindAllImplementationsCommandMenuItem>(),
@@ -385,7 +387,7 @@ namespace Rubberduck.Root
             {
                 GetRefactoringsParentMenu(),
                 GetSmartIndenterParentMenu(),
-                _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
+                //_kernel.Get<RegexSearchReplaceCommandMenuItem>(),
                 _kernel.Get<FindSymbolCommandMenuItem>(),
                 _kernel.Get<FindAllReferencesCommandMenuItem>(),
                 _kernel.Get<FindAllImplementationsCommandMenuItem>(),

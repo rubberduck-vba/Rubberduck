@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Annotations;
 
 namespace RubberduckTests.Grammar
 {
@@ -283,7 +284,7 @@ Option Explicit
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Class && item.IdentifierName == "Class2");
+                item.DeclarationType == DeclarationType.ClassModule && item.IdentifierName == "Class2");
 
             Assert.IsNotNull(declaration.References.SingleOrDefault());
         }
@@ -489,7 +490,7 @@ End Sub
 
             var fieldDeclaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable
-                && item.ParentScopeDeclaration.DeclarationType == DeclarationType.Module
+                && item.ParentScopeDeclaration.DeclarationType == DeclarationType.ProceduralModule
                 && item.IdentifierName == "foo");
 
             Assert.IsNull(fieldDeclaration.References.SingleOrDefault());
@@ -513,7 +514,7 @@ End Sub
 
             // assert
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Class && item.IdentifierName == "Class1");
+                item.DeclarationType == DeclarationType.ClassModule && item.IdentifierName == "Class1");
 
             Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
                 item.ParentScoping.IdentifierName == "Class2"));
@@ -947,8 +948,12 @@ End Sub
                 item.DeclarationType == DeclarationType.Variable);
 
             var usage = declaration.References.Single();
-
-            Assert.AreEqual("@Ignore UnassignedVariableUsage", usage.Annotations);
+            var annotation = (IgnoreAnnotation)usage.Annotations.First();
+            Assert.IsTrue(
+                usage.Annotations.Count() == 1
+                && annotation.AnnotationType == AnnotationType.Ignore
+                && annotation.InspectionNames.Count() == 1
+                && annotation.InspectionNames.First() == "UnassignedVariableUsage");
         }
 
         [TestMethod]
@@ -967,7 +972,7 @@ End Sub
 
             var usage = declaration.References.Single();
 
-            Assert.AreEqual(string.Empty, usage.Annotations);
+            Assert.IsTrue(!usage.Annotations.Any());
         }
 
         [TestMethod]
@@ -990,7 +995,7 @@ End Sub
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.UserDefinedType);
 
-            if (declaration.ProjectName != declaration.IdentifierName)
+            if (declaration.Project.Name != declaration.IdentifierName)
             {
                 Assert.Inconclusive("UDT should be named after project.");
             }
@@ -1022,7 +1027,7 @@ End Sub
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.UserDefinedType);
 
-            if (declaration.ProjectName != declaration.IdentifierName)
+            if (declaration.Project.Name != declaration.IdentifierName)
             {
                 Assert.Inconclusive("UDT should be named after project.");
             }
@@ -1052,7 +1057,7 @@ End Sub
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable);
 
-            if (declaration.ProjectName != declaration.AsTypeName)
+            if (declaration.Project.Name != declaration.AsTypeName)
             {
                 Assert.Inconclusive("variable should be named after project.");
             } 
@@ -1112,7 +1117,7 @@ End Sub
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.UserDefinedTypeMember
                 && item.IdentifierName == "Foo"
-                && item.AsTypeName == item.ProjectName
+                && item.AsTypeName == item.Project.Name
                 && item.IdentifierName == item.ParentDeclaration.IdentifierName);
 
             var usages = declaration.References.Where(item => 
@@ -1331,7 +1336,7 @@ End Sub
 
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Project
-                && item.IdentifierName == item.ProjectName);
+                && item.IdentifierName == item.Project.Name);
 
             var usages = declaration.References.Where(item =>
                 item.ParentScoping.IdentifierName == "DoSomething");
@@ -1356,7 +1361,7 @@ End Sub
             var state = Resolve(code);
 
             var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Module
+                item.DeclarationType == DeclarationType.ProceduralModule
                 && item.IdentifierName == item.ComponentName);
 
             var usages = declaration.References.Where(item =>

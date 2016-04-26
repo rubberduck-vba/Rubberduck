@@ -27,13 +27,13 @@ namespace Rubberduck.UI.Command.Refactorings
 
         public override bool CanExecute(object parameter)
         {
-            if (Vbe.ActiveCodePane == null) { return false; }
+            if (Vbe.ActiveCodePane == null)
+            {
+                return false;
+            }
 
-            var selection = Vbe.ActiveCodePane.GetSelection();
-            var target = _state.AllDeclarations.FindTarget(selection);
-
-            return _state.Status == ParserState.Ready
-                && target != null;
+            var target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
+            return _state.Status == ParserState.Ready && target != null && !target.IsBuiltIn;
         }
 
         public override void Execute(object parameter)
@@ -47,8 +47,7 @@ namespace Rubberduck.UI.Command.Refactorings
             }
             else
             {
-                var selection = Vbe.ActiveCodePane.GetSelection();
-                target = _state.AllUserDeclarations.FindTarget(selection);
+                target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
             }
 
             if (target == null)
@@ -64,7 +63,5 @@ namespace Rubberduck.UI.Command.Refactorings
                 refactoring.Refactor(target);
             }
         }
-
-        public RubberduckHotkey Hotkey { get {return RubberduckHotkey.RefactorRename; } }
     }
 }

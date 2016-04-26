@@ -29,10 +29,10 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = Vbe.ActiveCodePane.GetSelection();
-            var target = _state.AllUserDeclarations.FindTarget(selection, new []{DeclarationType.Variable, DeclarationType.Constant, });
-
-            var canExecute = target != null && target.References.Any();
+            var target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
+            var canExecute = target != null 
+                && (target.DeclarationType == DeclarationType.Variable || target.DeclarationType == DeclarationType.Constant)
+                && target.References.Any();
 
             Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;

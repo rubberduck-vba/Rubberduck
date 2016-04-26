@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections
             var context = functionContext ?? propertyGetContext;
             if (context == null)
             {
-                throw new InvalidOperationException(string.Format("Context type '{0}' is not valid for {1}.", Context.GetType(), GetType()));
+                throw new InvalidOperationException(string.Format(InspectionsUI.InvalidContextTypeInspectionFix, Context.GetType(), GetType()));
             }
 
             string token = functionContext != null
@@ -45,7 +45,7 @@ namespace Rubberduck.Inspections
                 : Tokens.Property;
 
             string visibility = context.visibility() == null ? string.Empty : context.visibility().GetText() + ' ';
-            string name = ' ' + context.ambiguousIdentifier().GetText();
+            string name = ' ' + context.identifier().GetText();
             bool hasTypeHint = context.typeHint() != null;
 
             string args = context.argList().GetText();

@@ -57,7 +57,12 @@ namespace RubberduckTests.Mocks
         /// <param name="protection">A value that indicates whether the project is protected.</param>
         public MockProjectBuilder ProjectBuilder(string name, vbext_ProjectProtection protection)
         {
-            var result = new MockProjectBuilder(name, protection, () => _vbe.Object, this);
+            return ProjectBuilder(name, string.Empty, protection);
+        }
+
+        public MockProjectBuilder ProjectBuilder(string name, string filename, vbext_ProjectProtection protection)
+        {
+            var result = new MockProjectBuilder(name, filename, protection, () => _vbe.Object, this);
             return result;
         }
 

@@ -78,26 +78,26 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ParserState_StateChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("CodeExplorerViewModel handles StateChanged...");
-            IsBusy = _state.Status == ParserState.Parsing;
-            if (_state.Status != ParserState.Ready)
-            {
-                return;
-            }
+            //Debug.WriteLine("CodeExplorerViewModel handles StateChanged...");
+            //IsBusy = _state.Status == ParserState.Parsing;
+            //if (_state.Status != ParserState.Ready)
+            //{
+            //    return;
+            //}
 
-            Debug.WriteLine("Creating Code Explorer model...");
-            var userDeclarations = _state.AllUserDeclarations
-                .GroupBy(declaration => declaration.ProjectName)
-                .Where(grouping => grouping.Key != null)
-                .ToList();
+            //Debug.WriteLine("Creating Code Explorer model...");
+            //var userDeclarations = _state.AllUserDeclarations
+            //    .GroupBy(declaration => declaration.ProjectName)
+            //    .Where(grouping => grouping.Key != null)
+            //    .ToList();
 
-            if (userDeclarations.Any(grouping => grouping.All(declaration => declaration.DeclarationType != DeclarationType.Project)))
-            {
-                return;
-            }
+            //if (userDeclarations.Any(grouping => grouping.All(declaration => declaration.DeclarationType != DeclarationType.Project)))
+            //{
+            //    return;
+            //}
 
-            Projects = new ObservableCollection<CodeExplorerProjectViewModel>(userDeclarations.Select(grouping => 
-                new CodeExplorerProjectViewModel(grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project), grouping)));
+            //Projects = new ObservableCollection<CodeExplorerProjectViewModel>(userDeclarations.Select(grouping => 
+            //    new CodeExplorerProjectViewModel(grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project), grouping)));
         }
 
         private void ParserState_ModuleStateChanged(object sender, Parsing.ParseProgressEventArgs e)

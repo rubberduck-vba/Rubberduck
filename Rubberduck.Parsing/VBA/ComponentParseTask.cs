@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Preprocessing;
@@ -52,10 +53,11 @@ namespace Rubberduck.Parsing.VBA
                 // temporal coupling... comments must be acquired before we walk the parse tree for declarations
                 // otherwise none of the annotations get associated to their respective Declaration
                 var commentListener = new CommentListener();
+                var annotationListener = new AnnotationListener(new VBAParserAnnotationFactory(), _qualifiedName);
 
                 var stopwatch = Stopwatch.StartNew();
                 ITokenStream stream;
-                var tree = ParseInternal(code, new IParseTreeListener[]{ commentListener }, out stream);
+                var tree = ParseInternal(code, new IParseTreeListener[]{ commentListener, annotationListener }, out stream);
                 stopwatch.Stop();
                 if (tree != null)
                 {
@@ -71,6 +73,7 @@ namespace Rubberduck.Parsing.VBA
                     Tokens = stream,
                     Attributes = attributes,
                     Comments = comments,
+                    Annotations = annotationListener.Annotations
                 });
             }
             catch (COMException exception)
@@ -144,6 +147,7 @@ namespace Rubberduck.Parsing.VBA
             public IParseTree ParseTree { get; internal set; }
             public IDictionary<Tuple<string, DeclarationType>, Attributes> Attributes { get; internal set; }
             public IEnumerable<CommentNode> Comments { get; internal set; }
+            public IEnumerable<IAnnotation> Annotations { get; internal set; }
         }
 
         public class ParseFailureArgs

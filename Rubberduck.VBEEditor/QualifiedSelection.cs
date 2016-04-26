@@ -18,5 +18,33 @@
         {
             return string.Concat(QualifiedName, " ", Selection);
         }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hash = 17;
+                hash = hash*23 + _qualifiedName.GetHashCode();
+                hash = hash * 23 + _selection.GetHashCode();
+                return hash;
+            } 
+        }
+
+        public static bool operator ==(QualifiedSelection selection1, QualifiedSelection selection2)
+        {
+            return selection1.Equals(selection2);
+        }
+
+        public static bool operator !=(QualifiedSelection selection1, QualifiedSelection selection2)
+        {
+            return !(selection1 == selection2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = (QualifiedSelection) obj;
+            return other.QualifiedName.Equals(_qualifiedName)
+                   && other.Selection.Equals(_selection);
+        }
     }
 }

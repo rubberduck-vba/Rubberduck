@@ -7,6 +7,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -50,8 +51,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                return _declaration.DeclarationType == DeclarationType.Module 
-                       && _declaration.Annotations.Split('\n').Contains(Parsing.Grammar.Annotations.TestModule);
+                return _declaration.DeclarationType == DeclarationType.ProceduralModule
+                       && _declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.TestModule);
             }
         }
 
@@ -63,8 +64,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private static readonly IDictionary<vbext_ComponentType, DeclarationType> DeclarationTypes = new Dictionary<vbext_ComponentType, DeclarationType>
         {
-            { vbext_ComponentType.vbext_ct_ClassModule, DeclarationType.Class },
-            { vbext_ComponentType.vbext_ct_StdModule, DeclarationType.Module },
+            { vbext_ComponentType.vbext_ct_ClassModule, DeclarationType.ClassModule },
+            { vbext_ComponentType.vbext_ct_StdModule, DeclarationType.ProceduralModule },
             { vbext_ComponentType.vbext_ct_Document, DeclarationType.Document },
             { vbext_ComponentType.vbext_ct_MSForm, DeclarationType.UserForm }
         };
@@ -73,7 +74,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                var result = DeclarationType.Class;
+                var result = DeclarationType.ClassModule;
                 try
                 {
                     DeclarationTypes.TryGetValue(ComponentType, out result);
@@ -88,8 +89,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private static readonly IDictionary<DeclarationType,BitmapImage> Icons = new Dictionary<DeclarationType, BitmapImage>
         {
-            { DeclarationType.Class, GetImageSource(resx.VSObject_Class) },
-            { DeclarationType.Module, GetImageSource(resx.VSObject_Module) },
+            { DeclarationType.ClassModule, GetImageSource(resx.VSObject_Class) },
+            { DeclarationType.ProceduralModule, GetImageSource(resx.VSObject_Module) },
             { DeclarationType.UserForm, GetImageSource(resx.VSProject_form) },
             { DeclarationType.Document, GetImageSource(resx.document_office) }
         };

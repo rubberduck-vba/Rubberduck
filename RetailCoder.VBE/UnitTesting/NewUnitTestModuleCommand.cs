@@ -51,7 +51,7 @@ namespace Rubberduck.UnitTesting
                     hasOptionExplicit = module.CodeModule.Lines[1, module.CodeModule.CountOfDeclarationLines].Contains("Option Explicit");
                 }
 
-                var options = String.Concat(hasOptionExplicit ? String.Empty : "Option Explicit\n", "Option Private Module\n\n");
+                var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\n", "Option Private Module\n\n");
 
                 module.CodeModule.AddFromString(options + TestModuleEmptyTemplate);
                 module.Activate();
@@ -67,7 +67,7 @@ namespace Rubberduck.UnitTesting
             var names = project.ComponentNames();
             var index = names.Count(n => n.StartsWith(TestModuleBaseName)) + 1;
 
-            return String.Concat(TestModuleBaseName, index);
+            return string.Concat(TestModuleBaseName, index);
         }
     }
 }

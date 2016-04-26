@@ -120,7 +120,7 @@
   <data name="OK_AllCaps" xml:space="preserve">
     <value>OK</value>
   </data>
-  <data name="DeclarationType_Class" xml:space="preserve">
+  <data name="DeclarationType_ClassModule" xml:space="preserve">
     <value>クラス</value>
   </data>
   <data name="DeclarationType_Constant" xml:space="preserve">
@@ -132,7 +132,7 @@
   <data name="DeclarationType_Function" xml:space="preserve">
     <value>ファンクション</value>
   </data>
-  <data name="DeclarationType_Module" xml:space="preserve">
+  <data name="DeclarationType_ProceduralModule" xml:space="preserve">
     <value>モジュール</value>
   </data>
   <data name="DeclarationType_Parameter" xml:space="preserve">

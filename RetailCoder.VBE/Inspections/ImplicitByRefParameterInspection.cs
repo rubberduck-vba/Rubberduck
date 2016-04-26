@@ -24,13 +24,16 @@ namespace Rubberduck.Inspections
             var interfaceMembers = UserDeclarations.FindInterfaceImplementationMembers();
 
             var issues = (from item in UserDeclarations
-                where !item.IsInspectionDisabled(AnnotationName)
+                where
+                    !item.IsInspectionDisabled(AnnotationName)
                     && item.DeclarationType == DeclarationType.Parameter
+                    // ParamArray parameters do not allow an explicit "ByRef" parameter mechanism.               
+                    && !((ParameterDeclaration)item).IsParamArray
                     && !interfaceMembers.Select(m => m.Scope).Contains(item.ParentScope)
                 let arg = item.Context as VBAParser.ArgContext
                 where arg != null && arg.BYREF() == null && arg.BYVAL() == null
                 select new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg))
-                .Select(issue => new ImplicitByRefParameterInspectionResult(this, issue.Context.ambiguousIdentifier().GetText(), issue));
+                .Select(issue => new ImplicitByRefParameterInspectionResult(this, issue.Context.identifier().GetText(), issue));
 
  
             return issues;

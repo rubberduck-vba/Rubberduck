@@ -27,12 +27,12 @@ namespace Rubberduck.Inspections
             VBAParser.ArgsCallContext arguments;
             if (context.eCS_MemberProcedureCall() != null)
             {
-                procedure = context.eCS_MemberProcedureCall().ambiguousIdentifier().GetText();
+                procedure = context.eCS_MemberProcedureCall().identifier().GetText();
                 arguments = context.eCS_MemberProcedureCall().argsCall();
             }
             else
             {
-                procedure = context.eCS_ProcedureCall().ambiguousIdentifier().GetText();
+                procedure = context.eCS_ProcedureCall().identifier().GetText();
                 arguments = context.eCS_ProcedureCall().argsCall();
             }
 
