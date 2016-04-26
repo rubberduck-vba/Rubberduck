@@ -73,6 +73,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             _qualifiedName = qualifiedName;
             _parentDeclaration = parentDeclaration;
+            _parentScopeDeclaration = _parentDeclaration;
             _parentScope = parentScope ?? string.Empty;
             _identifierName = qualifiedName.MemberName;
             _asTypeName = asTypeName;

@@ -215,13 +215,13 @@ namespace Rubberduck.Parsing.Symbols
                 // - Enum
                 if (identifiers.Count == 3)
                 {
-                    var moduleMatch = _declarationFinder.FindStdModule(_currentScope, identifiers[1].GetText());
+                    var moduleMatch = _declarationFinder.FindStdModule(identifiers[1].GetText(), _currentScope);
                     if (moduleMatch != null)
                     {
                         var moduleReference = CreateReference(identifiers[1], moduleMatch);
 
                         // 3rd identifier can only be a UDT
-                        var udtMatch = _declarationFinder.FindUserDefinedType(moduleMatch, identifiers[2].GetText());
+                        var udtMatch = _declarationFinder.FindUserDefinedType(identifiers[2].GetText(), moduleMatch);
                         if (udtMatch != null)
                         {
                             var udtReference = CreateReference(identifiers[2], udtMatch);
@@ -246,7 +246,7 @@ namespace Rubberduck.Parsing.Symbols
 
                             return udtMatch;
                         }
-                        var enumMatch = _declarationFinder.FindEnum(moduleMatch, identifiers[2].GetText());
+                        var enumMatch = _declarationFinder.FindEnum(identifiers[2].GetText(), moduleMatch);
                         if (enumMatch != null)
                         {
                             var enumReference = CreateReference(identifiers[2], enumMatch);
@@ -282,8 +282,8 @@ namespace Rubberduck.Parsing.Symbols
                     }
 
                     var match = _declarationFinder.FindClass(projectMatch, identifiers[1].GetText())
-                                ?? _declarationFinder.FindUserDefinedType(null, identifiers[1].GetText())
-                                ?? _declarationFinder.FindEnum(null, identifiers[1].GetText());
+                                ?? _declarationFinder.FindUserDefinedType(identifiers[1].GetText())
+                                ?? _declarationFinder.FindEnum(identifiers[1].GetText());
                     if (match != null)
                     {
                         var reference = CreateReference(identifiers[1], match);
@@ -302,14 +302,14 @@ namespace Rubberduck.Parsing.Symbols
             if (identifiers.Count != 3)
             {
 
-                var moduleMatch = _declarationFinder.FindStdModule(projectMatch, identifiers[0].GetText());
+                var moduleMatch = _declarationFinder.FindStdModule(identifiers[0].GetText(), projectMatch);
                 if (moduleMatch != null)
                 {
                     var moduleReference = CreateReference(identifiers[0], moduleMatch);
 
                     // 2nd identifier can only be a UDT or enum
-                    var match = _declarationFinder.FindUserDefinedType(moduleMatch, identifiers[1].GetText())
-                            ?? _declarationFinder.FindEnum(moduleMatch, identifiers[1].GetText());
+                    var match = _declarationFinder.FindUserDefinedType(identifiers[1].GetText(), moduleMatch)
+                            ?? _declarationFinder.FindEnum(identifiers[1].GetText(), moduleMatch);
                     if (match != null)
                     {
                         var reference = CreateReference(identifiers[1], match);
@@ -1147,6 +1147,13 @@ namespace Rubberduck.Parsing.Symbols
                    && declaration.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule;
         }
 
+        private bool IsPublicEnum(Declaration declaration)
+        {
+            return (IsPublicOrGlobal(declaration) || declaration.Accessibility == Accessibility.Implicit)
+                   && (declaration.DeclarationType == DeclarationType.Enumeration
+                       || declaration.DeclarationType == DeclarationType.EnumerationMember);
+        }
+
         private bool IsStaticClass(Declaration declaration)
         {
             return declaration.ParentDeclaration != null
@@ -1183,6 +1190,7 @@ namespace Rubberduck.Parsing.Symbols
             var matches = _declarationFinder.MatchName(identifierName).Where(item =>
                 item.DeclarationType == DeclarationType.Project
                 || item.DeclarationType == DeclarationType.ProceduralModule
+                || IsPublicEnum(item)
                 || IsStaticClass(item)
                 || IsStdModuleMember(item)
                 || (item.ParentScopeDeclaration != null && item.ParentScopeDeclaration.Equals(localScope))).ToList();

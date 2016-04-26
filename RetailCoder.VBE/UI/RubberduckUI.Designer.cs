@@ -717,9 +717,9 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to class.
         /// </summary>
-        public static string DeclarationType_Class {
+        public static string DeclarationType_ClassModule {
             get {
-                return ResourceManager.GetString("DeclarationType_Class", resourceCulture);
+                return ResourceManager.GetString("DeclarationType_ClassModule", resourceCulture);
             }
         }
         
@@ -796,20 +796,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to module.
-        /// </summary>
-        public static string DeclarationType_Module {
-            get {
-                return ResourceManager.GetString("DeclarationType_Module", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to parameter.
         /// </summary>
         public static string DeclarationType_Parameter {
             get {
                 return ResourceManager.GetString("DeclarationType_Parameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to module.
+        /// </summary>
+        public static string DeclarationType_ProceduralModule {
+            get {
+                return ResourceManager.GetString("DeclarationType_ProceduralModule", resourceCulture);
             }
         }
         
