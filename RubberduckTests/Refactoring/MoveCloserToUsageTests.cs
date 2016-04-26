@@ -68,7 +68,7 @@ End Sub";
         {
             //Input
             const string inputCode1 =
-@"Private bar As Boolean";
+@"Public bar As Boolean";
 
             const string inputCode2 =
 @"Private Sub Foo()
@@ -78,7 +78,7 @@ End Sub";
 
             //Expectation
             const string expectedCode1 =
-@"Public bar As Boolean"; 
+@""; 
             
             const string expectedCode2 =
 @"Private Sub Foo()
@@ -90,8 +90,8 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Module1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_StdModule, inputCode2)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(0);
