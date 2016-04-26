@@ -120,7 +120,7 @@
   <data name="CancelButtonText" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
-  <data name="DeclarationType_Class" xml:space="preserve">
+  <data name="DeclarationType_ClassModule" xml:space="preserve">
     <value>Klasse</value>
   </data>
   <data name="DeclarationType_Constant" xml:space="preserve">
@@ -141,7 +141,7 @@
   <data name="DeclarationType_LibraryFunction" xml:space="preserve">
     <value>Bibliotheks-Funktion</value>
   </data>
-  <data name="DeclarationType_Module" xml:space="preserve">
+  <data name="DeclarationType_ProceduralModule" xml:space="preserve">
     <value>Modul</value>
   </data>
   <data name="DeclarationType_Parameter" xml:space="preserve">
