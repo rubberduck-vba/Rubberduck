@@ -64,6 +64,60 @@ End Sub";
         }
 
         [TestMethod]
+        public void MoveCloserToUsageRefactoring_FieldInOtherClass()
+        {
+            //Input
+            const string inputCode1 =
+@"Private bar As Boolean";
+
+            const string inputCode2 =
+@"Private Sub Foo()
+    Module1.bar = True
+End Sub";
+            var selection = new Selection(1, 1, 1, 1);
+
+            //Expectation
+            const string expectedCode1 =
+@"Public bar As Boolean"; 
+            
+            const string expectedCode2 =
+@"Private Sub Foo()
+
+    Dim bar As Boolean
+    bar = True
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_StdModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = project.Object.VBComponents.Item(0);
+
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var module1 = project.Object.VBComponents.Item(0).CodeModule;
+            var module2 = project.Object.VBComponents.Item(1).CodeModule;
+            
+            //Act
+            var refactoring = new MoveCloserToUsageRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode1, module1.Lines());
+            Assert.AreEqual(expectedCode2, module2.Lines());
+        }
+
+        [TestMethod]
         public void MoveCloserToUsageRefactoring_Variable()
         {
             //Input
