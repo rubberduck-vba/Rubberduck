@@ -16,7 +16,7 @@ namespace Rubberduck.UI.UnitTesting
         private readonly TestExplorerModelBase _model;
         private readonly IClipboardWriter _clipboard;
 
-        public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, TestExplorerModelBase model, IClipboardWriter clipboard)
+        public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, TestExplorerModelBase model, IClipboardWriter clipboard, NewUnitTestModuleCommand newTestModuleCommand, NewTestMethodCommand newTestMethodCommand)
         {
             _testEngine = testEngine;
             _testEngine.TestCompleted += TestEngineTestCompleted;
@@ -26,9 +26,9 @@ namespace Rubberduck.UI.UnitTesting
             _navigateCommand = new NavigateCommand();
 
             _runAllTestsCommand = new RunAllTestsCommand(testEngine, model);
-            _addTestModuleCommand = new AddTestModuleCommand(vbe);
-            _addTestMethodCommand = new AddTestMethodCommand(vbe, model);
-            _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe, model);
+            _addTestModuleCommand = new AddTestModuleCommand(vbe, newTestModuleCommand);
+            _addTestMethodCommand = new AddTestMethodCommand(model, newTestMethodCommand);
+            _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(model, newTestMethodCommand);
 
             _refreshCommand = new DelegateCommand(ExecuteRefreshCommand, CanExecuteRefreshCommand);
             _repeatLastRunCommand = new DelegateCommand(ExecuteRepeatLastRunCommand, CanExecuteRepeatLastRunCommand);

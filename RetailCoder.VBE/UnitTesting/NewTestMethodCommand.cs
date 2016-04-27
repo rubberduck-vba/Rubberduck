@@ -1,22 +1,28 @@
-using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Reflection;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UnitTesting
 {
-    public static class NewTestMethodCommand
+    public class NewTestMethodCommand
     {
-        private static readonly string NamePlaceholder = "%METHODNAME%";
-        private static readonly string TestMethodBaseName = "TestMethod";
+        private readonly VBE _vbe;
 
-        private static readonly string TestMethodTemplate = string.Concat(
+        public NewTestMethodCommand(VBE vbe)
+        {
+            _vbe = vbe;
+        }
+
+        private static readonly string NamePlaceholder = "%METHODNAME%";
+        private readonly string _testMethodBaseName = "TestMethod";
+
+        private readonly string _testMethodTemplate = string.Concat(
             "'@TestMethod\n",
-            "Public Sub ", NamePlaceholder, "() 'TODO ", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_Rename, "\n",
+            "Public Sub ", NamePlaceholder, "() 'TODO ", RubberduckUI.UnitTest_NewMethod_Rename, "\n",
             "    On Error GoTo TestFail\n",
             "    \n",
             "    'Arrange:\n\n",
@@ -26,20 +32,20 @@ namespace Rubberduck.UnitTesting
             "TestExit:\n",
             "    Exit Sub\n",
             "TestFail:\n",
-            "    Assert.Fail \"", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_RaisedTestError, ": #\" & Err.Number & \" - \" & Err.Description\n",
+            "    Assert.Fail \"", RubberduckUI.UnitTest_NewMethod_RaisedTestError, ": #\" & Err.Number & \" - \" & Err.Description\n",
             "End Sub\n"
             );
 
-        private static readonly string TestMethodExpectedErrorTemplate = string.Concat(
+        private readonly string _testMethodExpectedErrorTemplate = string.Concat(
             "'@TestMethod\n",
-            "Public Sub ", NamePlaceholder, "() 'TODO ", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_Rename, "\n",
-            "    Const ExpectedError As Long = 0 'TODO ", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_ChangeErrorNo, "\n",
+            "Public Sub ", NamePlaceholder, "() 'TODO ", RubberduckUI.UnitTest_NewMethod_Rename, "\n",
+            "    Const ExpectedError As Long = 0 'TODO ", RubberduckUI.UnitTest_NewMethod_ChangeErrorNo, "\n",
             "    On Error GoTo TestFail\n",
             "    \n",
             "    'Arrange:\n\n",
             "    'Act:\n\n",
             "Assert:\n",
-            "    Assert.Fail \"", Rubberduck.UI.RubberduckUI.UnitTest_NewMethod_ErrorNotRaised, ".\"\n\n",
+            "    Assert.Fail \"", RubberduckUI.UnitTest_NewMethod_ErrorNotRaised, ".\"\n\n",
             "TestExit:\n",
             "    Exit Sub\n",
             "TestFail:\n",
@@ -51,24 +57,24 @@ namespace Rubberduck.UnitTesting
             "End Sub\n"
             );
 
-        public static TestMethod NewTestMethod(VBE vbe)
+        public TestMethod NewTestMethod()
         {
-            if (vbe.ActiveCodePane == null)
+            if (_vbe.ActiveCodePane == null)
             {
                 return null;
             }
 
             try
             {
-                if (vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
+                if (_vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
                 {
-                    var module = vbe.ActiveCodePane.CodeModule;
+                    var module = _vbe.ActiveCodePane.CodeModule;
                     var name = GetNextTestMethodName(module.Parent);
-                    var body = TestMethodTemplate.Replace(NamePlaceholder, name);
+                    var body = _testMethodTemplate.Replace(NamePlaceholder, name);
                     module.InsertLines(module.CountOfLines, body);
 
                     var qualifiedModuleName = new QualifiedModuleName(module.Parent);
-                    return new TestMethod(new QualifiedMemberName(qualifiedModuleName, name), vbe);
+                    return new TestMethod(new QualifiedMemberName(qualifiedModuleName, name), _vbe);
                 }
             }
             catch (COMException)
@@ -78,24 +84,24 @@ namespace Rubberduck.UnitTesting
             return null;
         }
     
-        public static TestMethod NewExpectedErrorTestMethod(VBE vbe)
+        public TestMethod NewExpectedErrorTestMethod()
         {
-            if (vbe.ActiveCodePane == null)
+            if (_vbe.ActiveCodePane == null)
             {
                 return null;
             }
 
             try
             {
-                if (vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
+                if (_vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
                 {
-                    var module = vbe.ActiveCodePane.CodeModule;
+                    var module = _vbe.ActiveCodePane.CodeModule;
                     var name = GetNextTestMethodName(module.Parent);
-                    var body = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
+                    var body = _testMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
                     module.InsertLines(module.CountOfLines, body);
 
                     var qualifiedModuleName = new QualifiedModuleName(module.Parent);
-                    return new TestMethod(new QualifiedMemberName(qualifiedModuleName, name), vbe);
+                    return new TestMethod(new QualifiedMemberName(qualifiedModuleName, name), _vbe);
                 }
             }
             catch (COMException)
@@ -105,12 +111,12 @@ namespace Rubberduck.UnitTesting
             return null;
         }
 
-        private static string GetNextTestMethodName(VBComponent component)
+        private string GetNextTestMethodName(VBComponent component)
         {
             var names = component.TestMethods().Select(test => test.QualifiedMemberName.MemberName);
-            var index = names.Count(n => n.StartsWith(TestMethodBaseName)) + 1;
+            var index = names.Count(n => n.StartsWith(_testMethodBaseName)) + 1;
 
-            return string.Concat(TestMethodBaseName, index);
+            return string.Concat(_testMethodBaseName, index);
         }
     }
 }
