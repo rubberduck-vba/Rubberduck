@@ -1486,4 +1486,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Nach Markierung</value>
   </data>
+  <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
+    <value>Bibliotheksprozedur</value>
+  </data>
 </root>
