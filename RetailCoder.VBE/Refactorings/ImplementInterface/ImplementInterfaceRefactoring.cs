@@ -68,13 +68,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         {
             var interfaceMembers = GetInterfaceMembers();
             var implementedMembers = GetImplementedMembers();
-
-            var nonImplementedMembers =
-                interfaceMembers.Where(d => !implementedMembers.Select(s => s.IdentifierName)
-                                    .Contains(_targetInterface.ComponentName + "_" + d.IdentifierName))
-                                .OrderBy(o => o.Selection.StartLine)
-                                .ThenBy(t => t.Selection.StartColumn)
-                                .ToList();
+            var nonImplementedMembers = GetNonImplementedMembers(interfaceMembers, implementedMembers);
 
             AddItems(nonImplementedMembers);
         }
@@ -181,10 +175,9 @@ namespace Rubberduck.Refactorings.ImplementInterface
                            .ThenBy(t => t.Selection.StartColumn)
                            .Select(p => new Parameter
                            {
-                               Accessibility = ((VBAParser.ArgContext)p.Context).BYREF() != null || 
-                                        (((VBAParser.ArgContext)p.Context).BYREF() == null && ((VBAParser.ArgContext)p.Context).BYVAL() == null) 
-                                            ? Tokens.ByRef 
-                                            : Tokens.ByVal,
+                               Accessibility = ((VBAParser.ArgContext)p.Context).BYVAL() != null
+                                            ? Tokens.ByVal 
+                                            : Tokens.ByRef,
 
                                Name = p.IdentifierName,
                                AsTypeName = p.AsTypeName
@@ -211,6 +204,15 @@ namespace Rubberduck.Refactorings.ImplementInterface
                                         && !item.Equals(_targetClass))
                                 .OrderBy(d => d.Selection.StartLine)
                                 .ThenBy(d => d.Selection.StartColumn);
+        }
+
+        private List<Declaration> GetNonImplementedMembers(IEnumerable<Declaration> interfaceMembers, IEnumerable<Declaration> implementedMembers)
+        {
+            return interfaceMembers.Where(d => !implementedMembers.Select(s => s.IdentifierName)
+                                        .Contains(_targetInterface.ComponentName + "_" + d.IdentifierName))
+                                    .OrderBy(o => o.Selection.StartLine)
+                                    .ThenBy(t => t.Selection.StartColumn)
+                                    .ToList();
         }
 
         private string GetMemberType(Declaration member)
