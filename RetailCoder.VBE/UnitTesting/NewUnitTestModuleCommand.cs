@@ -1,45 +1,56 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Settings;
+using Rubberduck.UI;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UnitTesting
 {
-    public static class NewUnitTestModuleCommand
+    public class NewUnitTestModuleCommand
     {
-        private static readonly string TestModuleEmptyTemplate = String.Concat(
+        private readonly VBE _vbe;
+        private readonly ConfigurationLoader _configLoader;
+
+        public NewUnitTestModuleCommand(VBE vbe, ConfigurationLoader configLoader)
+        {
+            _vbe = vbe;
+            _configLoader = configLoader;
+        }
+
+        private readonly string _testModuleEmptyTemplate = string.Concat(
                  "'@TestModule\n"
-                , "'' ", Rubberduck.UI.RubberduckUI.UnitTest_NewModule_UncommentLateBinding, ":\n"
+                , "'' ", RubberduckUI.UnitTest_NewModule_UncommentLateBinding, ":\n"
                 , "'Private Assert As Object\n"
-                , "'' ", Rubberduck.UI.RubberduckUI.UnitTest_NewModule_CommentEarlyBinding, ":\n"
+                , "'' ", RubberduckUI.UnitTest_NewModule_CommentEarlyBinding, ":\n"
                 , "Private Assert As New Rubberduck.AssertClass\n\n"
                 , "'@ModuleInitialize\n"
                 ,"Public Sub ModuleInitialize()\n"
-                ,"    '", Rubberduck.UI.RubberduckUI.UnitTest_NewModule_RunOnce, ".\n"
-                ,"    '' ", Rubberduck.UI.RubberduckUI.UnitTest_NewModule_UncommentLateBinding, ":\n"
+                ,"    '", RubberduckUI.UnitTest_NewModule_RunOnce, ".\n"
+                ,"    '' ", RubberduckUI.UnitTest_NewModule_UncommentLateBinding, ":\n"
                 ,"    'Set Assert = CreateObject(\"Rubberduck.AssertClass\")\n"
                 ,"End Sub\n\n"
                 , "'@ModuleCleanup\n"
                 , "Public Sub ModuleCleanup()\n"
-                , "    '", Rubberduck.UI.RubberduckUI.UnitTest_NewModule_RunOnce, ".\n"
+                , "    '", RubberduckUI.UnitTest_NewModule_RunOnce, ".\n"
                 , "End Sub\n\n"
                 , "'@TestInitialize\n"
                 , "Public Sub TestInitialize()\n"
-                , "    '", Rubberduck.UI.RubberduckUI.UnitTest_NewModule_RunBeforeTest, ".\n"
+                , "    '", RubberduckUI.UnitTest_NewModule_RunBeforeTest, ".\n"
                 , "End Sub\n\n"
                 , "'@TestCleanup\n"
                 , "Public Sub TestCleanup()\n"
-                , "    '", Rubberduck.UI.RubberduckUI.UnitTest_NewModule_RunAfterTest, ".\n"
+                , "    '", RubberduckUI.UnitTest_NewModule_RunAfterTest, ".\n"
                 , "End Sub\n\n"
             );
 
-        private static readonly string TestModuleBaseName = "TestModule";
+        private readonly string _testModuleBaseName = "TestModule";
 
-        public static void NewUnitTestModule(VBE vbe)
+        public void NewUnitTestModule()
         {
             try
             {
-                var project = vbe.ActiveVBProject;
+                var project = _vbe.ActiveVBProject;
                 project.EnsureReferenceToAddInLibrary();
 
                 var module = project.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
@@ -53,21 +64,21 @@ namespace Rubberduck.UnitTesting
 
                 var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\n", "Option Private Module\n\n");
 
-                module.CodeModule.AddFromString(options + TestModuleEmptyTemplate);
+                module.CodeModule.AddFromString(options + _testModuleEmptyTemplate);
                 module.Activate();
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 //can we please comment when we swallow every possible exception?
             }
         }
 
-        private static string GetNextTestModuleName(VBProject project)
+        private string GetNextTestModuleName(VBProject project)
         {
             var names = project.ComponentNames();
-            var index = names.Count(n => n.StartsWith(TestModuleBaseName)) + 1;
+            var index = names.Count(n => n.StartsWith(_testModuleBaseName)) + 1;
 
-            return string.Concat(TestModuleBaseName, index);
+            return string.Concat(_testModuleBaseName, index);
         }
     }
 }
