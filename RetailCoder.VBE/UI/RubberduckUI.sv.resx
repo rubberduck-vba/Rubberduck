@@ -1117,9 +1117,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
   <data name="GeneralSettings_HotkeyAlt">
     <value />
   </data>
-  <data name="UnitTest_NewModule_CommentEarlyBinding">
-    <value />
-  </data>
   <data name="EndOfLineCommentStyle_AlignInColumn">
     <value />
   </data>
@@ -1475,9 +1472,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil k
     <value />
   </data>
   <data name="SearchResults_ModuleName">
-    <value />
-  </data>
-  <data name="UnitTest_NewModule_UncommentLateBinding">
     <value />
   </data>
   <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt">

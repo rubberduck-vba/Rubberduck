@@ -1120,9 +1120,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="GeneralSettings_HotkeyAlt">
     <value />
   </data>
-  <data name="UnitTest_NewModule_CommentEarlyBinding">
-    <value />
-  </data>
   <data name="EndOfLineCommentStyle_AlignInColumn">
     <value />
   </data>
@@ -1478,9 +1475,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value />
   </data>
   <data name="SearchResults_ModuleName">
-    <value />
-  </data>
-  <data name="UnitTest_NewModule_UncommentLateBinding">
     <value />
   </data>
   <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt">
