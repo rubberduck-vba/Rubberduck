@@ -184,6 +184,13 @@ namespace Rubberduck.Parsing.VBA
             }
             
             var vba = finder.FindProject("VBA");
+            if (vba == null)
+            {
+                // if VBA project is null, we haven't loaded any COM references;
+                // we're in a unit test and mock project didn't setup any references.
+                return;
+            }
+
             Debug.Assert(vba != null);
             
             var errObject = finder.FindClass(vba, "ErrObject", true);
