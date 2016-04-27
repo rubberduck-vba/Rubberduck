@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Reflection;
-using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -12,12 +11,10 @@ namespace Rubberduck.UnitTesting
     public class NewTestMethodCommand
     {
         private readonly VBE _vbe;
-        private readonly ConfigurationLoader _configLoader;
 
-        public NewTestMethodCommand(VBE vbe, ConfigurationLoader configLoader)
+        public NewTestMethodCommand(VBE vbe)
         {
             _vbe = vbe;
-            _configLoader = configLoader;
         }
 
         private static readonly string NamePlaceholder = "%METHODNAME%";

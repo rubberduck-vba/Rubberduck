@@ -29,6 +29,7 @@ using Rubberduck.UI.Controls;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
+using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Root
@@ -61,6 +62,8 @@ namespace Rubberduck.Root
             _kernel.Bind<AddIn>().ToConstant(_addin);
             _kernel.Bind<RubberduckParserState>().ToSelf().InSingletonScope();
             _kernel.Bind<GitProvider>().ToSelf().InSingletonScope();
+            _kernel.Bind<NewUnitTestModuleCommand>().ToSelf().InSingletonScope();
+            _kernel.Bind<NewTestMethodCommand>().ToSelf().InSingletonScope();
             
             BindCodeInspectionTypes();
 
