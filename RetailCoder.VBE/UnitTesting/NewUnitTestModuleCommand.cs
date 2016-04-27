@@ -48,10 +48,8 @@ namespace Rubberduck.UnitTesting
 
         private const string TestModuleBaseName = "TestModule";
 
-        private string GetTestModule()
+        private string GetTestModule(UnitTestSettings settings)
         {
-            var settings = _configLoader.LoadConfiguration().UserSettings.UnitTestSettings;
-
             var assertClass = settings.AssertMode == AssertMode.StrictAssert ? string.Empty : "Permissive";
             var moduleBinding = settings.BindingMode == BindingMode.EarlyBinding
                 ? string.Format(ModuleEarlyBinding, assertClass)
@@ -77,6 +75,8 @@ namespace Rubberduck.UnitTesting
 
         public void NewUnitTestModule()
         {
+            var settings = _configLoader.LoadConfiguration().UserSettings.UnitTestSettings;
+            
             try
             {
                 var project = _vbe.ActiveVBProject;
@@ -93,12 +93,18 @@ namespace Rubberduck.UnitTesting
 
                 var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\n", "Option Private Module\n\n");
 
-                module.CodeModule.AddFromString(options + GetTestModule());
+                module.CodeModule.AddFromString(options + GetTestModule(settings));
                 module.Activate();
             }
             catch (Exception)
             {
                 //can we please comment when we swallow every possible exception?
+            }
+
+            if (settings.DefaultTestStubInNewModule)
+            {
+                var newTestMethodCommand = new NewTestMethodCommand(_vbe);
+                newTestMethodCommand.NewTestMethod();
             }
         }
 
