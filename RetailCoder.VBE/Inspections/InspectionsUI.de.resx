@@ -498,7 +498,7 @@
     <value>Der Variable '{0}' wird kein Wert zugewiesen.</value>
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
-    <value>Deaktivire diese Überprüfung</value>
+    <value>Deaktiviere diese Überprüfung</value>
   </data>
   <data name="EmptyStringLiteralInspectionResultFormat" xml:space="preserve">
     <value>vbNullString' sollte statt einem leeren String-Literal verwendet werden.</value>
@@ -516,9 +516,9 @@
     <value>Objektvariable '{0}' wird ohne das 'Set' Schlüsselwort zugewiesen</value>
   </data>
   <data name="ObjectVariableNotSetInspectionMeta" xml:space="preserve">
-    <value>Rubberduck hat festgestellt, dass die Variable eine Objektvaribale ist, die ohne 'Set' Schlüsselwort zugewiesen wird. Dies führt zu dem Laufzeitfehler 91 'Objekt oder With Block Variable wurden nicht gesetzt'.</value>
+    <value>Rubberduck hat festgestellt, dass die Variable eine Objektvariable ist, die ohne 'Set' Schlüsselwort zugewiesen wird. Dies führt zu dem Laufzeitfehler 91 'Objekt oder With Block Variable wurden nicht gesetzt'.</value>
   </data>
   <data name="ObjectVariableNotSetInspectionName" xml:space="preserve">
-    <value>Zuweiseung in eine Objektvariable benötigt das 'Set'-Schlüsselwort.</value>
+    <value>Zuweisung in eine Objektvariable benötigt das 'Set'-Schlüsselwort.</value>
   </data>
 </root>
