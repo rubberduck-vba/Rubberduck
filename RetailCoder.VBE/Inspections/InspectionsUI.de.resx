@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -127,7 +127,7 @@
     <value>Code Qualitätsproblem</value>
   </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
-    <value>Constant value is declared but Rubberduck could not find any reference to it. Consider removing the unused declaration.</value>
+    <value>Ein konstanter Wert ist deklariert, aber Rubberduck konnte keine Referenz auf ihn finden. Bedenken sie eine Entfernung der nicht verwendeten Deklaration.</value>
   </data>
   <data name="ConstantNotUsedInspectionName" xml:space="preserve">
     <value>Konstante wird nicht verwendet</value>
@@ -498,7 +498,7 @@
     <value>Der Variable '{0}' wird kein Wert zugewiesen.</value>
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
-    <value>Deaktivire diese Überprüfung</value>
+    <value>Deaktiviere diese Überprüfung</value>
   </data>
   <data name="EmptyStringLiteralInspectionResultFormat" xml:space="preserve">
     <value>vbNullString' sollte statt einem leeren String-Literal verwendet werden.</value>
@@ -516,9 +516,9 @@
     <value>Objektvariable '{0}' wird ohne das 'Set' Schlüsselwort zugewiesen</value>
   </data>
   <data name="ObjectVariableNotSetInspectionMeta" xml:space="preserve">
-    <value>Rubberduck hat festgestellt, dass die Variable eine Objektvaribale ist, die ohne 'Set' Schlüsselwort zugewiesen wird. Dies führt zu dem Laufzeitfehler 91 'Objekt oder With Block Variable wurden nicht gesetzt'.</value>
+    <value>Rubberduck hat festgestellt, dass die Variable eine Objektvariable ist, die ohne 'Set' Schlüsselwort zugewiesen wird. Dies führt zu dem Laufzeitfehler 91 'Objekt oder With Block Variable wurden nicht gesetzt'.</value>
   </data>
   <data name="ObjectVariableNotSetInspectionName" xml:space="preserve">
-    <value>Zuweiseung in eine Objektvariable benötigt das 'Set'-Schlüsselwort.</value>
+    <value>Zuweisung in eine Objektvariable benötigt das 'Set'-Schlüsselwort.</value>
   </data>
 </root>
