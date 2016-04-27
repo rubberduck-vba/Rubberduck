@@ -3998,15 +3998,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to early-binding requires reference to Rubberduck.UnitTesting.tlb.
-        /// </summary>
-        public static string UnitTest_NewModule_CommentEarlyBinding {
-            get {
-                return ResourceManager.GetString("UnitTest_NewModule_CommentEarlyBinding", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to this method runs after every test in the module.
         /// </summary>
         public static string UnitTest_NewModule_RunAfterTest {
@@ -4030,15 +4021,6 @@ namespace Rubberduck.UI {
         public static string UnitTest_NewModule_RunOnce {
             get {
                 return ResourceManager.GetString("UnitTest_NewModule_RunOnce", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to uncomment for late-binding.
-        /// </summary>
-        public static string UnitTest_NewModule_UncommentLateBinding {
-            get {
-                return ResourceManager.GetString("UnitTest_NewModule_UncommentLateBinding", resourceCulture);
             }
         }
         
