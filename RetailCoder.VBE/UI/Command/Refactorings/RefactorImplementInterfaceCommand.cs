@@ -24,7 +24,6 @@ namespace Rubberduck.UI.Command.Refactorings
 
         public override bool CanExecute(object parameter)
         {
-            return true;
             if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
             {
                 return false;
