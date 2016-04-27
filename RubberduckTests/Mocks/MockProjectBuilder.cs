@@ -223,7 +223,17 @@ namespace RubberduckTests.Mocks
                 .Callback<int, int>((index, count) => lines.RemoveRange(index - 1, count));
 
             codeModule.Setup(m => m.InsertLines(It.IsAny<int>(), It.IsAny<string>()))
-                .Callback<int, string>((index, newLine) => lines.Insert(index - 1, newLine));
+                .Callback<int, string>((index, newLine) =>
+                {
+                    if (index - 1 >= lines.Count)
+                    {
+                        lines.Add(newLine);
+                    }
+                    else
+                    {
+                        lines.Insert(index - 1, newLine);
+                    }
+                });
 
             return codeModule;
         }

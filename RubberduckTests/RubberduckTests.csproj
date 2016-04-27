@@ -125,6 +125,7 @@
     <Compile Include="Preprocessing\VBAPreprocessorVisitorTests.cs" />
     <Compile Include="Refactoring\EncapsulateFieldTests.cs" />
     <Compile Include="Refactoring\ExtractMethodTests.cs" />
+    <Compile Include="Refactoring\ImplementInterfaceTests.cs" />
     <Compile Include="Refactoring\IntroduceFieldTests.cs" />
     <Compile Include="Refactoring\MoveCloserToUsageTests.cs" />
     <Compile Include="Refactoring\IntroduceParameterTests.cs" />

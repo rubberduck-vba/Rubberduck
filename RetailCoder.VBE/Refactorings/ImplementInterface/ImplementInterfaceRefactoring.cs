@@ -70,10 +70,11 @@ namespace Rubberduck.Refactorings.ImplementInterface
             var implementedMembers = GetImplementedMembers();
 
             var nonImplementedMembers =
-                interfaceMembers.Where(
-                    d =>
-                        !implementedMembers.Select(s => s.IdentifierName)
-                            .Contains(_targetInterface.ComponentName + "_" + d.IdentifierName)).ToList();
+                interfaceMembers.Where(d => !implementedMembers.Select(s => s.IdentifierName)
+                                    .Contains(_targetInterface.ComponentName + "_" + d.IdentifierName))
+                                .OrderBy(o => o.Selection.StartLine)
+                                .ThenBy(t => t.Selection.StartColumn)
+                                .ToList();
 
             AddItems(nonImplementedMembers);
         }
@@ -82,12 +83,9 @@ namespace Rubberduck.Refactorings.ImplementInterface
         {
             var module = _targetClass.QualifiedSelection.QualifiedName.Component.CodeModule;
 
-            members.Reverse();
+            var missingMembersText = members.Aggregate(string.Empty, (current, member) => current + Environment.NewLine + GetInterfaceMember(member));
 
-            foreach (var member in members)
-            {
-                module.InsertLines(module.CountOfDeclarationLines + 2, GetInterfaceMember(member));
-            }
+            module.InsertLines(module.CountOfDeclarationLines + 2, missingMembersText);
         }
 
         private string GetInterfaceMember(Declaration member)
@@ -175,22 +173,23 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private List<Parameter> GetParameters(Declaration member)
         {
+            var parameters1 = _declarations.Where(item => item.DeclarationType == DeclarationType.Parameter &&
+                                                         item.ParentScope == member.Scope);
             var parameters = _declarations.Where(item => item.DeclarationType == DeclarationType.Parameter &&
-                              item.ParentScope == member.Scope)
+                              item.ParentScopeDeclaration == member)
                            .OrderBy(o => o.Selection.StartLine)
                            .ThenBy(t => t.Selection.StartColumn)
                            .Select(p => new Parameter
                            {
-                               Accessibility = ((VBAParser.ArgContext)p.Context).BYREF() == null ? Tokens.ByVal : Tokens.ByRef,
+                               Accessibility = ((VBAParser.ArgContext)p.Context).BYREF() != null || 
+                                        (((VBAParser.ArgContext)p.Context).BYREF() == null && ((VBAParser.ArgContext)p.Context).BYVAL() == null) 
+                                            ? Tokens.ByRef 
+                                            : Tokens.ByVal,
+
                                Name = p.IdentifierName,
                                AsTypeName = p.AsTypeName
                            })
                            .ToList();
-
-            if (member.DeclarationType == DeclarationType.PropertyGet && parameters.Any())
-            {
-                parameters.Remove(parameters.Last());
-            }
 
             return parameters;
         }
