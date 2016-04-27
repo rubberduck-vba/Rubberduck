@@ -90,9 +90,9 @@ namespace Rubberduck.Parsing.Symbols
                 case VarEnum.VT_USERDEFINED:
                     unchecked
                     {
-                        var href = desc.lpValue.ToInt32();
+                        var href = desc.lpValue.ToInt64();
                         ITypeInfo refTypeInfo;
-                        info.GetRefTypeInfo(href, out refTypeInfo);
+                        info.GetRefTypeInfo((int)href, out refTypeInfo);
                         return GetTypeName(refTypeInfo);
                     }
                 case VarEnum.VT_CARRAY:
