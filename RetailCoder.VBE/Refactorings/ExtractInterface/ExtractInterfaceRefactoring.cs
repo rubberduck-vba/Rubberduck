@@ -11,7 +11,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
-    public class ExtractInterfaceRefactoring //: IRefactoring
+    public class ExtractInterfaceRefactoring : IRefactoring
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
@@ -30,7 +30,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             _editor = editor;
         }
 
-        public bool CanExecute()
+        public bool CanExecute(QualifiedSelection selection)
         {
             return false;
         }
