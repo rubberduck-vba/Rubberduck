@@ -9,7 +9,6 @@ using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
@@ -38,9 +37,7 @@ Private Function Bar() As Integer
 End Function
 
 ";
-
-            var codePaneFactory = new CodePaneWrapperFactory();
-
+            
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
