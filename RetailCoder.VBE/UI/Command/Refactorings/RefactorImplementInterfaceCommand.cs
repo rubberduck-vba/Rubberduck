@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -18,7 +17,7 @@ namespace Rubberduck.UI.Command.Refactorings
             : base(vbe, editor)
         {
             _state = state;
-            _refactoring = new ImplementInterfaceRefactoring(Vbe, state, new MessageBox(), new CodePaneWrapperFactory());
+            _refactoring = new ImplementInterfaceRefactoring(Vbe, state, new MessageBox());
         }
 
         public override bool CanExecute(object parameter)

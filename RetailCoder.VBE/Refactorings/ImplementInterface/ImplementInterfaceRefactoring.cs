@@ -8,7 +8,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Refactorings.ImplementInterface
 {
@@ -17,7 +16,6 @@ namespace Rubberduck.Refactorings.ImplementInterface
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
-        private readonly CodePaneWrapperFactory _factory;
 
         private List<Declaration> _declarations;
         private Declaration _targetInterface;
@@ -25,13 +23,12 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private const string MemberBody = "    Err.Raise 5 'TODO implement interface member";
 
-        public ImplementInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox, CodePaneWrapperFactory factory)
+        public ImplementInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
         {
             _vbe = vbe;
             _state = state;
             _declarations = state.AllUserDeclarations.ToList();
             _messageBox = messageBox;
-            _factory = factory;
         }
 
         public bool CanExecute(QualifiedSelection selection)
@@ -50,8 +47,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
                 return;
             }
 
-            var codePane = _factory.Create(_vbe.ActiveCodePane);
-            Refactor(new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection));
+            Refactor(_vbe.ActiveCodePane.GetSelection());
         }
 
         public void Refactor(QualifiedSelection selection)
