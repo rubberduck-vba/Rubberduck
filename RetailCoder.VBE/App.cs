@@ -18,6 +18,8 @@ using Rubberduck.UI.Command.MenuItems;
 using Infralution.Localization.Wpf;
 using Rubberduck.Common.Dispatch;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.Common.WinAPI;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck
 {
@@ -82,7 +84,6 @@ namespace Rubberduck
             sink.ProjectRenamed += sink_ProjectRenamed;
 
             _projectsEventsConnectionPoint.Advise(sink, out _projectsEventsCookie);
-
             UiDispatcher.Initialize();
         }
 
@@ -127,20 +128,21 @@ namespace Rubberduck
         public void Startup()
         {
             CleanReloadConfig();
-
             _appMenus.Initialize();
             _appMenus.Localize();
-
-            Task.Delay(1000).ContinueWith(t =>
-            {
-                // run this on UI thread
-                UiDispatcher.Invoke(() =>
-                {
-                    _parser.State.OnParseRequested(this);
-                });
-            }).ConfigureAwait(false);
-
             _hooks.HookHotkeys();
+        }
+
+        public void Shutdown()
+        {
+            try
+            {
+                _hooks.Detach();
+            }
+            catch
+            {
+                // Won't matter anymore since we're shutting everything down anyway.
+            }
         }
 
         #region sink handlers. todo: move to another class

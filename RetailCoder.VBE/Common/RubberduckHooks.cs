@@ -45,8 +45,8 @@ namespace Rubberduck.Common
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.GeneralSettings.HotkeySettings;
 
-            AddHook(new KeyboardHook(_vbe));
-            AddHook(new MouseHook(_vbe));
+            AddHook(new MouseHook(_mainWindowHandle));
+            AddHook(new KeyboardHook(_mainWindowHandle));
             foreach (var hotkey in settings.Where(hotkey => hotkey.IsEnabled))
             {
                 AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), hotkey.Command));

@@ -86,16 +86,6 @@ namespace Rubberduck.Common.WinAPI
         [DllImport("user32.dll")]
         public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
-        // overload for use with LowLevelKeyboardProc
-        [DllImport("user32.dll")]
-        public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, WM wParam, [In]KBDLLHOOKSTRUCT lParam);
-        public delegate int LowLevelKeyboardProc(int nCode, WM wParam, [In] KBDLLHOOKSTRUCT lParam);
-
-        // overload for use with LowLevelMouseProc
-        [DllImport("user32.dll")]
-        public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, WM wParam, [In]MSLLHOOKSTRUCT lParam);
-        public delegate IntPtr LowLevelMouseProc(int code, WM wParam, [In] MSLLHOOKSTRUCT lParam);
-
         /// <summary>
         /// Retrieves a handle to the foreground window (the window with which the user is currently working). 
         /// The system assigns a slightly higher priority to the thread that creates the foreground window than it does to other threads.

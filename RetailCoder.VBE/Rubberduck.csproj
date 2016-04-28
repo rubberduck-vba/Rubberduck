@@ -309,9 +309,9 @@
     <Compile Include="Common\Hotkeys\Hotkey.cs" />
     <Compile Include="Common\IAttachable.cs" />
     <Compile Include="Common\Hotkeys\IHotkey.cs" />
-    <Compile Include="Common\ILowLevelKeyboardHook.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
     <Compile Include="Common\KeyboardHook.cs" />
+    <Compile Include="Common\LowLevelHook.cs" />
     <Compile Include="Common\ModuleExporter.cs" />
     <Compile Include="Common\MouseHook.cs" />
     <Compile Include="Common\RubberduckHooks.cs" />

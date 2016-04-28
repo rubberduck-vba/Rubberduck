@@ -1,100 +1,26 @@
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Common.WinAPI;
+using Rubberduck.UI.Command.MenuItems;
+using System;
 
 namespace Rubberduck.Common
 {
-    public class MouseHook : IAttachable
+    public sealed class MouseHook : LowLevelHook
     {
-        private readonly VBE _vbe;
-        private IntPtr _hookId;
-        private readonly User32.HookProc _callback;
+        private readonly IntPtr _vbeHandle;
 
-        public MouseHook(VBE vbe)
+        public MouseHook(IntPtr vbeHandle) : base(WindowsHook.MOUSE_LL)
         {
-            _vbe = vbe;
-            _callback = HookCallback;
+            _vbeHandle = vbeHandle;
         }
 
-        private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        protected override void HookCallbackCore(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            try
+            if (
+                ((WM)wParam == WM.RBUTTONUP || (WM)wParam == WM.LBUTTONUP)
+                && User32.IsVbeWindowActive(_vbeHandle))
             {
-                var pane = _vbe.ActiveCodePane;
-                if (User32.IsVbeWindowActive((IntPtr)_vbe.MainWindow.HWnd) && nCode >= 0 && pane != null)
-                {
-                    var button = (WM)wParam;
-                    if (button == WM.RBUTTONUP || button == WM.LBUTTONUP)
-                    {
-                        // handle right-click to evaluate commands' CanExecute before the context menu is shown;
-                        // handle left-click to do the same before the Rubberduck menu is drawn, too.
-                        OnMessageReceived();
-                    }
-                }
-
-                return User32.CallNextHookEx(_hookId, nCode, wParam, lParam);
+                UiDispatcher.InvokeAsync(() => OnMessageReceived());
             }
-            catch (Exception exception)
-            {
-                Debug.WriteLine(exception);
-            }
-
-            return User32.CallNextHookEx(_hookId, nCode, wParam, lParam);
-        }
-
-        private void OnMessageReceived()
-        {
-            var handler = MessageReceived;
-            if (handler != null)
-            {
-                handler.Invoke(this, HookEventArgs.Empty);
-            }
-        }
-
-        public bool IsAttached { get; private set; }
-        public event EventHandler<HookEventArgs> MessageReceived;
-
-        public void Attach()
-        {
-            if (IsAttached)
-            {
-                return;
-            }
-
-            var handle = Kernel32.GetModuleHandle("user32");
-            if (handle == IntPtr.Zero)
-            {
-                throw new Win32Exception();
-            } 
-            _hookId = User32.SetWindowsHookEx(WindowsHook.MOUSE_LL, _callback, handle, 0);
-            if (_hookId == IntPtr.Zero)
-            {
-                IsAttached = false;
-                throw new Win32Exception();
-            }
-            
-            IsAttached = true;
-            Debug.WriteLine("{0}: {1}", GetType().Name, IsAttached ? "Attached" : "Detached");
-        }
-
-        public void Detach()
-        {
-            if (!IsAttached)
-            {
-                return;
-            }
-
-            IsAttached = false;
-            if (_hookId != IntPtr.Zero && !User32.UnhookWindowsHookEx(_hookId))
-            {
-                _hookId = IntPtr.Zero;
-                throw new Win32Exception();
-            }
-
-            _hookId = IntPtr.Zero;
-            Debug.WriteLine("{0}: {1}", GetType().Name, IsAttached ? "Attached" : "Detached");
         }
     }
 }
