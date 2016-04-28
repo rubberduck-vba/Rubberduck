@@ -20,6 +20,7 @@ using Rubberduck.Common.Dispatch;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.Common.WinAPI;
 using System.Runtime.InteropServices;
+using RawInput_dll;
 
 namespace Rubberduck
 {
