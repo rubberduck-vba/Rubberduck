@@ -173,16 +173,11 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindClass(Declaration parent, string name, bool includeBuiltIn = false)
         {
-            if (parent == null)
-            {
-                throw new ArgumentNullException("parent");
-            }
-
             Declaration result = null;
             try
             {
                 result = MatchName(name).SingleOrDefault(declaration => declaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
-                    && parent.Equals(declaration.ParentDeclaration)
+                    && parent == null || parent.Equals(declaration.ParentDeclaration)
                     && (includeBuiltIn || !declaration.IsBuiltIn));
             }
             catch (InvalidOperationException exception)
