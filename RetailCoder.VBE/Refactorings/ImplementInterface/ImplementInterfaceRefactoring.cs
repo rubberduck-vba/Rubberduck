@@ -16,10 +16,12 @@ namespace Rubberduck.Refactorings.ImplementInterface
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
-        private Declaration _targetInterface;
-        private Declaration _targetClass;
         private readonly IMessageBox _messageBox;
         private readonly CodePaneWrapperFactory _factory;
+
+        private List<Declaration> _declarations;
+        private Declaration _targetInterface;
+        private Declaration _targetClass;
 
         private const string MemberBody = "    Err.Raise 5 'TODO implement interface member";
 
@@ -27,6 +29,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         {
             _vbe = vbe;
             _state = state;
+            _declarations = state.AllUserDeclarations.ToList();
             _messageBox = messageBox;
             _factory = factory;
         }
@@ -72,9 +75,11 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private void CalculateTargets(QualifiedSelection selection)
         {
-            _targetInterface = _state.AllUserDeclarations.FindInterface(selection);
+            _declarations = _state.AllUserDeclarations.ToList();
 
-            _targetClass = _state.AllUserDeclarations.SingleOrDefault(d =>
+            _targetInterface = _declarations.FindInterface(selection);
+
+            _targetClass = _declarations.SingleOrDefault(d =>
                         !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
                         d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
         }
@@ -182,9 +187,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private List<Parameter> GetParameters(Declaration member)
         {
-            var parameters1 = _state.AllUserDeclarations.Where(item => item.DeclarationType == DeclarationType.Parameter &&
-                                                         item.ParentScope == member.Scope);
-            var parameters = _state.AllUserDeclarations.Where(item => item.DeclarationType == DeclarationType.Parameter &&
+            var parameters = _declarations.Where(item => item.DeclarationType == DeclarationType.Parameter &&
                               item.ParentScopeDeclaration == member)
                            .OrderBy(o => o.Selection.StartLine)
                            .ThenBy(t => t.Selection.StartColumn)
@@ -204,7 +207,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private IEnumerable<Declaration> GetInterfaceMembers()
         {
-            return _state.AllUserDeclarations.FindInterfaceMembers()
+            return _declarations.FindInterfaceMembers()
                                 .Where(d => d.ComponentName == _targetInterface.IdentifierName)
                                 .OrderBy(d => d.Selection.StartLine)
                                 .ThenBy(d => d.Selection.StartColumn);
@@ -212,7 +215,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private IEnumerable<Declaration> GetImplementedMembers()
         {
-            return _state.AllUserDeclarations.FindInterfaceImplementationMembers()
+            return _declarations.FindInterfaceImplementationMembers()
                                 .Where(item => item.ProjectId == _targetInterface.ProjectId
                                         && item.ComponentName == _targetClass.IdentifierName
                                         && item.IdentifierName.StartsWith(_targetInterface.ComponentName + "_")
