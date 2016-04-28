@@ -27,6 +27,11 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             _messageBox = messageBox;
         }
 
+        public bool CanExecute()
+        {
+            return false;
+        }
+
         public void Refactor()
         {
             var qualifiedSelection = _editor.GetSelection();

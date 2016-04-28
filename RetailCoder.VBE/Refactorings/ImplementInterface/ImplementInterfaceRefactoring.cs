@@ -27,6 +27,20 @@ namespace Rubberduck.Refactorings.ImplementInterface
             _messageBox = messageBox;
         }
 
+        public bool CanExecute()
+        {
+            var selection = _editor.GetSelection();
+
+            if (!selection.HasValue)
+            {
+                return false;
+            }
+
+            CalculateTargets(selection.Value);
+
+            return _targetClass != null && _targetInterface != null;
+        }
+
         public void Refactor()
         {
             var selection = _editor.GetSelection();
@@ -43,11 +57,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         public void Refactor(QualifiedSelection selection)
         {
-            _targetInterface = _declarations.FindInterface(selection);
-
-            _targetClass = _declarations.SingleOrDefault(d =>
-                        !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
-                        d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
+            CalculateTargets(selection);
 
             if (_targetClass == null || _targetInterface == null)
             {
@@ -57,6 +67,15 @@ namespace Rubberduck.Refactorings.ImplementInterface
             }
 
             ImplementMissingMembers();
+        }
+
+        private void CalculateTargets(QualifiedSelection selection)
+        {
+            _targetInterface = _declarations.FindInterface(selection);
+
+            _targetClass = _declarations.SingleOrDefault(d =>
+                        !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
+                        d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
         }
 
         public void Refactor(Declaration target)

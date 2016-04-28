@@ -28,6 +28,11 @@ namespace Rubberduck.Refactorings.ReorderParameters
             _messageBox = messageBox;
         }
 
+        public bool CanExecute()
+        {
+            return false;
+        }
+
         public void Refactor()
         {
             var presenter = _factory.Create();

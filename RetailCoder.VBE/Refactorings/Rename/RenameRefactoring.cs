@@ -31,6 +31,11 @@ namespace Rubberduck.Refactorings.Rename
             _state = state;
         }
 
+        public bool CanExecute()
+        {
+            return false;
+        }
+
         public void Refactor()
         {
             var presenter = _factory.Create();

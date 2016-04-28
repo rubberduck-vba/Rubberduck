@@ -25,6 +25,11 @@ namespace Rubberduck.Refactorings.IntroduceField
             _messageBox = messageBox;
         }
 
+        public bool CanExecute()
+        {
+            return false;
+        }
+
         public void Refactor()
         {
             var selection = _editor.GetSelection();

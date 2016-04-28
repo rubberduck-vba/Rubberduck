@@ -28,6 +28,11 @@ namespace Rubberduck.Refactorings.ExtractInterface
             _editor = editor;
         }
 
+        public bool CanExecute()
+        {
+            return false;
+        }
+
         public void Refactor()
         {
             var presenter = _factory.Create();

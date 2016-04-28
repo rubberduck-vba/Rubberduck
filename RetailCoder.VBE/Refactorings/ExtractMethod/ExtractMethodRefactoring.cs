@@ -23,6 +23,11 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _editor = editor;
         }
 
+        public bool CanExecute()
+        {
+            return false;
+        }
+
         public void Refactor()
         {
             var presenter = _factory.Create();
