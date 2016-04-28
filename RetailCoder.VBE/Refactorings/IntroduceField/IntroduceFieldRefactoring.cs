@@ -19,6 +19,7 @@ namespace Rubberduck.Refactorings.IntroduceField
         private readonly IMessageBox _messageBox;
 
         private IList<Declaration> _declarations;
+        private Declaration _target;
 
         public IntroduceFieldRefactoring(VBE vbe, RubberduckParserState parserState, IMessageBox messageBox)
         {
@@ -31,8 +32,8 @@ namespace Rubberduck.Refactorings.IntroduceField
         {
             _declarations = _parserState.AllUserDeclarations.ToList();
 
-            var target = _declarations.FindVariable(selection);
-            return target != null;
+            _target = _declarations.FindVariable(selection);
+            return _target != null;
         }
 
         public void Refactor()
@@ -51,16 +52,14 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         public void Refactor(QualifiedSelection selection)
         {
-            var target = _declarations.FindVariable(selection);
-
-            if (target == null)
+            if (!CanExecute(selection))
             {
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
-            PromoteVariable(target);
+            PromoteVariable(_target);
         }
 
         public void Refactor(Declaration target)
@@ -86,33 +85,35 @@ namespace Rubberduck.Refactorings.IntroduceField
                 return;
             }
 
-            RemoveVariable(target);
-            AddField(target);
+            _target = target;
+
+            RemoveVariable();
+            AddField();
         }
 
-        private void AddField(Declaration target)
+        private void AddField()
         {
-            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            module.InsertLines(module.CountOfDeclarationLines + 1, GetFieldDefinition(target));
+            var module = _target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            module.InsertLines(module.CountOfDeclarationLines + 1, GetFieldDefinition());
         }
 
-        private void RemoveVariable(Declaration target)
+        private void RemoveVariable()
         {
             Selection selection;
-            var declarationText = target.Context.GetText();
-            var multipleDeclarations = target.HasMultipleDeclarationsInStatement();
+            var declarationText = _target.Context.GetText();
+            var multipleDeclarations = _target.HasMultipleDeclarationsInStatement();
 
-            var variableStmtContext = target.GetVariableStmtContext();
+            var variableStmtContext = _target.GetVariableStmtContext();
 
             if (!multipleDeclarations)
             {
                 declarationText = variableStmtContext.GetText();
-                selection = target.GetVariableStmtContextSelection();
+                selection = _target.GetVariableStmtContextSelection();
             }
             else
             {
-                selection = new Selection(target.Context.Start.Line, target.Context.Start.Column,
-                    target.Context.Stop.Line, target.Context.Stop.Column);
+                selection = new Selection(_target.Context.Start.Line, _target.Context.Start.Column,
+                    _target.Context.Stop.Line, _target.Context.Stop.Column);
             }
 
             var oldLines = _vbe.ActiveCodePane.CodeModule.GetLines(selection);
@@ -122,9 +123,9 @@ namespace Rubberduck.Refactorings.IntroduceField
 
             if (multipleDeclarations)
             {
-                selection = target.GetVariableStmtContextSelection();
+                selection = _target.GetVariableStmtContextSelection();
                 newLines = RemoveExtraComma(_vbe.ActiveCodePane.CodeModule.GetLines(selection).Replace(oldLines, newLines),
-                    target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
+                    _target.CountOfDeclarationsInStatement(), _target.IndexOfVariableDeclarationInStatement());
             }
 
             var newLinesWithoutExcessSpaces = newLines.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
@@ -188,9 +189,9 @@ namespace Rubberduck.Refactorings.IntroduceField
             return str.Remove(str.NthIndexOf(',', commaToRemove), 1);
         }
 
-        private string GetFieldDefinition(Declaration target)
+        private string GetFieldDefinition()
         {
-            return "Private " + target.IdentifierName + " As " + target.AsTypeName;
+            return "Private " + _target.IdentifierName + " As " + _target.AsTypeName;
         }
     }
 }

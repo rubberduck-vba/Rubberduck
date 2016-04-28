@@ -20,7 +20,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public EncapsulateFieldPresenter Create()
         {
             var selection = _vbe.ActiveCodePane.CodeModule.GetSelection();
-            if (selection == null)
+            if (!selection.HasValue)
             {
                 return null;
             }

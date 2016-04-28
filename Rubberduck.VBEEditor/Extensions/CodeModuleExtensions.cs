@@ -110,7 +110,10 @@ namespace Rubberduck.VBEditor.Extensions
 
         public static QualifiedSelection? GetSelection(this CodeModule module)
         {
-            return new QualifiedSelection(new QualifiedModuleName(module.Parent), module.CodePane.GetSelection());
+            var selection = module.CodePane.GetSelection();
+            return selection.HasValue
+                ? new QualifiedSelection(new QualifiedModuleName(module.Parent), selection.Value)
+                : new QualifiedSelection?();
         }
 
         public static void SetSelection(this CodeModule module, Selection selection)

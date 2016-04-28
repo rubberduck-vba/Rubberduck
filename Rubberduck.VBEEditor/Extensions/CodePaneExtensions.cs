@@ -30,7 +30,7 @@ public static class CodePaneExtensions
         return new QualifiedSelection(moduleName, selection);
     }
 
-    public static Selection GetSelection(this CodePane pane)
+    public static Selection? GetSelection(this CodePane pane)
     {
         int startLine;
         int endLine;
@@ -43,6 +43,14 @@ public static class CodePaneExtensions
         {
             endLine--;
             endColumn = pane.CodeModule.Lines[endLine, 1].Length;
+        }
+
+        if (startLine == 0 ||
+            startColumn == 0 ||
+            endLine == 0 ||
+            endColumn == 0)
+        {
+            return new Selection?();
         }
 
         return new Selection(startLine, startColumn, endLine, endColumn);
