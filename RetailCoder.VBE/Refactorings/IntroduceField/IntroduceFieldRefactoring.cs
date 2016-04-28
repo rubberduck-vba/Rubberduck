@@ -14,22 +14,25 @@ namespace Rubberduck.Refactorings.IntroduceField
 {
     public class IntroduceFieldRefactoring : IRefactoring
     {
-        private readonly IList<Declaration> _declarations;
         private readonly VBE _vbe;
+        private readonly RubberduckParserState _parserState;
         private readonly IMessageBox _messageBox;
+
+        private IList<Declaration> _declarations;
 
         public IntroduceFieldRefactoring(VBE vbe, RubberduckParserState parserState, IMessageBox messageBox)
         {
-            _declarations =
-                parserState.AllDeclarations.Where(i => !i.IsBuiltIn && i.DeclarationType == DeclarationType.Variable)
-                    .ToList();
             _vbe = vbe;
+            _parserState = parserState;
             _messageBox = messageBox;
         }
 
         public bool CanExecute(QualifiedSelection selection)
         {
-            return false;
+            _declarations = _parserState.AllUserDeclarations.ToList();
+
+            var target = _declarations.FindVariable(selection);
+            return target != null;
         }
 
         public void Refactor()

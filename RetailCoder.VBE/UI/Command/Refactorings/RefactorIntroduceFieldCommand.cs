@@ -12,13 +12,14 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorIntroduceFieldCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
+        private readonly IntroduceFieldRefactoring _refactoring;
+        private QualifiedSelection _qualifiedSelection;
 
-        public RefactorIntroduceFieldCommand (VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperWrapperFactory)
+        public RefactorIntroduceFieldCommand (VBE vbe, RubberduckParserState state)
             :base(vbe)
         {
             _state = state;
-            _wrapperWrapperFactory = wrapperWrapperFactory;
+            _refactoring = new IntroduceFieldRefactoring(Vbe, _state, new MessageBox());
         }
 
         public override bool CanExecute(object parameter)
@@ -28,26 +29,21 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
-            var target = _state.AllUserDeclarations.FindVariable(selection.Value);
+            var qualifiedSelection = Vbe.ActiveCodePane.GetQualifiedSelection();
 
-            var canExecute = target != null && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
+            if (qualifiedSelection == null)
+            {
+                return false;
+            }
 
-            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
-            return canExecute;
+            _qualifiedSelection = qualifiedSelection.Value;
+
+            return _refactoring.CanExecute(_qualifiedSelection);
         }
 
         public override void Execute(object parameter)
         {
-            if (Vbe.ActiveCodePane == null)
-            {
-                return;
-            }
-            var codePane = _wrapperWrapperFactory.Create(Vbe.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
-
-            var refactoring = new IntroduceFieldRefactoring(Vbe, _state, new MessageBox());
-            refactoring.Refactor(selection);
+            _refactoring.Refactor(_qualifiedSelection);
         }
     }
 }

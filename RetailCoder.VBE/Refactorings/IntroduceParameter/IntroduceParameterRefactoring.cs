@@ -18,7 +18,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
     public class IntroduceParameterRefactoring : IRefactoring
     {
         private readonly VBE _vbe;
-        private readonly RubberduckParserState _parseResult;
+        private readonly RubberduckParserState _parserState;
         private readonly IMessageBox _messageBox;
 
         private IList<Declaration> _declarations;
@@ -32,16 +32,16 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             DeclarationType.PropertySet
         };
 
-        public IntroduceParameterRefactoring(VBE vbe, RubberduckParserState parseResult, IMessageBox messageBox)
+        public IntroduceParameterRefactoring(VBE vbe, RubberduckParserState parserState, IMessageBox messageBox)
         {
             _vbe = vbe;
-            _parseResult = parseResult;
+            _parserState = parserState;
             _messageBox = messageBox;
         }
 
         public bool CanExecute(QualifiedSelection selection)
         {
-            _declarations = _parseResult.AllDeclarations.ToList();
+            _declarations = _parserState.AllUserDeclarations.ToList();
 
             var target = _declarations.FindVariable(selection);
             return target != null;
@@ -304,7 +304,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private string GetOldSignature(Declaration target)
         {
-            var rewriter = _parseResult.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
+            var rewriter = _parserState.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
 
             var context = target.Context;
             var firstTokenIndex = context.Start.TokenIndex;
