@@ -38,9 +38,14 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var selection = activePane.GetQualifiedSelection();
+            if (selection.HasValue)
+            {
+                return false;
+            }
+
             var target = _state.AllUserDeclarations.SingleOrDefault(item =>
-                item.QualifiedName.QualifiedModuleName.Equals(selection.QualifiedName)
-                && item.IdentifierName == selection.QualifiedName.ComponentName
+                item.QualifiedName.QualifiedModuleName.Equals(selection.Value.QualifiedName)
+                && item.IdentifierName == selection.Value.QualifiedName.ComponentName
                 && (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.Document || item.DeclarationType == DeclarationType.UserForm));
             var hasMembers = _state.AllUserDeclarations.Any(item => item.DeclarationType.HasFlag(DeclarationType.Member) && item.ParentDeclaration != null && item.ParentDeclaration.Equals(target));
 

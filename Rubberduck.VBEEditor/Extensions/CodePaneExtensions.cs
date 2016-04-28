@@ -5,12 +5,17 @@ using Rubberduck.VBEditor.Extensions;
 
 public static class CodePaneExtensions
 {
-    public static QualifiedSelection GetQualifiedSelection(this CodePane pane)
+    public static QualifiedSelection? GetQualifiedSelection(this CodePane pane)
     {
         int startLine;
         int endLine;
         int startColumn;
         int endColumn;
+
+        if (pane == null)
+        {
+            return null;
+        }
 
         pane.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
 

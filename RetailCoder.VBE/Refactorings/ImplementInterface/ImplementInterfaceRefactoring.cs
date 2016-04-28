@@ -47,7 +47,15 @@ namespace Rubberduck.Refactorings.ImplementInterface
                 return;
             }
 
-            Refactor(_vbe.ActiveCodePane.GetQualifiedSelection());
+            var qualifiedSelection = _vbe.ActiveCodePane.GetQualifiedSelection();
+            if (!qualifiedSelection.HasValue)
+            {
+                _messageBox.Show(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption,
+                    System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            Refactor(qualifiedSelection.Value);
         }
 
         public void Refactor(QualifiedSelection selection)

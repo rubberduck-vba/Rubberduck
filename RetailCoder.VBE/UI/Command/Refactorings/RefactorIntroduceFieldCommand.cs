@@ -29,7 +29,7 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
-            var target = _state.AllUserDeclarations.FindVariable(selection);
+            var target = _state.AllUserDeclarations.FindVariable(selection.Value);
 
             var canExecute = target != null && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
 

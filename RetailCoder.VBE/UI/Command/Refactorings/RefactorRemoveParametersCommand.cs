@@ -39,7 +39,7 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
-            var member = _state.AllUserDeclarations.FindTarget(selection, ValidDeclarationTypes);
+            var member = _state.AllUserDeclarations.FindTarget(selection.Value, ValidDeclarationTypes);
             if (member == null)
             {
                 return false;
@@ -66,7 +66,7 @@ namespace Rubberduck.UI.Command.Refactorings
             {
                 var factory = new RemoveParametersPresenterFactory(Vbe, view, _state, new MessageBox());
                 var refactoring = new RemoveParametersRefactoring(Vbe, factory);
-                refactoring.Refactor(selection);
+                refactoring.Refactor(selection.Value);
             }
         }
     }

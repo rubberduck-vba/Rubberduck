@@ -19,8 +19,9 @@ namespace Rubberduck.Refactorings.IntroduceParameter
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _parseResult;
-        private readonly IList<Declaration> _declarations;
         private readonly IMessageBox _messageBox;
+
+        private IList<Declaration> _declarations;
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
         {
@@ -35,13 +36,15 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         {
             _vbe = vbe;
             _parseResult = parseResult;
-            _declarations = parseResult.AllDeclarations.ToList();
             _messageBox = messageBox;
         }
 
         public bool CanExecute(QualifiedSelection selection)
         {
-            return false;
+            _declarations = _parseResult.AllDeclarations.ToList();
+
+            var target = _declarations.FindVariable(selection);
+            return target != null;
         }
 
         public void Refactor()

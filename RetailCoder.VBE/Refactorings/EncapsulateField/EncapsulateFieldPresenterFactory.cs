@@ -19,11 +19,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public EncapsulateFieldPresenter Create()
         {
-            if (_vbe.ActiveCodePane == null)
-            {
-                return null;
-            }
-
             var selection = _vbe.ActiveCodePane.CodeModule.GetSelection();
             if (selection == null)
             {

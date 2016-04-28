@@ -43,7 +43,7 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
-            var member = _state.AllUserDeclarations.FindTarget(selection, ValidDeclarationTypes);
+            var member = _state.AllUserDeclarations.FindTarget(selection.Value, ValidDeclarationTypes);
             if (member == null)
             {
                 return false;

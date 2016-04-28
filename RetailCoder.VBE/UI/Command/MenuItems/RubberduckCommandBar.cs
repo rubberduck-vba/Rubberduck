@@ -50,7 +50,7 @@ namespace Rubberduck.UI.Command.MenuItems
             if (declaration == null && _vbe.ActiveCodePane != null)
             {
                 var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
-                SetSelectionText(selection);
+                if (selection.HasValue) { SetSelectionText(selection.Value); }
                 _selectionButton.TooltipText = _selectionButton.Caption;
             }
             else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.ClassModule && declaration.DeclarationType != DeclarationType.ProceduralModule)
@@ -67,11 +67,14 @@ namespace Rubberduck.UI.Command.MenuItems
             else if (declaration != null)
             {
                 var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
-                _selectionButton.Caption = string.Format("{0}: {1} ({2}) {3}",
-                    declaration.QualifiedName.QualifiedModuleName,
-                    declaration.IdentifierName,
-                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType),
-                    selection.Selection);
+                if (selection.HasValue)
+                {
+                    _selectionButton.Caption = string.Format("{0}: {1} ({2}) {3}",
+                        declaration.QualifiedName.QualifiedModuleName,
+                        declaration.IdentifierName,
+                        RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType),
+                        selection.Value.Selection);
+                }
                 _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
                     ? _selectionButton.Caption
                     : declaration.DescriptionString;

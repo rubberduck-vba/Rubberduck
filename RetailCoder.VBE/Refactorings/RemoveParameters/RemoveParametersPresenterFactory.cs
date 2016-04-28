@@ -22,14 +22,14 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public RemoveParametersPresenter Create()
         {
-            if (_vbe.ActiveCodePane == null)
+            var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
+
+            if (!selection.HasValue)
             {
                 return null;
             }
 
-            var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
-
-            var model = new RemoveParametersModel(_parseResult, selection, _messageBox);
+            var model = new RemoveParametersModel(_parseResult, selection.Value, _messageBox);
             return new RemoveParametersPresenter(_view, model, _messageBox);
         }
     }

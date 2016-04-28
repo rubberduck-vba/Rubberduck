@@ -23,8 +23,6 @@ namespace Rubberduck.UI.Command.Refactorings
 
         public override bool CanExecute(object parameter)
         {
-            _selection = Vbe.ActiveCodePane.CodeModule.GetSelection();
-
             return Vbe.ActiveCodePane != null && _state.Status == ParserState.Ready && _selection.HasValue && _refactoring.CanExecute(_selection.Value);
         }
 

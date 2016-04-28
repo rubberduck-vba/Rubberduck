@@ -36,14 +36,14 @@ namespace Rubberduck.Refactorings.IntroduceField
         {
             var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
             
-            if (selection == new QualifiedSelection())
+            if (!selection.HasValue)
             {
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceField_Caption,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
-            Refactor(selection);
+            Refactor(selection.Value);
         }
 
         public void Refactor(QualifiedSelection selection)

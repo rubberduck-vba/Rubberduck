@@ -31,12 +31,17 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
-            var code = Vbe.ActiveCodePane.CodeModule.Lines[selection.Selection.StartLine, selection.Selection.LineCount];
+            if (!selection.HasValue)
+            {
+                return false;
+            }
 
-            var parentProcedure = _state.AllDeclarations.FindSelectedDeclaration(selection, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
+            var code = Vbe.ActiveCodePane.CodeModule.Lines[selection.Value.Selection.StartLine, selection.Value.Selection.LineCount];
+
+            var parentProcedure = _state.AllDeclarations.FindSelectedDeclaration(selection.Value, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
             var canExecute = parentProcedure != null
-                && selection.Selection.StartColumn != selection.Selection.EndColumn
-                && selection.Selection.LineCount > 0
+                && selection.Value.Selection.StartColumn != selection.Value.Selection.EndColumn
+                && selection.Value.Selection.LineCount > 0
                 && !string.IsNullOrWhiteSpace(code);
 
             Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
