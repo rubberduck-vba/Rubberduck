@@ -4,7 +4,6 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ExtractMethod

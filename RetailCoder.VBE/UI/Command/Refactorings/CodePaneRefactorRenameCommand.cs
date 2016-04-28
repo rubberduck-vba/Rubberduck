@@ -1,13 +1,9 @@
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using System.Runtime.InteropServices;
-using NLog.Targets;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.Settings;
 using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI.Command.Refactorings

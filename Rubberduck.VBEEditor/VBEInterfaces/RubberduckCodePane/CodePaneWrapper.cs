@@ -1,7 +1,5 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
 {

@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;

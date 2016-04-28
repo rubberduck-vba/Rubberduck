@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Command.Refactorings
 {

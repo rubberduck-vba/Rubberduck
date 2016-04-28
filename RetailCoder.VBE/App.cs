@@ -17,7 +17,6 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using Infralution.Localization.Wpf;
 using Rubberduck.Common.Dispatch;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck
 {

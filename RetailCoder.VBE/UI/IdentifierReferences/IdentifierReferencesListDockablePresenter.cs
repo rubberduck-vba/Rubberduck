@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 

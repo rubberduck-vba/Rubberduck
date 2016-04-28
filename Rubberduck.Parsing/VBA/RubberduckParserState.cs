@@ -11,9 +11,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing.VBA
 {

@@ -41,7 +41,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -140,7 +140,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -189,7 +189,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -237,7 +237,7 @@ End Sub";   // note: VBE will remove extra spaces
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -285,7 +285,7 @@ End Sub";   // note: VBE will remove extra spaces
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -333,7 +333,7 @@ End Sub";   // note: VBE will remove extra spaces
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -383,7 +383,7 @@ End Sub";   // note: VBE will remove extra spaces
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -433,7 +433,7 @@ End Sub";   // note: VBE will remove extra spaces
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -483,7 +483,7 @@ End Sub";   // note: VBE will remove extra spaces
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -517,7 +517,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -562,7 +562,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -611,7 +611,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -657,7 +657,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -707,7 +707,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -751,7 +751,7 @@ Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -835,7 +835,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();

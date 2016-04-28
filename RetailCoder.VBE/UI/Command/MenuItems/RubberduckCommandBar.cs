@@ -7,7 +7,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using ParserState = Rubberduck.Parsing.VBA.ParserState;
 
 namespace Rubberduck.UI.Command.MenuItems

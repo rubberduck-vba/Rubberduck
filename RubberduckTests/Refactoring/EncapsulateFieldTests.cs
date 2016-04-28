@@ -10,7 +10,6 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
-using RubberduckTests.Inspections;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
@@ -42,7 +41,7 @@ End Property
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -98,7 +97,7 @@ End Property
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -150,7 +149,7 @@ End Property
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -219,7 +218,7 @@ End Function";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -294,7 +293,7 @@ End Property";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -352,7 +351,7 @@ End Property
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -415,7 +414,7 @@ End Property
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -474,7 +473,7 @@ End Property
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -533,7 +532,7 @@ End Property
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -589,7 +588,7 @@ End Property
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -660,7 +659,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -810,7 +809,7 @@ End Property
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -882,7 +881,7 @@ End Property
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var module = component.CodeModule;
             var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
@@ -919,6 +918,8 @@ End Property
             var project = projectBuilder.Build();
             builder.AddProject(project);
             var vbe = builder.Build();
+
+            vbe.Setup(v => v.ActiveCodePane).Returns((CodePane) null);
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
@@ -1012,7 +1013,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1045,7 +1046,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1076,7 +1077,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1108,7 +1109,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1140,7 +1141,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1172,7 +1173,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1202,7 +1203,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1232,7 +1233,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1262,7 +1263,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1292,7 +1293,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1322,7 +1323,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1355,7 +1356,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1388,7 +1389,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1421,7 +1422,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1454,7 +1455,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1484,7 +1485,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1515,7 +1516,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1546,7 +1547,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());

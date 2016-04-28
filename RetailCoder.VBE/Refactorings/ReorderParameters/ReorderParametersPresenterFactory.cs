@@ -22,15 +22,15 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public IReorderParametersPresenter Create()
         {
-            if (_vbe.ActiveCodePane != null)
+            if (_vbe.ActiveCodePane == null)
             {
-                var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
-
-                var model = new ReorderParametersModel(_parseResult, selection, _messageBox);
-                return new ReorderParametersPresenter(_view, model, _messageBox);
+                return null;
             }
 
-            return null;
+            var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
+
+            var model = new ReorderParametersModel(_parseResult, selection, _messageBox);
+            return new ReorderParametersPresenter(_view, model, _messageBox);
         }
     }
 }

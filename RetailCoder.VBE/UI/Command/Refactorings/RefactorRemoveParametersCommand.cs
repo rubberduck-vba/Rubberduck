@@ -7,8 +7,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command.Refactorings
 {

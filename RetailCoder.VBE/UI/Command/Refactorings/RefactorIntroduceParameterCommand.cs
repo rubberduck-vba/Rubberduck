@@ -4,7 +4,6 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.IntroduceParameter;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command.Refactorings

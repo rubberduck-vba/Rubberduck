@@ -7,8 +7,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command.Refactorings
 {

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor;
 using System;
 using System.Windows.Forms;
 

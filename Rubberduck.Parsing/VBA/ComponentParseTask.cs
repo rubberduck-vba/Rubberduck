@@ -15,7 +15,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Parsing.VBA
 {
