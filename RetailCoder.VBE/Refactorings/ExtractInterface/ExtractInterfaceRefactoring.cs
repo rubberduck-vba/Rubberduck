@@ -8,24 +8,29 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
-    public class ExtractInterfaceRefactoring : IRefactoring
+    public class ExtractInterfaceRefactoring //: IRefactoring
     {
+        private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory<ExtractInterfacePresenter> _factory;
         private readonly IActiveCodePaneEditor _editor;
+        private readonly CodePaneWrapperFactory _wrapperFactory;
         private ExtractInterfaceModel _model;
 
-        public ExtractInterfaceRefactoring(RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory<ExtractInterfacePresenter> factory,
-            IActiveCodePaneEditor editor)
+        public ExtractInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory<ExtractInterfacePresenter> factory,
+            IActiveCodePaneEditor editor, CodePaneWrapperFactory wrapperFactory)
         {
+            _vbe = vbe;
             _state = state;
             _messageBox = messageBox;
             _factory = factory;
             _editor = editor;
+            _wrapperFactory = wrapperFactory;
         }
 
         public bool CanExecute()
@@ -93,7 +98,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var qualifiedSelection = new QualifiedSelection(_model.TargetDeclaration.QualifiedSelection.QualifiedName, new Selection(_insertionLine, 1, _insertionLine, 1));
             _editor.SetSelection(qualifiedSelection);
 
-            var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_state, _editor, _messageBox);
+            var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_vbe, _state, _messageBox, _wrapperFactory);
             implementInterfaceRefactoring.Refactor(qualifiedSelection);
 
             _state.StateChanged -= _state_StateChanged;

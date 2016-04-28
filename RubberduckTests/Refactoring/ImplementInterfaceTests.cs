@@ -60,7 +60,7 @@ End Sub
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null, codePaneFactory);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -113,7 +113,7 @@ End Sub
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null, codePaneFactory);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -166,7 +166,7 @@ End Function
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null, codePaneFactory);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -219,7 +219,7 @@ End Function
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null, codePaneFactory);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -272,7 +272,7 @@ End Function
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null, codePaneFactory);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -325,7 +325,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null, codePaneFactory);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -378,7 +378,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null, codePaneFactory);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -431,7 +431,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null, codePaneFactory);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -484,7 +484,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null, codePaneFactory);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -537,7 +537,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null, codePaneFactory);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -590,7 +590,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null, codePaneFactory);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -643,7 +643,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null, codePaneFactory);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -717,7 +717,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null, codePaneFactory);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert

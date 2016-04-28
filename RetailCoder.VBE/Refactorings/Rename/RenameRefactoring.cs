@@ -31,7 +31,7 @@ namespace Rubberduck.Refactorings.Rename
             _state = state;
         }
 
-        public bool CanExecute()
+        public bool CanExecute(QualifiedSelection selection)
         {
             return false;
         }

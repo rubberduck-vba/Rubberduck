@@ -63,7 +63,7 @@ namespace Rubberduck.UI.Command.Refactorings
             using (var view = new ExtractInterfaceDialog())
             {
                 var factory = new ExtractInterfacePresenterFactory(_state, Editor, view);
-                var refactoring = new ExtractInterfaceRefactoring(_state, _messageBox, factory, Editor);
+                var refactoring = new ExtractInterfaceRefactoring(Vbe, _state, _messageBox, factory, Editor, new CodePaneWrapperFactory());
                 refactoring.Refactor();
             }
         }

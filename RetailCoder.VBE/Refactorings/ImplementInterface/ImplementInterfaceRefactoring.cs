@@ -1,62 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Refactorings.ImplementInterface
 {
     public class ImplementInterfaceRefactoring : IRefactoring
     {
-        private readonly List<Declaration> _declarations;
-        private readonly IActiveCodePaneEditor _editor;
+        private List<Declaration> _declarations;
+        private readonly VBE _vbe;
+        private readonly RubberduckParserState _state;
         private Declaration _targetInterface;
         private Declaration _targetClass;
         private readonly IMessageBox _messageBox;
+        private readonly CodePaneWrapperFactory _factory;
 
         private const string MemberBody = "    Err.Raise 5 'TODO implement interface member";
 
-        public ImplementInterfaceRefactoring(RubberduckParserState state, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public ImplementInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox, CodePaneWrapperFactory factory)
         {
-            _declarations = state.AllDeclarations.ToList();
-            _editor = editor;
+            _vbe = vbe;
+            _state = state;
             _messageBox = messageBox;
+            _factory = factory;
+
+            InitializeDeclarations();
         }
 
-        public bool CanExecute()
+        private void InitializeDeclarations()
         {
-            var selection = _editor.GetSelection();
+            _declarations = _state.AllUserDeclarations.ToList();
+        }
 
-            if (!selection.HasValue)
-            {
-                return false;
-            }
-
-            CalculateTargets(selection.Value);
+        public bool CanExecute(QualifiedSelection selection)
+        {
+            InitializeDeclarations();
+            CalculateTargets(selection);
 
             return _targetClass != null && _targetInterface != null;
         }
 
         public void Refactor()
         {
-            var selection = _editor.GetSelection();
-
-            if (!selection.HasValue)
+            if (_vbe.ActiveCodePane == null)
             {
                 _messageBox.Show(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption,
                     System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
                 return;
             }
 
-            Refactor(selection.Value);
+            var codePane = _factory.Create(_vbe.ActiveCodePane);
+            Refactor(new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection));
         }
 
         public void Refactor(QualifiedSelection selection)
         {
+            InitializeDeclarations();
             CalculateTargets(selection);
 
             if (_targetClass == null || _targetInterface == null)
@@ -69,6 +75,11 @@ namespace Rubberduck.Refactorings.ImplementInterface
             ImplementMissingMembers();
         }
 
+        public void Refactor(Declaration target)
+        {
+            throw new NotImplementedException();
+        }
+
         private void CalculateTargets(QualifiedSelection selection)
         {
             _targetInterface = _declarations.FindInterface(selection);
@@ -76,11 +87,6 @@ namespace Rubberduck.Refactorings.ImplementInterface
             _targetClass = _declarations.SingleOrDefault(d =>
                         !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
                         d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
-        }
-
-        public void Refactor(Declaration target)
-        {
-            throw new NotImplementedException();
         }
 
         private void ImplementMissingMembers()

@@ -9,6 +9,6 @@ namespace Rubberduck.Refactorings
         void Refactor(QualifiedSelection target);
         void Refactor(Declaration target);
 
-        bool CanExecute();
+        bool CanExecute(QualifiedSelection selection);
     }
 }

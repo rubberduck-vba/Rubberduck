@@ -28,7 +28,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             _messageBox = messageBox;
         }
 
-        public bool CanExecute()
+        public bool CanExecute(QualifiedSelection selection)
         {
             return false;
         }

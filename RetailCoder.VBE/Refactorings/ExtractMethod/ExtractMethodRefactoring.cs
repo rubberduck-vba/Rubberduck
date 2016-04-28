@@ -23,7 +23,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _editor = editor;
         }
 
-        public bool CanExecute()
+        public bool CanExecute(QualifiedSelection selection)
         {
             return false;
         }
