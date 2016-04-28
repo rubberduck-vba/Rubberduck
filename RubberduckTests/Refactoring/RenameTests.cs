@@ -56,7 +56,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -102,7 +102,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -145,7 +145,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -198,7 +198,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -245,7 +245,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -290,7 +290,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -339,7 +339,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -388,7 +388,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -433,7 +433,7 @@ End Function";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -490,7 +490,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -533,7 +533,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(model.Target);
 
             //Assert
@@ -593,7 +593,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -652,7 +652,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -718,7 +718,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(model.Selection);
 
             //Assert
@@ -800,7 +800,7 @@ End Sub";
             var factory = new RenamePresenterFactory(vbe.Object, null, parser.State, null, codePaneFactory);
 
             //act
-            var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory, null, parser.State);
             refactoring.Refactor();
 
             Assert.AreEqual(inputCode, module.Lines());
@@ -865,9 +865,6 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
-
             int startLine, startColumn, endLine, endColumn;
 
             var codePaneMock = new Mock<CodePane>();
@@ -908,9 +905,6 @@ End Sub";
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = newName };
-
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -960,9 +954,6 @@ End Sub";
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -1017,9 +1008,6 @@ End Sub";
 
             var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = newName };
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             int startLine, startColumn, endLine, endColumn;
 
             var codePaneMock = new Mock<CodePane>();
@@ -1070,9 +1058,6 @@ End Sub";
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
-
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -1126,7 +1111,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(model.Target);
 
             //Assert
@@ -1177,7 +1162,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.No);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, messageBox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1228,7 +1213,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.Yes);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, messageBox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1272,7 +1257,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(model.Target);
 
             //Assert

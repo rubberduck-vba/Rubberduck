@@ -50,7 +50,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
             if (declaration == null && _vbe.ActiveCodePane != null)
             {
-                var selection = _vbe.ActiveCodePane.GetSelection();
+                var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
                 SetSelectionText(selection);
                 _selectionButton.TooltipText = _selectionButton.Caption;
             }
@@ -67,7 +67,7 @@ namespace Rubberduck.UI.Command.MenuItems
             }
             else if (declaration != null)
             {
-                var selection = _vbe.ActiveCodePane.GetSelection();
+                var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
                 _selectionButton.Caption = string.Format("{0}: {1} ({2}) {3}",
                     declaration.QualifiedName.QualifiedModuleName,
                     declaration.IdentifierName,

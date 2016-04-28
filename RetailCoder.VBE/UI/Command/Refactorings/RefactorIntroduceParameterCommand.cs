@@ -14,8 +14,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorIntroduceParameterCommand (VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory)
-            : base(vbe, editor)
+        public RefactorIntroduceParameterCommand (VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperWrapperFactory)
+            :base(vbe)
         {
             _state = state;
             _wrapperWrapperFactory = wrapperWrapperFactory;
@@ -28,7 +28,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = Vbe.ActiveCodePane.GetSelection();
+            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
             var target = _state.AllUserDeclarations.FindTarget(selection, new []{DeclarationType.Variable, DeclarationType.Constant});
 
             var canExecute = target != null && target.ParentScopeDeclaration != null && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
@@ -44,8 +44,8 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            var selection = Vbe.ActiveCodePane.GetSelection();
-            var refactoring = new IntroduceParameterRefactoring(_state, Editor, new MessageBox());
+            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
+            var refactoring = new IntroduceParameterRefactoring(Vbe, _state, new MessageBox());
             refactoring.Refactor(selection);
         }
     }

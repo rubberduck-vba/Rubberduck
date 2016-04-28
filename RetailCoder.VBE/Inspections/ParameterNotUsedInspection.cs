@@ -45,11 +45,8 @@ namespace Rubberduck.Inspections
                 && !(parameter.Context.Parent.Parent is VBAParser.DeclareStmtContext));
 
             var unused = parameters.Where(parameter => !parameter.References.Any()).ToList();
-            var editor = new ActiveCodePaneEditor(_vbe, _wrapperFactory);
             var quickFixRefactoring =
-                new RemoveParametersRefactoring(
-                    new RemoveParametersPresenterFactory(editor, 
-                        new RemoveParametersDialog(), State, _messageBox), editor);
+                new RemoveParametersRefactoring(_vbe, new RemoveParametersPresenterFactory(_vbe, new RemoveParametersDialog(), State, _messageBox));
 
             var issues = from issue in unused.Where(parameter =>
                 !IsInterfaceMemberParameter(parameter, interfaceMemberScopes)

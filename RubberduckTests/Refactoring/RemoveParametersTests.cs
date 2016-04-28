@@ -59,7 +59,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -103,7 +103,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -147,7 +147,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -191,7 +191,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -245,7 +245,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -289,7 +289,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -333,7 +333,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -387,7 +387,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -431,7 +431,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -474,7 +474,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.QuickFix(parser.State, qualifiedSelection);
 
             //Assert
@@ -518,7 +518,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -572,7 +572,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -626,7 +626,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -692,7 +692,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -798,7 +798,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -848,7 +848,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -900,7 +900,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -946,7 +946,7 @@ End Sub";   // note: VBE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -992,7 +992,7 @@ End Sub";   // note: VBE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1038,7 +1038,7 @@ End Sub";   // note: VBE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1084,7 +1084,7 @@ End Sub";   // note: VBE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(model.TargetDeclaration);
 
             //Assert
@@ -1144,7 +1144,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1206,7 +1206,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1269,7 +1269,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1344,7 +1344,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1408,7 +1408,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1470,7 +1470,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1533,7 +1533,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1608,7 +1608,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1677,7 +1677,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1756,7 +1756,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
 
             //assert
             try
@@ -1795,14 +1795,10 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
-
-            var factory = new RemoveParametersPresenterFactory(editor.Object, null,
-                parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, parser.State, null);
 
             //act
-            var refactoring = new RemoveParametersRefactoring(factory, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory);
             refactoring.Refactor();
 
             Assert.AreEqual(inputCode, module.Lines());
@@ -1839,7 +1835,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RemoveParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1868,9 +1864,6 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters[1].IsRemoved = true;
 
@@ -1878,7 +1871,7 @@ End Sub";
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new RemoveParametersPresenterFactory(editor.Object, view.Object, parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, view.Object, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -1907,9 +1900,6 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters[1].IsRemoved = true;
 
@@ -1917,7 +1907,7 @@ End Sub";
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new RemoveParametersPresenterFactory(editor.Object, view.Object, parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, view.Object, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -1946,13 +1936,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters[0].IsRemoved = true;
 
-            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -1986,13 +1973,10 @@ End Sub";
             var codePane = project.Object.VBComponents.Item(0).CodeModule.CodePane;
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
-            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parser.State, messageBox.Object);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, parser.State, messageBox.Object);
             var presenter = factory.Create();
 
             Assert.AreEqual(null, presenter.Show());
@@ -2030,10 +2014,7 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
-            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -2063,10 +2044,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
-
-            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, parser.State, null);
 
             Assert.AreEqual(null, factory.Create());
         }

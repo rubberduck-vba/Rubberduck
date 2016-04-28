@@ -14,8 +14,8 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
 
-        public RefactorEncapsulateFieldCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor)
-            : base(vbe, editor)
+        public RefactorEncapsulateFieldCommand(VBE vbe, RubberduckParserState state)
+            : base(vbe)
         {
             _state = state;
         }
@@ -47,8 +47,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
             using (var view = new EncapsulateFieldDialog())
             {
-                var factory = new EncapsulateFieldPresenterFactory(_state, Editor, view);
-                var refactoring = new EncapsulateFieldRefactoring(factory, Editor);
+                var factory = new EncapsulateFieldPresenterFactory(Vbe, _state, view);
+                var refactoring = new EncapsulateFieldRefactoring(Vbe, factory);
                 refactoring.Refactor();
             }
         }

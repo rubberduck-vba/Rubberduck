@@ -1,9 +1,11 @@
 using System;
 using System.Linq;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -14,13 +16,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
     /// </summary>
     public class ExtractMethodRefactoring : IRefactoring
     {
-        private readonly IActiveCodePaneEditor _editor;
+        private readonly VBE _vbe;
         private readonly IRefactoringPresenterFactory<IExtractMethodPresenter> _factory;
 
-        public ExtractMethodRefactoring(IRefactoringPresenterFactory<IExtractMethodPresenter> factory, IActiveCodePaneEditor editor)
+        public ExtractMethodRefactoring(VBE vbe, IRefactoringPresenterFactory<IExtractMethodPresenter> factory)
         {
+            _vbe = vbe;
             _factory = factory;
-            _editor = editor;
         }
 
         public bool CanExecute(QualifiedSelection selection)
@@ -48,7 +50,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public void Refactor(QualifiedSelection target)
         {
-            _editor.SetSelection(target);
+            _vbe.ActiveCodePane.CodeModule.SetSelection(target);
             Refactor();
         }
 
@@ -61,11 +63,11 @@ namespace Rubberduck.Refactorings.ExtractMethod
         {
             var selection = model.Selection.Selection;
 
-            _editor.DeleteLines(selection);
-            _editor.InsertLines(selection.StartLine, GetMethodCall(model));
+            _vbe.ActiveCodePane.CodeModule.DeleteLines(selection);
+            _vbe.ActiveCodePane.CodeModule.InsertLines(selection.StartLine, GetMethodCall(model));
 
             var insertionLine = model.SourceMember.Context.GetSelection().EndLine - selection.LineCount + 2;
-            _editor.InsertLines(insertionLine, GetExtractedMethod(model));
+            _vbe.ActiveCodePane.CodeModule.InsertLines(insertionLine, GetExtractedMethod(model));
 
             // assumes these are declared *before* the selection...
             var offset = 0;
@@ -77,7 +79,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     declaration.Selection.EndLine - offset,
                     declaration.Selection.EndColumn);
 
-                _editor.DeleteLines(target);
+                _vbe.ActiveCodePane.CodeModule.DeleteLines(target);
                 offset += declaration.Selection.LineCount;
             }
         }

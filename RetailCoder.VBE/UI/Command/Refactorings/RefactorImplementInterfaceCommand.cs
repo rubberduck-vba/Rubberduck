@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -13,8 +14,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly ImplementInterfaceRefactoring _refactoring;
         private QualifiedSelection? _selection;
 
-        public RefactorImplementInterfaceCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor)
-            : base(vbe, editor)
+        public RefactorImplementInterfaceCommand(VBE vbe, RubberduckParserState state)
+            :base(vbe)
         {
             _state = state;
             _refactoring = new ImplementInterfaceRefactoring(Vbe, state, new MessageBox());
@@ -22,7 +23,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         public override bool CanExecute(object parameter)
         {
-            _selection = Editor.GetSelection();
+            _selection = Vbe.ActiveCodePane.CodeModule.GetSelection();
 
             return Vbe.ActiveCodePane != null && _state.Status == ParserState.Ready && _selection.HasValue && _refactoring.CanExecute(_selection.Value);
         }

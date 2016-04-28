@@ -18,8 +18,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorReorderParametersCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
-            : base (vbe, editor)
+        public RefactorReorderParametersCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperWrapperFactory) 
+            : base (vbe)
         {
             _state = state;
             _wrapperWrapperFactory = wrapperWrapperFactory;
@@ -42,7 +42,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = Vbe.ActiveCodePane.GetSelection();
+            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
             var member = _state.AllUserDeclarations.FindTarget(selection, ValidDeclarationTypes);
             if (member == null)
             {
@@ -69,8 +69,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
             using (var view = new ReorderParametersDialog())
             {
-                var factory = new ReorderParametersPresenterFactory(Editor, view, _state, new MessageBox());
-                var refactoring = new ReorderParametersRefactoring(factory, Editor, new MessageBox());
+                var factory = new ReorderParametersPresenterFactory(Vbe, view, _state, new MessageBox());
+                var refactoring = new ReorderParametersRefactoring(Vbe, factory, new MessageBox());
                 refactoring.Refactor(selection);
             }
         }

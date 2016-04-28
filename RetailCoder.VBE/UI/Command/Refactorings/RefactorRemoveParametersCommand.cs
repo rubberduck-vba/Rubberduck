@@ -17,8 +17,8 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
 
-        public RefactorRemoveParametersCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor) 
-            : base (vbe, editor)
+        public RefactorRemoveParametersCommand(VBE vbe, RubberduckParserState state) 
+            : base (vbe)
         {
             _state = state;
         }
@@ -40,7 +40,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = Vbe.ActiveCodePane.GetSelection();
+            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
             var member = _state.AllUserDeclarations.FindTarget(selection, ValidDeclarationTypes);
             if (member == null)
             {
@@ -63,11 +63,11 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            var selection = Vbe.ActiveCodePane.GetSelection();
+            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
             using (var view = new RemoveParametersDialog())
             {
-                var factory = new RemoveParametersPresenterFactory(Editor, view, _state, new MessageBox());
-                var refactoring = new RemoveParametersRefactoring(factory, Editor);
+                var factory = new RemoveParametersPresenterFactory(Vbe, view, _state, new MessageBox());
+                var refactoring = new RemoveParametersRefactoring(Vbe, factory);
                 refactoring.Refactor(selection);
             }
         }

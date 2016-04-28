@@ -2,26 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.IntroduceField
 {
     public class IntroduceFieldRefactoring : IRefactoring
     {
         private readonly IList<Declaration> _declarations;
-        private readonly IActiveCodePaneEditor _editor;
+        private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
 
-        public IntroduceFieldRefactoring(RubberduckParserState parserState, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public IntroduceFieldRefactoring(VBE vbe, RubberduckParserState parserState, IMessageBox messageBox)
         {
             _declarations =
                 parserState.AllDeclarations.Where(i => !i.IsBuiltIn && i.DeclarationType == DeclarationType.Variable)
                     .ToList();
-            _editor = editor;
+            _vbe = vbe;
             _messageBox = messageBox;
         }
 
@@ -32,16 +34,16 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         public void Refactor()
         {
-            var selection = _editor.GetSelection();
+            var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
             
-            if (!selection.HasValue)
+            if (selection == new QualifiedSelection())
             {
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceField_Caption,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
-            Refactor(selection.Value);
+            Refactor(selection);
         }
 
         public void Refactor(QualifiedSelection selection)
@@ -110,7 +112,7 @@ namespace Rubberduck.Refactorings.IntroduceField
                     target.Context.Stop.Line, target.Context.Stop.Column);
             }
 
-            var oldLines = _editor.GetLines(selection);
+            var oldLines = _vbe.ActiveCodePane.CodeModule.GetLines(selection);
 
             var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
                 .Remove(selection.StartColumn, declarationText.Length);
@@ -118,7 +120,7 @@ namespace Rubberduck.Refactorings.IntroduceField
             if (multipleDeclarations)
             {
                 selection = target.GetVariableStmtContextSelection();
-                newLines = RemoveExtraComma(_editor.GetLines(selection).Replace(oldLines, newLines),
+                newLines = RemoveExtraComma(_vbe.ActiveCodePane.CodeModule.GetLines(selection).Replace(oldLines, newLines),
                     target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
             }
 
@@ -143,8 +145,8 @@ namespace Rubberduck.Refactorings.IntroduceField
                 break;
             }
 
-            _editor.DeleteLines(selection);
-            _editor.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
+            _vbe.ActiveCodePane.CodeModule.DeleteLines(selection);
+            _vbe.ActiveCodePane.CodeModule.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
         }
 
         private string RemoveExtraComma(string str, int numParams, int indexRemoved)

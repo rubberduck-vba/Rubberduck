@@ -17,8 +17,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public RefactorExtractInterfaceCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, IMessageBox messageBox)
-            : base(vbe, editor)
+        public RefactorExtractInterfaceCommand(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
+            :base(vbe)
         {
             _state = state;
             _messageBox = messageBox;
@@ -39,7 +39,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = activePane.GetSelection();
+            var selection = activePane.GetQualifiedSelection();
             var target = _state.AllUserDeclarations.SingleOrDefault(item =>
                 item.QualifiedName.QualifiedModuleName.Equals(selection.QualifiedName)
                 && item.IdentifierName == selection.QualifiedName.ComponentName
@@ -62,8 +62,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
             using (var view = new ExtractInterfaceDialog())
             {
-                var factory = new ExtractInterfacePresenterFactory(_state, Editor, view);
-                var refactoring = new ExtractInterfaceRefactoring(Vbe, _state, _messageBox, factory, Editor);
+                var factory = new ExtractInterfacePresenterFactory(Vbe, _state, view);
+                var refactoring = new ExtractInterfaceRefactoring(Vbe, _state, _messageBox, factory);
                 refactoring.Refactor();
             }
         }

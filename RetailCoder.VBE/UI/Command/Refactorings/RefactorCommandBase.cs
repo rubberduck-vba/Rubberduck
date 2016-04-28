@@ -7,13 +7,11 @@ namespace Rubberduck.UI.Command.Refactorings
 {
     public abstract class RefactorCommandBase : CommandBase
     {
-        protected readonly IActiveCodePaneEditor Editor;
         protected readonly VBE Vbe;
 
-        protected RefactorCommandBase(VBE vbe, IActiveCodePaneEditor editor)
+        protected RefactorCommandBase(VBE vbe)
         {
             Vbe = vbe;
-            Editor = editor;
         }
 
         protected void HandleInvalidSelection(object sender, EventArgs e)

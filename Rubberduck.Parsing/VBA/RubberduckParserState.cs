@@ -587,7 +587,7 @@ namespace Rubberduck.Parsing.VBA
 
         public Declaration FindSelectedDeclaration(CodePane activeCodePane, bool procedureLevelOnly = false)
         {
-            var selection = activeCodePane.GetSelection();
+            var selection = activeCodePane.GetQualifiedSelection();
             if (selection.Equals(_lastSelection))
             {
                 return _selectedDeclaration;

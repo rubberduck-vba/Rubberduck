@@ -18,8 +18,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
 
-        public RefactorExtractMethodCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, IIndenter indenter)
-            : base (vbe, editor)
+        public RefactorExtractMethodCommand(VBE vbe, RubberduckParserState state, IIndenter indenter)
+            : base (vbe)
         {
             _state = state;
             _indenter = indenter;
@@ -32,7 +32,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = Vbe.ActiveCodePane.GetSelection();
+            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
             var code = Vbe.ActiveCodePane.CodeModule.Lines[selection.Selection.StartLine, selection.Selection.LineCount];
 
             var parentProcedure = _state.AllDeclarations.FindSelectedDeclaration(selection, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
@@ -47,8 +47,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
         public override void Execute(object parameter)
         {
-            var factory = new ExtractMethodPresenterFactory(Editor, _state.AllDeclarations, _indenter);
-            var refactoring = new ExtractMethodRefactoring(factory, Editor);
+            var factory = new ExtractMethodPresenterFactory(Vbe, _state.AllDeclarations, _indenter);
+            var refactoring = new ExtractMethodRefactoring(Vbe, factory);
             refactoring.InvalidSelection += HandleInvalidSelection;
             refactoring.Refactor();
         }

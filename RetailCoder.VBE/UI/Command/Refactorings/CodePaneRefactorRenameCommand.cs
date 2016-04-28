@@ -18,8 +18,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public CodePaneRefactorRenameCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
-            : base (vbe, editor)
+        public CodePaneRefactorRenameCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperWrapperFactory) 
+            : base (vbe)
         {
             _state = state;
             _wrapperWrapperFactory = wrapperWrapperFactory;
@@ -58,7 +58,7 @@ namespace Rubberduck.UI.Command.Refactorings
             using (var view = new RenameDialog())
             {
                 var factory = new RenamePresenterFactory(Vbe, view, _state, new MessageBox(), _wrapperWrapperFactory);
-                var refactoring = new RenameRefactoring(factory, Editor, new MessageBox(), _state);
+                var refactoring = new RenameRefactoring(Vbe, factory, new MessageBox(), _state);
 
                 refactoring.Refactor(target);
             }

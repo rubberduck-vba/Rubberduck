@@ -1,25 +1,27 @@
 ﻿using System.Linq;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
     public class ExtractInterfacePresenterFactory : IRefactoringPresenterFactory<ExtractInterfacePresenter>
     {
-        private readonly IActiveCodePaneEditor _editor;
+        private readonly VBE _vbe;
         private readonly IExtractInterfaceView _view;
         private readonly RubberduckParserState _state;
 
-        public ExtractInterfacePresenterFactory(RubberduckParserState state, IActiveCodePaneEditor editor, IExtractInterfaceView view)
+        public ExtractInterfacePresenterFactory(VBE vbe, RubberduckParserState state, IExtractInterfaceView view)
         {
-            _editor = editor;
+            _vbe = vbe;
             _view = view;
             _state = state;
         }
 
         public ExtractInterfacePresenter Create()
         {
-            var selection = _editor.GetSelection();
+            var selection = _vbe.ActiveCodePane.CodeModule.GetSelection();
             if (selection == null)
             {
                 return null;

@@ -23,6 +23,56 @@ namespace RubberduckTests.Refactoring
     public class ReorderParametersTests : VbeTestBase
     {
         [TestMethod]
+        public void ReorderParams_SwapPositions1()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Bar(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+
+Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Bar(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+
+Private Sub Foo(ByVal arg2 As String, ByVal arg1 As Integer)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new CodePaneWrapperFactory();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            //set up model
+            var model = new ReorderParametersModel(parser.State, qualifiedSelection, null);
+            model.Parameters.Reverse();
+
+            var factory = SetupFactory(model);
+
+            //act
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+            refactoring.Refactor(qualifiedSelection);
+
+            //assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
         public void ReorderParams_SwapPositions()
         {
             //Input
@@ -59,7 +109,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //assert
@@ -103,7 +153,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(model.TargetDeclaration);
 
             //assert
@@ -140,7 +190,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
 
             //assert
             try
@@ -202,7 +252,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //assert
@@ -256,7 +306,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //assert
@@ -318,7 +368,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -365,7 +415,7 @@ End Function";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -427,7 +477,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -479,7 +529,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -524,7 +574,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -569,7 +619,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -672,7 +722,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -733,7 +783,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -787,7 +837,7 @@ End Sub
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -866,7 +916,7 @@ End Sub
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -952,7 +1002,7 @@ End Sub
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1001,7 +1051,7 @@ End Sub";
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //assert
@@ -1062,7 +1112,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //assert
@@ -1113,7 +1163,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1164,7 +1214,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1193,14 +1243,10 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
-
-            var factory = new ReorderParametersPresenterFactory(editor.Object, null,
-                parser.State, null);
+            var factory = new ReorderParametersPresenterFactory(vbe.Object, null, parser.State, null);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory, null);
             refactoring.Refactor();
 
             Assert.AreEqual(inputCode, module.Lines());
@@ -1260,7 +1306,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1322,7 +1368,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1396,7 +1442,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1465,7 +1511,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1569,7 +1615,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1631,7 +1677,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1693,7 +1739,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1768,7 +1814,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1799,9 +1845,6 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var model = new ReorderParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters.Reverse();
 
@@ -1809,7 +1852,7 @@ End Sub";
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, view.Object, parser.State, null);
+            var factory = new ReorderParametersPresenterFactory(vbe.Object, view.Object, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -1838,16 +1881,13 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var model = new ReorderParametersModel(parser.State, qualifiedSelection, new MessageBox());
 
             var view = new Mock<IReorderParametersView>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, view.Object, parser.State, null);
+            var factory = new ReorderParametersPresenterFactory(vbe.Object, view.Object, parser.State, null);
             var presenter = factory.Create();
 
             //Act
@@ -1879,14 +1919,11 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                       .Returns(DialogResult.OK);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parser.State, messageBox.Object);
+            var factory = new ReorderParametersPresenterFactory(vbe.Object, null, parser.State, messageBox.Object);
             var presenter = factory.Create();
 
             //Act
@@ -1918,14 +1955,11 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                       .Returns(DialogResult.OK);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parser.State, messageBox.Object);
+            var factory = new ReorderParametersPresenterFactory(vbe.Object, null, parser.State, messageBox.Object);
             var presenter = factory.Create();
 
             //Act
@@ -1958,10 +1992,7 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
-            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parser.State, null);
+            var factory = new ReorderParametersPresenterFactory(vbe.Object, null, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -1991,10 +2022,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
-
-            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parser.State, null);
+            var factory = new ReorderParametersPresenterFactory(vbe.Object, null, parser.State, null);
 
             //Act
             var result = factory.Create();

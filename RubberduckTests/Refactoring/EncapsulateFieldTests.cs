@@ -67,7 +67,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -123,7 +123,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -175,7 +175,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -244,7 +244,7 @@ End Function";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -319,7 +319,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -377,7 +377,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -440,7 +440,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -499,7 +499,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -558,7 +558,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -614,7 +614,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -685,7 +685,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -775,7 +775,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             var actualCode1 = module1.Lines();
@@ -835,7 +835,7 @@ End Property
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(parser.State.AllUserDeclarations.FindVariable(qualifiedSelection));
 
             //Assert
@@ -862,13 +862,10 @@ End Property
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
-
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, null);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, null);
 
             //act
-            var refactoring = new EncapsulateFieldRefactoring(factory, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory);
             refactoring.Refactor();
 
             Assert.AreEqual(inputCode, module.Lines());
@@ -901,7 +898,7 @@ End Property
             var factory = SetupFactory(null);
 
             //Act
-            var refactoring = new EncapsulateFieldRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory));
+            var refactoring = new EncapsulateFieldRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -930,10 +927,7 @@ End Property
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
-
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, null);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, null);
 
             Assert.AreEqual(null, factory.Create());
         }
@@ -962,13 +956,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var codePane = project.Object.VBComponents.Item(0).CodeModule.CodePane;
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), selection);
-
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, null);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, null);
             var presenter = factory.Create();
 
             Assert.AreEqual(null, presenter.Show());
@@ -1006,10 +994,7 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, null);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, null);
 
             var presenter = factory.Create();
 
@@ -1037,14 +1022,11 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
             view.SetupProperty(v => v.ParameterName, "myVal");
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
 
             var presenter = factory.Create();
 
@@ -1073,13 +1055,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
 
             var presenter = factory.Create();
 
@@ -1107,14 +1086,11 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.Setup(v => v.NewPropertyName).Returns("MyProperty");
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
 
             var presenter = factory.Create();
 
@@ -1142,14 +1118,11 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.SetupProperty(v => v.MustImplementLetSetterType, true);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
 
             var presenter = factory.Create();
 
@@ -1177,14 +1150,11 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.SetupProperty(v => v.MustImplementSetSetterType, true);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
 
             var presenter = factory.Create();
 
@@ -1212,13 +1182,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.SetupProperty(v => v.CanImplementLetSetterType, true);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.CanImplementLetSetterType);
@@ -1245,13 +1212,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.SetupProperty(v => v.CanImplementSetSetterType, true);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(false, view.Object.CanImplementSetSetterType);
@@ -1278,13 +1242,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.SetupProperty(v => v.CanImplementSetSetterType, true);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.CanImplementSetSetterType);
@@ -1311,13 +1272,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.SetupProperty(v => v.CanImplementLetSetterType, true);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(false, view.Object.CanImplementLetSetterType);
@@ -1344,13 +1302,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.SetupProperty(v => v.CanImplementLetSetterType, true);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.CanImplementLetSetterType);
@@ -1377,13 +1332,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.SetupProperty(v => v.CanImplementSetSetterType, true);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.CanImplementSetSetterType);
@@ -1413,13 +1365,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.SetupProperty(v => v.MustImplementLetSetterType, false);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.MustImplementLetSetterType);
@@ -1449,13 +1398,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.SetupProperty(v => v.MustImplementSetSetterType, false);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.MustImplementSetSetterType);
@@ -1485,13 +1431,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.SetupProperty(v => v.MustImplementLetSetterType, false);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.MustImplementLetSetterType);
@@ -1521,13 +1464,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.SetupProperty(v => v.MustImplementSetSetterType, false);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
             factory.Create().Show();
 
             Assert.AreEqual(true, view.Object.MustImplementSetSetterType);
@@ -1554,13 +1494,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
             var model = factory.Create().Show();
 
             Assert.AreEqual(false, model.ImplementLetSetterType);
@@ -1588,13 +1525,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
             var model = factory.Create().Show();
 
             Assert.AreEqual(false, model.ImplementLetSetterType);
@@ -1622,13 +1556,10 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
-
             var view = new Mock<IEncapsulateFieldView>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
-            var factory = new EncapsulateFieldPresenterFactory(parser.State, editor.Object, view.Object);
+            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
             var model = factory.Create().Show();
 
             Assert.AreEqual(false, model.ImplementLetSetterType);

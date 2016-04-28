@@ -47,7 +47,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
                 return;
             }
 
-            Refactor(_vbe.ActiveCodePane.GetSelection());
+            Refactor(_vbe.ActiveCodePane.GetQualifiedSelection());
         }
 
         public void Refactor(QualifiedSelection selection)
