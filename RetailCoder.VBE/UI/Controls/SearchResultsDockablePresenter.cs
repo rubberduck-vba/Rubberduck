@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UI.Controls

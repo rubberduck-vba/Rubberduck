@@ -12,7 +12,6 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
-using RubberduckTests.Inspections;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
@@ -37,10 +36,9 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -56,7 +54,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -83,10 +81,9 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -102,7 +99,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -126,10 +123,9 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -145,7 +141,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -179,10 +175,9 @@ End Sub
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -198,7 +193,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -226,10 +221,9 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -245,7 +239,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -271,10 +265,9 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -290,7 +283,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -320,10 +313,9 @@ End Property";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -339,7 +331,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -369,10 +361,9 @@ End Property";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -388,7 +379,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -414,10 +405,9 @@ End Function";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -433,7 +423,7 @@ End Function";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -471,10 +461,9 @@ End Sub
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -490,7 +479,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -514,10 +503,9 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -533,7 +521,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(model.Target);
 
             //Assert
@@ -574,7 +562,6 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(0);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -593,7 +580,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -633,7 +620,6 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(0);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -652,7 +638,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -694,7 +680,6 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(0);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -718,7 +703,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(model.Selection);
 
             //Assert
@@ -800,7 +785,7 @@ End Sub";
             var factory = new RenamePresenterFactory(vbe.Object, null, parser.State, null, codePaneFactory);
 
             //act
-            var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory, null, parser.State);
             refactoring.Refactor();
 
             Assert.AreEqual(inputCode, module.Lines());
@@ -865,9 +850,6 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
-
             int startLine, startColumn, endLine, endColumn;
 
             var codePaneMock = new Mock<CodePane>();
@@ -895,7 +877,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
@@ -908,9 +890,6 @@ End Sub";
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = newName };
-
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -949,7 +928,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
@@ -958,11 +937,6 @@ End Sub";
 
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -1003,7 +977,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
@@ -1016,9 +990,6 @@ End Sub";
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = newName };
-
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -1057,7 +1028,7 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
@@ -1070,9 +1041,6 @@ End Sub";
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var model = new RenameModel(vbe.Object, parser.State, qualifiedSelection, null) { NewName = "Goo" };
-
-            var editor = new Mock<IActiveCodePaneEditor>();
-            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             int startLine, startColumn, endLine, endColumn;
 
@@ -1111,7 +1079,6 @@ End Sub";
                              .MockVbeBuilder()
                              .Build();
             
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
@@ -1126,7 +1093,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(model.Target);
 
             //Assert
@@ -1152,10 +1119,9 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1177,7 +1143,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.No);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, messageBox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1203,10 +1169,9 @@ End Sub";
             //Arrange
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1228,7 +1193,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.Yes);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, messageBox.Object, parser.State);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1255,7 +1220,6 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(0);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -1272,7 +1236,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null, parser.State);
+            var refactoring = new RenameRefactoring(vbe.Object, factory.Object, null, parser.State);
             refactoring.Refactor(model.Target);
 
             //Assert

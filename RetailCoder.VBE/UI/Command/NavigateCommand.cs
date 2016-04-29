@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Input;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command
 {

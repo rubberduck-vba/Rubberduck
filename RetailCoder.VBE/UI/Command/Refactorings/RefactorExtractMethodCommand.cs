@@ -7,8 +7,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -18,8 +16,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
 
-        public RefactorExtractMethodCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, IIndenter indenter)
-            : base (vbe, editor)
+        public RefactorExtractMethodCommand(VBE vbe, RubberduckParserState state, IIndenter indenter)
+            : base (vbe)
         {
             _state = state;
             _indenter = indenter;
@@ -32,13 +30,18 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = Vbe.ActiveCodePane.GetSelection();
-            var code = Vbe.ActiveCodePane.CodeModule.Lines[selection.Selection.StartLine, selection.Selection.LineCount];
+            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
+            if (!selection.HasValue)
+            {
+                return false;
+            }
 
-            var parentProcedure = _state.AllDeclarations.FindSelectedDeclaration(selection, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
+            var code = Vbe.ActiveCodePane.CodeModule.Lines[selection.Value.Selection.StartLine, selection.Value.Selection.LineCount];
+
+            var parentProcedure = _state.AllDeclarations.FindSelectedDeclaration(selection.Value, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
             var canExecute = parentProcedure != null
-                && selection.Selection.StartColumn != selection.Selection.EndColumn
-                && selection.Selection.LineCount > 0
+                && selection.Value.Selection.StartColumn != selection.Value.Selection.EndColumn
+                && selection.Value.Selection.LineCount > 0
                 && !string.IsNullOrWhiteSpace(code);
 
             Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
@@ -47,8 +50,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
         public override void Execute(object parameter)
         {
-            var factory = new ExtractMethodPresenterFactory(Editor, _state.AllDeclarations, _indenter);
-            var refactoring = new ExtractMethodRefactoring(factory, Editor);
+            var factory = new ExtractMethodPresenterFactory(Vbe, _state.AllDeclarations, _indenter);
+            var refactoring = new ExtractMethodRefactoring(Vbe, factory);
             refactoring.InvalidSelection += HandleInvalidSelection;
             refactoring.Refactor();
         }

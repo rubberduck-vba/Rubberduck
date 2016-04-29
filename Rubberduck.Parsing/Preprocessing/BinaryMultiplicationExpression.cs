@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Rubberduck.Parsing.Preprocessing
+﻿namespace Rubberduck.Parsing.Preprocessing
 {
     public sealed class BinaryMultiplicationExpression : Expression
     {

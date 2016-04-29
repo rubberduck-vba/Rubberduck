@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor
 {
@@ -96,15 +95,32 @@ namespace Rubberduck.VBEditor
         public string ComponentName { get { return _componentName ?? string.Empty; } }
 
         public string Name { get { return ToString(); } }
+
         private readonly string _projectName;
+
+        public string ProjectName
+        {
+            get
+            {
+                return _projectName;
+            }
+        }
         private readonly string _projectPath;
+
+        public string ProjectPath
+        {
+            get
+            {
+                return _projectPath;
+            }
+        }
 
         public override string ToString()
         {
-            return _component == null && string.IsNullOrEmpty(_projectName)
+            return _component == null && string.IsNullOrEmpty(ProjectName)
                 ? string.Empty
-                : (string.IsNullOrEmpty(_projectPath) ? string.Empty : System.IO.Path.GetFileName(_projectPath) + ";")
-                     + _projectName + "." + _componentName;
+                : (string.IsNullOrEmpty(ProjectPath) ? string.Empty : System.IO.Path.GetFileName(ProjectPath) + ";")
+                     + ProjectName + "." + _componentName;
         }
 
         public override int GetHashCode()
