@@ -122,7 +122,8 @@ namespace Rubberduck
 
         private bool ShouldEvaluateCanExecute(Declaration selectedDeclaration, ParserState currentStatus)
         {
-            return _lastStatus != currentStatus || (selectedDeclaration != null && !selectedDeclaration.Equals(_lastSelectedDeclaration));
+            return !_vbe.ActiveCodePane.GetQualifiedSelection().HasValue || _lastStatus != currentStatus ||
+                   (selectedDeclaration != null && !selectedDeclaration.Equals(_lastSelectedDeclaration));
         }
 
         private void _configService_SettingsChanged(object sender, EventArgs e)
