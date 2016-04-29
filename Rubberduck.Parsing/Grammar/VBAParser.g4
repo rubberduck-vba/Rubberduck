@@ -81,7 +81,7 @@ moduleBodyElement :
 
 attributeStmt : ATTRIBUTE whiteSpace implicitCallStmt_InStmt whiteSpace? EQ whiteSpace? literal (whiteSpace? COMMA whiteSpace? literal)*;
 
-block : blockStmt (endOfStatement blockStmt)* endOfStatement;
+block : (blockStmt endOfStatement)*;
 
 blockStmt :
 	lineLabel
@@ -107,7 +107,8 @@ blockStmt :
 	| getStmt
 	| goSubStmt
 	| goToStmt
-	| ifThenElseStmt
+    | ifStmt
+	| singleLineIfStmt
 	| implementsStmt
 	| inputStmt
 	| killStmt
@@ -186,15 +187,15 @@ deleteSettingStmt :
 
 doLoopStmt :
 	DO endOfStatement 
-	block?
+	block
 	LOOP
 	|
 	DO whiteSpace (WHILE | UNTIL) whiteSpace valueStmt endOfStatement
-	block?
+	block
 	LOOP
 	| 
 	DO endOfStatement
-	block?
+	block
 	LOOP whiteSpace (WHILE | UNTIL) whiteSpace valueStmt
 ;
 
@@ -220,19 +221,19 @@ filecopyStmt : FILECOPY whiteSpace valueStmt whiteSpace? COMMA whiteSpace? value
 
 forEachStmt : 
 	FOR whiteSpace EACH whiteSpace identifier typeHint? whiteSpace IN whiteSpace valueStmt endOfStatement
-	block?
+	block
 	NEXT (whiteSpace identifier)?
 ;
 
 forNextStmt : 
 	FOR whiteSpace identifier typeHint? (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? valueStmt whiteSpace TO whiteSpace valueStmt (whiteSpace STEP whiteSpace valueStmt)? endOfStatement 
-	block?
+	block
 	NEXT (whiteSpace identifier typeHint?)?
 ; 
 
 functionStmt :
 	(visibility whiteSpace)? (STATIC whiteSpace)? FUNCTION whiteSpace? identifier typeHint? (whiteSpace? argList)? (whiteSpace? asTypeClause)? endOfStatement
-	block?
+	block
 	END_FUNCTION
 ;
 
@@ -242,27 +243,40 @@ goSubStmt : GOSUB whiteSpace valueStmt;
 
 goToStmt : GOTO whiteSpace valueStmt;
 
-ifThenElseStmt : 
-	IF whiteSpace ifConditionStmt whiteSpace THEN whiteSpace blockStmt (whiteSpace ELSE whiteSpace blockStmt)?	# inlineIfThenElse
-	| ifBlockStmt ifElseIfBlockStmt* ifElseBlockStmt? END_IF			# blockIfThenElse
+// 5.4.2.8 If Statement
+ifStmt :
+    IF whiteSpace booleanExpression whiteSpace THEN endOfLine+
+    block
+    elseIfBlock*
+    elseBlock?
+    END_IF
+;
+elseIfBlock :
+    ELSEIF whiteSpace booleanExpression whiteSpace THEN endOfLine+ block
+    | ELSEIF whiteSpace booleanExpression whiteSpace THEN whiteSpace? block
+;
+elseBlock :
+    ELSE endOfLine+ block
 ;
 
-ifBlockStmt : 
-	IF whiteSpace ifConditionStmt whiteSpace THEN endOfStatement 
-	block?
+// 5.4.2.9 Single-line If Statement
+singleLineIfStmt : ifWithNonEmptyThen | ifWithEmptyThen;
+ifWithNonEmptyThen : IF whiteSpace booleanExpression whiteSpace THEN whiteSpace? listOrLabel singleLineElseClause?;
+ifWithEmptyThen : IF whiteSpace booleanExpression whiteSpace THEN whiteSpace? singleLineElseClause;
+singleLineElseClause : ELSE whiteSpace? listOrLabel?;
+listOrLabel :
+    statementLabel (whiteSpace? COLON whiteSpace? sameLineStatement?)*
+    | (COLON whiteSpace?)? sameLineStatement (whiteSpace? COLON whiteSpace? sameLineStatement?)*
 ;
+sameLineStatement : blockStmt;
 
-ifConditionStmt : valueStmt;
+// 5.6.16.3 Boolean Expressions
+booleanExpression : valueStmt;
 
-ifElseIfBlockStmt : 
-	ELSEIF whiteSpace ifConditionStmt whiteSpace THEN endOfStatement
-	block?
-;
-
-ifElseBlockStmt : 
-	ELSE endOfStatement 
-	block?
-;
+// 5.4.1.1 Statement Labels
+statementLabel : identifierStatementLabel | lineNumberLabel;
+identifierStatementLabel : identifier;
+lineNumberLabel : numberLiteral;
 
 implementsStmt : IMPLEMENTS whiteSpace valueStmt;
 
@@ -314,19 +328,19 @@ printStmt : PRINT whiteSpace fileNumber whiteSpace? COMMA (whiteSpace? outputLis
 
 propertyGetStmt : 
 	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_GET whiteSpace identifier typeHint? (whiteSpace? argList)? (whiteSpace asTypeClause)? endOfStatement 
-	block? 
+	block 
 	END_PROPERTY
 ;
 
 propertySetStmt : 
 	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_SET whiteSpace identifier (whiteSpace? argList)? endOfStatement 
-	block? 
+	block 
 	END_PROPERTY
 ;
 
 propertyLetStmt : 
 	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_LET whiteSpace identifier (whiteSpace? argList)? endOfStatement 
-	block? 
+	block 
 	END_PROPERTY
 ;
 
@@ -370,7 +384,7 @@ sC_Selection :
 
 sC_Case : 
 	CASE whiteSpace sC_Cond endOfStatement
-	block?
+	block
 ;
 
 sC_Cond :
@@ -388,7 +402,7 @@ stopStmt : STOP;
 
 subStmt : 
 	(visibility whiteSpace)? (STATIC whiteSpace)? SUB whiteSpace? identifier (whiteSpace? argList)? endOfStatement
-	block? 
+	block 
 	END_SUB
 ;
 
@@ -441,7 +455,7 @@ variableSubStmt : identifier (whiteSpace? LPAREN whiteSpace? (subscripts whiteSp
 
 whileWendStmt : 
 	WHILE whiteSpace valueStmt endOfStatement 
-	block?
+	block
 	WEND
 ;
 
@@ -450,7 +464,7 @@ widthStmt : WIDTH whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt;
 withStmt :
     // TODO: withStmtExpression should actually be an expression, i.e. a valueStmt.
 	WITH whiteSpace withStmtExpression endOfStatement 
-	block? 
+	block 
 	END_WITH
 ;
 
@@ -573,7 +587,7 @@ endOfStatement : (endOfLine | whiteSpace? COLON whiteSpace?)*;
 
 remComment : REMCOMMENT;
 
-comment : COMMENT;
+comment : SINGLEQUOTE | COMMENT;
 
 annotationList : SINGLEQUOTE annotation+;
 
