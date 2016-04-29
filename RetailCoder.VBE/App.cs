@@ -1,26 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using Infralution.Localization.Wpf;
 using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Common;
+using Rubberduck.Common.Dispatch;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
-using Infralution.Localization.Wpf;
-using Rubberduck.Common.Dispatch;
-using Rubberduck.VBEditor.Extensions;
-using Rubberduck.Common.WinAPI;
-using System.Runtime.InteropServices;
-using RawInput_dll;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
+using System.Windows.Forms;
 
 namespace Rubberduck
 {

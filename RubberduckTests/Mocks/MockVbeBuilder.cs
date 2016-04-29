@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Moq;
+using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Mocks
 {
@@ -81,16 +82,17 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="content">The VBA code associated to the component.</param>
         /// <param name="component">The created <see cref="VBComponent"/></param>
+        /// <param name="selection"></param>
         /// <returns></returns>
-        public Mock<VBE> BuildFromSingleStandardModule(string content, out VBComponent component)
+        public Mock<VBE> BuildFromSingleStandardModule(string content, out VBComponent component, Selection selection = new Selection())
         {
-            return BuildFromSingleModule(content, vbext_ComponentType.vbext_ct_StdModule, out component);
+            return BuildFromSingleModule(content, vbext_ComponentType.vbext_ct_StdModule, out component, selection);
         }
 
-        public Mock<VBE> BuildFromSingleModule(string content, vbext_ComponentType type, out VBComponent component)
+        public Mock<VBE> BuildFromSingleModule(string content, vbext_ComponentType type, out VBComponent component, Selection selection)
         {
             var builder = ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
-            builder.AddComponent("TestModule1", type, content);
+            builder.AddComponent("TestModule1", type, content, selection);
             var project = builder.Build();
             component = project.Object.VBComponents.Item(0);
             return AddProject(project).Build();

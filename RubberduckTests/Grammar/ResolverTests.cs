@@ -16,7 +16,7 @@ namespace RubberduckTests.Grammar
         {
             var builder = new MockVbeBuilder();
             VBComponent component;
-            var vbe = builder.BuildFromSingleModule(code, moduleType, out component);
+            var vbe = builder.BuildFromSingleModule(code, moduleType, out component, new Rubberduck.VBEditor.Selection());
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();

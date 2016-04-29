@@ -1,20 +1,20 @@
-﻿using Rubberduck.Parsing.VBA;
+﻿using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
     public class ReorderParametersPresenterFactory : IRefactoringPresenterFactory<IReorderParametersPresenter>
     {
-        private readonly IActiveCodePaneEditor _editor;
+        private readonly VBE _vbe;
         private readonly IReorderParametersView _view;
         private readonly RubberduckParserState _parseResult;
         private readonly IMessageBox _messageBox;
 
-        public ReorderParametersPresenterFactory(IActiveCodePaneEditor editor, IReorderParametersView view,
+        public ReorderParametersPresenterFactory(VBE vbe, IReorderParametersView view,
             RubberduckParserState parseResult, IMessageBox messageBox)
         {
-            _editor = editor;
+            _vbe = vbe;
             _view = view;
             _parseResult = parseResult;
             _messageBox = messageBox;
@@ -22,8 +22,9 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public IReorderParametersPresenter Create()
         {
-            var selection = _editor.GetSelection();
-            if (selection == null)
+            var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
+
+            if (!selection.HasValue)
             {
                 return null;
             }

@@ -48,14 +48,16 @@ namespace Rubberduck.Common
 
             _rawinput = new RawInput(_mainWindowHandle, true);
             _rawinput.AddMessageFilter();
+
             var kb = (RawKeyboard)_rawinput.CreateKeyboard();
             _rawinput.AddDevice(kb);
             kb.KeyPressed += Kb_KeyPressed;
             _kb = kb;
+
             var mouse = (RawMouse)_rawinput.CreateMouse();
+            _rawinput.AddDevice(mouse);
             mouse.OnMouseClick += Mouse_OnMouseClick;
             _mouse = mouse;
-            _rawinput.AddDevice(_mouse);
 
             foreach (var hotkey in settings.Where(hotkey => hotkey.IsEnabled))
             {

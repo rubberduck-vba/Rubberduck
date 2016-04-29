@@ -1,10 +1,7 @@
 using System.Runtime.InteropServices;
-using System.Windows.Input;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Settings;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.UI.Command
 {

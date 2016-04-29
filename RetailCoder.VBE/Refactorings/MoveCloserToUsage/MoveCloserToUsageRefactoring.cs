@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -9,27 +10,33 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
     public class MoveCloserToUsageRefactoring : IRefactoring
     {
         private readonly List<Declaration> _declarations;
+        private readonly VBE _vbe;
         private readonly RubberduckParserState _parseResult;
-        private readonly IActiveCodePaneEditor _editor;
         private readonly IMessageBox _messageBox;
 
-        public MoveCloserToUsageRefactoring(RubberduckParserState parseResult, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public MoveCloserToUsageRefactoring(VBE vbe, RubberduckParserState parseResult, IMessageBox messageBox)
         {
             _declarations = parseResult.AllUserDeclarations.ToList();
+            _vbe = vbe;
             _parseResult = parseResult;
-            _editor = editor;
             _messageBox = messageBox;
+        }
+
+        public bool CanExecute(QualifiedSelection selection)
+        {
+            return false;
         }
 
         public void Refactor()
         {
-            var qualifiedSelection = _editor.GetSelection();
+            var qualifiedSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
             if (qualifiedSelection != null)
             {
                 Refactor(_declarations.FindVariable(qualifiedSelection.Value));

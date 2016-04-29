@@ -57,7 +57,7 @@ namespace Rubberduck.Inspections
             using (var view = new RenameDialog())
             {
                 var factory = new RenamePresenterFactory(vbe, view, _state, new MessageBox(), _wrapperFactory);
-                var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory), new MessageBox(), _state);
+                var refactoring = new RenameRefactoring(vbe, factory, new MessageBox(), _state);
                 refactoring.Refactor(_target);
                 IsCancelled = view.DialogResult == DialogResult.Cancel;
             }

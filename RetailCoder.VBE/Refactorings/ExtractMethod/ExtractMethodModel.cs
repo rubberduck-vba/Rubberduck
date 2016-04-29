@@ -2,16 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
     public class ExtractMethodModel
     {
-        public ExtractMethodModel(IActiveCodePaneEditor editor, IEnumerable<Declaration> declarations, QualifiedSelection selection)
+        public ExtractMethodModel(VBE vbe, IEnumerable<Declaration> declarations, QualifiedSelection selection)
         {
             var items = declarations.ToList();
 
@@ -24,7 +26,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _extractedMethod = new ExtractedMethod();
 
             _selection = selection;
-            _selectedCode = editor.GetLines(selection.Selection);
+            _selectedCode = vbe.ActiveCodePane.CodeModule.GetLines(selection.Selection);
 
             var inScopeDeclarations = items.Where(item => item.ParentScope == _sourceMember.Scope).ToList();
 

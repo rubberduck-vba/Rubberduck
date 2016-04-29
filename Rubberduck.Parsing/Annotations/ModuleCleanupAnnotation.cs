@@ -1,5 +1,4 @@
-﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
+﻿using Rubberduck.VBEditor;
 using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Annotations

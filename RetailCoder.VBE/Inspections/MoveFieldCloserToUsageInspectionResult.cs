@@ -56,8 +56,7 @@ namespace Rubberduck.Inspections
         {
             var vbe = Selection.QualifiedName.Project.VBE;
 
-            var refactoring = new MoveCloserToUsageRefactoring(_parseResult,
-                new ActiveCodePaneEditor(vbe, _wrapperFactory), _messageBox);
+            var refactoring = new MoveCloserToUsageRefactoring(vbe, _parseResult, _messageBox);
 
             refactoring.Refactor(_target);
         }

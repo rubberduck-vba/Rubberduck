@@ -8,7 +8,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command
 {

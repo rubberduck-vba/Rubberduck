@@ -28,12 +28,12 @@ namespace RawInput_dll
 
         public IRawDevice CreateKeyboard()
         {
-            return new RawKeyboard(base.Handle, true);
+            return new RawKeyboard(Handle, true);
         }
 
         public IRawDevice CreateMouse()
         {
-            return new RawMouse(base.Handle, true);
+            return new RawMouse(Handle, true);
         }
 
         public void AddMessageFilter()
@@ -96,7 +96,8 @@ namespace RawInput_dll
 
                 case Win32.WM_USB_DEVICECHANGE:
                     {
-                        Debug.WriteLine("USB Device Arrival / Removal"); foreach (var device in _devices)
+                        Debug.WriteLine("USB Device Arrival / Removal");
+                        foreach (var device in _devices)
                         {
                             device.EnumerateDevices();
                         }

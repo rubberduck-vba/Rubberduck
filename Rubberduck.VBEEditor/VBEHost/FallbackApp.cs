@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.VBEditor.VBEHost
 {

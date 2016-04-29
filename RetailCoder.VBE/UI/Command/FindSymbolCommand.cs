@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
 using Rubberduck.UI.FindSymbol;
 
 namespace Rubberduck.UI.Command

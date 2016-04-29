@@ -1,6 +1,4 @@
-﻿using Rubberduck.Parsing.Grammar;
-
-namespace Rubberduck.Parsing.Binding
+﻿namespace Rubberduck.Parsing.Binding
 {
     public static class ExpressionName
     {

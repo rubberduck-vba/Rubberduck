@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor
 {
@@ -96,8 +95,25 @@ namespace Rubberduck.VBEditor
         public string ComponentName { get { return _componentName ?? string.Empty; } }
 
         public string Name { get { return ToString(); } }
+
         private readonly string _projectName;
+
+        public string ProjectName
+        {
+            get
+            {
+                return _projectName;
+            }
+        }
         private readonly string _projectPath;
+
+        public string ProjectPath
+        {
+            get
+            {
+                return _projectPath;
+            }
+        }
 
         public override string ToString()
         {

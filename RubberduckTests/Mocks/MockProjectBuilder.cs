@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.Vbe.Interop;
 using Moq;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Mocks
 {
@@ -44,16 +45,17 @@ namespace RubberduckTests.Mocks
         /// <param name="name">The name of the new component.</param>
         /// <param name="type">The type of component to create.</param>
         /// <param name="content">The VBA code associated to the component.</param>
+        /// <param name="selection"></param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
-        public MockProjectBuilder AddComponent(string name, vbext_ComponentType type, string content)
+        public MockProjectBuilder AddComponent(string name, vbext_ComponentType type, string content, Selection selection = new Selection())
         {
-            var component = CreateComponentMock(name, type, content);
+            var component = CreateComponentMock(name, type, content, selection);
             return AddComponent(component);
         }
 
         /// <summary>
         /// Adds a new mock component to the project.
-        /// Use the <see cref="AddComponent(string,vbext_ComponentType,string)"/> overload to add module components.
+        /// Use the <see cref="AddComponent(string,vbext_ComponentType,string,Selection)"/> overload to add module components.
         /// Use this overload to add user forms created with a <see cref="RubberduckTests.Mocks.MockUserFormBuilder"/> instance.
         /// </summary>
         /// <param name="component">The component to add.</param>
@@ -98,7 +100,7 @@ namespace RubberduckTests.Mocks
         /// <param name="content">The VBA code associated to the component.</param>
         public MockUserFormBuilder MockUserFormBuilder(string name, string content)
         {
-            var component = CreateComponentMock(name, vbext_ComponentType.vbext_ct_MSForm, content);
+            var component = CreateComponentMock(name, vbext_ComponentType.vbext_ct_MSForm, content, new Selection());
             return new MockUserFormBuilder(component, this);
         }
 
@@ -166,7 +168,7 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
-        private Mock<VBComponent> CreateComponentMock(string name, vbext_ComponentType type, string content)
+        private Mock<VBComponent> CreateComponentMock(string name, vbext_ComponentType type, string content, Selection selection)
         {
             var result = new Mock<VBComponent>();
 
@@ -175,7 +177,7 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.Type).Returns(() => type);
             result.SetupProperty(m => m.Name, name);
 
-            var module = CreateCodeModuleMock(name, content);
+            var module = CreateCodeModuleMock(name, content, selection);
             module.SetupGet(m => m.Parent).Returns(() => result.Object);
             result.SetupGet(m => m.CodeModule).Returns(() => module.Object);
 
@@ -184,9 +186,9 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
-        private Mock<CodeModule> CreateCodeModuleMock(string name, string content)
+        private Mock<CodeModule> CreateCodeModuleMock(string name, string content, Selection selection)
         {
-            var codePane = CreateCodePaneMock(name);
+            var codePane = CreateCodePaneMock(name, selection);
             codePane.SetupGet(m => m.VBE).Returns(_getVbe);
 
             var result = CreateCodeModuleMock(content);
@@ -223,12 +225,22 @@ namespace RubberduckTests.Mocks
                 .Callback<int, int>((index, count) => lines.RemoveRange(index - 1, count));
 
             codeModule.Setup(m => m.InsertLines(It.IsAny<int>(), It.IsAny<string>()))
-                .Callback<int, string>((index, newLine) => lines.Insert(index - 1, newLine));
+                .Callback<int, string>((index, newLine) =>
+                {
+                    if (index - 1 >= lines.Count)
+                    {
+                        lines.Add(newLine);
+                    }
+                    else
+                    {
+                        lines.Insert(index - 1, newLine);
+                    }
+                });
 
             return codeModule;
         }
 
-        private Mock<CodePane> CreateCodePaneMock(string name)
+        private Mock<CodePane> CreateCodePaneMock(string name, Selection selection)
         {
             var windows = _getVbe().Windows as MockWindowsCollection;
             if (windows == null)
@@ -242,6 +254,13 @@ namespace RubberduckTests.Mocks
 
             codePane.Setup(p => p.SetSelection(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
             codePane.Setup(p => p.Show());
+
+            var sLine = selection.StartLine;
+            var sCol = selection.StartColumn;
+            var eLine = selection.EndLine;
+            var eCol = selection.EndColumn;
+
+            codePane.Setup(p => p.GetSelection(out sLine, out sCol, out eLine, out eCol));
 
             codePane.SetupGet(p => p.VBE).Returns(_getVbe);
             codePane.SetupGet(p => p.Window).Returns(() => window);
