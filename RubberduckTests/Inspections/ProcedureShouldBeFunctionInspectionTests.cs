@@ -161,7 +161,6 @@ End Sub";
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
-        [Ignore]
         [TestMethod]
         public void ProcedureShouldBeFunction_DoesNotReturnResult_InterfaceImplementation()
         {
