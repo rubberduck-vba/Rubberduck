@@ -117,10 +117,10 @@ namespace Rubberduck.VBEditor
 
         public override string ToString()
         {
-            return _component == null && string.IsNullOrEmpty(ProjectName)
+            return _component == null && string.IsNullOrEmpty(_projectName)
                 ? string.Empty
-                : (string.IsNullOrEmpty(ProjectPath) ? string.Empty : System.IO.Path.GetFileName(ProjectPath) + ";")
-                     + ProjectName + "." + _componentName;
+                : (string.IsNullOrEmpty(_projectPath) ? string.Empty : System.IO.Path.GetFileName(_projectPath) + ";")
+                     + _projectName + "." + _componentName;
         }
 
         public override int GetHashCode()
