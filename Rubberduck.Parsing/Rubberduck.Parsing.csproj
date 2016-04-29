@@ -97,6 +97,7 @@
     <Compile Include="Binding\VBAExpressionParserBaseVisitor.cs" />
     <Compile Include="Binding\VBAExpressionParserListener.cs" />
     <Compile Include="Binding\VBAExpressionParserVisitor.cs" />
+    <Compile Include="ComHelper.cs" />
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBALexer.cs" />

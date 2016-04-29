@@ -184,6 +184,13 @@ namespace Rubberduck.Parsing.VBA
             }
             
             var vba = finder.FindProject("VBA");
+            if (vba == null)
+            {
+                // if VBA project is null, we haven't loaded any COM references;
+                // we're in a unit test and mock project didn't setup any references.
+                return;
+            }
+
             Debug.Assert(vba != null);
             
             var errObject = finder.FindClass(vba, "ErrObject", true);
@@ -191,8 +198,8 @@ namespace Rubberduck.Parsing.VBA
 
             var qualifiedName = new QualifiedModuleName(vba.IdentifierName, vba.IdentifierName, errObject.IdentifierName);
             var err = new Declaration(new QualifiedMemberName(qualifiedName, Tokens.Err), vba, "Global", errObject.IdentifierName, true, false, Accessibility.Global, DeclarationType.Variable);
-            var debugClassName = new QualifiedModuleName(vba.IdentifierName, vba.IdentifierName, "DebugClass");
-            var debugClass = new Declaration(new QualifiedMemberName(debugClassName, "DebugClass"), vba, "Global", "DebugClass", false, false, Accessibility.Global, DeclarationType.ClassModule);
+            var debugClassName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
+            var debugClass = new ClassModuleDeclaration(new QualifiedMemberName(debugClassName, "DebugClass"), vba, "DebugClass", true, new List<IAnnotation>(), new Attributes(), true);
             var debugObject = new Declaration(new QualifiedMemberName(debugClassName, "Debug"), vba, "Global", "DebugClass", true, false, Accessibility.Global, DeclarationType.Variable);
             var debugAssert = new Declaration(new QualifiedMemberName(debugClassName, "Assert"), debugObject, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
             var debugPrint = new Declaration(new QualifiedMemberName(debugClassName, "Print"), debugObject, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);

@@ -15,12 +15,12 @@ namespace Rubberduck.Common
     {
         private readonly VBE _vbe;
         private readonly IntPtr _mainWindowHandle;
-
         private readonly IntPtr _oldWndPointer;
         private readonly User32.WndProc _oldWndProc;
         private User32.WndProc _newWndProc;
-
-        //private readonly IAttachable _timerHook;
+        private RawInput _rawinput;
+        private IRawDevice _kb;
+        private IRawDevice _mouse;
         private readonly IGeneralConfigService _config;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
 
@@ -45,14 +45,40 @@ namespace Rubberduck.Common
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.GeneralSettings.HotkeySettings;
 
-            AddHook(new KeyboardHook(_vbe));
-            AddHook(new MouseHook(_vbe));
+            _rawinput = new RawInput(_mainWindowHandle, true);
+            _rawinput.AddMessageFilter();
+
+            var kb = (RawKeyboard)_rawinput.CreateKeyboard();
+            _rawinput.AddDevice(kb);
+            kb.RawKeyInputReceived += Keyboard_RawKeyboardInputReceived;
+            _kb = kb;
+
+            var mouse = (RawMouse)_rawinput.CreateMouse();
+            _rawinput.AddDevice(mouse);
+            mouse.RawMouseInputReceived += Mouse_RawMouseInputReceived;
+            _mouse = mouse;
+
             foreach (var hotkey in settings.Where(hotkey => hotkey.IsEnabled))
             {
                 AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), hotkey.Command));
             }
-
             Attach();
+        }
+
+        private void Mouse_RawMouseInputReceived(object sender, RawMouseEventArgs e)
+        {
+            if (e.UlButtons.HasFlag(UsButtonFlags.RI_MOUSE_LEFT_BUTTON_UP) || e.UlButtons.HasFlag(UsButtonFlags.RI_MOUSE_RIGHT_BUTTON_UP))
+            {
+                MessageReceived(this, HookEventArgs.Empty);
+            }
+        }
+
+        private void Keyboard_RawKeyboardInputReceived(object sender, RawKeyEventArgs e)
+        {
+            if (e.Message == WM.KEYUP)
+            {
+                MessageReceived(this, HookEventArgs.Empty);
+            }
         }
 
         public IEnumerable<IAttachable> Hooks { get { return _hooks; } }
@@ -122,20 +148,6 @@ namespace Rubberduck.Common
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
-            if (sender is MouseHook)
-            {
-                Debug.WriteLine("MouseHook message received");
-                OnMessageReceived(sender, e);
-                return;
-            }
-
-            if (sender is KeyboardHook)
-            {
-                Debug.WriteLine("KeyboardHook message received");
-                OnMessageReceived(sender, e);
-                return;
-            }
-
             var hotkey = sender as IHotkey;
             if (hotkey != null)
             {
