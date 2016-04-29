@@ -80,7 +80,8 @@ namespace Rubberduck.Inspections
             Tokens.Long,
             Tokens.LongLong,
             Tokens.Single,
-            Tokens.String
+            Tokens.String,
+            Tokens.Variant
         };
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
@@ -97,8 +98,6 @@ namespace Rubberduck.Inspections
                         return setStmtContext != null && setStmtContext.LET() == null;
                     }))
                 .Select(reference => new ObjectVariableNotSetInspectionResult(this, reference));
-
-
         }
     }
 }
