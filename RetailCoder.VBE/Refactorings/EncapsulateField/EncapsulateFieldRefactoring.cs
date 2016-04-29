@@ -12,17 +12,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private readonly VBE _vbe;
         private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
+        private readonly RubberduckParserState _state;
         private EncapsulateFieldModel _model;
 
-        public EncapsulateFieldRefactoring(VBE vbe, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
+        public EncapsulateFieldRefactoring(VBE vbe, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory, RubberduckParserState state)
         {
             _vbe = vbe;
             _factory = factory;
+            _state = state;
         }
 
         public bool CanExecute(QualifiedSelection selection)
         {
-            return false;
+            return _state.AllUserDeclarations.FindVariable(selection) != null;
         }
 
         public void Refactor()

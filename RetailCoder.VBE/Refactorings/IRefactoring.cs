@@ -8,7 +8,5 @@ namespace Rubberduck.Refactorings
         void Refactor();
         void Refactor(QualifiedSelection target);
         void Refactor(Declaration target);
-
-        bool CanExecute(QualifiedSelection selection);
     }
 }
