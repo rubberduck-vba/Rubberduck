@@ -35,10 +35,10 @@ namespace Rubberduck.Common
             switch (componentType)
             {
                 case vbext_ComponentType.vbext_ct_StdModule:
-                    key = Tuple.Create(DeclarationType.Module, Accessibility.Public);
+                    key = Tuple.Create(DeclarationType.ProceduralModule, Accessibility.Public);
                     break;
                 case vbext_ComponentType.vbext_ct_ClassModule:
-                    key = Tuple.Create(DeclarationType.Class, Accessibility.Public);
+                    key = Tuple.Create(DeclarationType.ClassModule, Accessibility.Public);
                     break;
                 case vbext_ComponentType.vbext_ct_Document:
                     key = Tuple.Create(DeclarationType.Document, Accessibility.Public);
@@ -61,19 +61,19 @@ namespace Rubberduck.Common
             string path;
             switch (declarationType)
             {
-                case DeclarationType.Module:
+                case DeclarationType.ProceduralModule:
                     path = "VSObject_Module.png";
                     break;
 
-                case DeclarationType.Document | DeclarationType.Class: 
+                case DeclarationType.Document | DeclarationType.ClassModule: 
                     path = "document.png";
                     break;
                 
-                case DeclarationType.UserForm | DeclarationType.Class | DeclarationType.Control:
+                case DeclarationType.UserForm | DeclarationType.ClassModule | DeclarationType.Control:
                     path = "VSProject_Form.png";
                     break;
 
-                case DeclarationType.Class | DeclarationType.Module:
+                case DeclarationType.ClassModule | DeclarationType.ProceduralModule:
                     path = "VSProject_Class.png";
                     break;
 

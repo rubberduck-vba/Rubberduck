@@ -16,9 +16,10 @@ namespace RubberduckTests.Inspections
         [TestMethod]
         public void ImplicitPublicMember_ReturnsResult_Sub()
         {
-            const string inputCode =
-@"Sub Foo()
-End Sub";
+            const string inputCode = @"
+Sub Foo()
+End Sub
+";
 
             //Arrange
             var builder = new MockVbeBuilder();

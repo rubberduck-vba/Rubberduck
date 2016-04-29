@@ -86,5 +86,60 @@ namespace Rubberduck.VBEditor.Extensions
         {
             module.DeleteLines(1, module.CountOfLines);
         }
+
+        /// <summary>
+        /// Returns the lines containing the selection.
+        /// </summary>
+        /// <param name="module"></param>
+        /// <param name="selection"></param>
+        /// <returns></returns>
+        public static string GetLines(this CodeModule module, Selection selection)
+        {
+            return module.Lines[selection.StartLine, selection.LineCount];
+        }
+
+        /// <summary>
+        /// Deletes the lines containing the selection.
+        /// </summary>
+        /// <param name="module"></param>
+        /// <param name="selection"></param>
+        public static void DeleteLines(this CodeModule module, Selection selection)
+        {
+            module.DeleteLines(selection.StartLine, selection.LineCount);
+        }
+
+        public static QualifiedSelection? GetSelection(this CodeModule module)
+        {
+            var selection = module.CodePane.GetSelection();
+            return selection.HasValue
+                ? new QualifiedSelection(new QualifiedModuleName(module.Parent), selection.Value)
+                : new QualifiedSelection?();
+        }
+
+        public static void SetSelection(this CodeModule module, Selection selection)
+        {
+            module.CodePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+        }
+
+        public static void SetSelection(this CodeModule module, QualifiedSelection selection)
+        {
+            module.CodePane.SetSelection(selection.Selection.StartLine, selection.Selection.StartColumn,
+                selection.Selection.EndLine, selection.Selection.EndColumn);
+        }
+
+        public static string GetSelectedProcedureScope(this CodeModule module, Selection selection)
+        {
+            var moduleName = module.Name;
+            var projectName = module.Parent.Collection.Parent.Name;
+            var parentScope = projectName + '.' + moduleName;
+
+            vbext_ProcKind kind;
+            var procStart = module.get_ProcOfLine(selection.StartLine, out kind);
+            var procEnd = module.get_ProcOfLine(selection.EndLine, out kind);
+
+            return procStart == procEnd
+                ? parentScope + '.' + procStart
+                : null;
+        }
     }
 }

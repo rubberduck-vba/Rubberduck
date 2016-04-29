@@ -448,6 +448,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Context type &apos;{0}&apos; is not valid for {1}..
+        /// </summary>
+        internal static string InvalidContextTypeInspectionFix {
+            get {
+                return ResourceManager.GetString("InvalidContextTypeInspectionFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language opportunities.
         /// </summary>
         internal static string LanguageOpportunities {
@@ -597,6 +606,33 @@ namespace Rubberduck.Inspections {
         internal static string NonReturningFunctionInspectionResultFormat {
             get {
                 return ResourceManager.GetString("NonReturningFunctionInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to As far as Rubberduck can tell, this variable is an object variable, assigned without the &apos;Set&apos; keyword. This causes run-time error 91 &apos;Object or With block variable not set&apos;..
+        /// </summary>
+        internal static string ObjectVariableNotSetInspectionMeta {
+            get {
+                return ResourceManager.GetString("ObjectVariableNotSetInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object variable assignment requires &apos;Set&apos; keyword.
+        /// </summary>
+        internal static string ObjectVariableNotSetInspectionName {
+            get {
+                return ResourceManager.GetString("ObjectVariableNotSetInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object variable &apos;{0}&apos; is assigned without the &apos;Set&apos; keyword.
+        /// </summary>
+        internal static string ObjectVariableNotSetInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ObjectVariableNotSetInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -898,6 +934,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}: {1} - {2}.{3}, line {4}.
+        /// </summary>
+        internal static string QualifiedSelectionInspection {
+            get {
+                return ResourceManager.GetString("QualifiedSelectionInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fix all occurrences in module.
         /// </summary>
         internal static string QuickFix_ThisModule {
@@ -1029,6 +1074,15 @@ namespace Rubberduck.Inspections {
         internal static string SetExplicitVariantReturnTypeQuickFix {
             get {
                 return ResourceManager.GetString("SetExplicitVariantReturnTypeQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use &apos;Set&apos; keyword.
+        /// </summary>
+        internal static string SetObjectVariableQuickFix {
+            get {
+                return ResourceManager.GetString("SetObjectVariableQuickFix", resourceCulture);
             }
         }
         

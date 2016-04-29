@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Nodes;
 using Rubberduck.VBEditor;
 
@@ -71,7 +70,7 @@ namespace Rubberduck.Inspections
             }
 
             var scope = Selection.QualifiedName.ToString();
-            var localScope = scope + "." + context.ambiguousIdentifier().GetText();
+            var localScope = scope + "." + context.identifier().GetText();
             return new ProcedureNode(context, scope, localScope);
         }
 
@@ -83,7 +82,7 @@ namespace Rubberduck.Inspections
             }
 
             var scope = Selection.QualifiedName.ToString();
-            var localScope = scope + "." + context.ambiguousIdentifier().GetText();
+            var localScope = scope + "." + context.identifier().GetText();
             return new ProcedureNode(context, scope, localScope);
         }
     }

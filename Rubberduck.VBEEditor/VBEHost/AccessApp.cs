@@ -1,4 +1,3 @@
-using System.Reflection;
 using Microsoft.Office.Interop.Access;
 
 namespace Rubberduck.VBEditor.VBEHost

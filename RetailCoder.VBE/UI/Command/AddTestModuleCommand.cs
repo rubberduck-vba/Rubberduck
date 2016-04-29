@@ -1,9 +1,7 @@
 using System.Runtime.InteropServices;
-using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.UI.Command
 {
@@ -14,10 +12,12 @@ namespace Rubberduck.UI.Command
     public class AddTestModuleCommand : CommandBase
     {
         private readonly VBE _vbe;
+        private readonly NewUnitTestModuleCommand _command;
 
-        public AddTestModuleCommand(VBE vbe)
+        public AddTestModuleCommand(VBE vbe, NewUnitTestModuleCommand command)
         {
             _vbe = vbe;
+            _command = command;
         }
 
         public override bool CanExecute(object parameter)
@@ -36,8 +36,7 @@ namespace Rubberduck.UI.Command
 
         public override void Execute(object parameter)
         {
-            // legacy static class...
-            NewUnitTestModuleCommand.NewUnitTestModule(_vbe);
+            _command.NewUnitTestModule();
         }
     }
 }

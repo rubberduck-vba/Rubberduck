@@ -202,6 +202,20 @@ namespace Rubberduck.Common.WinAPI
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool KillTimer(IntPtr hWnd, IntPtr uIDEvent);
 
+        /// <summary>
+        /// A helper function that returns <c>true</c> when the specified handle is that of the foreground window.
+        /// </summary>
+        /// <param name="mainWindowHandle">The handle for the VBE's MainWindow.</param>
+        /// <returns></returns>
+        public static bool IsVbeWindowActive(IntPtr mainWindowHandle)
+        {
+            uint vbeThread;
+            GetWindowThreadProcessId(mainWindowHandle, out vbeThread);
 
+            uint hThread;
+            GetWindowThreadProcessId(GetForegroundWindow(), out hThread);
+
+            return (IntPtr)hThread == (IntPtr)vbeThread;
+        }
     }
 }

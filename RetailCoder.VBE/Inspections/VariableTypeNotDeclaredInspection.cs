@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections
             var issues = from item in UserDeclarations
                          where (item.DeclarationType == DeclarationType.Variable
                             || item.DeclarationType == DeclarationType.Constant
-                            || item.DeclarationType == DeclarationType.Parameter)
+                            || (item.DeclarationType == DeclarationType.Parameter && !item.IsArray()))
                          && !item.IsTypeSpecified()
                          select new VariableTypeNotDeclaredInspectionResult(this, item);
 

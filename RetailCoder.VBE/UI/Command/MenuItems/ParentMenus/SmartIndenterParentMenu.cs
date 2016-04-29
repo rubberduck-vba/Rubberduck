@@ -8,6 +8,11 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             : base("SmartIndenterMenu", items)
         {
         }
+
+        public override int DisplayOrder
+        {
+            get { return (int)CodePaneContextMenuItemDisplayOrder.Indenter; }
+        }
     }
 
     public enum SmartIndenterMenuItemDisplayOrder

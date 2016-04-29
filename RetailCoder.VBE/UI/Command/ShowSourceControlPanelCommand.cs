@@ -1,6 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using System.Windows.Input;
-using Rubberduck.UI.SourceControl;
 
 namespace Rubberduck.UI.Command
 {

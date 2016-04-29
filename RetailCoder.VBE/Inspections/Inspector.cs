@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -54,6 +55,7 @@ namespace Rubberduck.Inspections
 
                 await Task.Yield();
 
+                state.OnStatusMessageUpdate(RubberduckUI.CodeInspections_Inspecting);
                 UpdateInspectionSeverity();
                 //OnReset();
 
@@ -84,6 +86,7 @@ namespace Rubberduck.Inspections
                 }
 
                 Task.WaitAll(inspections);
+                state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status)); // should be "Ready"
 
                 return allIssues.ToList();
             }

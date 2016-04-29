@@ -1,4 +1,3 @@
-using Corel.GraphicsSuite.Interop.CorelDRAW;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.VBEHost
@@ -16,7 +15,7 @@ namespace Rubberduck.VBEditor.VBEHost
 		
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {
-            var projectName = qualifiedMemberName.QualifiedModuleName.ProjectName;
+            var projectName = qualifiedMemberName.QualifiedModuleName.ProjectId;
             var memberName = qualifiedMemberName.QualifiedModuleName.ComponentName + "." + qualifiedMemberName.MemberName;
 
             if (Application != null)

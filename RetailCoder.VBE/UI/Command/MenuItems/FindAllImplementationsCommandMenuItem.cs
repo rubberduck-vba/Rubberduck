@@ -11,11 +11,11 @@ namespace Rubberduck.UI.Command.MenuItems
         }
 
         public override string Key { get { return "ContextMenu_GoToImplementation"; } }
-        public override int DisplayOrder { get { return (int)NavigationMenuItemDisplayOrder.FindImplementations; } }
+        public override int DisplayOrder { get { return (int)CodePaneContextMenuItemDisplayOrder.FindAllImplementations; } }
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {
-            return state.Status == ParserState.Ready;
+            return Command.CanExecute(null);
         }
     }
 }

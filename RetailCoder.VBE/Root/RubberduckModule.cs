@@ -29,6 +29,7 @@ using Rubberduck.UI.Controls;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
+using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Root
@@ -61,6 +62,8 @@ namespace Rubberduck.Root
             _kernel.Bind<AddIn>().ToConstant(_addin);
             _kernel.Bind<RubberduckParserState>().ToSelf().InSingletonScope();
             _kernel.Bind<GitProvider>().ToSelf().InSingletonScope();
+            _kernel.Bind<NewUnitTestModuleCommand>().ToSelf().InSingletonScope();
+            _kernel.Bind<NewTestMethodCommand>().ToSelf().InSingletonScope();
             
             BindCodeInspectionTypes();
 
@@ -80,6 +83,8 @@ namespace Rubberduck.Root
             
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();
+            Bind<Func<IIndenterSettings>>().ToMethod(t => () => _kernel.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
+
             Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>().InSingletonScope();
             Rebind<IRubberduckParser>().To<RubberduckParser>().InSingletonScope();
 
@@ -360,7 +365,7 @@ namespace Rubberduck.Root
             {
                 _kernel.Get<CodeExplorerCommandMenuItem>(),
                 _kernel.Get<ToDoExplorerCommandMenuItem>(),
-                _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
+                //_kernel.Get<RegexSearchReplaceCommandMenuItem>(),
                 _kernel.Get<FindSymbolCommandMenuItem>(),
                 _kernel.Get<FindAllReferencesCommandMenuItem>(),
                 _kernel.Get<FindAllImplementationsCommandMenuItem>(),
@@ -385,7 +390,7 @@ namespace Rubberduck.Root
             {
                 GetRefactoringsParentMenu(),
                 GetSmartIndenterParentMenu(),
-                _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
+                //_kernel.Get<RegexSearchReplaceCommandMenuItem>(),
                 _kernel.Get<FindSymbolCommandMenuItem>(),
                 _kernel.Get<FindAllReferencesCommandMenuItem>(),
                 _kernel.Get<FindAllImplementationsCommandMenuItem>(),

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
@@ -6,7 +7,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Command
 {
@@ -36,6 +37,11 @@ namespace Rubberduck.UI.Command
             }
 
             var viewModel = CreateViewModel();
+            if (_viewModel == null)
+            {
+                return;
+            }
+
             _viewModel.AddTab(viewModel);
             _viewModel.SelectedTab = viewModel;
 
@@ -54,17 +60,28 @@ namespace Rubberduck.UI.Command
         {
             var errors = from error in _state.ModuleExceptions
                 let declaration = FindModuleDeclaration(error.Item1)
+                where declaration != null
                 select new SearchResultItem(declaration, error.Item2.GetNavigateCodeEventArgs(declaration), error.Item2.Message);
 
-            var viewModel = new SearchResultsViewModel(_navigateCommand, "Parser Errors", null, errors.ToList());
+            var searchResultItems = errors as IList<SearchResultItem> ?? errors.ToList();
+            var viewModel = new SearchResultsViewModel(_navigateCommand, "Parser Errors", null, searchResultItems);
             return viewModel;
         }
 
         private Declaration FindModuleDeclaration(VBComponent component)
         {
-            return _state.AllUserDeclarations.Single(item => item.ProjectName == component.Collection.Parent.ProjectName()
-                                                             && item.QualifiedName.QualifiedModuleName.Component == component 
-                                                             && (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module));
+            var projectId = component.Collection.Parent.HelpFile;
+
+            var project = _state.AllUserDeclarations.SingleOrDefault(item => 
+                item.DeclarationType == DeclarationType.Project && item.ProjectId == projectId);
+
+            var result = _state.AllUserDeclarations.SingleOrDefault(item => item.ProjectId == component.Collection.Parent.HelpFile
+                                                             && item.QualifiedName.QualifiedModuleName.ComponentName == component.Name
+                                                             && (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule));
+           
+            // FIXME dirty hack for project.Scope in case project is null. Clean up!
+            var declaration = new Declaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name), project, project == null ? null : project.Scope, component.Name, false, false, Accessibility.Global, DeclarationType.ProceduralModule, false);
+            return result ?? declaration; // module isn't in parser state - give it a dummy declaration, just so the ViewModel has something to chew on
         }
     }
 }

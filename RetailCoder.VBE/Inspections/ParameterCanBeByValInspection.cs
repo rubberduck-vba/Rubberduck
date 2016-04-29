@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Threading;
@@ -45,12 +44,9 @@ namespace Rubberduck.Inspections
             var declarations = UserDeclarations.ToList();
 
             IEnumerable<Declaration> interfaceMembers = null;
-            _dispatcher.Invoke(() =>
-            {
-                interfaceMembers = declarations.FindInterfaceMembers()
-                    .Concat(declarations.FindInterfaceImplementationMembers())
-                    .ToList();
-            });
+            interfaceMembers = declarations.FindInterfaceMembers()
+                .Concat(declarations.FindInterfaceImplementationMembers())
+                .ToList();
 
             var formEventHandlerScopes = declarations.FindFormEventHandlers()
                 .Select(handler => handler.Scope);
@@ -74,7 +70,7 @@ namespace Rubberduck.Inspections
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName));
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName));
 
             return issues;
         }

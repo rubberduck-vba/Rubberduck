@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -9,8 +10,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command
 {
@@ -35,6 +34,21 @@ namespace Rubberduck.UI.Command
             _vbe = vbe;
             _viewModel = viewModel;
             _presenterService = presenterService;
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            if (_vbe.ActiveCodePane == null && _state.Status != ParserState.Ready)
+            {
+                return false;
+            }
+
+            // todo: make this work for Code/Project Explorer context menus too (may require a new command implementation)
+            var target = FindTarget(parameter);
+            var canExecute = target != null;
+
+            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
+            return canExecute;
         }
 
         public override void Execute(object parameter)
@@ -99,22 +113,14 @@ namespace Rubberduck.UI.Command
                 return declaration;
             }
 
-            var selection = _vbe.ActiveCodePane.GetSelection();
-            if (!selection.Equals(default(QualifiedSelection)))
-            {
-                declaration = _state.AllDeclarations
-                    .SingleOrDefault(item =>
-                        IsSelectedDeclaration(selection, item) ||
-                        item.References.Any(reference => IsSelectedReference(selection, reference)));
-            }
-            return declaration;
+            return _state.FindSelectedDeclaration(_vbe.ActiveCodePane);
         }
 
         private IEnumerable<Declaration> FindImplementations(Declaration target)
         {
             var items = _state.AllDeclarations;
             string name;
-            var implementations = (target.DeclarationType == DeclarationType.Class
+            var implementations = (target.DeclarationType == DeclarationType.ClassModule
                 ? FindAllImplementationsOfClass(target, items, out name)
                 : FindAllImplementationsOfMember(target, items, out name)) ?? new List<Declaration>();
 
@@ -123,7 +129,7 @@ namespace Rubberduck.UI.Command
 
         private IEnumerable<Declaration> FindAllImplementationsOfClass(Declaration target, IEnumerable<Declaration> declarations, out string name)
         {
-            if (target.DeclarationType != DeclarationType.Class)
+            if (target.DeclarationType != DeclarationType.ClassModule)
             {
                 name = string.Empty;
                 return null;
@@ -165,18 +171,6 @@ namespace Rubberduck.UI.Command
             name = member.ComponentName + "." + member.IdentifierName;
             return items.FindInterfaceImplementationMembers(member.IdentifierName)
                    .Where(item => item.IdentifierName == member.ComponentName + "_" + member.IdentifierName);
-        }
-
-        private static bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
-        {
-            return declaration.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName)
-                   && declaration.QualifiedSelection.Selection.ContainsFirstCharacter(selection.Selection);
-        }
-
-        private static bool IsSelectedReference(QualifiedSelection selection, IdentifierReference reference)
-        {
-            return reference.QualifiedModuleName.Equals(selection.QualifiedName)
-                   && reference.Selection.ContainsFirstCharacter(selection.Selection);
         }
     }
 }

@@ -137,7 +137,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private async void ExecuteRefreshCommandAsync(object parameter)
         {
-            CanRefresh = _vbe.HostApplication() != null;
+            CanRefresh = _vbe.HostApplication() != null && _state.IsDirty();
             if (!CanRefresh)
             {
                 return;
@@ -164,6 +164,7 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             Debug.WriteLine("Running code inspections...");
+            IsBusy = true;
             var results = await _inspector.FindIssuesAsync(_state, CancellationToken.None);
             _dispatcher.Invoke(() =>
             {

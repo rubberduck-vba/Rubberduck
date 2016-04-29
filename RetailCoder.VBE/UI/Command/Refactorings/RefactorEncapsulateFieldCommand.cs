@@ -1,13 +1,10 @@
 ﻿using System.Diagnostics;
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -16,8 +13,8 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
 
-        public RefactorEncapsulateFieldCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor)
-            : base(vbe, editor)
+        public RefactorEncapsulateFieldCommand(VBE vbe, RubberduckParserState state)
+            : base(vbe)
         {
             _state = state;
         }
@@ -30,10 +27,11 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = pane.GetSelection();
-            var target = _state.AllUserDeclarations.FindTarget(selection, new[] {DeclarationType.Variable,});
+            var target = _state.FindSelectedDeclaration(pane);
 
-            var canExecute = target != null && !target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
+            var canExecute = target != null 
+                && target.DeclarationType == DeclarationType.Variable
+                && !target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
 
             Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;
@@ -48,8 +46,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
             using (var view = new EncapsulateFieldDialog())
             {
-                var factory = new EncapsulateFieldPresenterFactory(_state, Editor, view);
-                var refactoring = new EncapsulateFieldRefactoring(factory, Editor);
+                var factory = new EncapsulateFieldPresenterFactory(Vbe, _state, view);
+                var refactoring = new EncapsulateFieldRefactoring(Vbe, factory);
                 refactoring.Refactor();
             }
         }

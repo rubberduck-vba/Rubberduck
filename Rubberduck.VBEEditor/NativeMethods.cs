@@ -8,8 +8,10 @@ namespace Rubberduck.VBEditor
     /// <summary>
     /// Collection of WinAPI methods and extensions to handle native windows.
     /// </summary>
-    // Special Thank You to Carlos Quintero for supplying the project with the original code this file is based on.
-    public static class NativeWindowMethods
+    /// <remarks>
+    /// **Special Thanks** to Carlos Quintero for supplying the project with the original code this file is based on.
+    /// </remarks>
+    public static class NativeMethods
     {
         /// <summary>   Sends a message to the OS. </summary>
         ///
