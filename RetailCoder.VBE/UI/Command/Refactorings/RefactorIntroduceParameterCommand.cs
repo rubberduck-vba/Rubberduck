@@ -1,4 +1,7 @@
-﻿using Microsoft.Vbe.Interop;
+﻿using System.Diagnostics;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Common;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.IntroduceParameter;
 using Rubberduck.VBEditor;
@@ -8,14 +11,11 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorIntroduceParameterCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IntroduceParameterRefactoring _refactoring;
-        private QualifiedSelection _qualifiedSelection;
 
         public RefactorIntroduceParameterCommand (VBE vbe, RubberduckParserState state)
             :base(vbe)
         {
             _state = state;
-            _refactoring = new IntroduceParameterRefactoring(Vbe, _state, new MessageBox());
         }
 
         public override bool CanExecute(object parameter)
@@ -25,21 +25,30 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var qualifiedSelection = Vbe.ActiveCodePane.GetQualifiedSelection();
-
-            if (qualifiedSelection == null)
+            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
+            if (!selection.HasValue)
             {
                 return false;
             }
 
-            _qualifiedSelection = qualifiedSelection.Value;
+            var target = _state.AllUserDeclarations.FindVariable(selection.Value);
 
-            return _refactoring.CanExecute(_qualifiedSelection);
+            var canExecute = target != null && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
+
+            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
+            return canExecute;
         }
 
         public override void Execute(object parameter)
         {
-            _refactoring.Refactor(_qualifiedSelection);
+            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
+            if (!selection.HasValue)
+            {
+                return;
+            }
+
+            var refactoring = new IntroduceParameterRefactoring(Vbe, _state, new MessageBox());
+            refactoring.Refactor(selection.Value);
         }
     }
 }
