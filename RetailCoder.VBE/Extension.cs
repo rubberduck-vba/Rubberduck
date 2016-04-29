@@ -1,15 +1,15 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using Extensibility;
+﻿using Extensibility;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Factory;
 using Rubberduck.Root;
 using Rubberduck.UI;
-using System.Reflection;
+using System;
+using System.ComponentModel;
 using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace Rubberduck
 {
@@ -24,6 +24,7 @@ namespace Rubberduck
         private const string ProgId = "Rubberduck.Extension";
 
         private readonly IKernel _kernel = new StandardKernel(new FuncModule());
+        private App _app;
 
         public void OnAddInsUpdate(ref Array custom)
         {
@@ -40,11 +41,9 @@ namespace Rubberduck
             {
                 var currentDomain = AppDomain.CurrentDomain;
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
-
                 _kernel.Load(new RubberduckModule(_kernel, (VBE)Application, (AddIn)AddInInst));
-
-                var app = _kernel.Get<App>();
-                app.Startup();
+                _app = _kernel.Get<App>();
+                _app.Startup();
             }
             catch (Exception exception)
             {
@@ -70,6 +69,7 @@ namespace Rubberduck
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
         {
+            _app.Shutdown();
             _kernel.Dispose();
         }
     }
