@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Rubberduck
@@ -126,6 +127,14 @@ namespace Rubberduck
             CleanReloadConfig();
             _appMenus.Initialize();
             _appMenus.Localize();
+            Task.Delay(1000).ContinueWith(t =>
+            {
+                // run this on UI thread
+                UiDispatcher.Invoke(() =>
+                {
+                    _parser.State.OnParseRequested(this);
+                });
+            }).ConfigureAwait(false);
             _hooks.HookHotkeys();
         }
 
