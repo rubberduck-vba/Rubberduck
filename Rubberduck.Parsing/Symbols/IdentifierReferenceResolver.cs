@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Antlr4.Runtime;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
@@ -639,8 +640,24 @@ namespace Rubberduck.Parsing.Symbols
                 var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType, accessor, hasExplicitLetStatement, isTarget)
                              ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType, accessor, hasExplicitLetStatement, isTarget);
 
+                if (member == null && parent != null)
+                {
+                    var parentComTypeName = string.Empty;
+                    var property = parent.QualifiedName.QualifiedModuleName.Component.Properties.Item("Parent");
+                    if (property != null)
+                    {
+                        parentComTypeName = ComHelper.GetTypeName(property.Object);
+                    }
+
+                    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
+                    parentType = _declarationFinder.FindClass(_moduleDeclaration.ParentDeclaration, parentComTypeName);
+                    member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType, accessor, hasExplicitLetStatement, isTarget)
+                                 ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType, accessor, hasExplicitLetStatement, isTarget);
+                }
+
                 if (member == null)
                 {
+                    // if member still can't be found, it's hopeless
                     return null;
                 }
 
@@ -724,15 +741,33 @@ namespace Rubberduck.Parsing.Symbols
                               ?? ResolveInternal(context.identifier(), parentType);
                 parentType = ResolveType(parentScope);
             }
-            if (parentType == null)
-            {
-                return;
-            }
 
             var identifierContext = context.identifier();
-            var member = _declarationFinder.MatchName(identifierContext.GetText())
-                .SingleOrDefault(item => item.QualifiedName.QualifiedModuleName == parentType.QualifiedName.QualifiedModuleName
-                && item.DeclarationType != DeclarationType.Event);
+            Declaration member = null;
+            if (parentType != null)
+            {
+                member = _declarationFinder
+                    .MatchName(identifierContext.GetText())
+                    .SingleOrDefault(item => 
+                        item.QualifiedName.QualifiedModuleName == parentType.QualifiedName.QualifiedModuleName
+                        && item.DeclarationType != DeclarationType.Event);
+            }
+            else
+            {
+                if (parentScope != null)
+                {
+                    var parentComTypeName = string.Empty;
+                    var property = parentScope.QualifiedName.QualifiedModuleName.Component.Properties.Item("Parent");
+                    if (property != null)
+                    {
+                        parentComTypeName = ComHelper.GetTypeName(property.Object);
+                    }
+
+                    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
+                    parentType = _declarationFinder.FindClass(_moduleDeclaration.ParentDeclaration, parentComTypeName);
+                    member = ResolveInternal(identifierContext, parentType);
+                }
+            }
 
             if (member != null)
             {
@@ -741,6 +776,10 @@ namespace Rubberduck.Parsing.Symbols
                 parentScope.AddMemberCall(CreateReference(context.identifier(), member));
                 member.AddReference(reference);
                 _alreadyResolved.Add(reference.Context);
+            }
+            else
+            {
+                return;
             }
 
             var fieldCall = context.dictionaryCallStmt();
@@ -820,6 +859,21 @@ namespace Rubberduck.Parsing.Symbols
 
                 var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parent)
                           ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parent);
+
+                if (member == null && parent != null)
+                {
+                    var parentComTypeName = string.Empty;
+                    var property = parent.QualifiedName.QualifiedModuleName.Component.Properties.Item("Parent");
+                    if (property != null)
+                    {
+                        parentComTypeName = ComHelper.GetTypeName(property.Object);
+                    }
+
+                    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
+                    var parentType = _declarationFinder.FindClass(null, parentComTypeName);
+                    member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType)
+                                    ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType);
+                }
 
                 if (member == null)
                 {
@@ -1156,9 +1210,15 @@ namespace Rubberduck.Parsing.Symbols
 
         private bool IsStaticClass(Declaration declaration)
         {
-            return declaration.ParentDeclaration != null
+            var isDocumentOrForm = !declaration.IsBuiltIn &&
+                (declaration.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_Document
+                ||
+                declaration.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_MSForm);
+
+            return isDocumentOrForm || (declaration.ParentDeclaration != null
                    && declaration.ParentDeclaration.DeclarationType == DeclarationType.ClassModule
-                   && (declaration.ParentDeclaration.HasPredeclaredId || declaration.IsBuiltIn);
+                   && declaration.ParentDeclaration.HasPredeclaredId);
+
         }
 
         private readonly IReadOnlyList<string> SpecialCasedTokens = new[]{
@@ -1191,7 +1251,7 @@ namespace Rubberduck.Parsing.Symbols
                 item.DeclarationType == DeclarationType.Project
                 || item.DeclarationType == DeclarationType.ProceduralModule
                 || IsPublicEnum(item)
-                || IsStaticClass(item)
+                || IsStaticClass(item) 
                 || IsStdModuleMember(item)
                 || (item.ParentScopeDeclaration != null && item.ParentScopeDeclaration.Equals(localScope))).ToList();
 

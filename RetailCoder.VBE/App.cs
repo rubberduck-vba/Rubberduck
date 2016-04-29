@@ -17,6 +17,7 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck
 {
@@ -102,17 +103,26 @@ namespace Rubberduck
         }
 
         private ParserState _lastStatus;
+        private Declaration _lastSelectedDeclaration;
+
         private void RefreshSelection()
         {
-            _stateBar.SetSelectionText(_parser.State.FindSelectedDeclaration(_vbe.ActiveCodePane));
+            var selectedDeclaration = _parser.State.FindSelectedDeclaration(_vbe.ActiveCodePane);
+            _stateBar.SetSelectionText(selectedDeclaration);
 
             var currentStatus = _parser.State.Status;
-            if (_lastStatus != currentStatus)
+            if (ShouldEvaluateCanExecute(selectedDeclaration, currentStatus))
             {
                 _appMenus.EvaluateCanExecute(_parser.State);
             }
 
             _lastStatus = currentStatus;
+            _lastSelectedDeclaration = selectedDeclaration;
+        }
+
+        private bool ShouldEvaluateCanExecute(Declaration selectedDeclaration, ParserState currentStatus)
+        {
+            return _lastStatus != currentStatus || (selectedDeclaration != null && !selectedDeclaration.Equals(_lastSelectedDeclaration));
         }
 
         private void _configService_SettingsChanged(object sender, EventArgs e)
