@@ -453,7 +453,7 @@
     <value>Übergebe Parameter als Wert</value>
   </data>
   <data name="QuickFixUseTypedFunction_" xml:space="preserve">
-    <value>Ändere '{0}$' zu '{0}'</value>
+    <value>Ändere '{0}' zu '{0}$'</value>
   </data>
   <data name="QuickFix_ThisModule" xml:space="preserve">
     <value>Verarbeite alle Vorkommen im Modul</value>
