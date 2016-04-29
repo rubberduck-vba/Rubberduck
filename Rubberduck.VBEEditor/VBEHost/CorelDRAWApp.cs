@@ -1,4 +1,3 @@
-using Corel.GraphicsSuite.Interop.CorelDRAW;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.VBEHost

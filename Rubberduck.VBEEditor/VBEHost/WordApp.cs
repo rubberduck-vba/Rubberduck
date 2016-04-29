@@ -1,4 +1,3 @@
-using Microsoft.Office.Interop.Word;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.VBEHost

@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor
 {

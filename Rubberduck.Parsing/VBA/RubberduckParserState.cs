@@ -11,9 +11,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -587,13 +585,18 @@ namespace Rubberduck.Parsing.VBA
 
         public Declaration FindSelectedDeclaration(CodePane activeCodePane, bool procedureLevelOnly = false)
         {
-            var selection = activeCodePane.GetSelection();
+            var selection = activeCodePane.GetQualifiedSelection();
             if (selection.Equals(_lastSelection))
             {
                 return _selectedDeclaration;
             }
 
-            _lastSelection = selection;
+            if (selection == null)
+            {
+                return _selectedDeclaration;
+            }
+
+            _lastSelection = selection.Value;
             _selectedDeclaration = null;
 
             if (!selection.Equals(default(QualifiedSelection)))
@@ -603,8 +606,8 @@ namespace Rubberduck.Parsing.VBA
                                    item.DeclarationType != DeclarationType.ModuleOption &&
                                    item.DeclarationType != DeclarationType.ClassModule &&
                                    item.DeclarationType != DeclarationType.ProceduralModule &&
-                                   (IsSelectedDeclaration(selection, item) ||
-                                    item.References.Any(reference => IsSelectedReference(selection, reference))))
+                                   (IsSelectedDeclaration(selection.Value, item) ||
+                                    item.References.Any(reference => IsSelectedReference(selection.Value, reference))))
                     .ToList();
                 try
                 {
@@ -622,11 +625,11 @@ namespace Rubberduck.Parsing.VBA
 
                         // ambiguous (?), or no match - make the module be the current selection
                         match = match ?? AllUserDeclarations.SingleOrDefault(item =>
-                                    (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule)
-                                && item.QualifiedName.QualifiedModuleName.Equals(selection.QualifiedName));
+                            (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule)
+                            && item.QualifiedName.QualifiedModuleName.Equals(selection.Value.QualifiedName));
 
-                    _selectedDeclaration = match;
-                }
+                        _selectedDeclaration = match;
+                    }
                 }
                 catch (InvalidOperationException exception)
                 {

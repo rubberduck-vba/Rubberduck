@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -12,42 +13,54 @@ namespace Rubberduck.Refactorings.ImplementInterface
 {
     public class ImplementInterfaceRefactoring : IRefactoring
     {
-        private readonly List<Declaration> _declarations;
-        private readonly IActiveCodePaneEditor _editor;
+        private readonly VBE _vbe;
+        private readonly RubberduckParserState _state;
+        private readonly IMessageBox _messageBox;
+
+        private List<Declaration> _declarations;
         private Declaration _targetInterface;
         private Declaration _targetClass;
-        private readonly IMessageBox _messageBox;
 
         private const string MemberBody = "    Err.Raise 5 'TODO implement interface member";
 
-        public ImplementInterfaceRefactoring(RubberduckParserState state, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public ImplementInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
         {
-            _declarations = state.AllDeclarations.ToList();
-            _editor = editor;
+            _vbe = vbe;
+            _state = state;
+            _declarations = state.AllUserDeclarations.ToList();
             _messageBox = messageBox;
+        }
+
+        public bool CanExecute(QualifiedSelection selection)
+        {
+            CalculateTargets(selection);
+
+            return _targetClass != null && _targetInterface != null;
         }
 
         public void Refactor()
         {
-            var selection = _editor.GetSelection();
-
-            if (!selection.HasValue)
+            if (_vbe.ActiveCodePane == null)
             {
                 _messageBox.Show(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption,
                     System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
                 return;
             }
 
-            Refactor(selection.Value);
+            var qualifiedSelection = _vbe.ActiveCodePane.GetQualifiedSelection();
+            if (!qualifiedSelection.HasValue)
+            {
+                _messageBox.Show(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption,
+                    System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            Refactor(qualifiedSelection.Value);
         }
 
         public void Refactor(QualifiedSelection selection)
         {
-            _targetInterface = _declarations.FindInterface(selection);
-
-            _targetClass = _declarations.SingleOrDefault(d =>
-                        !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
-                        d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
+            CalculateTargets(selection);
 
             if (_targetClass == null || _targetInterface == null)
             {
@@ -62,6 +75,17 @@ namespace Rubberduck.Refactorings.ImplementInterface
         public void Refactor(Declaration target)
         {
             throw new NotImplementedException();
+        }
+
+        private void CalculateTargets(QualifiedSelection selection)
+        {
+            _declarations = _state.AllUserDeclarations.ToList();
+
+            _targetInterface = _declarations.FindInterface(selection);
+
+            _targetClass = _declarations.SingleOrDefault(d =>
+                        !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
+                        d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
         }
 
         private void ImplementMissingMembers()
@@ -167,8 +191,6 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private List<Parameter> GetParameters(Declaration member)
         {
-            var parameters1 = _declarations.Where(item => item.DeclarationType == DeclarationType.Parameter &&
-                                                         item.ParentScope == member.Scope);
             var parameters = _declarations.Where(item => item.DeclarationType == DeclarationType.Parameter &&
                               item.ParentScopeDeclaration == member)
                            .OrderBy(o => o.Selection.StartLine)

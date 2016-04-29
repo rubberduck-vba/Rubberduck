@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 

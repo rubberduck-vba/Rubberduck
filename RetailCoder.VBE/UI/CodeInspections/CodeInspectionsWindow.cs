@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows.Forms;
-using Rubberduck.Inspections;
-using Rubberduck.Properties;
+﻿using System.Windows.Forms;
 
 namespace Rubberduck.UI.CodeInspections
 {

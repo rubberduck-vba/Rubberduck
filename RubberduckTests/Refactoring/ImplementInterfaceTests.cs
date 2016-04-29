@@ -1,4 +1,4 @@
-﻿using Microsoft.Vbe.Interop;
+using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.VBA;
@@ -6,7 +6,6 @@ using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
@@ -45,7 +44,6 @@ End Sub
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -60,7 +58,7 @@ End Sub
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -98,7 +96,6 @@ End Sub
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -113,7 +110,7 @@ End Sub
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -151,7 +148,6 @@ End Function
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -166,7 +162,7 @@ End Function
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -204,7 +200,6 @@ End Function
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -219,7 +214,7 @@ End Function
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -257,7 +252,6 @@ End Function
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -272,7 +266,7 @@ End Function
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -310,7 +304,6 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -325,7 +318,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -363,7 +356,6 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -378,7 +370,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -416,7 +408,6 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -431,7 +422,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -469,7 +460,6 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -484,7 +474,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -522,7 +512,6 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -537,7 +526,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -575,7 +564,6 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -590,7 +578,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -628,7 +616,6 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -643,7 +630,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -702,7 +689,6 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
 
-            var codePaneFactory = new CodePaneWrapperFactory();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
@@ -717,7 +703,7 @@ End Property
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
-            var refactoring = new ImplementInterfaceRefactoring(parser.State, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert

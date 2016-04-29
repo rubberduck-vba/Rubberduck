@@ -7,7 +7,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using ParserState = Rubberduck.Parsing.VBA.ParserState;
 
 namespace Rubberduck.UI.Command.MenuItems
@@ -50,8 +49,8 @@ namespace Rubberduck.UI.Command.MenuItems
         {
             if (declaration == null && _vbe.ActiveCodePane != null)
             {
-                var selection = _vbe.ActiveCodePane.GetSelection();
-                SetSelectionText(selection);
+                var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
+                if (selection.HasValue) { SetSelectionText(selection.Value); }
                 _selectionButton.TooltipText = _selectionButton.Caption;
             }
             else if (declaration != null && !declaration.IsBuiltIn && declaration.DeclarationType != DeclarationType.ClassModule && declaration.DeclarationType != DeclarationType.ProceduralModule)
@@ -67,12 +66,15 @@ namespace Rubberduck.UI.Command.MenuItems
             }
             else if (declaration != null)
             {
-                var selection = _vbe.ActiveCodePane.GetSelection();
-                _selectionButton.Caption = string.Format("{0}: {1} ({2}) {3}",
-                    declaration.QualifiedName.QualifiedModuleName,
-                    declaration.IdentifierName,
-                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType),
-                    selection.Selection);
+                var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
+                if (selection.HasValue)
+                {
+                    _selectionButton.Caption = string.Format("{0}: {1} ({2}) {3}",
+                        declaration.QualifiedName.QualifiedModuleName,
+                        declaration.IdentifierName,
+                        RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType),
+                        selection.Value.Selection);
+                }
                 _selectionButton.TooltipText = string.IsNullOrEmpty(declaration.DescriptionString)
                     ? _selectionButton.Caption
                     : declaration.DescriptionString;
