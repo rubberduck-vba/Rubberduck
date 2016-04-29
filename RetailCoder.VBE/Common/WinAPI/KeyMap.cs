@@ -1,12 +1,9 @@
 ﻿using System.Globalization;
-using System.Windows.Forms;
 
-namespace RawInput_dll
+namespace Rubberduck.Common.WinAPI
 {
-    public static class KeyMapper
+    public static class KeyMap
     {
-        // I prefer to have control over the key mapping
-        // This mapping could be loading from file to allow mapping changes without a recompile
         public  static string GetKeyName(int value)
         {
             switch (value)
@@ -28,7 +25,6 @@ namespace RawInput_dll
                 case 0x43: return "C";
                 case 3: return "Cancel";
                 case 20: return "Capital";
-                //case 20:      return "CapsLock";
                 case 12: return "Clear";
                 case 0x20000: return "Control";
                 case 0x11: return "ControlKey";
@@ -84,7 +80,6 @@ namespace RawInput_dll
                 case 0x47: return "G";
                 case 0x48: return "H";
                 case 0x15: return "HanguelMode";
-                //case 0x15:    return "HangulMode";
                 case 0x19: return "HanjaMode";
                 case 0x2f: return "Help";
                 case 0x24: return "Home";
@@ -97,8 +92,6 @@ namespace RawInput_dll
                 case 0x4a: return "J";
                 case 0x17: return "JunjaMode";
                 case 0x4b: return "K";
-                //case 0x15:    return "KanaMode";
-                //case 0x19:    return "KanjiMode";
                 case 0xffff: return "KeyCode";
                 case 0x4c: return "L";
                 case 0xb6: return "LaunchApplication1";
@@ -118,7 +111,6 @@ namespace RawInput_dll
                 case 0xb1: return "MediaPreviousTrack";
                 case 0xb2: return "MediaStop";
                 case 0x12: return "Menu";
-                // case 65536:  return "Modifiers";
                 case 0x6a: return "Multiply";
                 case 0x4e: return "N";
                 case 0x22: return "Next";
@@ -152,8 +144,6 @@ namespace RawInput_dll
                 case 0xc0: return "Oemtilde";
                 case 80: return "P";
                 case 0xfd: return "Pa1";
-                // case 0x22:   return "PageDown";
-                // case 0x21:   return "PageUp";
                 case 0x13: return "Pause";
                 case 250: return "Play";
                 case 0x2a: return "Print";
@@ -164,7 +154,6 @@ namespace RawInput_dll
                 case 0x52: return "R";
                 case 2: return "RButton";
                 case 0xa3: return "RControl";
-                //case 13:      return "Return";
                 case 0x27: return "Right";
                 case 0xa5: return "RMenu";
                 case 0xa1: return "RShift";
@@ -176,7 +165,6 @@ namespace RawInput_dll
                 case 0x6c: return "Separator";
                 case 0x10000: return "Shift";
                 case 0x10: return "ShiftKey";
-                //case 0x2c:    return "Snapshot";
                 case 0x20: return "Space";
                 case 0x6d: return "Subtract";
                 case 0x54: return "T";
@@ -195,14 +183,7 @@ namespace RawInput_dll
                 case 90: return "Z";
                 case 0xfb: return "Zoom";
             }
-
             return value.ToString(CultureInfo.InvariantCulture).ToUpper();
-        }
-
-        // If you prefer the virtualkey converted into a Microsoft virtualkey code use this
-        public static string GetMicrosoftKeyName(int virtualKey)
-        {
-            return new KeysConverter().ConvertToString(virtualKey);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RawInput_dll
+namespace Rubberduck.Common.WinAPI
 {
     public interface IRawDevice
     {

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace RawInput_dll
+namespace Rubberduck.Common.WinAPI
 {
     public class PreMessageFilter : IMessageFilter
     {

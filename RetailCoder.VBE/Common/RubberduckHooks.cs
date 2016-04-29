@@ -8,7 +8,6 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Common.WinAPI;
 using Rubberduck.Settings;
-using RawInput_dll;
 
 namespace Rubberduck.Common
 {
@@ -51,12 +50,12 @@ namespace Rubberduck.Common
 
             var kb = (RawKeyboard)_rawinput.CreateKeyboard();
             _rawinput.AddDevice(kb);
-            kb.KeyPressed += Kb_KeyPressed;
+            kb.RawKeyInputReceived += Keyboard_RawKeyboardInputReceived;
             _kb = kb;
 
             var mouse = (RawMouse)_rawinput.CreateMouse();
             _rawinput.AddDevice(mouse);
-            mouse.OnMouseClick += Mouse_OnMouseClick;
+            mouse.RawMouseInputReceived += Mouse_RawMouseInputReceived;
             _mouse = mouse;
 
             foreach (var hotkey in settings.Where(hotkey => hotkey.IsEnabled))
@@ -66,17 +65,17 @@ namespace Rubberduck.Common
             Attach();
         }
 
-        private void Mouse_OnMouseClick(object sender, MouseClickEventArgs e)
+        private void Mouse_RawMouseInputReceived(object sender, RawMouseEventArgs e)
         {
-            if ( e.MouseClickEvent.ulButtons.HasFlag(UsButtonFlags.RI_MOUSE_LEFT_BUTTON_UP) || e.MouseClickEvent.ulButtons.HasFlag(UsButtonFlags.RI_MOUSE_RIGHT_BUTTON_UP))
+            if (e.UlButtons.HasFlag(UsButtonFlags.RI_MOUSE_LEFT_BUTTON_UP) || e.UlButtons.HasFlag(UsButtonFlags.RI_MOUSE_RIGHT_BUTTON_UP))
             {
                 MessageReceived(this, HookEventArgs.Empty);
             }
         }
 
-        private void Kb_KeyPressed(object sender, KeyPressEventArgs e)
+        private void Keyboard_RawKeyboardInputReceived(object sender, RawKeyEventArgs e)
         {
-            if (e.KeyPressEvent.Message == Win32.WM_KEYUP)
+            if (e.Message == WM.KEYUP)
             {
                 MessageReceived(this, HookEventArgs.Empty);
             }

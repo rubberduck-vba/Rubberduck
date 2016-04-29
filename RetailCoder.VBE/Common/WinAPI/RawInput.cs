@@ -3,8 +3,9 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using Rubberduck.Common.WinAPI;
 
-namespace RawInput_dll
+namespace Rubberduck.Common.WinAPI
 {
     public class RawInput : NativeWindow
     {
@@ -38,14 +39,20 @@ namespace RawInput_dll
 
         public void AddMessageFilter()
         {
-            if (null != _filter) return;
+            if (null != _filter)
+            {
+                return;
+            }
             _filter = new PreMessageFilter();
             Application.AddMessageFilter(_filter);
         }
 
         private void RemoveMessageFilter()
         {
-            if (null == _filter) return;
+            if (null == _filter)
+            {
+                return;
+            }
             Application.RemoveMessageFilter(_filter);
         }
 
@@ -61,7 +68,7 @@ namespace RawInput_dll
             {
                 mem = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(BroadcastDeviceInterface)));
                 Marshal.StructureToPtr(bdi, mem, false);
-                usbNotifyHandle = Win32.RegisterDeviceNotification(parent, mem, DeviceNotification.DEVICE_NOTIFY_WINDOW_HANDLE);
+                usbNotifyHandle = User32.RegisterDeviceNotification(parent, mem, DeviceNotification.DEVICE_NOTIFY_WINDOW_HANDLE);
             }
             catch (Exception e)
             {
@@ -83,9 +90,9 @@ namespace RawInput_dll
 
         protected override void WndProc(ref Message message)
         {
-            switch (message.Msg)
+            switch ((WM)message.Msg)
             {
-                case Win32.WM_INPUT:
+                case WM.INPUT:
                     {
                         foreach (var device in _devices)
                         {
@@ -94,7 +101,7 @@ namespace RawInput_dll
                     }
                     break;
 
-                case Win32.WM_USB_DEVICECHANGE:
+                case WM.DEVICECHANGE:
                     {
                         Debug.WriteLine("USB Device Arrival / Removal");
                         foreach (var device in _devices)
@@ -110,7 +117,7 @@ namespace RawInput_dll
 
         ~RawInput()
         {
-            Win32.UnregisterDeviceNotification(_devNotifyHandle);
+            User32.UnregisterDeviceNotification(_devNotifyHandle);
             RemoveMessageFilter();
         }
     }

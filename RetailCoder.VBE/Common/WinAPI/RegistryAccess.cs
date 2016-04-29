@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 
-namespace RawInput_dll
+namespace Rubberduck.Common.WinAPI
 {
     static internal class RegistryAccess
     {
