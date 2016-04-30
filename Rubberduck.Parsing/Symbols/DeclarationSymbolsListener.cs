@@ -256,7 +256,6 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-
             var name = context.identifier().GetText();
             var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.Procedure, context, context.identifier().GetSelection());
             OnNewDeclaration(declaration);
@@ -282,7 +281,6 @@ namespace Rubberduck.Parsing.Symbols
             var asTypeName = asTypeClause == null
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
-
             var declaration = CreateDeclaration(name, asTypeName, accessibility, DeclarationType.Function, context, context.identifier().GetSelection());
             OnNewDeclaration(declaration);
             SetCurrentScope(declaration, name);
@@ -307,7 +305,6 @@ namespace Rubberduck.Parsing.Symbols
             var asTypeName = asTypeClause == null
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
-
             var declaration = CreateDeclaration(name, asTypeName, accessibility, DeclarationType.PropertyGet, context, context.identifier().GetSelection());
 
             OnNewDeclaration(declaration);
@@ -399,7 +396,6 @@ namespace Rubberduck.Parsing.Symbols
                                     ? Tokens.Variant
                                     : asTypeClause.type().GetText()
                                 : null;
-
             var selection = nameContext.GetSelection();
 
             var declarationType = hasReturnType
@@ -426,7 +422,6 @@ namespace Rubberduck.Parsing.Symbols
                 var asTypeName = asTypeClause == null
                     ? Tokens.Variant
                     : asTypeClause.type().GetText();
-
                 var identifier = argContext.identifier();
                 if (identifier == null)
                 {
@@ -456,11 +451,10 @@ namespace Rubberduck.Parsing.Symbols
             var asTypeName = asTypeClause == null
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
-
             var withEvents = parent.WITHEVENTS() != null;
             var selfAssigned = asTypeClause != null && asTypeClause.NEW() != null;
 
-            OnNewDeclaration(CreateDeclaration(name, asTypeName, accessibility, DeclarationType.Variable, context, context.identifier().GetSelection(), selfAssigned, withEvents));
+            OnNewDeclaration(CreateDeclaration(name, asTypeName,  accessibility, DeclarationType.Variable, context, context.identifier().GetSelection(), selfAssigned, withEvents));
         }
 
         public override void EnterConstSubStmt(VBAParser.ConstSubStmtContext context)
@@ -472,7 +466,6 @@ namespace Rubberduck.Parsing.Symbols
             var asTypeName = asTypeClause == null
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
-
             var identifier = context.identifier();
             if (identifier == null)
             {
@@ -512,7 +505,6 @@ namespace Rubberduck.Parsing.Symbols
             var asTypeName = asTypeClause == null
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
-
             OnNewDeclaration(CreateDeclaration(context.identifier().GetText(), asTypeName, Accessibility.Implicit, DeclarationType.UserDefinedTypeMember, context, context.identifier().GetSelection()));
         }
 

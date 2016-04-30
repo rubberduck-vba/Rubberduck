@@ -1,3 +1,4 @@
+using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
@@ -101,7 +102,12 @@ namespace Rubberduck.Parsing.Symbols
         {
             _resolver.ExitWithBlock();
         }
-        
+
+        public override void EnterExplicitCallStmt([NotNull] VBAParser.ExplicitCallStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
         public override void EnterICS_B_ProcedureCall(VBAParser.ICS_B_ProcedureCallContext context)
         {
             _resolver.Resolve(context);

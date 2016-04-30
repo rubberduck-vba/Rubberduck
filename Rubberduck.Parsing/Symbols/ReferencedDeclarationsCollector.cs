@@ -18,6 +18,7 @@ using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 using Rubberduck.Parsing.Annotations;
+using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -227,21 +228,21 @@ namespace Rubberduck.Parsing.Symbols
         {
             IntPtr memberDescriptorPointer;
             info.GetFuncDesc(memberIndex, out memberDescriptorPointer);
-            memberDescriptor = (FUNCDESC) Marshal.PtrToStructure(memberDescriptorPointer, typeof (FUNCDESC));
+            memberDescriptor = (FUNCDESC)Marshal.PtrToStructure(memberDescriptorPointer, typeof(FUNCDESC));
 
             if (memberDescriptor.callconv != CALLCONV.CC_STDCALL)
             {
                 memberDescriptor = new FUNCDESC();
-                memberNames = new string[] {};
+                memberNames = new string[] { };
                 return null;
             }
 
             memberNames = new string[255];
             int namesArrayLength;
             info.GetNames(memberDescriptor.memid, memberNames, 255, out namesArrayLength);
-            
+
             var memberName = memberNames[0];
-            var funcValueType = (VarEnum) memberDescriptor.elemdescFunc.tdesc.vt;
+            var funcValueType = (VarEnum)memberDescriptor.elemdescFunc.tdesc.vt;
             var memberDeclarationType = GetDeclarationType(memberDescriptor, funcValueType, typeKind);
 
             var asTypeName = string.Empty;
@@ -251,7 +252,7 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     try
                     {
-                        var asTypeDesc = (TYPEDESC) Marshal.PtrToStructure(memberDescriptor.elemdescFunc.tdesc.lpValue, typeof (TYPEDESC));
+                        var asTypeDesc = (TYPEDESC)Marshal.PtrToStructure(memberDescriptor.elemdescFunc.tdesc.lpValue, typeof(TYPEDESC));
                         asTypeName = GetTypeName(asTypeDesc, info);
                     }
                     catch
@@ -264,7 +265,6 @@ namespace Rubberduck.Parsing.Symbols
                     asTypeName = funcValueType.ToString(); //TypeNames[VarEnum.VT_VARIANT];
                 }
             }
-
             var attributes = new Attributes();
             if (memberName == "_NewEnum" && ((FUNCFLAGS)memberDescriptor.wFuncFlags).HasFlag(FUNCFLAGS.FUNCFLAG_FNONBROWSABLE))
             {
@@ -306,7 +306,6 @@ namespace Rubberduck.Parsing.Symbols
             {
                 asTypeName = TypeNames[VarEnum.VT_VARIANT];
             }
-
             return new Declaration(new QualifiedMemberName(typeQualifiedModuleName, fieldName),
                 moduleDeclaration, moduleDeclaration, asTypeName, false, false, Accessibility.Global, memberType, null,
                 Selection.Home);

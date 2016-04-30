@@ -77,6 +77,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Binding\MemberAccessDefaultBindingTests.cs" />
     <Compile Include="Binding\MemberAccessTypeBindingTests.cs" />
     <Compile Include="Binding\MemberAccessProcedurePointerBindingTests.cs" />
     <Compile Include="Binding\SimpleNameProcedurePointerBindingTests.cs" />

@@ -122,7 +122,7 @@ namespace Rubberduck.Parsing.Symbols
                 if (baseType == null)
                 {
                     string typeExpression = expr.GetText();
-                    var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentScope, typeExpression);
+                    var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, typeExpression);
                     if (boundExpression != null)
                     {
                         _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(type.complexType(), declaration));
@@ -642,12 +642,7 @@ namespace Rubberduck.Parsing.Symbols
 
                 if (member == null && parent != null)
                 {
-                    var parentComTypeName = string.Empty;
-                    var property = parent.QualifiedName.QualifiedModuleName.Component.Properties.Item("Parent");
-                    if (property != null)
-                    {
-                        parentComTypeName = ComHelper.GetTypeName(property.Object);
-                    }
+                    var parentComTypeName = GetParentComTypeName(parent);
 
                     // if the member can't be found on the parentType, maybe we're looking at a document or form module?
                     parentType = _declarationFinder.FindClass(_moduleDeclaration.ParentDeclaration, parentComTypeName);
@@ -756,12 +751,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 if (parentScope != null)
                 {
-                    var parentComTypeName = string.Empty;
-                    var property = parentScope.QualifiedName.QualifiedModuleName.Component.Properties.Item("Parent");
-                    if (property != null)
-                    {
-                        parentComTypeName = ComHelper.GetTypeName(property.Object);
-                    }
+                    var parentComTypeName = GetParentComTypeName(parentScope);
 
                     // if the member can't be found on the parentType, maybe we're looking at a document or form module?
                     parentType = _declarationFinder.FindClass(_moduleDeclaration.ParentDeclaration, parentComTypeName);
@@ -862,13 +852,7 @@ namespace Rubberduck.Parsing.Symbols
 
                 if (member == null && parent != null)
                 {
-                    var parentComTypeName = string.Empty;
-                    var property = parent.QualifiedName.QualifiedModuleName.Component.Properties.Item("Parent");
-                    if (property != null)
-                    {
-                        parentComTypeName = ComHelper.GetTypeName(property.Object);
-                    }
-
+                    var parentComTypeName = GetParentComTypeName(parent);
                     // if the member can't be found on the parentType, maybe we're looking at a document or form module?
                     var parentType = _declarationFinder.FindClass(null, parentComTypeName);
                     member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType)
@@ -892,6 +876,20 @@ namespace Rubberduck.Parsing.Symbols
 
             ResolveInternal(fieldCall, parent);
             _alreadyResolved.Add(context);
+        }
+
+        private string GetParentComTypeName(Declaration declaration)
+        {
+            if (declaration.QualifiedName.QualifiedModuleName.Component == null)
+            {
+                return string.Empty;
+            }
+            var property = declaration.QualifiedName.QualifiedModuleName.Component.Properties.OfType<Property>().Where(p => p.Name == "Parent").FirstOrDefault();
+            if (property != null)
+            {
+                return ComHelper.GetTypeName(property.Object);
+            }
+            return string.Empty;
         }
 
         private VBAParser.IdentifierContext GetMemberCallIdentifierContext(VBAParser.ICS_S_MemberCallContext callContext)
@@ -944,6 +942,16 @@ namespace Rubberduck.Parsing.Symbols
             ResolveInternal(leftSide, _currentScope, ContextAccessorType.AssignReference, false, true);
         }
 
+        public void Resolve(VBAParser.ExplicitCallStmtContext context)
+        {
+            var expression = context.explicitCallStmtExpression().GetText();
+            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, expression);
+            if (boundExpression != null)
+            {
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.explicitCallStmtExpression(), declaration));
+            }
+        }
+
         public void Resolve(VBAParser.AsTypeClauseContext context)
         {
             var asType = context.type();
@@ -959,7 +967,7 @@ namespace Rubberduck.Parsing.Symbols
                 if (context.fieldLength() != null && context.fieldLength().identifier() != null)
                 {
                     var constantName = context.fieldLength().identifier();
-                    var constantNameExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentScope, constantName.GetText());
+                    var constantNameExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, constantName.GetText());
                     if (constantNameExpression != null)
                     {
                         _boundExpressionVisitor.AddIdentifierReferences(constantNameExpression, declaration => CreateReference(constantName, declaration));
@@ -968,7 +976,7 @@ namespace Rubberduck.Parsing.Symbols
                 return;
             }
             string typeExpression = asType.complexType().GetText();
-            var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentScope, typeExpression);
+            var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, typeExpression);
             if (boundExpression != null)
             {
                 _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(asType.complexType(), declaration));
@@ -1027,7 +1035,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ImplementsStmtContext context)
         {
-            var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentScope, context.valueStmt().GetText());
+            var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, context.valueStmt().GetText());
             if (boundExpression != null)
             {
                 _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.valueStmt(), declaration));
@@ -1036,7 +1044,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.VsAddressOfContext context)
         {
-            var boundExpression = _bindingService.ResolveProcedurePointer(_moduleDeclaration, _currentScope, context.valueStmt().GetText());
+            var boundExpression = _bindingService.ResolveProcedurePointer(_moduleDeclaration, _currentParent, context.valueStmt().GetText());
             if (boundExpression != null)
             {
                 _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.valueStmt(), declaration));

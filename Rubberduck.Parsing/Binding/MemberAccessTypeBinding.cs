@@ -15,13 +15,14 @@ namespace Rubberduck.Parsing.Binding
 
         public MemberAccessTypeBinding(
             DeclarationFinder declarationFinder,
+            Declaration project,
             Declaration module,
             Declaration parent,
             VBAExpressionParser.MemberAccessExpressionContext expression,
             IExpressionBinding lExpressionBinding)
         {
             _declarationFinder = declarationFinder;
-            _project = module.ParentDeclaration;
+            _project = project;
             _module = module;
             _parent = parent;
             _memberAccessExpression = expression;
@@ -30,13 +31,14 @@ namespace Rubberduck.Parsing.Binding
 
         public MemberAccessTypeBinding(
             DeclarationFinder declarationFinder,
+            Declaration project,
             Declaration module,
             Declaration parent,
             VBAExpressionParser.MemberAccessExprContext expression,
             IExpressionBinding lExpressionBinding)
         {
             _declarationFinder = declarationFinder;
-            _project = module.ParentDeclaration;
+            _project = project;
             _module = module;
             _parent = parent;
             _memberAccessExpr = expression;
@@ -123,7 +125,7 @@ namespace Rubberduck.Parsing.Binding
                 the enclosing project or a referenced project. In this case, the member access expression is 
                 classified as a project and refers to the specified project. 
              */
-            if (_declarationFinder.IsMatch(_project.Project.Name, name))
+            if (_declarationFinder.IsMatch(_project.ProjectName, name))
             {
                 return new MemberAccessExpression(_project, ExpressionClassification.Project, GetExpressionContext(), lExpression);
             }

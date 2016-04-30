@@ -472,6 +472,13 @@ public interface IVBAExpressionParserVisitor<Result> : IParseTreeVisitor<Result>
 	Result VisitTypeExpression([NotNull] VBAExpressionParser.TypeExpressionContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAExpressionParser.uncategorizedKeyword"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUncategorizedKeyword([NotNull] VBAExpressionParser.UncategorizedKeywordContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAExpressionParser.whiteSpace"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

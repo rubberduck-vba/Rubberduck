@@ -30,9 +30,9 @@ name : untypedName | typedName;
 reservedIdentifierName : reservedUntypedName | reservedTypedName;
 reservedUntypedName : reservedIdentifier;
 reservedTypedName : reservedIdentifier typeSuffix;
-untypedName : IDENTIFIER | FOREIGNNAME | reservedProcedureName | specialForm | optionCompareArgument | OBJECT;
+untypedName : IDENTIFIER | FOREIGNNAME | reservedProcedureName | specialForm | optionCompareArgument | OBJECT | uncategorizedKeyword | ERROR;
 typedName : typedNameValue typeSuffix;
-typedNameValue : IDENTIFIER | reservedProcedureName | specialForm | optionCompareArgument | OBJECT;
+typedNameValue : IDENTIFIER | reservedProcedureName | specialForm | optionCompareArgument | OBJECT | uncategorizedKeyword | ERROR;
 typeSuffix : PERCENT | AMPERSAND | POW | EXCLAMATIONPOINT | HASH | AT | DOLLAR;
 
 optionCompareArgument : BINARY | TEXT | DATABASE;
@@ -350,6 +350,16 @@ reservedTypeIdentifier :
     | STRING
     | VARIANT
 ;
+
+uncategorizedKeyword : 
+	ALIAS | ATTRIBUTE | APPACTIVATE |
+	BEEP | BEGIN | CLASS | CHDIR | CHDRIVE | COLLECTION | DELETESETTING |
+	FILECOPY | KILL | LOAD | LIB | MKDIR | NAME | ON |
+	RANDOMIZE | RMDIR |
+	SAVEPICTURE | SAVESETTING | SENDKEYS | SETATTR |
+	TAB | TIME | UNLOAD | VERSION
+;
+
 literalIdentifier : booleanLiteralIdentifier | objectLiteralIdentifier | variantLiteralIdentifier;
 booleanLiteralIdentifier : TRUE | FALSE;
 objectLiteralIdentifier : NOTHING;

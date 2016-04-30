@@ -59,13 +59,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitConstStmt([NotNull] VBAParser.ConstStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.eCS_MemberProcedureCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitECS_MemberProcedureCall([NotNull] VBAParser.ECS_MemberProcedureCallContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.setattrStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -99,6 +92,14 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitTypeStmt_Element([NotNull] VBAParser.TypeStmt_ElementContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>ECS_ProcedureCall</c>
+	/// labeled alternative in <see cref="VBAParser.explicitCallStmtExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.type"/>.
@@ -216,11 +217,12 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitFieldLength([NotNull] VBAParser.FieldLengthContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.eCS_ProcedureCall"/>.
+	/// Visit a parse tree produced by the <c>ECS_MemberCall</c>
+	/// labeled alternative in <see cref="VBAParser.explicitCallStmtExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context);
+	Result VisitECS_MemberCall([NotNull] VBAParser.ECS_MemberCallContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.identifier"/>.

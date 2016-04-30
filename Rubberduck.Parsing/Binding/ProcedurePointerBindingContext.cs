@@ -37,21 +37,21 @@ namespace Rubberduck.Parsing.Binding
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.SimpleNameExpressionContext expression)
         {
-            return new SimpleNameProcedurePointerBinding(_declarationFinder, module, parent, expression);
+            return new SimpleNameProcedurePointerBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.MemberAccessExprContext expression)
         {
             dynamic lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression);
-            return new MemberAccessProcedurePointerBinding(_declarationFinder, module, parent, expression, lExpressionBinding);
+            return new MemberAccessProcedurePointerBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.MemberAccessExpressionContext expression)
         {
             dynamic lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression);
-            return new MemberAccessProcedurePointerBinding(_declarationFinder, module, parent, expression, lExpressionBinding);
+            return new MemberAccessProcedurePointerBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding);
         }
     }
 }

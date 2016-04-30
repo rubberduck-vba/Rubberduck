@@ -15,13 +15,14 @@ namespace Rubberduck.Parsing.Binding
 
         public MemberAccessProcedurePointerBinding(
             DeclarationFinder declarationFinder,
+            Declaration project,
             Declaration module,
             Declaration parent,
             VBAExpressionParser.MemberAccessExpressionContext expression,
             IExpressionBinding lExpressionBinding)
         {
             _declarationFinder = declarationFinder;
-            _project = module.ParentDeclaration;
+            _project = project;
             _module = module;
             _parent = parent;
             _memberAccessExpression = expression;
@@ -30,13 +31,14 @@ namespace Rubberduck.Parsing.Binding
 
         public MemberAccessProcedurePointerBinding(
             DeclarationFinder declarationFinder,
+            Declaration project,
             Declaration module,
             Declaration parent,
             VBAExpressionParser.MemberAccessExprContext expression,
             IExpressionBinding lExpressionBinding)
         {
             _declarationFinder = declarationFinder;
-            _project = module.ParentDeclaration;
+            _project = project;
             _module = module;
             _parent = parent;
             _memberAccessExpr = expression;

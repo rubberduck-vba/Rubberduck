@@ -460,14 +460,12 @@ writeStmt : WRITE whiteSpace fileNumber whiteSpace? COMMA (whiteSpace? outputLis
 
 fileNumber : HASH? valueStmt;
 
-explicitCallStmt : 
-	eCS_ProcedureCall 
-	| eCS_MemberProcedureCall 
+explicitCallStmt : CALL whiteSpace explicitCallStmtExpression;
+
+explicitCallStmtExpression : 
+    implicitCallStmt_InStmt? DOT identifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*   # ECS_MemberCall
+    | identifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*                                  # ECS_ProcedureCall
 ;
-
-eCS_ProcedureCall : CALL whiteSpace identifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*;
-
-eCS_MemberProcedureCall : CALL whiteSpace implicitCallStmt_InStmt? DOT identifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
 implicitCallStmt_InBlock :
 	iCS_B_MemberProcedureCall 

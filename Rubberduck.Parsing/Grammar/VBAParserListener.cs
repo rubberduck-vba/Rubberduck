@@ -74,17 +74,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitConstStmt([NotNull] VBAParser.ConstStmtContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.eCS_MemberProcedureCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterECS_MemberProcedureCall([NotNull] VBAParser.ECS_MemberProcedureCallContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.eCS_MemberProcedureCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitECS_MemberProcedureCall([NotNull] VBAParser.ECS_MemberProcedureCallContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.setattrStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -138,6 +127,19 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitTypeStmt_Element([NotNull] VBAParser.TypeStmt_ElementContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ECS_ProcedureCall</c>
+	/// labeled alternative in <see cref="VBAParser.explicitCallStmtExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ECS_ProcedureCall</c>
+	/// labeled alternative in <see cref="VBAParser.explicitCallStmtExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.type"/>.
@@ -322,15 +324,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitFieldLength([NotNull] VBAParser.FieldLengthContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.eCS_ProcedureCall"/>.
+	/// Enter a parse tree produced by the <c>ECS_MemberCall</c>
+	/// labeled alternative in <see cref="VBAParser.explicitCallStmtExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context);
+	void EnterECS_MemberCall([NotNull] VBAParser.ECS_MemberCallContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.eCS_ProcedureCall"/>.
+	/// Exit a parse tree produced by the <c>ECS_MemberCall</c>
+	/// labeled alternative in <see cref="VBAParser.explicitCallStmtExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context);
+	void ExitECS_MemberCall([NotNull] VBAParser.ECS_MemberCallContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.identifier"/>.

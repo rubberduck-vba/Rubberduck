@@ -81,6 +81,7 @@
     <Compile Include="Binding\MemberAccessTypeBinding.cs" />
     <Compile Include="Binding\NewExpression.cs" />
     <Compile Include="Binding\ProcedurePointerBindingContext.cs" />
+    <Compile Include="Binding\MemberAccessDefaultBinding.cs" />
     <Compile Include="Binding\SimpleNameDefaultBinding.cs" />
     <Compile Include="Binding\SimpleNameProcedurePointerBinding.cs" />
     <Compile Include="Binding\NewTypeBinding.cs" />
@@ -209,6 +210,7 @@
     <Compile Include="Symbols\DeclarationEventArgs.cs" />
     <Compile Include="Symbols\DeclarationFinder.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
+    <Compile Include="Symbols\TypeAnnotationPass.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
     <Compile Include="Symbols\MemberProcessedEventArgs.cs" />
     <Compile Include="Symbols\ParameterDeclaration.cs" />

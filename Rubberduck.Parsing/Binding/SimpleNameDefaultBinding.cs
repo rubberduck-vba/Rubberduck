@@ -12,12 +12,13 @@ namespace Rubberduck.Parsing.Binding
 
         public SimpleNameDefaultBinding(
             DeclarationFinder declarationFinder,
+            Declaration project,
             Declaration module, 
             Declaration parent, 
             VBAExpressionParser.SimpleNameExpressionContext expression)
         {
             _declarationFinder = declarationFinder;
-            _project = module.ParentDeclaration;
+            _project = project;
             _module = module;
             _parent = parent;
             _expression = expression;
@@ -139,7 +140,7 @@ namespace Rubberduck.Parsing.Binding
                 Enclosing Project namespace: The enclosing project itself, a referenced project, or a 
                 procedural module contained in the enclosing project.
             */
-            if (_declarationFinder.IsMatch(_project.Project.Name, name))
+            if (_declarationFinder.IsMatch(_project.ProjectName, name))
             {
                 return new SimpleNameExpression(_project, ExpressionClassification.Project, _expression);
             }

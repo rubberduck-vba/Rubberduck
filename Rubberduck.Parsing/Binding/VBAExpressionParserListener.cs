@@ -732,6 +732,17 @@ public interface IVBAExpressionParserListener : IParseTreeListener {
 	void ExitTypeExpression([NotNull] VBAExpressionParser.TypeExpressionContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAExpressionParser.uncategorizedKeyword"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUncategorizedKeyword([NotNull] VBAExpressionParser.UncategorizedKeywordContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAExpressionParser.uncategorizedKeyword"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUncategorizedKeyword([NotNull] VBAExpressionParser.UncategorizedKeywordContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAExpressionParser.whiteSpace"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

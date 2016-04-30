@@ -86,19 +86,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitConstStmt([NotNull] VBAParser.ConstStmtContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.eCS_MemberProcedureCall"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterECS_MemberProcedureCall([NotNull] VBAParser.ECS_MemberProcedureCallContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.eCS_MemberProcedureCall"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitECS_MemberProcedureCall([NotNull] VBAParser.ECS_MemberProcedureCallContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.setattrStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -162,6 +149,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitTypeStmt_Element([NotNull] VBAParser.TypeStmt_ElementContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.ECS_ProcedureCall"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.ECS_ProcedureCall"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.type"/>.
@@ -372,17 +372,17 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitFieldLength([NotNull] VBAParser.FieldLengthContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.eCS_ProcedureCall"/>.
+	/// Enter a parse tree produced by <see cref="VBAParser.ECS_MemberCall"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context) { }
+	public virtual void EnterECS_MemberCall([NotNull] VBAParser.ECS_MemberCallContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.eCS_ProcedureCall"/>.
+	/// Exit a parse tree produced by <see cref="VBAParser.ECS_MemberCall"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context) { }
+	public virtual void ExitECS_MemberCall([NotNull] VBAParser.ECS_MemberCallContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.identifier"/>.

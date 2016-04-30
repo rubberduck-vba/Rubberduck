@@ -519,7 +519,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 return;
             }
-
             var qualifiedName = new QualifiedModuleName(component);
             Debug.WriteLine("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
             var resolver = new IdentifierReferenceResolver(qualifiedName, finder);
@@ -529,6 +528,7 @@ namespace Rubberduck.Parsing.VBA
                 var walker = new ParseTreeWalker();
                 try
                 {
+                    new TypeAnnotationPass(finder).Annotate();
                     walker.Walk(listener, tree);
                     state = ParserState.Ready;
                 }
@@ -551,19 +551,6 @@ namespace Rubberduck.Parsing.VBA
 
             public override void ExitExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
             {
-                var procedureCall = context.eCS_ProcedureCall();
-                if (procedureCall != null)
-                {
-                    if (procedureCall.CALL() != null)
-                    {
-                        _contexts.Add(context);
-                        return;
-                    }
-                }
-
-                var memberCall = context.eCS_MemberProcedureCall();
-                if (memberCall == null) return;
-                if (memberCall.CALL() == null) return;
                 _contexts.Add(context);
             }
         }
