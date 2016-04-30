@@ -31,6 +31,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly IReadOnlyList<DeclarationType> _returningMemberTypes;
 
         private readonly Stack<Declaration> _withBlockQualifiers;
+        private readonly Stack<string> _withBlockExpressions;
         private readonly HashSet<RuleContext> _alreadyResolved;
 
         private readonly Declaration _moduleDeclaration;
@@ -48,6 +49,7 @@ namespace Rubberduck.Parsing.Symbols
             _qualifiedModuleName = qualifiedModuleName;
 
             _withBlockQualifiers = new Stack<Declaration>();
+            _withBlockExpressions = new Stack<string>();
             _alreadyResolved = new HashSet<RuleContext>();
 
             _moduleTypes = new[]
@@ -122,7 +124,7 @@ namespace Rubberduck.Parsing.Symbols
                 if (baseType == null)
                 {
                     string typeExpression = expr.GetText();
-                    var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, typeExpression);
+                    var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, typeExpression, GetInnerMostWithExpression());
                     if (boundExpression != null)
                     {
                         _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(type.complexType(), declaration));
@@ -132,11 +134,22 @@ namespace Rubberduck.Parsing.Symbols
             }
             // note: pushes null if unresolved
             _withBlockQualifiers.Push(qualifier);
+            _withBlockExpressions.Push(expr.GetText());
+        }
+
+        private string GetInnerMostWithExpression()
+        {
+            if (_withBlockExpressions.Any())
+            {
+                return _withBlockExpressions.Peek();
+            }
+            return null;
         }
 
         public void ExitWithBlock()
         {
             _withBlockQualifiers.Pop();
+            _withBlockExpressions.Pop();
         }
 
         private IdentifierReference CreateReference(ParserRuleContext callSiteContext, Declaration callee, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
@@ -836,7 +849,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var expression = context.GetText();
-            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, expression);
+            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, expression, GetInnerMostWithExpression());
 
 
             var chainedCalls = context.iCS_S_MemberCall();
@@ -949,7 +962,7 @@ namespace Rubberduck.Parsing.Symbols
         public void Resolve(VBAParser.ExplicitCallStmtContext context)
         {
             var expression = context.explicitCallStmtExpression().GetText();
-            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, expression);
+            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, expression, GetInnerMostWithExpression());
             if (boundExpression != null)
             {
                 _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.explicitCallStmtExpression(), declaration));
@@ -971,7 +984,7 @@ namespace Rubberduck.Parsing.Symbols
                 if (context.fieldLength() != null && context.fieldLength().identifier() != null)
                 {
                     var constantName = context.fieldLength().identifier();
-                    var constantNameExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, constantName.GetText());
+                    var constantNameExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, constantName.GetText(), GetInnerMostWithExpression());
                     if (constantNameExpression != null)
                     {
                         _boundExpressionVisitor.AddIdentifierReferences(constantNameExpression, declaration => CreateReference(constantName, declaration));

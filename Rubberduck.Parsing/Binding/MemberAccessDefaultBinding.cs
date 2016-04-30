@@ -9,8 +9,8 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _project;
         private readonly Declaration _module;
         private readonly Declaration _parent;
-        private readonly VBAExpressionParser.MemberAccessExpressionContext _memberAccessExpression;
-        private readonly VBAExpressionParser.MemberAccessExprContext _memberAccessExpr;
+        private readonly ParserRuleContext _context;
+        private readonly string _name;
         private readonly IExpressionBinding _lExpressionBinding;
 
         public MemberAccessDefaultBinding(
@@ -20,13 +20,15 @@ namespace Rubberduck.Parsing.Binding
             Declaration parent,
             VBAExpressionParser.MemberAccessExpressionContext expression,
             IExpressionBinding lExpressionBinding)
+            : this(
+                  declarationFinder,
+                  project,
+                  module,
+                  parent,
+                  expression,
+                  lExpressionBinding,
+                  ExpressionName.GetName(expression.unrestrictedName()))
         {
-            _declarationFinder = declarationFinder;
-            _project = project;
-            _module = module;
-            _parent = parent;
-            _memberAccessExpression = expression;
-            _lExpressionBinding = lExpressionBinding;
         }
 
         public MemberAccessDefaultBinding(
@@ -36,31 +38,33 @@ namespace Rubberduck.Parsing.Binding
             Declaration parent,
             VBAExpressionParser.MemberAccessExprContext expression,
             IExpressionBinding lExpressionBinding)
+            : this(
+                  declarationFinder,
+                  project,
+                  module,
+                  parent,
+                  expression,
+                  lExpressionBinding,
+                  ExpressionName.GetName(expression.unrestrictedName()))
+        {
+        }
+
+        public MemberAccessDefaultBinding(
+            DeclarationFinder declarationFinder,
+            Declaration project,
+            Declaration module,
+            Declaration parent,
+            ParserRuleContext expression,
+            IExpressionBinding lExpressionBinding,
+            string name)
         {
             _declarationFinder = declarationFinder;
             _project = project;
             _module = module;
             _parent = parent;
-            _memberAccessExpr = expression;
+            _context = expression;
+            _name = name;
             _lExpressionBinding = lExpressionBinding;
-        }
-
-        private ParserRuleContext GetExpressionContext()
-        {
-            if (_memberAccessExpression != null)
-            {
-                return _memberAccessExpression;
-            }
-            return _memberAccessExpr;
-        }
-
-        private string GetUnrestrictedName()
-        {
-            if (_memberAccessExpression != null)
-            {
-                return ExpressionName.GetName(_memberAccessExpression.unrestrictedName());
-            }
-            return ExpressionName.GetName(_memberAccessExpr.unrestrictedName());
         }
 
         public IBoundExpression Resolve()
@@ -71,28 +75,27 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
-            string unrestrictedName = GetUnrestrictedName();
-            boundExpression = ResolveLExpressionIsVariablePropertyOrFunction(lExpression, unrestrictedName);
+            boundExpression = ResolveLExpressionIsVariablePropertyOrFunction(lExpression);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveLExpressionIsUnbound(lExpression, unrestrictedName);
+            boundExpression = ResolveLExpressionIsUnbound(lExpression);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveLExpressionIsProject(lExpression, unrestrictedName);
+            boundExpression = ResolveLExpressionIsProject(lExpression);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveLExpressionIsProceduralModule(lExpression, unrestrictedName);
+            boundExpression = ResolveLExpressionIsProceduralModule(lExpression);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveLExpressionIsEnum(lExpression, unrestrictedName);
+            boundExpression = ResolveLExpressionIsEnum(lExpression);
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -100,7 +103,7 @@ namespace Rubberduck.Parsing.Binding
             return null;
         }
 
-        private IBoundExpression ResolveLExpressionIsVariablePropertyOrFunction(IBoundExpression lExpression, string name)
+        private IBoundExpression ResolveLExpressionIsVariablePropertyOrFunction(IBoundExpression lExpression)
         {
             /*
               
@@ -139,41 +142,41 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
-            var variable = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, name, DeclarationType.Variable);
+            var variable = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, _name, DeclarationType.Variable);
             if (variable != null)
             {
-                return new MemberAccessExpression(variable, ExpressionClassification.Variable, GetExpressionContext(), lExpression);
+                return new MemberAccessExpression(variable, ExpressionClassification.Variable, _context, lExpression);
             }
-            var property = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, name, DeclarationType.Property);
+            var property = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, _name, DeclarationType.Property);
             if (property != null)
             {
-                return new MemberAccessExpression(property, ExpressionClassification.Property, GetExpressionContext(), lExpression);
+                return new MemberAccessExpression(property, ExpressionClassification.Property, _context, lExpression);
             }
-            var function = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, name, DeclarationType.Function);
+            var function = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, _name, DeclarationType.Function);
             if (function != null)
             {
-                return new MemberAccessExpression(function, ExpressionClassification.Function, GetExpressionContext(), lExpression);
+                return new MemberAccessExpression(function, ExpressionClassification.Function, _context, lExpression);
             }
-            var subroutine = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, name, DeclarationType.Procedure);
+            var subroutine = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, _name, DeclarationType.Procedure);
             if (subroutine != null)
             {
-                return new MemberAccessExpression(subroutine, ExpressionClassification.Subroutine, GetExpressionContext(), lExpression);
+                return new MemberAccessExpression(subroutine, ExpressionClassification.Subroutine, _context, lExpression);
             }
             // Note: To not have to deal with declared types we simply assume that no match means unbound member.
             // This way the rest of the member access expression can still be bound.
-            return new MemberAccessExpression(null, ExpressionClassification.Unbound, GetExpressionContext(), lExpression);
+            return new MemberAccessExpression(null, ExpressionClassification.Unbound, _context, lExpression);
         }
 
-        private IBoundExpression ResolveLExpressionIsUnbound(IBoundExpression lExpression, string name)
+        private IBoundExpression ResolveLExpressionIsUnbound(IBoundExpression lExpression)
         {
             if (lExpression.Classification != ExpressionClassification.Unbound)
             {
                 return null;
             }
-            return new MemberAccessExpression(null, ExpressionClassification.Unbound, GetExpressionContext(), lExpression);
+            return new MemberAccessExpression(null, ExpressionClassification.Unbound, _context, lExpression);
         }
 
-        private IBoundExpression ResolveLExpressionIsProject(IBoundExpression lExpression, string name)
+        private IBoundExpression ResolveLExpressionIsProject(IBoundExpression lExpression)
         {
             /*
                 <l-expression> is classified as a project, this project is either the enclosing project or a 
@@ -204,47 +207,47 @@ namespace Rubberduck.Parsing.Binding
             IBoundExpression boundExpression = null;
             var referencedProject = lExpression.ReferencedDeclaration;
             bool lExpressionIsEnclosingProject = _project.Equals(referencedProject);
-            boundExpression = ResolveProject(lExpression, name);
+            boundExpression = ResolveProject(lExpression);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveProceduralModule(lExpressionIsEnclosingProject, lExpression, name, referencedProject);
+            boundExpression = ResolveProceduralModule(lExpressionIsEnclosingProject, lExpression, referencedProject);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, name, referencedProject, DeclarationType.Variable, ExpressionClassification.Variable);
+            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, referencedProject, DeclarationType.Variable, ExpressionClassification.Variable);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, name, referencedProject, DeclarationType.Property, ExpressionClassification.Property);
+            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, referencedProject, DeclarationType.Property, ExpressionClassification.Property);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, name, referencedProject, DeclarationType.Function, ExpressionClassification.Function);
+            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, referencedProject, DeclarationType.Function, ExpressionClassification.Function);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, name, referencedProject, DeclarationType.Procedure, ExpressionClassification.Subroutine);
+            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, referencedProject, DeclarationType.Procedure, ExpressionClassification.Subroutine);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, name, referencedProject, DeclarationType.Constant, ExpressionClassification.Value);
+            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, referencedProject, DeclarationType.Constant, ExpressionClassification.Value);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, name, referencedProject, DeclarationType.Enumeration, ExpressionClassification.Value);
+            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, referencedProject, DeclarationType.Enumeration, ExpressionClassification.Value);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, name, referencedProject, DeclarationType.EnumerationMember, ExpressionClassification.Value);
+            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, referencedProject, DeclarationType.EnumerationMember, ExpressionClassification.Value);
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -252,72 +255,72 @@ namespace Rubberduck.Parsing.Binding
             return boundExpression;
         }
 
-        private IBoundExpression ResolveProject(IBoundExpression lExpression, string name)
+        private IBoundExpression ResolveProject(IBoundExpression lExpression)
         {
-            if (_declarationFinder.IsMatch(_project.ProjectName, name))
+            if (_declarationFinder.IsMatch(_project.ProjectName, _name))
             {
-                return new MemberAccessExpression(_project, ExpressionClassification.Project, GetExpressionContext(), lExpression);
+                return new MemberAccessExpression(_project, ExpressionClassification.Project, _context, lExpression);
             }
-            var referencedProjectRightOfDot = _declarationFinder.FindReferencedProject(_project, name);
+            var referencedProjectRightOfDot = _declarationFinder.FindReferencedProject(_project, _name);
             if (referencedProjectRightOfDot != null)
             {
-                return new MemberAccessExpression(referencedProjectRightOfDot, ExpressionClassification.Project, GetExpressionContext(), lExpression);
+                return new MemberAccessExpression(referencedProjectRightOfDot, ExpressionClassification.Project, _context, lExpression);
             }
             return null;
         }
 
-        private IBoundExpression ResolveProceduralModule(bool lExpressionIsEnclosingProject, IBoundExpression lExpression, string name, Declaration referencedProject)
+        private IBoundExpression ResolveProceduralModule(bool lExpressionIsEnclosingProject, IBoundExpression lExpression, Declaration referencedProject)
         {
             if (lExpressionIsEnclosingProject)
             {
-                if (_module.DeclarationType == DeclarationType.ProceduralModule && _declarationFinder.IsMatch(_module.IdentifierName, name))
+                if (_module.DeclarationType == DeclarationType.ProceduralModule && _declarationFinder.IsMatch(_module.IdentifierName, _name))
                 {
-                    return new MemberAccessExpression(_module, ExpressionClassification.ProceduralModule, GetExpressionContext(), lExpression);
+                    return new MemberAccessExpression(_module, ExpressionClassification.ProceduralModule, _context, lExpression);
                 }
-                var proceduralModuleEnclosingProject = _declarationFinder.FindModuleEnclosingProjectWithoutEnclosingModule(_project, _module, name, DeclarationType.ProceduralModule);
+                var proceduralModuleEnclosingProject = _declarationFinder.FindModuleEnclosingProjectWithoutEnclosingModule(_project, _module, _name, DeclarationType.ProceduralModule);
                 if (proceduralModuleEnclosingProject != null)
                 {
-                    return new MemberAccessExpression(proceduralModuleEnclosingProject, ExpressionClassification.ProceduralModule, GetExpressionContext(), lExpression);
+                    return new MemberAccessExpression(proceduralModuleEnclosingProject, ExpressionClassification.ProceduralModule, _context, lExpression);
                 }
             }
             else
             {
-                var proceduralModuleInReferencedProject = _declarationFinder.FindModuleReferencedProject(_project, _module, referencedProject, name, DeclarationType.ProceduralModule);
+                var proceduralModuleInReferencedProject = _declarationFinder.FindModuleReferencedProject(_project, _module, referencedProject, _name, DeclarationType.ProceduralModule);
                 if (proceduralModuleInReferencedProject != null)
                 {
-                    return new MemberAccessExpression(proceduralModuleInReferencedProject, ExpressionClassification.ProceduralModule, GetExpressionContext(), lExpression);
+                    return new MemberAccessExpression(proceduralModuleInReferencedProject, ExpressionClassification.ProceduralModule, _context, lExpression);
                 }
             }
             return null;
         }
 
-        private IBoundExpression ResolveMemberInReferencedProject(bool lExpressionIsEnclosingProject, IBoundExpression lExpression, string name, Declaration referencedProject, DeclarationType memberType, ExpressionClassification classification)
+        private IBoundExpression ResolveMemberInReferencedProject(bool lExpressionIsEnclosingProject, IBoundExpression lExpression, Declaration referencedProject, DeclarationType memberType, ExpressionClassification classification)
         {
             if (lExpressionIsEnclosingProject)
             {
-                var foundType = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, memberType);
+                var foundType = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, _name, memberType);
                 if (foundType != null)
                 {
-                    return new MemberAccessExpression(foundType, classification, GetExpressionContext(), lExpression);
+                    return new MemberAccessExpression(foundType, classification, _context, lExpression);
                 }
-                var accessibleType = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, memberType);
+                var accessibleType = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, _name, memberType);
                 if (accessibleType != null)
                 {
-                    return new MemberAccessExpression(accessibleType, classification, GetExpressionContext(), lExpression);
+                    return new MemberAccessExpression(accessibleType, classification, _context, lExpression);
                 }
             }
             else
             {
-                var referencedProjectType = _declarationFinder.FindMemberReferencedProject(_project, _module, _parent, referencedProject, name, memberType);
+                var referencedProjectType = _declarationFinder.FindMemberReferencedProject(_project, _module, _parent, referencedProject, _name, memberType);
                 if (referencedProjectType != null)
                 {
-                    return new MemberAccessExpression(referencedProjectType, classification, GetExpressionContext(), lExpression);
+                    return new MemberAccessExpression(referencedProjectType, classification, _context, lExpression);
                 }
             }
             return null;
         }
 
-        private IBoundExpression ResolveLExpressionIsProceduralModule(IBoundExpression lExpression, string name)
+        private IBoundExpression ResolveLExpressionIsProceduralModule(IBoundExpression lExpression)
         {
             /*
                 <l-expression> is classified as a procedural module, this procedural module has an accessible 
@@ -337,37 +340,37 @@ namespace Rubberduck.Parsing.Binding
                 return null;
             }
             IBoundExpression boundExpression = null;
-            boundExpression = ResolveMemberInModule(lExpression, name, lExpression.ReferencedDeclaration, DeclarationType.Variable, ExpressionClassification.Variable);
+            boundExpression = ResolveMemberInModule(lExpression, lExpression.ReferencedDeclaration, DeclarationType.Variable, ExpressionClassification.Variable);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInModule(lExpression, name, lExpression.ReferencedDeclaration, DeclarationType.Property, ExpressionClassification.Property);
+            boundExpression = ResolveMemberInModule(lExpression, lExpression.ReferencedDeclaration, DeclarationType.Property, ExpressionClassification.Property);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInModule(lExpression, name, lExpression.ReferencedDeclaration, DeclarationType.Function, ExpressionClassification.Function);
+            boundExpression = ResolveMemberInModule(lExpression, lExpression.ReferencedDeclaration, DeclarationType.Function, ExpressionClassification.Function);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInModule(lExpression, name, lExpression.ReferencedDeclaration, DeclarationType.Procedure, ExpressionClassification.Subroutine);
+            boundExpression = ResolveMemberInModule(lExpression, lExpression.ReferencedDeclaration, DeclarationType.Procedure, ExpressionClassification.Subroutine);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInModule(lExpression, name, lExpression.ReferencedDeclaration, DeclarationType.Constant, ExpressionClassification.Value);
+            boundExpression = ResolveMemberInModule(lExpression, lExpression.ReferencedDeclaration, DeclarationType.Constant, ExpressionClassification.Value);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInModule(lExpression, name, lExpression.ReferencedDeclaration, DeclarationType.Enumeration, ExpressionClassification.Value);
+            boundExpression = ResolveMemberInModule(lExpression, lExpression.ReferencedDeclaration, DeclarationType.Enumeration, ExpressionClassification.Value);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInModule(lExpression, name, lExpression.ReferencedDeclaration, DeclarationType.EnumerationMember, ExpressionClassification.Value);
+            boundExpression = ResolveMemberInModule(lExpression, lExpression.ReferencedDeclaration, DeclarationType.EnumerationMember, ExpressionClassification.Value);
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -375,23 +378,23 @@ namespace Rubberduck.Parsing.Binding
             return boundExpression;
         }
 
-        private IBoundExpression ResolveMemberInModule(IBoundExpression lExpression, string name, Declaration module, DeclarationType memberType, ExpressionClassification classification)
+        private IBoundExpression ResolveMemberInModule(IBoundExpression lExpression, Declaration module, DeclarationType memberType, ExpressionClassification classification)
         {
-            var enclosingProjectType = _declarationFinder.FindMemberEnclosedProjectInModule(_project, _module, _parent, module, name, memberType);
+            var enclosingProjectType = _declarationFinder.FindMemberEnclosedProjectInModule(_project, _module, _parent, module, _name, memberType);
             if (enclosingProjectType != null)
             {
-                return new MemberAccessExpression(enclosingProjectType, classification, GetExpressionContext(), lExpression);
+                return new MemberAccessExpression(enclosingProjectType, classification, _context, lExpression);
             }
 
-            var referencedProjectType = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, module, name, memberType);
+            var referencedProjectType = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, module, _name, memberType);
             if (referencedProjectType != null)
             {
-                return new MemberAccessExpression(referencedProjectType, classification, GetExpressionContext(), lExpression);
+                return new MemberAccessExpression(referencedProjectType, classification, _context, lExpression);
             }
             return null;
         }
 
-        private IBoundExpression ResolveLExpressionIsEnum(IBoundExpression lExpression, string name)
+        private IBoundExpression ResolveLExpressionIsEnum(IBoundExpression lExpression)
         {
             /*
                 <l-expression> is classified as a type, this type is an Enum type, and this type has an enum 
@@ -402,10 +405,10 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
-            var enumMember = _declarationFinder.FindMemberWithParent(_project, _module, lExpression.ReferencedDeclaration, name, DeclarationType.EnumerationMember);
+            var enumMember = _declarationFinder.FindMemberWithParent(_project, _module, lExpression.ReferencedDeclaration, _name, DeclarationType.EnumerationMember);
             if (enumMember != null)
             {
-                return new MemberAccessExpression(enumMember, ExpressionClassification.Value, GetExpressionContext(), lExpression);
+                return new MemberAccessExpression(enumMember, ExpressionClassification.Value, _context, lExpression);
             }
             return null;
         }

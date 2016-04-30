@@ -12,7 +12,7 @@ namespace Rubberduck.Parsing.Binding
 
         public BindingService(
             IBindingContext defaultBindingContext,
-            IBindingContext typedBindingContext, 
+            IBindingContext typedBindingContext,
             IBindingContext procedurePointerBindingContext)
         {
             _defaultBindingContext = defaultBindingContext;
@@ -20,22 +20,27 @@ namespace Rubberduck.Parsing.Binding
             _procedurePointerBindingContext = procedurePointerBindingContext;
         }
 
-        public IBoundExpression ResolveDefault(Declaration module, Declaration parent, string expression)
+        public IBoundExpression ResolveDefault(Declaration module, Declaration parent, string expression, string innerMostWithBlockVariableExpression)
         {
             var expr = Parse(expression);
-            return _defaultBindingContext.Resolve(module, parent, expr);
+            ParserRuleContext innerMostWithBlockVariableExpr = null;
+            if (!string.IsNullOrWhiteSpace(innerMostWithBlockVariableExpression))
+            {
+                innerMostWithBlockVariableExpr = Parse(innerMostWithBlockVariableExpression);
+            }
+            return _defaultBindingContext.Resolve(module, parent, expr, innerMostWithBlockVariableExpr);
         }
 
         public IBoundExpression ResolveType(Declaration module, Declaration parent, string expression)
         {
             var expr = Parse(expression);
-            return _typedBindingContext.Resolve(module, parent, expr);
+            return _typedBindingContext.Resolve(module, parent, expr, null);
         }
 
         public IBoundExpression ResolveProcedurePointer(Declaration module, Declaration parent, string expression)
         {
             var expr = Parse(expression);
-            return _procedurePointerBindingContext.Resolve(module, parent, expr);
+            return _procedurePointerBindingContext.Resolve(module, parent, expr, null);
         }
 
         private VBAExpressionParser.ExpressionContext Parse(string expression)

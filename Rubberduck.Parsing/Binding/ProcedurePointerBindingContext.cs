@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.Binding
@@ -12,7 +13,7 @@ namespace Rubberduck.Parsing.Binding
             _declarationFinder = declarationFinder;
         }
 
-        public IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression)
+        public IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression, ParserRuleContext innerMostWithVariableExpression)
         {
             dynamic dynamicExpression = expression;
             IExpressionBinding bindingTree = Visit(module, parent, dynamicExpression);
