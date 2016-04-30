@@ -901,7 +901,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Inspections\InspectionsUI.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
