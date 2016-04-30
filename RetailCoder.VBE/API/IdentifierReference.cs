@@ -10,6 +10,7 @@ namespace Rubberduck.API
         Declaration Declaration { get; }
         Declaration ParentScope { get; }
         Declaration ParentNonScoping { get; }
+        bool IsAssignment { get; }
         int StartLine { get; }
         int StartColumn { get; }
         int EndLine { get; }
@@ -50,6 +51,8 @@ namespace Rubberduck.API
         {
             get { return _parentNonScoping ?? (_parentNonScoping = new Declaration(_reference.ParentNonScoping)); }
         }
+
+        public bool IsAssignment { get { return _reference.IsAssignment; } }
 
         public int StartLine { get { return _reference.Selection.StartLine; } }
         public int EndLine { get { return _reference.Selection.EndLine; } }
