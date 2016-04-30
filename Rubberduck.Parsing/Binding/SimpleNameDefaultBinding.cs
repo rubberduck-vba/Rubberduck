@@ -62,14 +62,14 @@ namespace Rubberduck.Parsing.Binding
 
         private IBoundExpression ResolveProcedureNamespace(string name)
         {
-            if (_parent.DeclarationType != DeclarationType.Function && _parent.DeclarationType != DeclarationType.Procedure)
-            {
-                return null;
-            }
             /*  Namespace tier 1:
                 Procedure namespace: A local variable, reference parameter binding or constant whose implicit 
                 or explicit definition precedes this expression in an enclosing procedure.                
             */
+            if (_parent.DeclarationType != DeclarationType.Function && _parent.DeclarationType != DeclarationType.Procedure)
+            {
+                return null;
+            }
             var localVariable = _declarationFinder.FindMemberEnclosingProcedure(_parent, name, DeclarationType.Variable);
             if (localVariable != null)
             {
