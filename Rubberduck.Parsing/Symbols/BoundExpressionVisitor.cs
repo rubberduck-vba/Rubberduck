@@ -25,6 +25,16 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        private void Visit(IndexExpression expression, Func<Declaration, IdentifierReference> referenceCreator)
+        {
+            Visit((dynamic)expression.LExpression, referenceCreator);
+            // Expressions could be unbound thus not have a referenced declaration. The lexpression might still be bindable though.
+            if (expression.Classification != ExpressionClassification.Unbound)
+            {
+                expression.ReferencedDeclaration.AddReference(referenceCreator(expression.ReferencedDeclaration));
+            }
+        }
+
         private void Visit(NewExpression expression, Func<Declaration, IdentifierReference> referenceCreator)
         {
             // We don't need to add a reference to the NewExpression's referenced declaration since that's covered

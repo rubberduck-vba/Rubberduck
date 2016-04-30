@@ -279,7 +279,6 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-
             if (reference.Context.Parent != _context
                 && !_references.Select(r => r.Context).Contains(reference.Context.Parent)
                 && !_references.Any(r => r.QualifiedModuleName == reference.QualifiedModuleName
@@ -449,6 +448,11 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.ModuleOption,
             DeclarationType.Project,
         };
+
+        public VBAParser.AsTypeClauseContext GetAsTypeContext()
+        {
+            return (VBAParser.AsTypeClauseContext)((dynamic)Context).asTypeClause();
+        }
 
         public virtual bool IsTypeSpecified()
         {

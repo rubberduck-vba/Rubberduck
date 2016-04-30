@@ -32,7 +32,16 @@ namespace Rubberduck.Parsing.Symbols
 
         private void AnnotateType(Declaration declarationWithAsType)
         {
-            string typeExpression = declarationWithAsType.AsTypeName;
+            string typeExpression;
+            if (declarationWithAsType.IsTypeSpecified())
+            {
+                var typeContext = declarationWithAsType.GetAsTypeContext();
+                typeExpression = typeContext.type().complexType().GetText();
+            }
+            else
+            {
+                return;
+            }
             var module = Declaration.GetModuleParent(declarationWithAsType);
             if (module == null)
             {

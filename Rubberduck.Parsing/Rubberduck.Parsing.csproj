@@ -76,6 +76,8 @@
     <Compile Include="Annotations\VBAParserAnnotationFactory.cs" />
     <Compile Include="Binding\BindingService.cs" />
     <Compile Include="Binding\BoundExpression.cs" />
+    <Compile Include="Binding\IndexDefaultBinding.cs" />
+    <Compile Include="Binding\IndexExpression.cs" />
     <Compile Include="Binding\MemberAccessExpression.cs" />
     <Compile Include="Binding\MemberAccessProcedurePointerBinding.cs" />
     <Compile Include="Binding\MemberAccessTypeBinding.cs" />

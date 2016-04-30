@@ -415,9 +415,11 @@ namespace Rubberduck.Common
         {
             var items = declarations.ToList();
 
+            // TODO: Due to the new binding mechanism this can have more than one match (e.g. in the case of index expressions + simple name expressions)
+            // Left as is for now because the binding is not fully integrated yet.
             var target = items
                 .Where(item => !item.IsBuiltIn && validDeclarationTypes.Contains(item.DeclarationType))
-                .SingleOrDefault(item => item.IsSelected(selection)
+                .FirstOrDefault(item => item.IsSelected(selection)
                                      || item.References.Any(r => r.IsSelected(selection)));
 
             if (target != null)

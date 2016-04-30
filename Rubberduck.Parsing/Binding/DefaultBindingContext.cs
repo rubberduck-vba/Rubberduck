@@ -86,6 +86,20 @@ namespace Rubberduck.Parsing.Binding
             return new MemberAccessDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding);
         }
 
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.IndexExprContext expression)
+        {
+            dynamic lExpression = expression.lExpression();
+            var lExpressionBinding = Visit(module, parent, lExpression);
+            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding);
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.IndexExpressionContext expression)
+        {
+            dynamic lExpression = expression.lExpression();
+            var lExpressionBinding = Visit(module, parent, lExpression);
+            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding);
+        }
+
         private IExpressionBinding VisitTypeContext(Declaration module, Declaration parent, VBAExpressionParser.SimpleNameExprContext expression)
         {
             return VisitTypeContext(module, parent, expression.simpleNameExpression());
