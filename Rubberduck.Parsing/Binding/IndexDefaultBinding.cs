@@ -12,7 +12,9 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _parent;
         private readonly VBAExpressionParser.IndexExpressionContext _indexExpression;
         private readonly VBAExpressionParser.IndexExprContext _indexExpr;
+        private readonly ParserRuleContext _unknownOriginExpr;
         private readonly IExpressionBinding _lExpressionBinding;
+        private readonly ArgumentList _argumentList;
 
         private const int DEFAULT_MEMBER_RECURSION_LIMIT = 32;
         private int _defaultMemberRecursionLimitCounter = 0;
@@ -31,6 +33,7 @@ namespace Rubberduck.Parsing.Binding
             _parent = parent;
             _indexExpression = expression;
             _lExpressionBinding = lExpressionBinding;
+            _argumentList = ConvertContextToArgumentList(GetArgumentListContext());
         }
 
         public IndexDefaultBinding(
@@ -47,6 +50,25 @@ namespace Rubberduck.Parsing.Binding
             _parent = parent;
             _indexExpr = expression;
             _lExpressionBinding = lExpressionBinding;
+            _argumentList = ConvertContextToArgumentList(GetArgumentListContext());
+        }
+
+        public IndexDefaultBinding(
+            DeclarationFinder declarationFinder,
+            Declaration project,
+            Declaration module,
+            Declaration parent,
+            ParserRuleContext expression,
+            IExpressionBinding lExpressionBinding,
+            ArgumentList argumentList)
+        {
+            _declarationFinder = declarationFinder;
+            _project = project;
+            _module = module;
+            _parent = parent;
+            _unknownOriginExpr = expression;
+            _lExpressionBinding = lExpressionBinding;
+            _argumentList = argumentList;
         }
 
         private ParserRuleContext GetExpressionContext()
@@ -55,16 +77,45 @@ namespace Rubberduck.Parsing.Binding
             {
                 return _indexExpression;
             }
-            return _indexExpr;
+            if (_indexExpr != null)
+            {
+                return _indexExpr;
+            }
+            return _unknownOriginExpr;
         }
 
-        private VBAExpressionParser.ArgumentListContext GetArgumentList()
+        private VBAExpressionParser.ArgumentListContext GetArgumentListContext()
         {
             if (_indexExpression != null)
             {
                 return _indexExpression.argumentList();
             }
             return _indexExpr.argumentList();
+        }
+
+        private ArgumentList ConvertContextToArgumentList(VBAExpressionParser.ArgumentListContext argumentList)
+        {
+            var convertedList = new ArgumentList();
+            var list = argumentList.positionalOrNamedArgumentList();
+            if (list.positionalArgument() != null)
+            {
+                foreach (var expr in list.positionalArgument())
+                {
+                    convertedList.AddArgument(ArgumentListArgumentType.Positional);
+                }
+            }
+            if (list.requiredPositionalArgument() != null)
+            {
+                convertedList.AddArgument(ArgumentListArgumentType.Positional);
+            }
+            if (list.namedArgumentList() != null)
+            {
+                foreach (var expr in list.namedArgumentList().namedArgument())
+                {
+                    convertedList.AddArgument(ArgumentListArgumentType.Named);
+                }
+            }
+            return convertedList;
         }
 
         public IBoundExpression Resolve()
@@ -80,8 +131,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
-            var argumentList = GetArgumentList();
-            boundExpression = ResolveLExpressionIsVariablePropertyFunctionNoParameters(lExpression, argumentList);
+            boundExpression = ResolveLExpressionIsVariablePropertyFunctionNoParameters(lExpression);
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -99,7 +149,7 @@ namespace Rubberduck.Parsing.Binding
             return null;
         }
 
-        private IBoundExpression ResolveLExpressionIsVariablePropertyFunctionNoParameters(IBoundExpression lExpression, VBAExpressionParser.ArgumentListContext argumentList)
+        private IBoundExpression ResolveLExpressionIsVariablePropertyFunctionNoParameters(IBoundExpression lExpression)
         {
             /*
              <l-expression> is classified as a variable, or <l-expression> is classified as a property or function 
@@ -110,7 +160,7 @@ namespace Rubberduck.Parsing.Binding
             bool propertyWithParameters = lExpression.Classification == ExpressionClassification.Property && ((IDeclarationWithParameter)lExpression.ReferencedDeclaration).Parameters.Any();
             bool functionWithParameters = lExpression.Classification == ExpressionClassification.Function && ((IDeclarationWithParameter)lExpression.ReferencedDeclaration).Parameters.Any();
             if (isVariable ||
-                ((!propertyWithParameters || !functionWithParameters)) && HasArguments(argumentList))
+                ((!propertyWithParameters || !functionWithParameters)) && _argumentList.HasArguments)
             {
                 IBoundExpression boundExpression = null;
                 var asTypeName = lExpression.ReferencedDeclaration.AsTypeName;
@@ -120,7 +170,7 @@ namespace Rubberduck.Parsing.Binding
                 {
                     return boundExpression;
                 }
-                boundExpression = ResolveLExpressionDeclaredTypeIsArray(lExpression, asTypeDeclaration, argumentList);
+                boundExpression = ResolveLExpressionDeclaredTypeIsArray(lExpression, asTypeDeclaration);
                 if (boundExpression != null)
                 {
                     return boundExpression;
@@ -209,7 +259,7 @@ namespace Rubberduck.Parsing.Binding
             return null;
         }
 
-        private IBoundExpression ResolveLExpressionDeclaredTypeIsArray(IBoundExpression lExpression, Declaration asTypeDeclaration, VBAExpressionParser.ArgumentListContext argumentList)
+        private IBoundExpression ResolveLExpressionDeclaredTypeIsArray(IBoundExpression lExpression, Declaration asTypeDeclaration)
         {
             // TODO: Test this as soon as parser has as type fixed.
 
@@ -224,7 +274,7 @@ namespace Rubberduck.Parsing.Binding
                     takes on the classification and declared type of <l-expression> and references the same 
                     array.  
                  */
-                if (!HasArguments(argumentList))
+                if (!_argumentList.HasArguments)
                 {
                     return new IndexExpression(asTypeDeclaration, lExpression.Classification, GetExpressionContext(), lExpression);
                 }
@@ -238,7 +288,7 @@ namespace Rubberduck.Parsing.Binding
 
                         Note: We assume this is the case without checking, enfored by the VBE.
                      */
-                    if (!HasNamedArguments(argumentList))
+                    if (!_argumentList.HasNamedArguments)
                     {
                         return new IndexExpression(asTypeDeclaration, ExpressionClassification.Variable, GetExpressionContext(), lExpression);
                     }
@@ -280,23 +330,6 @@ namespace Rubberduck.Parsing.Binding
                 return new IndexExpression(lExpression.ReferencedDeclaration, ExpressionClassification.Unbound, GetExpressionContext(), lExpression);
             }
             return null;
-        }
-
-        private bool HasNamedArguments(VBAExpressionParser.ArgumentListContext argumentList)
-        {
-            var list = argumentList.positionalOrNamedArgumentList();
-            return list.namedArgumentList() != null && list.namedArgumentList().namedArgument().Count > 0;
-        }
-
-        private bool HasRequiredPositionalArgument(VBAExpressionParser.ArgumentListContext argumentList)
-        {
-            var list = argumentList.positionalOrNamedArgumentList();
-            return list.requiredPositionalArgument() != null;
-        }
-
-        private bool HasArguments(VBAExpressionParser.ArgumentListContext argumentList)
-        {
-            return HasRequiredPositionalArgument(argumentList) || HasNamedArguments(argumentList);
         }
     }
 }

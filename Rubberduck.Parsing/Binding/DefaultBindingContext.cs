@@ -100,6 +100,34 @@ namespace Rubberduck.Parsing.Binding
             return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding);
         }
 
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.DictionaryAccessExprContext expression)
+        {
+            /*
+                A dictionary access expression is syntactically translated into an index expression with the same 
+                expression for <l-expression> and an argument list with a single positional argument with a 
+                declared type of String and a value equal to the name value of <unrestricted-name>. 
+             */
+            dynamic lExpression = expression.lExpression();
+            var lExpressionBinding = Visit(module, parent, lExpression);
+            var fakeArgList = new ArgumentList();
+            fakeArgList.AddArgument(ArgumentListArgumentType.Positional);
+            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, fakeArgList);
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.DictionaryAccessExpressionContext expression)
+        {
+            /*
+                A dictionary access expression is syntactically translated into an index expression with the same 
+                expression for <l-expression> and an argument list with a single positional argument with a 
+                declared type of String and a value equal to the name value of <unrestricted-name>. 
+             */
+            dynamic lExpression = expression.lExpression();
+            var lExpressionBinding = Visit(module, parent, lExpression);
+            var fakeArgList = new ArgumentList();
+            fakeArgList.AddArgument(ArgumentListArgumentType.Positional);
+            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, fakeArgList);
+        }
+
         private IExpressionBinding VisitTypeContext(Declaration module, Declaration parent, VBAExpressionParser.SimpleNameExprContext expression)
         {
             return VisitTypeContext(module, parent, expression.simpleNameExpression());

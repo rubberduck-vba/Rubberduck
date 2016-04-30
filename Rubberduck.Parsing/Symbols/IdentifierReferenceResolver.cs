@@ -835,6 +835,10 @@ namespace Rubberduck.Parsing.Symbols
                 return;
             }
 
+            var expression = context.GetText();
+            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, expression);
+
+
             var chainedCalls = context.iCS_S_MemberCall();
             foreach (var memberCall in chainedCalls)
             {

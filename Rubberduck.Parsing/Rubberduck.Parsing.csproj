@@ -74,6 +74,9 @@
     <Compile Include="Annotations\TestMethodAnnotation.cs" />
     <Compile Include="Annotations\TestModuleAnnotation.cs" />
     <Compile Include="Annotations\VBAParserAnnotationFactory.cs" />
+    <Compile Include="Binding\ArgumentList.cs" />
+    <Compile Include="Binding\ArgumentListArgument.cs" />
+    <Compile Include="Binding\ArgumentListArgumentType.cs" />
     <Compile Include="Binding\BindingService.cs" />
     <Compile Include="Binding\BoundExpression.cs" />
     <Compile Include="Binding\IndexDefaultBinding.cs" />
