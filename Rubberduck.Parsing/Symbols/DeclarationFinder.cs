@@ -240,13 +240,20 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberEnclosedProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType, DeclarationType moduleType)
         {
+            var project = callingProject;
+            var module = callingModule;
+            var parent = callingParent;
+
             var allMatches = MatchName(memberName);
-            var memberMatches = allMatches.Where(m =>
-                m.DeclarationType.HasFlag(memberType)
-                && Declaration.GetMemberModule(m).DeclarationType.HasFlag(moduleType)
-                && Declaration.GetMemberProject(m).Equals(callingProject)
-                && !callingModule.Equals(Declaration.GetMemberModule(m)));
-            var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
+            var memberMatches = from m in allMatches
+                let memberModule = Declaration.GetMemberModule(m)
+                let memberProject = Declaration.GetMemberProject(m)
+                where memberModule != null && memberModule.DeclarationType.HasFlag(moduleType)
+                      && memberProject != null && memberProject.Equals(project)
+                      && !module.Equals(memberModule)
+                select m;
+
+            var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(project, module, parent, m));
             var match = accessibleMembers.FirstOrDefault();
             return match;
         }

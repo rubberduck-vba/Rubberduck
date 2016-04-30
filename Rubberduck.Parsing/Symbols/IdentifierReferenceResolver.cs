@@ -860,7 +860,7 @@ namespace Rubberduck.Parsing.Symbols
                 var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parent)
                           ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parent);
 
-                if (member == null && parent != null)
+                if (member == null && parent != null && parent.QualifiedName.QualifiedModuleName.Component != null)
                 {
                     var parentComTypeName = string.Empty;
                     var property = parent.QualifiedName.QualifiedModuleName.Component.Properties.Item("Parent");
