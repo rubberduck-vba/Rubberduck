@@ -186,9 +186,13 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     moduleDeclaration = new ProceduralModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes);
                 }
-                else
+                else if (typeDeclarationType == DeclarationType.ClassModule)
                 {
                     moduleDeclaration = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes, isExposed: true);
+                }
+                else
+                {
+                    moduleDeclaration = new Declaration(typeQualifiedMemberName, projectDeclaration, projectDeclaration, typeName, false, false, Accessibility.Global, typeDeclarationType, null, Selection.Home, true, null, attributes);
                 }
                 yield return moduleDeclaration;
                 
