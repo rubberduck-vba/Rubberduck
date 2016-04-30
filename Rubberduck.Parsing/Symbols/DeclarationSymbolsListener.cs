@@ -160,6 +160,10 @@ namespace Rubberduck.Parsing.Symbols
                 var isParamArray = argContext.PARAMARRAY() != null;
                 var isArray = argContext.LPAREN() != null;
                 result = new ParameterDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, context, selection, asTypeName, isOptional, isByRef, isArray, isParamArray);
+                if (Declaration.HasParameter(_parentDeclaration.DeclarationType))
+                {
+                    ((IDeclarationWithParameter)_parentDeclaration).Add(result);
+                }
             }
             else
             {
@@ -171,7 +175,34 @@ namespace Rubberduck.Parsing.Symbols
                 }
 
                 var annotations = FindAnnotations(selection.StartLine);
-                result = new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations, attributes);
+                if (declarationType == DeclarationType.Procedure)
+                {
+                    result = new SubroutineDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, false, annotations, attributes);
+                }
+                else if (declarationType == DeclarationType.Function)
+                {
+                    result = new FunctionDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, false, annotations, attributes);
+                }
+                else if (declarationType == DeclarationType.PropertyGet)
+                {
+                    result = new PropertyGetDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, false, annotations, attributes);
+                }
+                else if (declarationType == DeclarationType.PropertySet)
+                {
+                    result = new PropertySetDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, false, annotations, attributes);
+                }
+                else if (declarationType == DeclarationType.PropertyLet)
+                {
+                    result = new PropertyLetDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, false, annotations, attributes);
+                }
+                else
+                {
+                    result = new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations, attributes);
+                }
+                if (_parentDeclaration.DeclarationType == DeclarationType.ClassModule && result is ICanBeDefaultMember && ((ICanBeDefaultMember)result).IsDefaultMember)
+                {
+                    ((ClassModuleDeclaration)_parentDeclaration).DefaultMember = result;
+                }
             }
 
             OnNewDeclaration(result);
@@ -454,7 +485,7 @@ namespace Rubberduck.Parsing.Symbols
             var withEvents = parent.WITHEVENTS() != null;
             var selfAssigned = asTypeClause != null && asTypeClause.NEW() != null;
 
-            OnNewDeclaration(CreateDeclaration(name, asTypeName,  accessibility, DeclarationType.Variable, context, context.identifier().GetSelection(), selfAssigned, withEvents));
+            OnNewDeclaration(CreateDeclaration(name, asTypeName, accessibility, DeclarationType.Variable, context, context.identifier().GetSelection(), selfAssigned, withEvents));
         }
 
         public override void EnterConstSubStmt(VBAParser.ConstSubStmtContext context)

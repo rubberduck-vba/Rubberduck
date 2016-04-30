@@ -122,6 +122,14 @@ namespace Rubberduck.Parsing.Symbols
             _customFolder = result;
         }
 
+        public static bool HasParameter(DeclarationType declarationType)
+        {
+            return
+                declarationType.HasFlag(DeclarationType.Property)
+                || declarationType == DeclarationType.Function
+                || declarationType == DeclarationType.Procedure;
+        }
+
         public static Declaration GetModuleParent(Declaration declaration)
         {
             if (declaration == null)
@@ -217,25 +225,6 @@ namespace Rubberduck.Parsing.Symbols
                 if (_attributes.TryGetValue("VB_PredeclaredId", out value))
                 {
                     return value.Single() == "True";
-                }
-
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets an attribute value indicating whether a member is a class' default member.
-        /// If this value is true, any reference to an instance of the class it's the default member of,
-        /// should count as a member call to this member.
-        /// </summary>
-        public bool IsDefaultMember
-        {
-            get
-            {
-                IEnumerable<string> value;
-                if (_attributes.TryGetValue(IdentifierName + ".VB_UserMemId", out value))
-                {
-                    return value.Single() == "0";
                 }
 
                 return false;

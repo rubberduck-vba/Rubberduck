@@ -66,5 +66,7 @@ namespace Rubberduck.Parsing.Symbols
                 return false;
             }
         }
+
+        public Declaration DefaultMember { get; internal set; }
     }
 }

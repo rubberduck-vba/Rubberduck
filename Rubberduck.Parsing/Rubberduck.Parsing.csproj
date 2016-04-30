@@ -210,6 +210,13 @@
     <Compile Include="Symbols\DeclarationEventArgs.cs" />
     <Compile Include="Symbols\DeclarationFinder.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
+    <Compile Include="Symbols\ICanBeDefaultMember.cs" />
+    <Compile Include="Symbols\IDeclarationWithParameter.cs" />
+    <Compile Include="Symbols\PropertyLetDeclaration.cs" />
+    <Compile Include="Symbols\PropertySetDeclaration.cs" />
+    <Compile Include="Symbols\PropertyGetDeclaration.cs" />
+    <Compile Include="Symbols\FunctionDeclaration.cs" />
+    <Compile Include="Symbols\SubroutineDeclaration.cs" />
     <Compile Include="Symbols\TypeAnnotationPass.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
     <Compile Include="Symbols\MemberProcessedEventArgs.cs" />
