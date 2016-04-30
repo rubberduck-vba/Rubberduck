@@ -87,6 +87,22 @@ END";
         }
 
         [TestMethod]
+        public void TestEmptyComment()
+        {
+            string code = @"'";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//comment");
+        }
+
+        [TestMethod]
+        public void TestOneCharComment()
+        {
+            string code = @"'a";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//comment");
+        }
+
+        [TestMethod]
         public void TestDictionaryCallLineContinuation()
         {
             string code = @"

@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections
     public class UntypedFunctionUsageQuickFix : CodeInspectionQuickFix
     {
         public UntypedFunctionUsageQuickFix(ParserRuleContext context, QualifiedSelection selection) 
-            : base(context, selection, string.Format(InspectionsUI.QuickFixUseTypedFunction_, context.GetText()))
+            : base(context, selection, string.Format(InspectionsUI.QuickFixUseTypedFunction_, context.GetText(), context.GetText() + "$"))
         {
         }
 
@@ -49,6 +49,7 @@ namespace Rubberduck.Inspections
 
             var result = lines.Replace(originalInstruction, newInstruction);
             module.ReplaceLine(selection.StartLine, result);
+            // FIXME trigger reparse
         }
     }
 }

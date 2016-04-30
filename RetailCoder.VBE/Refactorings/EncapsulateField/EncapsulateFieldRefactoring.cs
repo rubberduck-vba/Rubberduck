@@ -20,11 +20,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _factory = factory;
         }
 
-        public bool CanExecute(QualifiedSelection selection)
-        {
-            return false;
-        }
-
         public void Refactor()
         {
             var presenter = _factory.Create();

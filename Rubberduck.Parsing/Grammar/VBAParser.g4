@@ -573,7 +573,7 @@ endOfStatement : (endOfLine | whiteSpace? COLON whiteSpace?)*;
 
 remComment : REMCOMMENT;
 
-comment : COMMENT;
+comment : SINGLEQUOTE | COMMENT;
 
 annotationList : SINGLEQUOTE annotation+;
 
