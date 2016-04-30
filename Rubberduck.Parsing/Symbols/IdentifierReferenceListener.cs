@@ -194,7 +194,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterFieldLength(VBAParser.FieldLengthContext context)
         {
-            _resolver.Resolve(context);
+            //_resolver.Resolve(context);
         }
 
         public override void EnterVsAssign(VBAParser.VsAssignContext context)

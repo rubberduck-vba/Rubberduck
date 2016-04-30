@@ -953,7 +953,18 @@ namespace Rubberduck.Parsing.Symbols
             }
             var baseType = asType.baseType();
             if (baseType != null)
-            {
+            {            
+                // Fixed-Length strings can have a constant-name as length that is a simple-name-expression that also has to be resolved.
+                var length = context.fieldLength();
+                if (context.fieldLength() != null && context.fieldLength().identifier() != null)
+                {
+                    var constantName = context.fieldLength().identifier();
+                    var constantNameExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentScope, constantName.GetText());
+                    if (constantNameExpression != null)
+                    {
+                        _boundExpressionVisitor.AddIdentifierReferences(constantNameExpression, declaration => CreateReference(constantName, declaration));
+                    }
+                }
                 return;
             }
             string typeExpression = asType.complexType().GetText();

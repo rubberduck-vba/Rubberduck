@@ -53,5 +53,18 @@ namespace Rubberduck.Parsing.Symbols
                 return _isExposed || attributeIsExposed;
             }
         }
+
+        public bool IsGlobalClassModule
+        {
+            get
+            {
+                IEnumerable<string> value;
+                if (Attributes.TryGetValue("VB_GlobalNamespace", out value))
+                {
+                    return value.Single() == "True";
+                }
+                return false;
+            }
+        }
     }
 }

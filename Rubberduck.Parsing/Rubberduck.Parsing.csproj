@@ -81,6 +81,7 @@
     <Compile Include="Binding\MemberAccessTypeBinding.cs" />
     <Compile Include="Binding\NewExpression.cs" />
     <Compile Include="Binding\ProcedurePointerBindingContext.cs" />
+    <Compile Include="Binding\SimpleNameDefaultBinding.cs" />
     <Compile Include="Binding\SimpleNameProcedurePointerBinding.cs" />
     <Compile Include="Binding\NewTypeBinding.cs" />
     <Compile Include="Binding\DefaultBindingContext.cs" />

@@ -45,8 +45,7 @@ namespace Rubberduck.Common
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.GeneralSettings.HotkeySettings;
 
-            _rawinput = new RawInput(_mainWindowHandle, true);
-            _rawinput.AddMessageFilter();
+            _rawinput = new RawInput(_mainWindowHandle);
 
             var kb = (RawKeyboard)_rawinput.CreateKeyboard();
             _rawinput.AddDevice(kb);

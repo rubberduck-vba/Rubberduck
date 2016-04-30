@@ -23,6 +23,12 @@ namespace Rubberduck.Parsing.Binding
             return null;
         }
 
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.LExprContext expression)
+        {
+            dynamic lexpr = expression.lExpression();
+            return Visit(module, parent, lexpr);
+        }
+
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.NewExprContext expression)
         {
             return Visit(module, parent, expression.newExpression());
@@ -51,9 +57,9 @@ namespace Rubberduck.Parsing.Binding
         {
             if (expression.simpleNameExpression() != null)
             {
-                return Visit(module, parent, expression.simpleNameExpression());
+                return VisitTypeContext(module, parent, expression.simpleNameExpression());
             }
-            return Visit(module, parent, expression.memberAccessExpression());
+            return VisitTypeContext(module, parent, expression.memberAccessExpression());
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.SimpleNameExprContext expression)
@@ -63,17 +69,27 @@ namespace Rubberduck.Parsing.Binding
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.SimpleNameExpressionContext expression)
         {
+            return new SimpleNameDefaultBinding(_declarationFinder, module, parent, expression);
+        }
+
+        private IExpressionBinding VisitTypeContext(Declaration module, Declaration parent, VBAExpressionParser.SimpleNameExprContext expression)
+        {
+            return VisitTypeContext(module, parent, expression.simpleNameExpression());
+        }
+
+        private IExpressionBinding VisitTypeContext(Declaration module, Declaration parent, VBAExpressionParser.SimpleNameExpressionContext expression)
+        {
             return new SimpleNameTypeBinding(_declarationFinder, module, parent, expression);
         }
 
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.MemberAccessExprContext expression)
+        private IExpressionBinding VisitTypeContext(Declaration module, Declaration parent, VBAExpressionParser.MemberAccessExprContext expression)
         {
             dynamic lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression);
             return new MemberAccessTypeBinding(_declarationFinder, module, parent, expression, lExpressionBinding);
         }
 
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.MemberAccessExpressionContext expression)
+        private IExpressionBinding VisitTypeContext(Declaration module, Declaration parent, VBAExpressionParser.MemberAccessExpressionContext expression)
         {
             dynamic lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression);
