@@ -453,7 +453,7 @@ namespace Rubberduck.Parsing.Symbols
                 var asTypeName = asTypeClause == null
                     ? Tokens.Variant
                     : asTypeClause.type().GetText();
-                var identifier = argContext.identifier();
+                var identifier = argContext.unrestrictedIdentifier();
                 if (identifier == null)
                 {
                     return;

@@ -167,11 +167,11 @@ namespace Rubberduck.Parsing.Symbols
 
         private void ResolveType(VBAParser.ICS_S_MembersCallContext context)
         {
-            var first = context.iCS_S_VariableOrProcedureCall().identifier();
-            var identifiers = new[] { first }.Concat(context.iCS_S_MemberCall()
-                        .Select(member => member.iCS_S_VariableOrProcedureCall().identifier()))
-                        .ToList();
-            ResolveType(identifiers);
+            //var first = context.iCS_S_VariableOrProcedureCall().identifier();
+            //var identifiers = new[] { first }.Concat(context.iCS_S_MemberCall()
+            //            .Select(member => member.iCS_S_VariableOrProcedureCallUnrestricted().unrestrictedIdentifier()))
+            //            .ToList();
+            //ResolveType(identifiers);
         }
 
         private Declaration ResolveType(VBAParser.ComplexTypeContext context)
@@ -555,14 +555,14 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var fieldName = fieldCall.identifier().GetText();
+            var fieldName = fieldCall.unrestrictedIdentifier().GetText();
             var result = _declarationFinder.MatchName(fieldName).SingleOrDefault(declaration => declaration.ParentScope == parentType.Scope);
             if (result == null)
             {
                 return null;
             }
 
-            var identifierContext = fieldCall.identifier();
+            var identifierContext = fieldCall.unrestrictedIdentifier();
             var reference = CreateReference(identifierContext, result, isAssignmentTarget, hasExplicitLetStatement);
             result.AddReference(reference);
             _alreadyResolved.Add(reference.Context);
@@ -626,37 +626,37 @@ namespace Rubberduck.Parsing.Symbols
             var lastCall = chainedCalls.Last();
             foreach (var memberCall in chainedCalls)
             {
-                // if we're on the left side of an assignment, only the last memberCall is the assignment target.
-                var isLast = memberCall.Equals(lastCall);
-                var accessor = isLast
-                    ? accessorType
-                    : ContextAccessorType.GetValueOrReference;
-                var isTarget = isLast && isAssignmentTarget;
+                //// if we're on the left side of an assignment, only the last memberCall is the assignment target.
+                //var isLast = memberCall.Equals(lastCall);
+                //var accessor = isLast
+                //    ? accessorType
+                //    : ContextAccessorType.GetValueOrReference;
+                //var isTarget = isLast && isAssignmentTarget;
 
-                var parentType = ResolveType(parent);
+                //var parentType = ResolveType(parent);
 
-                var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType, accessor, hasExplicitLetStatement, isTarget)
-                             ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType, accessor, hasExplicitLetStatement, isTarget);
+                //var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCallUnrestricted(), parentType, accessor, hasExplicitLetStatement, isTarget)
+                //             ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCallUnrestricted(), parentType, accessor, hasExplicitLetStatement, isTarget);
 
-                if (member == null && parent != null)
-                {
-                    var parentComTypeName = GetParentComTypeName(parent);
+                //if (member == null && parent != null)
+                //{
+                //    var parentComTypeName = GetParentComTypeName(parent);
 
-                    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
-                    parentType = _declarationFinder.FindClass(_moduleDeclaration.ParentDeclaration, parentComTypeName);
-                    member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType, accessor, hasExplicitLetStatement, isTarget)
-                                 ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType, accessor, hasExplicitLetStatement, isTarget);
-                }
+                //    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
+                //    parentType = _declarationFinder.FindClass(_moduleDeclaration.ParentDeclaration, parentComTypeName);
+                //    member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCallUnrestricted(), parentType, accessor, hasExplicitLetStatement, isTarget)
+                //                 ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCallUnrestricted(), parentType, accessor, hasExplicitLetStatement, isTarget);
+                //}
 
-                if (member == null)
-                {
-                    // if member still can't be found, it's hopeless
-                    return null;
-                }
+                //if (member == null)
+                //{
+                //    // if member still can't be found, it's hopeless
+                //    return null;
+                //}
 
-                var memberReference = CreateReference(GetMemberCallIdentifierContext(memberCall), parent);
-                member.AddMemberCall(memberReference);
-                parent = ResolveType(member);
+                //var memberReference = CreateReference(GetMemberCallIdentifierContext(memberCall), parent);
+                //member.AddMemberCall(memberReference);
+                //parent = ResolveType(member);
             }
 
             var fieldCall = context.dictionaryCallStmt();
@@ -842,34 +842,34 @@ namespace Rubberduck.Parsing.Symbols
             var chainedCalls = context.iCS_S_MemberCall();
             foreach (var memberCall in chainedCalls)
             {
-                var notationToken = memberCall.children[0];
-                if (notationToken.GetText() == "!")
-                {
-                    // the memberCall is a shorthand reference to the type's default member.
-                    // since the reference isn't explicit, we don't need to care for it.
-                    // (and we couldn't handle it if we wanted to, since we aren't parsing member attributes)
-                    return;
-                }
+                //var notationToken = memberCall.children[0];
+                //if (notationToken.GetText() == "!")
+                //{
+                //    // the memberCall is a shorthand reference to the type's default member.
+                //    // since the reference isn't explicit, we don't need to care for it.
+                //    // (and we couldn't handle it if we wanted to, since we aren't parsing member attributes)
+                //    return;
+                //}
 
-                var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parent)
-                          ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parent);
+                //var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parent)
+                //          ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parent);
 
-                if (member == null && parent != null)
-                {
-                    var parentComTypeName = GetParentComTypeName(parent);
-                    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
-                    var parentType = _declarationFinder.FindClass(null, parentComTypeName);
-                    member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType)
-                                    ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType);
-                }
+                //if (member == null && parent != null)
+                //{
+                //    var parentComTypeName = GetParentComTypeName(parent);
+                //    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
+                //    var parentType = _declarationFinder.FindClass(null, parentComTypeName);
+                //    member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType)
+                //                    ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType);
+                //}
 
-                if (member == null)
-                {
-                    return;
-                }
+                //if (member == null)
+                //{
+                //    return;
+                //}
 
-                member.AddReference(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
-                parent = ResolveType(member);
+                //member.AddReference(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
+                //parent = ResolveType(member);
             }
 
             var fieldCall = context.dictionaryCallStmt();
@@ -908,7 +908,6 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.BlockIfThenElseContext context)
         {
-            // TODO: Nested if statements don't work because the parse tree is built differently.
             var ifExpr = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.ifBlockStmt().ifConditionStmt().GetText(), GetInnerMostWithExpression());
             if (ifExpr != null)
             {
@@ -940,7 +939,6 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.SelectCaseStmtContext context)
         {
-            // TODO: Grammar does not build correct select case parse tree, thus not resolvable right now.
             var selectExpr = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt().GetText(), GetInnerMostWithExpression());
             if (selectExpr != null)
             {
@@ -1008,23 +1006,23 @@ namespace Rubberduck.Parsing.Symbols
             return string.Empty;
         }
 
-        private VBAParser.IdentifierContext GetMemberCallIdentifierContext(VBAParser.ICS_S_MemberCallContext callContext)
+        private ParserRuleContext GetMemberCallIdentifierContext(VBAParser.ICS_S_MemberCallContext callContext)
         {
             if (callContext == null)
             {
                 return null;
             }
 
-            var procedureOrArrayCall = callContext.iCS_S_ProcedureOrArrayCall();
+            var procedureOrArrayCall = callContext.iCS_S_ProcedureOrArrayCallUnrestricted();
             if (procedureOrArrayCall != null)
             {
-                return procedureOrArrayCall.identifier();
+                return procedureOrArrayCall.unrestrictedIdentifier();
             }
 
-            var variableOrProcedureCall = callContext.iCS_S_VariableOrProcedureCall();
+            var variableOrProcedureCall = callContext.iCS_S_VariableOrProcedureCallUnrestricted();
             if (variableOrProcedureCall != null)
             {
-                return variableOrProcedureCall.identifier();
+                return variableOrProcedureCall.unrestrictedIdentifier();
             }
 
             return null;

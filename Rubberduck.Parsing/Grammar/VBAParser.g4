@@ -37,13 +37,13 @@ module :
 moduleHeader : VERSION whiteSpace numberLiteral whiteSpace? CLASS? endOfStatement;
 
 moduleConfig :
-	BEGIN (whiteSpace GUIDLITERAL whiteSpace identifier whiteSpace?)? endOfStatement
+	BEGIN (whiteSpace GUIDLITERAL whiteSpace unrestrictedIdentifier whiteSpace?)? endOfStatement
 	moduleConfigElement+
 	END
 ;
 
 moduleConfigElement :
-	identifier whiteSpace* EQ whiteSpace* literal (COLON numberLiteral)? endOfStatement
+	unrestrictedIdentifier whiteSpace* EQ whiteSpace* literal (COLON numberLiteral)? endOfStatement
 ;
 
 moduleAttributes : (attributeStmt endOfStatement)+;
@@ -463,7 +463,7 @@ explicitCallStmt : CALL whiteSpace explicitCallStmtExpression;
 
 explicitCallStmtExpression : 
     implicitCallStmt_InStmt? DOT identifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*   # ECS_MemberCall
-    | identifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*                                  # ECS_ProcedureCall
+    | identifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*                              # ECS_ProcedureCall
 ;
 
 implicitCallStmt_InBlock :
@@ -483,12 +483,14 @@ implicitCallStmt_InStmt :
 ;
 
 iCS_S_VariableOrProcedureCall : identifier typeHint? (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
-
 iCS_S_ProcedureOrArrayCall : (identifier | baseType) typeHint? whiteSpace? LPAREN whiteSpace? (argsCall whiteSpace?)? RPAREN (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
+
+iCS_S_VariableOrProcedureCallUnrestricted : unrestrictedIdentifier typeHint? (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
+iCS_S_ProcedureOrArrayCallUnrestricted : (unrestrictedIdentifier | baseType) typeHint? whiteSpace? LPAREN whiteSpace? (argsCall whiteSpace?)? RPAREN (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
 iCS_S_MembersCall : (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall)? (iCS_S_MemberCall whiteSpace?)+ (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
-iCS_S_MemberCall : (DOT | EXCLAMATIONPOINT) whiteSpace? (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall);
+iCS_S_MemberCall : (DOT | EXCLAMATIONPOINT) whiteSpace? (iCS_S_VariableOrProcedureCallUnrestricted | iCS_S_ProcedureOrArrayCallUnrestricted);
 
 iCS_S_DictionaryCall : whiteSpace? dictionaryCallStmt;
 
@@ -496,17 +498,19 @@ argsCall : (argCall? whiteSpace? (COMMA | SEMICOLON) whiteSpace?)* argCall (whit
 
 argCall : LPAREN? ((BYVAL | BYREF | PARAMARRAY) whiteSpace)? RPAREN? valueStmt;
 
-dictionaryCallStmt : EXCLAMATIONPOINT whiteSpace? identifier typeHint?;
+dictionaryCallStmt : EXCLAMATIONPOINT whiteSpace? unrestrictedIdentifier typeHint?;
 
 argList : LPAREN (whiteSpace? arg (whiteSpace? COMMA whiteSpace? arg)*)? whiteSpace? RPAREN;
 
-arg : (OPTIONAL whiteSpace)? ((BYVAL | BYREF) whiteSpace)? (PARAMARRAY whiteSpace)? identifier typeHint? (whiteSpace? LPAREN whiteSpace? RPAREN)? (whiteSpace? asTypeClause)? (whiteSpace? argDefaultValue)?;
+arg : (OPTIONAL whiteSpace)? ((BYVAL | BYREF) whiteSpace)? (PARAMARRAY whiteSpace)? unrestrictedIdentifier typeHint? (whiteSpace? LPAREN whiteSpace? RPAREN)? (whiteSpace? asTypeClause)? (whiteSpace? argDefaultValue)?;
 
 argDefaultValue : EQ whiteSpace? valueStmt;
 
 subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 
 subscript : (valueStmt whiteSpace TO whiteSpace)? valueStmt;
+
+unrestrictedIdentifier : identifier | statementKeyword;
 
 identifier : IDENTIFIER | keyword;
 
@@ -535,30 +539,208 @@ typeHint : PERCENT | AMPERSAND | POW | EXCLAMATIONPOINT | HASH | AT | DOLLAR;
 visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 
 keyword : 
-	ACCESS | ADDRESSOF | ALIAS | AND | ATTRIBUTE | APPACTIVATE | APPEND | AS |
-	BEEP | BEGIN | BINARY | BOOLEAN | BYVAL | BYREF | BYTE | 
-	CALL | CASE | CLASS | CLOSE | CHDIR | CHDRIVE | COLLECTION | CONST | 
-	DATABASE | DATE | DECLARE | DEFBOOL | DEFBYTE | DEFCUR | DEFDBL | DEFDATE | DEFINT | DEFLNG | DEFLNGLNG | DEFLNGPTR | DEFOBJ | DEFSNG | DEFSTR | DEFVAR | DELETESETTING | DIM | DO | DOUBLE | 
-	EACH | ELSE | ELSEIF | END | ENUM | EQV | ERASE | ERROR | EVENT | 
-	FALSE | FILECOPY | FRIEND | FOR | FUNCTION | 
-	GET | GLOBAL | GOSUB | GOTO | 
-	IF | IMP | IMPLEMENTS | IN | INPUT | IS | INTEGER |
-	KILL | 
-	LOAD | LOCK | LONG | LOOP | LEN | LET | LIB | LIKE | LSET |
-	ME | MID | MKDIR | MOD | 
-	NAME | NEXT | NEW | NOT | NOTHING | NULL | 
-	ON | OPEN | OPTIONAL | OR | OUTPUT | 
-	PARAMARRAY | PRESERVE | PRINT | PRIVATE | PUBLIC | PUT |
-	RANDOM | RANDOMIZE | RAISEEVENT | READ | REDIM | REM | RESET | RESUME | RETURN | RMDIR | RSET |
-	SAVEPICTURE | SAVESETTING | SEEK | SELECT | SENDKEYS | SET | SETATTR | SHARED | SINGLE | SPC | STATIC | STEP | STOP | STRING | SUB | 
-	TAB | TEXT | THEN | TIME | TO | TRUE | TYPE | TYPEOF | 
-	UNLOAD | UNLOCK | UNTIL | 
-	VARIANT | VERSION | 
-	WEND | WHILE | WIDTH | WITH | WITHEVENTS | WRITE |
-	XOR | ABS | ANY | ARRAY | CBOOL | CBYTE | CCUR | 
-    CDATE |  CDBL | CDEC | CINT | CIRCLE | CLNG | CLNGLNG | CLNGPTR | CSNG | CSTR | CURRENCY | CVAR | 
-    CVERR | DEBUG | DOEVENTS | END_IF | EXIT | FIX | INPUTB | INT | LBOUND | 
-    LEN | LENB | LONGLONG | LONGPTR | MIDB | MIDBTYPESUFFIX | MIDTYPESUFFIX | OPTION | PSET | SCALE | SGN | UBOUND
+       ABS
+     | ADDRESSOF
+     | ALIAS
+     | AND
+     | ANY
+     | APPACTIVATE
+     | ARRAY
+     | AS
+     | ATTRIBUTE
+     | BEEP
+     | BEGIN
+     | BOOLEAN
+     | BYREF
+     | BYTE
+     | BYVAL
+     | CBOOL
+     | CBYTE
+     | CCUR
+     | CDATE
+     | CDBL
+     | CDEC
+     | CHDIR
+     | CHDRIVE
+     | CINT
+     | CIRCLE
+     | CLASS
+     | CLNG
+     | CLNGLNG
+     | CLNGPTR
+     | COLLECTION
+     | CSNG
+     | CSTR
+     | CURRENCY
+     | CVAR
+     | CVERR
+     | DATABASE
+     | DATE
+     | DEBUG
+     | DELETESETTING
+     | DOEVENTS
+     | DOUBLE
+     | END_IF
+     | EQV
+     | FALSE
+     | FILECOPY
+     | FIX
+     | IMP
+     | IN
+     | INPUTB
+     | INT
+     | INTEGER
+     | IS
+     | KILL
+     | LBOUND
+     | LEN
+     | LEN
+     | LENB
+     | LIB
+     | LIKE
+     | LOAD
+     | LONG
+     | LONGLONG
+     | LONGPTR
+     | ME
+     | MID
+     | MIDB
+     | MIDBTYPESUFFIX
+     | MIDTYPESUFFIX
+     | MKDIR
+     | MOD
+     | NAME
+     | NEW
+     | NOT
+     | NOTHING
+     | NULL
+     | OPTIONAL
+     | OR
+     | PARAMARRAY
+     | PRESERVE
+     | PSET
+     | RANDOMIZE
+     | REM
+     | RMDIR
+     | SAVEPICTURE
+     | SAVESETTING
+     | SCALE
+     | SENDKEYS
+     | SETATTR
+     | SGN
+     | SINGLE
+     | SPC
+     | STRING
+     | TAB
+     | TEXT
+     | THEN
+     | TIME
+     | TO
+     | TRUE
+     | TYPEOF
+     | UBOUND
+     | UNLOAD
+     | UNTIL
+     | VARIANT
+     | VERSION
+     | WITHEVENTS
+     | XOR
+;
+
+statementKeyword :
+    CALL
+    | CASE
+    | CLOSE
+    | CONST
+    | DECLARE
+    | DEFBOOL
+    | DEFBYTE
+    | DEFCUR
+    | DEFDATE
+    | DEFDBL
+    | DEFINT
+    | DEFLNG
+    | DEFLNGLNG
+    | DEFLNGPTR
+    | DEFOBJ
+    | DEFSNG
+    | DEFSTR
+    | DEFVAR
+    | DIM
+    | DO
+    | ELSE
+    | ELSEIF
+    | END
+    | ENDIF
+    | ENUM
+    | ERASE
+    | EVENT
+    | EXIT
+    | FOR
+    | FRIEND
+    | FUNCTION
+    | GET
+    | GLOBAL
+    | GOSUB
+    | GOTO
+    | IF
+    | IMPLEMENTS
+    | INPUT
+    | LET
+    | LOCK
+    | LOOP
+    | LSET
+    | NEXT
+    | ON
+    | OPEN
+    | OPTION
+    | PRINT
+    | PRIVATE
+    | PUBLIC
+    | PUT
+    | RAISEEVENT
+    | REDIM
+    | RESUME
+    | RETURN
+    | RSET
+    | SEEK
+    | SELECT
+    | SET
+    | STATIC
+    | STOP
+    | SUB
+    | TYPE
+    | UNLOCK
+    | WEND
+    | WHILE
+    | WITH
+    | WRITE
+    | STEP
+    | EXIT_DO 
+    | EXIT_FOR 
+    | EXIT_FUNCTION 
+    | EXIT_PROPERTY 
+    | EXIT_SUB
+    | END_SELECT
+    | END_WITH
+    | ON_ERROR
+    | RESUME_NEXT
+    | ERROR
+    | APPEND
+    | BINARY
+    | OUTPUT
+    | RANDOM
+    | ACCESS
+    | READ
+    | WRITE
+    | READ_WRITE
+    | SHARED
+    | LOCK_READ
+    | LOCK_WRITE
+    | LOCK_READ_WRITE
+    | RESET
+    | LINE_INPUT
+    | WIDTH
 ;
 
 endOfLine :

@@ -101,7 +101,7 @@ namespace Rubberduck.Inspections
             var newfunctionWithReturn = newFunctionWithoutReturn
                 .Insert(newFunctionWithoutReturn.LastIndexOf(Environment.NewLine, StringComparison.Ordinal),
                         Environment.NewLine + "    " + _subStmtQualifiedContext.Context.identifier().GetText() +
-                        " = " + _argQualifiedContext.Context.identifier().GetText());
+                        " = " + _argQualifiedContext.Context.unrestrictedIdentifier().GetText());
 
             _lineOffset = newfunctionWithReturn.Split(new[] {Environment.NewLine}, StringSplitOptions.None).Length -
                          subStmtText.Split(new[] {Environment.NewLine}, StringSplitOptions.None).Length;
