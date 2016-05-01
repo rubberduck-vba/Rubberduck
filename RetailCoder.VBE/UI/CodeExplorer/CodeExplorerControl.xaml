@@ -151,11 +151,11 @@
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/plus-circle.png" />
                     </MenuItem.Icon>
-                    <MenuItem Header="Test Module"></MenuItem>
+                    <MenuItem Header="Test Module" Command="{Binding AddTestModuleCommand}" />
                     <Separator />
-                    <MenuItem Header="Standard Module (.bas)"></MenuItem>
-                    <MenuItem Header="Class Module (.cls)"></MenuItem>
-                    <MenuItem Header="User Form (.frm)"></MenuItem>
+                    <MenuItem Header="Standard Module (.bas)" />
+                    <MenuItem Header="Class Module (.cls)" />
+                    <MenuItem Header="User Form (.frm)" />
                 </MenuItem>
             </Menu>
 

@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
+using Rubberduck.UnitTesting;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -14,20 +15,26 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private readonly RubberduckParserState _state;
 
-        public CodeExplorerViewModel(RubberduckParserState state, INavigateCommand navigateCommand)
+        public CodeExplorerViewModel(RubberduckParserState state, INavigateCommand navigateCommand, NewUnitTestModuleCommand newUnitTestModuleCommand)
         {
             _state = state;
             _navigateCommand = navigateCommand;
+            _newUnitTestModuleCommand = newUnitTestModuleCommand;
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
             _refreshCommand = new DelegateCommand(ExecuteRefreshCommand);
+            _addTestModuleCommand = new DelegateCommand(ExecuteAddTestModuleCommand);
         }
 
         private readonly ICommand _refreshCommand;
         public ICommand RefreshCommand { get { return _refreshCommand; } }
 
+        private readonly ICommand _addTestModuleCommand;
+        public ICommand AddTestModuleCommand { get { return _addTestModuleCommand; } }
+
         private readonly INavigateCommand _navigateCommand;
+        private readonly NewUnitTestModuleCommand _newUnitTestModuleCommand;
         public ICommand NavigateCommand { get { return _navigateCommand; } }
 
         private object _selectedItem;
@@ -110,6 +117,12 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             Debug.WriteLine("CodeExplorerViewModel.ExecuteRefreshCommand - requesting reparse");
             _state.OnParseRequested(this);
+        }
+
+        private void ExecuteAddTestModuleCommand(object param)
+        {
+            Debug.WriteLine("CodeExplorerViewModel.AddTestModeleCommand - requesting reparse");
+            _newUnitTestModuleCommand.NewUnitTestModule();
         }
     }
 }
