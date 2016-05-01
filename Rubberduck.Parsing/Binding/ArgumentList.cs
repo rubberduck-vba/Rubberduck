@@ -12,9 +12,9 @@ namespace Rubberduck.Parsing.Binding
             _arguments = new List<ArgumentListArgument>();
         }
 
-        public void AddArgument(ArgumentListArgumentType argumentType)
+        public void AddArgument(IExpressionBinding binding, ArgumentListArgumentType argumentType)
         {
-            _arguments.Add(new ArgumentListArgument(argumentType));
+            _arguments.Add(new ArgumentListArgument(binding, argumentType));
         }
 
         public bool HasArguments
@@ -38,6 +38,14 @@ namespace Rubberduck.Parsing.Binding
             get
             {
                 return _arguments.Any(a => a.ArgumentType == ArgumentListArgumentType.Positional);
+            }
+        }
+
+        public IReadOnlyList<ArgumentListArgument> Arguments
+        {
+            get
+            {
+                return _arguments;
             }
         }
     }

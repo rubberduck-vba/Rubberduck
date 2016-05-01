@@ -3,18 +3,28 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.Binding
 {
-    public sealed class NewExpression : BoundExpression
+    public sealed class TypeOfIsExpression : BoundExpression
     {
+        private readonly IBoundExpression _expression;
         private readonly IBoundExpression _typeExpression;
 
-        public NewExpression(
+        public TypeOfIsExpression(
             Declaration referencedDeclaration,
             ParserRuleContext context,
+            IBoundExpression expression,
             IBoundExpression typeExpression)
-            // Marked as Variable instead of Value to integrate into rest of binding process.
-            : base(referencedDeclaration, ExpressionClassification.Variable, context)
+            : base(referencedDeclaration, ExpressionClassification.Value, context)
         {
+            _expression = expression;
             _typeExpression = typeExpression;
+        }
+
+        public IBoundExpression Expression
+        {
+            get
+            {
+                return _expression;
+            }
         }
 
         public IBoundExpression TypeExpression

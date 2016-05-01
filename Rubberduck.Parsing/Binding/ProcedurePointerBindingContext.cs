@@ -1,5 +1,4 @@
-﻿using System;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.Binding
@@ -13,15 +12,37 @@ namespace Rubberduck.Parsing.Binding
             _declarationFinder = declarationFinder;
         }
 
-        public IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression, ParserRuleContext innerMostWithVariableExpression)
+        public IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable)
         {
-            dynamic dynamicExpression = expression;
-            IExpressionBinding bindingTree = Visit(module, parent, dynamicExpression);
+            IExpressionBinding bindingTree = BuildTree(module, parent, expression, withBlockVariable);
             if (bindingTree != null)
             {
                 return bindingTree.Resolve();
             }
             return null;
+        }
+
+        public IExpressionBinding BuildTree(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable)
+        {
+            dynamic dynamicExpression = expression;
+            return Visit(module, parent, dynamicExpression);
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.AddressOfExpressionContext expression)
+        {
+            return Visit(module, parent, expression.procedurePointerExpression());
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.ProcedurePointerExpressionContext expression)
+        {
+            if (expression.memberAccessExpression() != null)
+            {
+                return Visit(module, parent, expression.memberAccessExpression());
+            }
+            else
+            {
+                return Visit(module, parent, expression.simpleNameExpression());
+            }
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.LExprContext expression)

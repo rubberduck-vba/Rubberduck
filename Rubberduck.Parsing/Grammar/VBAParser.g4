@@ -448,13 +448,12 @@ whileWendStmt :
 widthStmt : WIDTH whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt;
 
 withStmt :
-    // TODO: withStmtExpression should actually be an expression, i.e. a valueStmt.
 	WITH whiteSpace withStmtExpression endOfStatement 
 	block? 
 	END_WITH
 ;
 
-withStmtExpression : (implicitCallStmt_InStmt | (NEW whiteSpace type));
+withStmtExpression : valueStmt;
 
 writeStmt : WRITE whiteSpace fileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
 

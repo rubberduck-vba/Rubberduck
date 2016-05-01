@@ -77,15 +77,17 @@ namespace Rubberduck.Inspections
 
         private bool IsReturnValueUsed(Declaration function)
         {
-            return function.References.Any(usage =>
-                            !IsReturnStatement(function, usage) && !IsAddressOfCall(usage) && !IsCallWithoutAssignment(usage));
+            return function.References.Any(
+                usage => 
+                !IsReturnStatement(function, usage)
+                && !IsAddressOfCall(usage)
+                && !IsExplicitCall(usage)
+                && !IsCallResultUsed(usage));
         }
 
         private bool IsAddressOfCall(IdentifierReference usage)
         {
-            RuleContext current = usage.Context;
-            while (current != null && !(current is VBAParser.VsAddressOfContext)) current = current.Parent;
-            return current != null;
+            return ParserRuleContextHelper.HasParent<VBAParser.VsAddressOfContext>(usage.Context);
         }
 
         private bool IsReturnStatement(Declaration function, IdentifierReference assignment)
@@ -93,9 +95,17 @@ namespace Rubberduck.Inspections
             return assignment.ParentScoping.Equals(function);
         }
 
-        private bool IsCallWithoutAssignment(IdentifierReference usage)
+        private bool IsExplicitCall(IdentifierReference usage)
         {
-            return usage.Context.Parent != null && usage.Context.Parent.Parent is VBAParser.ImplicitCallStmt_InBlockContext;
+            return ParserRuleContextHelper.HasParent<VBAParser.ExplicitCallStmtContext>(usage.Context);
+        }
+
+        private bool IsCallResultUsed(IdentifierReference usage)
+        {
+            return ParserRuleContextHelper.HasParent<VBAParser.ImplicitCallStmt_InBlockContext>(usage.Context)
+                && !ParserRuleContextHelper.HasParent<VBAParser.ImplicitCallStmt_InStmtContext>(usage.Context)
+                && !ParserRuleContextHelper.HasParent<VBAParser.LetStmtContext>(usage.Context)
+                && !ParserRuleContextHelper.HasParent<VBAParser.SetStmtContext>(usage.Context);
         }
     }
 }

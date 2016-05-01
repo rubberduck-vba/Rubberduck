@@ -51,7 +51,7 @@ namespace Rubberduck.Parsing.Symbols
                 !string.IsNullOrWhiteSpace(d.AsTypeName) 
                 && !d.AsTypeIsBaseType
                 && d.DeclarationType != DeclarationType.Project
-                && !d.DeclarationType.HasFlag(DeclarationType.Module)).ToList();
+                && d.DeclarationType != DeclarationType.ProceduralModule).ToList();
         }
 
         public IEnumerable<CommentNode> ModuleComments(QualifiedModuleName module)

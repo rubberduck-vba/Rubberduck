@@ -138,7 +138,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             // Implement statements are handled separately and directly through new binding expressions.
             // Prevent duplicate references.
-            if (BindingMigrationHelper.HasParent<VBAParser.ImplementsStmtContext>(context))
+            if (ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(context))
             {
                 return;
             }

@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly IReadOnlyList<DeclarationType> _returningMemberTypes;
 
         private readonly Stack<Declaration> _withBlockQualifiers;
-        private readonly Stack<string> _withBlockExpressions;
+        private readonly Stack<IBoundExpression> _withBlockExpressions;
         private readonly HashSet<RuleContext> _alreadyResolved;
 
         private readonly Declaration _moduleDeclaration;
@@ -49,7 +49,7 @@ namespace Rubberduck.Parsing.Symbols
             _qualifiedModuleName = qualifiedModuleName;
 
             _withBlockQualifiers = new Stack<Declaration>();
-            _withBlockExpressions = new Stack<string>();
+            _withBlockExpressions = new Stack<IBoundExpression>();
             _alreadyResolved = new HashSet<RuleContext>();
 
             _moduleTypes = new[]
@@ -80,10 +80,12 @@ namespace Rubberduck.Parsing.Symbols
 
             SetCurrentScope();
 
+            var typeBindingContext = new TypeBindingContext(_declarationFinder);
+            var procedurePointerBindingContext = new ProcedurePointerBindingContext(_declarationFinder);
             _bindingService = new BindingService(
-                new DefaultBindingContext(_declarationFinder),
-                new TypeBindingContext(_declarationFinder),
-                new ProcedurePointerBindingContext(_declarationFinder));
+                new DefaultBindingContext(_declarationFinder, typeBindingContext, procedurePointerBindingContext),
+                typeBindingContext,
+                procedurePointerBindingContext);
             _boundExpressionVisitor = new BoundExpressionVisitor();
         }
 
@@ -111,33 +113,19 @@ namespace Rubberduck.Parsing.Symbols
         {
             Declaration qualifier = null;
             var expr = context.withStmtExpression();
-
-            if (expr.NEW() == null)
+            var typeExpression = expr.GetText();
+            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, typeExpression, GetInnerMostWithExpression());
+            if (boundExpression != null)
             {
-                // TODO: Use valueStmt and resolve expression.
-                qualifier = ResolveInternal(expr.implicitCallStmt_InStmt(), _currentScope, ContextAccessorType.GetValueOrReference);
-            }
-            else
-            {
-                var type = expr.type();
-                var baseType = type.baseType();
-                if (baseType == null)
-                {
-                    string typeExpression = expr.GetText();
-                    var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, typeExpression, GetInnerMostWithExpression());
-                    if (boundExpression != null)
-                    {
-                        _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(type.complexType(), declaration));
-                        qualifier = boundExpression.ReferencedDeclaration;
-                    }
-                }
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(expr, declaration));
+                qualifier = boundExpression.ReferencedDeclaration;
             }
             // note: pushes null if unresolved
             _withBlockQualifiers.Push(qualifier);
-            _withBlockExpressions.Push(expr.GetText());
+            _withBlockExpressions.Push(boundExpression);
         }
 
-        private string GetInnerMostWithExpression()
+        private IBoundExpression GetInnerMostWithExpression()
         {
             if (_withBlockExpressions.Any())
             {
@@ -531,11 +519,11 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return null;
             }
-            if (BindingMigrationHelper.HasParent<VBAParser.ImplementsStmtContext>(context))
+            if (ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(context))
             {
                 return null;
             }
-            if (BindingMigrationHelper.HasParent<VBAParser.VsAddressOfContext>(context))
+            if (ParserRuleContextHelper.HasParent<VBAParser.VsAddressOfContext>(context))
             {
                 return null;
             }
@@ -756,7 +744,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 member = _declarationFinder
                     .MatchName(identifierContext.GetText())
-                    .SingleOrDefault(item => 
+                    .SingleOrDefault(item =>
                         item.QualifiedName.QualifiedModuleName == parentType.QualifiedName.QualifiedModuleName
                         && item.DeclarationType != DeclarationType.Event);
             }
@@ -775,10 +763,12 @@ namespace Rubberduck.Parsing.Symbols
             if (member != null)
             {
                 var reference = CreateReference(identifierContext, member);
-
-                parentScope.AddMemberCall(CreateReference(context.identifier(), member));
-                member.AddReference(reference);
-                _alreadyResolved.Add(reference.Context);
+                if (reference != null)
+                {
+                    parentScope.AddMemberCall(CreateReference(context.identifier(), member));
+                    member.AddReference(reference);
+                    _alreadyResolved.Add(reference.Context);
+                }
             }
             else
             {
@@ -978,7 +968,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             var baseType = asType.baseType();
             if (baseType != null)
-            {            
+            {
                 // Fixed-Length strings can have a constant-name as length that is a simple-name-expression that also has to be resolved.
                 var length = context.fieldLength();
                 if (context.fieldLength() != null && context.fieldLength().identifier() != null)
@@ -1287,7 +1277,7 @@ namespace Rubberduck.Parsing.Symbols
                 item.DeclarationType == DeclarationType.Project
                 || item.DeclarationType == DeclarationType.ProceduralModule
                 || IsPublicEnum(item)
-                || IsStaticClass(item) 
+                || IsStaticClass(item)
                 || IsStdModuleMember(item)
                 || (item.ParentScopeDeclaration != null && item.ParentScopeDeclaration.Equals(localScope))).ToList();
 

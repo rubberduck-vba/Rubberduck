@@ -12,10 +12,12 @@ namespace Rubberduck.Parsing.Symbols
         public TypeAnnotationPass(DeclarationFinder declarationFinder)
         {
             _declarationFinder = declarationFinder;
+            var typeBindingContext = new TypeBindingContext(_declarationFinder);
+            var procedurePointerBindingContext = new ProcedurePointerBindingContext(_declarationFinder);
             _bindingService = new BindingService(
-                new DefaultBindingContext(_declarationFinder),
-                new TypeBindingContext(_declarationFinder),
-                new ProcedurePointerBindingContext(_declarationFinder));
+                new DefaultBindingContext(_declarationFinder, typeBindingContext, procedurePointerBindingContext),
+                typeBindingContext,
+                procedurePointerBindingContext);
             _boundExpressionVisitor = new BoundExpressionVisitor();
         }
 
@@ -32,6 +34,12 @@ namespace Rubberduck.Parsing.Symbols
 
         private void AnnotateType(Declaration declarationWithAsType)
         {
+            // Classes are their own type, we treat the "as type" as the "declared type".
+            if (declarationWithAsType.DeclarationType == DeclarationType.ClassModule)
+            {
+                declarationWithAsType.AsTypeDeclaration = declarationWithAsType;
+            }
+
             string typeExpression;
             if (declarationWithAsType.IsTypeSpecified())
             {
@@ -48,6 +56,7 @@ namespace Rubberduck.Parsing.Symbols
                 // TODO: Reference Collector does not add module, find workaround?
                 return;
             }
+            
             var boundExpression = _bindingService.ResolveType(module, declarationWithAsType.ParentDeclaration, typeExpression);
             if (boundExpression != null)
             {

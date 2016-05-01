@@ -373,7 +373,7 @@ Public Sub Baz()
     Dim testObj As IFoo
     Set testObj = new Bar()
     Dim result As Integer
-    result = testObj.Test()
+    result = testObj.Test
 End Sub";
 
             //Arrange

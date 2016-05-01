@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using System;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -20,15 +21,11 @@ namespace Rubberduck.Parsing.Binding
             _procedurePointerBindingContext = procedurePointerBindingContext;
         }
 
-        public IBoundExpression ResolveDefault(Declaration module, Declaration parent, string expression, string innerMostWithBlockVariableExpression)
+        public IBoundExpression ResolveDefault(Declaration module, Declaration parent, string expression, IBoundExpression withBlockVariable)
         {
-            var expr = Parse(expression);
-            ParserRuleContext innerMostWithBlockVariableExpr = null;
-            if (!string.IsNullOrWhiteSpace(innerMostWithBlockVariableExpression))
-            {
-                innerMostWithBlockVariableExpr = Parse(innerMostWithBlockVariableExpression);
-            }
-            return _defaultBindingContext.Resolve(module, parent, expr, innerMostWithBlockVariableExpr);
+            // Trim the expression because the grammar allows whitespace in some places.
+            var expr = Parse(expression.Trim());
+            return _defaultBindingContext.Resolve(module, parent, expr, withBlockVariable);
         }
 
         public IBoundExpression ResolveType(Declaration module, Declaration parent, string expression)

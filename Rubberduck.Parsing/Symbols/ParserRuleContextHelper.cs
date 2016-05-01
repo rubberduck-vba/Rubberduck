@@ -2,7 +2,7 @@
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public static class BindingMigrationHelper
+    public static class ParserRuleContextHelper
     {
         public static bool HasParent<T>(RuleContext context)
         {

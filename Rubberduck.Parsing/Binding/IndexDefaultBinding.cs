@@ -10,10 +10,8 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _project;
         private readonly Declaration _module;
         private readonly Declaration _parent;
-        private readonly VBAExpressionParser.IndexExpressionContext _indexExpression;
-        private readonly VBAExpressionParser.IndexExprContext _indexExpr;
-        private readonly ParserRuleContext _unknownOriginExpr;
-        private readonly IExpressionBinding _lExpressionBinding;
+        private readonly ParserRuleContext _expression;
+        private readonly IBoundExpression _lExpression;
         private readonly ArgumentList _argumentList;
 
         private const int DEFAULT_MEMBER_RECURSION_LIMIT = 32;
@@ -24,33 +22,18 @@ namespace Rubberduck.Parsing.Binding
             Declaration project,
             Declaration module,
             Declaration parent,
-            VBAExpressionParser.IndexExpressionContext expression,
-            IExpressionBinding lExpressionBinding)
+            ParserRuleContext expression,
+            IExpressionBinding lExpressionBinding,
+            ArgumentList argumentList)
+            : this(
+                  declarationFinder,
+                  project,
+                  module,
+                  parent,
+                  expression,
+                  lExpressionBinding.Resolve(),
+                  argumentList)
         {
-            _declarationFinder = declarationFinder;
-            _project = project;
-            _module = module;
-            _parent = parent;
-            _indexExpression = expression;
-            _lExpressionBinding = lExpressionBinding;
-            _argumentList = ConvertContextToArgumentList(GetArgumentListContext());
-        }
-
-        public IndexDefaultBinding(
-            DeclarationFinder declarationFinder,
-            Declaration project,
-            Declaration module,
-            Declaration parent,
-            VBAExpressionParser.IndexExprContext expression,
-            IExpressionBinding lExpressionBinding)
-        {
-            _declarationFinder = declarationFinder;
-            _project = project;
-            _module = module;
-            _parent = parent;
-            _indexExpr = expression;
-            _lExpressionBinding = lExpressionBinding;
-            _argumentList = ConvertContextToArgumentList(GetArgumentListContext());
         }
 
         public IndexDefaultBinding(
@@ -59,69 +42,30 @@ namespace Rubberduck.Parsing.Binding
             Declaration module,
             Declaration parent,
             ParserRuleContext expression,
-            IExpressionBinding lExpressionBinding,
+            IBoundExpression lExpression,
             ArgumentList argumentList)
         {
             _declarationFinder = declarationFinder;
             _project = project;
             _module = module;
             _parent = parent;
-            _unknownOriginExpr = expression;
-            _lExpressionBinding = lExpressionBinding;
+            _expression = expression;
+            _lExpression = lExpression;
             _argumentList = argumentList;
         }
 
-        private ParserRuleContext GetExpressionContext()
+        private void ResolveArgumentList()
         {
-            if (_indexExpression != null)
+            foreach (var argument in _argumentList.Arguments)
             {
-                return _indexExpression;
+                argument.Resolve();
             }
-            if (_indexExpr != null)
-            {
-                return _indexExpr;
-            }
-            return _unknownOriginExpr;
-        }
-
-        private VBAExpressionParser.ArgumentListContext GetArgumentListContext()
-        {
-            if (_indexExpression != null)
-            {
-                return _indexExpression.argumentList();
-            }
-            return _indexExpr.argumentList();
-        }
-
-        private ArgumentList ConvertContextToArgumentList(VBAExpressionParser.ArgumentListContext argumentList)
-        {
-            var convertedList = new ArgumentList();
-            var list = argumentList.positionalOrNamedArgumentList();
-            if (list.positionalArgument() != null)
-            {
-                foreach (var expr in list.positionalArgument())
-                {
-                    convertedList.AddArgument(ArgumentListArgumentType.Positional);
-                }
-            }
-            if (list.requiredPositionalArgument() != null)
-            {
-                convertedList.AddArgument(ArgumentListArgumentType.Positional);
-            }
-            if (list.namedArgumentList() != null)
-            {
-                foreach (var expr in list.namedArgumentList().namedArgument())
-                {
-                    convertedList.AddArgument(ArgumentListArgumentType.Named);
-                }
-            }
-            return convertedList;
         }
 
         public IBoundExpression Resolve()
         {
-            var lExpression = _lExpressionBinding.Resolve();
-            return Resolve(lExpression);
+            ResolveArgumentList();
+            return Resolve(_lExpression);
         }
 
         private IBoundExpression Resolve(IBoundExpression lExpression)
@@ -189,7 +133,7 @@ namespace Rubberduck.Parsing.Binding
              */
             if (asTypeName != null && (asTypeName.ToUpperInvariant() == "VARIANT" || asTypeName.ToUpperInvariant() == "OBJECT"))
             {
-                return new IndexExpression(null, ExpressionClassification.Unbound, GetExpressionContext(), lExpression);
+                return new IndexExpression(null, ExpressionClassification.Unbound, _expression, lExpression, _argumentList);
             }
             /*
                 The declared type of <l-expression> is a specific class, which has a public default Property 
@@ -239,7 +183,7 @@ namespace Rubberduck.Parsing.Binding
                         {
                             classification = ExpressionClassification.Function;
                         }
-                        var defaultMemberAsLExpression = new SimpleNameExpression(defaultMember, classification, GetExpressionContext());
+                        var defaultMemberAsLExpression = new SimpleNameExpression(defaultMember, classification, _expression);
                         return Resolve(defaultMemberAsLExpression);
                     }
                     else
@@ -252,7 +196,7 @@ namespace Rubberduck.Parsing.Binding
                             Note: To not have to deal with implementing parameter compatibility ourselves we simply assume
                             that they are compatible otherwise it wouldn't have compiled in the VBE.
                          */
-                        return new IndexExpression(defaultMember, lExpression.Classification, GetExpressionContext(), lExpression);
+                        return new IndexExpression(defaultMember, lExpression.Classification, _expression, lExpression, _argumentList);
                     }
                 }
             }
@@ -276,7 +220,7 @@ namespace Rubberduck.Parsing.Binding
                  */
                 if (!_argumentList.HasArguments)
                 {
-                    return new IndexExpression(asTypeDeclaration, lExpression.Classification, GetExpressionContext(), lExpression);
+                    return new IndexExpression(asTypeDeclaration, lExpression.Classification, _expression, lExpression, _argumentList);
                 }
                 else
                 {
@@ -290,7 +234,7 @@ namespace Rubberduck.Parsing.Binding
                      */
                     if (!_argumentList.HasNamedArguments)
                     {
-                        return new IndexExpression(asTypeDeclaration, ExpressionClassification.Variable, GetExpressionContext(), lExpression);
+                        return new IndexExpression(asTypeDeclaration, ExpressionClassification.Variable, _expression, lExpression, _argumentList);
                     }
                 }
             }
@@ -314,7 +258,7 @@ namespace Rubberduck.Parsing.Binding
                || lExpression.Classification == ExpressionClassification.Function
                || lExpression.Classification == ExpressionClassification.Subroutine)
             {
-                return new IndexExpression(lExpression.ReferencedDeclaration, lExpression.Classification, GetExpressionContext(), lExpression);
+                return new IndexExpression(lExpression.ReferencedDeclaration, lExpression.Classification, _expression, lExpression, _argumentList);
             }
             return null;
         }
@@ -327,7 +271,7 @@ namespace Rubberduck.Parsing.Binding
             */
             if (lExpression.Classification == ExpressionClassification.Unbound)
             {
-                return new IndexExpression(lExpression.ReferencedDeclaration, ExpressionClassification.Unbound, GetExpressionContext(), lExpression);
+                return new IndexExpression(lExpression.ReferencedDeclaration, ExpressionClassification.Unbound, _expression, lExpression, _argumentList);
             }
             return null;
         }
