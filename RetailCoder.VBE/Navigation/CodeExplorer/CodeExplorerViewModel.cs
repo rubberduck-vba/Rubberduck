@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -13,10 +14,12 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerViewModel : ViewModelBase
     {
+        private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
 
-        public CodeExplorerViewModel(RubberduckParserState state, INavigateCommand navigateCommand, NewUnitTestModuleCommand newUnitTestModuleCommand)
+        public CodeExplorerViewModel(VBE vbe, RubberduckParserState state, INavigateCommand navigateCommand, NewUnitTestModuleCommand newUnitTestModuleCommand)
         {
+            _vbe = vbe;
             _state = state;
             _navigateCommand = navigateCommand;
             _newUnitTestModuleCommand = newUnitTestModuleCommand;
@@ -25,6 +28,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             _refreshCommand = new DelegateCommand(ExecuteRefreshCommand);
             _addTestModuleCommand = new DelegateCommand(ExecuteAddTestModuleCommand);
+            _addStdModuleCommand = new DelegateCommand(ExecuteAddStandardModuleCommand, CanAddStdModule);
         }
 
         private readonly ICommand _refreshCommand;
@@ -32,6 +36,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly ICommand _addTestModuleCommand;
         public ICommand AddTestModuleCommand { get { return _addTestModuleCommand; } }
+
+        private readonly ICommand _addStdModuleCommand;
+        public ICommand AddStdModuleCommand { get { return _addStdModuleCommand; } }
 
         private readonly INavigateCommand _navigateCommand;
         private readonly NewUnitTestModuleCommand _newUnitTestModuleCommand;
@@ -70,6 +77,11 @@ namespace Rubberduck.Navigation.CodeExplorer
                 _canRefresh = value;
                 OnPropertyChanged();
             }
+        }
+
+        private bool CanAddStdModule(object param)
+        {
+            return _vbe.ActiveVBProject != null;
         }
 
         private ObservableCollection<CodeExplorerProjectViewModel> _projects;
@@ -121,8 +133,14 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ExecuteAddTestModuleCommand(object param)
         {
-            Debug.WriteLine("CodeExplorerViewModel.AddTestModeleCommand - requesting reparse");
+            Debug.WriteLine("CodeExplorerViewModel.AddTestModuleCommand");
             _newUnitTestModuleCommand.NewUnitTestModule();
+        }
+
+        private void ExecuteAddStandardModuleCommand(object param)
+        {
+            Debug.WriteLine("CodeExplorerViewModel.AddStandardModuleCommand");
+            _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
         }
     }
 }
