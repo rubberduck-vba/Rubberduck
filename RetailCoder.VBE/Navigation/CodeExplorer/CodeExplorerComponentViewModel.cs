@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -57,6 +58,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         public override string Name { get { return _declaration.IdentifierName; } }
+        public override string NameWithSignature { get { return Name; } }
 
         public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
 
