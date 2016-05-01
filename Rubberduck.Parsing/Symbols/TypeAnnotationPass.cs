@@ -15,6 +15,7 @@ namespace Rubberduck.Parsing.Symbols
             var typeBindingContext = new TypeBindingContext(_declarationFinder);
             var procedurePointerBindingContext = new ProcedurePointerBindingContext(_declarationFinder);
             _bindingService = new BindingService(
+                _declarationFinder,
                 new DefaultBindingContext(_declarationFinder, typeBindingContext, procedurePointerBindingContext),
                 typeBindingContext,
                 procedurePointerBindingContext);

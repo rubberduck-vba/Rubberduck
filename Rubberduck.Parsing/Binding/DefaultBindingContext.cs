@@ -117,6 +117,10 @@ namespace Rubberduck.Parsing.Binding
         private ArgumentList VisitArgumentList(Declaration module, Declaration parent, VBAExpressionParser.ArgumentListContext argumentList, IBoundExpression withBlockVariable)
         {
             var convertedList = new ArgumentList();
+            if (argumentList == null)
+            {
+                return convertedList;
+            }
             var list = argumentList.positionalOrNamedArgumentList();
             if (list.positionalArgument() != null)
             {
@@ -221,6 +225,13 @@ namespace Rubberduck.Parsing.Binding
             return new ParenthesizedDefaultBinding(expression, expressionBinding);
         }
 
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.ParenthesizedExpressionContext expression, IBoundExpression withBlockVariable)
+        {
+            dynamic expressionParens = expression.expression();
+            var expressionBinding = Visit(module, parent, expressionParens, withBlockVariable);
+            return new ParenthesizedDefaultBinding(expression, expressionBinding);
+        }
+
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.TypeOfIsExprContext expression, IBoundExpression withBlockVariable)
         {
             return Visit(module, parent, expression.typeOfIsExpression(), withBlockVariable);
@@ -246,6 +257,11 @@ namespace Rubberduck.Parsing.Binding
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.IntDivOpContext expression, IBoundExpression withBlockVariable)
+        {
+            return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable);
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.ModOpContext expression, IBoundExpression withBlockVariable)
         {
             return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable);
         }
@@ -333,7 +349,7 @@ namespace Rubberduck.Parsing.Binding
         {
             dynamic exprExpr = expr;
             var exprBinding = Visit(module, parent, exprExpr, withBlockVariable);
-            return new UnaryOpDefaultBinding(context, exprExpr);
+            return new UnaryOpDefaultBinding(context, exprBinding);
         }
     }
 }

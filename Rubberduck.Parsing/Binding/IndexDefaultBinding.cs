@@ -104,7 +104,7 @@ namespace Rubberduck.Parsing.Binding
             bool propertyWithParameters = lExpression.Classification == ExpressionClassification.Property && ((IDeclarationWithParameter)lExpression.ReferencedDeclaration).Parameters.Any();
             bool functionWithParameters = lExpression.Classification == ExpressionClassification.Function && ((IDeclarationWithParameter)lExpression.ReferencedDeclaration).Parameters.Any();
             if (isVariable ||
-                ((!propertyWithParameters || !functionWithParameters)) && _argumentList.HasArguments)
+                ((lExpression.Classification == ExpressionClassification.Property || lExpression.Classification == ExpressionClassification.Function) && _argumentList.HasArguments))
             {
                 IBoundExpression boundExpression = null;
                 var asTypeName = lExpression.ReferencedDeclaration.AsTypeName;
@@ -211,7 +211,7 @@ namespace Rubberduck.Parsing.Binding
                  The declared type of <l-expression> is an array type, an empty argument list has not already 
                  been specified for it, and one of the following is true:  
              */
-            if (asTypeDeclaration != null && asTypeDeclaration.IsArray())
+            if (lExpression.ReferencedDeclaration.IsArray())
             {
                 /*
                     <argument-list> represents an empty argument list. In this case, the index expression 

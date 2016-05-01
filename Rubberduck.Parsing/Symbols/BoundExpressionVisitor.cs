@@ -31,12 +31,19 @@ namespace Rubberduck.Parsing.Symbols
             // Expressions could be unbound thus not have a referenced declaration. The lexpression might still be bindable though.
             if (expression.Classification != ExpressionClassification.Unbound)
             {
-                expression.ReferencedDeclaration.AddReference(referenceCreator(expression.ReferencedDeclaration));
+                // Referenced declaration could also be null if e.g. it's an array and the array is a "base type" such as String.
+                if (expression.ReferencedDeclaration != null)
+                {
+                    expression.ReferencedDeclaration.AddReference(referenceCreator(expression.ReferencedDeclaration));
+                }
             }
             // Argument List not affected by being unbound.
             foreach (var argument in expression.ArgumentList.Arguments)
             {
-                Visit((dynamic)argument.Expression, referenceCreator);
+                if (argument.Expression != null)
+                {
+                    Visit((dynamic)argument.Expression, referenceCreator);
+                }
             }
         }
 

@@ -85,23 +85,15 @@ block : blockStmt (endOfStatement blockStmt)* endOfStatement;
 
 blockStmt :
 	lineLabel
-    | appactivateStmt
 	| attributeStmt
-	| beepStmt
-	| chdirStmt
-	| chdriveStmt
 	| closeStmt
 	| constStmt
-	| dateStmt
-	| deleteSettingStmt
 	| deftypeStmt
 	| doLoopStmt
-	| endStmt
 	| eraseStmt
 	| errorStmt
-	| exitStmt
+    | exitStmt
 	| explicitCallStmt
-	| filecopyStmt
 	| forEachStmt
 	| forNextStmt
 	| getStmt
@@ -110,15 +102,11 @@ blockStmt :
 	| ifThenElseStmt
 	| implementsStmt
 	| inputStmt
-	| killStmt
 	| letStmt
 	| lineInputStmt
-	| loadStmt
 	| lockStmt
 	| lsetStmt
 	| midStmt
-	| mkdirStmt
-	| nameStmt
 	| onErrorStmt
 	| onGoToStmt
 	| onGoSubStmt
@@ -126,23 +114,14 @@ blockStmt :
 	| printStmt
 	| putStmt
 	| raiseEventStmt
-	| randomizeStmt
 	| redimStmt
 	| resetStmt
 	| resumeStmt
 	| returnStmt
-	| rmdirStmt
 	| rsetStmt
-	| savepictureStmt
-	| saveSettingStmt
 	| seekStmt
 	| selectCaseStmt
-	| sendkeysStmt
-	| setattrStmt
 	| setStmt
-	| stopStmt
-	| timeStmt
-	| unloadStmt
 	| unlockStmt
 	| variableStmt
 	| whileWendStmt
@@ -152,21 +131,11 @@ blockStmt :
 	| implicitCallStmt_InBlock
 ;
 
-appactivateStmt : APPACTIVATE whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)?;
-
-beepStmt : BEEP;
-
-chdirStmt : CHDIR whiteSpace valueStmt;
-
-chdriveStmt : CHDRIVE whiteSpace valueStmt;
-
 closeStmt : CLOSE (whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? fileNumber)*)?;
 
 constStmt : (visibility whiteSpace)? CONST whiteSpace constSubStmt (whiteSpace? COMMA whiteSpace? constSubStmt)*;
 
 constSubStmt : identifier typeHint? (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? valueStmt;
-
-dateStmt : DATE whiteSpace? EQ whiteSpace? valueStmt;
 
 declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? ((FUNCTION typeHint?) | SUB) whiteSpace identifier typeHint? whiteSpace LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)?;
 
@@ -178,11 +147,6 @@ deftypeStmt :
 	) whiteSpace
 	letterrange (whiteSpace? COMMA whiteSpace? letterrange)*
 ;
-
-deleteSettingStmt :
-    DELETESETTING whiteSpace valueStmt whiteSpace?
-    | DELETESETTING whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt
-    | DELETESETTING whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt whiteSpace? COMMA whiteSpace? valueStmt;
 
 doLoopStmt :
 	DO endOfStatement 
@@ -197,8 +161,6 @@ doLoopStmt :
 	block?
 	LOOP whiteSpace (WHILE | UNTIL) whiteSpace valueStmt
 ;
-
-endStmt : END;
 
 enumerationStmt: 
 	(visibility whiteSpace)? ENUM whiteSpace identifier endOfStatement 
@@ -215,8 +177,6 @@ errorStmt : ERROR whiteSpace valueStmt;
 eventStmt : (visibility whiteSpace)? EVENT whiteSpace identifier whiteSpace? argList;
 
 exitStmt : EXIT_DO | EXIT_FOR | EXIT_FUNCTION | EXIT_PROPERTY | EXIT_SUB;
-
-filecopyStmt : FILECOPY whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt;
 
 forEachStmt : 
 	FOR whiteSpace EACH whiteSpace valueStmt whiteSpace IN whiteSpace valueStmt endOfStatement
@@ -268,26 +228,19 @@ implementsStmt : IMPLEMENTS whiteSpace valueStmt;
 
 inputStmt : INPUT whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? valueStmt)+;
 
-killStmt : KILL whiteSpace valueStmt;
-
-letStmt : (LET whiteSpace)? implicitCallStmt_InStmt whiteSpace? EQ whiteSpace? valueStmt;
+letStmt : (LET whiteSpace)? valueStmt whiteSpace? EQ whiteSpace? valueStmt;
 
 lineInputStmt : LINE_INPUT whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt;
 
-loadStmt : LOAD whiteSpace valueStmt;
-
 lockStmt : LOCK whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt (whiteSpace TO whiteSpace valueStmt)?)?;
 
-lsetStmt : LSET whiteSpace implicitCallStmt_InStmt whiteSpace? EQ whiteSpace? valueStmt;
+lsetStmt : LSET whiteSpace valueStmt whiteSpace? EQ whiteSpace? valueStmt;
 
 midStmt : MID whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN;
 
-mkdirStmt : MKDIR whiteSpace valueStmt;
-
-nameStmt : NAME whiteSpace valueStmt whiteSpace AS whiteSpace valueStmt;
-
 onErrorStmt : (ON_ERROR | ON_LOCAL_ERROR) whiteSpace (GOTO whiteSpace valueStmt | RESUME whiteSpace NEXT);
 
+// TODO: only first valueStmt is correct, rest should be IDENTIFIER/INTEGERs?
 onGoToStmt : ON whiteSpace valueStmt whiteSpace GOTO whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)*;
 
 onGoSubStmt : ON whiteSpace valueStmt whiteSpace GOSUB whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)*;
@@ -334,25 +287,17 @@ putStmt : PUT whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt? whi
 
 raiseEventStmt : RAISEEVENT whiteSpace identifier (whiteSpace? LPAREN whiteSpace? (argsCall whiteSpace?)? RPAREN)?;
 
-randomizeStmt : RANDOMIZE (whiteSpace valueStmt)?;
-
 redimStmt : REDIM whiteSpace (PRESERVE whiteSpace)? redimSubStmt (whiteSpace? COMMA whiteSpace? redimSubStmt)*;
 
 redimSubStmt : implicitCallStmt_InStmt whiteSpace? LPAREN whiteSpace? subscripts whiteSpace? RPAREN (whiteSpace asTypeClause)?;
 
 resetStmt : RESET;
 
-resumeStmt : RESUME (whiteSpace (NEXT | identifier))?;
+resumeStmt : RESUME (whiteSpace (NEXT | valueStmt))?;
 
 returnStmt : RETURN;
 
-rmdirStmt : RMDIR whiteSpace valueStmt;
-
-rsetStmt : RSET whiteSpace implicitCallStmt_InStmt whiteSpace? EQ whiteSpace? valueStmt;
-
-savepictureStmt : SAVEPICTURE whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt;
-
-saveSettingStmt : SAVESETTING whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt whiteSpace? COMMA whiteSpace? valueStmt whiteSpace? COMMA whiteSpace? valueStmt;
+rsetStmt : RSET whiteSpace valueStmt whiteSpace? EQ whiteSpace? valueStmt;
 
 seekStmt : SEEK whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt;
 
@@ -378,21 +323,13 @@ sC_Cond :
     | sC_Selection (whiteSpace? COMMA whiteSpace? sC_Selection)*                   # caseCondSelection
 ;
 
-sendkeysStmt : SENDKEYS whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)?;
-
-setattrStmt : SETATTR whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt;
-
-setStmt : SET whiteSpace implicitCallStmt_InStmt whiteSpace? EQ whiteSpace? valueStmt;
-
-stopStmt : STOP;
+setStmt : SET whiteSpace valueStmt whiteSpace? EQ whiteSpace? valueStmt;
 
 subStmt : 
 	(visibility whiteSpace)? (STATIC whiteSpace)? SUB whiteSpace? identifier (whiteSpace? argList)? endOfStatement
 	block? 
 	END_SUB
 ;
-
-timeStmt : TIME whiteSpace? EQ whiteSpace? valueStmt;
 
 typeStmt : 
 	(visibility whiteSpace)? TYPE whiteSpace identifier endOfStatement
@@ -401,8 +338,6 @@ typeStmt :
 ;
 
 typeStmt_Element : identifier (whiteSpace? LPAREN (whiteSpace? subscripts)? whiteSpace? RPAREN)? (whiteSpace asTypeClause)? endOfStatement;
-
-unloadStmt : UNLOAD whiteSpace valueStmt;
 
 unlockStmt : UNLOCK whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? valueStmt (whiteSpace TO whiteSpace valueStmt)?)?;
 
@@ -471,7 +406,7 @@ implicitCallStmt_InBlock :
 	| iCS_B_ProcedureCall
 ;
 
-iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? whiteSpace? DOT whiteSpace? identifier typeHint? (whiteSpace argsCall)? (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
+iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? whiteSpace? DOT whiteSpace? unrestrictedIdentifier typeHint? (whiteSpace argsCall)? (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
 iCS_B_ProcedureCall : identifier (whiteSpace argsCall)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
@@ -544,11 +479,9 @@ keyword :
      | ALIAS
      | AND
      | ANY
-     | APPACTIVATE
      | ARRAY
      | AS
      | ATTRIBUTE
-     | BEEP
      | BEGIN
      | BOOLEAN
      | BYREF
@@ -560,8 +493,6 @@ keyword :
      | CDATE
      | CDBL
      | CDEC
-     | CHDIR
-     | CHDRIVE
      | CINT
      | CIRCLE
      | CLASS
@@ -583,7 +514,6 @@ keyword :
      | END_IF
      | EQV
      | FALSE
-     | FILECOPY
      | FIX
      | IMP
      | IN
@@ -591,7 +521,6 @@ keyword :
      | INT
      | INTEGER
      | IS
-     | KILL
      | LBOUND
      | LEN
      | LEN
@@ -607,9 +536,7 @@ keyword :
      | MIDB
      | MIDBTYPESUFFIX
      | MIDTYPESUFFIX
-     | MKDIR
      | MOD
-     | NAME
      | NEW
      | NOT
      | NOTHING
@@ -619,11 +546,8 @@ keyword :
      | PARAMARRAY
      | PRESERVE
      | PSET
-     | RANDOMIZE
      | REM
      | RMDIR
-     | SAVEPICTURE
-     | SAVESETTING
      | SCALE
      | SENDKEYS
      | SETATTR
@@ -634,12 +558,10 @@ keyword :
      | TAB
      | TEXT
      | THEN
-     | TIME
      | TO
      | TRUE
      | TYPEOF
      | UBOUND
-     | UNLOAD
      | UNTIL
      | VARIANT
      | VERSION

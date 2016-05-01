@@ -352,12 +352,9 @@ reservedTypeIdentifier :
 ;
 
 uncategorizedKeyword : 
-	ALIAS | ATTRIBUTE | APPACTIVATE |
-	BEEP | BEGIN | CLASS | CHDIR | CHDRIVE | COLLECTION | DELETESETTING |
-	FILECOPY | KILL | LOAD | LIB | MKDIR | NAME | ON |
-	RANDOMIZE | RMDIR |
-	SAVEPICTURE | SAVESETTING | SENDKEYS | SETATTR |
-	TAB | TIME | UNLOAD | VERSION
+	ALIAS | ATTRIBUTE | 
+	BEGIN | CLASS | COLLECTION |
+	LIB |  ON | TAB | VERSION
 ;
 
 literalIdentifier : booleanLiteralIdentifier | objectLiteralIdentifier | variantLiteralIdentifier;

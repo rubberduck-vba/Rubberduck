@@ -118,7 +118,57 @@ namespace Rubberduck.Parsing.Symbols
             _resolver.Resolve(context);
         }
 
+        public override void EnterGoToStmt(VBAParser.GoToStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterOnGoToStmt(VBAParser.OnGoToStmtContext context)
+        {       
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterGoSubStmt([NotNull] VBAParser.GoSubStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterOnGoSubStmt(VBAParser.OnGoSubStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
         public override void EnterExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterConstStmt(VBAParser.ConstStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterRedimStmt(VBAParser.RedimStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterEraseStmt(VBAParser.EraseStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterMidStmt(VBAParser.MidStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterLsetStmt(VBAParser.LsetStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterRsetStmt(VBAParser.RsetStmtContext context)
         {
             _resolver.Resolve(context);
         }
@@ -171,6 +221,82 @@ namespace Rubberduck.Parsing.Symbols
             {
                 _resolver.Resolve(context);
             }
+        }
+
+        public override void EnterOpenStmt(VBAParser.OpenStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+
+
+
+
+        public override void EnterCloseStmt(VBAParser.CloseStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterSeekStmt([NotNull] VBAParser.SeekStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterLockStmt([NotNull] VBAParser.LockStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterUnlockStmt([NotNull] VBAParser.UnlockStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterLineInputStmt([NotNull] VBAParser.LineInputStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterWidthStmt([NotNull] VBAParser.WidthStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterPrintStmt([NotNull] VBAParser.PrintStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterWriteStmt([NotNull] VBAParser.WriteStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterInputStmt([NotNull] VBAParser.InputStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterPutStmt([NotNull] VBAParser.PutStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterGetStmt([NotNull] VBAParser.GetStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+
+
+        public override void EnterOnErrorStmt(VBAParser.OnErrorStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterErrorStmt(VBAParser.ErrorStmtContext context)
+        {
+            _resolver.Resolve(context);
         }
 
         public override void EnterLetStmt(VBAParser.LetStmtContext context)
