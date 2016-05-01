@@ -161,21 +161,6 @@
 
             <Separator />
 
-            <Button>
-                <Image Height="16" Source="../../Resources/folder--pencil.png" />
-                <Button.ToolTip>
-                    <TextBlock Text="Edit module folder" />
-                </Button.ToolTip>
-            </Button>
-            <Button>
-                <Image Height="16" Source="../../Resources/folder-rename.png" />
-                <Button.ToolTip>
-                    <TextBlock Text="Rename folder" />
-                </Button.ToolTip>
-            </Button>
-
-            <Separator />
-
             <ToggleButton IsEnabled="{Binding CanRefresh}" ToolTip="Toggle signatures">
                 <Image Height="16" Source="../../Resources/Microsoft/PNG/DisplayFullSignature_13393_32.png" />
             </ToggleButton>
