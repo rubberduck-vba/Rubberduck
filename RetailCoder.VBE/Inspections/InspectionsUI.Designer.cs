@@ -142,11 +142,20 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Project has default project name.
+        ///   Looks up a localized string similar to Project has default name.
         /// </summary>
         public static string DefaultProjectNameInspectionName {
             get {
                 return ResourceManager.GetString("DefaultProjectNameInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project &apos;{0}&apos; has default name.
+        /// </summary>
+        public static string DefaultProjectNameInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("DefaultProjectNameInspectionResultFormat", resourceCulture);
             }
         }
         

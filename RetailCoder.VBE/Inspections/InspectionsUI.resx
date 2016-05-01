@@ -136,7 +136,7 @@
     <value>Consider naming your VBA project.</value>
   </data>
   <data name="DefaultProjectNameInspectionName" xml:space="preserve">
-    <value>Project has default project name</value>
+    <value>Project has default name</value>
   </data>
   <data name="EmptyStringLiteralInspection" xml:space="preserve">
     <value>Prefer 'vbNullString' to an empty string literal</value>
@@ -521,5 +521,8 @@
   </data>
   <data name="ObjectVariableNotSetInspectionName" xml:space="preserve">
     <value>Object variable assignment requires 'Set' keyword</value>
+  </data>
+  <data name="DefaultProjectNameInspectionResultFormat" xml:space="preserve">
+    <value>Project '{0}' has default name</value>
   </data>
 </root>
