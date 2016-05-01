@@ -362,9 +362,6 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return sameScopeUdt.Single();
             }
-
-            // todo: try to resolve identifier using referenced projects
-
             return null;
         }
 
@@ -885,6 +882,118 @@ namespace Rubberduck.Parsing.Symbols
             _alreadyResolved.Add(context);
         }
 
+        public void Resolve(VBAParser.WhileWendStmtContext context)
+        {
+            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt().GetText(), GetInnerMostWithExpression());
+            if (boundExpression != null)
+            {
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.valueStmt(), declaration));
+            }
+            // TODO: Resolve block
+        }
+
+        public void Resolve(VBAParser.DoLoopStmtContext context)
+        {
+            if (context.valueStmt() == null)
+            {
+                return;
+            }
+            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt().GetText(), GetInnerMostWithExpression());
+            if (boundExpression != null)
+            {
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.valueStmt(), declaration));
+            }
+            // TODO: Resolve block
+        }
+
+        public void Resolve(VBAParser.BlockIfThenElseContext context)
+        {
+            // TODO: Nested if statements don't work because the parse tree is built differently.
+            var ifExpr = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.ifBlockStmt().ifConditionStmt().GetText(), GetInnerMostWithExpression());
+            if (ifExpr != null)
+            {
+                _boundExpressionVisitor.AddIdentifierReferences(ifExpr, declaration => CreateReference(context.ifBlockStmt().ifConditionStmt(), declaration));
+            }
+            if (context.ifElseIfBlockStmt() != null)
+            {
+                foreach (var elseIfBlock in context.ifElseIfBlockStmt())
+                {
+                    var elseIfExpr = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, elseIfBlock.ifConditionStmt().GetText(), GetInnerMostWithExpression());
+                    if (elseIfExpr != null)
+                    {
+                        _boundExpressionVisitor.AddIdentifierReferences(elseIfExpr, declaration => CreateReference(elseIfBlock.ifConditionStmt(), declaration));
+                    }
+                }
+            }
+            // TODO: Resolve blocks.
+        }
+
+        public void Resolve(VBAParser.InlineIfThenElseContext context)
+        {
+            var ifExpr = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.ifConditionStmt().GetText(), GetInnerMostWithExpression());
+            if (ifExpr != null)
+            {
+                _boundExpressionVisitor.AddIdentifierReferences(ifExpr, declaration => CreateReference(context.ifConditionStmt(), declaration));
+            }
+            // TODO: Resolve blocks.
+        }
+
+        public void Resolve(VBAParser.SelectCaseStmtContext context)
+        {
+            // TODO: Grammar does not build correct select case parse tree, thus not resolvable right now.
+            var selectExpr = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt().GetText(), GetInnerMostWithExpression());
+            if (selectExpr != null)
+            {
+                _boundExpressionVisitor.AddIdentifierReferences(selectExpr, declaration => CreateReference(context.valueStmt(), declaration));
+            }
+            if (context.sC_Case() != null)
+            {
+                foreach (var caseClauseBlock in context.sC_Case())
+                {
+                    var caseClause = caseClauseBlock.sC_Cond();
+                    if (caseClause is VBAParser.CaseCondSelectionContext)
+                    {
+                        foreach (var selectClause in ((VBAParser.CaseCondSelectionContext)caseClause).sC_Selection())
+                        {
+                            if (selectClause is VBAParser.CaseCondIsContext)
+                            {
+                                var ctx = (VBAParser.CaseCondIsContext)selectClause;
+                                var clauseExpr = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, ctx.valueStmt().GetText(), GetInnerMostWithExpression());
+                                if (clauseExpr != null)
+                                {
+                                    _boundExpressionVisitor.AddIdentifierReferences(clauseExpr, declaration => CreateReference(ctx.valueStmt(), declaration));
+                                }
+                            }
+                            else if (selectClause is VBAParser.CaseCondToContext)
+                            {
+                                var ctx = (VBAParser.CaseCondToContext)selectClause;
+                                var fromExpr = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, ctx.valueStmt()[0].GetText(), GetInnerMostWithExpression());
+                                if (fromExpr != null)
+                                {
+                                    _boundExpressionVisitor.AddIdentifierReferences(fromExpr, declaration => CreateReference(ctx.valueStmt()[0], declaration));
+                                }
+                                var toExpr = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, ctx.valueStmt()[1].GetText(), GetInnerMostWithExpression());
+                                if (toExpr != null)
+                                {
+                                    _boundExpressionVisitor.AddIdentifierReferences(toExpr, declaration => CreateReference(ctx.valueStmt()[1], declaration));
+                                }
+                            }
+                            else
+                            {
+                                var ctx = (VBAParser.CaseCondValueContext)selectClause;
+                                var clauseExpr = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt().GetText(), GetInnerMostWithExpression());
+                                if (clauseExpr != null)
+                                {
+                                    _boundExpressionVisitor.AddIdentifierReferences(clauseExpr, declaration => CreateReference(context.valueStmt(), declaration));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // TODO: Resolve blocks.
+        }
+
         private string GetParentComTypeName(Declaration declaration)
         {
             if (declaration.QualifiedName.QualifiedModuleName.Component == null)
@@ -992,52 +1101,48 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ForNextStmtContext context)
         {
-            var identifiers = context.identifier();
-            var identifier = ResolveInternal(identifiers[0], _currentScope, ContextAccessorType.AssignValue, null, false, true);
-            if (identifier == null)
+            var firstExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt()[0].GetText(), GetInnerMostWithExpression());
+            if (firstExpression != null)
             {
-                return;
+                // each iteration counts as an assignment
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, declaration => CreateReference(context.valueStmt()[0], declaration, true));
+                // each iteration also counts as a plain usage
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, declaration => CreateReference(context.valueStmt()[0], declaration));
             }
 
-            // each iteration counts as an assignment
-            var assignmentReference = CreateReference(identifiers[0], identifier, true);
-            identifier.AddReference(assignmentReference);
-
-            // each iteration also counts as a plain usage
-            var usageReference = CreateReference(identifiers[0], identifier);
-            identifier.AddReference(usageReference);
-
-            if (identifiers.Count > 1)
+            for (int exprIndex = 1; exprIndex < context.valueStmt().Count; exprIndex++)
             {
-                var endForBlockReference = CreateReference(identifiers[1], identifier);
-                identifier.AddReference(endForBlockReference);
+                var expr = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt()[exprIndex].GetText(), GetInnerMostWithExpression());
+                if (expr != null)
+                {
+                    _boundExpressionVisitor.AddIdentifierReferences(expr, declaration => CreateReference(context.valueStmt()[exprIndex], declaration));
+                }
             }
+
+            // TODO: resolve block
         }
 
         public void Resolve(VBAParser.ForEachStmtContext context)
         {
-            var identifiers = context.identifier();
-            var identifier = ResolveInternal(identifiers[0], _currentScope, ContextAccessorType.AssignValue, null, false, true);
-            if (identifier == null)
+            var firstExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt()[0].GetText(), GetInnerMostWithExpression());
+            if (firstExpression != null)
             {
-                return;
+                // each iteration counts as an assignment
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, declaration => CreateReference(context.valueStmt()[0], declaration, true));
+                // each iteration also counts as a plain usage
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, declaration => CreateReference(context.valueStmt()[0], declaration));
             }
 
-            // each iteration counts as an assignment
-            var assignmentReference = CreateReference(identifiers[0], identifier, true);
-            identifier.AddReference(assignmentReference);
-
-            // each iteration also counts as a plain usage - CreateReference will return null here, need to create it manually.
-            var name = identifiers[0].GetText();
-            var selection = identifiers[0].GetSelection();
-            var annotations = FindAnnotations(selection.StartLine);
-            var usageReference = new IdentifierReference(_qualifiedModuleName, _currentScope, _currentParent, name, selection, identifiers[0], identifier, false, false, annotations);
-            identifier.AddReference(usageReference);
-
-            if (identifiers.Count > 1)
+            for (int exprIndex = 1; exprIndex < context.valueStmt().Count; exprIndex++)
             {
-                identifier.AddReference(CreateReference(identifiers[1], identifier));
+                var expr = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt()[exprIndex].GetText(), GetInnerMostWithExpression());
+                if (expr != null)
+                {
+                    _boundExpressionVisitor.AddIdentifierReferences(expr, declaration => CreateReference(context.valueStmt()[exprIndex], declaration));
+                }
             }
+
+            // TODO: resolve block
         }
 
         public void Resolve(VBAParser.ImplementsStmtContext context)

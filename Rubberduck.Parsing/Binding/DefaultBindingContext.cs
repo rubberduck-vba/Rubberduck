@@ -221,6 +221,20 @@ namespace Rubberduck.Parsing.Binding
             return new ParenthesizedDefaultBinding(expression, expressionBinding);
         }
 
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.TypeOfIsExprContext expression, IBoundExpression withBlockVariable)
+        {
+            return Visit(module, parent, expression.typeOfIsExpression(), withBlockVariable);
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.TypeOfIsExpressionContext expression, IBoundExpression withBlockVariable)
+        {
+            dynamic booleanExpression = expression.expression();
+            var booleanExpressionBinding = Visit(module, parent, booleanExpression, withBlockVariable);
+            dynamic typeExpression = expression.typeExpression();
+            var typeExpressionBinding = Visit(module, parent, typeExpression, withBlockVariable);
+            return new TypeOfIsDefaultBinding(expression, booleanExpressionBinding, typeExpressionBinding);
+        }
+
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.PowOpContext expression, IBoundExpression withBlockVariable)
         {
             return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable);

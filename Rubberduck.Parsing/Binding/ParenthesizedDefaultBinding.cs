@@ -13,6 +13,7 @@ namespace Rubberduck.Parsing.Binding
             IExpressionBinding expressionBinding)
         {
             _context = context;
+            _expressionBinding = expressionBinding;
         }
 
         public IBoundExpression Resolve()

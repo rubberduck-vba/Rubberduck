@@ -219,15 +219,15 @@ exitStmt : EXIT_DO | EXIT_FOR | EXIT_FUNCTION | EXIT_PROPERTY | EXIT_SUB;
 filecopyStmt : FILECOPY whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt;
 
 forEachStmt : 
-	FOR whiteSpace EACH whiteSpace identifier typeHint? whiteSpace IN whiteSpace valueStmt endOfStatement
+	FOR whiteSpace EACH whiteSpace valueStmt whiteSpace IN whiteSpace valueStmt endOfStatement
 	block?
-	NEXT (whiteSpace identifier)?
+	NEXT (whiteSpace valueStmt)?
 ;
 
 forNextStmt : 
-	FOR whiteSpace identifier typeHint? (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? valueStmt whiteSpace TO whiteSpace valueStmt (whiteSpace STEP whiteSpace valueStmt)? endOfStatement 
+	FOR whiteSpace valueStmt whiteSpace? EQ whiteSpace? valueStmt whiteSpace TO whiteSpace valueStmt (whiteSpace STEP whiteSpace valueStmt)? endOfStatement 
 	block?
-	NEXT (whiteSpace identifier typeHint?)?
+	NEXT (whiteSpace valueStmt)?
 ; 
 
 functionStmt :

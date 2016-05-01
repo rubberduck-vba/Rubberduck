@@ -103,7 +103,22 @@ namespace Rubberduck.Parsing.Symbols
             _resolver.ExitWithBlock();
         }
 
-        public override void EnterExplicitCallStmt([NotNull] VBAParser.ExplicitCallStmtContext context)
+        public override void EnterBlockIfThenElse(VBAParser.BlockIfThenElseContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterInlineIfThenElse(VBAParser.InlineIfThenElseContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterSelectCaseStmt(VBAParser.SelectCaseStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
         {
             _resolver.Resolve(context);
         }
@@ -118,12 +133,17 @@ namespace Rubberduck.Parsing.Symbols
             _resolver.Resolve(context);
         }
 
+        public override void EnterWhileWendStmt(VBAParser.WhileWendStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
         public override void EnterICS_S_VariableOrProcedureCall(VBAParser.ICS_S_VariableOrProcedureCallContext context)
         {
-            if (context.Parent.GetType() != typeof(VBAParser.ICS_S_MemberCallContext))
-            {
-                _resolver.Resolve(context);
-            }
+            //if (context.Parent.GetType() != typeof(VBAParser.ICS_S_MemberCallContext))
+            //{
+            //    _resolver.Resolve(context);
+            //}
         }
 
         public override void EnterICS_S_ProcedureOrArrayCall(VBAParser.ICS_S_ProcedureOrArrayCallContext context)
@@ -174,6 +194,11 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public override void EnterForEachStmt(VBAParser.ForEachStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterDoLoopStmt([NotNull] VBAParser.DoLoopStmtContext context)
         {
             _resolver.Resolve(context);
         }
