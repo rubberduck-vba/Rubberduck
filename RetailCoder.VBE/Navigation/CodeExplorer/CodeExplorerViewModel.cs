@@ -28,7 +28,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             _refreshCommand = new DelegateCommand(ExecuteRefreshCommand);
             _addTestModuleCommand = new DelegateCommand(ExecuteAddTestModuleCommand);
-            _addStdModuleCommand = new DelegateCommand(ExecuteAddStandardModuleCommand, CanAddStdModule);
+            _addStdModuleCommand = new DelegateCommand(ExecuteAddStdModuleCommand, CanAddModule);
+            _addClsModuleCommand = new DelegateCommand(ExecuteAddClsModuleCommand, CanAddModule);
+            _addFormCommand = new DelegateCommand(ExecuteAddFormCommand, CanAddModule);
         }
 
         private readonly ICommand _refreshCommand;
@@ -39,6 +41,12 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly ICommand _addStdModuleCommand;
         public ICommand AddStdModuleCommand { get { return _addStdModuleCommand; } }
+
+        private readonly ICommand _addClsModuleCommand;
+        public ICommand AddClsModuleCommand { get { return _addClsModuleCommand; } }
+
+        private readonly ICommand _addFormCommand;
+        public ICommand AddFormCommand { get { return _addFormCommand; } }
 
         private readonly INavigateCommand _navigateCommand;
         private readonly NewUnitTestModuleCommand _newUnitTestModuleCommand;
@@ -79,7 +87,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private bool CanAddStdModule(object param)
+        private bool CanAddModule(object param)
         {
             return _vbe.ActiveVBProject != null;
         }
@@ -137,10 +145,22 @@ namespace Rubberduck.Navigation.CodeExplorer
             _newUnitTestModuleCommand.NewUnitTestModule();
         }
 
-        private void ExecuteAddStandardModuleCommand(object param)
+        private void ExecuteAddStdModuleCommand(object param)
         {
-            Debug.WriteLine("CodeExplorerViewModel.AddStandardModuleCommand");
+            Debug.WriteLine("CodeExplorerViewModel.AddStdModuleCommand");
             _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
+        }
+
+        private void ExecuteAddClsModuleCommand(object param)
+        {
+            Debug.WriteLine("CodeExplorerViewModel.AddClsModuleCommand");
+            _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
+        }
+
+        private void ExecuteAddFormCommand(object param)
+        {
+            Debug.WriteLine("CodeExplorerViewModel.AddFormCommand");
+            _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_MSForm);
         }
     }
 }

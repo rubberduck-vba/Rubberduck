@@ -154,8 +154,8 @@
                     <MenuItem Header="Test Module" Command="{Binding AddTestModuleCommand}" />
                     <Separator />
                     <MenuItem Header="Standard Module (.bas)" Command="{Binding AddStdModuleCommand}" />
-                    <MenuItem Header="Class Module (.cls)" />
-                    <MenuItem Header="User Form (.frm)" />
+                    <MenuItem Header="Class Module (.cls)" Command="{Binding AddClsModuleCommand}" />
+                    <MenuItem Header="User Form (.frm)" Command="{Binding AddFormCommand}" />
                 </MenuItem>
             </Menu>
 
