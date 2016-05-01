@@ -228,7 +228,7 @@
   <data name="MultipleFolderAnnotationsInspectionMeta" xml:space="preserve">
     <value>Rubberduck only uses the first '@Folder' annotation in a code module; consider removing extraneous ones.</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspectionNamer" xml:space="preserve">
+  <data name="MultipleFolderAnnotationsInspectionName" xml:space="preserve">
     <value>Module has more than one folder annotation.</value>
   </data>
   <data name="NonReturningFunctionInspectionMeta" xml:space="preserve">

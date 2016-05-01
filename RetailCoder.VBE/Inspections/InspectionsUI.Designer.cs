@@ -567,9 +567,9 @@ namespace Rubberduck.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Module has more than one folder annotation..
         /// </summary>
-        public static string MultipleFolderAnnotationsInspectionNamer {
+        public static string MultipleFolderAnnotationsInspectionName {
             get {
-                return ResourceManager.GetString("MultipleFolderAnnotationsInspectionNamer", resourceCulture);
+                return ResourceManager.GetString("MultipleFolderAnnotationsInspectionName", resourceCulture);
             }
         }
         
@@ -961,7 +961,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change &apos;{0}&apos; to &apos;{0}$&apos;.
+        ///   Looks up a localized string similar to Change &apos;{0}&apos; to &apos;{1}&apos;.
         /// </summary>
         public static string QuickFixUseTypedFunction_ {
             get {
