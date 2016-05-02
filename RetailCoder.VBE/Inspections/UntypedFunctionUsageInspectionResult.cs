@@ -1,18 +1,19 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
     public class UntypedFunctionUsageInspectionResult : InspectionResultBase
     {
-        private readonly string _result;
+        private readonly IdentifierReference _reference;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public UntypedFunctionUsageInspectionResult(IInspection inspection, string result, QualifiedModuleName qualifiedName, ParserRuleContext context) 
-            : base(inspection, qualifiedName, context)
+        public UntypedFunctionUsageInspectionResult(IInspection inspection, IdentifierReference reference) 
+            : base(inspection, reference.QualifiedModuleName, reference.Context)
         {
-            _result = result;
+            _reference = reference;
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new UntypedFunctionUsageQuickFix(Context, QualifiedSelection), 
@@ -24,10 +25,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get
-            {
-                return _result;
-            }
+            get { return string.Format(Inspection.Description, _reference.Declaration.IdentifierName); }
         }
     }
 

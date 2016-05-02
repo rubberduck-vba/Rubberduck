@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections;
@@ -33,9 +34,18 @@ namespace RubberduckTests.Inspections
         [TestMethod]
         public void InspectionResultFormatStringsExist()
         {
+            var inspectionsWithSharedResultFormat = new List<string>
+            {
+                typeof(ConstantNotUsedInspection).Name,
+                typeof(ParameterNotUsedInspection).Name,
+                typeof(ProcedureNotUsedInspection).Name,
+                typeof(VariableNotUsedInspection).Name
+            };
+
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
                           .Where(type => type.BaseType == typeof(InspectionBase))
-                          .Where(i => string.IsNullOrEmpty(InspectionsUI.ResourceManager.GetString(i.Name + "ResultFormat")))
+                          .Where(i => !inspectionsWithSharedResultFormat.Contains(i.Name) &&
+                                      string.IsNullOrEmpty(InspectionsUI.ResourceManager.GetString(i.Name + "ResultFormat")))
                           .Select(i => i.Name);
 
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));

@@ -313,6 +313,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; implicitly references ActiveSheet.
+        /// </summary>
+        public static string ImplicitActiveSheetReferenceInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ImplicitActiveSheetReferenceInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Implicit references to the active workbook make the code frail and harder to debug. Consider making these references explicit when they&apos;re intended, and prefer working off object references. Ignore if the member call is referring to a type Rubberduck can&apos;t resolve..
         /// </summary>
         public static string ImplicitActiveWorkbookReferenceInspectionMeta {
@@ -327,6 +336,15 @@ namespace Rubberduck.Inspections {
         public static string ImplicitActiveWorkbookReferenceInspectionName {
             get {
                 return ResourceManager.GetString("ImplicitActiveWorkbookReferenceInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; implicitly references ActiveWorkbook.
+        /// </summary>
+        public static string ImplicitActiveWorkbookReferenceInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ImplicitActiveWorkbookReferenceInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -430,11 +448,11 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to declaration of .
+        ///   Looks up a localized string similar to Declaration.
         /// </summary>
-        public static string Inspections_DeclarationOf {
+        public static string Inspections_Declaration {
             get {
-                return ResourceManager.GetString("Inspections_DeclarationOf", resourceCulture);
+                return ResourceManager.GetString("Inspections_Declaration", resourceCulture);
             }
         }
         
@@ -448,11 +466,11 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to usage of .
+        ///   Looks up a localized string similar to Usage.
         /// </summary>
-        public static string Inspections_UsageOf {
+        public static string Inspections_Usage {
             get {
-                return ResourceManager.GetString("Inspections_UsageOf", resourceCulture);
+                return ResourceManager.GetString("Inspections_Usage", resourceCulture);
             }
         }
         
@@ -556,11 +574,20 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Instruction contains multiple declarations.
+        ///   Looks up a localized string similar to Multiple declarations in single instruction.
         /// </summary>
         public static string MultipleDeclarationsInspectionName {
             get {
                 return ResourceManager.GetString("MultipleDeclarationsInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instruction contains multiple declarations.
+        /// </summary>
+        public static string MultipleDeclarationsInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("MultipleDeclarationsInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -664,6 +691,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Assignment uses obsolete &apos;Call&apos; modifier.
+        /// </summary>
+        public static string ObsoleteCallStatementInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ObsoleteCallStatementInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The &apos;Rem&apos; statement only exists in the language to support legacy code that required it; it can be safely replaced with an apostrophe / single-quote comment..
         /// </summary>
         public static string ObsoleteCommentSyntaxInspectionMeta {
@@ -678,6 +714,15 @@ namespace Rubberduck.Inspections {
         public static string ObsoleteCommentSyntaxInspectionName {
             get {
                 return ResourceManager.GetString("ObsoleteCommentSyntaxInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comment uses obsolete &apos;Rem&apos; marker.
+        /// </summary>
+        public static string ObsoleteCommentSyntaxInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ObsoleteCommentSyntaxInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -736,6 +781,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Assignment uses obsolete &apos;Let&apos; modifier.
+        /// </summary>
+        public static string ObsoleteLetStatementInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ObsoleteLetStatementInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type hint characters only exist in the language to support legacy code that required it; they can be safely replaced in declarations with an &quot;As&quot; type clause that specifies the type explicitly, and they can be omitted in other identifier references..
         /// </summary>
         public static string ObsoleteTypeHintInspectionMeta {
@@ -754,6 +808,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} &apos;{2}&apos; uses an obsolete type hint.
+        /// </summary>
+        public static string ObsoleteTypeHintInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ObsoleteTypeHintInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Arrays are typically zero-based. This option changes the default lower boundary for implicitly-sized arrays, which can introduce off-by-one errors if one isn&apos;t cautious..
         /// </summary>
         public static string OptionBaseInspectionMeta {
@@ -768,6 +831,15 @@ namespace Rubberduck.Inspections {
         public static string OptionBaseInspectionName {
             get {
                 return ResourceManager.GetString("OptionBaseInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Component &apos;{0}&apos; uses &apos;Option Base 1&apos;.
+        /// </summary>
+        public static string OptionBaseInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("OptionBaseInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -1114,6 +1186,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This is likely a bug. A variable is being referred to, but is never assigned..
         /// </summary>
         public static string UnassignedVariableUsageInspectionMeta {
@@ -1155,6 +1236,15 @@ namespace Rubberduck.Inspections {
         public static string UntypedFunctionUsageInspectionName {
             get {
                 return ResourceManager.GetString("UntypedFunctionUsageInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace function `{0}` with existing typed function.
+        /// </summary>
+        public static string UntypedFunctionUsageInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("UntypedFunctionUsageInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -1240,11 +1330,20 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable is implicitly &apos;Variant&apos;.
+        ///   Looks up a localized string similar to Implicitly &apos;Variant&apos; variable.
         /// </summary>
         public static string VariableTypeNotDeclaredInspectionName {
             get {
                 return ResourceManager.GetString("VariableTypeNotDeclaredInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos; is implicitly &apos;Variant&apos;.
+        /// </summary>
+        public static string VariableTypeNotDeclaredInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("VariableTypeNotDeclaredInspectionResultFormat", resourceCulture);
             }
         }
         

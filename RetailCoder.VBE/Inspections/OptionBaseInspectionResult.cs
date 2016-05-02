@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return Inspection.Description; }
+            get { return string.Format(Inspection.Description, QualifiedName.ComponentName); }
         }
     }
 }

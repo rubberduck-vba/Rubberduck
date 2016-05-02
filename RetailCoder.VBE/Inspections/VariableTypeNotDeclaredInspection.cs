@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.VariableTypeNotDeclaredInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.VariableTypeNotDeclaredInspectionName; } }
+        public override string Description { get { return InspectionsUI.VariableTypeNotDeclaredInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
