@@ -6,6 +6,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+             xmlns:converter="clr-namespace:Rubberduck.UI.CodeExplorer"
              ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
              mc:Ignorable="d" 
@@ -13,8 +14,9 @@
     <UserControl.Resources>
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <converter:BoolToHiddenVisibility x:Key="BoolToHiddenVisibility" />
 
-        <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
+            <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
 
             <Setter Property="Width" Value="Auto"/>
 
@@ -59,6 +61,7 @@
         <Style x:Key="ShinyTreeView" 
                TargetType="{x:Type TreeViewItem}">
             <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="BorderBrush" Value="#adc6e5"/>
@@ -90,7 +93,13 @@
             <Setter Property="Margin" Value="2,0,2,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
-        
+
+        <Style x:Key="TreeViewItemStyleWithSignatures" TargetType="TextBlock">
+            <Setter Property="Text" Value="{Binding NameWithSignature}" />
+            <Setter Property="Margin" Value="2,0,2,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
         <Style x:Key="TreeViewIconStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">
             <Setter Property="Source" Value="{Binding CollapsedIcon}" />
             <Style.Triggers>
@@ -105,7 +114,8 @@
                                   ItemsSource="{Binding Items}">
             <StackPanel Orientation="Horizontal">
                 <Image Style="{StaticResource TreeViewIconStyle}" />
-                <TextBlock Style="{StaticResource TreeViewItemStyle}" />
+                <TextBlock Style="{StaticResource TreeViewItemStyle}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToHiddenVisibility}}" />
+                <TextBlock Style="{StaticResource TreeViewItemStyleWithSignatures}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" />
             </StackPanel>
         </HierarchicalDataTemplate>
         
@@ -114,7 +124,8 @@
                                   ItemsSource="{Binding Items}">
             <StackPanel Orientation="Horizontal">
                 <Image Style="{StaticResource TreeViewIconStyle}" />
-                <TextBlock Style="{StaticResource TreeViewItemStyle}" />
+                <TextBlock Style="{StaticResource TreeViewItemStyle}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToHiddenVisibility}}" />
+                <TextBlock Style="{StaticResource TreeViewItemStyleWithSignatures}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" />
             </StackPanel>
         </HierarchicalDataTemplate>
 
@@ -151,32 +162,17 @@
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/plus-circle.png" />
                     </MenuItem.Icon>
-                    <MenuItem Header="Test Module"></MenuItem>
+                    <MenuItem Header="Test Module" Command="{Binding AddTestModuleCommand}" />
                     <Separator />
-                    <MenuItem Header="Standard Module (.bas)"></MenuItem>
-                    <MenuItem Header="Class Module (.cls)"></MenuItem>
-                    <MenuItem Header="User Form (.frm)"></MenuItem>
+                    <MenuItem Header="Standard Module (.bas)" Command="{Binding AddStdModuleCommand}" />
+                    <MenuItem Header="Class Module (.cls)" Command="{Binding AddClsModuleCommand}" />
+                    <MenuItem Header="User Form (.frm)" Command="{Binding AddFormCommand}" />
                 </MenuItem>
             </Menu>
 
             <Separator />
 
-            <Button>
-                <Image Height="16" Source="../../Resources/folder--pencil.png" />
-                <Button.ToolTip>
-                    <TextBlock Text="Edit module folder" />
-                </Button.ToolTip>
-            </Button>
-            <Button>
-                <Image Height="16" Source="../../Resources/folder-rename.png" />
-                <Button.ToolTip>
-                    <TextBlock Text="Rename folder" />
-                </Button.ToolTip>
-            </Button>
-
-            <Separator />
-
-            <ToggleButton IsEnabled="{Binding CanRefresh}" ToolTip="Toggle signatures">
+            <ToggleButton Name="DisplaySignatures" IsEnabled="{Binding CanRefresh}" ToolTip="Toggle signatures" IsChecked="True">
                 <Image Height="16" Source="../../Resources/Microsoft/PNG/DisplayFullSignature_13393_32.png" />
             </ToggleButton>
 

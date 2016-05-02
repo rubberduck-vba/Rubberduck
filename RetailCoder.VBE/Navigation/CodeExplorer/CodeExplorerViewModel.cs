@@ -1,31 +1,56 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Input;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
+using Rubberduck.UnitTesting;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerViewModel : ViewModelBase
     {
+        private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
 
-        public CodeExplorerViewModel(RubberduckParserState state, INavigateCommand navigateCommand)
+        public CodeExplorerViewModel(VBE vbe, RubberduckParserState state, INavigateCommand navigateCommand, NewUnitTestModuleCommand newUnitTestModuleCommand)
         {
+            _vbe = vbe;
             _state = state;
             _navigateCommand = navigateCommand;
+            _newUnitTestModuleCommand = newUnitTestModuleCommand;
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
             _refreshCommand = new DelegateCommand(ExecuteRefreshCommand);
+            _addTestModuleCommand = new DelegateCommand(ExecuteAddTestModuleCommand);
+            _addStdModuleCommand = new DelegateCommand(ExecuteAddStdModuleCommand, CanAddModule);
+            _addClsModuleCommand = new DelegateCommand(ExecuteAddClsModuleCommand, CanAddModule);
+            _addFormCommand = new DelegateCommand(ExecuteAddFormCommand, CanAddModule);
         }
 
         private readonly ICommand _refreshCommand;
         public ICommand RefreshCommand { get { return _refreshCommand; } }
 
+        private readonly ICommand _addTestModuleCommand;
+        public ICommand AddTestModuleCommand { get { return _addTestModuleCommand; } }
+
+        private readonly ICommand _addStdModuleCommand;
+        public ICommand AddStdModuleCommand { get { return _addStdModuleCommand; } }
+
+        private readonly ICommand _addClsModuleCommand;
+        public ICommand AddClsModuleCommand { get { return _addClsModuleCommand; } }
+
+        private readonly ICommand _addFormCommand;
+        public ICommand AddFormCommand { get { return _addFormCommand; } }
+
         private readonly INavigateCommand _navigateCommand;
+        private readonly NewUnitTestModuleCommand _newUnitTestModuleCommand;
         public ICommand NavigateCommand { get { return _navigateCommand; } }
 
         private object _selectedItem;
@@ -63,8 +88,13 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private ObservableCollection<CodeExplorerProjectViewModel> _projects;
-        public ObservableCollection<CodeExplorerProjectViewModel> Projects
+        private bool CanAddModule(object param)
+        {
+            return _vbe.ActiveVBProject != null;
+        }
+
+        private ObservableCollection<CodeExplorerItemViewModel> _projects;
+        public ObservableCollection<CodeExplorerItemViewModel> Projects
         {
             get { return _projects; }
             set
@@ -76,26 +106,68 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ParserState_StateChanged(object sender, EventArgs e)
         {
-            //Debug.WriteLine("CodeExplorerViewModel handles StateChanged...");
-            //IsBusy = _state.Status == ParserState.Parsing;
-            //if (_state.Status != ParserState.Ready)
-            //{
-            //    return;
-            //}
+            if (Projects == null)
+            {
+                Projects = new ObservableCollection<CodeExplorerItemViewModel>();
+            }
 
-            //Debug.WriteLine("Creating Code Explorer model...");
-            //var userDeclarations = _state.AllUserDeclarations
-            //    .GroupBy(declaration => declaration.ProjectName)
-            //    .Where(grouping => grouping.Key != null)
-            //    .ToList();
+            Debug.WriteLine("CodeExplorerViewModel handles StateChanged...");
+            IsBusy = _state.Status == ParserState.Parsing;
+            if (_state.Status != ParserState.Ready)
+            {
+                return;
+            }
 
-            //if (userDeclarations.Any(grouping => grouping.All(declaration => declaration.DeclarationType != DeclarationType.Project)))
-            //{
-            //    return;
-            //}
+            Debug.WriteLine("Creating Code Explorer model...");
+            var userDeclarations = _state.AllUserDeclarations
+                .GroupBy(declaration => declaration.Project)
+                .Where(grouping => grouping.Key != null)
+                .ToList();
 
-            //Projects = new ObservableCollection<CodeExplorerProjectViewModel>(userDeclarations.Select(grouping => 
-            //    new CodeExplorerProjectViewModel(grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project), grouping)));
+            if (userDeclarations.Any(grouping => grouping.All(declaration => declaration.DeclarationType != DeclarationType.Project)))
+            {
+                return;
+            }
+
+            var newProjects = new ObservableCollection<CodeExplorerItemViewModel>(userDeclarations.Select(grouping =>
+                new CodeExplorerProjectViewModel(grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project), grouping)));
+
+            UpdateNodes(Projects, newProjects);
+            Projects = newProjects;
+        }
+
+        private void UpdateNodes(IEnumerable<CodeExplorerItemViewModel> oldList,
+            IEnumerable<CodeExplorerItemViewModel> newList)
+        {
+            foreach (var item in newList)
+            {
+                CodeExplorerItemViewModel oldItem;
+
+                if (item is CodeExplorerCustomFolderViewModel)
+                {
+                    oldItem = oldList.FirstOrDefault(i => i.Name == item.Name);
+                }
+                else
+                {
+                    oldItem = oldList.FirstOrDefault(i =>
+                        item.QualifiedSelection != null && i.QualifiedSelection != null &&
+                        i.QualifiedSelection.Value.QualifiedName.ProjectId ==
+                        item.QualifiedSelection.Value.QualifiedName.ProjectId &&
+                        i.QualifiedSelection.Value.QualifiedName.ComponentName ==
+                        item.QualifiedSelection.Value.QualifiedName.ComponentName &&
+                        i.QualifiedSelection.Value.Selection == item.QualifiedSelection.Value.Selection);
+                }
+
+                if (oldItem != null)
+                {
+                    item.IsExpanded = oldItem.IsExpanded;
+
+                    if (oldItem.Items.Any() && item.Items.Any())
+                    {
+                        UpdateNodes(oldItem.Items, item.Items);
+                    }
+                }
+            }
         }
 
         private void ParserState_ModuleStateChanged(object sender, Parsing.ParseProgressEventArgs e)
@@ -108,6 +180,30 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             Debug.WriteLine("CodeExplorerViewModel.ExecuteRefreshCommand - requesting reparse");
             _state.OnParseRequested(this);
+        }
+
+        private void ExecuteAddTestModuleCommand(object param)
+        {
+            Debug.WriteLine("CodeExplorerViewModel.AddTestModuleCommand");
+            _newUnitTestModuleCommand.NewUnitTestModule();
+        }
+
+        private void ExecuteAddStdModuleCommand(object param)
+        {
+            Debug.WriteLine("CodeExplorerViewModel.AddStdModuleCommand");
+            _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
+        }
+
+        private void ExecuteAddClsModuleCommand(object param)
+        {
+            Debug.WriteLine("CodeExplorerViewModel.AddClsModuleCommand");
+            _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
+        }
+
+        private void ExecuteAddFormCommand(object param)
+        {
+            Debug.WriteLine("CodeExplorerViewModel.AddFormCommand");
+            _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_MSForm);
         }
     }
 }

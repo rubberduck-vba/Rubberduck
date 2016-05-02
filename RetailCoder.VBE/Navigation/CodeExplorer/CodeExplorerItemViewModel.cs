@@ -11,7 +11,10 @@ namespace Rubberduck.Navigation.CodeExplorer
         private IList<CodeExplorerItemViewModel> _items = new List<CodeExplorerItemViewModel>();
         public IEnumerable<CodeExplorerItemViewModel> Items { get { return _items; } protected set { _items = value.ToList(); } }
 
+        public bool IsExpanded { get; set; }
+
         public abstract string Name { get; }
+        public abstract string NameWithSignature { get; }
         public abstract BitmapImage CollapsedIcon { get; }
         public abstract BitmapImage ExpandedIcon { get; }
 

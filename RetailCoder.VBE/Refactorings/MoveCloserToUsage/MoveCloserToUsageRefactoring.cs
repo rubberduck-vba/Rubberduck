@@ -29,11 +29,6 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             _messageBox = messageBox;
         }
 
-        public bool CanExecute(QualifiedSelection selection)
-        {
-            return false;
-        }
-
         public void Refactor()
         {
             var qualifiedSelection = _vbe.ActiveCodePane.CodeModule.GetSelection();
