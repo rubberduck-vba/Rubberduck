@@ -549,9 +549,6 @@
   <data name="OptionBaseInspectionResultFormat" xml:space="preserve">
     <value>Component '{0}' uses 'Option Base 1'</value>
   </data>
-  <data name="String1" xml:space="preserve">
-    <value />
-  </data>
   <data name="UntypedFunctionUsageInspectionResultFormat" xml:space="preserve">
     <value>Replace function `{0}` with existing typed function</value>
   </data>
