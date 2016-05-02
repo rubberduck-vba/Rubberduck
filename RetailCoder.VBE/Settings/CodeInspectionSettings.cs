@@ -32,6 +32,15 @@ namespace Rubberduck.Settings
         public string Description { get; set; } // not serialized because culture-dependent
 
         [XmlIgnore]
+        public string LocalizedName
+        {
+            get
+            {
+                return InspectionsUI.ResourceManager.GetString(Name + "Name");
+            }
+        } // not serialized because culture-dependent
+
+        [XmlIgnore]
         public string AnnotationName { get; set; }
 
         [XmlIgnore]
@@ -41,7 +50,8 @@ namespace Rubberduck.Settings
         public CodeInspectionSeverity Severity { get; set; }
 
         [XmlIgnore]
-        public string Meta {
+        public string Meta
+        {
             get
             {
                 return InspectionsUI.ResourceManager.GetString(Name + "Meta");
