@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1352,7 +1352,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value>Referenzen werden geladen</value>
   </data>
   <data name="ParserState_Parsed" xml:space="preserve">
-    <value>Analysiert</value>
+    <value>Fertig analysiert</value>
   </data>
   <data name="ParserState_Parsing" xml:space="preserve">
     <value>Parsing …</value>

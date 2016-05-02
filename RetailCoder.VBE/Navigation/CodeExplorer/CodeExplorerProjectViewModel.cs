@@ -24,9 +24,10 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CodeExplorerProjectViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
         {
+            _declaration = declaration;
+
             try
             {
-                _declaration = declaration;
                 Items = FindFolders(declarations.ToList(), '.');
 
                 _icon = _declaration.Project.Protection == vbext_ProjectProtection.vbext_pp_locked
@@ -84,6 +85,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public override BitmapImage ExpandedIcon { get { return _icon; } }
 
         public override string Name { get { return _declaration.IdentifierName; } }
+        public override string NameWithSignature { get { return Name; } }
         public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
     }
 }

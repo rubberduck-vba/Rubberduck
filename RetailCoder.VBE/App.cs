@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
 
@@ -121,7 +122,9 @@ namespace Rubberduck
 
         private bool ShouldEvaluateCanExecute(Declaration selectedDeclaration, ParserState currentStatus)
         {
-            return _lastStatus != currentStatus || (selectedDeclaration != null && !selectedDeclaration.Equals(_lastSelectedDeclaration));
+            return _lastStatus != currentStatus ||
+                   (selectedDeclaration != null && !selectedDeclaration.Equals(_lastSelectedDeclaration)) ||
+                   (selectedDeclaration == null && _lastSelectedDeclaration != null);
         }
 
         private void _configService_SettingsChanged(object sender, EventArgs e)
@@ -136,6 +139,14 @@ namespace Rubberduck
             CleanReloadConfig();
             _appMenus.Initialize();
             _appMenus.Localize();
+            Task.Delay(1000).ContinueWith(t =>
+            {
+                // run this on UI thread
+                UiDispatcher.Invoke(() =>
+                {
+                    _parser.State.OnParseRequested(this);
+                });
+            }).ConfigureAwait(false);
             _hooks.HookHotkeys();
         }
 

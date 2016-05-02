@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.ObsoleteCallStatementInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ObsoleteCallStatementInspectionName; } }
+        public override string Description { get { return InspectionsUI.ObsoleteCallStatementInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()

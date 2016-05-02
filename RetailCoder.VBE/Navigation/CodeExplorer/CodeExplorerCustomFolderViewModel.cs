@@ -49,6 +49,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         public override string Name { get { return _name; } }
+        public override string NameWithSignature { get { return Name; } }
 
         public override QualifiedSelection? QualifiedSelection { get { return null; } }
 

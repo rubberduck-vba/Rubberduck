@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
@@ -77,6 +78,28 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly string _name;
         public override string Name { get { return _name; } }
+        public override string NameWithSignature
+        {
+            get
+            {
+                var context =
+                    _declaration.Context.children.First(d => d is VBAParser.ArgListContext) as VBAParser.ArgListContext;
+
+                if (context == null)
+                {
+                    return string.Empty;
+                }
+
+                if (_declaration.DeclarationType == DeclarationType.PropertyGet ||
+                    _declaration.DeclarationType == DeclarationType.PropertyLet ||
+                    _declaration.DeclarationType == DeclarationType.PropertySet)
+                {
+                    return Name.Insert(Name.Length - 6, context.GetText()); // the three-letter "get/let/set" + parens + space
+                }
+
+                return Name + context.GetText();
+            }
+        }
 
         public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
 
