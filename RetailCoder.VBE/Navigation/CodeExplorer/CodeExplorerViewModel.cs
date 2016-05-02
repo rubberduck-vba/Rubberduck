@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -92,8 +93,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             return _vbe.ActiveVBProject != null;
         }
 
-        private ObservableCollection<CodeExplorerProjectViewModel> _projects;
-        public ObservableCollection<CodeExplorerProjectViewModel> Projects
+        private ObservableCollection<CodeExplorerItemViewModel> _projects;
+        public ObservableCollection<CodeExplorerItemViewModel> Projects
         {
             get { return _projects; }
             set
@@ -105,6 +106,11 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ParserState_StateChanged(object sender, EventArgs e)
         {
+            if (Projects == null)
+            {
+                Projects = new ObservableCollection<CodeExplorerItemViewModel>();
+            }
+
             Debug.WriteLine("CodeExplorerViewModel handles StateChanged...");
             IsBusy = _state.Status == ParserState.Parsing;
             if (_state.Status != ParserState.Ready)
@@ -123,8 +129,45 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            Projects = new ObservableCollection<CodeExplorerProjectViewModel>(userDeclarations.Select(grouping =>
+            var newProjects = new ObservableCollection<CodeExplorerItemViewModel>(userDeclarations.Select(grouping =>
                 new CodeExplorerProjectViewModel(grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project), grouping)));
+
+            UpdateNodes(Projects, newProjects);
+            Projects = newProjects;
+        }
+
+        private void UpdateNodes(IEnumerable<CodeExplorerItemViewModel> oldList,
+            IEnumerable<CodeExplorerItemViewModel> newList)
+        {
+            foreach (var item in newList)
+            {
+                CodeExplorerItemViewModel oldItem;
+
+                if (item is CodeExplorerCustomFolderViewModel)
+                {
+                    oldItem = oldList.FirstOrDefault(i => i.Name == item.Name);
+                }
+                else
+                {
+                    oldItem = oldList.FirstOrDefault(i =>
+                        item.QualifiedSelection != null && i.QualifiedSelection != null &&
+                        i.QualifiedSelection.Value.QualifiedName.ProjectId ==
+                        item.QualifiedSelection.Value.QualifiedName.ProjectId &&
+                        i.QualifiedSelection.Value.QualifiedName.ComponentName ==
+                        item.QualifiedSelection.Value.QualifiedName.ComponentName &&
+                        i.QualifiedSelection.Value.Selection == item.QualifiedSelection.Value.Selection);
+                }
+
+                if (oldItem != null)
+                {
+                    item.IsExpanded = oldItem.IsExpanded;
+
+                    if (oldItem.Items.Any() && item.Items.Any())
+                    {
+                        UpdateNodes(oldItem.Items, item.Items);
+                    }
+                }
+            }
         }
 
         private void ParserState_ModuleStateChanged(object sender, Parsing.ParseProgressEventArgs e)

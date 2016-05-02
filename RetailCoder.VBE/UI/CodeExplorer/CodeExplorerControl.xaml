@@ -61,6 +61,7 @@
         <Style x:Key="ShinyTreeView" 
                TargetType="{x:Type TreeViewItem}">
             <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="BorderBrush" Value="#adc6e5"/>
