@@ -336,28 +336,28 @@
                 <Button Command="{Binding RefreshCommand}" IsEnabled="{Binding CanRefresh}">
                     <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
                     <Button.ToolTip>
-                        <TextBlock Text="Refresh" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}" />
                     </Button.ToolTip>
                 </Button>
 
                 <Separator />
 
                 <Menu>
-                    <MenuItem Header="Add">
+                    <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}">
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/plus-circle.png" />
                         </MenuItem.Icon>
-                        <MenuItem Header="Test Module" Command="{Binding AddTestModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddTestModuleText}" Command="{Binding AddTestModuleCommand}" />
                         <Separator />
-                        <MenuItem Header="Standard Module (.bas)" Command="{Binding AddStdModuleCommand}" />
-                        <MenuItem Header="Class Module (.cls)" Command="{Binding AddClsModuleCommand}" />
-                        <MenuItem Header="User Form (.frm)" Command="{Binding AddFormCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddStdModuleText}" Command="{Binding AddStdModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddClassModuleText}" Command="{Binding AddClsModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddFormText}" Command="{Binding AddFormCommand}" />
                     </MenuItem>
                 </Menu>
 
                 <Separator />
 
-                <ToggleButton Name="DisplaySignatures" IsEnabled="{Binding CanRefresh}" ToolTip="Toggle signatures" IsChecked="True">
+                <ToggleButton Name="DisplaySignatures" IsEnabled="{Binding CanRefresh}" ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ShowSignaturesToolTip}" IsChecked="True">
                     <Image Height="16" Source="../../Resources/Microsoft/PNG/DisplayFullSignature_13393_32.png" />
                 </ToggleButton>
 

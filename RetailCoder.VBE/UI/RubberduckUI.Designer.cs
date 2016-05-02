@@ -209,16 +209,16 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Class module (.cls).
+        ///   Looks up a localized string similar to Class module (.cls).
         /// </summary>
-        public static string CodeExplorer_AddClassText {
+        public static string CodeExplorer_AddClassModuleText {
             get {
-                return ResourceManager.GetString("CodeExplorer_AddClassText", resourceCulture);
+                return ResourceManager.GetString("CodeExplorer_AddClassModuleText", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User &amp;form.
+        ///   Looks up a localized string similar to User form (.frm).
         /// </summary>
         public static string CodeExplorer_AddFormText {
             get {
@@ -227,7 +227,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Standard module (.bas).
+        ///   Looks up a localized string similar to Standard module (.bas).
         /// </summary>
         public static string CodeExplorer_AddStdModuleText {
             get {
@@ -236,7 +236,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Test module.
+        ///   Looks up a localized string similar to Test module.
         /// </summary>
         public static string CodeExplorer_AddTestModuleText {
             get {
@@ -367,6 +367,15 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_ShowFoldersToolTip {
             get {
                 return ResourceManager.GetString("CodeExplorer_ShowFoldersToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle signatures.
+        /// </summary>
+        public static string CodeExplorer_ShowSignaturesToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ShowSignaturesToolTip", resourceCulture);
             }
         }
         
