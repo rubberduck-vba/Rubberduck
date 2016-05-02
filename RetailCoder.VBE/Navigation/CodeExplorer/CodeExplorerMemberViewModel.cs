@@ -11,7 +11,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerMemberViewModel : CodeExplorerItemViewModel
     {
-        private readonly Declaration _declaration;
+        public Declaration Declaration { get; private set; }
 
         private static readonly DeclarationType[] SubMemberTypes =
         {
@@ -59,7 +59,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CodeExplorerMemberViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
         {
-            _declaration = declaration;
+            Declaration = declaration;
             if (declarations != null)
             {
                 Items = declarations.Where(item => SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(declaration))
@@ -83,16 +83,16 @@ namespace Rubberduck.Navigation.CodeExplorer
             get
             {
                 var context =
-                    _declaration.Context.children.First(d => d is VBAParser.ArgListContext) as VBAParser.ArgListContext;
+                    Declaration.Context.children.First(d => d is VBAParser.ArgListContext) as VBAParser.ArgListContext;
 
                 if (context == null)
                 {
                     return string.Empty;
                 }
 
-                if (_declaration.DeclarationType == DeclarationType.PropertyGet ||
-                    _declaration.DeclarationType == DeclarationType.PropertyLet ||
-                    _declaration.DeclarationType == DeclarationType.PropertySet)
+                if (Declaration.DeclarationType == DeclarationType.PropertyGet ||
+                    Declaration.DeclarationType == DeclarationType.PropertyLet ||
+                    Declaration.DeclarationType == DeclarationType.PropertySet)
                 {
                     return Name.Insert(Name.Length - 6, context.GetText()); // the three-letter "get/let/set" + parens + space
                 }
@@ -101,7 +101,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
+        public override QualifiedSelection? QualifiedSelection { get { return Declaration.QualifiedSelection; } }
 
         private static string DetermineMemberName(Declaration declaration)
         {

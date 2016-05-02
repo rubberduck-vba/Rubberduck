@@ -12,7 +12,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerProjectViewModel : CodeExplorerItemViewModel
     {
-        private readonly Declaration _declaration;
+        public Declaration Declaration { get; private set; }
 
         private static readonly DeclarationType[] ComponentTypes =
         {
@@ -24,13 +24,13 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CodeExplorerProjectViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
         {
-            _declaration = declaration;
+            Declaration = declaration;
 
             try
             {
                 Items = FindFolders(declarations.ToList(), '.');
 
-                _icon = _declaration.Project.Protection == vbext_ProjectProtection.vbext_pp_locked
+                _icon = Declaration.Project.Protection == vbext_ProjectProtection.vbext_pp_locked
                     ? GetImageSource(resx.lock__exclamation)
                     : GetImageSource(resx.VSObject_Library);
             }
@@ -84,8 +84,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         public override BitmapImage CollapsedIcon { get { return _icon; } }
         public override BitmapImage ExpandedIcon { get { return _icon; } }
 
-        public override string Name { get { return _declaration.IdentifierName; } }
+        public override string Name { get { return Declaration.IdentifierName; } }
         public override string NameWithSignature { get { return Name; } }
-        public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
+        public override QualifiedSelection? QualifiedSelection { get { return Declaration.QualifiedSelection; } }
     }
 }

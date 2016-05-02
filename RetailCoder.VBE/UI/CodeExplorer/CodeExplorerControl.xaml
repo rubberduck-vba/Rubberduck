@@ -393,18 +393,18 @@
                 </StackPanel>
                 
                 <WrapPanel Grid.Column="0" Grid.Row="1">
-                    <!--<Button Style="{StaticResource LinkButton}" Margin="4"
-                            Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}}"
+                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                            Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}, UpdateSourceTrigger=PropertyChanged}"
                             Command="{Binding IndenterCommand}"
                             Content="Indent" />
                     <Button Style="{StaticResource LinkButton}" Margin="4"
-                            Visibility="{Binding CanExecuteRefactorRename, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding RefactorRenameCommand}"
-                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RefactorMenu_Rename}" />
+                            Visibility="{Binding CanExecuteRenameCommand, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding RenameCommand}"
+                            Content="Rename" />
                     <Button Style="{StaticResource LinkButton}" Margin="4"
-                            Visibility="{Binding CanExecuteFindAllReferences, Converter={StaticResource BoolToVisibility}}"
+                            Visibility="{Binding CanExecuteFindAllReferencesCommand, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding FindAllReferencesCommand}"
-                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ContextMenu_FindAllReferences}" />-->
+                            Content="Find All References" />
                 </WrapPanel>
             </Grid>
         </Border>
