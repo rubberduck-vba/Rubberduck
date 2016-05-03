@@ -290,15 +290,15 @@ namespace Rubberduck.Navigation.CodeExplorer
             Declaration declaration;
             if (SelectedItem is CodeExplorerProjectViewModel)
             {
-                declaration = ((CodeExplorerProjectViewModel) SelectedItem).Declaration;
+                declaration = ((CodeExplorerProjectViewModel) SelectedItem)._declaration;
             }
             else if (SelectedItem is CodeExplorerComponentViewModel)
             {
-                declaration = ((CodeExplorerComponentViewModel)SelectedItem).Declaration;
+                declaration = ((CodeExplorerComponentViewModel)SelectedItem)._declaration;
             }
             else
             {
-                declaration = ((CodeExplorerMemberViewModel)SelectedItem).Declaration;
+                declaration = ((CodeExplorerMemberViewModel)SelectedItem)._declaration;
             }
 
             using (var view = new RenameDialog())
@@ -315,15 +315,15 @@ namespace Rubberduck.Navigation.CodeExplorer
             Declaration declaration;
             if (SelectedItem is CodeExplorerProjectViewModel)
             {
-                declaration = ((CodeExplorerProjectViewModel)SelectedItem).Declaration;
+                declaration = ((CodeExplorerProjectViewModel)SelectedItem)._declaration;
             }
             else if (SelectedItem is CodeExplorerComponentViewModel)
             {
-                declaration = ((CodeExplorerComponentViewModel)SelectedItem).Declaration;
+                declaration = ((CodeExplorerComponentViewModel)SelectedItem)._declaration;
             }
             else
             {
-                declaration = ((CodeExplorerMemberViewModel)SelectedItem).Declaration;
+                declaration = ((CodeExplorerMemberViewModel)SelectedItem)._declaration;
             }
 
             _findAllReferences.Execute(declaration);

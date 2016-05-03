@@ -13,7 +13,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel
     {
-        public Declaration Declaration { get; private set; }
+        private readonly Declaration _declaration;
+        public Declaration Declaration { get { return _declaration; } }
 
         private static readonly DeclarationType[] MemberTypes =
         {
@@ -33,7 +34,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CodeExplorerComponentViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
         {
-            Declaration = declaration;
+            _declaration = declaration;
             _icon = Icons[DeclarationType];
             Items = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
                             grouping.Where(item => item.ParentDeclaration != null
@@ -51,17 +52,17 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                return Declaration.DeclarationType == DeclarationType.ProceduralModule
-                       && Declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.TestModule);
+                return _declaration.DeclarationType == DeclarationType.ProceduralModule
+                       && _declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.TestModule);
             }
         }
 
-        public override string Name { get { return Declaration.IdentifierName; } }
+        public override string Name { get { return _declaration.IdentifierName; } }
         public override string NameWithSignature { get { return Name; } }
 
-        public override QualifiedSelection? QualifiedSelection { get { return Declaration.QualifiedSelection; } }
+        public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
 
-        private vbext_ComponentType ComponentType { get { return Declaration.QualifiedName.QualifiedModuleName.Component.Type; } }
+        private vbext_ComponentType ComponentType { get { return _declaration.QualifiedName.QualifiedModuleName.Component.Type; } }
 
         private static readonly IDictionary<vbext_ComponentType, DeclarationType> DeclarationTypes = new Dictionary<vbext_ComponentType, DeclarationType>
         {
