@@ -13,11 +13,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeExplorer:CodeExplorerViewModel}">
     <UserControl.Resources>
-
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         <converter:BoolToHiddenVisibility x:Key="BoolToHiddenVisibility" />
 
-            <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
+        <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
 
             <Setter Property="Width" Value="Auto"/>
 
@@ -63,6 +62,25 @@
                TargetType="{x:Type TreeViewItem}">
             <Setter Property="BorderThickness" Value="1.5"/>
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+            <Setter Property="ContextMenu">
+                <Setter.Value>
+                    <ContextMenu>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}"
+                                  Command="{Binding RefreshCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="../../Resources/arrow-circle-double.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}" Command="{Binding RenameCommand}" />
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddTestModuleText}" Command="{Binding AddTestModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddStdModuleText}" Command="{Binding AddStdModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddClassModuleText}" Command="{Binding AddClsModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddFormText}" Command="{Binding AddFormCommand}" />
+                    </ContextMenu>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="BorderBrush" Value="#adc6e5"/>
@@ -81,7 +99,6 @@
                 </Style>
             </Style.Resources>
         </Style>
-
         
         <Style x:Key="IconStyle" TargetType="Image">
             <Setter Property="Height" Value="16" />

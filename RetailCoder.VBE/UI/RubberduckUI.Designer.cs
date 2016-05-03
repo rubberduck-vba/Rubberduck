@@ -245,6 +245,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Class module (.cls).
+        /// </summary>
+        public static string CodeExplorer_ContextMenu_AddClassModuleText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ContextMenu_AddClassModuleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add User form (.frm).
+        /// </summary>
+        public static string CodeExplorer_ContextMenu_AddFormText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ContextMenu_AddFormText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Standard module (.bas).
+        /// </summary>
+        public static string CodeExplorer_ContextMenu_AddStdModuleText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ContextMenu_AddStdModuleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Test module.
+        /// </summary>
+        public static string CodeExplorer_ContextMenu_AddTestModuleText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ContextMenu_AddTestModuleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display member &amp;names.
         /// </summary>
         public static string CodeExplorer_DisplayMemberNamesText {

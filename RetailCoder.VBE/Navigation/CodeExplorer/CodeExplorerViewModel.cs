@@ -42,7 +42,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
-            _refreshCommand = new DelegateCommand(ExecuteRefreshCommand);
+            _refreshCommand = new DelegateCommand(ExecuteRefreshCommand, _ => CanRefresh);
             _addTestModuleCommand = new DelegateCommand(ExecuteAddTestModuleCommand);
             _addStdModuleCommand = new DelegateCommand(ExecuteAddStdModuleCommand, CanAddModule);
             _addClsModuleCommand = new DelegateCommand(ExecuteAddClsModuleCommand, CanAddModule);
