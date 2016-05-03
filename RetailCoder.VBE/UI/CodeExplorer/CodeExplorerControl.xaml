@@ -76,11 +76,17 @@
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}"
                                   Command="{Binding RenameCommand}" />
                         <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Navigate}"
+                                  Command="{Binding ContextMenuNavigateCommand}" />
+                        <Separator />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddTestModuleText}"
                                   Command="{Binding AddTestModuleCommand}" />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddStdModuleText}" Command="{Binding AddStdModuleCommand}" />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddClassModuleText}" Command="{Binding AddClsModuleCommand}" />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddFormText}" Command="{Binding AddFormCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddStdModuleText}"
+                                  Command="{Binding AddStdModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddClassModuleText}"
+                                  Command="{Binding AddClsModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddFormText}"
+                                  Command="{Binding AddFormCommand}" />
                     </ContextMenu>
                 </Setter.Value>
             </Setter>
