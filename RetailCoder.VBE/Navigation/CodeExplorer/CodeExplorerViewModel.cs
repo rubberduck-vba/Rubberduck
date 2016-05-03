@@ -81,6 +81,34 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly Indenter _indenter;
         public ICommand NavigateCommand { get { return _navigateCommand; } }
 
+        public string Description
+        {
+            get
+            {
+                if (SelectedItem is CodeExplorerProjectViewModel)
+                {
+                    return ((CodeExplorerProjectViewModel)SelectedItem).Declaration.DescriptionString;
+                }
+
+                if (SelectedItem is CodeExplorerComponentViewModel)
+                {
+                    return ((CodeExplorerComponentViewModel)SelectedItem).Declaration.DescriptionString;
+                }
+
+                if (SelectedItem is CodeExplorerMemberViewModel)
+                {
+                    return ((CodeExplorerMemberViewModel)SelectedItem).Declaration.DescriptionString;
+                }
+
+                if (SelectedItem is CodeExplorerCustomFolderViewModel)
+                {
+                    return ((CodeExplorerCustomFolderViewModel)SelectedItem).FolderAttribute;
+                }
+
+                return string.Empty;
+            }
+        }
+
         private CodeExplorerItemViewModel _selectedItem;
         public CodeExplorerItemViewModel SelectedItem
         {
@@ -92,6 +120,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 OnPropertyChanged("CanExecuteIndenterCommand");
                 OnPropertyChanged("CanExecuteRenameCommand");
                 OnPropertyChanged("CanExecuteFindAllReferencesCommand");
+                OnPropertyChanged("Description");
             }
         }
 
@@ -267,21 +296,20 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ExecuteIndenterCommand(object param)
         {
+            if (SelectedItem.QualifiedSelection.HasValue)
+            {
+                return;
+            }
+
             Debug.WriteLine("CodeExplorerViewModel.IndenterCommand");
             if (SelectedItem is CodeExplorerProjectViewModel)
             {
-                if (SelectedItem.QualifiedSelection.HasValue)
-                {
-                    _indenter.Indent(SelectedItem.QualifiedSelection.Value.QualifiedName.Project);
-                }
+                _indenter.Indent(SelectedItem.QualifiedSelection.Value.QualifiedName.Project);
             }
 
             if (SelectedItem is CodeExplorerComponentViewModel)
             {
-                if (SelectedItem.QualifiedSelection.HasValue)
-                {
-                    _indenter.Indent(SelectedItem.QualifiedSelection.Value.QualifiedName.Component);
-                }
+                _indenter.Indent(SelectedItem.QualifiedSelection.Value.QualifiedName.Component);
             }
         }
 
