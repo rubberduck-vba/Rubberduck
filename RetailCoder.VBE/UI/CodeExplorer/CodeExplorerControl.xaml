@@ -10,6 +10,7 @@
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
+             Name="CodeExplorer"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeExplorer:CodeExplorerViewModel}">
     <UserControl.Resources>
@@ -64,7 +65,7 @@
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
             <Setter Property="ContextMenu">
                 <Setter.Value>
-                    <ContextMenu>
+                    <ContextMenu DataContext="{Binding DataContext, Source={x:Reference CodeExplorer}}">
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}"
                                   Command="{Binding RefreshCommand}">
                             <MenuItem.Icon>
@@ -72,9 +73,11 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}" Command="{Binding RenameCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}"
+                                  Command="{Binding RenameCommand}" />
                         <Separator />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddTestModuleText}" Command="{Binding AddTestModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddTestModuleText}"
+                                  Command="{Binding AddTestModuleCommand}" />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddStdModuleText}" Command="{Binding AddStdModuleCommand}" />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddClassModuleText}" Command="{Binding AddClsModuleCommand}" />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddFormText}" Command="{Binding AddFormCommand}" />
@@ -385,7 +388,8 @@
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
                   MouseDoubleClick="TreeView_OnMouseDoubleClick"
-                  Style="{StaticResource CodeExplorerTreeViewStyle}">
+                  Style="{StaticResource CodeExplorerTreeViewStyle}"
+                  DataContext="{Binding ElementName=CodeExplorer, Path=DataContext}">
             <i:Interaction.Behaviors>
                 <controls:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
