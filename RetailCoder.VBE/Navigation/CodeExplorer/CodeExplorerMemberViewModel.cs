@@ -79,26 +79,36 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly string _name;
         public override string Name { get { return _name; } }
+
+        private string _signature = null;
         public override string NameWithSignature
         {
             get
             {
+                if (_signature != null)
+                {
+                    return _signature;
+                }
+
                 var context =
-                    _declaration.Context.children.First(d => d is VBAParser.ArgListContext) as VBAParser.ArgListContext;
+                    _declaration.Context.children.FirstOrDefault(d => d is VBAParser.ArgListContext) as VBAParser.ArgListContext;
 
                 if (context == null)
                 {
-                    return string.Empty;
+                    _signature = Name;
                 }
-
-                if (_declaration.DeclarationType == DeclarationType.PropertyGet ||
-                    _declaration.DeclarationType == DeclarationType.PropertyLet ||
-                    _declaration.DeclarationType == DeclarationType.PropertySet)
+                else if (_declaration.DeclarationType == DeclarationType.PropertyGet 
+                      || _declaration.DeclarationType == DeclarationType.PropertyLet 
+                      || _declaration.DeclarationType == DeclarationType.PropertySet)
                 {
-                    return Name.Insert(Name.Length - 6, context.GetText()); // the three-letter "get/let/set" + parens + space
+                    // 6 being the three-letter "get/let/set" + parens + space
+                    _signature = Name.Insert(Name.Length - 6, context.GetText()); 
                 }
-
-                return Name + context.GetText();
+                else
+                {
+                    _signature = Name + context.GetText();
+                }
+                return _signature;
             }
         }
 
