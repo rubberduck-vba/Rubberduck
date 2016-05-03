@@ -296,7 +296,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ExecuteIndenterCommand(object param)
         {
-            if (SelectedItem.QualifiedSelection.HasValue)
+            if (!SelectedItem.QualifiedSelection.HasValue)
             {
                 return;
             }
