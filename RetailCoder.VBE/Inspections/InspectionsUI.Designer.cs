@@ -1186,15 +1186,6 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This is likely a bug. A variable is being referred to, but is never assigned..
         /// </summary>
         public static string UnassignedVariableUsageInspectionMeta {

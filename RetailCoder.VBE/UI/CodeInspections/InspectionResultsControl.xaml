@@ -15,6 +15,7 @@
              d:DesignHeight="300" d:DesignWidth="300" 
              d:DataContext="{d:DesignInstance codeInspections:InspectionResultsViewModel}">
     <UserControl.Resources>
+        <BitmapImage x:Key="SettingsImage" UriSource="../../Resources/gear.png" />
 
         <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -374,7 +375,9 @@
             <Button Command="{Binding CopyResultsCommand}">
                 <Image Height="16" Source="../../Resources/document-copy.png" />
             </Button>
-                        
+            <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings}" Command="{Binding OpenTodoSettings}" BorderThickness="0" Background="Transparent">
+                <Image Height="16" Source="{StaticResource SettingsImage}" />
+            </Button>
         </ToolBar>
         
         <controls:GroupingGrid Grid.Row="1"

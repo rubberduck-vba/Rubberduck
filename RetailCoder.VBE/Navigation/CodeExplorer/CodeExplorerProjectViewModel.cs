@@ -13,6 +13,7 @@ namespace Rubberduck.Navigation.CodeExplorer
     public class CodeExplorerProjectViewModel : CodeExplorerItemViewModel
     {
         private readonly Declaration _declaration;
+        public Declaration Declaration { get { return _declaration; } }
 
         private static readonly DeclarationType[] ComponentTypes =
         {
