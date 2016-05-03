@@ -8,13 +8,13 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel
     {
         private readonly Declaration _declaration;
+        public Declaration Declaration { get { return _declaration; } }
 
         private static readonly DeclarationType[] MemberTypes =
         {

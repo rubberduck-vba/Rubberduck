@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -512,17 +512,17 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="ParseErrors_Caption" xml:space="preserve">
     <value>Rubberduck - Parser Errors</value>
   </data>
-  <data name="CodeExplorer_AddClassText" xml:space="preserve">
-    <value>&amp;Class module (.cls)</value>
+  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
+    <value>Class module (.cls)</value>
   </data>
   <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>User &amp;form</value>
+    <value>User form (.frm)</value>
   </data>
   <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>&amp;Standard module (.bas)</value>
+    <value>Standard module (.bas)</value>
   </data>
   <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>&amp;Test module</value>
+    <value>Test module</value>
   </data>
   <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
     <value>Display member &amp;names</value>
@@ -1505,5 +1505,8 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>Library procedure</value>
+  </data>
+  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
+    <value>Toggle signatures</value>
   </data>
 </root>

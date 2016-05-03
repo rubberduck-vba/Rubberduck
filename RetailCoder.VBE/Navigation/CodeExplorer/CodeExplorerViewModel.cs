@@ -7,9 +7,13 @@ using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Rename;
+using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Refactorings;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -17,13 +21,24 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
+        private readonly FindAllReferencesCommand _findAllReferences;
 
-        public CodeExplorerViewModel(VBE vbe, RubberduckParserState state, INavigateCommand navigateCommand, NewUnitTestModuleCommand newUnitTestModuleCommand)
+        public CodeExplorerViewModel(VBE vbe,
+            RubberduckParserState state,
+            INavigateCommand navigateCommand,
+            NewUnitTestModuleCommand newUnitTestModuleCommand,
+            Indenter indenter,
+            ICodePaneWrapperFactory wrapperFactory,
+            FindAllReferencesCommand findAllReferences)
         {
             _vbe = vbe;
             _state = state;
             _navigateCommand = navigateCommand;
             _newUnitTestModuleCommand = newUnitTestModuleCommand;
+            _indenter = indenter;
+            _wrapperFactory = wrapperFactory;
+            _findAllReferences = findAllReferences;
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
@@ -32,6 +47,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             _addStdModuleCommand = new DelegateCommand(ExecuteAddStdModuleCommand, CanAddModule);
             _addClsModuleCommand = new DelegateCommand(ExecuteAddClsModuleCommand, CanAddModule);
             _addFormCommand = new DelegateCommand(ExecuteAddFormCommand, CanAddModule);
+            _indenterCommand = new DelegateCommand(ExecuteIndenterCommand);
+            _renameCommand = new DelegateCommand(ExecuteRenameCommand);
+            _findAllReferencesCommand = new DelegateCommand(ExecuteFindAllReferencesCommand);
         }
 
         private readonly ICommand _refreshCommand;
@@ -49,18 +67,31 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly ICommand _addFormCommand;
         public ICommand AddFormCommand { get { return _addFormCommand; } }
 
+        private readonly ICommand _indenterCommand;
+        public ICommand IndenterCommand { get { return _indenterCommand; } }
+
+        private readonly ICommand _renameCommand;
+        public ICommand RenameCommand { get { return _renameCommand; } }
+
+        private readonly ICommand _findAllReferencesCommand;
+        public ICommand FindAllReferencesCommand { get { return _findAllReferencesCommand; } }
+
         private readonly INavigateCommand _navigateCommand;
         private readonly NewUnitTestModuleCommand _newUnitTestModuleCommand;
+        private readonly Indenter _indenter;
         public ICommand NavigateCommand { get { return _navigateCommand; } }
 
-        private object _selectedItem;
-        public object SelectedItem
+        private CodeExplorerItemViewModel _selectedItem;
+        public CodeExplorerItemViewModel SelectedItem
         {
             get { return _selectedItem; }
             set
             {
                 _selectedItem = value; 
                 OnPropertyChanged();
+                OnPropertyChanged("CanExecuteIndenterCommand");
+                OnPropertyChanged("CanExecuteRenameCommand");
+                OnPropertyChanged("CanExecuteFindAllReferencesCommand");
             }
         }
 
@@ -93,7 +124,35 @@ namespace Rubberduck.Navigation.CodeExplorer
             return _vbe.ActiveVBProject != null;
         }
 
+        public bool CanExecuteIndenterCommand
+        {
+            get
+            {
+                Debug.WriteLine("CodeExplorerViewModel.CanExecuteIndenterCommand");
+                return _state.Status == ParserState.Ready && (SelectedItem is CodeExplorerProjectViewModel || SelectedItem is CodeExplorerComponentViewModel);
+            }
+        }
+
+        public bool CanExecuteRenameCommand
+        {
+            get
+            {
+                Debug.WriteLine("CodeExplorerViewModel.CanExecuteRenameCommand");
+                return _state.Status == ParserState.Ready && !(SelectedItem is CodeExplorerCustomFolderViewModel);
+            }
+        }
+
+        public bool CanExecuteFindAllReferencesCommand
+        {
+            get
+            {
+                Debug.WriteLine("CodeExplorerViewModel.CanExecuteFindAllReferencesCommand");
+                return _state.Status == ParserState.Ready && !(SelectedItem is CodeExplorerCustomFolderViewModel);
+            }
+        }
+
         private ObservableCollection<CodeExplorerItemViewModel> _projects;
+
         public ObservableCollection<CodeExplorerItemViewModel> Projects
         {
             get { return _projects; }
@@ -204,6 +263,62 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             Debug.WriteLine("CodeExplorerViewModel.AddFormCommand");
             _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_MSForm);
+        }
+
+        private void ExecuteIndenterCommand(object param)
+        {
+            Debug.WriteLine("CodeExplorerViewModel.IndenterCommand");
+            if (SelectedItem is CodeExplorerProjectViewModel)
+            {
+                if (SelectedItem.QualifiedSelection.HasValue)
+                {
+                    _indenter.Indent(SelectedItem.QualifiedSelection.Value.QualifiedName.Project);
+                }
+            }
+
+            if (SelectedItem is CodeExplorerComponentViewModel)
+            {
+                if (SelectedItem.QualifiedSelection.HasValue)
+                {
+                    _indenter.Indent(SelectedItem.QualifiedSelection.Value.QualifiedName.Component);
+                }
+            }
+        }
+
+        private void ExecuteRenameCommand(object obj)
+        {
+            using (var view = new RenameDialog())
+            {
+                var factory = new RenamePresenterFactory(_vbe, view, _state, new MessageBox(), _wrapperFactory);
+                var refactoring = new RenameRefactoring(_vbe, factory, new MessageBox(), _state);
+
+                refactoring.Refactor(GetSelectedDeclaration());
+            }
+        }
+
+        private void ExecuteFindAllReferencesCommand(object obj)
+        {
+            _findAllReferences.Execute(GetSelectedDeclaration());
+        }
+
+        private Declaration GetSelectedDeclaration()
+        {
+            if (SelectedItem is CodeExplorerProjectViewModel)
+            {
+                return ((CodeExplorerProjectViewModel) SelectedItem).Declaration;
+            }
+
+            if (SelectedItem is CodeExplorerComponentViewModel)
+            {
+                return ((CodeExplorerComponentViewModel) SelectedItem).Declaration;
+            }
+
+            if (SelectedItem is CodeExplorerMemberViewModel)
+            {
+                return ((CodeExplorerMemberViewModel) SelectedItem).Declaration;
+            }
+
+            return null;
         }
     }
 }
