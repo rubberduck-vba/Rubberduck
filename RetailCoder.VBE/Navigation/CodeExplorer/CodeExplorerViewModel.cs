@@ -287,46 +287,38 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ExecuteRenameCommand(object obj)
         {
-            Declaration declaration;
-            if (SelectedItem is CodeExplorerProjectViewModel)
-            {
-                declaration = ((CodeExplorerProjectViewModel) SelectedItem)._declaration;
-            }
-            else if (SelectedItem is CodeExplorerComponentViewModel)
-            {
-                declaration = ((CodeExplorerComponentViewModel)SelectedItem)._declaration;
-            }
-            else
-            {
-                declaration = ((CodeExplorerMemberViewModel)SelectedItem)._declaration;
-            }
-
             using (var view = new RenameDialog())
             {
                 var factory = new RenamePresenterFactory(_vbe, view, _state, new MessageBox(), _wrapperFactory);
                 var refactoring = new RenameRefactoring(_vbe, factory, new MessageBox(), _state);
 
-                refactoring.Refactor(declaration);
+                refactoring.Refactor(GetSelectedDeclaration());
             }
         }
 
         private void ExecuteFindAllReferencesCommand(object obj)
         {
-            Declaration declaration;
+            _findAllReferences.Execute(GetSelectedDeclaration());
+        }
+
+        private Declaration GetSelectedDeclaration()
+        {
             if (SelectedItem is CodeExplorerProjectViewModel)
             {
-                declaration = ((CodeExplorerProjectViewModel)SelectedItem)._declaration;
-            }
-            else if (SelectedItem is CodeExplorerComponentViewModel)
-            {
-                declaration = ((CodeExplorerComponentViewModel)SelectedItem)._declaration;
-            }
-            else
-            {
-                declaration = ((CodeExplorerMemberViewModel)SelectedItem)._declaration;
+                return ((CodeExplorerProjectViewModel) SelectedItem).Declaration;
             }
 
-            _findAllReferences.Execute(declaration);
+            if (SelectedItem is CodeExplorerComponentViewModel)
+            {
+                return ((CodeExplorerComponentViewModel) SelectedItem).Declaration;
+            }
+
+            if (SelectedItem is CodeExplorerMemberViewModel)
+            {
+                return ((CodeExplorerMemberViewModel) SelectedItem).Declaration;
+            }
+
+            return null;
         }
     }
 }
