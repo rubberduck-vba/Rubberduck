@@ -84,7 +84,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             get
             {
                 var context =
-                    _declaration.Context.children.First(d => d is VBAParser.ArgListContext) as VBAParser.ArgListContext;
+                    _declaration.Context.children.FirstOrDefault(d => d is VBAParser.ArgListContext) as VBAParser.ArgListContext;
 
                 if (context == null)
                 {
