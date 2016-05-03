@@ -90,6 +90,7 @@
                     </ContextMenu>
                 </Setter.Value>
             </Setter>
+            <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="BorderBrush" Value="#adc6e5"/>
@@ -394,8 +395,7 @@
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
                   MouseDoubleClick="TreeView_OnMouseDoubleClick"
-                  Style="{StaticResource CodeExplorerTreeViewStyle}"
-                  DataContext="{Binding ElementName=CodeExplorer, Path=DataContext}">
+                  Style="{StaticResource CodeExplorerTreeViewStyle}">
             <i:Interaction.Behaviors>
                 <controls:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
