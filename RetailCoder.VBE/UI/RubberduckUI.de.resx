@@ -1483,4 +1483,10 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>Bibliotheksprozedur</value>
   </data>
+  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
+    <value>Klassenmodul (.cls)</value>
+  </data>
+  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
+    <value>Wechsele Signatur</value>
+  </data>
 </root>
