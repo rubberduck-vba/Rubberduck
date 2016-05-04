@@ -209,16 +209,16 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Class module (.cls).
+        ///   Looks up a localized string similar to Class module (.cls).
         /// </summary>
-        public static string CodeExplorer_AddClassText {
+        public static string CodeExplorer_AddClassModuleText {
             get {
-                return ResourceManager.GetString("CodeExplorer_AddClassText", resourceCulture);
+                return ResourceManager.GetString("CodeExplorer_AddClassModuleText", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User &amp;form.
+        ///   Looks up a localized string similar to User form (.frm).
         /// </summary>
         public static string CodeExplorer_AddFormText {
             get {
@@ -227,7 +227,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Standard module (.bas).
+        ///   Looks up a localized string similar to Standard module (.bas).
         /// </summary>
         public static string CodeExplorer_AddStdModuleText {
             get {
@@ -236,7 +236,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Test module.
+        ///   Looks up a localized string similar to Test module.
         /// </summary>
         public static string CodeExplorer_AddTestModuleText {
             get {
@@ -272,7 +272,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find &amp;All Implementations....
+        ///   Looks up a localized string similar to Find All Implementations....
         /// </summary>
         public static string CodeExplorer_FindAllImplementationsText {
             get {
@@ -281,7 +281,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Find All References....
+        ///   Looks up a localized string similar to Find All References....
         /// </summary>
         public static string CodeExplorer_FindAllReferencesText {
             get {
@@ -344,15 +344,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Show Designer.
-        /// </summary>
-        public static string CodeExplorer_ShowDesignerText {
-            get {
-                return ResourceManager.GetString("CodeExplorer_ShowDesignerText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Open Designer.
         /// </summary>
         public static string CodeExplorer_ShowDesignerToolTip {
@@ -367,6 +358,15 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_ShowFoldersToolTip {
             get {
                 return ResourceManager.GetString("CodeExplorer_ShowFoldersToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle signatures.
+        /// </summary>
+        public static string CodeExplorer_ShowSignaturesToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ShowSignaturesToolTip", resourceCulture);
             }
         }
         
@@ -1134,6 +1134,15 @@ namespace Rubberduck.UI {
         public static string ExtractMethod_TitleText {
             get {
                 return ResourceManager.GetString("ExtractMethod_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find.
+        /// </summary>
+        public static string Find {
+            get {
+                return ResourceManager.GetString("Find", resourceCulture);
             }
         }
         
@@ -2202,15 +2211,6 @@ namespace Rubberduck.UI {
         public static string RegexSearchReplace_Caption {
             get {
                 return ResourceManager.GetString("RegexSearchReplace_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Find.
-        /// </summary>
-        public static string RegexSearchReplace_FindButtonLabel {
-            get {
-                return ResourceManager.GetString("RegexSearchReplace_FindButtonLabel", resourceCulture);
             }
         }
         

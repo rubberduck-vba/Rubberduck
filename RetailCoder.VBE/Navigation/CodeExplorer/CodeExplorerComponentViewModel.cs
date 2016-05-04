@@ -14,6 +14,7 @@ namespace Rubberduck.Navigation.CodeExplorer
     public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel
     {
         private readonly Declaration _declaration;
+        public Declaration Declaration { get { return _declaration; } }
 
         private static readonly DeclarationType[] MemberTypes =
         {
@@ -40,7 +41,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                                                 && item.ParentScope == declaration.Scope
                                                 && MemberTypes.Contains(item.DeclarationType))
                                 .OrderBy(item => item.QualifiedSelection.Selection.StartLine)
-                                .Select(item => new CodeExplorerMemberViewModel(item, grouping)));
+                                .Select(item => new CodeExplorerMemberViewModel(item, grouping)))
+                                .ToList<CodeExplorerItemViewModel>();
             
         }
 
@@ -57,6 +59,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         public override string Name { get { return _declaration.IdentifierName; } }
+        public override string NameWithSignature { get { return Name; } }
 
         public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
 

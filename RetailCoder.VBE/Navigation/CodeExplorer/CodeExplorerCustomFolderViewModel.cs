@@ -11,6 +11,7 @@ namespace Rubberduck.Navigation.CodeExplorer
     public class CodeExplorerCustomFolderViewModel : CodeExplorerItemViewModel
     {
         private readonly string _name;
+        private readonly string _folderAttribute;
         private static readonly DeclarationType[] ComponentTypes =
         {
             DeclarationType.ClassModule, 
@@ -19,9 +20,10 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.UserForm, 
         };
 
-        public CodeExplorerCustomFolderViewModel(string name, IEnumerable<Declaration> declarations)
+        public CodeExplorerCustomFolderViewModel(string name, string fullPath, IEnumerable<Declaration> declarations)
         {
-            _name = name;
+            _name = name.Replace("\"", string.Empty);
+            _folderAttribute = string.Format("@Folder(\"{0}\")", fullPath.Replace("\"", string.Empty));
 
             _collapsedIcon = GetImageSource(resx.folder_horizontal);
             _expandedIcon = GetImageSource(resx.folder_horizontal_open);
@@ -48,7 +50,10 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        public string FolderAttribute { get { return _folderAttribute; } }
+
         public override string Name { get { return _name; } }
+        public override string NameWithSignature { get { return Name; } }
 
         public override QualifiedSelection? QualifiedSelection { get { return null; } }
 

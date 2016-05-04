@@ -16,6 +16,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
+using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.CodeInspections
@@ -44,6 +45,7 @@ namespace Rubberduck.UI.CodeInspections
             _quickFixInModuleCommand = new DelegateCommand(ExecuteQuickFixInModuleCommand);
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
+            _openSettingsCommand = new DelegateCommand(OpenSettings);
 
             _state.StateChanged += _state_StateChanged;
         }
@@ -116,6 +118,17 @@ namespace Rubberduck.UI.CodeInspections
 
         private readonly ICommand _copyResultsCommand;
         public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
+
+        private readonly ICommand _openSettingsCommand;
+        public ICommand OpenTodoSettings { get { return _openSettingsCommand; } }
+
+        private void OpenSettings(object param)
+        {
+            using (var window = new SettingsForm(_configService, SettingsViews.InspectionSettings))
+            {
+                window.ShowDialog();
+            }
+        }
 
         private bool _canRefresh = true;
 

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -27,10 +28,10 @@ namespace Rubberduck.Parsing.Symbols
             _declarations = declarations;
             _declarationsByName = declarations.GroupBy(declaration => new
             {
-                IdentifierName = declaration.Project != null &&
+                IdentifierName = /*declaration.Project != null &&
                         declaration.DeclarationType.HasFlag(DeclarationType.Project)
                             ? declaration.Project.Name.ToLowerInvariant()
-                            : declaration.IdentifierName.ToLowerInvariant()
+                            : */declaration.IdentifierName.ToLowerInvariant()
             })
             .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
 
@@ -205,7 +206,7 @@ namespace Rubberduck.Parsing.Symbols
             try
             {
                 result = MatchName(name).SingleOrDefault(declaration => declaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
-                    && parent == null || parent.Equals(declaration.ParentDeclaration)
+                    && (parent == null || parent.Equals(declaration.ParentDeclaration))
                     && (includeBuiltIn || !declaration.IsBuiltIn));
             }
             catch (InvalidOperationException exception)

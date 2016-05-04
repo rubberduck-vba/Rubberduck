@@ -362,6 +362,7 @@
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInspection.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerErrorNodeViewModel.cs" />
     <Compile Include="Settings\RubberduckHotkey.cs" />
     <Compile Include="UI\About\AboutControl.xaml.cs">
       <DependentUpon>AboutControl.xaml</DependentUpon>
@@ -373,6 +374,7 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\CodeExplorer\BoolToHiddenVisibility.cs" />
     <Compile Include="UI\Command\IndentCurrentModuleCommand.cs" />
     <Compile Include="UI\Command\MenuItems\InspectionResultsCommandMenuItem.cs" />
     <Compile Include="UI\Command\ReparseCommand.cs" />
@@ -896,7 +898,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Inspections\InspectionsUI.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -1039,7 +1041,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
-    <Folder Include="UI\ParserProgress\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\rubberduck.config" />

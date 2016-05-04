@@ -11,8 +11,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="255" d:DesignWidth="455"
              d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
-    
+
     <UserControl.Resources>
+        <BitmapImage x:Key="SettingsImage" UriSource="../../Resources/gear.png" />
+        
         <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
         <local:TestResultToOutcomeTextConverter x:Key="OutcomeTextConverter" />
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
@@ -126,7 +128,9 @@
             <Button Command="{Binding CopyResultsCommand}">
                 <Image Height="16" Source="../../Resources/document-copy.png" />
             </Button>
-            
+            <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings}" Command="{Binding OpenTodoSettings}" BorderThickness="0" Background="Transparent">
+                <Image Height="16" Source="{StaticResource SettingsImage}" />
+            </Button>
         </ToolBar>
 
         <Border Grid.Row="1" Margin="2">

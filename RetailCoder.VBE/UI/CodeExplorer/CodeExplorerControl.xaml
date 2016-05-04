@@ -6,13 +6,16 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+             xmlns:converter="clr-namespace:Rubberduck.UI.CodeExplorer"
+             xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
+             Name="CodeExplorer"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeExplorer:CodeExplorerViewModel}">
     <UserControl.Resources>
-
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <converter:BoolToHiddenVisibility x:Key="BoolToHiddenVisibility" />
 
         <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
 
@@ -56,9 +59,45 @@
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
 
-        <Style x:Key="ShinyTreeView" 
+        <Style x:Key="ShinyTreeView"
                TargetType="{x:Type TreeViewItem}">
             <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="ContextMenu">
+                <Setter.Value>
+                    <ContextMenu DataContext="{Binding DataContext, Source={x:Reference CodeExplorer}}">
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Navigate}"
+                                  FontWeight="Bold"
+                                  Command="{Binding ContextMenuNavigateCommand}" />
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}"
+                                  Command="{Binding RenameCommand}" />
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}">
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddTestModuleText}"
+                                  Command="{Binding AddTestModuleCommand}" />
+                            <Separator />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddStdModuleText}"
+                                  Command="{Binding AddStdModuleCommand}" />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddClassModuleText}"
+                                  Command="{Binding AddClsModuleCommand}" />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddFormText}"
+                                  Command="{Binding AddFormCommand}" />
+                        </MenuItem>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Find}">
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllReferencesText}"
+                                  Command="{Binding FindAllReferencesCommand}" />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllImplementationsText}"
+                                  Command="{Binding FindAllImplementationsCommand}" />
+                        </MenuItem>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SmartIndenterMenu}"
+                                  Command="{Binding IndenterCommand}" />
+                        <Separator />
+                    </ContextMenu>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="BorderBrush" Value="#adc6e5"/>
@@ -77,7 +116,6 @@
                 </Style>
             </Style.Resources>
         </Style>
-
         
         <Style x:Key="IconStyle" TargetType="Image">
             <Setter Property="Height" Value="16" />
@@ -87,10 +125,24 @@
         
         <Style x:Key="TreeViewItemStyle" TargetType="TextBlock">
             <Setter Property="Text" Value="{Binding Name}" />
+            <Setter Property="MaxWidth" Value="200" />
             <Setter Property="Margin" Value="2,0,2,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="ToolTip" Value="{Binding Name}" />
+            <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
-        
+
+        <Style x:Key="TreeViewItemStyleWithSignatures" TargetType="TextBlock">
+            <Setter Property="Text" Value="{Binding NameWithSignature}" />
+            <Setter Property="MaxWidth" Value="200" />
+            <Setter Property="Margin" Value="2,0,2,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="ToolTip" Value="{Binding NameWithSignature}" />
+            <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+
         <Style x:Key="TreeViewIconStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">
             <Setter Property="Source" Value="{Binding CollapsedIcon}" />
             <Style.Triggers>
@@ -105,7 +157,8 @@
                                   ItemsSource="{Binding Items}">
             <StackPanel Orientation="Horizontal">
                 <Image Style="{StaticResource TreeViewIconStyle}" />
-                <TextBlock Style="{StaticResource TreeViewItemStyle}" />
+                <TextBlock Style="{StaticResource TreeViewItemStyle}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToHiddenVisibility}}" />
+                <TextBlock Style="{StaticResource TreeViewItemStyleWithSignatures}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" />
             </StackPanel>
         </HierarchicalDataTemplate>
         
@@ -114,7 +167,8 @@
                                   ItemsSource="{Binding Items}">
             <StackPanel Orientation="Horizontal">
                 <Image Style="{StaticResource TreeViewIconStyle}" />
-                <TextBlock Style="{StaticResource TreeViewItemStyle}" />
+                <TextBlock Style="{StaticResource TreeViewItemStyle}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToHiddenVisibility}}" />
+                <TextBlock Style="{StaticResource TreeViewItemStyleWithSignatures}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" />
             </StackPanel>
         </HierarchicalDataTemplate>
 
@@ -123,6 +177,189 @@
             <Setter Property="ItemsSource" Value="{Binding Projects, UpdateSourceTrigger=PropertyChanged}" />
         </Style>
 
+        <SolidColorBrush x:Key="ToolBarHorizontalBackground" Color="#FFEEF5FD"/>
+        <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackground" Color="#FFEEF5FD"/>
+        <SolidColorBrush x:Key="ToolBarButtonHover" Color="#210080FF"/>
+        <SolidColorBrush x:Key="ToolBarGripper" Color="#FF6D6D6D"/>
+        <Style x:Key="ToolBarVerticalOverflowButtonStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Background" Value="{StaticResource ToolBarToggleButtonVerticalBackground}"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="MinWidth" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="Bd" SnapsToDevicePixels="true" CornerRadius="0,0,3,3" Background="{TemplateBinding Background}">
+                            <Canvas Width="7" VerticalAlignment="Bottom" SnapsToDevicePixels="true" Margin="2,7,2,2" Height="6" HorizontalAlignment="Right">
+                                <Path Data="M 1.5 1 L 1.5 6" Stroke="White"/>
+                                <Path Data="M 0.5 0 L 0.5 5" Stroke="{TemplateBinding Foreground}"/>
+                                <Path Data="M 3.5 0.5 L 7 3.5 L 4 6.5 Z" Fill="White"/>
+                                <Path Data="M 3 -0.5 L 6 2.5 L 3 5.5 Z" Fill="{TemplateBinding Foreground}"/>
+                            </Canvas>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource ToolBarButtonHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="true">
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource ToolBarButtonHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{StaticResource ToolBarGripper}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Source={x:Static SystemParameters.HighContrast}}" Value="true">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <SolidColorBrush x:Key="ToolBarVerticalBackground" Color="#FFEEF5FD"/>
+        <SolidColorBrush x:Key="ToolBarToggleButtonHorizontalBackground" Color="#FFEEF5FD"/>
+        <Style x:Key="ToolBarHorizontalOverflowButtonStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Background" Value="{StaticResource ToolBarToggleButtonHorizontalBackground}"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="MinWidth" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="Bd" SnapsToDevicePixels="true" CornerRadius="0,3,3,0" Background="{TemplateBinding Background}">
+                            <Canvas Width="6" VerticalAlignment="Bottom" SnapsToDevicePixels="true" Margin="7,2,2,2" Height="7" HorizontalAlignment="Right">
+                                <Path Data="M 1 1.5 L 6 1.5" Stroke="White"/>
+                                <Path Data="M 0 0.5 L 5 0.5" Stroke="{TemplateBinding Foreground}"/>
+                                <Path Data="M 0.5 4 L 6.5 4 L 3.5 7 Z" Fill="White"/>
+                                <Path Data="M -0.5 3 L 5.5 3 L 2.5 6 Z" Fill="{TemplateBinding Foreground}"/>
+                            </Canvas>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource ToolBarButtonHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="true">
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource ToolBarButtonHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{StaticResource ToolBarGripper}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Source={x:Static SystemParameters.HighContrast}}" Value="true">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <SolidColorBrush x:Key="ToolBarMenuBorder" Color="#FFB6BDC5"/>
+        <SolidColorBrush x:Key="ToolBarSubMenuBackground" Color="#FFEEF5FD"/>
+        <Style x:Key="ToolBarThumbStyle" TargetType="{x:Type Thumb}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border SnapsToDevicePixels="True" Padding="{TemplateBinding Padding}" Background="Transparent">
+                            <Rectangle>
+                                <Rectangle.Fill>
+                                    <DrawingBrush ViewboxUnits="Absolute" ViewportUnits="Absolute" Viewport="0,0,4,4" Viewbox="0,0,4,4" TileMode="Tile">
+                                        <DrawingBrush.Drawing>
+                                            <DrawingGroup>
+                                                <GeometryDrawing Brush="White" Geometry="M 1 1 L 1 3 L 3 3 L 3 1 z"/>
+                                                <GeometryDrawing Brush="{StaticResource ToolBarGripper}" Geometry="M 0 0 L 0 2 L 2 2 L 2 0 z"/>
+                                            </DrawingGroup>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Cursor" Value="SizeAll"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ToolBarMainPanelBorderStyle" TargetType="{x:Type Border}">
+            <Setter Property="Margin" Value="0,0,11,0"/>
+            <Setter Property="CornerRadius" Value="3,3,3,3"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Source={x:Static SystemParameters.HighContrast}}" Value="true">
+                    <Setter Property="CornerRadius" Value="0,0,0,0"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ToolBarWithOverflowOnlyShowingWhenNeededStyle" TargetType="{x:Type ToolBar}">
+            <Setter Property="Background" Value="{StaticResource ToolBarHorizontalBackground}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToolBar}">
+                        <Grid x:Name="Grid" Margin="3,1,1,1" SnapsToDevicePixels="true">
+                            <Grid x:Name="OverflowGrid" HorizontalAlignment="Right">
+                                <ToggleButton x:Name="OverflowButton" ClickMode="Press" FocusVisualStyle="{x:Null}" IsChecked="{Binding IsOverflowOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" IsEnabled="{TemplateBinding HasOverflowItems}" Style="{StaticResource ToolBarHorizontalOverflowButtonStyle}" Visibility="{Binding ElementName=OverflowButton, Path=IsEnabled, Converter={StaticResource BoolToVisibility}}"/>
+                                <Popup x:Name="OverflowPopup" AllowsTransparency="true" Focusable="false" IsOpen="{Binding IsOverflowOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom" StaysOpen="false">
+                                    <themes:SystemDropShadowChrome x:Name="Shdw" Color="Transparent">
+                                        <Border x:Name="ToolBarSubMenuBorder" BorderBrush="{StaticResource ToolBarMenuBorder}" BorderThickness="1" Background="{StaticResource ToolBarSubMenuBackground}" RenderOptions.ClearTypeHint="Enabled">
+                                            <ToolBarOverflowPanel x:Name="PART_ToolBarOverflowPanel" KeyboardNavigation.DirectionalNavigation="Cycle" FocusVisualStyle="{x:Null}" Focusable="true" Margin="2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle" WrapWidth="200"/>
+                                        </Border>
+                                    </themes:SystemDropShadowChrome>
+                                </Popup>
+                            </Grid>
+                            <Border x:Name="MainPanelBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" Style="{StaticResource ToolBarMainPanelBorderStyle}">
+                                <DockPanel KeyboardNavigation.TabIndex="1" KeyboardNavigation.TabNavigation="Local">
+                                    <Thumb x:Name="ToolBarThumb" Margin="-3,-1,0,0" Padding="6,5,1,6" Style="{StaticResource ToolBarThumbStyle}" Width="10"/>
+                                    <ContentPresenter x:Name="ToolBarHeader" ContentSource="Header" HorizontalAlignment="Center" Margin="4,0,4,0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
+                                    <ToolBarPanel x:Name="PART_ToolBarPanel" IsItemsHost="true" Margin="0,1,2,2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </DockPanel>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsOverflowOpen" Value="true">
+                                <Setter Property="IsEnabled" TargetName="ToolBarThumb" Value="false"/>
+                            </Trigger>
+                            <Trigger Property="Header" Value="{x:Null}">
+                                <Setter Property="Visibility" TargetName="ToolBarHeader" Value="Collapsed"/>
+                            </Trigger>
+                            <Trigger Property="ToolBarTray.IsLocked" Value="true">
+                                <Setter Property="Visibility" TargetName="ToolBarThumb" Value="Collapsed"/>
+                            </Trigger>
+                            <Trigger Property="HasDropShadow" SourceName="OverflowPopup" Value="true">
+                                <Setter Property="Margin" TargetName="Shdw" Value="0,0,5,5"/>
+                                <Setter Property="SnapsToDevicePixels" TargetName="Shdw" Value="true"/>
+                                <Setter Property="Color" TargetName="Shdw" Value="#71000000"/>
+                            </Trigger>
+                            <Trigger Property="Orientation" Value="Vertical">
+                                <Setter Property="Margin" TargetName="Grid" Value="1,3,1,1"/>
+                                <Setter Property="Style" TargetName="OverflowButton" Value="{StaticResource ToolBarVerticalOverflowButtonStyle}"/>
+                                <Setter Property="Height" TargetName="ToolBarThumb" Value="10"/>
+                                <Setter Property="Width" TargetName="ToolBarThumb" Value="Auto"/>
+                                <Setter Property="Margin" TargetName="ToolBarThumb" Value="-1,-3,0,0"/>
+                                <Setter Property="Padding" TargetName="ToolBarThumb" Value="5,6,6,1"/>
+                                <Setter Property="Margin" TargetName="ToolBarHeader" Value="0,0,0,4"/>
+                                <Setter Property="Margin" TargetName="PART_ToolBarPanel" Value="1,0,2,2"/>
+                                <Setter Property="DockPanel.Dock" TargetName="ToolBarThumb" Value="Top"/>
+                                <Setter Property="DockPanel.Dock" TargetName="ToolBarHeader" Value="Top"/>
+                                <Setter Property="HorizontalAlignment" TargetName="OverflowGrid" Value="Stretch"/>
+                                <Setter Property="VerticalAlignment" TargetName="OverflowGrid" Value="Bottom"/>
+                                <Setter Property="Placement" TargetName="OverflowPopup" Value="Right"/>
+                                <Setter Property="Margin" TargetName="MainPanelBorder" Value="0,0,0,11"/>
+                                <Setter Property="Background" Value="{StaticResource ToolBarVerticalBackground}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Source={x:Static SystemParameters.HighContrast}}" Value="true">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -135,53 +372,48 @@
 
         <Border Grid.Row="0" Grid.RowSpan="3" Background="#FFEEF5FD" />
 
-        <ToolBar Grid.Row="0">
+        <ToolBarTray Grid.Row="0" IsLocked="True">
+            <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
 
-            <Button Command="{Binding RefreshCommand}" IsEnabled="{Binding CanRefresh}">
-                <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
-                <Button.ToolTip>
-                    <TextBlock Text="Refresh" />
-                </Button.ToolTip>
-            </Button>
-            
-            <Separator />
+                <Button Command="{Binding RefreshCommand}" IsEnabled="{Binding CanRefresh}">
+                    <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
+                    <Button.ToolTip>
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}" />
+                    </Button.ToolTip>
+                </Button>
 
-            <Menu>
-                <MenuItem Header="Add">
-                    <MenuItem.Icon>
-                        <Image Height="16" Source="../../Resources/plus-circle.png" />
-                    </MenuItem.Icon>
-                    <MenuItem Header="Test Module"></MenuItem>
-                    <Separator />
-                    <MenuItem Header="Standard Module (.bas)"></MenuItem>
-                    <MenuItem Header="Class Module (.cls)"></MenuItem>
-                    <MenuItem Header="User Form (.frm)"></MenuItem>
-                </MenuItem>
-            </Menu>
+                <Separator />
 
-            <Separator />
+                <Menu>
+                    <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}">
+                        <MenuItem.Icon>
+                            <Image Height="16" Source="../../Resources/plus-circle.png" />
+                        </MenuItem.Icon>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddTestModuleText}" Command="{Binding AddTestModuleCommand}" />
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddStdModuleText}" Command="{Binding AddStdModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddClassModuleText}" Command="{Binding AddClsModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddFormText}" Command="{Binding AddFormCommand}" />
+                    </MenuItem>
+                </Menu>
 
-            <Button>
-                <Image Height="16" Source="../../Resources/folder--pencil.png" />
-                <Button.ToolTip>
-                    <TextBlock Text="Edit module folder" />
-                </Button.ToolTip>
-            </Button>
-            <Button>
-                <Image Height="16" Source="../../Resources/folder-rename.png" />
-                <Button.ToolTip>
-                    <TextBlock Text="Rename folder" />
-                </Button.ToolTip>
-            </Button>
+                <Separator />
 
-            <Separator />
+                <ToggleButton Name="DisplaySignatures" IsEnabled="{Binding CanRefresh}" ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ShowSignaturesToolTip}" IsChecked="True">
+                    <Image Height="16" Source="../../Resources/Microsoft/PNG/DisplayFullSignature_13393_32.png" />
+                </ToggleButton>
 
-            <ToggleButton IsEnabled="{Binding CanRefresh}" ToolTip="Toggle signatures">
-                <Image Height="16" Source="../../Resources/Microsoft/PNG/DisplayFullSignature_13393_32.png" />
-            </ToggleButton>
+                <Separator />
+                
+                <Button Command="{Binding OpenDesignerCommand}" IsEnabled="{Binding CanOpenDesigner}">
+                    <Image Height="16" Source="../../Resources/Microsoft/PNG/VSProject_form.png" />
+                    <Button.ToolTip>
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ShowDesignerToolTip}" />
+                    </Button.ToolTip>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
 
-        </ToolBar>
-        
         <TreeView Grid.Row="1"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
@@ -197,34 +429,37 @@
         <GridSplitter Grid.Row="2" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 
         <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
-            
-            <Grid Background="Gainsboro">
-                
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    </StackPanel>
-                </StackPanel>
-                
-                <WrapPanel Grid.Column="0" Grid.Row="1">
-                    <!--<Button Style="{StaticResource LinkButton}" Margin="4"
-                            Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}}"
+            <StackPanel Orientation="Vertical" MinHeight="48" Background="Gainsboro">
+
+                <Grid Margin="4" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center"
+                           Source="{Binding SelectedItem.CollapsedIcon}" Grid.Column="0"/>
+                    <TextBlock Margin="4" Text="{Binding PanelTitle}" FontWeight="Bold"
+                               TextWrapping="WrapWithOverflow" Grid.Column="1"/>
+                </Grid>
+
+                <TextBlock Margin="4" Text="{Binding Description}" FontSize="10" TextWrapping="WrapWithOverflow"/>
+
+                <WrapPanel>
+                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                            Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}, UpdateSourceTrigger=PropertyChanged}"
                             Command="{Binding IndenterCommand}"
-                            Content="Indent" />
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SmartIndenterMenu}" />
                     <Button Style="{StaticResource LinkButton}" Margin="4"
-                            Visibility="{Binding CanExecuteRefactorRename, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding RefactorRenameCommand}"
-                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RefactorMenu_Rename}" />
+                            Visibility="{Binding CanExecuteRenameCommand, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding RenameCommand}"
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}" />
                     <Button Style="{StaticResource LinkButton}" Margin="4"
-                            Visibility="{Binding CanExecuteFindAllReferences, Converter={StaticResource BoolToVisibility}}"
+                            Visibility="{Binding CanExecuteFindAllReferencesCommand, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding FindAllReferencesCommand}"
-                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ContextMenu_FindAllReferences}" />-->
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllReferencesText}" />
                 </WrapPanel>
-            </Grid>
+            </StackPanel>
         </Border>
 
     </Grid>

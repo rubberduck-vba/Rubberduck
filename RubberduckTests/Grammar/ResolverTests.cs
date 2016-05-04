@@ -20,6 +20,10 @@ namespace RubberduckTests.Grammar
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.ResolverError)
+            {
+                Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+            }
             if (parser.State.Status != ParserState.Ready)
             {
                 Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
@@ -44,6 +48,10 @@ namespace RubberduckTests.Grammar
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.ResolverError)
+            {
+                Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+            }
             if (parser.State.Status != ParserState.Ready)
             {
                 Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
@@ -68,6 +76,10 @@ namespace RubberduckTests.Grammar
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
+            if (parser.State.Status == ParserState.ResolverError)
+            {
+                Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+            }
             if (parser.State.Status != ParserState.Ready)
             {
                 Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);

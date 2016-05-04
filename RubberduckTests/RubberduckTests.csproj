@@ -91,6 +91,7 @@
     <Compile Include="Grammar\VBAParserValidityTests.cs" />
     <Compile Include="Inspections\EncapsulatePublicFieldInspectionTests.cs" />
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\GeneralInspectionTests.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInpsectionTests.cs" />
     <Compile Include="MockParser.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspectionTests.cs" />

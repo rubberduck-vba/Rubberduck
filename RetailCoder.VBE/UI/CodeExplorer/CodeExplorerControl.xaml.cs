@@ -32,5 +32,10 @@ namespace Rubberduck.UI.CodeExplorer
             var arg = selectedResult.QualifiedSelection.Value.GetNavitationArgs();
             ViewModel.NavigateCommand.Execute(arg);
         }
+
+        private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ((TreeViewItem)sender).IsSelected = true;
+        }
     }
 }

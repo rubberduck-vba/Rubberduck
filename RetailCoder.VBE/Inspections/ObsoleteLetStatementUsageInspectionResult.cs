@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections
 
         public override string Description
         {
-            get { return Inspection.Name; }
+            get { return Inspection.Description; }
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get {return _quickFixes; } }

@@ -241,7 +241,7 @@ namespace Rubberduck.Parsing.Symbols
             get
             {
                 IEnumerable<string> value;
-                if (_attributes.TryGetValue(IdentifierName + ".VB_Description", out value))
+                if (_attributes.TryGetValue("VB_Description", out value))
                 {
                     return value.Single();
                 }
@@ -259,7 +259,7 @@ namespace Rubberduck.Parsing.Symbols
             get
             {
                 IEnumerable<string> value;
-                if (_attributes.TryGetValue(IdentifierName + ".VB_UserMemId", out value))
+                if (_attributes.TryGetValue("VB_UserMemId", out value))
                 {
                     return value.Single() == "-4";
                 }
