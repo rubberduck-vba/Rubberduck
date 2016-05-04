@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -425,13 +425,7 @@
   <data name="ImplicitByRefParameterQuickFix" xml:space="preserve">
     <value />
   </data>
-  <data name="Inspections_DeclarationOf" xml:space="preserve">
-    <value />
-  </data>
   <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Inspections_UsageOf" xml:space="preserve">
     <value />
   </data>
   <data name="MakeSingleLineParameterQuickFix" xml:space="preserve">
