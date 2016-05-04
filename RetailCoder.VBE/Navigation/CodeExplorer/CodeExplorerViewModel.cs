@@ -125,6 +125,11 @@ namespace Rubberduck.Navigation.CodeExplorer
                     return ((CodeExplorerCustomFolderViewModel)SelectedItem).FolderAttribute;
                 }
 
+                if (SelectedItem is CodeExplorerErrorNodeViewModel)
+                {
+                    return ((CodeExplorerErrorNodeViewModel)SelectedItem).Name;
+                }
+
                 return string.Empty;
             }
         }
@@ -142,13 +147,13 @@ namespace Rubberduck.Navigation.CodeExplorer
                 OnPropertyChanged("CanExecuteRenameCommand");
                 OnPropertyChanged("CanExecuteFindAllReferencesCommand");
                 OnPropertyChanged("CanExecuteShowDesignerCommand");
+                OnPropertyChanged("PanelTitle");
                 OnPropertyChanged("Description");
                 // ReSharper restore ExplicitCallerInfoArgument
             }
         }
 
         private bool _isBusy;
-
         public bool IsBusy
         {
             get { return _isBusy; }
@@ -168,6 +173,37 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 _canRefresh = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public string PanelTitle
+        {
+            get
+            {
+                if (SelectedItem == null)
+                {
+                    return string.Empty;
+                }
+
+                if (SelectedItem is CodeExplorerProjectViewModel)
+                {
+                    var node = (CodeExplorerProjectViewModel)SelectedItem;
+                    return node.Declaration.IdentifierName + string.Format(" - ({0})", node.Declaration.DeclarationType);
+                }
+
+                if (SelectedItem is CodeExplorerComponentViewModel)
+                {
+                    var node = (CodeExplorerComponentViewModel)SelectedItem;
+                    return node.Declaration.IdentifierName + string.Format(" - ({0})", node.Declaration.DeclarationType);
+                }
+
+                if (SelectedItem is CodeExplorerMemberViewModel)
+                {
+                    var node = (CodeExplorerMemberViewModel)SelectedItem;
+                    return node.Declaration.IdentifierName + string.Format(" - ({0})", node.Declaration.DeclarationType);
+                }
+
+                return SelectedItem.Name;
             }
         }
 

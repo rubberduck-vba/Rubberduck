@@ -59,10 +59,11 @@
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
 
-        <Style x:Key="ShinyTreeView" 
+        <Style x:Key="ShinyTreeView"
                TargetType="{x:Type TreeViewItem}">
             <Setter Property="BorderThickness" Value="1.5"/>
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+            <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="ContextMenu">
                 <Setter.Value>
                     <ContextMenu DataContext="{Binding DataContext, Source={x:Reference CodeExplorer}}">
@@ -124,14 +125,22 @@
         
         <Style x:Key="TreeViewItemStyle" TargetType="TextBlock">
             <Setter Property="Text" Value="{Binding Name}" />
+            <Setter Property="MaxWidth" Value="200" />
             <Setter Property="Margin" Value="2,0,2,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="ToolTip" Value="{Binding Name}" />
+            <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
 
         <Style x:Key="TreeViewItemStyleWithSignatures" TargetType="TextBlock">
             <Setter Property="Text" Value="{Binding NameWithSignature}" />
+            <Setter Property="MaxWidth" Value="200" />
             <Setter Property="Margin" Value="2,0,2,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="ToolTip" Value="{Binding NameWithSignature}" />
+            <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
 
         <Style x:Key="TreeViewIconStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">
@@ -423,11 +432,16 @@
 
             <StackPanel Orientation="Vertical" MinHeight="48" Background="Gainsboro">
 
-                <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center" 
-                           Source="{Binding SelectedItem.CollapsedIcon}"/>
-                    <TextBlock Margin="4" Text="{Binding SelectedItem.NameWithSignature}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
-                </StackPanel>
+                <Grid Margin="4" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center"
+                           Source="{Binding SelectedItem.CollapsedIcon}" Grid.Column="0"/>
+                    <TextBlock Margin="4" Text="{Binding PanelTitle}" FontWeight="Bold"
+                               TextWrapping="WrapWithOverflow" Grid.Column="1"/>
+                </Grid>
 
                 <TextBlock Margin="4" Text="{Binding Description}" FontSize="10" TextWrapping="WrapWithOverflow"/>
 
