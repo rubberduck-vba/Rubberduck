@@ -394,6 +394,14 @@
                     <Image Height="16" Source="../../Resources/Microsoft/PNG/DisplayFullSignature_13393_32.png" />
                 </ToggleButton>
 
+                <Separator />
+                
+                <Button Command="{Binding OpenDesignerCommand}" IsEnabled="{Binding CanOpenDesigner}">
+                    <Image Height="16" Source="../../Resources/Microsoft/PNG/VSProject_form.png" />
+                    <Button.ToolTip>
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ShowDesignerToolTip}" />
+                    </Button.ToolTip>
+                </Button>
             </ToolBar>
         </ToolBarTray>
 

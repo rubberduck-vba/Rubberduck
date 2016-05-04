@@ -344,15 +344,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Show Designer.
-        /// </summary>
-        public static string CodeExplorer_ShowDesignerText {
-            get {
-                return ResourceManager.GetString("CodeExplorer_ShowDesignerText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Open Designer.
         /// </summary>
         public static string CodeExplorer_ShowDesignerToolTip {

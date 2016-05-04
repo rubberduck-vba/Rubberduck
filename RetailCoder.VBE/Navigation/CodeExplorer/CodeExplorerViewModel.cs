@@ -54,6 +54,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             _addStdModuleCommand = new DelegateCommand(ExecuteAddStdModuleCommand, CanAddModule);
             _addClsModuleCommand = new DelegateCommand(ExecuteAddClsModuleCommand, CanAddModule);
             _addFormCommand = new DelegateCommand(ExecuteAddFormCommand, CanAddModule);
+
+            _openDesignerCommand = new DelegateCommand(ExecuteOpenDesignerCommand, _ => CanExecuteShowDesignerCommand);
             _indenterCommand = new DelegateCommand(ExecuteIndenterCommand, _ => CanExecuteIndenterCommand);
             _renameCommand = new DelegateCommand(ExecuteRenameCommand, _ => CanExecuteRenameCommand);
             _findAllReferencesCommand = new DelegateCommand(ExecuteFindAllReferencesCommand, _ => CanExecuteFindAllReferencesCommand);
@@ -74,6 +76,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly ICommand _addFormCommand;
         public ICommand AddFormCommand { get { return _addFormCommand; } }
+
+        private readonly ICommand _openDesignerCommand;
+        public ICommand OpenDesignerCommand { get { return _openDesignerCommand; } }
 
         private readonly ICommand _indenterCommand;
         public ICommand IndenterCommand { get { return _indenterCommand; } }
@@ -133,6 +138,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 OnPropertyChanged("CanExecuteIndenterCommand");
                 OnPropertyChanged("CanExecuteRenameCommand");
                 OnPropertyChanged("CanExecuteFindAllReferencesCommand");
+                OnPropertyChanged("CanExecuteShowDesignerCommand");
                 OnPropertyChanged("Description");
                 // ReSharper restore ExplicitCallerInfoArgument
             }
@@ -172,6 +178,16 @@ namespace Rubberduck.Navigation.CodeExplorer
             return SelectedItem != null && SelectedItem.QualifiedSelection.HasValue;
         }
 
+        private bool CanExecuteShowDesignerCommand
+        {
+            get
+            {
+                var declaration = GetSelectedDeclaration();
+                return declaration != null && declaration.DeclarationType == DeclarationType.ClassModule &&
+                       declaration.QualifiedName.QualifiedModuleName.Component.Designer != null;
+            }
+        }
+
         public bool CanExecuteIndenterCommand
         {
             get
@@ -196,7 +212,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public bool CanExecuteFindAllImplementationsCommand
+        private bool CanExecuteFindAllImplementationsCommand
         {
             get
             {
@@ -312,6 +328,11 @@ namespace Rubberduck.Navigation.CodeExplorer
         private void ExecuteAddFormCommand(object param)
         {
             _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_MSForm);
+        }
+
+        private void ExecuteOpenDesignerCommand(object param)
+        {
+            GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Component.DesignerWindow().Visible = true;
         }
 
         private void ExecuteIndenterCommand(object param)

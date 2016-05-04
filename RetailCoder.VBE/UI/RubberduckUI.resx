@@ -551,9 +551,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
     <value>Run All &amp;Tests</value>
   </data>
-  <data name="CodeExplorer_ShowDesignerText" xml:space="preserve">
-    <value>&amp;Show Designer</value>
-  </data>
   <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
     <value>Open Designer</value>
   </data>
