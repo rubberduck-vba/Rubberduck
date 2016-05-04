@@ -425,14 +425,8 @@
   <data name="ImplicitByRefParameterQuickFix" xml:space="preserve">
     <value>Parameter explizit als Referenz angeben</value>
   </data>
-  <data name="Inspections_DeclarationOf" xml:space="preserve">
-    <value>Deklaration von</value>
-  </data>
   <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
     <value>TODO</value>
-  </data>
-  <data name="Inspections_UsageOf" xml:space="preserve">
-    <value>Nutzung von</value>
   </data>
   <data name="MakeSingleLineParameterQuickFix" xml:space="preserve">
     <value>Schreibe Variable in einer Zeile</value>
