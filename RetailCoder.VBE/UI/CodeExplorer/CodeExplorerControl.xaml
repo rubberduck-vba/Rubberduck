@@ -10,14 +10,14 @@
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
+             Name="CodeExplorer"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeExplorer:CodeExplorerViewModel}">
     <UserControl.Resources>
-
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         <converter:BoolToHiddenVisibility x:Key="BoolToHiddenVisibility" />
 
-            <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
+        <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
 
             <Setter Property="Width" Value="Auto"/>
 
@@ -63,6 +63,34 @@
                TargetType="{x:Type TreeViewItem}">
             <Setter Property="BorderThickness" Value="1.5"/>
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+            <Setter Property="ContextMenu">
+                <Setter.Value>
+                    <ContextMenu DataContext="{Binding DataContext, Source={x:Reference CodeExplorer}}">
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}"
+                                  Command="{Binding RefreshCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="../../Resources/arrow-circle-double.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}"
+                                  Command="{Binding RenameCommand}" />
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Navigate}"
+                                  Command="{Binding ContextMenuNavigateCommand}" />
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddTestModuleText}"
+                                  Command="{Binding AddTestModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddStdModuleText}"
+                                  Command="{Binding AddStdModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddClassModuleText}"
+                                  Command="{Binding AddClsModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddFormText}"
+                                  Command="{Binding AddFormCommand}" />
+                    </ContextMenu>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="BorderBrush" Value="#adc6e5"/>
@@ -81,7 +109,6 @@
                 </Style>
             </Style.Resources>
         </Style>
-
         
         <Style x:Key="IconStyle" TargetType="Image">
             <Setter Property="Height" Value="16" />
@@ -379,20 +406,18 @@
         <GridSplitter Grid.Row="2" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 
         <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
-            
-            <Grid Background="Gainsboro">
-                
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    </StackPanel>
+            <StackPanel Orientation="Vertical" MinHeight="48" Background="Gainsboro">
+
+                <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center" 
+                           Source="{Binding SelectedItem.CollapsedIcon}"/>
+                    <TextBlock Margin="4" Text="{Binding SelectedItem.NameWithSignature}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
                 </StackPanel>
-                
-                <WrapPanel Grid.Column="0" Grid.Row="1">
+
+                <TextBlock Margin="4" Text="{Binding Description}" FontSize="10" TextWrapping="WrapWithOverflow"/>
+
+                <WrapPanel>
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}, UpdateSourceTrigger=PropertyChanged}"
                             Command="{Binding IndenterCommand}"
@@ -406,7 +431,7 @@
                             Command="{Binding FindAllReferencesCommand}"
                             Content="Find All References" />
                 </WrapPanel>
-            </Grid>
+            </StackPanel>
         </Border>
 
     </Grid>

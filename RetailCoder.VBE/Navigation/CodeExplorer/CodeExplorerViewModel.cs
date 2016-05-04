@@ -21,6 +21,8 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
+        private readonly NewUnitTestModuleCommand _newUnitTestModuleCommand;
+        private readonly Indenter _indenter;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly FindAllReferencesCommand _findAllReferences;
 
@@ -34,7 +36,6 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             _vbe = vbe;
             _state = state;
-            _navigateCommand = navigateCommand;
             _newUnitTestModuleCommand = newUnitTestModuleCommand;
             _indenter = indenter;
             _wrapperFactory = wrapperFactory;
@@ -42,13 +43,15 @@ namespace Rubberduck.Navigation.CodeExplorer
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
-            _refreshCommand = new DelegateCommand(ExecuteRefreshCommand);
+            _navigateCommand = navigateCommand;
+            _contextMenuNavigateCommand = new DelegateCommand(ExecuteContextMenuNavigateCommand, CanExecuteContextMenuNavigateCommand);
+            _refreshCommand = new DelegateCommand(ExecuteRefreshCommand, _ => CanRefresh);
             _addTestModuleCommand = new DelegateCommand(ExecuteAddTestModuleCommand);
             _addStdModuleCommand = new DelegateCommand(ExecuteAddStdModuleCommand, CanAddModule);
             _addClsModuleCommand = new DelegateCommand(ExecuteAddClsModuleCommand, CanAddModule);
             _addFormCommand = new DelegateCommand(ExecuteAddFormCommand, CanAddModule);
-            _indenterCommand = new DelegateCommand(ExecuteIndenterCommand);
-            _renameCommand = new DelegateCommand(ExecuteRenameCommand);
+            _indenterCommand = new DelegateCommand(ExecuteIndenterCommand, _ => CanExecuteIndenterCommand);
+            _renameCommand = new DelegateCommand(ExecuteRenameCommand, _ => CanExecuteRenameCommand);
             _findAllReferencesCommand = new DelegateCommand(ExecuteFindAllReferencesCommand);
         }
 
@@ -77,9 +80,38 @@ namespace Rubberduck.Navigation.CodeExplorer
         public ICommand FindAllReferencesCommand { get { return _findAllReferencesCommand; } }
 
         private readonly INavigateCommand _navigateCommand;
-        private readonly NewUnitTestModuleCommand _newUnitTestModuleCommand;
-        private readonly Indenter _indenter;
         public ICommand NavigateCommand { get { return _navigateCommand; } }
+
+        private readonly ICommand _contextMenuNavigateCommand;
+        public ICommand ContextMenuNavigateCommand { get { return _contextMenuNavigateCommand; } }
+
+        public string Description
+        {
+            get
+            {
+                if (SelectedItem is CodeExplorerProjectViewModel)
+                {
+                    return ((CodeExplorerProjectViewModel)SelectedItem).Declaration.DescriptionString;
+                }
+
+                if (SelectedItem is CodeExplorerComponentViewModel)
+                {
+                    return ((CodeExplorerComponentViewModel)SelectedItem).Declaration.DescriptionString;
+                }
+
+                if (SelectedItem is CodeExplorerMemberViewModel)
+                {
+                    return ((CodeExplorerMemberViewModel)SelectedItem).Declaration.DescriptionString;
+                }
+
+                if (SelectedItem is CodeExplorerCustomFolderViewModel)
+                {
+                    return ((CodeExplorerCustomFolderViewModel)SelectedItem).FolderAttribute;
+                }
+
+                return string.Empty;
+            }
+        }
 
         private CodeExplorerItemViewModel _selectedItem;
         public CodeExplorerItemViewModel SelectedItem
@@ -92,6 +124,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 OnPropertyChanged("CanExecuteIndenterCommand");
                 OnPropertyChanged("CanExecuteRenameCommand");
                 OnPropertyChanged("CanExecuteFindAllReferencesCommand");
+                OnPropertyChanged("Description");
             }
         }
 
@@ -122,6 +155,11 @@ namespace Rubberduck.Navigation.CodeExplorer
         private bool CanAddModule(object param)
         {
             return _vbe.ActiveVBProject != null;
+        }
+
+        private bool CanExecuteContextMenuNavigateCommand(object param)
+        {
+            return SelectedItem != null && SelectedItem.QualifiedSelection.HasValue;
         }
 
         public bool CanExecuteIndenterCommand
@@ -267,21 +305,20 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ExecuteIndenterCommand(object param)
         {
+            if (!SelectedItem.QualifiedSelection.HasValue)
+            {
+                return;
+            }
+
             Debug.WriteLine("CodeExplorerViewModel.IndenterCommand");
             if (SelectedItem is CodeExplorerProjectViewModel)
             {
-                if (SelectedItem.QualifiedSelection.HasValue)
-                {
-                    _indenter.Indent(SelectedItem.QualifiedSelection.Value.QualifiedName.Project);
-                }
+                _indenter.Indent(SelectedItem.QualifiedSelection.Value.QualifiedName.Project);
             }
 
             if (SelectedItem is CodeExplorerComponentViewModel)
             {
-                if (SelectedItem.QualifiedSelection.HasValue)
-                {
-                    _indenter.Indent(SelectedItem.QualifiedSelection.Value.QualifiedName.Component);
-                }
+                _indenter.Indent(SelectedItem.QualifiedSelection.Value.QualifiedName.Component);
             }
         }
 
@@ -299,6 +336,15 @@ namespace Rubberduck.Navigation.CodeExplorer
         private void ExecuteFindAllReferencesCommand(object obj)
         {
             _findAllReferences.Execute(GetSelectedDeclaration());
+        }
+
+        private void ExecuteContextMenuNavigateCommand(object obj)
+        {
+            // ReSharper disable once PossibleInvalidOperationException
+            // CanExecute protects against this
+            var arg = new NavigateCodeEventArgs(SelectedItem.QualifiedSelection.Value);
+
+            NavigateCommand.Execute(arg);
         }
 
         private Declaration GetSelectedDeclaration()
