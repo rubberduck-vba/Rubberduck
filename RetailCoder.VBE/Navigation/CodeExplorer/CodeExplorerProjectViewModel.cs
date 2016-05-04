@@ -29,7 +29,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             try
             {
-                Items = FindFolders(declarations.ToList(), '.');
+                Items = FindFolders(declarations.ToList(), '.').ToList();
 
                 _icon = _declaration.Project.Protection == vbext_ProjectProtection.vbext_pp_locked
                     ? GetImageSource(resx.lock__exclamation)
@@ -43,7 +43,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private static IEnumerable<CodeExplorerItemViewModel> FindFolders(IEnumerable<Declaration> declarations, char delimiter)
         {
-            var root = new CodeExplorerCustomFolderViewModel(string.Empty, new List<Declaration>());
+            var root = new CodeExplorerCustomFolderViewModel(string.Empty, string.Empty, new List<Declaration>());
 
             var items = declarations.ToList();
             var folders = items.Where(item => ComponentTypes.Contains(item.DeclarationType))
@@ -68,7 +68,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                         var currentPath = path.ToString();
                         var parents = grouping.Where(item => ComponentTypes.Contains(item.DeclarationType) && item.CustomFolder == currentPath).ToList();
 
-                        next = new CodeExplorerCustomFolderViewModel(part, items.Where(item => 
+                        next = new CodeExplorerCustomFolderViewModel(part, currentPath, items.Where(item => 
                             parents.Contains(item) || parents.Any(parent => 
                                 (item.ParentDeclaration != null && item.ParentDeclaration.Equals(parent)) || item.ComponentName == parent.ComponentName)));
                         node.AddChild(next);

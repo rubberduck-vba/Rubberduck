@@ -531,10 +531,10 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Display full &amp;signatures</value>
   </data>
   <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>Find &amp;All Implementations...</value>
+    <value>Find All Implementations...</value>
   </data>
   <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>&amp;Find All References...</value>
+    <value>Find All References...</value>
   </data>
   <data name="Inspect" xml:space="preserve">
     <value>Inspect</value>
@@ -550,9 +550,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
     <value>Run All &amp;Tests</value>
-  </data>
-  <data name="CodeExplorer_ShowDesignerText" xml:space="preserve">
-    <value>&amp;Show Designer</value>
   </data>
   <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
     <value>Open Designer</value>
@@ -949,7 +946,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RegexSearchReplace_Caption" xml:space="preserve">
     <value>Regex Search &amp; Replace</value>
   </data>
-  <data name="RegexSearchReplace_FindButtonLabel" xml:space="preserve">
+  <data name="Find" xml:space="preserve">
     <value>Find</value>
   </data>
   <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
