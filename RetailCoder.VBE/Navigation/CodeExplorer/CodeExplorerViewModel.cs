@@ -167,7 +167,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             get
             {
                 Debug.WriteLine("CodeExplorerViewModel.CanExecuteIndenterCommand");
-                return _state.Status == ParserState.Ready && (SelectedItem is CodeExplorerProjectViewModel || SelectedItem is CodeExplorerComponentViewModel);
+                return _state.Status == ParserState.Ready && !(SelectedItem is CodeExplorerCustomFolderViewModel);
             }
         }
 
@@ -319,6 +319,17 @@ namespace Rubberduck.Navigation.CodeExplorer
             if (SelectedItem is CodeExplorerComponentViewModel)
             {
                 _indenter.Indent(SelectedItem.QualifiedSelection.Value.QualifiedName.Component);
+            }
+
+            if (SelectedItem is CodeExplorerMemberViewModel)
+            {
+                var node = (CodeExplorerMemberViewModel)SelectedItem;
+                var indenterSelection = new Selection(node.Declaration.Selection.StartLine,
+                    node.Declaration.Selection.StartColumn, node.Declaration.Selection.EndLine,
+                    node.Declaration.Selection.EndColumn);
+
+                _indenter.Indent(SelectedItem.QualifiedSelection.Value.QualifiedName.Component,
+                    node.Declaration.IdentifierName, indenterSelection);
             }
         }
 

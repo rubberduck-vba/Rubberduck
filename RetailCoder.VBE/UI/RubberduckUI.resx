@@ -534,7 +534,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Find &amp;All Implementations...</value>
   </data>
   <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>&amp;Find All References...</value>
+    <value>Find All References...</value>
   </data>
   <data name="Inspect" xml:space="preserve">
     <value>Inspect</value>
@@ -1508,17 +1508,5 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
     <value>Toggle signatures</value>
-  </data>
-  <data name="CodeExplorer_ContextMenu_AddClassModuleText" xml:space="preserve">
-    <value>Add Class module (.cls)</value>
-  </data>
-  <data name="CodeExplorer_ContextMenu_AddFormText" xml:space="preserve">
-    <value>Add User form (.frm)</value>
-  </data>
-  <data name="CodeExplorer_ContextMenu_AddStdModuleText" xml:space="preserve">
-    <value>Add Standard module (.bas)</value>
-  </data>
-  <data name="CodeExplorer_ContextMenu_AddTestModuleText" xml:space="preserve">
-    <value>Add Test module</value>
   </data>
 </root>

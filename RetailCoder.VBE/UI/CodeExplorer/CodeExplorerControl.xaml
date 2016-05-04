@@ -66,27 +66,27 @@
             <Setter Property="ContextMenu">
                 <Setter.Value>
                     <ContextMenu DataContext="{Binding DataContext, Source={x:Reference CodeExplorer}}">
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}"
-                                  Command="{Binding RefreshCommand}">
-                            <MenuItem.Icon>
-                                <Image Source="../../Resources/arrow-circle-double.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Navigate}"
+                                  FontWeight="Bold"
+                                  Command="{Binding ContextMenuNavigateCommand}" />
                         <Separator />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}"
                                   Command="{Binding RenameCommand}" />
                         <Separator />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Navigate}"
-                                  Command="{Binding ContextMenuNavigateCommand}" />
-                        <Separator />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddTestModuleText}"
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}">
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddTestModuleText}"
                                   Command="{Binding AddTestModuleCommand}" />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddStdModuleText}"
+                            <Separator />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddStdModuleText}"
                                   Command="{Binding AddStdModuleCommand}" />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddClassModuleText}"
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddClassModuleText}"
                                   Command="{Binding AddClsModuleCommand}" />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddFormText}"
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddFormText}"
                                   Command="{Binding AddFormCommand}" />
+                        </MenuItem>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SmartIndenterMenu}"
+                                  Command="{Binding IndenterCommand}" />
+                        <Separator />
                     </ContextMenu>
                 </Setter.Value>
             </Setter>
@@ -421,15 +421,15 @@
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}, UpdateSourceTrigger=PropertyChanged}"
                             Command="{Binding IndenterCommand}"
-                            Content="Indent" />
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SmartIndenterMenu}" />
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteRenameCommand, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding RenameCommand}"
-                            Content="Rename" />
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}" />
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteFindAllReferencesCommand, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding FindAllReferencesCommand}"
-                            Content="Find All References" />
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllReferencesText}" />
                 </WrapPanel>
             </StackPanel>
         </Border>
