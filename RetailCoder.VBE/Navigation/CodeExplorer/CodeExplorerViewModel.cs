@@ -14,6 +14,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+// ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -121,10 +122,12 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 _selectedItem = value; 
                 OnPropertyChanged();
+                // ReSharper disable ExplicitCallerInfoArgument
                 OnPropertyChanged("CanExecuteIndenterCommand");
                 OnPropertyChanged("CanExecuteRenameCommand");
                 OnPropertyChanged("CanExecuteFindAllReferencesCommand");
                 OnPropertyChanged("Description");
+                // ReSharper restore ExplicitCallerInfoArgument
             }
         }
 
@@ -166,7 +169,6 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                Debug.WriteLine("CodeExplorerViewModel.CanExecuteIndenterCommand");
                 return _state.Status == ParserState.Ready && !(SelectedItem is CodeExplorerCustomFolderViewModel);
             }
         }
@@ -175,7 +177,6 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                Debug.WriteLine("CodeExplorerViewModel.CanExecuteRenameCommand");
                 return _state.Status == ParserState.Ready && !(SelectedItem is CodeExplorerCustomFolderViewModel);
             }
         }
@@ -184,7 +185,6 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                Debug.WriteLine("CodeExplorerViewModel.CanExecuteFindAllReferencesCommand");
                 return _state.Status == ParserState.Ready && !(SelectedItem is CodeExplorerCustomFolderViewModel);
             }
         }
@@ -208,7 +208,6 @@ namespace Rubberduck.Navigation.CodeExplorer
                 Projects = new ObservableCollection<CodeExplorerItemViewModel>();
             }
 
-            Debug.WriteLine("CodeExplorerViewModel handles StateChanged...");
             IsBusy = _state.Status == ParserState.Parsing;
             if (_state.Status != ParserState.Ready)
             {
@@ -275,31 +274,26 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ExecuteRefreshCommand(object param)
         {
-            Debug.WriteLine("CodeExplorerViewModel.ExecuteRefreshCommand - requesting reparse");
             _state.OnParseRequested(this);
         }
 
         private void ExecuteAddTestModuleCommand(object param)
         {
-            Debug.WriteLine("CodeExplorerViewModel.AddTestModuleCommand");
             _newUnitTestModuleCommand.NewUnitTestModule();
         }
 
         private void ExecuteAddStdModuleCommand(object param)
         {
-            Debug.WriteLine("CodeExplorerViewModel.AddStdModuleCommand");
             _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
         }
 
         private void ExecuteAddClsModuleCommand(object param)
         {
-            Debug.WriteLine("CodeExplorerViewModel.AddClsModuleCommand");
             _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
         }
 
         private void ExecuteAddFormCommand(object param)
         {
-            Debug.WriteLine("CodeExplorerViewModel.AddFormCommand");
             _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_MSForm);
         }
 
@@ -310,7 +304,6 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            Debug.WriteLine("CodeExplorerViewModel.IndenterCommand");
             if (SelectedItem is CodeExplorerProjectViewModel)
             {
                 _indenter.Indent(SelectedItem.QualifiedSelection.Value.QualifiedName.Project);
@@ -323,13 +316,10 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             if (SelectedItem is CodeExplorerMemberViewModel)
             {
-                var node = (CodeExplorerMemberViewModel)SelectedItem;
-                var indenterSelection = new Selection(node.Declaration.Selection.StartLine,
-                    node.Declaration.Selection.StartColumn, node.Declaration.Selection.EndLine,
-                    node.Declaration.Selection.EndColumn);
+                var arg = new NavigateCodeEventArgs(SelectedItem.QualifiedSelection.Value);
+                NavigateCommand.Execute(arg);
 
-                _indenter.Indent(SelectedItem.QualifiedSelection.Value.QualifiedName.Component,
-                    node.Declaration.IdentifierName, indenterSelection);
+                _indenter.IndentCurrentProcedure();
             }
         }
 
