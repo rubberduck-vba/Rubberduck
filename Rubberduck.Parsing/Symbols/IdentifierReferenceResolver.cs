@@ -643,7 +643,16 @@ namespace Rubberduck.Parsing.Symbols
                 if (member == null && parent != null)
                 {
                     var parentComTypeName = string.Empty;
-                    var property = parent.QualifiedName.QualifiedModuleName.Component.Properties.Item("Parent");
+                    Property property = null;
+                    try
+                    {
+                        property = parent.QualifiedName.QualifiedModuleName.Component.Properties.Item("Parent");
+                    }
+                    catch (NotSupportedException)
+                    {
+                        // okay, no "Parent" property. tough luck.
+                    }
+
                     if (property != null)
                     {
                         parentComTypeName = ComHelper.GetTypeName(property.Object);
@@ -757,7 +766,16 @@ namespace Rubberduck.Parsing.Symbols
                 if (parentScope != null)
                 {
                     var parentComTypeName = string.Empty;
-                    var property = parentScope.QualifiedName.QualifiedModuleName.Component.Properties.Item("Parent");
+                    Property property = null;
+                    try
+                    {
+                        property = parentScope.QualifiedName.QualifiedModuleName.Component.Properties.Item("Parent");
+                    }
+                    catch (NotSupportedException)
+                    {
+                        // okay, there's no "Parent" property there. move on.
+                    }
+
                     if (property != null)
                     {
                         parentComTypeName = ComHelper.GetTypeName(property.Object);

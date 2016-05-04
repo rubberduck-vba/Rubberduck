@@ -487,6 +487,17 @@ namespace Rubberduck.Parsing.VBA
                 success = success && (!_comments.ContainsKey(key) || _comments.TryRemove(key, out nodes));
             }
 
+            var projectId = component.Collection.Parent.HelpFile;
+            var sameProjectDeclarations = _declarations.Where(item => item.Key.ProjectId == projectId).ToList();
+            if (sameProjectDeclarations.Any() && sameProjectDeclarations.Count(item => item.Value.Any(key => key.Key.DeclarationType == DeclarationType.Project)) == sameProjectDeclarations.Count)
+            {
+                // only the project declaration is left; remove it.
+                ConcurrentDictionary<Declaration, byte> declarations;
+                _declarations.TryRemove(sameProjectDeclarations.Single().Key, out declarations);
+                _projects.Remove(projectId);
+                Debug.WriteLine(string.Format("Removed Project declaration for project Id {0}", projectId));
+            }
+
             Debug.WriteLine("ClearDeclarations({0}): {1} - {2} declarations removed", component.Name, success ? "succeeded" : "failed", declarationsRemoved);
             return success;
         }
