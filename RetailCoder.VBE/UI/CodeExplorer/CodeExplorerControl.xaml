@@ -84,6 +84,12 @@
                             <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddFormText}"
                                   Command="{Binding AddFormCommand}" />
                         </MenuItem>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Find}">
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllReferencesText}"
+                                  Command="{Binding FindAllReferencesCommand}" />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllImplementationsText}"
+                                  Command="{Binding FindAllImplementationsCommand}" />
+                        </MenuItem>
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SmartIndenterMenu}"
                                   Command="{Binding IndenterCommand}" />
                         <Separator />

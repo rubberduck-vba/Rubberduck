@@ -272,7 +272,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find &amp;All Implementations....
+        ///   Looks up a localized string similar to Find All Implementations....
         /// </summary>
         public static string CodeExplorer_FindAllImplementationsText {
             get {
@@ -1143,6 +1143,15 @@ namespace Rubberduck.UI {
         public static string ExtractMethod_TitleText {
             get {
                 return ResourceManager.GetString("ExtractMethod_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find.
+        /// </summary>
+        public static string Find {
+            get {
+                return ResourceManager.GetString("Find", resourceCulture);
             }
         }
         
@@ -2211,15 +2220,6 @@ namespace Rubberduck.UI {
         public static string RegexSearchReplace_Caption {
             get {
                 return ResourceManager.GetString("RegexSearchReplace_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Find.
-        /// </summary>
-        public static string RegexSearchReplace_FindButtonLabel {
-            get {
-                return ResourceManager.GetString("RegexSearchReplace_FindButtonLabel", resourceCulture);
             }
         }
         

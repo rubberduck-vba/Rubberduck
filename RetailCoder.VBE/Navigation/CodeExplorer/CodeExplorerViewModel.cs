@@ -26,6 +26,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly Indenter _indenter;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly FindAllReferencesCommand _findAllReferences;
+        private readonly FindAllImplementationsCommand _findAllImplementations;
 
         public CodeExplorerViewModel(VBE vbe,
             RubberduckParserState state,
@@ -33,7 +34,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             NewUnitTestModuleCommand newUnitTestModuleCommand,
             Indenter indenter,
             ICodePaneWrapperFactory wrapperFactory,
-            FindAllReferencesCommand findAllReferences)
+            FindAllReferencesCommand findAllReferences,
+            FindAllImplementationsCommand findAllImplementations)
         {
             _vbe = vbe;
             _state = state;
@@ -41,6 +43,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _indenter = indenter;
             _wrapperFactory = wrapperFactory;
             _findAllReferences = findAllReferences;
+            _findAllImplementations = findAllImplementations;
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
@@ -53,7 +56,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             _addFormCommand = new DelegateCommand(ExecuteAddFormCommand, CanAddModule);
             _indenterCommand = new DelegateCommand(ExecuteIndenterCommand, _ => CanExecuteIndenterCommand);
             _renameCommand = new DelegateCommand(ExecuteRenameCommand, _ => CanExecuteRenameCommand);
-            _findAllReferencesCommand = new DelegateCommand(ExecuteFindAllReferencesCommand);
+            _findAllReferencesCommand = new DelegateCommand(ExecuteFindAllReferencesCommand, _ => CanExecuteFindAllReferencesCommand);
+            _findAllImplementationsCommand = new DelegateCommand(ExecuteFindAllImplementationsCommand, _ => CanExecuteFindAllImplementationsCommand);
         }
 
         private readonly ICommand _refreshCommand;
@@ -79,6 +83,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly ICommand _findAllReferencesCommand;
         public ICommand FindAllReferencesCommand { get { return _findAllReferencesCommand; } }
+
+        private readonly ICommand _findAllImplementationsCommand;
+        public ICommand FindAllImplementationsCommand { get { return _findAllImplementationsCommand; } }
 
         private readonly INavigateCommand _navigateCommand;
         public ICommand NavigateCommand { get { return _navigateCommand; } }
@@ -147,7 +154,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private bool _canRefresh = true;
         public bool CanRefresh
         {
-            get { return true /*_canRefresh*/; }
+            get { return _canRefresh; }
             private set
             {
                 _canRefresh = value;
@@ -186,6 +193,16 @@ namespace Rubberduck.Navigation.CodeExplorer
             get
             {
                 return _state.Status == ParserState.Ready && !(SelectedItem is CodeExplorerCustomFolderViewModel);
+            }
+        }
+
+        public bool CanExecuteFindAllImplementationsCommand
+        {
+            get
+            {
+                return _state.Status == ParserState.Ready &&
+                       (SelectedItem is CodeExplorerComponentViewModel ||
+                       SelectedItem is CodeExplorerMemberViewModel);
             }
         }
 
@@ -337,6 +354,11 @@ namespace Rubberduck.Navigation.CodeExplorer
         private void ExecuteFindAllReferencesCommand(object obj)
         {
             _findAllReferences.Execute(GetSelectedDeclaration());
+        }
+
+        private void ExecuteFindAllImplementationsCommand(object obj)
+        {
+            _findAllImplementations.Execute(GetSelectedDeclaration());
         }
 
         private void ExecuteContextMenuNavigateCommand(object obj)

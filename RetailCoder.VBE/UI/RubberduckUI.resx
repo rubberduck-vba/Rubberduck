@@ -531,7 +531,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Display full &amp;signatures</value>
   </data>
   <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>Find &amp;All Implementations...</value>
+    <value>Find All Implementations...</value>
   </data>
   <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
     <value>Find All References...</value>
@@ -949,7 +949,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RegexSearchReplace_Caption" xml:space="preserve">
     <value>Regex Search &amp; Replace</value>
   </data>
-  <data name="RegexSearchReplace_FindButtonLabel" xml:space="preserve">
+  <data name="Find" xml:space="preserve">
     <value>Find</value>
   </data>
   <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
