@@ -29,7 +29,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             try
             {
-                Items = FindFolders(declarations.ToList(), '.');
+                Items = FindFolders(declarations.ToList(), '.').ToList();
 
                 _icon = _declaration.Project.Protection == vbext_ProjectProtection.vbext_pp_locked
                     ? GetImageSource(resx.lock__exclamation)

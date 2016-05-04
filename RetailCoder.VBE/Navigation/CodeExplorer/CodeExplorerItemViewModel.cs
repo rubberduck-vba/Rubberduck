@@ -8,8 +8,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public abstract class CodeExplorerItemViewModel : ViewModelBase
     {
-        private IList<CodeExplorerItemViewModel> _items = new List<CodeExplorerItemViewModel>();
-        public IEnumerable<CodeExplorerItemViewModel> Items { get { return _items; } protected set { _items = value.ToList(); } }
+        private List<CodeExplorerItemViewModel> _items = new List<CodeExplorerItemViewModel>();
+        public List<CodeExplorerItemViewModel> Items { get { return _items; } protected set { _items = value; } }
 
         public bool IsExpanded { get; set; }
 

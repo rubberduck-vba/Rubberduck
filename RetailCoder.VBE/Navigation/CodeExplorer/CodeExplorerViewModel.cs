@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -27,6 +27,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly FindAllReferencesCommand _findAllReferences;
         private readonly FindAllImplementationsCommand _findAllImplementations;
+        private readonly Dispatcher _dispatcher;
 
         public CodeExplorerViewModel(VBE vbe,
             RubberduckParserState state,
@@ -37,6 +38,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             FindAllReferencesCommand findAllReferences,
             FindAllImplementationsCommand findAllImplementations)
         {
+            _dispatcher = Dispatcher.CurrentDispatcher;
+
             _vbe = vbe;
             _state = state;
             _newUnitTestModuleCommand = newUnitTestModuleCommand;
@@ -192,7 +195,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                return _state.Status == ParserState.Ready && !(SelectedItem is CodeExplorerCustomFolderViewModel);
+                return _state.Status == ParserState.Ready && !(SelectedItem is CodeExplorerCustomFolderViewModel) &&
+                       !(SelectedItem is CodeExplorerErrorNodeViewModel);
             }
         }
 
@@ -200,7 +204,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                return _state.Status == ParserState.Ready && !(SelectedItem is CodeExplorerCustomFolderViewModel);
+                return _state.Status == ParserState.Ready && !(SelectedItem is CodeExplorerCustomFolderViewModel) &&
+                       !(SelectedItem is CodeExplorerErrorNodeViewModel);
             }
         }
 
@@ -208,7 +213,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                return _state.Status == ParserState.Ready && !(SelectedItem is CodeExplorerCustomFolderViewModel);
+                return _state.Status == ParserState.Ready && !(SelectedItem is CodeExplorerCustomFolderViewModel) &&
+                       !(SelectedItem is CodeExplorerErrorNodeViewModel);
             }
         }
 
@@ -223,7 +229,6 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         private ObservableCollection<CodeExplorerItemViewModel> _projects;
-
         public ObservableCollection<CodeExplorerItemViewModel> Projects
         {
             get { return _projects; }
@@ -247,7 +252,6 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            Debug.WriteLine("Creating Code Explorer model...");
             var userDeclarations = _state.AllUserDeclarations
                 .GroupBy(declaration => declaration.Project)
                 .Where(grouping => grouping.Key != null)
@@ -301,8 +305,63 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ParserState_ModuleStateChanged(object sender, Parsing.ParseProgressEventArgs e)
         {
-            // todo: figure out a way to handle error state.
-            // the problem is that the _projects collection might not contain our failing module yet.
+            if (e.State != ParserState.Error)
+            {
+                return;
+            }
+
+            var componentProject = e.Component.Collection.Parent;
+            var node = Projects.OfType<CodeExplorerProjectViewModel>()
+                    .FirstOrDefault(p => p.Declaration.Project == componentProject);
+
+            if (node == null)
+            {
+                return;
+            }
+
+            var folderNode = node.Items.First(f => f is CodeExplorerCustomFolderViewModel && f.Name == node.Name);
+
+            AddErrorNode addNode = AddComponentErrorNode;
+            _dispatcher.BeginInvoke(addNode, node, folderNode, e.Component.Name);
+        }
+
+        private delegate void AddErrorNode(CodeExplorerItemViewModel projectNode, CodeExplorerItemViewModel folderNode, string componentName);
+        private void AddComponentErrorNode(CodeExplorerItemViewModel projectNode, CodeExplorerItemViewModel folderNode, string componentName)
+        {
+            Projects.Remove(projectNode);
+            RemoveFailingComponent(projectNode, componentName);
+            
+            folderNode.AddChild(new CodeExplorerErrorNodeViewModel(componentName));
+            Projects.Add(projectNode);
+        }
+
+        private bool _removedNode;
+        private void RemoveFailingComponent(CodeExplorerItemViewModel itemNode, string componentName)
+        {
+            foreach (var node in itemNode.Items)
+            {
+                if (node is CodeExplorerCustomFolderViewModel)
+                {
+                    RemoveFailingComponent(node, componentName);
+                }
+
+                if (_removedNode)
+                {
+                    return;
+                }
+
+                if (node is CodeExplorerComponentViewModel)
+                {
+                    var component = (CodeExplorerComponentViewModel)node;
+                    if (component.Name == componentName)
+                    {
+                        itemNode.Items.Remove(node);
+                        _removedNode = true;
+
+                        return;
+                    }
+                }
+            }
         }
 
         private void ExecuteRefreshCommand(object param)

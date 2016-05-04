@@ -41,7 +41,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                                                 && item.ParentScope == declaration.Scope
                                                 && MemberTypes.Contains(item.DeclarationType))
                                 .OrderBy(item => item.QualifiedSelection.Selection.StartLine)
-                                .Select(item => new CodeExplorerMemberViewModel(item, grouping)));
+                                .Select(item => new CodeExplorerMemberViewModel(item, grouping)))
+                                .ToList<CodeExplorerItemViewModel>();
             
         }
 
