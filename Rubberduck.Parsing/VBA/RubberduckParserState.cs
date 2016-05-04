@@ -210,6 +210,11 @@ namespace Rubberduck.Parsing.VBA
         private static readonly ParserState[] States = Enum.GetValues(typeof(ParserState)).Cast<ParserState>().ToArray();
         private ParserState EvaluateParserState()
         {
+            if (_moduleStates.IsEmpty)
+            {
+                return ParserState.Pending;
+            }
+
             var moduleStates = _moduleStates.Values.ToList();
             var state = States.SingleOrDefault(value => moduleStates.All(ps => ps == value));
 
