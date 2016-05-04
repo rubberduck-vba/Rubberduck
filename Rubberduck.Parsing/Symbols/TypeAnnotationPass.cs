@@ -1,5 +1,6 @@
 using Rubberduck.Parsing.Binding;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -39,6 +40,7 @@ namespace Rubberduck.Parsing.Symbols
             if (declarationWithAsType.DeclarationType == DeclarationType.ClassModule)
             {
                 declarationWithAsType.AsTypeDeclaration = declarationWithAsType;
+                return;
             }
 
             string typeExpression;
@@ -46,6 +48,10 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var typeContext = declarationWithAsType.GetAsTypeContext();
                 typeExpression = typeContext.type().complexType().GetText();
+            }
+            else if (!string.IsNullOrWhiteSpace(declarationWithAsType.AsTypeName) && !Declaration.BASE_TYPES.Contains(declarationWithAsType.AsTypeName.ToUpperInvariant()))
+            {
+                typeExpression = declarationWithAsType.AsTypeName;
             }
             else
             {
@@ -57,7 +63,6 @@ namespace Rubberduck.Parsing.Symbols
                 // TODO: Reference Collector does not add module, find workaround?
                 return;
             }
-            
             var boundExpression = _bindingService.ResolveType(module, declarationWithAsType.ParentDeclaration, typeExpression);
             if (boundExpression != null)
             {

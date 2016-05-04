@@ -1293,32 +1293,6 @@ End Sub
         }
 
         [TestMethod]
-        public void GivenUDTField_NamedAmbiguously_FullyQualifiedMemberAssignmentCallResolvesToUDTMember()
-        {
-            var code = @"
-Private Type TestModule1
-    Foo As Integer
-End Type
-
-Private TestModule1 As TestModule1
-
-Public Sub DoSomething()
-    TestProject1.TestModule1.TestModule1.Foo = 42
-End Sub
-";
-            var state = Resolve(code);
-
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedTypeMember
-                && item.IdentifierName == "Foo");
-
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
-
-            Assert.AreEqual(1, usages.Count());
-        }
-
-        [TestMethod]
         public void GivenFullyReferencedUDTFieldMemberCall_ProjectParentMember_ResolvesToProject()
         {
             var code = @"

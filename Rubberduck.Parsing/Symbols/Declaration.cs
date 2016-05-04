@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing.Symbols
     [DebuggerDisplay("({DeclarationType}) {Accessibility} {IdentifierName} As {AsTypeName} | {Selection}")]
     public class Declaration : IEquatable<Declaration>
     {
-        private static readonly string[] _baseTypes = new string[]
+        public static readonly string[] BASE_TYPES = new string[]
         {
                 "BOOLEAN",
                 "BYTE",
@@ -376,7 +376,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
-                return string.IsNullOrWhiteSpace(AsTypeName) || _baseTypes.Contains(_asTypeName.ToUpperInvariant());
+                return string.IsNullOrWhiteSpace(AsTypeName) || BASE_TYPES.Contains(_asTypeName.ToUpperInvariant());
             }
         }
 

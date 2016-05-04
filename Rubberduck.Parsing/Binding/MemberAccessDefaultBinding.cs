@@ -11,7 +11,9 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _parent;
         private readonly ParserRuleContext _context;
         private readonly string _name;
-        private readonly IBoundExpression _lExpression;
+        private readonly IExpressionBinding _lExpressionBinding;
+        private IBoundExpression _lExpression;
+        private readonly DeclarationType _propertySearchType;
 
         public MemberAccessDefaultBinding(
             DeclarationFinder declarationFinder,
@@ -19,16 +21,19 @@ namespace Rubberduck.Parsing.Binding
             Declaration module,
             Declaration parent,
             VBAExpressionParser.MemberAccessExpressionContext expression,
-            IExpressionBinding lExpressionBinding)
+            IExpressionBinding lExpressionBinding,
+            ResolutionStatementContext statementContext)
             : this(
                   declarationFinder,
                   project,
                   module,
                   parent,
                   expression,
-                  lExpressionBinding.Resolve(),
-                  ExpressionName.GetName(expression.unrestrictedName()))
+                  null,
+                  ExpressionName.GetName(expression.unrestrictedName()),
+                  statementContext)
         {
+            _lExpressionBinding = lExpressionBinding;
         }
 
         public MemberAccessDefaultBinding(
@@ -37,16 +42,19 @@ namespace Rubberduck.Parsing.Binding
             Declaration module,
             Declaration parent,
             VBAExpressionParser.MemberAccessExprContext expression,
-            IExpressionBinding lExpressionBinding)
+            IExpressionBinding lExpressionBinding,
+            ResolutionStatementContext statementContext)
             : this(
                   declarationFinder,
                   project,
                   module,
                   parent,
                   expression,
-                  lExpressionBinding.Resolve(),
-                  ExpressionName.GetName(expression.unrestrictedName()))
+                  null,
+                  ExpressionName.GetName(expression.unrestrictedName()),
+                  statementContext)
         {
+            _lExpressionBinding = lExpressionBinding;
         }
 
         public MemberAccessDefaultBinding(
@@ -56,7 +64,8 @@ namespace Rubberduck.Parsing.Binding
             Declaration parent,
             ParserRuleContext expression,
             IBoundExpression lExpression,
-            string name)
+            string name,
+            ResolutionStatementContext statementContext)
         {
             _declarationFinder = declarationFinder;
             _project = project;
@@ -65,11 +74,16 @@ namespace Rubberduck.Parsing.Binding
             _context = expression;
             _lExpression = lExpression;
             _name = name;
+            _propertySearchType = StatementContext.GetSearchDeclarationType(statementContext);
         }
 
         public IBoundExpression Resolve()
         {
             IBoundExpression boundExpression = null;
+            if (_lExpressionBinding != null)
+            {
+                _lExpression = _lExpressionBinding.Resolve();
+            }
             if (_lExpression == null)
             {
                 return null;
@@ -141,12 +155,18 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
+            // TODO: DeclarationType UDT Member should actually be Variable?
+            var udtMember = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, _name, DeclarationType.UserDefinedTypeMember);
+            if (udtMember != null)
+            {
+                return new MemberAccessExpression(udtMember, ExpressionClassification.Variable, _context, _lExpression);
+            }
             var variable = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, _name, DeclarationType.Variable);
             if (variable != null)
             {
                 return new MemberAccessExpression(variable, ExpressionClassification.Variable, _context, _lExpression);
             }
-            var property = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, _name, DeclarationType.Property);
+            var property = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, _name, _propertySearchType);
             if (property != null)
             {
                 return new MemberAccessExpression(property, ExpressionClassification.Property, _context, _lExpression);
@@ -221,7 +241,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, referencedProject, DeclarationType.Property, ExpressionClassification.Property);
+            boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, referencedProject, _propertySearchType, ExpressionClassification.Property);
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -344,7 +364,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            boundExpression = ResolveMemberInModule(_lExpression.ReferencedDeclaration, DeclarationType.Property, ExpressionClassification.Property);
+            boundExpression = ResolveMemberInModule(_lExpression.ReferencedDeclaration, _propertySearchType, ExpressionClassification.Property);
             if (boundExpression != null)
             {
                 return boundExpression;

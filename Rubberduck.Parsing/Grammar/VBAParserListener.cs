@@ -898,6 +898,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitVsAmp([NotNull] VBAParser.VsAmpContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.subroutineName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSubroutineName([NotNull] VBAParser.SubroutineNameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.subroutineName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSubroutineName([NotNull] VBAParser.SubroutineNameContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.forNextStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1255,6 +1266,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitVisibility([NotNull] VBAParser.VisibilityContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.attributeValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAttributeValue([NotNull] VBAParser.AttributeValueContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.attributeValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAttributeValue([NotNull] VBAParser.AttributeValueContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>vsTypeOf</c>
 	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
 	/// </summary>
@@ -1520,6 +1542,28 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitOpenStmt([NotNull] VBAParser.OpenStmtContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.markerKeyword"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMarkerKeyword([NotNull] VBAParser.MarkerKeywordContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.markerKeyword"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMarkerKeyword([NotNull] VBAParser.MarkerKeywordContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.attributeName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAttributeName([NotNull] VBAParser.AttributeNameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.attributeName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAttributeName([NotNull] VBAParser.AttributeNameContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.ifBlockStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1584,6 +1628,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitSC_Case([NotNull] VBAParser.SC_CaseContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.functionName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunctionName([NotNull] VBAParser.FunctionNameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.functionName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunctionName([NotNull] VBAParser.FunctionNameContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.variableListStmt"/>.

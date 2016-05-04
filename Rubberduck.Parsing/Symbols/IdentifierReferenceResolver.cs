@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -115,13 +116,12 @@ namespace Rubberduck.Parsing.Symbols
             Declaration qualifier = null;
             var expr = context.withStmtExpression();
             var typeExpression = expr.GetText();
-            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, typeExpression, GetInnerMostWithExpression());
+            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, typeExpression, GetInnerMostWithExpression(), ResolutionStatementContext.Undefined);
             if (boundExpression != null)
             {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(expr, declaration));
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, declaration) => CreateReference(expr, declaration, RubberduckParserState.CreateBindingSelection(expr, exprCtx)));
                 qualifier = boundExpression.ReferencedDeclaration;
             }
-            Resolve(context.block());
             // note: pushes null if unresolved
             _withBlockQualifiers.Push(qualifier);
             _withBlockExpressions.Push(boundExpression);
@@ -142,7 +142,7 @@ namespace Rubberduck.Parsing.Symbols
             _withBlockExpressions.Pop();
         }
 
-        private IdentifierReference CreateReference(ParserRuleContext callSiteContext, Declaration callee, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
+        private IdentifierReference CreateReference(ParserRuleContext callSiteContext, Declaration callee, Selection bindingSelection, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
         {
             if (callSiteContext == null || _currentScope == null || _alreadyResolved.Contains(callSiteContext))
             {
@@ -151,7 +151,7 @@ namespace Rubberduck.Parsing.Symbols
             var name = callSiteContext.GetText();
             var selection = callSiteContext.GetSelection();
             var annotations = FindAnnotations(selection.StartLine);
-            return new IdentifierReference(_qualifiedModuleName, _currentScope, _currentParent, name, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement, annotations);
+            return new IdentifierReference(_qualifiedModuleName, _currentScope, _currentParent, name, selection, bindingSelection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement, annotations);
         }
 
         private IEnumerable<IAnnotation> FindAnnotations(int line)
@@ -167,723 +167,723 @@ namespace Rubberduck.Parsing.Symbols
             return new List<IAnnotation>();
         }
 
-        private void ResolveType(VBAParser.ICS_S_MembersCallContext context)
-        {
-            //var first = context.iCS_S_VariableOrProcedureCall().identifier();
-            //var identifiers = new[] { first }.Concat(context.iCS_S_MemberCall()
-            //            .Select(member => member.iCS_S_VariableOrProcedureCallUnrestricted().unrestrictedIdentifier()))
-            //            .ToList();
-            //ResolveType(identifiers);
-        }
-
-        private Declaration ResolveType(VBAParser.ComplexTypeContext context)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-
-            var identifiers = context.identifier()
-                .Select(identifier => identifier)
-                .ToList();
-
-            // if there's only 1 identifier, resolve to the tightest-scope match:
-            if (identifiers.Count == 1)
-            {
-                var type = ResolveInScopeType(identifiers.Single().GetText(), _currentScope);
-                if (type != null && !_alreadyResolved.Contains(context))
-                {
-                    type.AddReference(CreateReference(context, type));
-                    _alreadyResolved.Add(context);
-                }
-                return type;
-            }
-
-            // if there's 2 or more identifiers, resolve to the deepest path:
-            return ResolveType(identifiers);
-        }
-
-        private Declaration ResolveType(IList<VBAParser.IdentifierContext> identifiers)
-        {
-            var first = identifiers[0].GetText();
-            var projectMatch = _declarationFinder.FindProject(first, _currentScope);
-
-            if (projectMatch != null)
-            {
-                var projectReference = CreateReference(identifiers[0], projectMatch);
-
-                // matches current project. 2nd identifier could be:
-                // - standard module (only if there's a 3rd identifier)
-                // - class module
-                // - UDT
-                // - Enum
-                if (identifiers.Count == 3)
-                {
-                    var moduleMatch = _declarationFinder.FindStdModule(identifiers[1].GetText(), _currentScope);
-                    if (moduleMatch != null)
-                    {
-                        var moduleReference = CreateReference(identifiers[1], moduleMatch);
-
-                        // 3rd identifier can only be a UDT
-                        var udtMatch = _declarationFinder.FindUserDefinedType(identifiers[2].GetText(), moduleMatch);
-                        if (udtMatch != null)
-                        {
-                            var udtReference = CreateReference(identifiers[2], udtMatch);
-
-                            if (!_alreadyResolved.Contains(projectReference.Context))
-                            {
-                                projectMatch.AddReference(projectReference);
-                                _alreadyResolved.Add(projectReference.Context);
-                            }
-
-                            if (!_alreadyResolved.Contains(moduleReference.Context))
-                            {
-                                moduleMatch.AddReference(moduleReference);
-                                _alreadyResolved.Add(moduleReference.Context);
-                            }
-
-                            if (!_alreadyResolved.Contains(udtReference.Context))
-                            {
-                                udtMatch.AddReference(udtReference);
-                                _alreadyResolved.Add(udtReference.Context);
-                            }
-
-                            return udtMatch;
-                        }
-                        var enumMatch = _declarationFinder.FindEnum(identifiers[2].GetText(), moduleMatch);
-                        if (enumMatch != null)
-                        {
-                            var enumReference = CreateReference(identifiers[2], enumMatch);
-
-                            if (!_alreadyResolved.Contains(projectReference.Context))
-                            {
-                                projectMatch.AddReference(projectReference);
-                                _alreadyResolved.Add(projectReference.Context);
-                            }
-
-                            if (!_alreadyResolved.Contains(moduleReference.Context))
-                            {
-                                moduleMatch.AddReference(moduleReference);
-                                _alreadyResolved.Add(moduleReference.Context);
-                            }
-
-                            if (!_alreadyResolved.Contains(enumReference.Context))
-                            {
-                                enumMatch.AddReference(enumReference);
-                                _alreadyResolved.Add(enumReference.Context);
-                            }
-
-                            return enumMatch;
-                        }
-                    }
-                }
-                else
-                {
-                    if (projectReference != null && !_alreadyResolved.Contains(projectReference.Context))
-                    {
-                        projectMatch.AddReference(projectReference);
-                        _alreadyResolved.Add(projectReference.Context);
-                    }
-
-                    var match = _declarationFinder.FindClass(projectMatch, identifiers[1].GetText())
-                                ?? _declarationFinder.FindUserDefinedType(identifiers[1].GetText())
-                                ?? _declarationFinder.FindEnum(identifiers[1].GetText());
-                    if (match != null)
-                    {
-                        var reference = CreateReference(identifiers[1], match);
-                        if (reference != null && !_alreadyResolved.Contains(reference.Context))
-                        {
-                            match.AddReference(reference);
-                            _alreadyResolved.Add(reference.Context);
-                        }
-                        return match;
-                    }
-                }
-            }
-
-            // first identifier didn't match current project.
-            // if there are 3 identifiers, type isn't in current project.
-            if (identifiers.Count != 3)
-            {
-
-                var moduleMatch = _declarationFinder.FindStdModule(identifiers[0].GetText(), projectMatch);
-                if (moduleMatch != null)
-                {
-                    var moduleReference = CreateReference(identifiers[0], moduleMatch);
-
-                    // 2nd identifier can only be a UDT or enum
-                    var match = _declarationFinder.FindUserDefinedType(identifiers[1].GetText(), moduleMatch)
-                            ?? _declarationFinder.FindEnum(identifiers[1].GetText(), moduleMatch);
-                    if (match != null)
-                    {
-                        var reference = CreateReference(identifiers[1], match);
-
-                        if (!_alreadyResolved.Contains(moduleReference.Context))
-                        {
-                            moduleMatch.AddReference(moduleReference);
-                            _alreadyResolved.Add(moduleReference.Context);
-                        }
-
-                        if (!_alreadyResolved.Contains(reference.Context))
-                        {
-                            match.AddReference(reference);
-                            _alreadyResolved.Add(reference.Context);
-                        }
-
-                        return match;
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        private Declaration ResolveInScopeType(string identifier, Declaration scope)
-        {
-            var matches = _declarationFinder.MatchTypeName(identifier).ToList();
-            if (matches.Count == 1)
-            {
-                return matches.Single();
-            }
-
-            if (matches.Count(match => match.ProjectId == scope.ProjectId) == 1)
-            {
-                return matches.Single(match => match.ProjectId == scope.ProjectId);
-            }
-
-            // more than one matching identifiers found.
-            // if it matches a UDT or enum in the current scope, resolve to that type.
-            var sameScopeUdt = matches.Where(declaration =>
-                declaration.ProjectId == scope.ProjectId
-                && (declaration.DeclarationType == DeclarationType.UserDefinedType
-                || declaration.DeclarationType == DeclarationType.Enumeration)
-                && declaration.ParentDeclaration.Equals(scope))
-                .ToList();
-
-            if (sameScopeUdt.Count == 1)
-            {
-                return sameScopeUdt.Single();
-            }
-            return null;
-        }
-
-        private Declaration ResolveType(Declaration parent)
-        {
-            if (parent != null && (parent.DeclarationType == DeclarationType.UserDefinedType
-                                || parent.DeclarationType == DeclarationType.Enumeration
-                                || parent.DeclarationType == DeclarationType.Project
-                                || parent.DeclarationType == DeclarationType.ProceduralModule
-                                || (parent.DeclarationType == DeclarationType.ClassModule && (parent.IsBuiltIn || parent.HasPredeclaredId))))
-            {
-                return parent;
-            }
-
-            if (parent == null || parent.AsTypeName == null)
-            {
-                return null;
-            }
-
-            var identifier = parent.AsTypeName.Contains(".")
-                ? parent.AsTypeName.Split('.').Last() // bug: this can't be right
-                : parent.AsTypeName;
-
-            identifier = identifier.StartsWith("VT_") ? parent.IdentifierName : identifier;
-
-            var matches = _declarationFinder.MatchTypeName(identifier).ToList();
-            if (matches.Count == 1)
-            {
-                return matches.Single();
-            }
-
-            var result = matches.Where(item =>
-                (item.DeclarationType == DeclarationType.UserDefinedType
-                || item.DeclarationType == DeclarationType.Enumeration)
-                && item.ProjectId == _currentScope.ProjectId
-                && item.ComponentName == _currentScope.ComponentName)
-            .ToList();
-
-            if (!result.Any())
-            {
-                result = matches.Where(item =>
-                    _moduleTypes.Contains(item.DeclarationType)
-                    && item.ProjectId == _currentScope.ProjectId)
-                .ToList();
-            }
-
-            if (!result.Any())
-            {
-                result = matches.Where(item =>
-                    _moduleTypes.Contains(item.DeclarationType))
-                .ToList();
-            }
-
-            return result.Count == 1 ? result.SingleOrDefault() :
-                matches.Count == 1 ? matches.First() : null;
-        }
-
-        private static readonly Type[] IdentifierContexts =
-        {
-            typeof (VBAParser.IdentifierContext),
-            typeof (VBAParser.UnrestrictedIdentifierContext),
-        };
-
-        private Declaration ResolveInternal(ParserRuleContext callSiteContext, Declaration localScope, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, VBAParser.DictionaryCallStmtContext fieldCall = null, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
-        {
-            if (callSiteContext == null)
-            {
-                return null;
-            }
-
-            if (!IdentifierContexts.Contains(callSiteContext.GetType()))
-            {
-                throw new ArgumentException("'" + callSiteContext.GetType().Name + "' is not an identifier context.", "callSiteContext");
-            }
-
-            if (localScope == null)
-            {
-                localScope = _currentScope;
-            }
-
-            if (localScope == null)
-            {
-                return null;
-            }
-
-            var parentContext = callSiteContext.Parent;
-            var identifierName = callSiteContext.GetText();
-            if (identifierName.StartsWith("[") && identifierName.EndsWith("]"))
-            {
-                // square-bracketed identifier may contain a '!' symbol; identifier name is at the left of it.
-                identifierName = identifierName.Substring(1, identifierName.Length - 2)/*.Split('!').First()*/;
-                // problem, is that IdentifierReference should work off IDENTIFIER tokens, not AmbiguousIdentifierContext.
-                // not sure what the better fix is. 
-            }
-
-            var sibling = parentContext.ChildCount > 1 ? parentContext.GetChild(1) : null;
-            var hasStringQualifier = sibling is VBAParser.TypeHintContext && sibling.GetText() == "$";
-
-            Declaration callee = null;
-            if (localScope.DeclarationType == DeclarationType.UserDefinedType)
-            {
-                callee = _declarationFinder.MatchName(identifierName).SingleOrDefault(item => item.Context != null && item.Context.Parent == localScope.Context);
-            }
-            else
-            {
-                callee = Resolve(identifierName, localScope, accessorType, parentContext is VBAParser.ICS_S_VariableOrProcedureCallContext, isAssignmentTarget, hasStringQualifier);
-            }
-
-
-            if (callee == null)
-            {
-                // calls inside With block can still refer to identifiers in _currentScope
-                localScope = _currentScope;
-                identifierName = callSiteContext.GetText();
-                callee = FindLocalScopeDeclaration(identifierName, localScope, parentContext is VBAParser.ICS_S_VariableOrProcedureCallContext, isAssignmentTarget)
-                      ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
-                      ?? FindModuleScopeDeclaration(identifierName, localScope)
-                      ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, accessorType, hasStringQualifier);
-            }
-
-            if (callee == null)
-            {
-                return null;
-            }
-
-            var reference = CreateReference(callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement);
-            if (reference != null && !_alreadyResolved.Contains(reference.Context))
-            {
-                callee.AddReference(reference);
-                _alreadyResolved.Add(reference.Context);
-                _alreadyResolved.Add(callSiteContext);
-            }
-
-            if (fieldCall != null)
-            {
-                return ResolveInternal(fieldCall, callee);
-            }
-
-            return callee;
-        }
-
-        private Declaration Resolve(string identifierName, Declaration localScope, ContextAccessorType accessorType, bool parentContextIsVariableOrProcedureCall = false, bool isAssignmentTarget = false, bool hasStringQualifier = false)
-        {
-            return FindLocalScopeDeclaration(identifierName, localScope, parentContextIsVariableOrProcedureCall, isAssignmentTarget)
-                ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
-                ?? FindModuleScopeDeclaration(identifierName, localScope)
-                ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, accessorType, hasStringQualifier);
-        }
-
-        private Declaration ResolveInternal(VBAParser.ICS_S_VariableOrProcedureCallContext context, Declaration localScope, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-            if (ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(context))
-            {
-                return null;
-            }
-            if (ParserRuleContextHelper.HasParent<VBAParser.VsAddressOfContext>(context))
-            {
-                return null;
-            }
-
-            var identifierContext = context.identifier();
-            var fieldCall = context.dictionaryCallStmt();
-
-            var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
-            if (result != null && localScope != null /*&& !localScope.DeclarationType.HasFlag(DeclarationType.Member)*/)
-            {
-                var reference = CreateReference(context.identifier(), result, isAssignmentTarget);
-                if (reference != null)
-                {
-                    result.AddReference(reference);
-                    //localScope.AddMemberCall(reference);
-                }
-            }
-
-            return result;
-        }
-
-        private Declaration ResolveInternal(VBAParser.DictionaryCallStmtContext fieldCall, Declaration parent, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
-        {
-            if (fieldCall == null)
-            {
-                return null;
-            }
-
-            var parentType = ResolveType(parent);
-            if (parentType == null)
-            {
-                return null;
-            }
-
-            var fieldName = fieldCall.unrestrictedIdentifier().GetText();
-            var result = _declarationFinder.MatchName(fieldName).SingleOrDefault(declaration => declaration.ParentScope == parentType.Scope);
-            if (result == null)
-            {
-                return null;
-            }
-
-            var identifierContext = fieldCall.unrestrictedIdentifier();
-            var reference = CreateReference(identifierContext, result, isAssignmentTarget, hasExplicitLetStatement);
-            result.AddReference(reference);
-            _alreadyResolved.Add(reference.Context);
-
-            return result;
-        }
-
-        private Declaration ResolveInternal(VBAParser.ICS_S_ProcedureOrArrayCallContext context, Declaration localScope, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-
-            var identifierContext = context.identifier();
-            var fieldCall = context.dictionaryCallStmt();
-            // todo: understand WTF [baseType] is doing in that grammar rule...
-
-            if (localScope == null)
-            {
-                localScope = _currentScope;
-            }
-
-            var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
-            if (result != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
-            {
-                localScope.AddMemberCall(CreateReference(context.identifier(), result));
-            }
-
-            return result;
-        }
-
-        private Declaration ResolveInternal(VBAParser.ICS_S_MembersCallContext context, ContextAccessorType accessorType, Declaration localScope = null, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-
-            Declaration parent;
-            if (_withBlockQualifiers.Any())
-            {
-                parent = _withBlockQualifiers.Peek();
-                if (parent == null)
-                {
-                    // if parent is an unknown type, continuing any further will only cause issues.
-                    return null;
-                }
-            }
-            else
-            {
-                if (localScope == null)
-                {
-                    localScope = _currentScope;
-                }
-                parent = ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), localScope, accessorType, hasExplicitLetStatement)
-                      ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), localScope, accessorType, hasExplicitLetStatement);
-            }
-
-            var chainedCalls = context.iCS_S_MemberCall();
-            var lastCall = chainedCalls.Last();
-            foreach (var memberCall in chainedCalls)
-            {
-                //// if we're on the left side of an assignment, only the last memberCall is the assignment target.
-                //var isLast = memberCall.Equals(lastCall);
-                //var accessor = isLast
-                //    ? accessorType
-                //    : ContextAccessorType.GetValueOrReference;
-                //var isTarget = isLast && isAssignmentTarget;
-
-                //var parentType = ResolveType(parent);
-
-                //var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCallUnrestricted(), parentType, accessor, hasExplicitLetStatement, isTarget)
-                //             ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCallUnrestricted(), parentType, accessor, hasExplicitLetStatement, isTarget);
-
-                //if (member == null && parent != null)
-                //{
-                //    var parentComTypeName = GetParentComTypeName(parent);
-
-                //    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
-                //    parentType = _declarationFinder.FindClass(_moduleDeclaration.ParentDeclaration, parentComTypeName);
-                //    member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCallUnrestricted(), parentType, accessor, hasExplicitLetStatement, isTarget)
-                //                 ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCallUnrestricted(), parentType, accessor, hasExplicitLetStatement, isTarget);
-                //}
-
-                //if (member == null)
-                //{
-                //    // if member still can't be found, it's hopeless
-                //    return null;
-                //}
-
-                //var memberReference = CreateReference(GetMemberCallIdentifierContext(memberCall), parent);
-                //member.AddMemberCall(memberReference);
-                //parent = ResolveType(member);
-            }
-
-            var fieldCall = context.dictionaryCallStmt();
-            if (fieldCall == null)
-            {
-                return parent;
-            }
-
-            return ResolveInternal(fieldCall, parent, hasExplicitLetStatement, isAssignmentTarget);
-        }
-
-        private Declaration ResolveInternal(VBAParser.ImplicitCallStmt_InStmtContext callSiteContext, Declaration localScope, ContextAccessorType accessorType, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
-        {
-            if (callSiteContext == null)
-            {
-                return null;
-            }
-
-            var dictionaryCall = callSiteContext.iCS_S_DictionaryCall();
-            var fieldCall = dictionaryCall == null ? null : dictionaryCall.dictionaryCallStmt();
-
-            return ResolveInternal(callSiteContext.iCS_S_VariableOrProcedureCall(), localScope, accessorType, hasExplicitLetStatement, isAssignmentTarget)
-                   ?? ResolveInternal(callSiteContext.iCS_S_ProcedureOrArrayCall(), localScope, accessorType, hasExplicitLetStatement, isAssignmentTarget)
-                   ?? ResolveInternal(callSiteContext.iCS_S_MembersCall(), accessorType, localScope, hasExplicitLetStatement, isAssignmentTarget)
-                   ?? ResolveInternal(callSiteContext.iCS_S_DictionaryCall(), localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
-        }
-
-        private Declaration ResolveInternal(VBAParser.ICS_B_ProcedureCallContext context)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-
-            var identifierContext = context.identifier();
-            var callee = ResolveInternal(identifierContext, _currentScope);
-            if (callee == null)
-            {
-                return null;
-            }
-
-            var reference = CreateReference(identifierContext, callee);
-            if (reference != null)
-            {
-                callee.AddReference(reference);
-                _alreadyResolved.Add(reference.Context);
-            }
-            return callee;
-        }
-
-        public void Resolve(VBAParser.ICS_B_ProcedureCallContext context)
-        {
-            if (_alreadyResolved.Contains(context))
-            {
-                return;
-            }
-
-            ResolveInternal(context);
-        }
-
-        public void Resolve(VBAParser.ICS_B_MemberProcedureCallContext context)
-        {
-            if (_alreadyResolved.Contains(context))
-            {
-                return;
-            }
-
-            var parentScope = ResolveInternal(context.implicitCallStmt_InStmt(), _currentScope, ContextAccessorType.GetValueOrReference);
-            var parentType = ResolveType(parentScope);
-
-            if (_withBlockQualifiers.Any())
-            {
-                parentType = ResolveType(_withBlockQualifiers.Peek());
-                parentScope = ResolveInternal(context.implicitCallStmt_InStmt(), parentType, ContextAccessorType.GetValueOrReference)
-                              ?? ResolveInternal(context.unrestrictedIdentifier(), parentType);
-                parentType = ResolveType(parentScope);
-            }
-
-            var identifierContext = context.unrestrictedIdentifier();
-            Declaration member = null;
-            if (parentType != null)
-            {
-                member = _declarationFinder
-                    .MatchName(identifierContext.GetText())
-                    .SingleOrDefault(item =>
-                        item.QualifiedName.QualifiedModuleName == parentType.QualifiedName.QualifiedModuleName
-                        && item.DeclarationType != DeclarationType.Event);
-            }
-            else
-            {
-                if (parentScope != null)
-                {
-                    var parentComTypeName = GetParentComTypeName(parentScope);
-
-                    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
-                    parentType = _declarationFinder.FindClass(_moduleDeclaration.ParentDeclaration, parentComTypeName);
-                    member = ResolveInternal(identifierContext, parentType);
-                }
-            }
-
-            if (member != null)
-            {
-                var reference = CreateReference(identifierContext, member);
-                if (reference != null)
-                {
-                    parentScope.AddMemberCall(CreateReference(context.unrestrictedIdentifier(), member));
-                    member.AddReference(reference);
-                    _alreadyResolved.Add(reference.Context);
-                }
-            }
-            else
-            {
-                return;
-            }
-
-            var fieldCall = context.dictionaryCallStmt();
-            ResolveInternal(fieldCall, member);
-        }
-
-        public void Resolve(VBAParser.ICS_S_VariableOrProcedureCallContext context)
-        {
-            ResolveInternal(context, _currentScope);
-        }
-
-        public void Resolve(VBAParser.ICS_S_ProcedureOrArrayCallContext context)
-        {
-            ResolveInternal(context, _currentScope);
-        }
-
-        public void Resolve(VBAParser.ICS_S_MembersCallContext context)
-        {
-            if (context == null || _alreadyResolved.Contains(context))
-            {
-                return;
-            }
-
-            if (context.Parent.Parent.Parent is VBAParser.VsNewContext)
-            {
-                // if we're in a ValueStatement/New context, we're actually resolving for a type:
-                ResolveType(context);
-                return;
-            }
-
-            Declaration parent;
-            if (_withBlockQualifiers.Any())
-            {
-                parent = ResolveType(_withBlockQualifiers.Peek());
-                if (parent == null)
-                {
-                    return;
-                }
-            }
-            else
-            {
-                parent = ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), _currentScope)
-                        ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), _currentScope);
-                parent = ResolveType(parent);
-            }
-
-            if (parent != null && parent.Context != null)
-            {
-                var identifierContext = ((dynamic)parent.Context).identifier() as VBAParser.IdentifierContext;
-
-                var parentReference = CreateReference(identifierContext, parent);
-                if (parentReference != null)
-                {
-                    parent.AddReference(parentReference);
-                    _alreadyResolved.Add(parentReference.Context);
-                }
-            }
-
-            if (parent == null)
-            {
-
-
-                return;
-            }
-
-            var expression = context.GetText();
-            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, expression, GetInnerMostWithExpression());
-
-
-            var chainedCalls = context.iCS_S_MemberCall();
-            foreach (var memberCall in chainedCalls)
-            {
-                //var notationToken = memberCall.children[0];
-                //if (notationToken.GetText() == "!")
-                //{
-                //    // the memberCall is a shorthand reference to the type's default member.
-                //    // since the reference isn't explicit, we don't need to care for it.
-                //    // (and we couldn't handle it if we wanted to, since we aren't parsing member attributes)
-                //    return;
-                //}
-
-                //var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parent)
-                //          ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parent);
-
-                //if (member == null && parent != null)
-                //{
-                //    var parentComTypeName = GetParentComTypeName(parent);
-                //    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
-                //    var parentType = _declarationFinder.FindClass(null, parentComTypeName);
-                //    member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType)
-                //                    ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType);
-                //}
-
-                //if (member == null)
-                //{
-                //    return;
-                //}
-
-                //member.AddReference(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
-                //parent = ResolveType(member);
-            }
-
-            var fieldCall = context.dictionaryCallStmt();
-            if (fieldCall == null)
-            {
-                return;
-            }
-
-            ResolveInternal(fieldCall, parent);
-            _alreadyResolved.Add(context);
-        }
+        //private void ResolveType(VBAParser.ICS_S_MembersCallContext context)
+        //{
+        //    //var first = context.iCS_S_VariableOrProcedureCall().identifier();
+        //    //var identifiers = new[] { first }.Concat(context.iCS_S_MemberCall()
+        //    //            .Select(member => member.iCS_S_VariableOrProcedureCallUnrestricted().unrestrictedIdentifier()))
+        //    //            .ToList();
+        //    //ResolveType(identifiers);
+        //}
+
+        //private Declaration ResolveType(VBAParser.ComplexTypeContext context)
+        //{
+        //    if (context == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    var identifiers = context.identifier()
+        //        .Select(identifier => identifier)
+        //        .ToList();
+
+        //    // if there's only 1 identifier, resolve to the tightest-scope match:
+        //    if (identifiers.Count == 1)
+        //    {
+        //        var type = ResolveInScopeType(identifiers.Single().GetText(), _currentScope);
+        //        if (type != null && !_alreadyResolved.Contains(context))
+        //        {
+        //            type.AddReference(CreateReference(context, type));
+        //            _alreadyResolved.Add(context);
+        //        }
+        //        return type;
+        //    }
+
+        //    // if there's 2 or more identifiers, resolve to the deepest path:
+        //    return ResolveType(identifiers);
+        //}
+
+        //private Declaration ResolveType(IList<VBAParser.IdentifierContext> identifiers)
+        //{
+        //    var first = identifiers[0].GetText();
+        //    var projectMatch = _declarationFinder.FindProject(first, _currentScope);
+
+        //    if (projectMatch != null)
+        //    {
+        //        var projectReference = CreateReference(identifiers[0], projectMatch);
+
+        //        // matches current project. 2nd identifier could be:
+        //        // - standard module (only if there's a 3rd identifier)
+        //        // - class module
+        //        // - UDT
+        //        // - Enum
+        //        if (identifiers.Count == 3)
+        //        {
+        //            var moduleMatch = _declarationFinder.FindStdModule(identifiers[1].GetText(), _currentScope);
+        //            if (moduleMatch != null)
+        //            {
+        //                var moduleReference = CreateReference(identifiers[1], moduleMatch);
+
+        //                // 3rd identifier can only be a UDT
+        //                var udtMatch = _declarationFinder.FindUserDefinedType(identifiers[2].GetText(), moduleMatch);
+        //                if (udtMatch != null)
+        //                {
+        //                    var udtReference = CreateReference(identifiers[2], udtMatch);
+
+        //                    if (!_alreadyResolved.Contains(projectReference.Context))
+        //                    {
+        //                        projectMatch.AddReference(projectReference);
+        //                        _alreadyResolved.Add(projectReference.Context);
+        //                    }
+
+        //                    if (!_alreadyResolved.Contains(moduleReference.Context))
+        //                    {
+        //                        moduleMatch.AddReference(moduleReference);
+        //                        _alreadyResolved.Add(moduleReference.Context);
+        //                    }
+
+        //                    if (!_alreadyResolved.Contains(udtReference.Context))
+        //                    {
+        //                        udtMatch.AddReference(udtReference);
+        //                        _alreadyResolved.Add(udtReference.Context);
+        //                    }
+
+        //                    return udtMatch;
+        //                }
+        //                var enumMatch = _declarationFinder.FindEnum(identifiers[2].GetText(), moduleMatch);
+        //                if (enumMatch != null)
+        //                {
+        //                    var enumReference = CreateReference(identifiers[2], enumMatch);
+
+        //                    if (!_alreadyResolved.Contains(projectReference.Context))
+        //                    {
+        //                        projectMatch.AddReference(projectReference);
+        //                        _alreadyResolved.Add(projectReference.Context);
+        //                    }
+
+        //                    if (!_alreadyResolved.Contains(moduleReference.Context))
+        //                    {
+        //                        moduleMatch.AddReference(moduleReference);
+        //                        _alreadyResolved.Add(moduleReference.Context);
+        //                    }
+
+        //                    if (!_alreadyResolved.Contains(enumReference.Context))
+        //                    {
+        //                        enumMatch.AddReference(enumReference);
+        //                        _alreadyResolved.Add(enumReference.Context);
+        //                    }
+
+        //                    return enumMatch;
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (projectReference != null && !_alreadyResolved.Contains(projectReference.Context))
+        //            {
+        //                projectMatch.AddReference(projectReference);
+        //                _alreadyResolved.Add(projectReference.Context);
+        //            }
+
+        //            var match = _declarationFinder.FindClass(projectMatch, identifiers[1].GetText())
+        //                        ?? _declarationFinder.FindUserDefinedType(identifiers[1].GetText())
+        //                        ?? _declarationFinder.FindEnum(identifiers[1].GetText());
+        //            if (match != null)
+        //            {
+        //                var reference = CreateReference(identifiers[1], match);
+        //                if (reference != null && !_alreadyResolved.Contains(reference.Context))
+        //                {
+        //                    match.AddReference(reference);
+        //                    _alreadyResolved.Add(reference.Context);
+        //                }
+        //                return match;
+        //            }
+        //        }
+        //    }
+
+        //    // first identifier didn't match current project.
+        //    // if there are 3 identifiers, type isn't in current project.
+        //    if (identifiers.Count != 3)
+        //    {
+
+        //        var moduleMatch = _declarationFinder.FindStdModule(identifiers[0].GetText(), projectMatch);
+        //        if (moduleMatch != null)
+        //        {
+        //            var moduleReference = CreateReference(identifiers[0], moduleMatch);
+
+        //            // 2nd identifier can only be a UDT or enum
+        //            var match = _declarationFinder.FindUserDefinedType(identifiers[1].GetText(), moduleMatch)
+        //                    ?? _declarationFinder.FindEnum(identifiers[1].GetText(), moduleMatch);
+        //            if (match != null)
+        //            {
+        //                var reference = CreateReference(identifiers[1], match);
+
+        //                if (!_alreadyResolved.Contains(moduleReference.Context))
+        //                {
+        //                    moduleMatch.AddReference(moduleReference);
+        //                    _alreadyResolved.Add(moduleReference.Context);
+        //                }
+
+        //                if (!_alreadyResolved.Contains(reference.Context))
+        //                {
+        //                    match.AddReference(reference);
+        //                    _alreadyResolved.Add(reference.Context);
+        //                }
+
+        //                return match;
+        //            }
+        //        }
+        //    }
+
+        //    return null;
+        //}
+
+        //private Declaration ResolveInScopeType(string identifier, Declaration scope)
+        //{
+        //    var matches = _declarationFinder.MatchTypeName(identifier).ToList();
+        //    if (matches.Count == 1)
+        //    {
+        //        return matches.Single();
+        //    }
+
+        //    if (matches.Count(match => match.ProjectId == scope.ProjectId) == 1)
+        //    {
+        //        return matches.Single(match => match.ProjectId == scope.ProjectId);
+        //    }
+
+        //    // more than one matching identifiers found.
+        //    // if it matches a UDT or enum in the current scope, resolve to that type.
+        //    var sameScopeUdt = matches.Where(declaration =>
+        //        declaration.ProjectId == scope.ProjectId
+        //        && (declaration.DeclarationType == DeclarationType.UserDefinedType
+        //        || declaration.DeclarationType == DeclarationType.Enumeration)
+        //        && declaration.ParentDeclaration.Equals(scope))
+        //        .ToList();
+
+        //    if (sameScopeUdt.Count == 1)
+        //    {
+        //        return sameScopeUdt.Single();
+        //    }
+        //    return null;
+        //}
+
+        //private Declaration ResolveType(Declaration parent)
+        //{
+        //    if (parent != null && (parent.DeclarationType == DeclarationType.UserDefinedType
+        //                        || parent.DeclarationType == DeclarationType.Enumeration
+        //                        || parent.DeclarationType == DeclarationType.Project
+        //                        || parent.DeclarationType == DeclarationType.ProceduralModule
+        //                        || (parent.DeclarationType == DeclarationType.ClassModule && (parent.IsBuiltIn || parent.HasPredeclaredId))))
+        //    {
+        //        return parent;
+        //    }
+
+        //    if (parent == null || parent.AsTypeName == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    var identifier = parent.AsTypeName.Contains(".")
+        //        ? parent.AsTypeName.Split('.').Last() // bug: this can't be right
+        //        : parent.AsTypeName;
+
+        //    identifier = identifier.StartsWith("VT_") ? parent.IdentifierName : identifier;
+
+        //    var matches = _declarationFinder.MatchTypeName(identifier).ToList();
+        //    if (matches.Count == 1)
+        //    {
+        //        return matches.Single();
+        //    }
+
+        //    var result = matches.Where(item =>
+        //        (item.DeclarationType == DeclarationType.UserDefinedType
+        //        || item.DeclarationType == DeclarationType.Enumeration)
+        //        && item.ProjectId == _currentScope.ProjectId
+        //        && item.ComponentName == _currentScope.ComponentName)
+        //    .ToList();
+
+        //    if (!result.Any())
+        //    {
+        //        result = matches.Where(item =>
+        //            _moduleTypes.Contains(item.DeclarationType)
+        //            && item.ProjectId == _currentScope.ProjectId)
+        //        .ToList();
+        //    }
+
+        //    if (!result.Any())
+        //    {
+        //        result = matches.Where(item =>
+        //            _moduleTypes.Contains(item.DeclarationType))
+        //        .ToList();
+        //    }
+
+        //    return result.Count == 1 ? result.SingleOrDefault() :
+        //        matches.Count == 1 ? matches.First() : null;
+        //}
+
+        //private static readonly Type[] IdentifierContexts =
+        //{
+        //    typeof (VBAParser.IdentifierContext),
+        //    typeof (VBAParser.UnrestrictedIdentifierContext),
+        //};
+
+        //private Declaration ResolveInternal(ParserRuleContext callSiteContext, Declaration localScope, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, VBAParser.DictionaryCallStmtContext fieldCall = null, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
+        //{
+        //    if (callSiteContext == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    if (!IdentifierContexts.Contains(callSiteContext.GetType()))
+        //    {
+        //        throw new ArgumentException("'" + callSiteContext.GetType().Name + "' is not an identifier context.", "callSiteContext");
+        //    }
+
+        //    if (localScope == null)
+        //    {
+        //        localScope = _currentScope;
+        //    }
+
+        //    if (localScope == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    var parentContext = callSiteContext.Parent;
+        //    var identifierName = callSiteContext.GetText();
+        //    if (identifierName.StartsWith("[") && identifierName.EndsWith("]"))
+        //    {
+        //        // square-bracketed identifier may contain a '!' symbol; identifier name is at the left of it.
+        //        identifierName = identifierName.Substring(1, identifierName.Length - 2)/*.Split('!').First()*/;
+        //        // problem, is that IdentifierReference should work off IDENTIFIER tokens, not AmbiguousIdentifierContext.
+        //        // not sure what the better fix is. 
+        //    }
+
+        //    var sibling = parentContext.ChildCount > 1 ? parentContext.GetChild(1) : null;
+        //    var hasStringQualifier = sibling is VBAParser.TypeHintContext && sibling.GetText() == "$";
+
+        //    Declaration callee = null;
+        //    if (localScope.DeclarationType == DeclarationType.UserDefinedType)
+        //    {
+        //        callee = _declarationFinder.MatchName(identifierName).SingleOrDefault(item => item.Context != null && item.Context.Parent == localScope.Context);
+        //    }
+        //    else
+        //    {
+        //        callee = Resolve(identifierName, localScope, accessorType, parentContext is VBAParser.ICS_S_VariableOrProcedureCallContext, isAssignmentTarget, hasStringQualifier);
+        //    }
+
+
+        //    if (callee == null)
+        //    {
+        //        // calls inside With block can still refer to identifiers in _currentScope
+        //        localScope = _currentScope;
+        //        identifierName = callSiteContext.GetText();
+        //        callee = FindLocalScopeDeclaration(identifierName, localScope, parentContext is VBAParser.ICS_S_VariableOrProcedureCallContext, isAssignmentTarget)
+        //              ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
+        //              ?? FindModuleScopeDeclaration(identifierName, localScope)
+        //              ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, accessorType, hasStringQualifier);
+        //    }
+
+        //    if (callee == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    var reference = CreateReference(callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement);
+        //    if (reference != null && !_alreadyResolved.Contains(reference.Context))
+        //    {
+        //        callee.AddReference(reference);
+        //        _alreadyResolved.Add(reference.Context);
+        //        _alreadyResolved.Add(callSiteContext);
+        //    }
+
+        //    if (fieldCall != null)
+        //    {
+        //        return ResolveInternal(fieldCall, callee);
+        //    }
+
+        //    return callee;
+        //}
+
+        //private Declaration Resolve(string identifierName, Declaration localScope, ContextAccessorType accessorType, bool parentContextIsVariableOrProcedureCall = false, bool isAssignmentTarget = false, bool hasStringQualifier = false)
+        //{
+        //    return FindLocalScopeDeclaration(identifierName, localScope, parentContextIsVariableOrProcedureCall, isAssignmentTarget)
+        //        ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
+        //        ?? FindModuleScopeDeclaration(identifierName, localScope)
+        //        ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, accessorType, hasStringQualifier);
+        //}
+
+        //private Declaration ResolveInternal(VBAParser.ICS_S_VariableOrProcedureCallContext context, Declaration localScope, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
+        //{
+        //    if (context == null)
+        //    {
+        //        return null;
+        //    }
+        //    if (ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(context))
+        //    {
+        //        return null;
+        //    }
+        //    if (ParserRuleContextHelper.HasParent<VBAParser.VsAddressOfContext>(context))
+        //    {
+        //        return null;
+        //    }
+
+        //    var identifierContext = context.identifier();
+        //    var fieldCall = context.dictionaryCallStmt();
+
+        //    var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
+        //    if (result != null && localScope != null /*&& !localScope.DeclarationType.HasFlag(DeclarationType.Member)*/)
+        //    {
+        //        var reference = CreateReference(context.identifier(), result, isAssignmentTarget);
+        //        if (reference != null)
+        //        {
+        //            result.AddReference(reference);
+        //            //localScope.AddMemberCall(reference);
+        //        }
+        //    }
+
+        //    return result;
+        //}
+
+        //private Declaration ResolveInternal(VBAParser.DictionaryCallStmtContext fieldCall, Declaration parent, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
+        //{
+        //    if (fieldCall == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    var parentType = ResolveType(parent);
+        //    if (parentType == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    var fieldName = fieldCall.unrestrictedIdentifier().GetText();
+        //    var result = _declarationFinder.MatchName(fieldName).SingleOrDefault(declaration => declaration.ParentScope == parentType.Scope);
+        //    if (result == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    var identifierContext = fieldCall.unrestrictedIdentifier();
+        //    var reference = CreateReference(identifierContext, result, isAssignmentTarget, hasExplicitLetStatement);
+        //    result.AddReference(reference);
+        //    _alreadyResolved.Add(reference.Context);
+
+        //    return result;
+        //}
+
+        //private Declaration ResolveInternal(VBAParser.ICS_S_ProcedureOrArrayCallContext context, Declaration localScope, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
+        //{
+        //    if (context == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    var identifierContext = context.identifier();
+        //    var fieldCall = context.dictionaryCallStmt();
+        //    // todo: understand WTF [baseType] is doing in that grammar rule...
+
+        //    if (localScope == null)
+        //    {
+        //        localScope = _currentScope;
+        //    }
+
+        //    var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
+        //    if (result != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
+        //    {
+        //        localScope.AddMemberCall(CreateReference(context.identifier(), result));
+        //    }
+
+        //    return result;
+        //}
+
+        //private Declaration ResolveInternal(VBAParser.ICS_S_MembersCallContext context, ContextAccessorType accessorType, Declaration localScope = null, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
+        //{
+        //    if (context == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    Declaration parent;
+        //    if (_withBlockQualifiers.Any())
+        //    {
+        //        parent = _withBlockQualifiers.Peek();
+        //        if (parent == null)
+        //        {
+        //            // if parent is an unknown type, continuing any further will only cause issues.
+        //            return null;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (localScope == null)
+        //        {
+        //            localScope = _currentScope;
+        //        }
+        //        parent = ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), localScope, accessorType, hasExplicitLetStatement)
+        //              ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), localScope, accessorType, hasExplicitLetStatement);
+        //    }
+
+        //    var chainedCalls = context.iCS_S_MemberCall();
+        //    var lastCall = chainedCalls.Last();
+        //    foreach (var memberCall in chainedCalls)
+        //    {
+        //        //// if we're on the left side of an assignment, only the last memberCall is the assignment target.
+        //        //var isLast = memberCall.Equals(lastCall);
+        //        //var accessor = isLast
+        //        //    ? accessorType
+        //        //    : ContextAccessorType.GetValueOrReference;
+        //        //var isTarget = isLast && isAssignmentTarget;
+
+        //        //var parentType = ResolveType(parent);
+
+        //        //var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCallUnrestricted(), parentType, accessor, hasExplicitLetStatement, isTarget)
+        //        //             ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCallUnrestricted(), parentType, accessor, hasExplicitLetStatement, isTarget);
+
+        //        //if (member == null && parent != null)
+        //        //{
+        //        //    var parentComTypeName = GetParentComTypeName(parent);
+
+        //        //    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
+        //        //    parentType = _declarationFinder.FindClass(_moduleDeclaration.ParentDeclaration, parentComTypeName);
+        //        //    member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCallUnrestricted(), parentType, accessor, hasExplicitLetStatement, isTarget)
+        //        //                 ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCallUnrestricted(), parentType, accessor, hasExplicitLetStatement, isTarget);
+        //        //}
+
+        //        //if (member == null)
+        //        //{
+        //        //    // if member still can't be found, it's hopeless
+        //        //    return null;
+        //        //}
+
+        //        //var memberReference = CreateReference(GetMemberCallIdentifierContext(memberCall), parent);
+        //        //member.AddMemberCall(memberReference);
+        //        //parent = ResolveType(member);
+        //    }
+
+        //    var fieldCall = context.dictionaryCallStmt();
+        //    if (fieldCall == null)
+        //    {
+        //        return parent;
+        //    }
+
+        //    return ResolveInternal(fieldCall, parent, hasExplicitLetStatement, isAssignmentTarget);
+        //}
+
+        //private Declaration ResolveInternal(VBAParser.ImplicitCallStmt_InStmtContext callSiteContext, Declaration localScope, ContextAccessorType accessorType, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
+        //{
+        //    if (callSiteContext == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    var dictionaryCall = callSiteContext.iCS_S_DictionaryCall();
+        //    var fieldCall = dictionaryCall == null ? null : dictionaryCall.dictionaryCallStmt();
+
+        //    return ResolveInternal(callSiteContext.iCS_S_VariableOrProcedureCall(), localScope, accessorType, hasExplicitLetStatement, isAssignmentTarget)
+        //           ?? ResolveInternal(callSiteContext.iCS_S_ProcedureOrArrayCall(), localScope, accessorType, hasExplicitLetStatement, isAssignmentTarget)
+        //           ?? ResolveInternal(callSiteContext.iCS_S_MembersCall(), accessorType, localScope, hasExplicitLetStatement, isAssignmentTarget)
+        //           ?? ResolveInternal(callSiteContext.iCS_S_DictionaryCall(), localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
+        //}
+
+        //private Declaration ResolveInternal(VBAParser.ICS_B_ProcedureCallContext context)
+        //{
+        //    if (context == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    var identifierContext = context.identifier();
+        //    var callee = ResolveInternal(identifierContext, _currentScope);
+        //    if (callee == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    var reference = CreateReference(identifierContext, callee);
+        //    if (reference != null)
+        //    {
+        //        callee.AddReference(reference);
+        //        _alreadyResolved.Add(reference.Context);
+        //    }
+        //    return callee;
+        //}
+
+        //public void Resolve(VBAParser.ICS_B_ProcedureCallContext context)
+        //{
+        //    if (_alreadyResolved.Contains(context))
+        //    {
+        //        return;
+        //    }
+
+        //    ResolveInternal(context);
+        //}
+
+        //public void Resolve(VBAParser.ICS_B_MemberProcedureCallContext context)
+        //{
+        //    if (_alreadyResolved.Contains(context))
+        //    {
+        //        return;
+        //    }
+
+        //    var parentScope = ResolveInternal(context.implicitCallStmt_InStmt(), _currentScope, ContextAccessorType.GetValueOrReference);
+        //    var parentType = ResolveType(parentScope);
+
+        //    if (_withBlockQualifiers.Any())
+        //    {
+        //        parentType = ResolveType(_withBlockQualifiers.Peek());
+        //        parentScope = ResolveInternal(context.implicitCallStmt_InStmt(), parentType, ContextAccessorType.GetValueOrReference)
+        //                      ?? ResolveInternal(context.unrestrictedIdentifier(), parentType);
+        //        parentType = ResolveType(parentScope);
+        //    }
+
+        //    var identifierContext = context.unrestrictedIdentifier();
+        //    Declaration member = null;
+        //    if (parentType != null)
+        //    {
+        //        member = _declarationFinder
+        //            .MatchName(identifierContext.GetText())
+        //            .SingleOrDefault(item =>
+        //                item.QualifiedName.QualifiedModuleName == parentType.QualifiedName.QualifiedModuleName
+        //                && item.DeclarationType != DeclarationType.Event);
+        //    }
+        //    else
+        //    {
+        //        if (parentScope != null)
+        //        {
+        //            var parentComTypeName = GetParentComTypeName(parentScope);
+
+        //            // if the member can't be found on the parentType, maybe we're looking at a document or form module?
+        //            parentType = _declarationFinder.FindClass(_moduleDeclaration.ParentDeclaration, parentComTypeName);
+        //            member = ResolveInternal(identifierContext, parentType);
+        //        }
+        //    }
+
+        //    if (member != null)
+        //    {
+        //        var reference = CreateReference(identifierContext, member);
+        //        if (reference != null)
+        //        {
+        //            parentScope.AddMemberCall(CreateReference(context.unrestrictedIdentifier(), member));
+        //            member.AddReference(reference);
+        //            _alreadyResolved.Add(reference.Context);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return;
+        //    }
+
+        //    var fieldCall = context.dictionaryCallStmt();
+        //    ResolveInternal(fieldCall, member);
+        //}
+
+        //public void Resolve(VBAParser.ICS_S_VariableOrProcedureCallContext context)
+        //{
+        //    ResolveInternal(context, _currentScope);
+        //}
+
+        //public void Resolve(VBAParser.ICS_S_ProcedureOrArrayCallContext context)
+        //{
+        //    ResolveInternal(context, _currentScope);
+        //}
+
+        //public void Resolve(VBAParser.ICS_S_MembersCallContext context)
+        //{
+        //    if (context == null || _alreadyResolved.Contains(context))
+        //    {
+        //        return;
+        //    }
+
+        //    if (context.Parent.Parent.Parent is VBAParser.VsNewContext)
+        //    {
+        //        // if we're in a ValueStatement/New context, we're actually resolving for a type:
+        //        ResolveType(context);
+        //        return;
+        //    }
+
+        //    Declaration parent;
+        //    if (_withBlockQualifiers.Any())
+        //    {
+        //        parent = ResolveType(_withBlockQualifiers.Peek());
+        //        if (parent == null)
+        //        {
+        //            return;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        parent = ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), _currentScope)
+        //                ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), _currentScope);
+        //        parent = ResolveType(parent);
+        //    }
+
+        //    if (parent != null && parent.Context != null)
+        //    {
+        //        var identifierContext = ((dynamic)parent.Context).identifier() as VBAParser.IdentifierContext;
+
+        //        var parentReference = CreateReference(identifierContext, parent);
+        //        if (parentReference != null)
+        //        {
+        //            parent.AddReference(parentReference);
+        //            _alreadyResolved.Add(parentReference.Context);
+        //        }
+        //    }
+
+        //    if (parent == null)
+        //    {
+
+
+        //        return;
+        //    }
+
+        //    var expression = context.GetText();
+        //    var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, expression, GetInnerMostWithExpression());
+
+
+        //    var chainedCalls = context.iCS_S_MemberCall();
+        //    foreach (var memberCall in chainedCalls)
+        //    {
+        //        //var notationToken = memberCall.children[0];
+        //        //if (notationToken.GetText() == "!")
+        //        //{
+        //        //    // the memberCall is a shorthand reference to the type's default member.
+        //        //    // since the reference isn't explicit, we don't need to care for it.
+        //        //    // (and we couldn't handle it if we wanted to, since we aren't parsing member attributes)
+        //        //    return;
+        //        //}
+
+        //        //var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parent)
+        //        //          ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parent);
+
+        //        //if (member == null && parent != null)
+        //        //{
+        //        //    var parentComTypeName = GetParentComTypeName(parent);
+        //        //    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
+        //        //    var parentType = _declarationFinder.FindClass(null, parentComTypeName);
+        //        //    member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType)
+        //        //                    ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType);
+        //        //}
+
+        //        //if (member == null)
+        //        //{
+        //        //    return;
+        //        //}
+
+        //        //member.AddReference(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
+        //        //parent = ResolveType(member);
+        //    }
+
+        //    var fieldCall = context.dictionaryCallStmt();
+        //    if (fieldCall == null)
+        //    {
+        //        return;
+        //    }
+
+        //    ResolveInternal(fieldCall, parent);
+        //    _alreadyResolved.Add(context);
+        //}
 
         public void Resolve(VBAParser.OnErrorStmtContext context)
         {
@@ -904,16 +904,25 @@ namespace Rubberduck.Parsing.Symbols
             var labelDeclaration = _bindingService.ResolveGoTo(_currentParent, label);
             if (labelDeclaration != null)
             {
-                labelDeclaration.AddReference(CreateReference(context, labelDeclaration));
+                labelDeclaration.AddReference(CreateReference(context, labelDeclaration, context.GetSelection()));
             }
         }
 
-        private void ResolveDefault(ParserRuleContext context, string expression, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
+        private void ResolveDefault(ParserRuleContext context, string expression, ResolutionStatementContext statementContext = ResolutionStatementContext.Undefined, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
         {
-            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, expression, GetInnerMostWithExpression());
+            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, expression, GetInnerMostWithExpression(), statementContext);
             if (boundExpression != null)
             {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context, declaration, isAssignmentTarget, hasExplicitLetStatement));
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, declaration) => CreateReference(context, declaration, RubberduckParserState.CreateBindingSelection(context, exprCtx), isAssignmentTarget, hasExplicitLetStatement));
+            }
+        }
+
+        private void ResolveType(ParserRuleContext context, string expression)
+        {
+            var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, expression);
+            if (boundExpression != null)
+            {
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, declaration) => CreateReference(context, declaration, RubberduckParserState.CreateBindingSelection(context, boundExpression.Context)));
             }
         }
 
@@ -959,32 +968,9 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public void Resolve(VBAParser.BlockContext context)
-        {
-            if (context == null)
-            {
-                return;
-            }
-            foreach (var stmt in context.blockStmt())
-            {
-                Resolve(stmt);
-            }
-        }
-
-        public void Resolve(VBAParser.BlockStmtContext context)
-        {
-            //if (context == null)
-            //{
-            //    return;
-            //}
-            //dynamic ctx = context;
-            //Resolve(ctx);
-        }
-
         public void Resolve(VBAParser.WhileWendStmtContext context)
         {
             ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
-            Resolve(context.block());
         }
 
         public void Resolve(VBAParser.DoLoopStmtContext context)
@@ -994,34 +980,23 @@ namespace Rubberduck.Parsing.Symbols
                 return;
             }
             ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
-            Resolve(context.block());
         }
 
         public void Resolve(VBAParser.BlockIfThenElseContext context)
         {
             ResolveDefault(context.ifBlockStmt().ifConditionStmt(), context.ifBlockStmt().ifConditionStmt().GetText());
-            Resolve(context.ifBlockStmt().block());
             if (context.ifElseIfBlockStmt() != null)
             {
                 foreach (var elseIfBlock in context.ifElseIfBlockStmt())
                 {
                     ResolveDefault(elseIfBlock.ifConditionStmt(), elseIfBlock.ifConditionStmt().GetText());
-                    Resolve(elseIfBlock.block());
                 }
-            }
-            if (context.ifElseBlockStmt() != null)
-            {
-                Resolve(context.ifElseBlockStmt().block());
             }
         }
 
         public void Resolve(VBAParser.InlineIfThenElseContext context)
         {
             ResolveDefault(context.ifConditionStmt(), context.ifConditionStmt().GetText());
-            foreach (var blockStmt in context.blockStmt())
-            {
-                Resolve(blockStmt);
-            }
         }
 
         public void Resolve(VBAParser.SelectCaseStmtContext context)
@@ -1054,7 +1029,6 @@ namespace Rubberduck.Parsing.Symbols
                             }
                         }
                     }
-                    Resolve(caseClauseBlock.block());
                 }
             }
         }
@@ -1082,58 +1056,58 @@ namespace Rubberduck.Parsing.Symbols
             return string.Empty;
         }
 
-        private ParserRuleContext GetMemberCallIdentifierContext(VBAParser.ICS_S_MemberCallContext callContext)
-        {
-            if (callContext == null)
-            {
-                return null;
-            }
+        //private ParserRuleContext GetMemberCallIdentifierContext(VBAParser.ICS_S_MemberCallContext callContext)
+        //{
+        //    if (callContext == null)
+        //    {
+        //        return null;
+        //    }
 
-            var procedureOrArrayCall = callContext.iCS_S_ProcedureOrArrayCallUnrestricted();
-            if (procedureOrArrayCall != null)
-            {
-                return procedureOrArrayCall.unrestrictedIdentifier();
-            }
+        //    var procedureOrArrayCall = callContext.iCS_S_ProcedureOrArrayCallUnrestricted();
+        //    if (procedureOrArrayCall != null)
+        //    {
+        //        return procedureOrArrayCall.unrestrictedIdentifier();
+        //    }
 
-            var variableOrProcedureCall = callContext.iCS_S_VariableOrProcedureCallUnrestricted();
-            if (variableOrProcedureCall != null)
-            {
-                return variableOrProcedureCall.unrestrictedIdentifier();
-            }
+        //    var variableOrProcedureCall = callContext.iCS_S_VariableOrProcedureCallUnrestricted();
+        //    if (variableOrProcedureCall != null)
+        //    {
+        //        return variableOrProcedureCall.unrestrictedIdentifier();
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
-        public void Resolve(VBAParser.ICS_S_DictionaryCallContext context)
-        {
-            TryResolve(context);
-        }
+        //public void Resolve(VBAParser.ICS_S_DictionaryCallContext context)
+        //{
+        //    TryResolve(context);
+        //}
 
-        private void TryResolve<TContext>(TContext context) where TContext : ParserRuleContext
-        {
-            if (context == null || _alreadyResolved.Contains(context))
-            {
-                return;
-            }
-            ResolveInternal(context, _currentScope);
-        }
+        //private void TryResolve<TContext>(TContext context) where TContext : ParserRuleContext
+        //{
+        //    if (context == null || _alreadyResolved.Contains(context))
+        //    {
+        //        return;
+        //    }
+        //    ResolveInternal(context, _currentScope);
+        //}
 
         public void Resolve(VBAParser.LetStmtContext context)
         {
             var letStatement = context.LET();
-            ResolveDefault(context.valueStmt()[0], context.valueStmt()[0].GetText(), true, letStatement != null);
+            ResolveDefault(context.valueStmt()[0], context.valueStmt()[0].GetText(), ResolutionStatementContext.LetStatement, true, letStatement != null);
             ResolveDefault(context.valueStmt()[1], context.valueStmt()[1].GetText());
         }
 
         public void Resolve(VBAParser.SetStmtContext context)
         {
-            ResolveDefault(context.valueStmt()[0], context.valueStmt()[0].GetText(), true, false);
+            ResolveDefault(context.valueStmt()[0], context.valueStmt()[0].GetText(), ResolutionStatementContext.SetStatement, true, false);
             ResolveDefault(context.valueStmt()[1], context.valueStmt()[1].GetText());
         }
 
         public void Resolve(VBAParser.ExplicitCallStmtContext context)
         {
-            ResolveDefault(context.explicitCallStmtExpression(), context.explicitCallStmtExpression().GetText());
+            ResolveDefault(context.explicitCallStmtExpression(), context.explicitCallStmtExpression().GetText(), ResolutionStatementContext.CallStatement);
         }
 
         public void Resolve(VBAParser.ConstStmtContext context)
@@ -1287,73 +1261,49 @@ namespace Rubberduck.Parsing.Symbols
                 var length = context.fieldLength();
                 if (context.fieldLength() != null && context.fieldLength().identifier() != null)
                 {
-                    var constantName = context.fieldLength().identifier();
-                    var constantNameExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, constantName.GetText(), GetInnerMostWithExpression());
-                    if (constantNameExpression != null)
-                    {
-                        _boundExpressionVisitor.AddIdentifierReferences(constantNameExpression, declaration => CreateReference(constantName, declaration));
-                    }
+                    ResolveDefault(context.fieldLength().identifier(), context.fieldLength().identifier().GetText());
                 }
                 return;
             }
-            string typeExpression = asType.complexType().GetText();
-            var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, typeExpression);
-            if (boundExpression != null)
-            {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(asType.complexType(), declaration));
-            }
+            ResolveType(asType.complexType(), asType.complexType().GetText());
         }
 
         public void Resolve(VBAParser.ForNextStmtContext context)
         {
-            var firstExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt()[0].GetText(), GetInnerMostWithExpression());
+            var firstExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt()[0].GetText(), GetInnerMostWithExpression(), ResolutionStatementContext.Undefined);
             if (firstExpression != null)
             {
                 // each iteration counts as an assignment
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, declaration => CreateReference(context.valueStmt()[0], declaration, true));
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, declaration) => CreateReference(context.valueStmt()[0], declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context), true));
                 // each iteration also counts as a plain usage
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, declaration => CreateReference(context.valueStmt()[0], declaration));
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, declaration) => CreateReference(context.valueStmt()[0], declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context)));
             }
             for (int exprIndex = 1; exprIndex < context.valueStmt().Count; exprIndex++)
             {
-                var expr = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt()[exprIndex].GetText(), GetInnerMostWithExpression());
-                if (expr != null)
-                {
-                    _boundExpressionVisitor.AddIdentifierReferences(expr, declaration => CreateReference(context.valueStmt()[exprIndex], declaration));
-                }
+                ResolveDefault(context.valueStmt()[exprIndex], context.valueStmt()[exprIndex].GetText());
             }
-            Resolve(context.block());
         }
 
         public void Resolve(VBAParser.ForEachStmtContext context)
         {
-            var firstExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt()[0].GetText(), GetInnerMostWithExpression());
+            var firstExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt()[0].GetText(), GetInnerMostWithExpression(), ResolutionStatementContext.Undefined);
             if (firstExpression != null)
             {
                 // each iteration counts as an assignment
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, declaration => CreateReference(context.valueStmt()[0], declaration, true));
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, declaration) => CreateReference(context.valueStmt()[0], declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context), true));
                 // each iteration also counts as a plain usage
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, declaration => CreateReference(context.valueStmt()[0], declaration));
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, declaration) => CreateReference(context.valueStmt()[0], declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context)));
             }
 
             for (int exprIndex = 1; exprIndex < context.valueStmt().Count; exprIndex++)
             {
-                var expr = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt()[exprIndex].GetText(), GetInnerMostWithExpression());
-                if (expr != null)
-                {
-                    _boundExpressionVisitor.AddIdentifierReferences(expr, declaration => CreateReference(context.valueStmt()[exprIndex], declaration));
-                }
+                ResolveDefault(context.valueStmt()[exprIndex], context.valueStmt()[exprIndex].GetText());
             }
-            Resolve(context.block());
         }
 
         public void Resolve(VBAParser.ImplementsStmtContext context)
         {
-            var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, context.valueStmt().GetText());
-            if (boundExpression != null)
-            {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.valueStmt(), declaration));
-            }
+            ResolveType(context.valueStmt(), context.valueStmt().GetText());
         }
 
         public void Resolve(VBAParser.VsAddressOfContext context)
@@ -1361,7 +1311,7 @@ namespace Rubberduck.Parsing.Symbols
             var boundExpression = _bindingService.ResolveProcedurePointer(_moduleDeclaration, _currentParent, context.valueStmt().GetText());
             if (boundExpression != null)
             {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.valueStmt(), declaration));
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, declaration) => CreateReference(context.valueStmt(), declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt(), boundExpression.Context)));
             }
         }
 
@@ -1370,7 +1320,7 @@ namespace Rubberduck.Parsing.Symbols
             var eventDeclaration = _bindingService.ResolveEvent(_moduleDeclaration, context.identifier().GetText());
             if (eventDeclaration != null)
             {
-                eventDeclaration.AddReference(CreateReference(context.identifier(), eventDeclaration));
+                eventDeclaration.AddReference(CreateReference(context.identifier(), eventDeclaration, context.identifier().GetSelection()));
             }
             ResolveArgsCall(context.argsCall());
         }
@@ -1401,57 +1351,55 @@ namespace Rubberduck.Parsing.Symbols
             ResolveLabel(context.valueStmt(), context.valueStmt().GetText());
         }
 
-        public void Resolve(VBAParser.LineLabelContext context)
-        {
-            // Nothing to bind.
-        }
-
-        public void Resolve(VBAParser.AttributeStmtContext context)
-        {
-            // Nothing to bind.
-        }
-
-        public void Resolve(VBAParser.DeftypeStmtContext context)
-        {
-            // Nothing to bind.
-        }
-
-        public void Resolve(VBAParser.ExitStmtContext context)
-        {
-            // Nothing to bind.
-        }
-
-        public void Resolve(VBAParser.VariableStmtContext context)
-        {
-            // Nothing to bind.
-        }
-
         public void Resolve(VBAParser.ImplicitCallStmt_InBlockContext context)
         {
-            // TODO: This is a call statement but arg list has to be specified separately.
+            string expr = context.GetText();
+            // This represents a CALL statement without the CALL keyword which is slightly different than a normal expression because it does not allow parentheses around its argument list.
+            try
+            {
+                ResolveDefault(context, expr, ResolutionStatementContext.CallStatement);
+            }
+            catch (Exception ex)
+            {
+                // TODO: Fix wrong parse tree for array variable declarations (e.g. Dim a() As String)
+            }
         }
 
-        public void Resolve(VBAParser.FieldLengthContext context)
+        public void Resolve(VBAParser.EnumerationStmtContext context)
         {
-            ResolveInternal(context.identifier(), _currentScope);
+            if (context.enumerationStmt_Constant() == null)
+            {
+                return;
+            }
+            foreach (var enumMember in context.enumerationStmt_Constant())
+            {
+                if (enumMember.valueStmt() != null)
+                {
+                    ResolveDefault(enumMember.valueStmt(), enumMember.valueStmt().GetText());
+                }
+            }
         }
 
-        public void Resolve(VBAParser.VsAssignContext context)
-        {
-            // TODO: Understand this.
-            // named parameter reference must be scoped to called procedure
-            var callee = FindParentCall(context);
-            ResolveInternal(context.implicitCallStmt_InStmt(), callee, ContextAccessorType.AssignValueOrReference);
-        }
+        //public void Resolve(VBAParser.FieldLengthContext context)
+        //{
+        //    ResolveInternal(context.identifier(), _currentScope);
+        //}
 
-        private Declaration FindParentCall(VBAParser.VsAssignContext context)
-        {
-            var calleeContext = context.Parent.Parent.Parent;
-            return ResolveInternal(calleeContext as VBAParser.ICS_B_ProcedureCallContext)
-                   ?? ResolveInternal(calleeContext as VBAParser.ICS_S_VariableOrProcedureCallContext, _currentScope)
-                   ?? ResolveInternal(calleeContext as VBAParser.ICS_S_ProcedureOrArrayCallContext, _currentScope)
-                   ?? ResolveInternal(calleeContext as VBAParser.ICS_S_MembersCallContext, _currentScope);
-        }
+        //public void Resolve(VBAParser.VsAssignContext context)
+        //{
+        //    // named parameter reference must be scoped to called procedure
+        //    var callee = FindParentCall(context);
+        //    ResolveInternal(context.implicitCallStmt_InStmt(), callee, ContextAccessorType.AssignValueOrReference);
+        //}
+
+        //private Declaration FindParentCall(VBAParser.VsAssignContext context)
+        //{
+        //    var calleeContext = context.Parent.Parent.Parent;
+        //    return ResolveInternal(calleeContext as VBAParser.ICS_B_ProcedureCallContext)
+        //           ?? ResolveInternal(calleeContext as VBAParser.ICS_S_VariableOrProcedureCallContext, _currentScope)
+        //           ?? ResolveInternal(calleeContext as VBAParser.ICS_S_ProcedureOrArrayCallContext, _currentScope)
+        //           ?? ResolveInternal(calleeContext as VBAParser.ICS_S_MembersCallContext, _currentScope);
+        //}
 
         private Declaration FindFunctionOrPropertyGetter(string identifierName, Declaration localScope = null)
         {

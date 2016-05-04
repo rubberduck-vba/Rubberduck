@@ -21,7 +21,10 @@ parser grammar VBAExpressionParser;
 
 options { tokenVocab = VBALexer; }
 
-startRule : expression EOF;
+startRule : (expression | callStmt) EOF;
+
+// Call statement is here because its syntax is slightly different than a normal expression
+callStmt : (memberAccessExpression | simpleNameExpression | withExpression) (whiteSpace argumentList)?;
 
 // 5.1 Module Body Structure
 unrestrictedName : name | reservedIdentifierName;

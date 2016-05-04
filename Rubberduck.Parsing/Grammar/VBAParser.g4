@@ -43,7 +43,7 @@ moduleConfig :
 ;
 
 moduleConfigElement :
-	unrestrictedIdentifier whiteSpace* EQ whiteSpace* literal (COLON numberLiteral)? endOfStatement
+	unrestrictedIdentifier whiteSpace* EQ whiteSpace* valueStmt (COLON numberLiteral)? endOfStatement
 ;
 
 moduleAttributes : (attributeStmt endOfStatement)+;
@@ -79,7 +79,9 @@ moduleBodyElement :
 	| subStmt 
 ;
 
-attributeStmt : ATTRIBUTE whiteSpace implicitCallStmt_InStmt whiteSpace? EQ whiteSpace? literal (whiteSpace? COMMA whiteSpace? literal)*;
+attributeStmt : ATTRIBUTE whiteSpace attributeName whiteSpace? EQ whiteSpace? attributeValue (whiteSpace? COMMA whiteSpace? attributeValue)*;
+attributeName : implicitCallStmt_InStmt;
+attributeValue : valueStmt;
 
 block : blockStmt (endOfStatement blockStmt)* endOfStatement;
 
@@ -191,10 +193,11 @@ forNextStmt :
 ; 
 
 functionStmt :
-	(visibility whiteSpace)? (STATIC whiteSpace)? FUNCTION whiteSpace? identifier typeHint? (whiteSpace? argList)? (whiteSpace? asTypeClause)? endOfStatement
+	(visibility whiteSpace)? (STATIC whiteSpace)? FUNCTION whiteSpace? functionName typeHint? (whiteSpace? argList)? (whiteSpace? asTypeClause)? endOfStatement
 	block?
 	END_FUNCTION
 ;
+functionName : identifier;
 
 getStmt : GET whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt? whiteSpace? COMMA whiteSpace? valueStmt;
 
@@ -266,19 +269,19 @@ outputList_Expression :
 printStmt : PRINT whiteSpace fileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
 
 propertyGetStmt : 
-	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_GET whiteSpace identifier typeHint? (whiteSpace? argList)? (whiteSpace asTypeClause)? endOfStatement 
+	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_GET whiteSpace functionName typeHint? (whiteSpace? argList)? (whiteSpace asTypeClause)? endOfStatement 
 	block? 
 	END_PROPERTY
 ;
 
 propertySetStmt : 
-	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_SET whiteSpace identifier (whiteSpace? argList)? endOfStatement 
+	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_SET whiteSpace subroutineName (whiteSpace? argList)? endOfStatement 
 	block? 
 	END_PROPERTY
 ;
 
 propertyLetStmt : 
-	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_LET whiteSpace identifier (whiteSpace? argList)? endOfStatement 
+	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_LET whiteSpace subroutineName (whiteSpace? argList)? endOfStatement 
 	block? 
 	END_PROPERTY
 ;
@@ -326,10 +329,11 @@ sC_Cond :
 setStmt : SET whiteSpace valueStmt whiteSpace? EQ whiteSpace? valueStmt;
 
 subStmt : 
-	(visibility whiteSpace)? (STATIC whiteSpace)? SUB whiteSpace? identifier (whiteSpace? argList)? endOfStatement
+	(visibility whiteSpace)? (STATIC whiteSpace)? SUB whiteSpace? subroutineName (whiteSpace? argList)? endOfStatement
 	block? 
 	END_SUB
 ;
+subroutineName : identifier;
 
 typeStmt : 
 	(visibility whiteSpace)? TYPE whiteSpace identifier endOfStatement
@@ -445,7 +449,7 @@ subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 
 subscript : (valueStmt whiteSpace TO whiteSpace)? valueStmt;
 
-unrestrictedIdentifier : identifier | statementKeyword;
+unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
 
 identifier : IDENTIFIER | keyword;
 
@@ -480,7 +484,6 @@ keyword :
      | AND
      | ANY
      | ARRAY
-     | AS
      | ATTRIBUTE
      | BEGIN
      | BOOLEAN
@@ -568,6 +571,8 @@ keyword :
      | WITHEVENTS
      | XOR
 ;
+
+markerKeyword : AS;
 
 statementKeyword :
     CALL
@@ -688,6 +693,6 @@ annotationArgList :
 	 | whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN whiteSpace?
 	 | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN whiteSpace?;
 	
-annotationArg : IDENTIFIER | literal;
+annotationArg : valueStmt;
 
 whiteSpace : (WS | LINE_CONTINUATION)+;

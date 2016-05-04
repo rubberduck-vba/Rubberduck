@@ -197,17 +197,23 @@ namespace Rubberduck.Parsing.VBA
             Debug.Assert(errObject != null);
 
             var qualifiedName = new QualifiedModuleName(vba.IdentifierName, vba.IdentifierName, errObject.IdentifierName);
-            var err = new Declaration(new QualifiedMemberName(qualifiedName, Tokens.Err), vba, "Global", errObject.IdentifierName, true, false, Accessibility.Global, DeclarationType.Variable);
+            var errModuleName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
+            var errModule = new ProceduralModuleDeclaration(new QualifiedMemberName(errModuleName, "ErrModule"), vba, "ErrModule", true, new List<IAnnotation>(), new Attributes());
+            var err = new Declaration(new QualifiedMemberName(qualifiedName, Tokens.Err), errModule, "Global", errObject.IdentifierName, true, false, Accessibility.Global, DeclarationType.Variable);
+            var debugModuleName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
+            var debugModule = new ProceduralModuleDeclaration(new QualifiedMemberName(debugModuleName, "DebugModule"), vba, "DebugModule", true, new List<IAnnotation>(), new Attributes());
             var debugClassName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
             var debugClass = new ClassModuleDeclaration(new QualifiedMemberName(debugClassName, "DebugClass"), vba, "DebugClass", true, new List<IAnnotation>(), new Attributes(), true);
-            var debugObject = new Declaration(new QualifiedMemberName(debugClassName, "Debug"), vba, "Global", "DebugClass", true, false, Accessibility.Global, DeclarationType.Variable);
-            var debugAssert = new Declaration(new QualifiedMemberName(debugClassName, "Assert"), debugObject, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
-            var debugPrint = new Declaration(new QualifiedMemberName(debugClassName, "Print"), debugObject, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
+            var debugObject = new Declaration(new QualifiedMemberName(debugClassName, "Debug"), debugModule, "Global", "DebugClass", true, false, Accessibility.Global, DeclarationType.Variable);
+            var debugAssert = new Declaration(new QualifiedMemberName(debugClassName, "Assert"), debugClass, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
+            var debugPrint = new Declaration(new QualifiedMemberName(debugClassName, "Print"), debugClass, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
 
 
             lock (_state)
             {
+                _state.AddDeclaration(errModule);
                 _state.AddDeclaration(err);
+                _state.AddDeclaration(debugModule);
                 _state.AddDeclaration(debugClass);
                 _state.AddDeclaration(debugObject);
                 _state.AddDeclaration(debugAssert);
@@ -530,6 +536,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     new TypeAnnotationPass(finder).Annotate();
                     walker.Walk(listener, tree);
+                    _state.RebuildSelectionCache();
                     state = ParserState.Ready;
                 }
                 catch (Exception exception)

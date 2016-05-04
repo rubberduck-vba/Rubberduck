@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections
        public ProcedureShouldBeFunctionInspectionResult(IInspection inspection, RubberduckParserState state, QualifiedContext<VBAParser.ArgListContext> argListQualifiedContext, QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext)
            : base(inspection,
                 subStmtQualifiedContext.ModuleName,
-                subStmtQualifiedContext.Context.identifier())
+                subStmtQualifiedContext.Context.subroutineName())
         {
            _target = state.AllUserDeclarations.Single(declaration => 
                declaration.DeclarationType == DeclarationType.Procedure
@@ -100,7 +100,7 @@ namespace Rubberduck.Inspections
 
             var newfunctionWithReturn = newFunctionWithoutReturn
                 .Insert(newFunctionWithoutReturn.LastIndexOf(Environment.NewLine, StringComparison.Ordinal),
-                        Environment.NewLine + "    " + _subStmtQualifiedContext.Context.identifier().GetText() +
+                        Environment.NewLine + "    " + _subStmtQualifiedContext.Context.subroutineName().GetText() +
                         " = " + _argQualifiedContext.Context.unrestrictedIdentifier().GetText());
 
             _lineOffset = newfunctionWithReturn.Split(new[] {Environment.NewLine}, StringSplitOptions.None).Length -
@@ -115,7 +115,7 @@ namespace Rubberduck.Inspections
 
         private void UpdateCalls()
         {
-            var procedureName = _subStmtQualifiedContext.Context.identifier().GetText();
+            var procedureName = _subStmtQualifiedContext.Context.subroutineName().GetText();
 
             var procedure =
                 _state.AllDeclarations.SingleOrDefault(d =>
@@ -142,7 +142,7 @@ namespace Rubberduck.Inspections
                 
                 var referenceText = reference.Context.Parent.GetText();
                 var newCall = referenceParent.argsCall().argCall().ToList().ElementAt(_argListQualifiedContext.Context.arg().ToList().IndexOf(_argQualifiedContext.Context)).GetText() +
-                              " = " + _subStmtQualifiedContext.Context.identifier().GetText() +
+                              " = " + _subStmtQualifiedContext.Context.subroutineName().GetText() +
                               "(" + referenceParent.argsCall().GetText() + ")";
 
                 var oldLines = module.Lines[startLine, reference.Selection.LineCount];

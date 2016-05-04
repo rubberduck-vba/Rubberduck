@@ -545,6 +545,13 @@ public interface IVBAExpressionParserVisitor<Result> : IParseTreeVisitor<Result>
 	Result VisitArgumentExpression([NotNull] VBAExpressionParser.ArgumentExpressionContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAExpressionParser.callStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCallStmt([NotNull] VBAExpressionParser.CallStmtContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAExpressionParser.reservedIdentifier"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

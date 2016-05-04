@@ -79,6 +79,8 @@
     <Compile Include="Binding\ArgumentListArgumentType.cs" />
     <Compile Include="Binding\LiteralDefaultBinding.cs" />
     <Compile Include="Binding\InstanceDefaultBinding.cs" />
+    <Compile Include="Binding\ResolutionStatementContext.cs" />
+    <Compile Include="Binding\StatementContext.cs" />
     <Compile Include="Binding\UnaryOpDefaultBinding.cs" />
     <Compile Include="Binding\LiteralExpression.cs" />
     <Compile Include="Binding\InstanceExpression.cs" />

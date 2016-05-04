@@ -944,6 +944,19 @@ public partial class VBAExpressionParserBaseListener : IVBAExpressionParserListe
 	public virtual void ExitArgumentExpression([NotNull] VBAExpressionParser.ArgumentExpressionContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAExpressionParser.callStmt"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCallStmt([NotNull] VBAExpressionParser.CallStmtContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAExpressionParser.callStmt"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCallStmt([NotNull] VBAExpressionParser.CallStmtContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAExpressionParser.reservedIdentifier"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

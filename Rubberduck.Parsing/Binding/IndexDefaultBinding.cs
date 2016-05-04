@@ -11,7 +11,8 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _module;
         private readonly Declaration _parent;
         private readonly ParserRuleContext _expression;
-        private readonly IBoundExpression _lExpression;
+        private readonly IExpressionBinding _lExpressionBinding;
+        private IBoundExpression _lExpression;
         private readonly ArgumentList _argumentList;
 
         private const int DEFAULT_MEMBER_RECURSION_LIMIT = 32;
@@ -31,9 +32,10 @@ namespace Rubberduck.Parsing.Binding
                   module,
                   parent,
                   expression,
-                  lExpressionBinding.Resolve(),
+                  (IBoundExpression)null,
                   argumentList)
         {
+            _lExpressionBinding = lExpressionBinding;
         }
 
         public IndexDefaultBinding(
@@ -64,6 +66,10 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression Resolve()
         {
+            if (_lExpressionBinding != null)
+            {
+                _lExpression = _lExpressionBinding.Resolve();
+            }
             ResolveArgumentList();
             return Resolve(_lExpression);
         }
@@ -162,7 +168,7 @@ namespace Rubberduck.Parsing.Binding
                         recursively, as if this default member was specified instead for <l-expression> with the 
                         same <argument-list>.
                     */
-                    if (((IDeclarationWithParameter)defaultMember).Parameters.Count() == 0)
+                    if (((IDeclarationWithParameter)defaultMember).Parameters.Count() == 0 && _argumentList.HasArguments)
                     {
                         // Recursion limit reached, abort.
                         if (DEFAULT_MEMBER_RECURSION_LIMIT == _defaultMemberRecursionLimitCounter)

@@ -282,13 +282,13 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
             var accessibility = GetProcedureAccessibility(context.visibility());
-            var identifier = context.identifier();
+            var identifier = context.subroutineName();
             if (identifier == null)
             {
                 return;
             }
-            var name = context.identifier().GetText();
-            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.Procedure, context, context.identifier().GetSelection());
+            var name = context.subroutineName().GetText();
+            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.Procedure, context, context.subroutineName().GetSelection());
             OnNewDeclaration(declaration);
             SetCurrentScope(declaration, name);
         }
@@ -301,7 +301,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
             var accessibility = GetProcedureAccessibility(context.visibility());
-            var identifier = context.identifier();
+            var identifier = context.functionName().identifier();
             if (identifier == null)
             {
                 return;
@@ -312,7 +312,7 @@ namespace Rubberduck.Parsing.Symbols
             var asTypeName = asTypeClause == null
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
-            var declaration = CreateDeclaration(name, asTypeName, accessibility, DeclarationType.Function, context, context.identifier().GetSelection());
+            var declaration = CreateDeclaration(name, asTypeName, accessibility, DeclarationType.Function, context, context.functionName().identifier().GetSelection());
             OnNewDeclaration(declaration);
             SetCurrentScope(declaration, name);
         }
@@ -325,7 +325,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
             var accessibility = GetProcedureAccessibility(context.visibility());
-            var identifier = context.identifier();
+            var identifier = context.functionName().identifier();
             if (identifier == null)
             {
                 return;
@@ -336,7 +336,7 @@ namespace Rubberduck.Parsing.Symbols
             var asTypeName = asTypeClause == null
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
-            var declaration = CreateDeclaration(name, asTypeName, accessibility, DeclarationType.PropertyGet, context, context.identifier().GetSelection());
+            var declaration = CreateDeclaration(name, asTypeName, accessibility, DeclarationType.PropertyGet, context, context.functionName().identifier().GetSelection());
 
             OnNewDeclaration(declaration);
             SetCurrentScope(declaration, name);
@@ -350,14 +350,14 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
             var accessibility = GetProcedureAccessibility(context.visibility());
-            var identifier = context.identifier();
+            var identifier = context.subroutineName();
             if (identifier == null)
             {
                 return;
             }
             var name = identifier.GetText();
 
-            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.PropertyLet, context, context.identifier().GetSelection());
+            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.PropertyLet, context, context.subroutineName().GetSelection());
             OnNewDeclaration(declaration);
             SetCurrentScope(declaration, name);
         }
@@ -370,14 +370,14 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
             var accessibility = GetProcedureAccessibility(context.visibility());
-            var identifier = context.identifier();
+            var identifier = context.subroutineName();
             if (identifier == null)
             {
                 return;
             }
             var name = identifier.GetText();
 
-            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.PropertySet, context, context.identifier().GetSelection());
+            var declaration = CreateDeclaration(name, null, accessibility, DeclarationType.PropertySet, context, context.subroutineName().GetSelection());
 
             OnNewDeclaration(declaration);
             SetCurrentScope(declaration, name);

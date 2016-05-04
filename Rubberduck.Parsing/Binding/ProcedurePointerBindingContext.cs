@@ -12,9 +12,9 @@ namespace Rubberduck.Parsing.Binding
             _declarationFinder = declarationFinder;
         }
 
-        public IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable)
+        public IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext)
         {
-            IExpressionBinding bindingTree = BuildTree(module, parent, expression, withBlockVariable);
+            IExpressionBinding bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
             if (bindingTree != null)
             {
                 return bindingTree.Resolve();
@@ -22,10 +22,15 @@ namespace Rubberduck.Parsing.Binding
             return null;
         }
 
-        public IExpressionBinding BuildTree(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable)
+        public IExpressionBinding BuildTree(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext)
         {
             dynamic dynamicExpression = expression;
             return Visit(module, parent, dynamicExpression);
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.StartRuleContext expression)
+        {
+            return Visit(module, parent, (dynamic)expression.expression());
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.AddressOfExpressionContext expression)

@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using System.Diagnostics;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -20,7 +21,6 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression Resolve()
         {
-            // TODO: Allow broken trees?
             var leftExpr = _left.Resolve();
             if (leftExpr == null)
             {

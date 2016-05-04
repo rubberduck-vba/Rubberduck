@@ -33,6 +33,8 @@ namespace Rubberduck.Parsing.Symbols
                             : declaration.IdentifierName.ToLowerInvariant()
             })
             .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
+
+            var all = declarations.Where(d => d.IdentifierName == "ThisWorkbook").ToList();
         }
 
         private readonly HashSet<Accessibility> _projectScopePublicModifiers =

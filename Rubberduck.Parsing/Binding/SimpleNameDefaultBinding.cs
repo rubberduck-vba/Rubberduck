@@ -9,19 +9,22 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _module;
         private readonly Declaration _parent;
         private readonly VBAExpressionParser.SimpleNameExpressionContext _expression;
+        private readonly DeclarationType _propertySearchType;
 
         public SimpleNameDefaultBinding(
             DeclarationFinder declarationFinder,
             Declaration project,
             Declaration module, 
             Declaration parent, 
-            VBAExpressionParser.SimpleNameExpressionContext expression)
+            VBAExpressionParser.SimpleNameExpressionContext expression,
+            ResolutionStatementContext statementContext)
         {
             _declarationFinder = declarationFinder;
             _project = project;
             _module = module;
             _parent = parent;
             _expression = expression;
+            _propertySearchType = StatementContext.GetSearchDeclarationType(statementContext);
         }
 
         public IBoundExpression Resolve()
@@ -116,7 +119,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(enumMember, ExpressionClassification.Value, _expression);
             }
-            var property = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Property);
+            var property = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, _propertySearchType);
             if (property != null)
             {
                 return new SimpleNameExpression(property, ExpressionClassification.Property, _expression);
@@ -184,7 +187,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(accessibleMember, ExpressionClassification.Value, _expression);
             }
-            var accessibleProperty = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Property);
+            var accessibleProperty = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, _propertySearchType);
             if (accessibleProperty != null)
             {
                 return new SimpleNameExpression(accessibleProperty, ExpressionClassification.Property, _expression);
@@ -245,7 +248,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(accessibleMember, ExpressionClassification.Value, _expression);
             }
-            var accessibleProperty = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, DeclarationType.Property);
+            var accessibleProperty = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, _propertySearchType);
             if (accessibleProperty != null)
             {
                 return new SimpleNameExpression(accessibleProperty, ExpressionClassification.Property, _expression);
@@ -282,7 +285,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(globalClassModuleMember, ExpressionClassification.Value, _expression);
             }
-            var globalClassModuleProperty = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, DeclarationType.Property);
+            var globalClassModuleProperty = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, _propertySearchType);
             if (globalClassModuleProperty != null)
             {
                 return new SimpleNameExpression(globalClassModuleProperty, ExpressionClassification.Property, _expression);

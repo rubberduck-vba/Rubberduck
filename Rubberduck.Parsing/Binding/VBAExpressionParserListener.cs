@@ -848,6 +848,17 @@ public interface IVBAExpressionParserListener : IParseTreeListener {
 	void ExitArgumentExpression([NotNull] VBAExpressionParser.ArgumentExpressionContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAExpressionParser.callStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCallStmt([NotNull] VBAExpressionParser.CallStmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAExpressionParser.callStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCallStmt([NotNull] VBAExpressionParser.CallStmtContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAExpressionParser.reservedIdentifier"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
