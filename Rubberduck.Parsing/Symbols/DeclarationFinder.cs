@@ -35,6 +35,8 @@ namespace Rubberduck.Parsing.Symbols
             .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
 
             var all = declarations.Where(d => d.IdentifierName == "ThisWorkbook").ToList();
+            //var workbook = all.AsTypeDeclaration;
+            //var kkk = declarations.Where(d => d.ParentDeclaration.Equals(workbook)).ToList();
         }
 
         private readonly HashSet<Accessibility> _projectScopePublicModifiers =
@@ -247,12 +249,12 @@ namespace Rubberduck.Parsing.Symbols
             return match;
         }
 
-        public Declaration FindMemberWithParent(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
+        public Declaration FindMemberWithParent(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration parent, string memberName, DeclarationType memberType)
         {
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m =>
                 m.DeclarationType.HasFlag(memberType)
-                && callingParent.Equals(m.ParentDeclaration));
+                && parent.Equals(m.ParentDeclaration));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
             return match;

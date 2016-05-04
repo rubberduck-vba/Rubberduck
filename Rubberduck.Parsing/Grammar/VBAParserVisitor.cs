@@ -1027,6 +1027,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitIfElseIfBlockStmt([NotNull] VBAParser.IfElseIfBlockStmtContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.stopStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStopStmt([NotNull] VBAParser.StopStmtContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.whiteSpace"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

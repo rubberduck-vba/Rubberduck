@@ -65,7 +65,7 @@ namespace RubberduckTests.Binding
 
                 var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_NAME);
 
-                Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(2, declaration.References.Count());
             }
 
             private static RubberduckParserState Parse(Moq.Mock<VBE> vbe)

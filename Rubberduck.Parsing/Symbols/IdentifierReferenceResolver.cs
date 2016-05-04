@@ -1355,14 +1355,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             string expr = context.GetText();
             // This represents a CALL statement without the CALL keyword which is slightly different than a normal expression because it does not allow parentheses around its argument list.
-            try
-            {
-                ResolveDefault(context, expr, ResolutionStatementContext.CallStatement);
-            }
-            catch (Exception ex)
-            {
-                // TODO: Fix wrong parse tree for array variable declarations (e.g. Dim a() As String)
-            }
+            ResolveDefault(context, expr, ResolutionStatementContext.CallStatement);
         }
 
         public void Resolve(VBAParser.EnumerationStmtContext context)

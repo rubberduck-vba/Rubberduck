@@ -82,7 +82,7 @@ namespace Rubberduck.Parsing.Binding
             IBoundExpression boundExpression = null;
             if (_lExpressionBinding != null)
             {
-                _lExpression = _lExpressionBinding.Resolve();
+                 _lExpression = _lExpressionBinding.Resolve();
             }
             if (_lExpression == null)
             {
@@ -156,27 +156,27 @@ namespace Rubberduck.Parsing.Binding
                 return null;
             }
             // TODO: DeclarationType UDT Member should actually be Variable?
-            var udtMember = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, _name, DeclarationType.UserDefinedTypeMember);
+            var udtMember = _declarationFinder.FindMemberWithParent(_project, _module, _parent, referencedType, _name, DeclarationType.UserDefinedTypeMember);
             if (udtMember != null)
             {
                 return new MemberAccessExpression(udtMember, ExpressionClassification.Variable, _context, _lExpression);
             }
-            var variable = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, _name, DeclarationType.Variable);
+            var variable = _declarationFinder.FindMemberWithParent(_project, _module, _parent, referencedType, _name, DeclarationType.Variable);
             if (variable != null)
             {
                 return new MemberAccessExpression(variable, ExpressionClassification.Variable, _context, _lExpression);
             }
-            var property = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, _name, _propertySearchType);
+            var property = _declarationFinder.FindMemberWithParent(_project, _module, _parent, referencedType, _name, _propertySearchType);
             if (property != null)
             {
                 return new MemberAccessExpression(property, ExpressionClassification.Property, _context, _lExpression);
             }
-            var function = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, _name, DeclarationType.Function);
+            var function = _declarationFinder.FindMemberWithParent(_project, _module, _parent, referencedType, _name, DeclarationType.Function);
             if (function != null)
             {
                 return new MemberAccessExpression(function, ExpressionClassification.Function, _context, _lExpression);
             }
-            var subroutine = _declarationFinder.FindMemberWithParent(_project, _module, referencedType, _name, DeclarationType.Procedure);
+            var subroutine = _declarationFinder.FindMemberWithParent(_project, _module, _parent, referencedType, _name, DeclarationType.Procedure);
             if (subroutine != null)
             {
                 return new MemberAccessExpression(subroutine, ExpressionClassification.Subroutine, _context, _lExpression);
@@ -424,7 +424,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
-            var enumMember = _declarationFinder.FindMemberWithParent(_project, _module, _lExpression.ReferencedDeclaration, _name, DeclarationType.EnumerationMember);
+            var enumMember = _declarationFinder.FindMemberWithParent(_project, _module, _parent, _lExpression.ReferencedDeclaration, _name, DeclarationType.EnumerationMember);
             if (enumMember != null)
             {
                 return new MemberAccessExpression(enumMember, ExpressionClassification.Value, _context, _lExpression);

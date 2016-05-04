@@ -210,6 +210,11 @@ namespace Rubberduck.Parsing.Binding
             }
         }
 
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.AddressOfExpressionContext expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext)
+        {
+            return _procedurePointerBindingContext.BuildTree(module, parent, expression, withBlockVariable, statementContext);
+        }
+
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.DictionaryAccessExprContext expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext)
         {
             dynamic lExpression = expression.lExpression();

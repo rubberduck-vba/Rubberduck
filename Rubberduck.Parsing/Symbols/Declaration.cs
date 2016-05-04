@@ -127,7 +127,9 @@ namespace Rubberduck.Parsing.Symbols
             return
                 declarationType.HasFlag(DeclarationType.Property)
                 || declarationType == DeclarationType.Function
-                || declarationType == DeclarationType.Procedure;
+                || declarationType == DeclarationType.Procedure
+                || declarationType == DeclarationType.LibraryFunction
+                || declarationType == DeclarationType.LibraryProcedure;
         }
 
         public static Declaration GetModuleParent(Declaration declaration)

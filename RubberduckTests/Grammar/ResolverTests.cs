@@ -101,7 +101,7 @@ End Function
             // arrange
             var code = @"
 Public Sub DoSomething()
-    Debug.Print Foo
+    Foo
 End Sub
 
 Private Function Foo() As String
@@ -414,7 +414,7 @@ End Property
             var code_class2 = @"
 Public Sub DoSomething()
     With New Class1
-        Debug.Print .Foo
+        a = .Foo
     End With
 End Sub
 ";
@@ -716,7 +716,7 @@ End Property
             var code_class2 = @"
 Public Sub DoSomething()
     Dim bar As New Class1
-    Debug.Print bar.Foo
+    a = bar.Foo
 End Sub
 ";
 

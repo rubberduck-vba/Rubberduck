@@ -124,6 +124,7 @@ blockStmt :
 	| seekStmt
 	| selectCaseStmt
 	| setStmt
+    | stopStmt
 	| unlockStmt
 	| variableStmt
 	| whileWendStmt
@@ -302,6 +303,9 @@ returnStmt : RETURN;
 
 rsetStmt : RSET whiteSpace valueStmt whiteSpace? EQ whiteSpace? valueStmt;
 
+// 5.4.2.11 Stop Statement
+stopStmt : STOP;
+
 seekStmt : SEEK whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt;
 
 selectCaseStmt : 
@@ -353,7 +357,7 @@ valueStmt :
 	| typeOfIsExpression                                                                            # vsTypeOf
 	| midStmt                                                                                       # vsMid
 	| ADDRESSOF whiteSpace? valueStmt                                                               # vsAddressOf
-	| implicitCallStmt_InStmt whiteSpace? ASSIGN whiteSpace? valueStmt                              # vsAssign
+	| unrestrictedIdentifier whiteSpace? ASSIGN whiteSpace? valueStmt                              # vsAssign
 	| valueStmt whiteSpace? POW whiteSpace? valueStmt                                               # vsPow
 	| MINUS whiteSpace? valueStmt                                                                   # vsNegation
 	| valueStmt whiteSpace? (MULT | DIV) whiteSpace? valueStmt                                      # vsMult

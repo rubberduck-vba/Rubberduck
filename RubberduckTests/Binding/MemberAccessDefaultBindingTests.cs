@@ -81,7 +81,7 @@ namespace RubberduckTests.Binding
                 const string PROJECT_NAME = "AnyProject";
                 var builder = new MockVbeBuilder();
                 var enclosingProjectBuilder = builder.ProjectBuilder(PROJECT_NAME, vbext_ProjectProtection.vbext_pp_none);
-                string code = string.Format("Public Sub Test() {0} Call {1}.{2} {0}End Sub", Environment.NewLine, BINDING_TARGET_LEXPRESSION, BINDING_TARGET_UNRESTRICTEDNAME);
+                string code = string.Format("Public Sub Test() {0} a = {1}.{2} {0}End Sub", Environment.NewLine, BINDING_TARGET_LEXPRESSION, BINDING_TARGET_UNRESTRICTEDNAME);
                 enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, vbext_ComponentType.vbext_ct_ClassModule, code);
                 enclosingProjectBuilder.AddComponent("AnyModule", vbext_ComponentType.vbext_ct_StdModule, CreateEnumType(BINDING_TARGET_LEXPRESSION, BINDING_TARGET_UNRESTRICTEDNAME));
                 var enclosingProject = enclosingProjectBuilder.Build();

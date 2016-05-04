@@ -9,6 +9,8 @@ namespace Rubberduck.Parsing.Symbols
     public sealed class ClassModuleDeclaration : Declaration
     {
         private readonly bool _isExposed;
+        private readonly bool _isGlobalClassModule;
+
 
         public ClassModuleDeclaration(
                   QualifiedMemberName qualifiedName,
@@ -17,7 +19,8 @@ namespace Rubberduck.Parsing.Symbols
                   bool isBuiltIn,
                   IEnumerable<IAnnotation> annotations,
                   Attributes attributes,
-                  bool isExposed = false)
+                  bool isExposed = false,
+                  bool isGlobalClassModule = false)
             : base(
                   qualifiedName,
                   projectDeclaration,
@@ -34,6 +37,7 @@ namespace Rubberduck.Parsing.Symbols
                   attributes)
         {
             _isExposed = isExposed;
+            _isGlobalClassModule = isGlobalClassModule;
         }
 
         /// <summary>
@@ -58,12 +62,13 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
+                bool attributeIsGlobalClassModule = false;
                 IEnumerable<string> value;
                 if (Attributes.TryGetValue("VB_GlobalNamespace", out value))
                 {
-                    return value.Single() == "True";
+                    attributeIsGlobalClassModule = value.Single() == "True";
                 }
-                return false;
+                return _isGlobalClassModule || attributeIsGlobalClassModule;
             }
         }
 

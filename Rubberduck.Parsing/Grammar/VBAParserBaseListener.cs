@@ -1828,6 +1828,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitIfElseIfBlockStmt([NotNull] VBAParser.IfElseIfBlockStmtContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.stopStmt"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStopStmt([NotNull] VBAParser.StopStmtContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.stopStmt"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStopStmt([NotNull] VBAParser.StopStmtContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.whiteSpace"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

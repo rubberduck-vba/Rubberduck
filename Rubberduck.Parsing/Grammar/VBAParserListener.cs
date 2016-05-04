@@ -1608,6 +1608,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitIfElseIfBlockStmt([NotNull] VBAParser.IfElseIfBlockStmtContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.stopStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterStopStmt([NotNull] VBAParser.StopStmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.stopStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitStopStmt([NotNull] VBAParser.StopStmtContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.whiteSpace"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

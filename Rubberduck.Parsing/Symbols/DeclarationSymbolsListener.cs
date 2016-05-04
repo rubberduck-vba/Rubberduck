@@ -183,6 +183,10 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     result = new FunctionDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, false, annotations, attributes);
                 }
+                else if (declarationType == DeclarationType.LibraryProcedure || declarationType == DeclarationType.LibraryFunction)
+                {
+                    result = new ExternalProcedureDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, declarationType, asTypeName, accessibility, context, selection, false, annotations);
+                }
                 else if (declarationType == DeclarationType.PropertyGet)
                 {
                     result = new PropertyGetDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, false, annotations, attributes);

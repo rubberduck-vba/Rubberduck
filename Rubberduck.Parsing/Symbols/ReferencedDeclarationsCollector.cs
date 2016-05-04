@@ -189,7 +189,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 else if (typeDeclarationType == DeclarationType.ClassModule)
                 {
-                    moduleDeclaration = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes, isExposed: true);
+                    moduleDeclaration = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes, isExposed: true, isGlobalClassModule: true);
                 }
                 else
                 {
