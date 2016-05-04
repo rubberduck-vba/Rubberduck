@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
+using System;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -179,21 +180,52 @@ namespace Rubberduck.Parsing.Binding
             {
                 foreach (var expr in list.positionalArgument())
                 {
-                    convertedList.AddArgument(VisitArgumentBinding(module, parent, expr.argumentExpression(), withBlockVariable, ResolutionStatementContext.Undefined), ArgumentListArgumentType.Positional);
+                    convertedList.AddArgument(new ArgumentListArgument(
+                        VisitArgumentBinding(module, parent, expr.argumentExpression(), withBlockVariable,
+                        ResolutionStatementContext.Undefined), ArgumentListArgumentType.Positional));
                 }
             }
             if (list.requiredPositionalArgument() != null)
             {
-                convertedList.AddArgument(VisitArgumentBinding(module, parent, list.requiredPositionalArgument().argumentExpression(), withBlockVariable, ResolutionStatementContext.Undefined), ArgumentListArgumentType.Positional);
+                convertedList.AddArgument(new ArgumentListArgument(
+                    VisitArgumentBinding(module, parent, list.requiredPositionalArgument().argumentExpression(),
+                    withBlockVariable, ResolutionStatementContext.Undefined),
+                    ArgumentListArgumentType.Positional));
             }
             if (list.namedArgumentList() != null)
             {
                 foreach (var expr in list.namedArgumentList().namedArgument())
                 {
-                    convertedList.AddArgument(VisitArgumentBinding(module, parent, expr.argumentExpression(), withBlockVariable, ResolutionStatementContext.Undefined), ArgumentListArgumentType.Named);
+                    convertedList.AddArgument(new ArgumentListArgument(
+                        VisitArgumentBinding(module, parent, expr.argumentExpression(),
+                        withBlockVariable,
+                        ResolutionStatementContext.Undefined),
+                        ArgumentListArgumentType.Named,
+                        CreateNamedArgumentExpressionCreator(expr.unrestrictedName().GetText(), expr.unrestrictedName())));
                 }
             }
             return convertedList;
+        }
+
+        private Func<Declaration, IBoundExpression> CreateNamedArgumentExpressionCreator(string parameterName, ParserRuleContext context)
+        {
+            return calledProcedure =>
+            {
+                ExpressionClassification classification;
+                if (calledProcedure.DeclarationType == DeclarationType.Procedure)
+                {
+                    classification = ExpressionClassification.Subroutine;
+                }
+                else if (calledProcedure.DeclarationType == DeclarationType.Function || calledProcedure.DeclarationType == DeclarationType.LibraryFunction || calledProcedure.DeclarationType == DeclarationType.LibraryProcedure)
+                {
+                    classification = ExpressionClassification.Function;
+                }
+                else
+                {
+                    classification = ExpressionClassification.Property;
+                }
+                return new SimpleNameExpression(_declarationFinder.FindParameter(calledProcedure, parameterName), classification, context);
+            };
         }
 
         private IExpressionBinding VisitArgumentBinding(Declaration module, Declaration parent, VBAExpressionParser.ArgumentExpressionContext argumentExpression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext)
@@ -237,7 +269,7 @@ namespace Rubberduck.Parsing.Binding
                 declared type of String and a value equal to the name value of <unrestricted-name>. 
              */
             var fakeArgList = new ArgumentList();
-            fakeArgList.AddArgument(new LiteralDefaultBinding(nameContext), ArgumentListArgumentType.Positional);
+            fakeArgList.AddArgument(new ArgumentListArgument(new LiteralDefaultBinding(nameContext), ArgumentListArgumentType.Positional));
             return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, fakeArgList);
         }
 
@@ -249,7 +281,7 @@ namespace Rubberduck.Parsing.Binding
                 declared type of String and a value equal to the name value of <unrestricted-name>. 
              */
             var fakeArgList = new ArgumentList();
-            fakeArgList.AddArgument(new LiteralDefaultBinding(nameContext), ArgumentListArgumentType.Positional);
+            fakeArgList.AddArgument(new ArgumentListArgument(new LiteralDefaultBinding(nameContext), ArgumentListArgumentType.Positional));
             return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpression, fakeArgList);
         }
 

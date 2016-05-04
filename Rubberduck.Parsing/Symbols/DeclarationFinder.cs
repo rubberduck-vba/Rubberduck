@@ -70,6 +70,12 @@ namespace Rubberduck.Parsing.Symbols
             return new List<CommentNode>();
         }
 
+        public Declaration FindParameter(Declaration procedure, string parameterName)
+        {
+            var matches = MatchName(parameterName);
+            return matches.Where(m => procedure.Equals(m.ParentDeclaration) && m.DeclarationType == DeclarationType.Parameter).FirstOrDefault();
+        }
+
         public IEnumerable<IAnnotation> ModuleAnnotations(QualifiedModuleName module)
         {
             IAnnotation[] result;

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Rubberduck.Parsing.Symbols;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Parsing.Binding
@@ -12,9 +14,9 @@ namespace Rubberduck.Parsing.Binding
             _arguments = new List<ArgumentListArgument>();
         }
 
-        public void AddArgument(IExpressionBinding binding, ArgumentListArgumentType argumentType)
+        public void AddArgument(ArgumentListArgument argument)
         {
-            _arguments.Add(new ArgumentListArgument(binding, argumentType));
+            _arguments.Add(argument);
         }
 
         public bool HasArguments

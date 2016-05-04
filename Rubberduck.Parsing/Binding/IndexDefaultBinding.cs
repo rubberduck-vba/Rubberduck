@@ -56,11 +56,11 @@ namespace Rubberduck.Parsing.Binding
             _argumentList = argumentList;
         }
 
-        private void ResolveArgumentList()
+        private void ResolveArgumentList(Declaration calledProcedure)
         {
             foreach (var argument in _argumentList.Arguments)
             {
-                argument.Resolve();
+                argument.Resolve(calledProcedure);
             }
         }
 
@@ -70,7 +70,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 _lExpression = _lExpressionBinding.Resolve();
             }
-            ResolveArgumentList();
+            ResolveArgumentList(_lExpression.ReferencedDeclaration);
             return Resolve(_lExpression);
         }
 

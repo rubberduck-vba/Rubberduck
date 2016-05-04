@@ -47,7 +47,7 @@ End Sub";
 Public Sub Foo()
     Let bar = ""test""
 End Sub
-Public Sub For()
+Public Sub For2()
     Let bar = ""test""
 End Sub";
 

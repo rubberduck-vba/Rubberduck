@@ -45,6 +45,10 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     Visit((dynamic)argument.Expression, referenceCreator);
                 }
+                if (argument.NamedArgumentExpression != null)
+                {
+                    Visit((dynamic)argument.NamedArgumentExpression, referenceCreator);
+                }
             }
         }
 
