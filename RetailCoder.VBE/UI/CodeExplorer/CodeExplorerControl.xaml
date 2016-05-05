@@ -6,8 +6,8 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
-             xmlns:converter="clr-namespace:Rubberduck.UI.CodeExplorer"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+             xmlns:converters="clr-namespace:Rubberduck.UI.CodeExplorer.Converters"
              ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
              Name="CodeExplorer"
@@ -15,7 +15,7 @@
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeExplorer:CodeExplorerViewModel}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-        <converter:BoolToHiddenVisibility x:Key="BoolToHiddenVisibility" />
+        <converters:BoolToHiddenVisibility x:Key="BoolToHiddenVisibility" />
 
         <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
 

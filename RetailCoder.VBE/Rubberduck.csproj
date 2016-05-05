@@ -381,7 +381,16 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\CodeExplorer\BoolToHiddenVisibility.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerAddUserFormCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerRemoveCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerExportCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerImportCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerPrintCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerOpenDesignerCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerAddClassModuleCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerAddStdModuleCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerAddTestModuleCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Converters\BoolToHiddenVisibility.cs" />
     <Compile Include="UI\Command\IndentCurrentModuleCommand.cs" />
     <Compile Include="UI\Command\MenuItems\InspectionResultsCommandMenuItem.cs" />
     <Compile Include="UI\Command\ReparseCommand.cs" />
