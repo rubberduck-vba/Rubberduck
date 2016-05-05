@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Ninject;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
@@ -15,6 +16,7 @@ namespace Rubberduck.UI.SourceControl
     public class SourceControlViewViewModel : ViewModelBase
     {
         private readonly VBE _vbe;
+        private readonly RubberduckParserState _state;
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly IConfigurationService<SourceControlConfiguration> _configService;
@@ -23,6 +25,7 @@ namespace Rubberduck.UI.SourceControl
 
         public SourceControlViewViewModel(
             VBE vbe,
+            RubberduckParserState state,
             ISourceControlProviderFactory providerFactory,
             IFolderBrowserFactory folderBrowserFactory,
             IConfigurationService<SourceControlConfiguration> configService,
@@ -33,8 +36,11 @@ namespace Rubberduck.UI.SourceControl
             ICodePaneWrapperFactory wrapperFactory)
         {
             _vbe = vbe;
+            _state = state;
             _providerFactory = providerFactory;
             _folderBrowserFactory = folderBrowserFactory;
+
+            _state.StateChanged += _state_StateChanged;
 
             _configService = configService;
             _config = _configService.LoadConfiguration();
@@ -61,6 +67,14 @@ namespace Rubberduck.UI.SourceControl
             Status = RubberduckUI.Offline;
 
             ListenForErrors();
+        }
+
+        private void _state_StateChanged(object sender, ParserStateEventArgs e)
+        {
+            if (e.State == ParserState.Parsed)
+            {
+                Refresh();
+            }
         }
 
         private ISourceControlProvider _provider;

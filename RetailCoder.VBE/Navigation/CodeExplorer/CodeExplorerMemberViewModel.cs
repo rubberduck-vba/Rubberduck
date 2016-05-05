@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
@@ -11,6 +12,7 @@ namespace Rubberduck.Navigation.CodeExplorer
     public class CodeExplorerMemberViewModel : CodeExplorerItemViewModel
     {
         private readonly Declaration _declaration;
+        public Declaration Declaration { get { return _declaration; } }
 
         private static readonly DeclarationType[] SubMemberTypes =
         {
@@ -63,7 +65,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 Items = declarations.Where(item => SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(declaration))
                                     .OrderBy(item => item.Selection.StartLine)
-                                    .Select(item => new CodeExplorerMemberViewModel(item, null));
+                                    .Select(item => new CodeExplorerMemberViewModel(item, null))
+                                    .ToList<CodeExplorerItemViewModel>();
             }
 
             var modifier = declaration.Accessibility == Accessibility.Global || declaration.Accessibility == Accessibility.Implicit
@@ -77,6 +80,38 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly string _name;
         public override string Name { get { return _name; } }
+
+        private string _signature = null;
+        public override string NameWithSignature
+        {
+            get
+            {
+                if (_signature != null)
+                {
+                    return _signature;
+                }
+
+                var context =
+                    _declaration.Context.children.FirstOrDefault(d => d is VBAParser.ArgListContext) as VBAParser.ArgListContext;
+
+                if (context == null)
+                {
+                    _signature = Name;
+                }
+                else if (_declaration.DeclarationType == DeclarationType.PropertyGet 
+                      || _declaration.DeclarationType == DeclarationType.PropertyLet 
+                      || _declaration.DeclarationType == DeclarationType.PropertySet)
+                {
+                    // 6 being the three-letter "get/let/set" + parens + space
+                    _signature = Name.Insert(Name.Length - 6, context.GetText()); 
+                }
+                else
+                {
+                    _signature = Name + context.GetText();
+                }
+                return _signature;
+            }
+        }
 
         public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
 

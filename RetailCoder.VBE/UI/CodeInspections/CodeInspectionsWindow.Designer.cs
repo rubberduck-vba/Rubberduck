@@ -39,20 +39,21 @@ namespace Rubberduck.UI.CodeInspections
             // 
             this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.elementHost1.Location = new System.Drawing.Point(0, 0);
+            this.elementHost1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(555, 125);
+            this.elementHost1.Size = new System.Drawing.Size(740, 154);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.wpfInspectionResultsControl;
             // 
             // CodeInspectionsWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.elementHost1);
-            this.MinimumSize = new System.Drawing.Size(400, 28);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "CodeInspectionsWindow";
-            this.Size = new System.Drawing.Size(555, 125);
+            this.Size = new System.Drawing.Size(740, 154);
             this.ResumeLayout(false);
 
         }
