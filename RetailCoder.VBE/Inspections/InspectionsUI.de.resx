@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -425,14 +425,8 @@
   <data name="ImplicitByRefParameterQuickFix" xml:space="preserve">
     <value>Parameter explizit als Referenz angeben</value>
   </data>
-  <data name="Inspections_DeclarationOf" xml:space="preserve">
-    <value>Deklaration von</value>
-  </data>
   <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
     <value>TODO</value>
-  </data>
-  <data name="Inspections_UsageOf" xml:space="preserve">
-    <value>Nutzung von</value>
   </data>
   <data name="MakeSingleLineParameterQuickFix" xml:space="preserve">
     <value>Schreibe Variable in einer Zeile</value>
@@ -520,5 +514,44 @@
   </data>
   <data name="ObjectVariableNotSetInspectionName" xml:space="preserve">
     <value>Zuweisung in eine Objektvariable benötigt das 'Set'-Schlüsselwort.</value>
+  </data>
+  <data name="Inspections_Usage" xml:space="preserve">
+    <value>Verwendung</value>
+  </data>
+  <data name="Inspections_Declaration" xml:space="preserve">
+    <value>Deklaration</value>
+  </data>
+  <data name="VariableTypeNotDeclaredInspectionResultFormat" xml:space="preserve">
+    <value>{0} '{1}' ist implizit 'Variant'</value>
+  </data>
+  <data name="ObsoleteCommentSyntaxInspectionResultFormat" xml:space="preserve">
+    <value>Kommentar verwendet die obsolete 'REM' - Markierung</value>
+  </data>
+  <data name="DefaultProjectNameInspectionResultFormat" xml:space="preserve">
+    <value>Projekt '{0}' hat den Standardnamen</value>
+  </data>
+  <data name="ObsoleteCallStatementInspectionResultFormat" xml:space="preserve">
+    <value>Zuweisung verwendet obsolete 'Call' Anweisung</value>
+  </data>
+  <data name="ObsoleteLetStatementInspectionResultFormat" xml:space="preserve">
+    <value>Zuweisung verwendet obsoleten 'Let' Anweisung</value>
+  </data>
+  <data name="ImplicitActiveSheetReferenceInspectionResultFormat" xml:space="preserve">
+    <value>Member '{0}' referenziert implizit auf 'ActiveSheet'</value>
+  </data>
+  <data name="ImplicitActiveWorkbookReferenceInspectionResultFormat" xml:space="preserve">
+    <value>Member '{0}' referenziert implizit auf 'ActiveWorkbook'</value>
+  </data>
+  <data name="UntypedFunctionUsageInspectionResultFormat" xml:space="preserve">
+    <value>Ersetze Funktion {0} mit der existierenden typed function</value>
+  </data>
+  <data name="OptionBaseInspectionResultFormat" xml:space="preserve">
+    <value>Komponente '{0}' verwendet 'Option Base 1'</value>
+  </data>
+  <data name="ObsoleteTypeHintInspectionResultFormat" xml:space="preserve">
+    <value>{0}  von {1} '{2}' verwendet einen obsoleten Typenhinweis</value>
+  </data>
+  <data name="MultipleDeclarationsInspectionResultFormat" xml:space="preserve">
+    <value>Instruktion enthält Mehrfachdeklaration</value>
   </data>
 </root>
