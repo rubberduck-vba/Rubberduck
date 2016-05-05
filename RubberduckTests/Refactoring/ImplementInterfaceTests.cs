@@ -39,7 +39,7 @@ End Sub
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
                  .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2, selection)
+                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
                  .Build();
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
