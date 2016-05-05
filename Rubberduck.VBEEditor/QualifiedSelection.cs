@@ -9,7 +9,7 @@
         }
 
         private readonly QualifiedModuleName _qualifiedName;
-        public QualifiedModuleName QualifiedName { get {return _qualifiedName; } }
+        public QualifiedModuleName QualifiedName { get { return _qualifiedName; } }
 
         private readonly Selection _selection;
         public Selection Selection { get { return _selection; } }
@@ -24,10 +24,10 @@
             unchecked
             {
                 var hash = 17;
-                hash = hash*23 + _qualifiedName.GetHashCode();
+                hash = hash * 23 + _qualifiedName.GetHashCode();
                 hash = hash * 23 + _selection.GetHashCode();
                 return hash;
-            } 
+            }
         }
 
         public static bool operator ==(QualifiedSelection selection1, QualifiedSelection selection2)
@@ -42,7 +42,7 @@
 
         public override bool Equals(object obj)
         {
-            var other = (QualifiedSelection) obj;
+            var other = (QualifiedSelection)obj;
             return other.QualifiedName.Equals(_qualifiedName)
                    && other.Selection.Equals(_selection);
         }
