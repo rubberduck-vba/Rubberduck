@@ -216,24 +216,6 @@ namespace Rubberduck.Parsing.Symbols
         public IReadOnlyDictionary<string, IEnumerable<string>> Attributes { get { return _attributes; } }
 
         /// <summary>
-        /// Gets an attribute value indicating whether a class has a predeclared ID.
-        /// Such classes can be treated as "static classes", or as far as resolving is concerned, as standard modules.
-        /// </summary>
-        public bool HasPredeclaredId
-        {
-            get
-            {
-                IEnumerable<string> value;
-                if (_attributes.TryGetValue("VB_PredeclaredId", out value))
-                {
-                    return value.Single() == "True";
-                }
-
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Gets an attribute value that contains the docstring for a member.
         /// </summary>
         public string DescriptionString

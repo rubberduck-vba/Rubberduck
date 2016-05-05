@@ -72,6 +72,31 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        /// <summary>
+        /// Gets an attribute value indicating whether a class has a predeclared ID.
+        /// Such classes can be treated as "static classes", or as far as resolving is concerned, as standard modules.
+        /// </summary>
+        public bool HasPredeclaredId
+        {
+            get
+            {
+                IEnumerable<string> value;
+                if (Attributes.TryGetValue("VB_PredeclaredId", out value))
+                {
+                    return value.Single() == "True";
+                }
+                return false;
+            }
+        }
+
+        public bool HasDefaultInstanceVariable
+        {
+            get
+            {
+                return HasPredeclaredId || IsGlobalClassModule;
+            }
+        }
+
         public Declaration DefaultMember { get; internal set; }
     }
 }

@@ -240,6 +240,17 @@ namespace Rubberduck.Parsing.Symbols
             return match;
         }
 
+        public Declaration FindDefaultInstanceVariableClassEnclosingProject(Declaration callingProject, Declaration callingModule, string defaultInstanceVariableClassName)
+        {
+            var nameMatches = MatchName(defaultInstanceVariableClassName);
+            var moduleMatches = nameMatches.Where(m =>
+                m.DeclarationType == DeclarationType.ClassModule && ((ClassModuleDeclaration)m).HasDefaultInstanceVariable
+                && Declaration.GetProjectParent(m).Equals(callingProject));
+            var accessibleModules = moduleMatches.Where(calledModule => AccessibilityCheck.IsModuleAccessible(callingProject, callingModule, calledModule));
+            var match = accessibleModules.FirstOrDefault();
+            return match;
+        }
+
         public Declaration FindModuleReferencedProject(Declaration callingProject, Declaration callingModule, string calleeModuleName, DeclarationType moduleType)
         {
             var moduleMatches = FindAllInReferencedProjectByPriority(callingProject, calleeModuleName, p => p.DeclarationType.HasFlag(moduleType));

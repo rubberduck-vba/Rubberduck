@@ -155,7 +155,6 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
-            // TODO: DeclarationType UDT Member should actually be Variable?
             var udtMember = _declarationFinder.FindMemberWithParent(_project, _module, _parent, referencedType, _name, DeclarationType.UserDefinedTypeMember);
             if (udtMember != null)
             {
@@ -232,6 +231,11 @@ namespace Rubberduck.Parsing.Binding
                 return boundExpression;
             }
             boundExpression = ResolveProceduralModule(lExpressionIsEnclosingProject, referencedProject);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            boundExpression = ResolveDefaultInstanceVariableClass(lExpressionIsEnclosingProject, referencedProject);
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -313,6 +317,20 @@ namespace Rubberduck.Parsing.Binding
             return null;
         }
 
+        private IBoundExpression ResolveDefaultInstanceVariableClass(bool lExpressionIsEnclosingProject, Declaration referencedProject)
+        {
+            if (!lExpressionIsEnclosingProject)
+            {
+                return null;
+            }
+            var defaultInstanceVariableClass = _declarationFinder.FindDefaultInstanceVariableClassEnclosingProject(_project, _module, _name);
+            if (defaultInstanceVariableClass != null)
+            {
+                return new MemberAccessExpression(defaultInstanceVariableClass, ExpressionClassification.Type, _context, _lExpression);
+            }
+            return null;
+        }
+
         private IBoundExpression ResolveMemberInReferencedProject(bool lExpressionIsEnclosingProject, Declaration referencedProject, DeclarationType memberType, ExpressionClassification classification)
         {
             if (lExpressionIsEnclosingProject)
@@ -354,7 +372,8 @@ namespace Rubberduck.Parsing.Binding
                     -   The member is a value. In this case, the member access expression is classified as a value with 
                         the same declared type as the member. 
              */
-            if (_lExpression.Classification != ExpressionClassification.ProceduralModule)
+            bool isDefaultInstanceVariableClass = _lExpression.Classification == ExpressionClassification.Type && _lExpression.ReferencedDeclaration.DeclarationType == DeclarationType.ClassModule && ((ClassModuleDeclaration)_lExpression.ReferencedDeclaration).HasDefaultInstanceVariable;
+            if (_lExpression.Classification != ExpressionClassification.ProceduralModule && !isDefaultInstanceVariableClass)
             {
                 return null;
             }

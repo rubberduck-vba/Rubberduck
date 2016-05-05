@@ -157,6 +157,11 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(proceduralModuleEnclosingProject, ExpressionClassification.ProceduralModule, _expression);
             }
+            var defaultInstanceVariableClass = _declarationFinder.FindDefaultInstanceVariableClassEnclosingProject(_project, _module, name);
+            if (defaultInstanceVariableClass != null)
+            {
+                return new SimpleNameExpression(defaultInstanceVariableClass, ExpressionClassification.Type, _expression);
+            }
             return null;
         }
 
