@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
@@ -728,17 +727,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ExecuteRemoveCommand(object param)
         {
-            // todo display popup
             var message = string.Format("Do you want to export '{0}' before removing?", SelectedItem.Name);
-
-            /*_messageBox.MessageBoxHelpRequested += (sender, e) =>
-            {
-                var uri = new Uri("http://msdn.microsoft.com/en-us/library/office/gg264533.aspx");
-                Process.Start(new ProcessStartInfo(uri.AbsoluteUri));
-            };*/
-
             var result = _messageBox.Show(message, "Rubberduck Export Prompt", MessageBoxButtons.YesNoCancel,
-                    MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, 0, true);
+                    MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
 
             if (result == DialogResult.Cancel)
             {
