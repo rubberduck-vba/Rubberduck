@@ -224,7 +224,15 @@ namespace Rubberduck.Parsing.Binding
                 {
                     classification = ExpressionClassification.Property;
                 }
-                return new SimpleNameExpression(_declarationFinder.FindParameter(calledProcedure, parameterName), classification, context);
+                var parameter = _declarationFinder.FindParameter(calledProcedure, parameterName);
+                if (parameter != null)
+                {
+                    return new SimpleNameExpression(parameter, classification, context);
+                }
+                else
+                {
+                    return null;
+                }
             };
         }
 
