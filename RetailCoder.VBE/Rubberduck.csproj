@@ -382,6 +382,12 @@
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorerAddUserFormCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerRenameCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerFindAllReferencesCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerFindAllImplementationsCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerIndentCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerNavigateCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerRefreshCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorerRemoveCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorerExportCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorerImportCommand.cs" />
