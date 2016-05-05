@@ -1506,4 +1506,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
     <value>Toggle signatures</value>
   </data>
+  <data name="CodeExplorer_Print" xml:space="preserve">
+    <value>Print...</value>
+  </data>
 </root>

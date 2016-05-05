@@ -326,6 +326,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Print....
+        /// </summary>
+        public static string CodeExplorer_Print {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Print", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to R&amp;efresh.
         /// </summary>
         public static string CodeExplorer_Refresh {

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Vbe.Interop;
@@ -14,6 +18,8 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using MessageBox = Rubberduck.UI.MessageBox;
+
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
 
 namespace Rubberduck.Navigation.CodeExplorer
@@ -63,6 +69,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _renameCommand = new DelegateCommand(ExecuteRenameCommand, _ => CanExecuteRenameCommand);
             _findAllReferencesCommand = new DelegateCommand(ExecuteFindAllReferencesCommand, _ => CanExecuteFindAllReferencesCommand);
             _findAllImplementationsCommand = new DelegateCommand(ExecuteFindAllImplementationsCommand, _ => CanExecuteFindAllImplementationsCommand);
+            _printCommand = new DelegateCommand(ExecutePrintCommand, CanExecutePrintCommand);
         }
 
         private readonly ICommand _refreshCommand;
@@ -97,6 +104,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly INavigateCommand _navigateCommand;
         public ICommand NavigateCommand { get { return _navigateCommand; } }
+
+        private readonly ICommand _printCommand;
+        public ICommand PrintCommand { get { return _printCommand; } }
 
         private readonly ICommand _contextMenuNavigateCommand;
         public ICommand ContextMenuNavigateCommand { get { return _contextMenuNavigateCommand; } }
@@ -215,6 +225,11 @@ namespace Rubberduck.Navigation.CodeExplorer
         private bool CanExecuteContextMenuNavigateCommand(object param)
         {
             return SelectedItem != null && SelectedItem.QualifiedSelection.HasValue;
+        }
+
+        private bool CanExecutePrintCommand(object param)
+        {
+            return SelectedItem is CodeExplorerComponentViewModel;
         }
 
         private bool CanExecuteShowDesignerCommand
@@ -484,6 +499,35 @@ namespace Rubberduck.Navigation.CodeExplorer
             var arg = new NavigateCodeEventArgs(SelectedItem.QualifiedSelection.Value);
 
             NavigateCommand.Execute(arg);
+        }
+
+        private void ExecutePrintCommand(object obj)
+        {
+            var node = (CodeExplorerComponentViewModel)SelectedItem;
+            var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;
+
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck",
+                component.Name + ".txt");
+
+            var text = component.CodeModule.Lines[1, component.CodeModule.CountOfLines];
+
+            var printDoc = new PrintDocument { DocumentName = path };
+            var pd = new PrintDialog
+            {
+                Document = printDoc,
+                AllowSelection = true,
+                AllowSomePages = true
+            };
+
+            if (pd.ShowDialog() == DialogResult.OK)
+            {
+                printDoc.PrintPage += (sender, printPageArgs) =>
+                {
+                    var font = new Font(new FontFamily("Consolas"), 10, FontStyle.Regular);
+                    printPageArgs.Graphics.DrawString(text, font, Brushes.Black, 0, 0, new StringFormat());
+                };
+                printDoc.Print();
+            }
         }
 
         private Declaration GetSelectedDeclaration()
