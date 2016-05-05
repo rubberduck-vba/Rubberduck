@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Vbe.Interop;
+using System.Linq;
 
 namespace Rubberduck.VBEditor
 {
@@ -15,7 +16,8 @@ namespace Rubberduck.VBEditor
             _project = project;
             _projectName = project.Name;
             _projectHashCode = project.GetHashCode();
-            _contentHashCode = 0;  
+            _documentName = "";
+            _contentHashCode = 0;
        }
 
         public QualifiedModuleName(VBComponent component)
@@ -26,6 +28,7 @@ namespace Rubberduck.VBEditor
             _componentName = component == null ? string.Empty : component.Name;
             _projectName = component == null ? string.Empty : component.Collection.Parent.Name;
             _projectHashCode = component == null ? 0 : component.Collection.Parent.GetHashCode();
+            _documentName = "";
 
             _contentHashCode = 0;
             if (component == null)
@@ -53,6 +56,8 @@ namespace Rubberduck.VBEditor
             _component = null;
             _contentHashCode = componentName.GetHashCode();
             _projectHashCode = projectName.GetHashCode();
+            _documentName = "";
+
         }
 
         public QualifiedMemberName QualifyMemberName(string member)
@@ -78,6 +83,45 @@ namespace Rubberduck.VBEditor
         public string ComponentName { get { return _componentName; } }
 
         public string Name { get { return ToString(); } }
+
+        private readonly string _documentName;
+        public string DocumentName
+        {
+            get
+            {
+                string DocName = "";
+                try
+                {
+                    DocName = this.Project.FileName;
+                }
+                catch
+                {
+                }
+
+                if (DocName.Length > 0)
+                {
+                    return DocName;
+                }
+                else
+                {
+                    VBComponent comp = this.Project.VBComponents.Item(1);
+                    if (comp.Type == vbext_ComponentType.vbext_ct_Document && comp.Properties.Count > 1)
+                    {
+                        Property prop = null;
+                        try
+                        {
+                            prop = comp.Properties.Item("Name");
+                        }
+                        catch
+                        {
+                        }
+                        DocName = (prop != null) ? prop.Value.ToString() : "";
+                    }
+                    return DocName;
+                }
+            }
+        }
+            
 
         public override string ToString()
         {

@@ -117,7 +117,7 @@ namespace Rubberduck.Inspections
             catch
             {
             }
-            return new object[] {Inspection.Severity.ToString(), Description, FileName, module.ProjectName, module.ComponentName, QualifiedSelection.Selection.StartLine };
+            return new object[] {Inspection.Severity.ToString(), Description, module.DocumentName, module.ProjectName, module.ComponentName, QualifiedSelection.Selection.StartLine };
         }
 
         public string ToCsvString()
