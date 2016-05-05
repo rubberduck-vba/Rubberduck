@@ -14,7 +14,6 @@ namespace Rubberduck.Refactorings.ImplementInterface
     public class ImplementInterfaceRefactoring : IRefactoring
     {
         private readonly VBE _vbe;
-        private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
         private List<Declaration> _declarations;
@@ -26,16 +25,8 @@ namespace Rubberduck.Refactorings.ImplementInterface
         public ImplementInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
         {
             _vbe = vbe;
-            _state = state;
             _declarations = state.AllUserDeclarations.ToList();
             _messageBox = messageBox;
-        }
-
-        public bool CanExecute(QualifiedSelection selection)
-        {
-            CalculateTargets(selection);
-
-            return _targetClass != null && _targetInterface != null;
         }
 
         public void Refactor()
@@ -60,7 +51,11 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         public void Refactor(QualifiedSelection selection)
         {
-            CalculateTargets(selection);
+            _targetInterface = _declarations.FindInterface(selection);
+
+            _targetClass = _declarations.SingleOrDefault(d =>
+                        !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
+                        d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
 
             if (_targetClass == null || _targetInterface == null)
             {
@@ -75,17 +70,6 @@ namespace Rubberduck.Refactorings.ImplementInterface
         public void Refactor(Declaration target)
         {
             throw new NotImplementedException();
-        }
-
-        private void CalculateTargets(QualifiedSelection selection)
-        {
-            _declarations = _state.AllUserDeclarations.ToList();
-
-            _targetInterface = _declarations.FindInterface(selection);
-
-            _targetClass = _declarations.SingleOrDefault(d =>
-                        !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
-                        d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
         }
 
         private void ImplementMissingMembers()
