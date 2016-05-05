@@ -69,7 +69,7 @@ namespace Rubberduck.Parsing.Symbols
             var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, typeExpression, GetInnerMostWithExpression(), ResolutionStatementContext.Undefined);
             if (boundExpression != null)
             {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, declaration) => CreateReference(expr, declaration, RubberduckParserState.CreateBindingSelection(expr, exprCtx)));
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, identifier, declaration) => CreateReference(expr, identifier, declaration, RubberduckParserState.CreateBindingSelection(expr, exprCtx)));
                 qualifier = boundExpression.ReferencedDeclaration;
             }
             // note: pushes null if unresolved
@@ -90,16 +90,14 @@ namespace Rubberduck.Parsing.Symbols
             _withBlockExpressions.Pop();
         }
 
-        private IdentifierReference CreateReference(ParserRuleContext callSiteContext, Declaration callee, Selection bindingSelection, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
+        private IdentifierReference CreateReference(ParserRuleContext callSiteContext, string identifier, Declaration callee, Selection selection, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
         {
             if (callSiteContext == null || _currentScope == null)
             {
                 return null;
             }
-            var name = callSiteContext.GetText();
-            var selection = callSiteContext.GetSelection();
             var annotations = FindAnnotations(selection.StartLine);
-            return new IdentifierReference(_qualifiedModuleName, _currentScope, _currentParent, name, selection, bindingSelection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement, annotations);
+            return new IdentifierReference(_qualifiedModuleName, _currentScope, _currentParent, identifier, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement, annotations);
         }
 
         private IEnumerable<IAnnotation> FindAnnotations(int line)
@@ -134,7 +132,7 @@ namespace Rubberduck.Parsing.Symbols
             var labelDeclaration = _bindingService.ResolveGoTo(_currentParent, label);
             if (labelDeclaration != null)
             {
-                labelDeclaration.AddReference(CreateReference(context, labelDeclaration, context.GetSelection()));
+                labelDeclaration.AddReference(CreateReference(context, context.GetText(), labelDeclaration, context.GetSelection()));
             }
         }
 
@@ -143,7 +141,7 @@ namespace Rubberduck.Parsing.Symbols
             var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, expression, GetInnerMostWithExpression(), statementContext);
             if (boundExpression != null)
             {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, declaration) => CreateReference(context, declaration, RubberduckParserState.CreateBindingSelection(context, exprCtx), isAssignmentTarget, hasExplicitLetStatement));
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, identifier, declaration) => CreateReference(context, identifier, declaration, RubberduckParserState.CreateBindingSelection(context, exprCtx), isAssignmentTarget, hasExplicitLetStatement));
             }
             else
             {
@@ -156,7 +154,7 @@ namespace Rubberduck.Parsing.Symbols
             var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, expression);
             if (boundExpression != null)
             {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, declaration) => CreateReference(context, declaration, RubberduckParserState.CreateBindingSelection(context, boundExpression.Context)));
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, identifier, declaration) => CreateReference(context, identifier, declaration, RubberduckParserState.CreateBindingSelection(context, boundExpression.Context)));
             }
         }
 
@@ -449,9 +447,9 @@ namespace Rubberduck.Parsing.Symbols
             if (firstExpression != null)
             {
                 // each iteration counts as an assignment
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, declaration) => CreateReference(context.valueStmt()[0], declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context), true));
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context), true));
                 // each iteration also counts as a plain usage
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, declaration) => CreateReference(context.valueStmt()[0], declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context)));
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context)));
             }
             for (int exprIndex = 1; exprIndex < context.valueStmt().Count; exprIndex++)
             {
@@ -465,9 +463,9 @@ namespace Rubberduck.Parsing.Symbols
             if (firstExpression != null)
             {
                 // each iteration counts as an assignment
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, declaration) => CreateReference(context.valueStmt()[0], declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context), true));
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context), true));
                 // each iteration also counts as a plain usage
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, declaration) => CreateReference(context.valueStmt()[0], declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context)));
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context)));
             }
 
             for (int exprIndex = 1; exprIndex < context.valueStmt().Count; exprIndex++)
@@ -486,7 +484,7 @@ namespace Rubberduck.Parsing.Symbols
             var eventDeclaration = _bindingService.ResolveEvent(_moduleDeclaration, context.identifier().GetText());
             if (eventDeclaration != null)
             {
-                eventDeclaration.AddReference(CreateReference(context.identifier(), eventDeclaration, context.identifier().GetSelection()));
+                eventDeclaration.AddReference(CreateReference(context.identifier(), context.identifier().GetText(), eventDeclaration, context.identifier().GetSelection()));
             }
             ResolveArgsCall(context.argsCall());
         }
@@ -504,10 +502,6 @@ namespace Rubberduck.Parsing.Symbols
             }
             foreach (var argCall in argsCall.argCall())
             {
-                if (argCall.valueStmt() is VBAParser.VsAssignContext)
-                {
-
-                }
                 ResolveDefault(argCall.valueStmt(), argCall.valueStmt().GetText());
             }
         }

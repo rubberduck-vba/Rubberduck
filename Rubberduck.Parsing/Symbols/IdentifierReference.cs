@@ -15,7 +15,6 @@ namespace Rubberduck.Parsing.Symbols
             Declaration parentNonScopingDeclaration, 
             string identifierName,
             Selection selection,
-            Selection bindingSelection,
             ParserRuleContext context, 
             Declaration declaration, 
             bool isAssignmentTarget = false,
@@ -27,7 +26,6 @@ namespace Rubberduck.Parsing.Symbols
             _qualifiedName = qualifiedName;
             _identifierName = identifierName;
             _selection = selection;
-            _bindingSelection = bindingSelection;
             _context = context;
             _declaration = declaration;
             _hasExplicitLetStatement = hasExplicitLetStatement;
@@ -43,9 +41,6 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly Selection _selection;
         public Selection Selection { get { return _selection; } }
-
-        private readonly Selection _bindingSelection;
-        public Selection BindingSelection { get { return _bindingSelection; } }
 
         private readonly Declaration _parentScopingDeclaration;
         /// <summary>

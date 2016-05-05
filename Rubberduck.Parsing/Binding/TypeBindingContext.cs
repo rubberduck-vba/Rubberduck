@@ -55,14 +55,14 @@ namespace Rubberduck.Parsing.Binding
         {
             dynamic lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression);
-            return new MemberAccessTypeBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding);
+            return new MemberAccessTypeBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, expression.unrestrictedName(), lExpressionBinding);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.MemberAccessExpressionContext expression)
         {
             dynamic lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression);
-            return new MemberAccessTypeBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding);
+            return new MemberAccessTypeBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, expression.unrestrictedName() , lExpressionBinding);
         }
     }
 }

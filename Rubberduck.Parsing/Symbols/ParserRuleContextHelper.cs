@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using System;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -6,15 +7,20 @@ namespace Rubberduck.Parsing.Symbols
     {
         public static bool HasParent<T>(RuleContext context)
         {
+            return GetParent<T>(context) != null;
+        }
+
+        public static T GetParent<T>(RuleContext context)
+        {
             if (context == null)
             {
-                return false;
+                return default(T);
             }
-            if (context.Parent is T)
+            if (context is T)
             {
-                return true;
+                return (T)Convert.ChangeType(context, typeof(T));
             }
-            return HasParent<T>(context.Parent);
+            return GetParent<T>(context.Parent);
         }
     }
 }

@@ -604,7 +604,7 @@ namespace Rubberduck.Parsing.VBA
         {
             _declarationSelections.Clear();
             var declarations = AllDeclarations.Where(d => !d.IsBuiltIn).Select(d => Tuple.Create(d, d.Selection, d.QualifiedSelection.QualifiedName));
-            var references = AllDeclarations.SelectMany(d => d.References.Select(r => Tuple.Create(d, r.BindingSelection, r.QualifiedModuleName)));
+            var references = AllDeclarations.SelectMany(d => d.References.Select(r => Tuple.Create(d, r.Selection, r.QualifiedModuleName)));
             _declarationSelections.AddRange(declarations.Union(references));
         }
 
@@ -696,15 +696,20 @@ namespace Rubberduck.Parsing.VBA
         private static bool IsSelectedReference(QualifiedSelection selection, IdentifierReference reference)
         {
             return reference.QualifiedModuleName.Equals(selection.QualifiedName)
-                   && reference.BindingSelection.ContainsFirstCharacter(selection.Selection);
+                   && reference.Selection.ContainsFirstCharacter(selection.Selection);
         }
 
         public static Selection CreateBindingSelection(ParserRuleContext vbaGrammarContext, ParserRuleContext exprContext)
         {
+            var k = exprContext.GetText();
             Selection vbaGrammarSelection = vbaGrammarContext.GetSelection();
             Selection exprSelection = exprContext.GetSelection();
             int lineOffset = vbaGrammarSelection.StartLine - 1;
-            int columnOffset = vbaGrammarSelection.StartColumn - 1;
+            int columnOffset = 0;
+            if (exprSelection.StartLine == 1)
+            {
+                columnOffset = vbaGrammarSelection.StartColumn - 1;
+            }
             return new Selection(
                 exprSelection.StartLine + lineOffset,
                 exprSelection.StartColumn + columnOffset,

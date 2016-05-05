@@ -137,10 +137,10 @@ namespace Rubberduck.Inspections
 
                 var module = reference.QualifiedModuleName.Component.CodeModule;
 
-                var referenceParent = reference.Context.Parent as VBAParser.ICS_B_ProcedureCallContext;
+                var referenceParent = reference.Context as VBAParser.ICS_B_ProcedureCallContext;
                 if (referenceParent == null) { continue; }
                 
-                var referenceText = reference.Context.Parent.GetText();
+                var referenceText = reference.Context.GetText();
                 var newCall = referenceParent.argsCall().argCall().ToList().ElementAt(_argListQualifiedContext.Context.arg().ToList().IndexOf(_argQualifiedContext.Context)).GetText() +
                               " = " + _subStmtQualifiedContext.Context.subroutineName().GetText() +
                               "(" + referenceParent.argsCall().GetText() + ")";

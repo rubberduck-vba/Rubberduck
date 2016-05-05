@@ -142,14 +142,14 @@ namespace Rubberduck.Parsing.Binding
         {
             dynamic lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, ResolutionStatementContext.Undefined);
-            return new MemberAccessDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, statementContext);
+            return new MemberAccessDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, statementContext, expression.unrestrictedName());
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.MemberAccessExpressionContext expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext)
         {
             dynamic lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, ResolutionStatementContext.Undefined);
-            return new MemberAccessDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, statementContext);
+            return new MemberAccessDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, statementContext, expression.unrestrictedName());
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.IndexExprContext expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext)
@@ -308,7 +308,7 @@ namespace Rubberduck.Parsing.Binding
              */
             if (expression.withMemberAccessExpression() != null)
             {
-                return new MemberAccessDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, withBlockVariable, expression.withMemberAccessExpression().unrestrictedName().GetText(), statementContext);
+                return new MemberAccessDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression,  withBlockVariable, expression.withMemberAccessExpression().unrestrictedName().GetText(), statementContext, expression.withMemberAccessExpression().unrestrictedName());
             }
             else
             {
