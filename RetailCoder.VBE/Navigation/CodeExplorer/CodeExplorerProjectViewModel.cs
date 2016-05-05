@@ -26,6 +26,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CodeExplorerProjectViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
         {
             _declaration = declaration;
+            IsExpanded = true;
 
             try
             {
