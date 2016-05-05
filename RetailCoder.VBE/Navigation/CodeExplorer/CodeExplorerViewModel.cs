@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
@@ -19,7 +20,6 @@ using Rubberduck.UI.Refactorings;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using MessageBox = Rubberduck.UI.MessageBox;
-
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
 
 namespace Rubberduck.Navigation.CodeExplorer
@@ -35,6 +35,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly FindAllImplementationsCommand _findAllImplementations;
         private readonly SaveFileDialog _saveFileDialog;
         private readonly OpenFileDialog _openFileDialog;
+        private readonly IMessageBox _messageBox;
         private readonly Dispatcher _dispatcher;
 
         public CodeExplorerViewModel(VBE vbe,
@@ -46,7 +47,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             FindAllReferencesCommand findAllReferences,
             FindAllImplementationsCommand findAllImplementations,
             SaveFileDialog saveFileDialog,
-            OpenFileDialog openFileDialog)
+            OpenFileDialog openFileDialog,
+            IMessageBox messageBox)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
 
@@ -59,6 +61,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _findAllImplementations = findAllImplementations;
             _saveFileDialog = saveFileDialog;
             _openFileDialog = openFileDialog;
+            _messageBox = messageBox;
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
@@ -327,7 +330,13 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private bool CanExecutePrintCommand(object param)
         {
-            return SelectedItem is CodeExplorerComponentViewModel;
+            var node = SelectedItem as CodeExplorerComponentViewModel;
+            if (node == null)
+            {
+                return false;
+            }
+
+            return node.Declaration.QualifiedName.QualifiedModuleName.Component.CodeModule.CountOfLines != 0;
         }
 
         private bool CanExecuteImportCommand(object param)
@@ -351,7 +360,14 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private bool CanExecuteRemoveCommand(object param)
         {
-            return SelectedItem is CodeExplorerComponentViewModel;
+            if (!(SelectedItem is CodeExplorerComponentViewModel))
+            {
+                return false;
+            }
+
+            var node = (CodeExplorerComponentViewModel)SelectedItem;
+            return node.Declaration.QualifiedName.QualifiedModuleName.Component.Type !=
+                   vbext_ComponentType.vbext_ct_Document;
         }
 
         private bool CanExecuteShowDesignerCommand
@@ -360,7 +376,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 var declaration = GetSelectedDeclaration();
                 return declaration != null && declaration.DeclarationType == DeclarationType.ClassModule &&
-                       declaration.QualifiedName.QualifiedModuleName.Component.Designer != null;
+                        declaration.QualifiedName.QualifiedModuleName.Component.Designer != null;
             }
         }
 
@@ -686,7 +702,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             { vbext_ComponentType.vbext_ct_MSForm, ".frm" }
         };
 
-        private void ExecuteExportCommand(object param)
+        private bool ExportFile()
         {
             var node = (CodeExplorerComponentViewModel)SelectedItem;
             var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;
@@ -695,14 +711,55 @@ namespace Rubberduck.Navigation.CodeExplorer
             _exportableFileExtensions.TryGetValue(component.Type, out ext);
 
             _saveFileDialog.FileName = component.Name + ext;
-            if (_saveFileDialog.ShowDialog() == DialogResult.OK)
+            var result = _saveFileDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
             {
                 component.Export(_saveFileDialog.FileName);
             }
+
+            return result == DialogResult.OK;
+        }
+
+        private void ExecuteExportCommand(object param)
+        {
+            ExportFile();
         }
 
         private void ExecuteRemoveCommand(object param)
         {
+            // todo display popup
+            var message = string.Format("Do you want to export '{0}' before removing?", SelectedItem.Name);
+
+            /*_messageBox.MessageBoxHelpRequested += (sender, e) =>
+            {
+                var uri = new Uri("http://msdn.microsoft.com/en-us/library/office/gg264533.aspx");
+                Process.Start(new ProcessStartInfo(uri.AbsoluteUri));
+            };*/
+
+            var result = _messageBox.Show(message, "Rubberduck Export Prompt", MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, 0, true);
+
+            if (result == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            if (result == DialogResult.Yes && !ExportFile())
+            {
+                return;
+            }
+
+            // No file export or file successfully exported--now remove it
+
+            // I know this will never be null because of the CanExecute
+            var declaration = GetSelectedDeclaration();
+
+            var project = declaration.QualifiedName.QualifiedModuleName.Project;
+
+            SelectedItem =
+                Projects.Cast<CodeExplorerProjectViewModel>().FirstOrDefault(f => f.Declaration.Project == project);
+            project.VBComponents.Remove(declaration.QualifiedName.QualifiedModuleName.Component);
         }
 
         private Declaration GetSelectedDeclaration()

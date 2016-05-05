@@ -470,6 +470,5 @@
                 </WrapPanel>
             </StackPanel>
         </Border>
-
     </Grid>
 </UserControl>
