@@ -523,9 +523,18 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ImplicitCallStmt_InBlockContext context)
         {
-            string expr = context.GetText();
+            ParserRuleContext subContext;
+            if (context.iCS_B_MemberProcedureCall() != null)
+            {
+                subContext = context.iCS_B_MemberProcedureCall();
+            }
+            else
+            {
+                subContext = context.iCS_B_ProcedureCall();
+            }
+            string expr = subContext.GetText();
             // This represents a CALL statement without the CALL keyword which is slightly different than a normal expression because it does not allow parentheses around its argument list.
-            ResolveDefault(context, expr, ResolutionStatementContext.CallStatement);
+            ResolveDefault(subContext, expr, ResolutionStatementContext.CallStatement);
         }
 
         public void Resolve(VBAParser.EnumerationStmtContext context)

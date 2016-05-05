@@ -61,11 +61,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 var module = reference.QualifiedModuleName.Component.CodeModule;
 
-                var oldLine = module.Lines[reference.Selection.StartLine, 1];
-                oldLine = oldLine.Remove(reference.Selection.StartColumn - 1, reference.Selection.EndColumn - reference.Selection.StartColumn);
-                var newLine = oldLine.Insert(reference.Selection.StartColumn - 1, _model.PropertyName);
+                var oldLine = module.Lines[reference.BindingSelection.StartLine, 1];
+                oldLine = oldLine.Remove(reference.BindingSelection.StartColumn - 1, reference.BindingSelection.EndColumn - reference.BindingSelection.StartColumn);
+                var newLine = oldLine.Insert(reference.BindingSelection.StartColumn - 1, _model.PropertyName);
 
-                module.ReplaceLine(reference.Selection.StartLine, newLine);
+                module.ReplaceLine(reference.BindingSelection.StartLine, newLine);
             }
         }
 

@@ -496,21 +496,11 @@ Public Function IFoo_Test() As Integer
     IFoo_Test = 42
 End Function";
 
-            const string expectedImplementationCode1 =
-@"Implements IFoo
-Public Sub IFoo_Test()
-End Sub";
-
             const string inputImplementationCode2 =
 @"Implements IFoo
 Public Function IFoo_Test() As Integer
     IFoo_Test = 42
 End Function";
-
-            const string expectedImplementationCode2 =
-@"Implements IFoo
-Public Sub IFoo_Test()
-End Sub";
 
             const string callSiteCode =
 @"
@@ -544,12 +534,6 @@ End Function";
             var interfaceModule = project.VBComponents.Item(0).CodeModule;
             string actualInterface = interfaceModule.Lines();
             Assert.AreEqual(expectedInterfaceCode, actualInterface, "Interface");
-            var implementationModule1 = project.VBComponents.Item(1).CodeModule;
-            string actualImplementation1 = implementationModule1.Lines();
-            //Assert.AreEqual(expectedImplementationCode1, actualImplementation1, "Implementation1");
-            var implementationModule2 = project.VBComponents.Item(2).CodeModule;
-            string actualImplementation2 = implementationModule2.Lines();
-            //Assert.AreEqual(expectedImplementationCode2, actualImplementation2, "Implementation2");
         }
 
         [TestMethod]
