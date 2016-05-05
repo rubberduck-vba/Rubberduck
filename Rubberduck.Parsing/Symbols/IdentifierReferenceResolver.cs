@@ -1,5 +1,4 @@
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
@@ -598,12 +597,5 @@ namespace Rubberduck.Parsing.Symbols
                 }
             }
         }
-
-        //public void Resolve(VBAParser.VsAssignContext context)
-        //{
-        //    // named parameter reference must be scoped to called procedure
-        //    var callee = FindParentCall(context);
-        //    ResolveInternal(context.implicitCallStmt_InStmt(), callee, ContextAccessorType.AssignValueOrReference);
-        //}
     }
 }

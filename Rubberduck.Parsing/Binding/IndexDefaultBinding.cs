@@ -70,7 +70,14 @@ namespace Rubberduck.Parsing.Binding
             {
                 _lExpression = _lExpressionBinding.Resolve();
             }
-            ResolveArgumentList(_lExpression.ReferencedDeclaration);
+            if (_lExpression != null)
+            {
+                ResolveArgumentList(_lExpression.ReferencedDeclaration);
+            }
+            else
+            {
+                ResolveArgumentList(null);
+            }
             return Resolve(_lExpression);
         }
 
