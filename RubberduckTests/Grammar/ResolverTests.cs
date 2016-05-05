@@ -139,7 +139,7 @@ End Function
             var code = @"
 Public Sub DoSomething()
     Dim foo As Integer
-    Debug.Print foo
+    a = foo
 End Sub
 ";
             // act
@@ -459,7 +459,7 @@ End Property
 Public Sub DoSomething()
     With New Class1
         With .Foo
-            Debug.Print .Bar
+            a = .Bar
         End With
     End With
 End Sub
@@ -547,7 +547,7 @@ End Property
 ";
             var code_class3 = @"
 Public Sub DoSomething(ByVal a As Class1)
-    Debug.Print a.Foo.Bar
+    a = a.Foo.Bar
 End Sub
 ";
             // act
@@ -573,7 +573,7 @@ End Property
 ";
             var code_class2 = @"
 Public Sub DoSomething(ByVal a As Class1)
-    Debug.Print a.Foo
+    b = a.Foo
 End Sub
 ";
             // act
@@ -926,7 +926,7 @@ End Sub
 'note: Dim Foo() As Integer on this line would not compile in VBA
 Public Sub DoSomething()
     Dim Foo() As Integer
-    Debug.Print Foo(0) 'VBA raises index out of bounds error, i.e. VBA resolves to local Foo()
+    a = Foo(0) 'VBA raises index out of bounds error, i.e. VBA resolves to local Foo()
 End Sub
 
 Private Function Foo(ByVal bar As Integer)
@@ -1236,7 +1236,7 @@ End Type
 Private Bar As TestModule1
 
 Public Sub DoSomething()
-    Debug.Print Bar.Foo
+    a = Bar.Foo
 End Sub
 ";
             var state = Resolve(code);
@@ -1427,7 +1427,7 @@ Public Something As TSomething
 
             var code_module2 = @"
 Sub DoSomething()
-    Debug.Print Component1.Something.Bar
+    a = Component1.Something.Bar
 End Sub
 ";
 
