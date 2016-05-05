@@ -145,7 +145,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                Debug.WriteLine("Failed to resolve {0}. Possible causes include: COM Coclass/Interface mixup / Alias / Bug in the resolver.", expression);
+                Debug.WriteLine(string.Format("Failed to resolve {0}. Possible causes include: COM Coclass/Interface mixup / Alias / Bug in the resolver.", expression));
             }
         }
 

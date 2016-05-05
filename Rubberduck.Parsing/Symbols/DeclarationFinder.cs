@@ -28,16 +28,9 @@ namespace Rubberduck.Parsing.Symbols
             _declarations = declarations;
             _declarationsByName = declarations.GroupBy(declaration => new
             {
-                IdentifierName = /*declaration.Project != null &&
-                        declaration.DeclarationType.HasFlag(DeclarationType.Project)
-                            ? declaration.Project.Name.ToLowerInvariant()
-                            : */declaration.IdentifierName.ToLowerInvariant()
+                IdentifierName = declaration.IdentifierName.ToLowerInvariant()
             })
             .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
-
-            var all = declarations.Where(d => d.IdentifierName == "ThisWorkbook").ToList();
-            //var workbook = all.AsTypeDeclaration;
-            //var kkk = declarations.Where(d => d.ParentDeclaration.Equals(workbook)).ToList();
         }
 
         private readonly HashSet<Accessibility> _projectScopePublicModifiers =
