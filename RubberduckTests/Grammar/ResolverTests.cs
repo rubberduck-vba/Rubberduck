@@ -232,33 +232,6 @@ Public foo As Integer
         }
 
         [TestMethod]
-        public void EncapsulatedVariableAssignment_DoesNotResolve()
-        {
-            // arrange
-            var code_class1 = @"
-Public Sub DoSomething()
-    foo = 42
-End Sub
-";
-            var code_class2 = @"
-Option Explicit
-Public foo As Integer
-";
-            var class1 = Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule);
-            var class2 = Tuple.Create(code_class2, vbext_ComponentType.vbext_ct_ClassModule);
-
-            // act
-            var state = Resolve(class1, class2);
-
-            // assert
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
-
-            var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
-            Assert.IsNull(reference);
-        }
-
-        [TestMethod]
         public void UserDefinedTypeVariableAsTypeClause_IsReferenceToUserDefinedTypeDeclaration()
         {
             // arrange
