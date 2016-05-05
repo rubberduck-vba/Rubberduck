@@ -175,14 +175,40 @@ End Sub
             Assert.IsNotNull(reference);
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
-
+        
         [TestMethod]
+        public void EncapsulatedVariableAssignment_DoesNotResolve()
+        {
+            // arrange
+            var code_class1 = @"
+Public Sub DoSomething()
+    foo = 42
+End Sub
+";
+            var code_class2 = @"
+Option Explicit
+Public foo As Integer
+";
+            var class1 = Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule);
+            var class2 = Tuple.Create(code_class2, vbext_ComponentType.vbext_ct_ClassModule);
+ 
+            // act
+            var state = Resolve(class1, class2);
+ 
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+ 
+            var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
+            Assert.IsNull(reference);
+        }
+
+    [TestMethod]
         public void PublicVariableCall_IsReferenceToVariableDeclaration()
         {
             // arrange
             var code_class1 = @"
 Public Sub DoSomething()
-    Debug.Print foo
+    a = foo
 End Sub
 ";
             var code_class2 = @"
@@ -280,7 +306,7 @@ Option Explicit
             // arrange
             var code = @"
 Public Sub DoSomething(ByVal foo As Integer)
-    Debug.Print foo
+    a = foo
 End Sub
 ";
             // act
@@ -639,7 +665,7 @@ End Sub
 Public Sub DoSomething(ParamArray values())
     Dim i As Integer
     For i = 0 To 9
-        Debug.Print values(i)
+        a = values(i)
     Next
 End Sub
 ";
@@ -924,7 +950,7 @@ End Function";
 Public Sub DoSomething()
     Dim foo As Integer
     '@Ignore UnassignedVariableUsage
-    Debug.Print foo    
+    a = foo
 End Sub
 ";
             var state = Resolve(code);
@@ -947,7 +973,7 @@ End Sub
             var code = @"
 Public Sub DoSomething()
     Dim foo As Integer
-    Debug.Print foo '@Ignore UnassignedVariableUsage 
+    a = foo '@Ignore UnassignedVariableUsage 
 End Sub
 ";
             var state = Resolve(code);

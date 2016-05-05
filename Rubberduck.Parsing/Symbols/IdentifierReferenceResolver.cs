@@ -11,74 +11,27 @@ using System.Threading;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public class IdentifierReferenceResolver
+    public sealed class IdentifierReferenceResolver
     {
         private readonly DeclarationFinder _declarationFinder;
-
-        private enum ContextAccessorType
-        {
-            GetValueOrReference,
-            AssignValue,
-            AssignReference,
-            AssignValueOrReference = AssignValue | AssignReference
-        }
-
         private readonly QualifiedModuleName _qualifiedModuleName;
-
-        private readonly IReadOnlyList<DeclarationType> _moduleTypes;
-        private readonly IReadOnlyList<DeclarationType> _memberTypes;
-        private readonly IReadOnlyList<DeclarationType> _returningMemberTypes;
-
-        private readonly Stack<Declaration> _withBlockQualifiers;
         private readonly Stack<IBoundExpression> _withBlockExpressions;
-        private readonly HashSet<RuleContext> _alreadyResolved;
-
         private readonly Declaration _moduleDeclaration;
-
         private Declaration _currentScope;
         private Declaration _currentParent;
-
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
 
         public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, DeclarationFinder finder)
         {
             _declarationFinder = finder;
-
             _qualifiedModuleName = qualifiedModuleName;
-
-            _withBlockQualifiers = new Stack<Declaration>();
             _withBlockExpressions = new Stack<IBoundExpression>();
-            _alreadyResolved = new HashSet<RuleContext>();
-
-            _moduleTypes = new[]
-            {
-                DeclarationType.ProceduralModule,
-                DeclarationType.ClassModule,
-            };
-
-            _memberTypes = new[]
-            {
-                DeclarationType.Procedure,
-                DeclarationType.Function,
-                DeclarationType.PropertyGet,
-                DeclarationType.PropertyLet,
-                DeclarationType.PropertySet,
-            };
-
-            _returningMemberTypes = new[]
-            {
-                DeclarationType.Function,
-                DeclarationType.PropertyGet,
-            };
-
             _moduleDeclaration = finder.MatchName(_qualifiedModuleName.ComponentName)
                 .SingleOrDefault(item =>
                     (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule)
                 && item.QualifiedName.QualifiedModuleName.Equals(_qualifiedModuleName));
-
             SetCurrentScope();
-
             var typeBindingContext = new TypeBindingContext(_declarationFinder);
             var procedurePointerBindingContext = new ProcedurePointerBindingContext(_declarationFinder);
             _bindingService = new BindingService(
@@ -93,7 +46,6 @@ namespace Rubberduck.Parsing.Symbols
         {
             _currentScope = _moduleDeclaration;
             _currentParent = _moduleDeclaration;
-            _alreadyResolved.Clear();
         }
 
         public void SetCurrentScope(string memberName, DeclarationType type)
@@ -121,7 +73,6 @@ namespace Rubberduck.Parsing.Symbols
                 qualifier = boundExpression.ReferencedDeclaration;
             }
             // note: pushes null if unresolved
-            _withBlockQualifiers.Push(qualifier);
             _withBlockExpressions.Push(boundExpression);
         }
 
@@ -136,13 +87,12 @@ namespace Rubberduck.Parsing.Symbols
 
         public void ExitWithBlock()
         {
-            _withBlockQualifiers.Pop();
             _withBlockExpressions.Pop();
         }
 
         private IdentifierReference CreateReference(ParserRuleContext callSiteContext, Declaration callee, Selection bindingSelection, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
         {
-            if (callSiteContext == null || _currentScope == null || _alreadyResolved.Contains(callSiteContext))
+            if (callSiteContext == null || _currentScope == null)
             {
                 return null;
             }
@@ -194,6 +144,10 @@ namespace Rubberduck.Parsing.Symbols
             if (boundExpression != null)
             {
                 _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, declaration) => CreateReference(context, declaration, RubberduckParserState.CreateBindingSelection(context, exprCtx), isAssignmentTarget, hasExplicitLetStatement));
+            }
+            else
+            {
+                Debug.WriteLine("Failed to resolve {0}. Possible causes include: COM Coclass/Interface mixup / Alias / Bug in the resolver.", expression);
             }
         }
 
@@ -525,15 +479,6 @@ namespace Rubberduck.Parsing.Symbols
         public void Resolve(VBAParser.ImplementsStmtContext context)
         {
             ResolveType(context.valueStmt(), context.valueStmt().GetText());
-        }
-
-        public void Resolve(VBAParser.VsAddressOfContext context)
-        {
-            var boundExpression = _bindingService.ResolveProcedurePointer(_moduleDeclaration, _currentParent, context.valueStmt().GetText());
-            if (boundExpression != null)
-            {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, declaration) => CreateReference(context.valueStmt(), declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt(), boundExpression.Context)));
-            }
         }
 
         public void Resolve(VBAParser.RaiseEventStmtContext context)

@@ -289,11 +289,6 @@ namespace Rubberduck.Parsing.Symbols
             _resolver.Resolve(context);
         }
 
-        public override void EnterVsAddressOf(VBAParser.VsAddressOfContext context)
-        {        
-            _resolver.Resolve(context);
-        }
-
         public override void EnterRaiseEventStmt(VBAParser.RaiseEventStmtContext context)
         {
             _resolver.Resolve(context);

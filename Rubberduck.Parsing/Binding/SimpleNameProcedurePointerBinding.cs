@@ -95,17 +95,17 @@ namespace Rubberduck.Parsing.Binding
                 subroutine or property with a Property Get defined in a procedural module within the enclosing 
                 project other than the enclosing module.  
             */
-            var function = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Function, DeclarationType.ProceduralModule);
+            var function = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Function);
             if (function != null)
             {
                 return new SimpleNameExpression(function, ExpressionClassification.Function, _expression);
             }
-            var subroutine = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Procedure, DeclarationType.ProceduralModule);
+            var subroutine = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Procedure);
             if (subroutine != null)
             {
                 return new SimpleNameExpression(subroutine, ExpressionClassification.Subroutine, _expression);
             }
-            var propertyGet = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.PropertyGet, DeclarationType.ProceduralModule);
+            var propertyGet = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.PropertyGet);
             if (propertyGet != null)
             {
                 return new SimpleNameExpression(propertyGet, ExpressionClassification.Property, _expression);

@@ -302,22 +302,22 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberEnclosedProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
         {
-            return FindMemberEnclosedProjectWithoutEnclosingModule(callingProject, callingModule, callingParent, memberName, memberType, DeclarationType.Module);
-        }
-
-        public Declaration FindMemberEnclosedProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType, DeclarationType moduleType)
-        {
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m =>
                 m.DeclarationType.HasFlag(memberType)
                 // TODO: Fix this?
                 // Assume no module = built-in, not checkable thus we conservatively include it in the matches.
-                && (Declaration.GetModuleParent(m) == null || Declaration.GetModuleParent(m).DeclarationType.HasFlag(moduleType))
+                && (Declaration.GetModuleParent(m) == null || Declaration.GetModuleParent(m).DeclarationType == DeclarationType.ProceduralModule)
                 && Declaration.GetProjectParent(m).Equals(callingProject)
                 && !callingModule.Equals(Declaration.GetModuleParent(m)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
             return match;
+        }
+
+        private static bool IsInstanceSensitive(DeclarationType memberType)
+        {
+            return memberType == DeclarationType.Variable || memberType == DeclarationType.Constant || memberType.HasFlag(DeclarationType.Procedure) || memberType.HasFlag(DeclarationType.Function);
         }
 
         public Declaration FindMemberEnclosedProjectInModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration memberModule, string memberName, DeclarationType memberType)
@@ -334,7 +334,8 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberReferencedProject(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
         {
-            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType));
+            bool isInstanceSensitive = IsInstanceSensitive(memberType);
+            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => (!isInstanceSensitive || Declaration.GetModuleParent(p) == null || Declaration.GetModuleParent(p).DeclarationType != DeclarationType.ClassModule) &&  p.DeclarationType.HasFlag(memberType));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
             return match;
