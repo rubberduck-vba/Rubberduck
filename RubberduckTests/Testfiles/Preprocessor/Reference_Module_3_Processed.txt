@@ -1,0 +1,981 @@
+Attribute VB_Name = "vbFnPivotItemPri"
+Option Explicit
+Option Private Module
+
+
+
+Private Const ThisModule As String = ThisProject & "|vbFnPivotItemPri"
+
+Public Sub ClearPivotItemsVector(PivotItemsVector As tyPivotItemsVector)
+    Const ThisProcedure As String = ThisModule & "|ClearPivotItemsVector|Sub"
+    Dim lvIndex As Long
+
+    With PivotItemsVector
+        For lvIndex = Lo1 To .Count
+            Set .Items(lvIndex) = Nothing
+        Next
+    End With
+End Sub
+
+Public Function GetPivotItemLabelRangeOrNothing(PivotItem As Excel.PivotItem) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|HasPivotItemDataRange|Function"
+    ' eingeführt, weil PivotItem.Visible bei RowItems den Fehler "Typen unverträglich" wirft
+    On Error Resume Next
+    Set GetPivotItemLabelRangeOrNothing = PivotItem.LabelRange
+End Function
+
+Public Function GetPivotItemsVisibleVector(PivotItems As Excel.PivotItems _
+                                         , PivotFieldOrientation As XlPivotFieldOrientation _
+                                         , SelectedOnly As Boolean _
+                                         ) As tyPivotItemsVector
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemsVisibleVector|Function"
+    Dim lcPivotItem As Excel.PivotItem
+
+    Select Case PivotFieldOrientation
+        Case XlPivotFieldOrientation.xlColumnField
+            GetPivotItemsVisibleVector = GetPivotItemColumnVisibleVector(PivotItems:=PivotItems)
+
+        Case XlPivotFieldOrientation.xlRowField
+            GetPivotItemsVisibleVector = GetPivotItemRowVisibleVector(PivotItems:=PivotItems)
+
+        Case XlPivotFieldOrientation.xlPageField
+            GetPivotItemsVisibleVector = GetPivotItemPageVisibleVector(PivotItems:=PivotItems, SelectedOnly:=SelectedOnly)
+
+        Case Else
+            RaiseLogicError Source:="GetPivotItemsVector"
+
+    End Select
+End Function
+
+Private Sub GetPivotItemTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemTest|Sub"
+    Dim lcPivotTable As Excel.PivotTable
+    Dim lcPivotField As Excel.PivotField
+    Dim lcPivotItem As Excel.PivotItem
+    Dim lcPivotItems As Excel.PivotItems
+    Dim v
+
+    Set lcPivotTable = ActiveSheet.PivotTables(1)
+    'Debug.Print lcPivotTable.Parent.Name
+'    Set lcPivotField = lcPivotTable.PageFields("b")
+    Set lcPivotField = lcPivotTable.RowFields("b")
+Debug.Print lcPivotField.Name
+    For Each lcPivotItem In lcPivotField.PivotItems
+        On Error Resume Next
+        v = lcPivotItem.Visible
+Debug.Print Err.Number, Err.Description
+        On Error Resume Next
+Debug.Print lcPivotItem.DataRange.Address
+Debug.Print Err.Number, Err.Description
+    Next
+    Exit Sub
+
+    Set lcPivotItem = GetPivotItem(PivotItems:=lcPivotField.PivotItems _
+                                 , PivotFieldOrientation:=XlPivotFieldOrientation.xlPageField _
+                                 , FieldItem:=GetPINV("F", 1, "n", 2) _
+                                 )
+End Sub
+Public Function GetPivotItem(PivotItems As Excel.PivotItems _
+                           , PivotFieldOrientation As XlPivotFieldOrientation _
+                           , FieldItem As tyParentItem _
+                           ) As Excel.PivotItem
+    Const ThisProcedure As String = ThisModule & "|GetPivotItem|Function"
+    Dim lcPivotItem As Excel.PivotItem
+
+    ' dieser Text ist einfach Quatsch; deshalb habe ich die alte Routime (GetPivotItemOld) ausgemustert
+    ' bei PivotItems wird der ItemIndex nicht als Index verstanden, sondern als Wert
+    ' deshalb muss bei PivotItems abgeloopt werden; außer bei einem String
+
+    With FieldItem
+        Set lcPivotItem = GetPivotItemOrNothing(PivotItems:=PivotItems, Index:=.ItemNV.Value)
+        If lcPivotItem Is Nothing Then
+            RaisePivotItemsItemValueStringIsNothing FieldItem:=FieldItem _
+                                                  , PivotFieldOrientation:=PivotFieldOrientation
+        End If
+    End With
+
+    Set GetPivotItem = lcPivotItem
+
+    Set lcPivotItem = Nothing
+End Function
+
+Private Sub GetPivotItemOldTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemOldTest|Sub"
+    Dim lcPivotTable As Excel.PivotTable
+    Dim lcPivotField As Excel.PivotField
+    Dim lcPivotItem As Excel.PivotItem
+    Dim lcPivotItems As Excel.PivotItems
+    Dim v
+
+    Set lcPivotTable = ActiveSheet.PivotTables(1)
+    'Debug.Print lcPivotTable.Parent.Name
+'    Set lcPivotField = lcPivotTable.PageFields("b")
+    Set lcPivotField = lcPivotTable.RowFields("b")
+Debug.Print lcPivotField.Name
+    For Each lcPivotItem In lcPivotField.PivotItems
+        On Error Resume Next
+        v = lcPivotItem.Visible
+Debug.Print Err.Number, Err.Description
+        On Error Resume Next
+Debug.Print lcPivotItem.DataRange.Address
+Debug.Print Err.Number, Err.Description
+    Next
+    Exit Sub
+
+    Set lcPivotItem = GetPivotItemOld(PivotItems:=lcPivotField.PivotItems _
+                                 , PivotFieldOrientation:=XlPivotFieldOrientation.xlPageField _
+                                 , FieldItem:=GetPINV("F", 1, "n", 2) _
+                                 )
+End Sub
+Public Function GetPivotItemOld(PivotItems As Excel.PivotItems _
+                           , PivotFieldOrientation As XlPivotFieldOrientation _
+                           , FieldItem As tyParentItem _
+                           ) As Excel.PivotItem
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemOld|Function"
+    Dim lcPivotField As Excel.PivotField
+    Dim lcPivotItem As Excel.PivotItem
+    Dim ltPivotItemsVector As tyPivotItemsVector
+    Dim lvCount As Long
+    Dim lvIndex As Long
+
+    Set lcPivotField = PivotItems.Parent
+    If PivotItems.Count = Lo0 Then
+        RaisePivotItemsCountEq0 FieldItem:=FieldItem _
+                               , PivotFieldOrientation:=PivotFieldOrientation _
+                               , Count:=PivotItems.Count
+    End If
+
+    ' bei PivotItems wird der ItemIndex nicht als Index verstanden, sondern als Wert
+    ' deshalb muss bei PivotItems abgeloopt werden; außer bei einem String
+
+    With FieldItem
+        .ItemNV.Value = GetLongOrStringValue(NameValue:=.ItemNV)
+    End With
+
+    With FieldItem
+        If VBA.VarType(VarName:=.ItemNV.Value) = VBA.VbVarType.vbString Then
+            Set lcPivotItem = GetPivotItemOrNothing(PivotItems:=PivotItems, Index:=.ItemNV.Value)
+            If lcPivotItem Is Nothing Then
+                RaisePivotItemsItemValueStringIsNothing FieldItem:=FieldItem _
+                                                      , PivotFieldOrientation:=PivotFieldOrientation
+            End If
+        Else
+            ltPivotItemsVector = GetPivotItemsVisibleVector(PivotItems:=PivotItems _
+                                                          , PivotFieldOrientation:=PivotFieldOrientation _
+                                                          , SelectedOnly:=False _
+                                                          )
+
+            Select Case VBA.Sgn(.ItemNV.Value)
+                Case In1
+                    If VBA.Abs(.ItemNV.Value) > ltPivotItemsVector.Count Then
+                        RaisePivotItemsItemValueLongPosGtCount FieldItem:=FieldItem _
+                                                             , PivotFieldOrientation:=PivotFieldOrientation _
+                                                             , Count:=ltPivotItemsVector.Count
+                    End If
+                    Set lcPivotItem = ltPivotItemsVector.Items(.ItemNV.Value)
+
+                Case InM1
+                    If VBA.Abs(.ItemNV.Value) > ltPivotItemsVector.Count Then
+                        RaisePivotItemsItemValueLongNegGtCount FieldItem:=FieldItem _
+                                                             , PivotFieldOrientation:=PivotFieldOrientation _
+                                                             , Count:=ltPivotItemsVector.Count
+                    End If
+                    Set lcPivotItem = ltPivotItemsVector.Items(ltPivotItemsVector.Count + Lo1 + .ItemNV.Value)
+
+                Case In0
+                    RaisePivotItemsItemValueLongEq0 FieldItem:=FieldItem _
+                                                  , PivotFieldOrientation:=PivotFieldOrientation _
+                                                  , Count:=ltPivotItemsVector.Count
+            End Select
+        End If
+    End With
+
+    Set GetPivotItemOld = lcPivotItem
+
+    Set lcPivotItem = Nothing
+End Function
+
+Private Sub x()
+
+End Sub
+'Private Sub GetPivotItem2Test()
+'    Const ThisProcedure As String = ThisModule & "|GetPivotItem2Test|Sub"
+'    Dim lcPivotTable As Excel.PivotTable
+'    Dim lcPivotField As Excel.PivotField
+'    Dim lcPivotItem As Excel.PivotItem
+'    Dim lcPivotItems As Excel.PivotItems
+'    Dim v
+'
+'    Set lcPivotTable = ActiveSheet.PivotTables(1)
+'    'Debug.Print lcPivotTable.Parent.Name
+''    Set lcPivotField = lcPivotTable.PageFields("b")
+'    Set lcPivotField = lcPivotTable.RowFields("b")
+'Debug.Print lcPivotField.Name
+'    For Each lcPivotItem In lcPivotField.PivotItems
+'        On Error Resume Next
+'        v = lcPivotItem.Visible
+'Debug.Print Err.Number, Err.Description
+'        On Error Resume Next
+'Debug.Print lcPivotItem.DataRange.Address
+'Debug.Print Err.Number, Err.Description
+'    Next
+'    Exit Sub
+'
+'    Set lcPivotItem = GetPivotItem2(PivotItems:=lcPivotField.PivotItems _
+'                                 , PivotFieldOrientation:=XlPivotFieldOrientation.xlPageField _
+'                                 , FieldItem:=GetPINV("F", 1, "n", 2) _
+'                                 )
+'End Sub
+'Public Function GetPivotItem2(PivotItems As Excel.PivotItems _
+'                           , PivotFieldOrientation As XlPivotFieldOrientation _
+'                           , FieldItem As tyParentItem _
+'                           ) As Excel.PivotItem
+'    Const ThisProcedure As String = ThisModule & "|GetPivotItem2|Function"
+'    Dim lcPivotField As Excel.PivotField
+'    Dim lcPivotItem As Excel.PivotItem
+'    Dim ltPivotItemsVector As tyPivotItemsVector
+'    Dim lvCount As Long
+'    Dim lvIndex As Long
+'
+'    Set lcPivotField = PivotItems.Parent
+'    If PivotItems.Count = Lo0 Then
+'        RaisePivotItemsCountEq0 FieldItem:=FieldItem _
+'                               , PivotFieldOrientation:=PivotFieldOrientation _
+'                               , Count:=PivotItems.Count
+'    End If
+'
+'    ' bei PivotItems wird der ItemIndex nicht als Index verstanden, sondern als Wert
+'    ' deshalb muss bei PivotItems abgeloopt werden; außer bei einem String
+'
+'    With FieldItem
+'        .ItemNV.Value = GetLongOrStringValue(NameValue:=.ItemNV)
+'    End With
+'
+'    With FieldItem
+'        If VBA.VarType(VarName:=.ItemNV.Value) = VBA.VbVarType.vbString Then
+'            Set lcPivotItem = GetPivotItemOrNothing(PivotItems:=PivotItems, Index:=.ItemNV.Value)
+'            If lcPivotItem Is Nothing Then
+'                RaisePivotItemsItemValueStringIsNothing FieldItem:=FieldItem _
+'                                                      , PivotFieldOrientation:=PivotFieldOrientation
+'            End If
+'        Else
+'            ltPivotItemsVector = GetPivotFieldItemsVisibleVector(PivotField:=lcPivotField)
+'
+'            Select Case VBA.Sgn(.ItemNV.Value)
+'                Case In1
+'                    If VBA.Abs(.ItemNV.Value) > ltPivotItemsVector.Count Then
+'                        RaisePivotItemsItemValueLongPosGtCount FieldItem:=FieldItem _
+'                                                             , PivotFieldOrientation:=PivotFieldOrientation _
+'                                                             , Count:=ltPivotItemsVector.Count
+'                    End If
+'                    Set lcPivotItem = ltPivotItemsVector.Items(.ItemNV.Value)
+'
+'                Case InM1
+'                    If VBA.Abs(.ItemNV.Value) > ltPivotItemsVector.Count Then
+'                        RaisePivotItemsItemValueLongNegGtCount FieldItem:=FieldItem _
+'                                                             , PivotFieldOrientation:=PivotFieldOrientation _
+'                                                             , Count:=ltPivotItemsVector.Count
+'                    End If
+'                    Set lcPivotItem = ltPivotItemsVector.Items(ltPivotItemsVector.Count + Lo1 + .ItemNV.Value)
+'
+'                Case In0
+'                    RaisePivotItemsItemValueLongEq0 FieldItem:=FieldItem _
+'                                                  , PivotFieldOrientation:=PivotFieldOrientation _
+'                                                  , Count:=ltPivotItemsVector.Count
+'            End Select
+'        End If
+'    End With
+'
+'    Set GetPivotItem2 = lcPivotItem
+'
+'    Set lcPivotItem = Nothing
+'End Function
+'
+Public Function GetPivotItemsVisibleDataRange(PivotItems As Excel.PivotItems _
+                                            , PivotFieldOrientation As XlPivotFieldOrientation _
+                                            , FieldItem As tyParentItem _
+                                            ) As Excel.Range
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemsVisibleDataRange|Function"
+    Dim lcDataRange As Excel.Range
+    Dim lcPivotField As Excel.PivotField
+    Dim ltPivotItemsVector As tyPivotItemsVector
+    Dim lvCount As Long
+    Dim lvIndex As Long
+
+    Set lcPivotField = PivotItems.Parent
+    If PivotItems.Count = Lo0 Then
+        RaisePivotItemsCountEq0 FieldItem:=FieldItem _
+                              , PivotFieldOrientation:=PivotFieldOrientation _
+                              , Count:=PivotItems.Count
+    End If
+
+    ltPivotItemsVector = GetPivotItemsVisibleVector(PivotItems:=PivotItems _
+                                                  , PivotFieldOrientation:=PivotFieldOrientation _
+                                                  , SelectedOnly:=False _
+                                                  )
+    With ltPivotItemsVector
+        For lvIndex = LBound(.Items) To UBound(.Items)
+            If lcDataRange Is Nothing Then
+                Set lcDataRange = .Items(lvIndex).DataRange
+            Else
+                Set lcDataRange = Application.Union(Arg1:=lcDataRange _
+                                                  , Arg2:=.Items(lvIndex).DataRange _
+                                                  )
+            End If
+        Next
+    End With
+
+    Set GetPivotItemsVisibleDataRange = lcDataRange
+
+    Set lcPivotField = Nothing
+    Set lcDataRange = Nothing
+End Function
+
+Private Sub GetPivotItemByValueTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemByValueTest|Sub"
+    Dim lcPivotTable As Excel.PivotTable
+    Dim lcPivotField As Excel.PivotField
+    Set lcPivotTable = ActiveSheet.PivotTables(1)
+    Set lcPivotField = lcPivotTable.PivotFields("Time")
+    'Debug.Print GetPivotItemByValue(lcPivotField.PivotItems, VBA.TimeSerial(1, 0, 0), "bla").Name
+End Sub
+Public Function GetPivotItemByValue(PivotItems As Excel.PivotItems, ItemNV As tyNameValue) As Excel.PivotItem
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemByValue|Function"
+    Dim lcPivotItem As Excel.PivotItem
+    Dim lvVarType As VBA.VbVarType
+
+    On Error GoTo CatchError
+
+    With ItemNV
+        If VBA.VarType(VarName:=.Value) = VBA.VbVarType.vbString Then
+            On Error Resume Next
+            Set GetPivotItemByValue = GetPivotItemOrNothing(PivotItems:=PivotItems, Index:=.Value)
+        Else
+            lvVarType = VBA.VarType(VarName:=.Value)
+            If lvVarType = VBA.VbVarType.vbLong _
+            Or lvVarType = VBA.VbVarType.vbInteger Then
+                lvVarType = VBA.VbVarType.vbDouble
+            End If
+            For Each lcPivotItem In PivotItems
+                If IsPivotItemVisible(lcPivotItem) Then
+                    With lcPivotItem.LabelRange.Areas(Index:=Lo1).Resize(RowSize:=Lo1, ColumnSize:=Lo1)
+                        'Debug.Print VBA.VarType(VarName:=.Value), .Value
+                        If VBA.VarType(VarName:=.Value) = lvVarType Then
+                            If .Value = ItemNV.Value Then
+                                Set GetPivotItemByValue = lcPivotItem
+                                Exit For
+                            End If
+                        ElseIf (VBA.VarType(VarName:=.Value) = VBA.VbVarType.vbDate And lvVarType = VBA.VbVarType.vbDouble) Then
+                            If .Value2 = ItemNV.Value Then
+                                Set GetPivotItemByValue = lcPivotItem
+                                Exit For
+                            End If
+                        End If
+                    End With
+                End If
+            Next
+        End If
+    End With
+    If GetPivotItemByValue Is Nothing Then
+        RaisePivotItemByValueNotFound NameValue:=ItemNV
+    End If
+
+    Exit Function
+
+CatchError:
+    GetPivotItemByValue = SetErrMsg(XlCVError:=Excel.XlCVError.xlErrRef _
+                                           , Description:=VBA.Err.Description _
+                                           )
+End Function
+
+Private Sub GetPivotFieldItemsVisibleVectorTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotFieldItemsVisibleVectorTest|Sub"
+    Dim ltVector As tyPivotItemsVector
+    ltVector = GetPivotFieldItemsVisibleVector(ActiveCell.PivotTable.ColumnFields("host2"))
+    Stop
+End Sub
+Private Function GetPivotFieldItemsVisibleVector(PivotField As Excel.PivotField) As tyPivotItemsVector
+    Const ThisProcedure As String = ThisModule & "|GetPivotFieldItemsVisibleVector|Function"
+    Dim lcPivotAxis As Excel.PivotAxis
+    Dim lcPivotLine As Excel.PivotLine
+    Dim lcPivotLineCell As Excel.PivotCell
+    Dim lcPivotItem As Excel.PivotItem
+    Dim ltVector As tyPivotItemsVector
+
+    Set lcPivotAxis = GetPivotFieldPivotAxis(PivotField:=PivotField)
+    For Each lcPivotLine In lcPivotAxis.PivotLines
+        If lcPivotLine.LineType = XlPivotLineType.xlPivotLineRegular Then
+            For Each lcPivotLineCell In lcPivotLine.PivotLineCells
+                With lcPivotLineCell
+                    If .PivotCellType = XlPivotCellType.xlPivotCellPivotItem Then
+                        If .PivotField.Name = PivotField.Name Then
+                            Set lcPivotItem = .PivotItem
+                            'Debug.Print "PivotField", PivotField.Name, PivotField.NumberFormat, PivotFieldDataTypeName(PivotField.DataType)
+                            Debug.Print "PivotItem ", lcPivotItem.Name, VarTypeName(lcPivotItem.Value)
+                            'Debug.Print "LabelRange", lcPivotItem.LabelRange.NumberFormat, lcPivotItem.LabelRange.Value, VarTypeName(lcPivotItem.LabelRange.Value)
+
+                            With ltVector
+                                .Count = .Count + Lo1
+                                If .Count = Lo1 Then
+                                    ReDim .Items(Lo1 To .Count)
+                                Else
+                                    ReDim Preserve .Items(Lo1 To .Count)
+                                End If
+                                Set .Items(.Count) = lcPivotItem
+                            End With
+'                            Select Case PivotField.DataType
+'                                Case XlPivotFieldDataType.xlDate
+'                                    lcDict.Add Key:=lcPivotItem.Name, Item:=lcPivotItem
+'
+'                                Case XlPivotFieldDataType.xlNumber
+'                                    lcDict.Add Key:=lcPivotItem.Name, Item:=lcPivotItem
+'
+'                                Case XlPivotFieldDataType.xlText
+'                                    lcDict.Add Key:=lcPivotItem.Name, Item:=lcPivotItem
+'
+'                                Case Else
+'                                    Stop
+'                            End Select
+                            Exit For
+                        End If
+                    End If
+                End With
+            Next
+        End If
+    Next
+
+    GetPivotFieldItemsVisibleVector = ltVector
+
+End Function
+
+Public Function GetPivotItemColumnVisibleVector(PivotItems As Excel.PivotItems) As tyPivotItemsVector
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemRowVisibleVector|Function"
+    
+    ' Achtung: diese neue Version macht genau das, was die alte Version (GetPivotItemColumnVisibleVectorOldTest) macht
+    ' dabei kann es bei PivotFields ab den 2. Level vorkommen, dass PivotItems mehrfach auftreten
+    ' wenn es beim PivotField auf dem 1. Level mehrere PivotItems gibt
+    ' z. B: 2 Hosts auf Level 1 und die CPU 0 auf Level 2
+    ' aber vorher war's so, also lass ich es
+    
+    GetPivotItemColumnVisibleVector = GetPivotItemRowColumnVisibleVector(PivotItems:=PivotItems, PivotFieldOrientation:=XlPivotFieldOrientation.xlColumnField)
+    
+End Function
+
+Private Sub GetPivotItemColumnVisibleVectorOldTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemColumnVisibleVectorOldTest|Sub"
+    Dim piv As tyPivotItemsVector
+    Dim i As Variant
+    Dim pf As PivotField
+    Dim pi As PivotItem
+    Set pf = ActiveSheet.PivotTables(1).ColumnFields("host2")
+    piv = GetPivotItemColumnVisibleVectorOld(pf.PivotItems)
+    For i = 1 To piv.Count
+        Set pi = piv.Items(i)
+Debug.Print i, pf.Name, pi.Name, pf.Position
+    Next
+End Sub
+Public Function GetPivotItemColumnVisibleVectorOld(PivotItems As Excel.PivotItems) As tyPivotItemsVector
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemColumnVisibleVectorOld|Function"
+    Dim lcPivotItem As Excel.PivotItem
+    Dim lcPivotField As Excel.PivotField
+    Dim lcPivotTable As Excel.PivotTable
+    Dim laVector() As Excel.PivotItem
+    Dim lvCount As Long
+    Dim lvIndex As Long
+
+    Set lcPivotField = PivotItems.Parent
+    Set lcPivotTable = lcPivotField.Parent
+    'Debug.Print lcPivotField.Name
+
+    With lcPivotTable.TableRange1
+        ReDim laVector(.Column To .Column + .Columns.Count - Lo1)
+    End With
+
+    For Each lcPivotItem In PivotItems
+        If IsPivotItemVisible(PivotItem:=lcPivotItem) Then
+            With lcPivotItem.LabelRange.Areas(Index:=Lo1).Resize(RowSize:=Lo1, ColumnSize:=Lo1)
+                Set laVector(.Column) = lcPivotItem
+                lvCount = lvCount + Lo1
+            End With
+        End If
+    Next
+
+    GetPivotItemColumnVisibleVectorOld = GetVectorFromVector(Vector:=laVector _
+                                                            , Count:=lvCount _
+                                                            )
+
+    GetPivotItemColumnVisibleVectorOld.PivotFieldDataType = lcPivotField.DataType
+
+    Set lcPivotItem = Nothing
+    Set lcPivotTable = Nothing
+    Set lcPivotField = Nothing
+End Function
+
+Private Sub GetPivotItemColumnVisibleVector2Test()
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemColumnVisibleVector2Test|Sub"
+    Dim piv As tyPivotItemsVector
+    Dim i As Variant
+    Dim pf As PivotField
+    Dim pi As PivotItem
+    Set pf = ActiveSheet.PivotTables(1).ColumnFields("Server")
+    piv = GetPivotItemColumnVisibleVector2(pf.PivotItems)
+    For i = 1 To piv.Count
+        Set pi = piv.Items(i)
+Debug.Print i, pf.Name, pi.Name, pf.Position
+    Next
+End Sub
+Public Function GetPivotItemColumnVisibleVector2(PivotItems As Excel.PivotItems) As tyPivotItemsVector
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemColumnVisibleVector2|Function"
+    Dim lcPivotField As Excel.PivotField
+
+    Set lcPivotField = PivotItems.Parent
+
+    GetPivotItemColumnVisibleVector2 = GetPivotFieldItemsVisibleVector(PivotField:=lcPivotField)
+
+    Set lcPivotField = Nothing
+End Function
+
+Private Sub GetPivotItemPageVisibleVectorTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemPageVisibleVectorTest|Sub"
+    Dim piv As tyPivotItemsVector
+    Dim i As Variant
+    Dim pf As PivotField
+    Dim pi As PivotItem
+    Set pf = ActiveSheet.PivotTables(1).PageFields("DateHHMMSS")
+    piv = GetPivotItemPageVisibleVector(pf.PivotItems, False)
+    For i = 1 To piv.Count
+        Set pi = piv.Items(i)
+Debug.Print i, pf.Name, pi.Name, pf.Position
+    Next
+End Sub
+Public Function GetPivotItemPageVisibleVector(PivotItems As Excel.PivotItems, SelectedOnly As Boolean) As tyPivotItemsVector
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemPageVisibleVector|Function"
+    Dim lcPivotItem As Excel.PivotItem
+    Dim lcPivotField As Excel.PivotField
+    Dim laVector() As Excel.PivotItem
+    Dim lvCount As Long
+    Dim lvIndex As Long
+    Dim lvFieldDate As Date
+    Dim lvItemDate As Date
+    Dim v As Variant
+
+    Set lcPivotField = PivotItems.Parent
+    'Debug.Print lcPivotField.Name
+
+    If lcPivotField.AllItemsVisible Then
+
+        If Not SelectedOnly Then
+            ReDim laVector(Lo1 To PivotItems.Count)
+
+            For Each lcPivotItem In PivotItems
+                lvCount = lvCount + Lo1
+                Set laVector(lvCount) = lcPivotItem
+            Next
+        End If
+
+    ElseIf lcPivotField.EnableMultiplePageItems Then
+        ' mehrere PageFields ausgewählt
+
+        ReDim laVector(Lo1 To PivotItems.Count)
+
+        For Each lcPivotItem In PivotItems
+            lvIndex = lvIndex + Lo1
+            With lcPivotItem
+                If IsPivotItemVisibleOnError(PivotItem:=lcPivotItem) Then
+                    RaisePivotItemVisibleError ParName:=lcPivotField.Name
+                End If
+                If SelectedOnly Then
+                    If .Visible Then
+                        Set laVector(lvIndex) = lcPivotItem
+                        lvCount = lvCount + Lo1
+                    End If
+                Else
+                    Set laVector(lvIndex) = lcPivotItem
+                    lvCount = lvCount + Lo1
+                End If
+            End With
+        Next
+
+    Else
+        'nur ein einzelnes PageField ausgewählt
+        ReDim laVector(Lo1 To Lo1)
+        If lcPivotField.DataType = XlPivotFieldDataType.xlDate Then
+            lvFieldDate = lcPivotField.DataRange.Value
+            For Each lcPivotItem In PivotItems
+                lvItemDate = GetDateFromPivotItemValue(PivotItemValue:=lcPivotItem.Value)
+                If lvItemDate = lvFieldDate Then
+                    lvCount = lvCount + Lo1
+                    Set laVector(lvCount) = lcPivotItem
+                End If
+            Next
+        Else
+            For Each lcPivotItem In PivotItems
+                If lcPivotItem.Visible Then
+                    lvCount = lvCount + Lo1
+                    Set laVector(lvCount) = lcPivotItem
+                    Exit For
+                End If
+            Next
+        End If
+
+    End If
+
+    If lvCount > Lo0 Then
+
+    GetPivotItemPageVisibleVector = GetVectorFromVector(Vector:=laVector _
+                                                      , Count:=lvCount _
+                                                      )
+    End If
+    GetPivotItemPageVisibleVector.PivotFieldDataType = lcPivotField.DataType
+
+    Set lcPivotItem = Nothing
+    Set lcPivotField = Nothing
+End Function
+
+Public Function GetPivotItemRowVisibleVector(PivotItems As Excel.PivotItems) As tyPivotItemsVector
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemRowVisibleVector|Function"
+    
+    ' Achtung: diese neue Version macht genau das, was die alte Version (GetPivotItemRowVisibleVectorOld) macht
+    ' dabei kann es bei PivotFields ab den 2. Level vorkommen, dass PivotItems mehrfach auftreten
+    ' wenn es beim PivotField auf dem 1. Level mehrere PivotItems gibt
+    ' z. B: 2 Hosts auf Level 1 und die CPU 0 auf Level 2
+    ' aber vorher war's so, also lass ich es
+    
+    GetPivotItemRowVisibleVector = GetPivotItemRowColumnVisibleVector(PivotItems:=PivotItems, PivotFieldOrientation:=XlPivotFieldOrientation.xlRowField)
+    
+End Function
+
+Private Sub GetPivotItemRowVisibleVectorOldTest()
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemRowVisibleVectorOldTest|Sub"
+    Dim piv As tyPivotItemsVector
+    Dim i As Variant
+    Dim pf As PivotField
+    Dim pi As PivotItem
+    Set pf = ActiveSheet.PivotTables(1).RowFields("Date")
+    piv = GetPivotItemRowVisibleVectorOld(pf.PivotItems)
+    For i = 1 To piv.Count
+        Set pi = piv.Items(i)
+Debug.Print i, pf.Name, pi.Name, pf.Position
+    Next
+End Sub
+Public Function GetPivotItemRowVisibleVectorOld(PivotItems As Excel.PivotItems) As tyPivotItemsVector
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemRowVisibleVectorOld|Function"
+    Dim lcPivotItem As Excel.PivotItem
+    Dim lcPivotField As Excel.PivotField
+    Dim lcPivotTable As Excel.PivotTable
+    Dim laVector() As Excel.PivotItem
+    Dim lvCount As Long
+    Dim lvIndex As Long
+
+    Set lcPivotField = PivotItems.Parent
+    Set lcPivotTable = lcPivotField.Parent
+    'Debug.Print lcPivotField.Name
+
+    With lcPivotTable.TableRange1
+        ReDim laVector(.Row To .Row + .Rows.Count - Lo1)
+    End With
+
+    For Each lcPivotItem In PivotItems
+        If IsPivotItemVisible(PivotItem:=lcPivotItem) Then
+            With lcPivotItem.LabelRange.Areas(Index:=Lo1).Resize(RowSize:=Lo1, ColumnSize:=Lo1)
+                Set laVector(.Row) = lcPivotItem
+                lvCount = lvCount + Lo1
+            End With
+        End If
+    Next
+
+    GetPivotItemRowVisibleVectorOld = GetVectorFromVector(Vector:=laVector _
+                                                         , Count:=lvCount _
+                                                         )
+
+    GetPivotItemRowVisibleVectorOld.PivotFieldDataType = lcPivotField.DataType
+
+    Set lcPivotItem = Nothing
+    Set lcPivotTable = Nothing
+    Set lcPivotField = Nothing
+End Function
+
+Private Sub GetPivotItemRowColumnVisibleVectorTest()
+    Dim ltPivotItemsVector As tyPivotItemsVector
+    Dim lcPivotTable As Excel.PivotTable
+    Dim lcPivotField As Excel.PivotField
+    Dim lvOrientation As XlPivotFieldOrientation
+    
+    Set lcPivotTable = ActiveSheet.PivotTables(1)
+    Set lcPivotField = lcPivotTable.PivotFields("Host")
+    lvOrientation = lcPivotField.Orientation
+    
+
+    ltPivotItemsVector = GetPivotItemRowColumnVisibleVector(lcPivotField.PivotItems, lvOrientation)
+End Sub
+
+Public Function GetPivotItemRowColumnVisibleVector(PivotItems As Excel.PivotItems, PivotFieldOrientation As XlPivotFieldOrientation) As tyPivotItemsVector
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemColumnVisibleVector|Function"
+    Dim lcArea As Excel.Range
+    Dim lcRange As Excel.Range
+    Dim lcPivotAxis As Excel.PivotAxis
+    Dim lcPivotCell As Excel.PivotCell
+    Dim lcPivotField As Excel.PivotField
+    Dim lcPivotItem As Excel.PivotItem
+    Dim lcPivotLine As Excel.PivotLine
+    Dim lcPivotTable As Excel.PivotTable
+    Dim ltPivotItemsVector As tyPivotItemsVector
+    Dim lvAreaOK As Boolean
+    Dim lvAreaSize As Long
+    Dim lvCellsCount As Long
+    Dim lvIndex As Long
+    Dim lvPivotItemsCount As Long
+    Dim lvPosition As Long
+    
+    ' es werden die ItemNamen des PivotField ermittelt
+    ' die mit den Kriterien, die in den PivotFieldPivotItemAxes übereinstimmten
+    ' die ItemName werden von links nacch rechts bei Column und
+    ' und von oben nach unten bei Row ausgegeben
+    ' also so, wie sie eben in der PivotTable angezeigt werden
+    
+    Set lcPivotField = PivotItems.Parent
+    With lcPivotField
+        Set lcPivotTable = .Parent
+        lvPosition = .Position
+    End With
+    
+    If PivotFieldOrientation = XlPivotFieldOrientation.xlRowField Then
+        Set lcPivotAxis = lcPivotTable.PivotRowAxis
+        
+    ElseIf PivotFieldOrientation = XlPivotFieldOrientation.xlColumnField Then
+        Set lcPivotAxis = lcPivotTable.PivotColumnAxis
+    Else
+        RaiseLogicError Source:="GetPivotItemRowColumnVisibleVector"
+    End If
+        
+    Set lcPivotLine = lcPivotAxis.PivotLines(Index:=Lo1)
+    Set lcPivotCell = lcPivotLine.PivotLineCells.Item(Index:=lvPosition)
+    Set lcPivotItem = lcPivotCell.PivotItem
+    
+    ' die Schrittweite und länge bestimmen, in denen jeweils über die Achse gehoppelt wird
+        
+    If PivotFieldOrientation = XlPivotFieldOrientation.xlRowField Then
+        lvCellsCount = lcPivotField.DataRange.Rows.Count
+        lvAreaSize = lcPivotItem.DataRange.Areas(Index:=Lo1).Rows.Count
+    
+    ElseIf PivotFieldOrientation = XlPivotFieldOrientation.xlColumnField Then
+        lvCellsCount = lcPivotField.DataRange.Columns.Count
+        lvAreaSize = lcPivotItem.DataRange.Areas(Index:=Lo1).Columns.Count
+        
+    Else
+        RaiseLogicError Source:="GetPivotItemRowColumnVisibleVector"
+    End If
+    
+    For lvIndex = Lo1 To lvCellsCount Step lvAreaSize
+        Set lcPivotLine = lcPivotAxis.PivotLines(Index:=lvIndex)
+        ' das ist die Cell von PivotField
+        Set lcPivotCell = lcPivotLine.PivotLineCells.Item(Index:=lvPosition)
+        Set lcPivotItem = lcPivotCell.PivotItem
+
+            Debug.Print lcPivotItem.DataRange.Address
+            lcPivotItem.DataRange.Select
+
+        For Each lcArea In lcPivotItem.DataRange.Areas
+
+                lcArea.Select
+
+            lvAreaOK = False
+            If PivotFieldOrientation = XlPivotFieldOrientation.xlRowField Then
+                If lcArea.Row = lcPivotCell.Range.Row Then
+                    lvAreaOK = True
+
+                        lcArea.Select
+
+                End If
+            ElseIf PivotFieldOrientation = XlPivotFieldOrientation.xlColumnField Then
+                If lcArea.Column = lcPivotCell.Range.Column Then
+                    lvAreaOK = True
+
+                        lcArea.Select
+
+                End If
+            Else
+                RaiseLogicError Source:="GetPivotItemRowColumnVisibleVector"
+            End If
+            If lvAreaOK Then
+                With ltPivotItemsVector
+                    lvPivotItemsCount = lvPivotItemsCount + Lo1
+                    .Count = lvPivotItemsCount
+                    ReDim Preserve .Items(Lo1 To .Count)
+                    Set .Items(.Count) = lcPivotItem
+                End With
+                Exit For
+            End If
+        Next
+    Next
+    
+    ltPivotItemsVector.PivotFieldDataType = lcPivotField.DataType
+    
+    GetPivotItemRowColumnVisibleVector = ltPivotItemsVector
+
+    Set lcPivotItem = Nothing
+    Set lcPivotTable = Nothing
+    Set lcPivotField = Nothing
+End Function
+
+Public Function IsPivotItemVisible(PivotItem As Excel.PivotItem) As Boolean
+    Const ThisProcedure As String = ThisModule & "|IsPivotItemVisible|Function"
+    ' eingeführt, weil PivotItem.Visible bei RowFields den Fehler "Typen unverträglich" wirft
+    On Error Resume Next
+    IsPivotItemVisible = VBA.CBool(Not PivotItem.DataRange Is Nothing)
+End Function
+
+Public Function IsPivotItemVisibleOnError(PivotItem As Excel.PivotItem) As Boolean
+    Const ThisProcedure As String = ThisModule & "|IsPivotItemVisibleOnError|Function"
+    Dim lvVisible As Boolean
+    On Error GoTo CatchError
+    lvVisible = PivotItem.Visible
+    IsPivotItemVisibleOnError = False
+    Exit Function
+CatchError:
+    IsPivotItemVisibleOnError = True
+End Function
+
+Private Function GetVectorFromVector(ByRef Vector() As Excel.PivotItem, Count As Long) As tyPivotItemsVector
+    Const ThisProcedure As String = ThisModule & "|GetVectorFromVector|Function"
+    Dim lvIndex As Long
+
+    If Count > Lo0 Then
+    With GetVectorFromVector
+        ReDim .Items(Lo1 To Count)
+
+        For lvIndex = LBound(Vector) To UBound(Vector)
+            If Not Vector(lvIndex) Is Nothing Then
+                .Count = .Count + Lo1
+                Set .Items(.Count) = Vector(lvIndex)
+                Set Vector(lvIndex) = Nothing
+            End If
+        Next
+
+        If .Count <> Count Then
+            RaiseLogicError Source:="GetVectorFromVector"
+        End If
+    End With
+    End If
+End Function
+
+Public Function GetPivotItemLabelRangeValue(PivotItem As Excel.PivotItem) As Variant
+    Const ThisProcedure As String = ThisModule & "|GetPivotItemLabelRangeValue|Function"
+    Dim lcPivotField As Excel.PivotField
+    Dim lvNumberFormat As String
+
+    Set lcPivotField = PivotItem.Parent
+    With PivotItem.LabelRange.Areas(Index:=Lo1).Resize(RowSize:=Lo1, ColumnSize:=Lo1)
+        If VBA.VarType(VarName:=.Value) = VBA.VbVarType.vbDouble Then
+            On Error Resume Next
+            ' NumberFormat wirft bei ColumnFields einen Fehler
+            lvNumberFormat = lcPivotField.NumberFormat
+            On Error GoTo 0
+            If VBA.InStr(lvNumberFormat, ConChrColon) > Lo0 Then
+                GetPivotItemLabelRangeValue = VBA.CDate(.Value)
+            Else
+                GetPivotItemLabelRangeValue = .Value
+            End If
+        Else
+            GetPivotItemLabelRangeValue = .Value
+        End If
+
+    End With
+
+    Set lcPivotField = Nothing
+End Function
+
+Private Sub GetPivotItemAreasVisibleVectorSortedByPositionTest()
+    Dim ltVector As tyPivotItemAreasVector
+    ltVector = GetPivotItemAreasVisibleVectorSortedByPosition(ActiveCell.PivotTable.ColumnFields("CPU").PivotItems)
+
+End Sub
+Public Function GetPivotItemAreasVisibleVectorSortedByPosition(PivotItems As Excel.PivotItems) As tyPivotItemAreasVector
+    Const ThisProcedure As String = ThisModule & "|GetPivotFieldByPosition|Function"
+    Dim lcArea As Excel.Range
+    Dim lcCell As Excel.Range
+    Dim lcPivotField As Excel.PivotField
+    Dim lcPivotItem As Excel.PivotItem
+    Dim lcPivotTable As Excel.PivotTable
+    Dim ltVector As tyPivotItemAreasVector
+    Dim lvAreaSize As Long
+    Dim lvCellsCount As Long
+    Dim lvCount As Long
+    Dim lvIndex As Long
+    Dim lvOrientation As XlPivotFieldOrientation
+    Dim lvPosition As Long
+
+    ' die PivotFields sortiert nach ihrer Position zurück
+    
+    Set lcPivotField = PivotItems.Parent
+    lvOrientation = lcPivotField.Orientation
+    lvPosition = lcPivotField.Position
+    
+    Set lcPivotTable = lcPivotField.Parent
+    
+    If lvOrientation = XlPivotFieldOrientation.xlRowField Then
+        ' rows
+        lvAreaSize = Lo1
+        lvCellsCount = GetPivotTableRowLabelRange(PivotTable:=lcPivotTable).Rows.Count
+    
+        With ltVector
+            For lvIndex = Lo0 To lvCellsCount - Lo1 Step lvAreaSize
+                Set lcCell = lcPivotField.DataRange.Offset(RowOffset:=lvIndex).Resize(RowSize:=Lo1)
+
+                    lcCell.Select
+
+                Set lcPivotItem = lcCell.PivotCell.PivotColumnLine.PivotLineCells(Index:=lvPosition).PivotItem
+                lvCount = lvCount + Lo1
+                ReDim Preserve .Items(Lo1 To lvCount)
+                With .Items(lvCount)
+                    Set .PivotItem = lcPivotItem
+                End With
+                .Count = lvCount
+            Next
+            
+        End With
+    
+    ElseIf lvOrientation = XlPivotFieldOrientation.xlColumnField Then
+        ' Columns
+        lvAreaSize = lcPivotTable.DataFields.Count
+        lvCellsCount = GetPivotTableColumnLabelRange(PivotTable:=lcPivotTable).Columns.Count
+    
+        With ltVector
+            For lvIndex = Lo0 To lvCellsCount - Lo1 Step lvAreaSize
+                Set lcCell = lcPivotField.DataRange.Offset(ColumnOffset:=lvIndex).Resize(ColumnSize:=Lo1)
+
+                    lcCell.Select
+
+                Set lcPivotItem = lcCell.PivotCell.PivotColumnLine.PivotLineCells(Index:=lvPosition).PivotItem
+                lvCount = lvCount + Lo1
+                ReDim Preserve .Items(Lo1 To lvCount)
+                With .Items(lvCount)
+                    Set .PivotItem = lcPivotItem
+                End With
+                .Count = lvCount
+            Next
+            
+        End With
+        
+    
+    End If
+    
+    
+    GetPivotItemAreasVisibleVectorSortedByPosition = ltVector
+    
+End Function
+
+Private Sub SwapPivotItemArea(LO As tyPivotItemArea, HI As tyPivotItemArea)
+    Dim ltPivotItemArea As tyPivotItemArea
+    
+    ltPivotItemArea = HI
+    HI = LO
+    LO = ltPivotItemArea
+
+        LO.Area.Select ' muss jetzt LO sein
+        HI.Area.Select ' muss jetzt HI sein
+
+
+End Sub
+
+

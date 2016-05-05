@@ -67,7 +67,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             return Declarations.Where(d => d.DeclarationType == DeclarationType.Parameter
                                        && d.ComponentName == TargetDeclaration.ComponentName
-                                       && d.Project.Equals(TargetDeclaration.Project)
+                                       && d.ProjectId == TargetDeclaration.ProjectId
                                        && targetSelection.Contains(d.Selection))
                               .OrderBy(item => item.Selection.StartLine)
                               .ThenBy(item => item.Selection.StartColumn);

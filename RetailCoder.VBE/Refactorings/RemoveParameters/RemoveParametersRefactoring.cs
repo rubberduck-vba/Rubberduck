@@ -10,19 +10,20 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
     public class RemoveParametersRefactoring : IRefactoring
     {
+        private readonly VBE _vbe;
         private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
-        private readonly IActiveCodePaneEditor _editor;
         private RemoveParametersModel _model;
 
-        public RemoveParametersRefactoring(IRefactoringPresenterFactory<IRemoveParametersPresenter> factory, IActiveCodePaneEditor editor)
+        public RemoveParametersRefactoring(VBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
         {
+            _vbe = vbe;
             _factory = factory;
-            _editor = editor;
         }
 
         public void Refactor()
@@ -44,7 +45,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public void Refactor(QualifiedSelection target)
         {
-            _editor.SetSelection(target);
+            _vbe.ActiveCodePane.CodeModule.SetSelection(target);
             Refactor();
         }
 
@@ -55,7 +56,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            _editor.SetSelection(target.QualifiedSelection);
+            _vbe.ActiveCodePane.CodeModule.SetSelection(target.QualifiedSelection);
             Refactor();
         }
 
@@ -273,7 +274,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             var interfaceImplementations = _model.Declarations.FindInterfaceImplementationMembers()
-                                                        .Where(item => item.Project.Equals(_model.TargetDeclaration.Project) &&
+                                                        .Where(item => item.ProjectId == _model.TargetDeclaration.ProjectId &&
                                                                item.IdentifierName == _model.TargetDeclaration.ComponentName + "_" + _model.TargetDeclaration.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {

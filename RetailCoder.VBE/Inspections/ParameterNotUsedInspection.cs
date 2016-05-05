@@ -8,7 +8,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
@@ -33,7 +32,7 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var declarations = Declarations.ToList();
+            var declarations = UserDeclarations.ToList();
 
             var interfaceMemberScopes = declarations.FindInterfaceMembers().Select(m => m.Scope).ToList();
             var interfaceImplementationMemberScopes = declarations.FindInterfaceImplementationMembers().Select(m => m.Scope).ToList();
@@ -45,17 +44,16 @@ namespace Rubberduck.Inspections
                 && !(parameter.Context.Parent.Parent is VBAParser.DeclareStmtContext));
 
             var unused = parameters.Where(parameter => !parameter.References.Any()).ToList();
-            var editor = new ActiveCodePaneEditor(_vbe, _wrapperFactory);
             var quickFixRefactoring =
-                new RemoveParametersRefactoring(
-                    new RemoveParametersPresenterFactory(editor, 
-                        new RemoveParametersDialog(), State, _messageBox), editor);
+                new RemoveParametersRefactoring(_vbe, new RemoveParametersPresenterFactory(_vbe, new RemoveParametersDialog(), State, _messageBox));
 
             var issues = from issue in unused.Where(parameter =>
                 !IsInterfaceMemberParameter(parameter, interfaceMemberScopes)
                 && !builtInHandlers.Contains(parameter.ParentDeclaration))
                 let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)
-                select new ParameterNotUsedInspectionResult(this, issue, isInterfaceImplementationMember, quickFixRefactoring, State);
+                select new ParameterNotUsedInspectionResult(this, issue,
+                        ((dynamic) issue.Context).identifier(), issue.QualifiedName,
+                        isInterfaceImplementationMember, quickFixRefactoring, State);
 
             return issues.ToList();
         }

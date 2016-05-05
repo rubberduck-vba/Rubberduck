@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Nodes;
 using Rubberduck.VBEditor;
 
@@ -10,15 +9,17 @@ namespace Rubberduck.Inspections
 {
     public sealed class ImplicitVariantReturnTypeInspectionResult : InspectionResultBase
     {
+        private readonly string _identifierName;
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ImplicitVariantReturnTypeInspectionResult(IInspection inspection, Declaration target)
-            : base(inspection, target)
+        public ImplicitVariantReturnTypeInspectionResult(IInspection inspection, string identifierName, QualifiedContext<ParserRuleContext> qualifiedContext)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
+            _identifierName = identifierName;
             _quickFixes = new CodeInspectionQuickFix[]
             {
                 new SetExplicitVariantReturnTypeQuickFix(Context, QualifiedSelection, InspectionsUI.SetExplicitVariantReturnTypeQuickFix), 
-                new IgnoreOnceQuickFix(Target.Context, QualifiedSelection, Inspection.AnnotationName), 
+                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
 
@@ -28,7 +29,8 @@ namespace Rubberduck.Inspections
         {
             get
             {
-                return string.Format(InspectionsUI.ImplicitVariantReturnTypeInspectionResultFormat, Target.IdentifierName);
+                return string.Format(InspectionsUI.ImplicitVariantReturnTypeInspectionResultFormat,
+                    _identifierName);
             }
         }
     }
@@ -68,7 +70,7 @@ namespace Rubberduck.Inspections
             }
 
             var scope = Selection.QualifiedName.ToString();
-            var localScope = scope + "." + context.ambiguousIdentifier().GetText();
+            var localScope = scope + "." + context.identifier().GetText();
             return new ProcedureNode(context, scope, localScope);
         }
 
@@ -80,7 +82,7 @@ namespace Rubberduck.Inspections
             }
 
             var scope = Selection.QualifiedName.ToString();
-            var localScope = scope + "." + context.ambiguousIdentifier().GetText();
+            var localScope = scope + "." + context.identifier().GetText();
             return new ProcedureNode(context, scope, localScope);
         }
     }

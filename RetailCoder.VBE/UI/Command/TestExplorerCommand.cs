@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
 {
@@ -16,5 +17,7 @@ namespace Rubberduck.UI.Command
         {
             _presenter.Show();
         }
+
+        public RubberduckHotkey Hotkey { get {return RubberduckHotkey.TestExplorer; } }
     }
 }

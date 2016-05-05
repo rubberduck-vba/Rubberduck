@@ -14,6 +14,8 @@ namespace Rubberduck.UI.Command
 
         public abstract void Execute(object parameter);
 
+        public virtual string ShortcutText { get; set; }
+
         public event EventHandler CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }

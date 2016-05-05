@@ -248,7 +248,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -275,6 +275,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Accessibility.cs" />
+    <Compile Include="API\Declaration.cs" />
+    <Compile Include="API\DeclarationType.cs" />
+    <Compile Include="API\IdentifierReference.cs" />
+    <Compile Include="API\ParserState.cs" />
     <Compile Include="AppMenu.cs" />
     <Compile Include="AutoSave\AutoSave.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
@@ -287,29 +292,83 @@
     <Compile Include="Common\Dispatch\VBProjectsEventsSink.cs" />
     <Compile Include="Common\Dispatch\VBProjectsEventsWrapper.cs" />
     <Compile Include="Common\HookEventArgs.cs" />
-    <Compile Include="Common\HotKeyInfo.cs" />
-    <Compile Include="Common\HotKey.cs" />
+    <Compile Include="Common\Hotkeys\HotkeyInfo.cs" />
+    <Compile Include="Common\Hotkeys\Hotkey.cs" />
     <Compile Include="Common\IAttachable.cs" />
-    <Compile Include="Common\IHook.cs" />
-    <Compile Include="Common\IHotKey.cs" />
-    <Compile Include="Common\ILowLevelKeyboardHook.cs" />
+    <Compile Include="Common\Hotkeys\IHotkey.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
-    <Compile Include="Common\ITimerHook.cs" />
+    <Compile Include="Common\ModuleExporter.cs" />
+    <Compile Include="Common\WinAPI\EnumeratedDevice.cs" />
+    <Compile Include="Common\WinAPI\IRawDevice.cs" />
+    <Compile Include="Common\WinAPI\KeyMap.cs" />
+    <Compile Include="Common\WinAPI\RawDevice.cs" />
+    <Compile Include="Common\WinAPI\RawKeyEventArgs.cs" />
+    <Compile Include="Common\WinAPI\RawMouseEventArgs.cs" />
+    <Compile Include="Common\WinAPI\PreMessageFilter.cs" />
+    <Compile Include="Common\WinAPI\RawInput.cs" />
+    <Compile Include="Common\WinAPI\RawKeyboard.cs" />
+    <Compile Include="Common\WinAPI\RawMouse.cs" />
+    <Compile Include="Common\WinAPI\RegistryAccess.cs" />
+    <Compile Include="Common\WinAPI\Win32.cs" />
     <Compile Include="Common\RubberduckHooks.cs" />
     <Compile Include="Common\TimerHook.cs" />
+    <Compile Include="Common\WinAPI\BroadcastDeviceInterface.cs" />
+    <Compile Include="Common\WinAPI\BroadcastDeviceType.cs" />
+    <Compile Include="Common\WinAPI\DataCommand.cs" />
+    <Compile Include="Common\WinAPI\DeviceInfo.cs" />
+    <Compile Include="Common\WinAPI\DeviceInfoHid.cs" />
+    <Compile Include="Common\WinAPI\DeviceInfoKeyboard.cs" />
+    <Compile Include="Common\WinAPI\DeviceInfoMouse.cs" />
+    <Compile Include="Common\WinAPI\DeviceNotification.cs" />
+    <Compile Include="Common\WinAPI\DeviceType.cs" />
+    <Compile Include="Common\WinAPI\HidUsage.cs" />
+    <Compile Include="Common\WinAPI\HidUsagePage.cs" />
+    <Compile Include="Common\WinAPI\InputData.cs" />
     <Compile Include="Common\WinAPI\KBDLLHOOKSTRUCT.cs" />
     <Compile Include="Common\WinAPI\KBDLLHOOKSTRUCTFlags.cs" />
     <Compile Include="Common\WinAPI\MSLLHOOKSTRUCT.cs" />
     <Compile Include="Common\WinAPI\POINT.cs" />
+    <Compile Include="Common\WinAPI\RawData.cs" />
+    <Compile Include="Common\WinAPI\RawHID.cs" />
+    <Compile Include="Common\WinAPI\RawInputDevice.cs" />
+    <Compile Include="Common\WinAPI\RawInputDeviceFlags.cs" />
+    <Compile Include="Common\WinAPI\RawInputDeviceInfo.cs" />
+    <Compile Include="Common\WinAPI\RawInputDeviceList.cs" />
+    <Compile Include="Common\WinAPI\RawInputHeader.cs" />
+    <Compile Include="Common\WinAPI\RawKeyboardSTRUCT.cs" />
+    <Compile Include="Common\WinAPI\RawMouseSTRUCT.cs" />
+    <Compile Include="Common\WinAPI\UsButtonFlags.cs" />
     <Compile Include="Common\WinAPI\WindowsHook.cs" />
     <Compile Include="Common\WinAPI\Kernel32.cs" />
-    <Compile Include="Common\LowLevelKeyboardHook.cs" />
     <Compile Include="Common\KeyHookEventArgs.cs" />
     <Compile Include="Common\WinAPI\User32.cs" />
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WinAPI\WM.cs" />
+    <Compile Include="Inspections\InspectionsUI.de.Designer.cs">
+      <DependentUpon>InspectionsUI.de.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Inspections\InspectionsUI.fr.Designer.cs">
+      <DependentUpon>InspectionsUI.fr.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Inspections\InspectionsUI.sv.Designer.cs">
+      <DependentUpon>InspectionsUI.sv.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Inspections\InspectionsUI.ja.Designer.cs">
+      <DependentUpon>InspectionsUI.ja.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
+    <Compile Include="Inspections\ObjectVariableNotSetInspection.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerErrorNodeViewModel.cs" />
+    <Compile Include="Settings\RubberduckHotkey.cs" />
     <Compile Include="UI\About\AboutControl.xaml.cs">
       <DependentUpon>AboutControl.xaml</DependentUpon>
     </Compile>
@@ -320,6 +379,12 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\CodeExplorer\BoolToHiddenVisibility.cs" />
+    <Compile Include="UI\Command\IndentCurrentModuleCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\InspectionResultsCommandMenuItem.cs" />
+    <Compile Include="UI\Command\ReparseCommand.cs" />
+    <Compile Include="UI\Command\ShowParserErrorsCommand.cs" />
+    <Compile Include="UI\Command\SyntaxErrorExtensions.cs" />
     <Compile Include="UI\Controls\DeclarationTypeToStringConverter.cs" />
     <Compile Include="UI\Controls\SearchResultPresenterInstanceManager.cs" />
     <Compile Include="UI\Controls\ISearchResultsWindowViewModel.cs" />
@@ -364,9 +429,6 @@
     <Compile Include="Inspections\UntypedFunctionUsageInspection.cs" />
     <Compile Include="Navigation\CodeExplorer\CodeExplorerCustomFolderViewModel.cs" />
     <Compile Include="Navigation\CodeExplorer\CodeExplorerItemViewModel.cs" />
-    <Compile Include="Navigation\NavigateAllReferences.cs" />
-    <Compile Include="Navigation\NavigateAllImplementations.cs" />
-    <Compile Include="Navigation\IDeclarationNavigator.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionResult.cs" />
     <Compile Include="Navigation\RegexSearchReplace\IRegexSearchReplace.cs" />
     <Compile Include="Navigation\RegexSearchReplace\IRegexSearchReplaceDialog.cs" />
@@ -403,11 +465,10 @@
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersRefactoring.cs" />
-    <Compile Include="Root\CommandBarsModule.cs" />
     <Compile Include="Root\RubberduckModule.cs" />
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
     <Compile Include="Settings\GeneralSettings.cs" />
-    <Compile Include="Settings\Hotkey.cs" />
+    <Compile Include="Settings\HotkeySetting.cs" />
     <Compile Include="Settings\IndenterSettings.cs" />
     <Compile Include="Settings\SourceControlConfiguration.cs" />
     <Compile Include="Settings\SourceControlConfigurationService.cs" />
@@ -533,7 +594,7 @@
     <Compile Include="UI\Command\RegexSearchReplaceCommand.cs" />
     <Compile Include="UI\Command\RunAllTestsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RunAllTestsCommandMenuItem.cs" />
-    <Compile Include="UI\Command\RunCodeInspectionsCommand.cs" />
+    <Compile Include="UI\Command\InspectionResultsCommand.cs" />
     <Compile Include="UI\Command\ShowSourceControlPanelCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ShowSourceControlPanelCommandMenuItem.cs" />
     <Compile Include="UI\Command\TestExplorerCommand.cs" />
@@ -628,7 +689,6 @@
     <Compile Include="UI\Settings\UnitTestSettings.xaml.cs">
       <DependentUpon>UnitTestSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\ActionFailedEventArgs.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -700,73 +760,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\BranchesControl.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="UI\SourceControl\BranchesView.xaml.cs">
+      <DependentUpon>BranchesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\BranchesControl.Designer.cs">
-      <DependentUpon>BranchesControl.cs</DependentUpon>
+    <Compile Include="UI\SourceControl\BranchesViewViewModel.cs" />
+    <Compile Include="UI\SourceControl\ChangesView.xaml.cs">
+      <DependentUpon>ChangesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\BranchesPresenter.cs" />
-    <Compile Include="UI\SourceControl\ChangesControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\ChangesControl.Designer.cs">
-      <DependentUpon>ChangesControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\ChangesPresenter.cs" />
-    <Compile Include="UI\SourceControl\CloneRepositoryForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\CloneRepositoryForm.Designer.cs">
-      <DependentUpon>CloneRepositoryForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\CreateBranchForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\CreateBranchForm.Designer.cs">
-      <DependentUpon>CreateBranchForm.cs</DependentUpon>
-    </Compile>
+    <Compile Include="UI\SourceControl\ChangesViewViewModel.cs" />
+    <Compile Include="UI\SourceControl\CommitAction.cs" />
+    <Compile Include="UI\SourceControl\Converters\CommitActionsToTextConverter.cs" />
+    <Compile Include="UI\SourceControl\Converters\CommitActionTextToEnum.cs" />
     <Compile Include="UI\FileBrowserDialogFactory.cs" />
-    <Compile Include="UI\SourceControl\DeleteBranchForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\DeleteBranchForm.Designer.cs">
-      <DependentUpon>DeleteBranchForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\FailedActionControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\FailedActionControl.Designer.cs">
-      <DependentUpon>FailedActionControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\IBranchesView.cs" />
-    <Compile Include="UI\SourceControl\IChangesView.cs" />
-    <Compile Include="UI\SourceControl\ICloneRepositoryView.cs" />
-    <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
-    <Compile Include="UI\SourceControl\IDeleteBranchView.cs" />
-    <Compile Include="UI\SourceControl\IMergeView.cs" />
-    <Compile Include="UI\SourceControl\LoginControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\LoginControl.Designer.cs">
-      <DependentUpon>LoginControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\ProviderPresenter.cs" />
-    <Compile Include="UI\SourceControl\IRefreshableView.cs" />
-    <Compile Include="UI\SourceControl\ISettingsView.cs" />
-    <Compile Include="UI\SourceControl\ISourceControlView.cs" />
-    <Compile Include="UI\SourceControl\MergeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\MergeForm.Designer.cs">
-      <DependentUpon>MergeForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\SettingsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\SettingsControl.Designer.cs">
-      <DependentUpon>SettingsControl.cs</DependentUpon>
-    </Compile>
+    <Compile Include="UI\SourceControl\IControlView.cs" />
+    <Compile Include="UI\SourceControl\IControlViewModel.cs" />
     <Compile Include="Refactorings\Rename\IRenameView.cs" />
     <Compile Include="UI\Refactorings\RenameDialog.cs">
       <SubType>Form</SubType>
@@ -775,18 +782,25 @@
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Refactorings\Rename\RenamePresenter.cs" />
-    <Compile Include="UI\SourceControl\SettingsPresenter.cs" />
-    <Compile Include="UI\SourceControl\SourceControlBindings.cs" />
+    <Compile Include="UI\SourceControl\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\SettingsViewViewModel.cs" />
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\SourceControl\SourceControlPanel.Designer.cs">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\SourceControlPresenter.cs" />
     <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
-    <Compile Include="UI\SourceControl\UnsyncedCommitsPresenter.cs" />
+    <Compile Include="UI\SourceControl\SourceControlView.xaml.cs" />
+    <Compile Include="UI\SourceControl\SourceControlViewViewModel.cs" />
+    <Compile Include="UI\SourceControl\SourceControlDockablePresenter.cs" />
     <Compile Include="UI\Controls\INavigateSelection.cs" />
+    <Compile Include="UI\SourceControl\UnsyncedCommitsView.xaml.cs">
+      <DependentUpon>UnsyncedCommitsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\UnsyncedCommitsViewViewModel.cs" />
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="Settings\IConfigurationService.cs" />
     <Compile Include="Settings\ConfigurationLoader.cs" />
@@ -882,13 +896,6 @@
     <Compile Include="UnitTesting\TestResult.cs" />
     <Compile Include="UI\UnitTesting\TestResultToOutcomeTextConverter.cs" />
     <Compile Include="UnitTesting\TestRunner.cs" />
-    <Compile Include="UI\SourceControl\IUnSyncedCommitsView.cs" />
-    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.Designer.cs">
-      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="UnitTesting\PermissiveAssertClass.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorCommandBase.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorExtractMethodCommand.cs" />
@@ -896,8 +903,28 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Inspections\InspectionsUI.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\InspectionsUI.de.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI.de.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\InspectionsUI.fr.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI.fr.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\InspectionsUI.sv.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI.sv.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\InspectionsUI.ja.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI.ja.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\About\AboutDialog.resx">
@@ -973,33 +1000,6 @@
       <SubType>Designer</SubType>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\BranchesControl.resx">
-      <DependentUpon>BranchesControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\ChangesControl.resx">
-      <DependentUpon>ChangesControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\CloneRepositoryForm.resx">
-      <DependentUpon>CloneRepositoryForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\CreateBranchForm.resx">
-      <DependentUpon>CreateBranchForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\DeleteBranchForm.resx">
-      <DependentUpon>DeleteBranchForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\FailedActionControl.resx">
-      <DependentUpon>FailedActionControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\LoginControl.resx">
-      <DependentUpon>LoginControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\MergeForm.resx">
-      <DependentUpon>MergeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\SettingsControl.resx">
-      <DependentUpon>SettingsControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\SourceControlPanel.resx">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -1009,9 +1009,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\UnitTesting\TestExplorerWindow.resx">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\UnSyncedCommitsControl.resx">
-      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -1049,7 +1046,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
-    <Folder Include="UI\ParserProgress\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\rubberduck.config" />
@@ -1183,6 +1179,7 @@
     <Resource Include="Resources\flask_exclamation_mask.png" />
     <Resource Include="Resources\flask_mask.png" />
     <Resource Include="Resources\disk.png" />
+    <Resource Include="Resources\arrow-circle-left.png" />
     <Content Include="Resources\arrow_circle_double_mask.bmp" />
     <Content Include="Resources\balloon_ellipsis.bmp" />
     <Content Include="Resources\balloon_mask.bmp" />
@@ -1201,10 +1198,16 @@
     <Resource Include="Resources\folder--plus.png" />
     <Resource Include="Resources\folder-rename.png" />
     <Resource Include="Resources\cross-button.png" />
+    <Resource Include="Resources\init-repo.png" />
+    <Content Include="Resources\Microsoft\Mask\AddProperty_5538_32.bmp" />
+    <None Include="Resources\Microsoft\Mask\AddVariable_5541_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
+    <None Include="Resources\Microsoft\Mask\ExtractInterface_6778_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
     <None Include="Resources\Microsoft\Mask\RemoveParameters_6781_32.bmp" />
+    <None Include="Resources\Microsoft\Mask\ImplementInterface_5540_32.bmp" />
+    <None Include="Resources\Microsoft\Mask\PromoteLocal_6784_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\ReorderParameters_6780_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\TestManager_8590_32.bmp" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
@@ -1433,6 +1436,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\NoOverflowToolbarStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Settings\GeneralSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1454,6 +1461,26 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Settings\UnitTestSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\BranchesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\ChangesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SourceControl\SourceControlView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\SourceControl\UnsyncedCommitsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

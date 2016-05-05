@@ -1,5 +1,6 @@
 namespace Rubberduck.Parsing.VBA
 {
+    //note: ordering of the members is important
     public enum ParserState
     {
         /// <summary>
@@ -7,9 +8,9 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         Pending,
         /// <summary>
-        /// Parser state is in sync with the actual code in the VBE.
+        /// Project references are being loaded into parser state.
         /// </summary>
-        Ready,
+        LoadingReference,
         /// <summary>
         /// Code from modified modules is being parsed.
         /// </summary>
@@ -23,8 +24,16 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         Resolving,
         /// <summary>
+        /// Parser state is in sync with the actual code in the VBE.
+        /// </summary>
+        Ready,
+        /// <summary>
         /// Parsing could not be completed for one or more modules.
         /// </summary>
-        Error
+        Error,
+        /// <summary>
+        /// Parsing completed, but identifier references could not be resolved for one or more modules.
+        /// </summary>
+        ResolverError,
     }
 }

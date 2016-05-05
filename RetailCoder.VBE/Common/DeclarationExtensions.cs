@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
@@ -190,7 +189,7 @@ namespace Rubberduck.Common
 
         public static IEnumerable<Declaration> FindInterfaces(this IEnumerable<Declaration> declarations)
         {
-            var classes = declarations.Where(item => item.DeclarationType == DeclarationType.Class);
+            var classes = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule);
             var interfaces = classes.Where(item => item.References.Any(reference =>
                 reference.Context.Parent is VBAParser.ImplementsStmtContext));
 
@@ -278,7 +277,7 @@ namespace Rubberduck.Common
         {
             var items = declarations.ToList();
 
-            var forms = items.Where(item => item.DeclarationType == DeclarationType.Class
+            var forms = items.Where(item => item.DeclarationType == DeclarationType.ClassModule
                 && item.QualifiedName.QualifiedModuleName.Component != null
                 && item.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_MSForm)
                 .ToList();
@@ -317,7 +316,7 @@ namespace Rubberduck.Common
             .Select(item => new
             {
                 WithEventDeclaration = item, 
-                EventProvider = items.SingleOrDefault(type => type.DeclarationType == DeclarationType.Class && type.QualifiedName.QualifiedModuleName == item.QualifiedName.QualifiedModuleName)
+                EventProvider = items.SingleOrDefault(type => type.DeclarationType == DeclarationType.ClassModule && type.QualifiedName.QualifiedModuleName == item.QualifiedName.QualifiedModuleName)
             })
             .Select(item => new
             {
@@ -340,7 +339,7 @@ namespace Rubberduck.Common
             }
 
             var items = declarations as IList<Declaration> ?? declarations.ToList();
-            var type = items.SingleOrDefault(item => item.DeclarationType == DeclarationType.Class
+            var type = items.SingleOrDefault(item => item.DeclarationType == DeclarationType.ClassModule
                                                              && item.Project != null
                                                              && item.IdentifierName == withEventsDeclaration.AsTypeName.Split('.').Last());
 
@@ -354,7 +353,7 @@ namespace Rubberduck.Common
             var handlerNames = events.Select(e => withEventsDeclaration.IdentifierName + '_' + e.IdentifierName);
 
             return items.Where(item => item.Project != null 
-                                               && item.Project.Equals(withEventsDeclaration.Project)
+                                               && item.ProjectId == withEventsDeclaration.ProjectId
                                                && item.ParentScope == withEventsDeclaration.ParentScope
                                                && item.DeclarationType == DeclarationType.Procedure
                                                && handlerNames.Any(name => item.IdentifierName == name))
@@ -363,7 +362,7 @@ namespace Rubberduck.Common
 
         private static IEnumerable<Declaration> GetTypeMembers(this IEnumerable<Declaration> declarations, Declaration type)
         {
-            return declarations.Where(item => item.Project != null && item.Project.Equals(type.Project) && item.ParentScope == type.Scope);
+            return declarations.Where(item => item.Project != null && item.ProjectId == type.ProjectId && item.ParentScope == type.Scope);
         }
 
             /// <summary>
@@ -394,8 +393,14 @@ namespace Rubberduck.Common
             var matches = members.Where(m => !m.IsBuiltIn && implementation.IdentifierName == m.ComponentName + '_' + m.IdentifierName).ToList();
 
             return matches.Count > 1 
-                ? matches.SingleOrDefault(m => m.Project == implementation.Project) 
+                ? matches.SingleOrDefault(m => m.ProjectId == implementation.ProjectId) 
                 : matches.First();
+        }
+
+        public static Declaration FindTarget(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
+        {
+            var items = declarations.ToList();
+            return items.SingleOrDefault(item => item.IsSelected(selection) || item.References.Any(reference => reference.IsSelected(selection)));
         }
 
         /// <summary>
@@ -411,16 +416,14 @@ namespace Rubberduck.Common
             var items = declarations.ToList();
 
             var target = items
-                .Where(item => !item.IsBuiltIn)
-                .FirstOrDefault(item => item.IsSelected(selection)
+                .Where(item => !item.IsBuiltIn && validDeclarationTypes.Contains(item.DeclarationType))
+                .SingleOrDefault(item => item.IsSelected(selection)
                                      || item.References.Any(r => r.IsSelected(selection)));
 
-            if (target != null && validDeclarationTypes.Contains(target.DeclarationType))
+            if (target != null)
             {
                 return target;
             }
-
-            target = null;
 
             var targets = items
                 .Where(item => !item.IsBuiltIn
@@ -429,7 +432,7 @@ namespace Rubberduck.Common
 
             var currentSelection = new Selection(0, 0, int.MaxValue, int.MaxValue);
 
-            foreach (var declaration in targets)
+            foreach (var declaration in targets.Where(item => item.Context != null))
             {
                 var activeSelection = new Selection(declaration.Context.Start.Line,
                                                     declaration.Context.Start.Column,
@@ -445,12 +448,16 @@ namespace Rubberduck.Common
                 foreach (var reference in declaration.References)
                 {
                     var proc = (dynamic)reference.Context.Parent;
-                    VBAParser.ArgsCallContext paramList;
+                    var paramList = proc ;
 
                     // This is to prevent throws when this statement fails:
                     // (VBAParser.ArgsCallContext)proc.argsCall();
-                    try { paramList = (VBAParser.ArgsCallContext)proc.argsCall(); }
-                    catch { continue; }
+                    var method = ((Type) proc.GetType()).GetMethod("argsCall");
+                    if (method != null)
+                    {
+                        try { paramList = method.Invoke(proc, null); }
+                        catch { continue; }
+                    }
 
                     if (paramList == null) { continue; }
 
@@ -531,8 +538,7 @@ namespace Rubberduck.Common
                         implementsStmt.GetSelection().StartColumn, reference.Selection.EndLine,
                         reference.Selection.EndColumn);
 
-                    if (reference.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName &&
-                        reference.QualifiedModuleName.Project == selection.QualifiedName.Project &&
+                    if (reference.QualifiedModuleName.Equals(selection.QualifiedName) &&
                         completeSelection.Contains(selection.Selection))
                     {
                         return declaration;

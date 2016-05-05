@@ -1,16 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel
     {
         private readonly Declaration _declaration;
+        public Declaration Declaration { get { return _declaration; } }
 
         private static readonly DeclarationType[] MemberTypes =
         {
@@ -37,7 +41,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                                                 && item.ParentScope == declaration.Scope
                                                 && MemberTypes.Contains(item.DeclarationType))
                                 .OrderBy(item => item.QualifiedSelection.Selection.StartLine)
-                                .Select(item => new CodeExplorerMemberViewModel(item, grouping)));
+                                .Select(item => new CodeExplorerMemberViewModel(item, grouping)))
+                                .ToList<CodeExplorerItemViewModel>();
             
         }
 
@@ -48,12 +53,13 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                return _declaration.DeclarationType == DeclarationType.Module 
-                       && _declaration.Annotations.Split('\n').Contains(Parsing.Grammar.Annotations.TestModule);
+                return _declaration.DeclarationType == DeclarationType.ProceduralModule
+                       && _declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.TestModule);
             }
         }
 
         public override string Name { get { return _declaration.IdentifierName; } }
+        public override string NameWithSignature { get { return Name; } }
 
         public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
 
@@ -61,8 +67,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private static readonly IDictionary<vbext_ComponentType, DeclarationType> DeclarationTypes = new Dictionary<vbext_ComponentType, DeclarationType>
         {
-            { vbext_ComponentType.vbext_ct_ClassModule, DeclarationType.Class },
-            { vbext_ComponentType.vbext_ct_StdModule, DeclarationType.Module },
+            { vbext_ComponentType.vbext_ct_ClassModule, DeclarationType.ClassModule },
+            { vbext_ComponentType.vbext_ct_StdModule, DeclarationType.ProceduralModule },
             { vbext_ComponentType.vbext_ct_Document, DeclarationType.Document },
             { vbext_ComponentType.vbext_ct_MSForm, DeclarationType.UserForm }
         };
@@ -71,20 +77,23 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                DeclarationType result;
-                if (!DeclarationTypes.TryGetValue(ComponentType, out result))
+                var result = DeclarationType.ClassModule;
+                try
                 {
-                    result = DeclarationType.Class;
+                    DeclarationTypes.TryGetValue(ComponentType, out result);
                 }
-
+                catch (COMException exception)
+                {
+                    Console.WriteLine(exception);
+                }
                 return result;
             }
         }
 
         private static readonly IDictionary<DeclarationType,BitmapImage> Icons = new Dictionary<DeclarationType, BitmapImage>
         {
-            { DeclarationType.Class, GetImageSource(resx.VSObject_Class) },
-            { DeclarationType.Module, GetImageSource(resx.VSObject_Module) },
+            { DeclarationType.ClassModule, GetImageSource(resx.VSObject_Class) },
+            { DeclarationType.ProceduralModule, GetImageSource(resx.VSObject_Module) },
             { DeclarationType.UserForm, GetImageSource(resx.VSProject_form) },
             { DeclarationType.Document, GetImageSource(resx.document_office) }
         };

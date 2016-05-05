@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Antlr4.Runtime;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -10,8 +9,8 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public MultilineParameterInspectionResult(IInspection inspection, ParserRuleContext context, QualifiedMemberName qualifiedName)
-            : base(inspection, qualifiedName.QualifiedModuleName, context)
+        public MultilineParameterInspectionResult(IInspection inspection, Declaration target)
+            : base(inspection, target)
         {
             _quickFixes = new[]
             {

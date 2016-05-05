@@ -12,11 +12,11 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
             }
 
             public override string Key { get { return "ContextMenu_FindAllReferences"; } }
-            public override int DisplayOrder { get { return (int)NavigationMenuItemDisplayOrder.FindAllReferences; } }
+            public override int DisplayOrder { get { return (int)CodePaneContextMenuItemDisplayOrder.FindAllReferences; } }
 
             public override bool EvaluateCanExecute(RubberduckParserState state)
             {
-                return state.Status == ParserState.Ready;
+                return Command.CanExecute(null);
             }
         }
     }

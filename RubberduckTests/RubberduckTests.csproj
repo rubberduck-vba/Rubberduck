@@ -52,7 +52,7 @@
     <Reference Include="Microsoft.Vbe.Interop.Forms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\..\..\..\..\Windows\assembly\GAC_MSIL\Microsoft.Vbe.Interop.Forms\11.0.0.0__71e9bce111e9429c\Microsoft.Vbe.Interop.Forms.dll</HintPath>
+      <HintPath>..\libs\Microsoft.Vbe.Interop.Forms.dll</HintPath>
     </Reference>
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
@@ -77,11 +77,20 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Binding\MemberAccessTypeBindingTests.cs" />
+    <Compile Include="Binding\MemberAccessProcedurePointerBindingTests.cs" />
+    <Compile Include="Binding\SimpleNameProcedurePointerBindingTests.cs" />
+    <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="ComponentTypeExtensionTests.cs" />
     <Compile Include="ConfigurationTests.cs" />
+    <Compile Include="Grammar\ResolverTests.cs" />
     <Compile Include="Grammar\VBAParserTests.cs" />
+    <Compile Include="Grammar\VBAParserValidityTests.cs" />
     <Compile Include="Inspections\EncapsulatePublicFieldInspectionTests.cs" />
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\GeneralInspectionTests.cs" />
+    <Compile Include="Inspections\ObjectVariableNotSetInpsectionTests.cs" />
+    <Compile Include="MockParser.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspectionTests.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionTests.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspectionTests.cs" />
@@ -114,15 +123,17 @@
     <Compile Include="Mocks\MockVbeBuilder.cs" />
     <Compile Include="Mocks\MockWindowsCollection.cs" />
     <Compile Include="MultiAssert.cs" />
+    <Compile Include="Preprocessing\VBAPreprocessorTests.cs" />
+    <Compile Include="Preprocessing\VBAPreprocessorVisitorTests.cs" />
     <Compile Include="Refactoring\EncapsulateFieldTests.cs" />
     <Compile Include="Refactoring\ExtractMethodTests.cs" />
+    <Compile Include="Refactoring\ImplementInterfaceTests.cs" />
     <Compile Include="Refactoring\IntroduceFieldTests.cs" />
     <Compile Include="Refactoring\MoveCloserToUsageTests.cs" />
     <Compile Include="Refactoring\IntroduceParameterTests.cs" />
     <Compile Include="Refactoring\RemoveParametersTests.cs" />
     <Compile Include="Refactoring\RenameTests.cs" />
     <Compile Include="Refactoring\ReorderParametersTests.cs" />
-    <Compile Include="RubberduckParserTests.cs" />
     <Compile Include="Settings\InspectionSettingsTests.cs" />
     <Compile Include="Settings\GeneralSettingsTests.cs" />
     <Compile Include="Settings\IndenterSettingsTests.cs" />
@@ -130,12 +141,12 @@
     <Compile Include="Settings\TodoSettingsTests.cs" />
     <Compile Include="Settings\UnitTestSettingsTests.cs" />
     <Compile Include="SourceControlConfig.cs" />
-    <Compile Include="SourceControl\BranchesPresenterTests.cs" />
-    <Compile Include="SourceControl\ChangesPresenterTests.cs" />
-    <Compile Include="SourceControl\SCPresenterTests.cs" />
-    <Compile Include="SourceControl\SettingsPresenterTests.cs" />
+    <Compile Include="SourceControl\BranchesViewModelTests.cs" />
+    <Compile Include="SourceControl\ChangesViewModelTests.cs" />
+    <Compile Include="SourceControl\SettingsViewModelTests.cs" />
     <Compile Include="SourceControl\SourceControlTests.cs" />
-    <Compile Include="SourceControl\UnsyncedCommitsPresenterTests.cs" />
+    <Compile Include="SourceControl\SourceControlViewModelTests.cs" />
+    <Compile Include="SourceControl\UnsyncedCommitsViewModelTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="TodoControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -168,6 +179,88 @@
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Testfiles\Grammar\Reference_Module_1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_10.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_2_Processed.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_3_Processed.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_4_Processed.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_4.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_3.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_11.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_12.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_13.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_14.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_15.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_16.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_17.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_18.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_3.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_4.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_5.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_6.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_7.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_8.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Grammar\Reference_Module_9.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_1_Processed.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testfiles\Preprocessor\Reference_Module_1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

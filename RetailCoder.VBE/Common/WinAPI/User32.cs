@@ -46,90 +46,9 @@ namespace Rubberduck.Common.WinAPI
         [DllImport("user32.dll")]
         public static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, WndProc dwNewLong);
 
-        /// <summary>
-        /// Changes an attribute of the specified window. 
-        /// The function also sets the 32-bit (long) value at the specified offset into the extra window memory.
-        /// </summary>
-        /// <param name="hWnd">A handle to the window and, indirectly, the class to which the window belongs.</param>
-        /// <param name="nIndex">The zero-based offset to the value to be set. 
-        /// Valid values are in the range zero through the number of bytes of extra window memory, minus the size of an integer.
-        /// <see cref="WindowLongFlags"/>.</param>
-        /// <param name="dwNewLong">The replacement value.</param>
-        /// <returns>The return value specifies the result of the message processing and depends on the message sent.</returns>
-        //public static IntPtr SetWindowLongPtr(IntPtr hWnd, WindowLongFlags nIndex, WndProc dwNewLong)
-        //{
-        //    return IntPtr.Size == 8 
-        //        ? SetWindowLongPtr64(hWnd, nIndex, dwNewLong) 
-        //        : new IntPtr(SetWindowLong32(hWnd, nIndex, dwNewLong.ToInt32()));
-        //}
-
-        //[DllImport("user32.dll", EntryPoint = "SetWindowLong")]
-        //private static extern int SetWindowLong32(IntPtr hWnd, WindowLongFlags nIndex, int dwNewLong);
-
-        //[DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
-        //private static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, WindowLongFlags nIndex, IntPtr dwNewLong);
-
-
-        /// <summary>
-        /// Passes message information to the specified window procedure.
-        /// </summary>
-        /// <param name="lpPrevWndFunc">The previous window procedure. 
-        /// If this value is obtained by calling the GetWindowLong function with the nIndex parameter set to GWL_WNDPROC or DWL_DLGPROC, 
-        /// it is actually either the address of a window or dialog box procedure, or a special internal value meaningful only to CallWindowProc.</param>
-        /// <param name="hWnd">A handle to the window procedure to receive the message.</param>
-        /// <param name="Msg">The message.</param>
-        /// <param name="wParam">Additional message-specific information. The contents of this parameter depend on the value of the Msg parameter.</param>
-        /// <param name="lParam">Additional message-specific information. The contents of this parameter depend on the value of the Msg parameter.</param>
-        /// <returns></returns>
         [DllImport("user32.dll")]
-        public static extern IntPtr CallWindowProc(WndProc lpPrevWndFunc, IntPtr hWnd, int Msg, int wParam, int lParam);
-        public delegate IntPtr WndProc(IntPtr hWnd, int uMsg, int wParam, int lParam);
-
-        /// <summary>
-        /// A pointer to the hook procedure. 
-        /// If the dwThreadId parameter is zero or specifies the identifier of a thread created by a different process, the lpfn parameter must point to a hook procedure in a DLL. 
-        /// Otherwise, lpfn can point to a hook procedure in the code associated with the current process.
-        /// </summary>
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr SetWindowsHookEx(WindowsHook hookType, HookProc lpfn, IntPtr hMod, uint dwThreadId);
-        public delegate IntPtr HookProc(int code, IntPtr wParam, IntPtr lParam);
-
-        /// <summary>
-        /// Removes a hook procedure installed in a hook chain by the SetWindowsHookEx function.
-        /// </summary>
-        /// <param name="hhk">A handle to the hook to be removed. 
-        /// This parameter is a hook handle obtained by a previous call to SetWindowsHookEx.</param>
-        /// <returns>If the function succeeds, the return value is nonzero. 
-        /// If the function fails, the return value is zero. To get extended error information, call GetLastError.</returns>
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool UnhookWindowsHookEx(IntPtr hhk);
-
-        /// <summary>
-        /// Passes the hook information to the next hook procedure in the current hook chain. 
-        /// A hook procedure can call this function either before or after processing the hook information.
-        /// </summary>
-        /// <param name="hhk">This parameter is ignored.</param>
-        /// <param name="nCode">The hook code passed to the current hook procedure. 
-        /// The next hook procedure uses this code to determine how to process the hook information.</param>
-        /// <param name="wParam">The wParam value passed to the current hook procedure. 
-        /// The meaning of this parameter depends on the type of hook associated with the current hook chain.</param>
-        /// <param name="lParam">The lParam value passed to the current hook procedure. 
-        /// The meaning of this parameter depends on the type of hook associated with the current hook chain.</param>
-        /// <returns>This value is returned by the next hook procedure in the chain. 
-        /// The current hook procedure must also return this value. The meaning of the return value depends on the hook type.</returns>
-        [DllImport("user32.dll")]
-        public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
-
-        // overload for use with LowLevelKeyboardProc
-        [DllImport("user32.dll")]
-        public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, WM wParam, [In]KBDLLHOOKSTRUCT lParam);
-        public delegate int LowLevelKeyboardProc(int nCode, WM wParam, [In] KBDLLHOOKSTRUCT lParam);
-
-        // overload for use with LowLevelMouseProc
-        [DllImport("user32.dll")]
-        public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, WM wParam, [In]MSLLHOOKSTRUCT lParam);
-        public delegate IntPtr LowLevelMouseProc(int code, WM wParam, [In] MSLLHOOKSTRUCT lParam);
+        public static extern IntPtr CallWindowProc(WndProc lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        public delegate IntPtr WndProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
 
         /// <summary>
         /// Retrieves a handle to the foreground window (the window with which the user is currently working). 
@@ -237,6 +156,44 @@ namespace Rubberduck.Common.WinAPI
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool KillTimer(IntPtr hWnd, IntPtr uIDEvent);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern int GetRawInputData(IntPtr hRawInput, DataCommand command, [Out] out InputData buffer, [In, Out] ref int size, int cbSizeHeader);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern int GetRawInputData(IntPtr hRawInput, DataCommand command, [Out] IntPtr pData, [In, Out] ref int size, int sizeHeader);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern uint GetRawInputDeviceInfo(IntPtr hDevice, RawInputDeviceInfo command, IntPtr pData, ref uint size);
+
+        [DllImport("user32.dll")]
+        private static extern uint GetRawInputDeviceInfo(IntPtr hDevice, uint command, ref DeviceInfo data, ref uint dataSize);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern uint GetRawInputDeviceList(IntPtr pRawInputDeviceList, ref uint numberDevices, uint size);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern bool RegisterRawInputDevices(RawInputDevice[] pRawInputDevice, uint numberDevices, uint size);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern IntPtr RegisterDeviceNotification(IntPtr hRecipient, IntPtr notificationFilter, DeviceNotification flags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern bool UnregisterDeviceNotification(IntPtr handle);
+
+        /// <summary>
+        /// A helper function that returns <c>true</c> when the specified handle is that of the foreground window.
+        /// </summary>
+        /// <param name="mainWindowHandle">The handle for the VBE's MainWindow.</param>
+        /// <returns></returns>
+        public static bool IsVbeWindowActive(IntPtr mainWindowHandle)
+        {
+            uint vbeThread;
+            GetWindowThreadProcessId(mainWindowHandle, out vbeThread);
+
+            uint hThread;
+            GetWindowThreadProcessId(GetForegroundWindow(), out hThread);
+
+            return (IntPtr)hThread == (IntPtr)vbeThread;
+        }
     }
 }

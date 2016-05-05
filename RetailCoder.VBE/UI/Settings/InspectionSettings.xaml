@@ -67,19 +67,19 @@
                     <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}"
                                             Width="2.75*"
                                             IsReadOnly="True"
-                                            SortMemberPath="{Binding Description}">
+                                            SortMemberPath="{Binding LocalizedName}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Description}">
+                                <TextBlock Text="{Binding LocalizedName}">
                                     <TextBlock.ToolTip>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding Description}"
+                                            <TextBlock Text="{Binding LocalizedName}"
                                                        FontWeight="SemiBold"
                                                        MaxWidth="300"
-                                                       TextWrapping="Wrap" />
+                                                       TextWrapping="WrapWithOverflow" />
                                             <TextBlock Text="{Binding Meta}"
                                                        MaxWidth="300"
-                                                       TextWrapping="Wrap" />
+                                                       TextWrapping="WrapWithOverflow" />
                                         </StackPanel>
                                     </TextBlock.ToolTip>
                                 </TextBlock>

@@ -36,6 +36,18 @@ namespace Rubberduck.Inspections
             _comment = comment;
         }
 
+        /// <summary>
+        /// Creates an inspection result.
+        /// </summary>
+        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context, Declaration declaration, CommentNode comment = null)
+        {
+            _inspection = inspection;
+            _qualifiedName = qualifiedName;
+            _context = context;
+            _target = declaration;
+            _comment = comment;
+        }
+
         private readonly IInspection _inspection;
         public IInspection Inspection { get { return _inspection; } }
 
@@ -88,10 +100,10 @@ namespace Rubberduck.Inspections
         {
             var module = QualifiedSelection.QualifiedName;
             return string.Format(
-                "{0}: {1} - {2}.{3}, line {4}",
+                InspectionsUI.QualifiedSelectionInspection,
                 Inspection.Severity,
                 Description,
-                module.ProjectName,
+                module.ProjectId,
                 module.ComponentName,
                 QualifiedSelection.Selection.StartLine);
         }
@@ -109,15 +121,9 @@ namespace Rubberduck.Inspections
         public object[] ToArray()
         {
             var module = QualifiedSelection.QualifiedName;
-            string FileName = "";
-            try
-            {
-                FileName = module.Project.FileName;
-            }
-            catch
-            {
-            }
-            return new object[] {Inspection.Severity.ToString(), Description, module.DocumentName, module.ProjectName, module.ComponentName, QualifiedSelection.Selection.StartLine };
+            //TODO - Fix this Merge conflict ThunderFrame
+            //return new object[] {Inspection.Severity.ToString(), Description, module.DocumentName, module.ProjectName, module.ComponentName, QualifiedSelection.Selection.StartLine };
+            return new object[] {Inspection.Severity.ToString(), Description, module.ProjectId, module.ComponentName, QualifiedSelection.Selection.StartLine };
         }
 
         public string ToCsvString()
@@ -127,7 +133,7 @@ namespace Rubberduck.Inspections
                 "\"{0}\",\"{1}\",\"{2}\",\"{3}\",{4}",
                 Inspection.Severity,
                 Description,
-                module.ProjectName,
+                module.ProjectId,
                 module.ComponentName,
                 QualifiedSelection.Selection.StartLine);
         }

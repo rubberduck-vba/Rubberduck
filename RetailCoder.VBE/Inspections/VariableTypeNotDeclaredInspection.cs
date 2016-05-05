@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.VariableTypeNotDeclaredInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.VariableTypeNotDeclaredInspectionName; } }
+        public override string Description { get { return InspectionsUI.VariableTypeNotDeclaredInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
@@ -21,9 +21,9 @@ namespace Rubberduck.Inspections
             var issues = from item in UserDeclarations
                          where (item.DeclarationType == DeclarationType.Variable
                             || item.DeclarationType == DeclarationType.Constant
-                            || item.DeclarationType == DeclarationType.Parameter)
+                            || (item.DeclarationType == DeclarationType.Parameter && !item.IsArray()))
                          && !item.IsTypeSpecified()
-                         select new VariableTypeNotDeclaredInspectionResult(this, item.Context, item.QualifiedName.QualifiedModuleName);
+                         select new VariableTypeNotDeclaredInspectionResult(this, item);
 
             return issues;
         }

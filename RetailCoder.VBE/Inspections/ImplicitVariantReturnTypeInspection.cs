@@ -31,7 +31,8 @@ namespace Rubberduck.Inspections
                                where !item.IsInspectionDisabled(AnnotationName)
                                 && ProcedureTypes.Contains(item.DeclarationType)
                                 && !item.IsTypeSpecified()
-                               select new ImplicitVariantReturnTypeInspectionResult(this, item);
+                               let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
+                               select new ImplicitVariantReturnTypeInspectionResult(this, issue.Declaration.IdentifierName, issue.QualifiedContext);
             return issues;
         }
     }

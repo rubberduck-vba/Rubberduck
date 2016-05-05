@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Threading;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -12,7 +13,10 @@ namespace Rubberduck.Inspections
         public ParameterCanBeByValInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion)
         {
+            _dispatcher = Dispatcher.CurrentDispatcher;
         }
+
+        private readonly Dispatcher _dispatcher;
 
         public override string Meta { get { return InspectionsUI.ParameterCanBeByValInspectionMeta; } }
         public override string Description { get { return InspectionsUI.ParameterCanBeByValInspectionName; } }
@@ -39,7 +43,8 @@ namespace Rubberduck.Inspections
         {
             var declarations = UserDeclarations.ToList();
 
-            var interfaceMembers = declarations.FindInterfaceMembers()
+            IEnumerable<Declaration> interfaceMembers = null;
+            interfaceMembers = declarations.FindInterfaceMembers()
                 .Concat(declarations.FindInterfaceImplementationMembers())
                 .ToList();
 
@@ -58,13 +63,14 @@ namespace Rubberduck.Inspections
             var ignoredScopes = formEventHandlerScopes.Concat(eventScopes).Concat(declareScopes);
 
             var issues = declarations.Where(declaration =>
-                !ignoredScopes.Contains(declaration.ParentScope)
+                !declaration.IsArray()
+                && !ignoredScopes.Contains(declaration.ParentScope)
                 && declaration.DeclarationType == DeclarationType.Parameter
                 && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue));
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName));
 
             return issues;
         }

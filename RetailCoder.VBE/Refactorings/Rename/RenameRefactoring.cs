@@ -12,21 +12,22 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.Rename
 {
     public class RenameRefactoring : IRefactoring
     {
+        private readonly VBE _vbe;
         private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
-        private readonly IActiveCodePaneEditor _editor;
         private readonly IMessageBox _messageBox;
         private readonly RubberduckParserState _state;
         private RenameModel _model;
 
-        public RenameRefactoring(IRefactoringPresenterFactory<IRenamePresenter> factory, IActiveCodePaneEditor editor, IMessageBox messageBox, RubberduckParserState state)
+        public RenameRefactoring(VBE vbe, IRefactoringPresenterFactory<IRenamePresenter> factory, IMessageBox messageBox, RubberduckParserState state)
         {
+            _vbe = vbe;
             _factory = factory;
-            _editor = editor;
             _messageBox = messageBox;
             _state = state;
         }
@@ -44,7 +45,7 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor(QualifiedSelection target)
         {
-            _editor.SetSelection(target);
+            _vbe.ActiveCodePane.CodeModule.SetSelection(target);
             Refactor();
         }
 
@@ -77,7 +78,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 var targetReference = reference;
                 var potentialDeclarations = _model.Declarations.Where(item => !item.IsBuiltIn
-                                                         && item.Project.Equals(targetReference.Declaration.Project)
+                                                         && item.ProjectId == targetReference.Declaration.ProjectId
                                                          && ((item.Context != null
                                                          && item.Context.Start.Line <= targetReference.Selection.StartLine
                                                          && item.Context.Stop.Line >= targetReference.Selection.EndLine)
@@ -122,8 +123,8 @@ namespace Rubberduck.Refactorings.Rename
 
         private static readonly DeclarationType[] ModuleDeclarationTypes =
         {
-            DeclarationType.Class,
-            DeclarationType.Module
+            DeclarationType.ClassModule,
+            DeclarationType.ProceduralModule
         };
 
         private void Rename()
@@ -148,7 +149,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 // properties can have more than 1 member.
                 var members = _model.Declarations.Named(_model.Target.IdentifierName)
-                    .Where(item => item.Project == _model.Target.Project
+                    .Where(item => item.ProjectId == _model.Target.ProjectId
                         && item.ComponentName == _model.Target.ComponentName
                         && item.DeclarationType.HasFlag(DeclarationType.Property));
                 foreach (var member in members)
@@ -211,7 +212,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             try
             {
-                var project = _model.VBE.VBProjects.Cast<VBProject>().FirstOrDefault(p => p.Name == _model.Target.IdentifierName);
+                var project = _state.Projects.SingleOrDefault(p => p.HelpFile == _model.Target.ProjectId);
                 if (project != null)
                 {
                     project.Name = _model.NewName;
@@ -250,7 +251,7 @@ namespace Rubberduck.Refactorings.Rename
             else
             {
                 var members = _model.Declarations.Named(target.IdentifierName)
-                    .Where(item => item.Project == target.Project
+                    .Where(item => item.ProjectId == target.ProjectId
                         && item.ComponentName == target.ComponentName
                         && item.DeclarationType.HasFlag(DeclarationType.Property));
 
@@ -393,7 +394,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 var argContext = (VBAParser.ArgContext)target.Context;
                 var rewriter = _model.ParseResult.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
-                rewriter.Replace(argContext.ambiguousIdentifier().Start.TokenIndex, _model.NewName);
+                rewriter.Replace(argContext.identifier().Start.TokenIndex, _model.NewName);
 
                 // Target.Context is an ArgContext, its parent is an ArgsListContext;
                 // the ArgsListContext's parent is the procedure context and it includes the body.

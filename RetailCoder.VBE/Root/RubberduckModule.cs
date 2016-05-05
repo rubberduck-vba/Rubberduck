@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Input;
+using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Conventions;
@@ -15,13 +17,19 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
+using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.MenuItems;
+using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.UI.Controls;
+using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
+using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Root
@@ -31,6 +39,12 @@ namespace Rubberduck.Root
         private readonly IKernel _kernel;
         private readonly VBE _vbe;
         private readonly AddIn _addin;
+
+        private const int MenuBar = 1;
+        private const int CodeWindow = 9;
+        private const int ProjectWindow = 14;
+        private const int MsForms = 17;
+        private const int MsFormsControl = 18;
 
         public RubberduckModule(IKernel kernel, VBE vbe, AddIn addin)
         {
@@ -47,6 +61,9 @@ namespace Rubberduck.Root
             _kernel.Bind<VBE>().ToConstant(_vbe);
             _kernel.Bind<AddIn>().ToConstant(_addin);
             _kernel.Bind<RubberduckParserState>().ToSelf().InSingletonScope();
+            _kernel.Bind<GitProvider>().ToSelf().InSingletonScope();
+            _kernel.Bind<NewUnitTestModuleCommand>().ToSelf().InSingletonScope();
+            _kernel.Bind<NewTestMethodCommand>().ToSelf().InSingletonScope();
             
             BindCodeInspectionTypes();
 
@@ -62,8 +79,12 @@ namespace Rubberduck.Root
             ApplyDefaultInterfacesConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
 
+            BindCommandsToMenuItems();
+            
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();
+            Bind<Func<IIndenterSettings>>().ToMethod(t => () => _kernel.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
+
             Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>().InSingletonScope();
             Rebind<IRubberduckParser>().To<RubberduckParser>().InSingletonScope();
 
@@ -76,7 +97,7 @@ namespace Rubberduck.Root
                 .WithConstructorArgument<IDockableUserControl>(new TestExplorerWindow { ViewModel = _kernel.Get<TestExplorerViewModel>() });
 
             Bind<IPresenter>().To<CodeInspectionsDockablePresenter>()
-                .WhenInjectedInto<RunCodeInspectionsCommand>()
+                .WhenInjectedInto<InspectionResultsCommand>()
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>() });
             
@@ -90,13 +111,41 @@ namespace Rubberduck.Root
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new ToDoExplorerWindow { ViewModel = _kernel.Get<ToDoExplorerViewModel>() });
 
-            //BindWindowsHooks();
+            Bind<IControlView>().To<ChangesView>().Named("changesView");
+            Bind<IControlView>().To<BranchesView>().Named("branchesView");
+            Bind<IControlView>().To<UnsyncedCommitsView>().Named("unsyncedCommitsView");
+            Bind<IControlView>().To<SettingsView>().Named("settingsView");
+
+            Bind<IControlViewModel>().To<ChangesViewViewModel>()
+                .WhenInjectedInto<ChangesView>();
+            Bind<IControlViewModel>().To<BranchesViewViewModel>()
+                .WhenInjectedInto<BranchesView>();
+            Bind<IControlViewModel>().To<UnsyncedCommitsViewViewModel>()
+                .WhenInjectedInto<UnsyncedCommitsView>();
+            Bind<IControlViewModel>().To<SettingsViewViewModel>()
+                .WhenInjectedInto<SettingsView>();
+
+            Bind<ISourceControlProviderFactory>().To<SourceControlProviderFactory>()
+                .WhenInjectedInto<SourceControlViewViewModel>();
+
+            Bind<IPresenter>().To<SourceControlDockablePresenter>()
+                .WhenInjectedInto<ShowSourceControlPanelCommand>()
+                .InSingletonScope()
+                .WithConstructorArgument<IDockableUserControl>(new SourceControlPanel { ViewModel = _kernel.Get<SourceControlViewViewModel>() });
+
+            ConfigureRubberduckMenu();
+            ConfigureCodePaneContextMenu();
+            ConfigureFormDesignerContextMenu();
+            ConfigureFormDesignerControlContextMenu();
+            ConfigureProjectExplorerContextMenu();
+
+            BindWindowsHooks();
             Debug.Print("completed RubberduckModule.Load()");
         }
 
         private void BindWindowsHooks()
         {
-            _kernel.Rebind<ITimerHook>().To<TimerHook>()
+            _kernel.Rebind<IAttachable>().To<TimerHook>()
                 .InSingletonScope()
                 .WithConstructorArgument("mainWindowHandle", (IntPtr)_vbe.MainWindow.HWnd);
 
@@ -147,6 +196,224 @@ namespace Rubberduck.Root
             {
                 _kernel.Bind<IInspection>().To(inspection).InSingletonScope();
             }
+        }
+
+        private void ConfigureRubberduckMenu()
+        {
+            const int windowMenuId = 30009;
+            var parent = _kernel.Get<VBE>().CommandBars[MenuBar].Controls;
+            var beforeIndex = FindRubberduckMenuInsertionIndex(parent, windowMenuId);
+
+            var items = GetRubberduckMenuItems();
+            BindParentMenuItem<RubberduckParentMenu>(parent, beforeIndex, items);
+        }
+
+        private void ConfigureCodePaneContextMenu()
+        {
+            const int listMembersMenuId = 2529;
+            var parent = _kernel.Get<VBE>().CommandBars[CodeWindow].Controls;
+            var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == listMembersMenuId);
+            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
+
+            var items = GetCodePaneContextMenuItems();
+            BindParentMenuItem<CodePaneContextParentMenu>(parent, beforeIndex, items);
+        }
+
+        private void ConfigureFormDesignerContextMenu()
+        {
+            const int viewCodeMenuId = 2558;
+            var parent = _kernel.Get<VBE>().CommandBars[MsForms].Controls;
+            var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == viewCodeMenuId);
+            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
+
+            var items = GetFormDesignerContextMenuItems();
+            BindParentMenuItem<FormDesignerContextParentMenu>(parent, beforeIndex, items);
+        }
+
+        private void ConfigureFormDesignerControlContextMenu()
+        {
+            const int viewCodeMenuId = 2558;
+            var parent = _kernel.Get<VBE>().CommandBars[MsFormsControl].Controls;
+            var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == viewCodeMenuId);
+            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
+
+            var items = GetFormDesignerContextMenuItems();
+            BindParentMenuItem<FormDesignerControlContextParentMenu>(parent, beforeIndex, items);
+        }
+
+        private void ConfigureProjectExplorerContextMenu()
+        {
+            const int projectPropertiesMenuId = 2578;
+            var parent = _kernel.Get<VBE>().CommandBars[ProjectWindow].Controls;
+            var beforeControl = parent.Cast<CommandBarControl>().FirstOrDefault(control => control.Id == projectPropertiesMenuId);
+            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
+
+            var items = GetProjectWindowContextMenuItems();
+            BindParentMenuItem<ProjectWindowContextParentMenu>(parent, beforeIndex, items);
+        }
+
+        private void BindParentMenuItem<TParentMenu>(CommandBarControls parent, int beforeIndex, IEnumerable<IMenuItem> items)
+        {
+            _kernel.Bind<IParentMenuItem>().To(typeof(TParentMenu))
+                .WhenInjectedInto<IAppMenu>()
+                .InCallScope()
+                .WithConstructorArgument("items", items)
+                .WithConstructorArgument("beforeIndex", beforeIndex)
+                .WithPropertyValue("Parent", parent);
+        }
+
+        private static int FindRubberduckMenuInsertionIndex(CommandBarControls controls, int beforeId)
+        {
+            for (var i = 1; i <= controls.Count; i++)
+            {
+                if (controls[i].BuiltIn && controls[i].Id == beforeId)
+                {
+                    return i;
+                }
+            }
+
+            return controls.Count;
+        }
+
+        private void BindCommandsToMenuItems()
+        {
+            var types = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(type => type.IsClass && type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? String.Empty))
+                .ToList();
+
+            // note: ICommand naming convention: [Foo]Command
+            var baseCommandTypes = new[] { typeof(CommandBase), typeof(RefactorCommandBase) };
+            var commands = types.Where(type => type.IsClass && baseCommandTypes.Contains(type.BaseType) && type.Name.EndsWith("Command"));
+            foreach (var command in commands)
+            {
+                var commandName = command.Name.Substring(0, command.Name.Length - "Command".Length);
+                try
+                {
+                    // note: ICommandMenuItem naming convention for [Foo]Command: [Foo]CommandMenuItem
+                    var item = types.SingleOrDefault(type => type.Name == commandName + "CommandMenuItem");
+                    if (item != null)
+                    {
+                        var binding = _kernel.Bind<ICommand>().To(command);
+                        var whenCommandMenuItemCondition =
+                            binding.WhenInjectedInto(item).BindingConfiguration.Condition;
+                        var whenConfigurationLoaderCondition =
+                            binding.WhenInjectedInto<ConfigurationLoader>().BindingConfiguration.Condition;
+
+                        binding.When(request => whenCommandMenuItemCondition(request) || whenConfigurationLoaderCondition(request))
+                               .InSingletonScope();
+
+                        //_kernel.Bind<ICommand>().To(command).WhenInjectedExactlyInto(item);
+                        //_kernel.Bind<ICommand>().To(command);
+                    }
+                }
+                catch (InvalidOperationException exception)
+                {
+                    // rename one of the classes, "FooCommand" is expected to match exactly 1 "FooBarXyzCommandMenuItem"
+                }
+            }
+        }
+
+        private IEnumerable<IMenuItem> GetRubberduckMenuItems()
+        {
+            return new IMenuItem[]
+            {
+                _kernel.Get<AboutCommandMenuItem>(),
+                _kernel.Get<SettingsCommandMenuItem>(),
+                _kernel.Get<InspectionResultsCommandMenuItem>(),
+                _kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
+                GetUnitTestingParentMenu(),
+                GetSmartIndenterParentMenu(),
+                GetRefactoringsParentMenu(),
+                GetNavigateParentMenu(),
+            };
+        }
+
+        private IMenuItem GetUnitTestingParentMenu()
+        {
+            var items = new IMenuItem[]
+            {
+                _kernel.Get<RunAllTestsCommandMenuItem>(),
+                _kernel.Get<TestExplorerCommandMenuItem>(),
+                _kernel.Get<AddTestModuleCommandMenuItem>(),
+                _kernel.Get<AddTestMethodCommandMenuItem>(),
+                _kernel.Get<AddTestMethodExpectedErrorCommandMenuItem>(),
+            };
+            return new UnitTestingParentMenu(items);
+        }
+
+        private IMenuItem GetRefactoringsParentMenu()
+        {
+            var items = new IMenuItem[]
+            {
+                _kernel.Get<CodePaneRefactorRenameCommandMenuItem>(),
+                _kernel.Get<RefactorExtractMethodCommandMenuItem>(),
+                _kernel.Get<RefactorReorderParametersCommandMenuItem>(),
+                _kernel.Get<RefactorRemoveParametersCommandMenuItem>(),
+                _kernel.Get<RefactorIntroduceParameterCommandMenuItem>(),
+                _kernel.Get<RefactorIntroduceFieldCommandMenuItem>(),
+                _kernel.Get<RefactorEncapsulateFieldCommandMenuItem>(),
+                _kernel.Get<RefactorMoveCloserToUsageCommandMenuItem>(),
+                _kernel.Get<RefactorExtractInterfaceCommandMenuItem>(),
+                _kernel.Get<RefactorImplementInterfaceCommandMenuItem>()
+            };
+            return new RefactoringsParentMenu(items);
+        }
+
+        private IMenuItem GetNavigateParentMenu()
+        {
+            var items = new IMenuItem[]
+            {
+                _kernel.Get<CodeExplorerCommandMenuItem>(),
+                _kernel.Get<ToDoExplorerCommandMenuItem>(),
+                //_kernel.Get<RegexSearchReplaceCommandMenuItem>(),
+                _kernel.Get<FindSymbolCommandMenuItem>(),
+                _kernel.Get<FindAllReferencesCommandMenuItem>(),
+                _kernel.Get<FindAllImplementationsCommandMenuItem>(),
+            };
+            return new NavigateParentMenu(items);
+        }
+
+        private IMenuItem GetSmartIndenterParentMenu()
+        {
+            var items = new IMenuItem[]
+            {
+                _kernel.Get<IndentCurrentProcedureCommandMenuItem>(),
+                _kernel.Get<IndentCurrentModuleCommandMenuItem>()
+            };
+
+            return new SmartIndenterParentMenu(items);
+        }
+
+        private IEnumerable<IMenuItem> GetCodePaneContextMenuItems()
+        {
+            return new IMenuItem[]
+            {
+                GetRefactoringsParentMenu(),
+                GetSmartIndenterParentMenu(),
+                //_kernel.Get<RegexSearchReplaceCommandMenuItem>(),
+                _kernel.Get<FindSymbolCommandMenuItem>(),
+                _kernel.Get<FindAllReferencesCommandMenuItem>(),
+                _kernel.Get<FindAllImplementationsCommandMenuItem>(),
+            };
+        }
+
+        private IEnumerable<IMenuItem> GetFormDesignerContextMenuItems()
+        {
+            return new IMenuItem[]
+            {
+                _kernel.Get<FormDesignerRefactorRenameCommandMenuItem>(),
+            };
+        }
+
+        private IEnumerable<IMenuItem> GetProjectWindowContextMenuItems()
+        {
+            return new IMenuItem[]
+            {
+                _kernel.Get<ProjectExplorerRefactorRenameCommandMenuItem>(),
+                _kernel.Get<FindSymbolCommandMenuItem>(),
+                _kernel.Get<FindAllReferencesCommandMenuItem>(),
+                _kernel.Get<FindAllImplementationsCommandMenuItem>(),
+            };
         }
     }
 }

@@ -20,21 +20,21 @@ namespace Rubberduck.AutoSave
         {
             _vbe = vbe;
             _configService = configService;
-            _config = _configService.LoadConfiguration();
 
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
 
-            _timer.Enabled = _config.UserSettings.GeneralSettings.AutoSaveEnabled 
-                && _config.UserSettings.GeneralSettings.AutoSavePeriod != 0;
+            // todo: move this out of ctor
+            //_timer.Enabled = _config.UserSettings.GeneralSettings.AutoSaveEnabled 
+            //    && _config.UserSettings.GeneralSettings.AutoSavePeriod != 0;
 
-            if (_config.UserSettings.GeneralSettings.AutoSavePeriod != 0)
-            {
-                _timer.Interval = _config.UserSettings.GeneralSettings.AutoSavePeriod * 1000;
-                _timer.Elapsed += _timer_Elapsed;
-            }
+            //if (_config.UserSettings.GeneralSettings.AutoSavePeriod != 0)
+            //{
+            //    _timer.Interval = _config.UserSettings.GeneralSettings.AutoSavePeriod * 1000;
+            //    _timer.Elapsed += _timer_Elapsed;
+            //}
         }
 
-        void ConfigServiceSettingsChanged(object sender, EventArgs e)
+        private void ConfigServiceSettingsChanged(object sender, EventArgs e)
         {
             _config = _configService.LoadConfiguration();
 
@@ -48,11 +48,11 @@ namespace Rubberduck.AutoSave
             {
                 try
                 {
-                    // note: VBProject.FileName getter throws IOException if unsaved
-                    _vbe.VBProjects.OfType<VBProject>().Select(p => p.FileName).ToList();
+                    var projects = _vbe.VBProjects.OfType<VBProject>().Select(p => p.FileName).ToList();
                 }
-                catch (DirectoryNotFoundException)
+                catch (IOException)
                 {
+                    // note: VBProject.FileName getter throws IOException if unsaved
                     return;
                 }
 

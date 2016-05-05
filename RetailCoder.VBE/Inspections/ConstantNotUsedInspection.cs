@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections
                     declaration.DeclarationType == DeclarationType.Constant && !declaration.References.Any());
 
             return results.Select(issue => 
-                new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName.QualifiedModuleName)).Cast<InspectionResultBase>();
+                new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName.QualifiedModuleName)).Cast<InspectionResultBase>();
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
                 {
 
                     if (declaration.DeclarationType != DeclarationType.Variable ||
-                        !new[] {DeclarationType.Class, DeclarationType.Module}.Contains(declaration.ParentDeclaration.DeclarationType))
+                        !new[] {DeclarationType.ClassModule, DeclarationType.ProceduralModule}.Contains(declaration.ParentDeclaration.DeclarationType))
                     {
                         return false;
                     }
@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections
 
             return UserDeclarations.SingleOrDefault(d =>
                         reference.ParentScoping.Equals(d) && declarationTypes.Contains(d.DeclarationType) &&
-                        d.Project == reference.QualifiedModuleName.Project);
+                        d.QualifiedName.QualifiedModuleName.Equals(reference.QualifiedModuleName));
         }
     }
 }

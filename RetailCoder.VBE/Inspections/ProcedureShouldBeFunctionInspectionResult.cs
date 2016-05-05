@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections
        public ProcedureShouldBeFunctionInspectionResult(IInspection inspection, RubberduckParserState state, QualifiedContext<VBAParser.ArgListContext> argListQualifiedContext, QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext)
            : base(inspection,
                 subStmtQualifiedContext.ModuleName,
-                subStmtQualifiedContext.Context.ambiguousIdentifier())
+                subStmtQualifiedContext.Context.identifier())
         {
            _target = state.AllUserDeclarations.Single(declaration => 
                declaration.DeclarationType == DeclarationType.Procedure
@@ -100,8 +100,8 @@ namespace Rubberduck.Inspections
 
             var newfunctionWithReturn = newFunctionWithoutReturn
                 .Insert(newFunctionWithoutReturn.LastIndexOf(Environment.NewLine, StringComparison.Ordinal),
-                        Environment.NewLine + "    " + _subStmtQualifiedContext.Context.ambiguousIdentifier().GetText() +
-                        " = " + _argQualifiedContext.Context.ambiguousIdentifier().GetText());
+                        Environment.NewLine + "    " + _subStmtQualifiedContext.Context.identifier().GetText() +
+                        " = " + _argQualifiedContext.Context.identifier().GetText());
 
             _lineOffset = newfunctionWithReturn.Split(new[] {Environment.NewLine}, StringSplitOptions.None).Length -
                          subStmtText.Split(new[] {Environment.NewLine}, StringSplitOptions.None).Length;
@@ -115,15 +115,14 @@ namespace Rubberduck.Inspections
 
         private void UpdateCalls()
         {
-            var procedureName = _subStmtQualifiedContext.Context.ambiguousIdentifier().GetText();
+            var procedureName = _subStmtQualifiedContext.Context.identifier().GetText();
 
             var procedure =
                 _state.AllDeclarations.SingleOrDefault(d =>
                         !d.IsBuiltIn &&
                         d.IdentifierName == procedureName &&
                         d.Context is VBAParser.SubStmtContext &&
-                        d.ComponentName == _subStmtQualifiedContext.ModuleName.ComponentName &&
-                        d.Project == _subStmtQualifiedContext.ModuleName.Project);
+                        d.QualifiedName.QualifiedModuleName.Equals(_subStmtQualifiedContext.ModuleName));
 
             if (procedure == null) { return; }
 
@@ -143,7 +142,7 @@ namespace Rubberduck.Inspections
                 
                 var referenceText = reference.Context.Parent.GetText();
                 var newCall = referenceParent.argsCall().argCall().ToList().ElementAt(_argListQualifiedContext.Context.arg().ToList().IndexOf(_argQualifiedContext.Context)).GetText() +
-                              " = " + _subStmtQualifiedContext.Context.ambiguousIdentifier().GetText() +
+                              " = " + _subStmtQualifiedContext.Context.identifier().GetText() +
                               "(" + referenceParent.argsCall().GetText() + ")";
 
                 var oldLines = module.Lines[startLine, reference.Selection.LineCount];

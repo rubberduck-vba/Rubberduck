@@ -3,8 +3,10 @@ using System.Linq;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
+using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
+using Rubberduck.UI.Settings;
 using Rubberduck.UnitTesting;
 using resx = Rubberduck.UI.RubberduckUI;
 
@@ -15,20 +17,22 @@ namespace Rubberduck.UI.UnitTesting
         private readonly ITestEngine _testEngine;
         private readonly TestExplorerModelBase _model;
         private readonly IClipboardWriter _clipboard;
+        private readonly IGeneralConfigService _configService;
 
-        public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, TestExplorerModelBase model, IClipboardWriter clipboard)
+        public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, TestExplorerModelBase model, IClipboardWriter clipboard, NewUnitTestModuleCommand newTestModuleCommand, NewTestMethodCommand newTestMethodCommand, IGeneralConfigService configService)
         {
             _testEngine = testEngine;
             _testEngine.TestCompleted += TestEngineTestCompleted;
             _model = model;
             _clipboard = clipboard;
+            _configService = configService;
 
             _navigateCommand = new NavigateCommand();
 
             _runAllTestsCommand = new RunAllTestsCommand(testEngine, model);
-            _addTestModuleCommand = new AddTestModuleCommand(vbe);
-            _addTestMethodCommand = new AddTestMethodCommand(vbe, model);
-            _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe, model);
+            _addTestModuleCommand = new AddTestModuleCommand(vbe, newTestModuleCommand);
+            _addTestMethodCommand = new AddTestMethodCommand(model, newTestMethodCommand);
+            _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(model, newTestMethodCommand);
 
             _refreshCommand = new DelegateCommand(ExecuteRefreshCommand, CanExecuteRefreshCommand);
             _repeatLastRunCommand = new DelegateCommand(ExecuteRepeatLastRunCommand, CanExecuteRepeatLastRunCommand);
@@ -39,7 +43,7 @@ namespace Rubberduck.UI.UnitTesting
 
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
 
-
+            _openSettingsCommand = new DelegateCommand(OpenSettings);
         }
 
         private bool CanExecuteRunPassedTestsCommand(object obj)
@@ -120,6 +124,17 @@ namespace Rubberduck.UI.UnitTesting
 
         private readonly ICommand _runSelectedTestCommand;
         public ICommand RunSelectedTestCommand { get { return _runSelectedTestCommand; } }
+        
+        private readonly ICommand _openSettingsCommand;
+        public ICommand OpenTodoSettings { get { return _openSettingsCommand; } }
+
+        private void OpenSettings(object param)
+        {
+            using (var window = new SettingsForm(_configService, SettingsViews.UnitTestSettings))
+            {
+                window.ShowDialog();
+            }
+        }
 
         public TestExplorerModelBase Model { get { return _model; } }
 

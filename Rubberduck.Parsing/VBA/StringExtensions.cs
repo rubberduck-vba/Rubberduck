@@ -81,7 +81,7 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            throw new ArgumentException(string.Format("Not {0} instances of '{1}' in '{2}'", index, chr, line), "index");
+            throw new ArgumentException(string.Format(ParsingText.StringExtensionsArgumentException, index, chr, line), "index");
         }
     }
 }

@@ -8,7 +8,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Vbe.Interop;
@@ -18,6 +17,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
+using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.CodeInspections
@@ -46,6 +46,7 @@ namespace Rubberduck.UI.CodeInspections
             _quickFixInModuleCommand = new DelegateCommand(ExecuteQuickFixInModuleCommand);
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
+            _openSettingsCommand = new DelegateCommand(OpenSettings);
 
             _state.StateChanged += _state_StateChanged;
         }
@@ -119,6 +120,17 @@ namespace Rubberduck.UI.CodeInspections
         private readonly ICommand _copyResultsCommand;
         public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
 
+        private readonly ICommand _openSettingsCommand;
+        public ICommand OpenTodoSettings { get { return _openSettingsCommand; } }
+
+        private void OpenSettings(object param)
+        {
+            using (var window = new SettingsForm(_configService, SettingsViews.InspectionSettings))
+            {
+                window.ShowDialog();
+            }
+        }
+
         private bool _canRefresh = true;
 
         public bool CanRefresh
@@ -139,7 +151,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private async void ExecuteRefreshCommandAsync(object parameter)
         {
-            CanRefresh = _vbe.HostApplication() != null;
+            CanRefresh = _vbe.HostApplication() != null && _state.IsDirty();
             if (!CanRefresh)
             {
                 return;
@@ -148,7 +160,7 @@ namespace Rubberduck.UI.CodeInspections
             IsBusy = true;
 
             Debug.WriteLine("InspectionResultsViewModel.ExecuteRefreshCommand - requesting reparse");
-            _state.OnParseRequested();
+            _state.OnParseRequested(this);
         }
 
         private bool CanExecuteRefreshCommand(object parameter)
@@ -156,13 +168,17 @@ namespace Rubberduck.UI.CodeInspections
             return !IsBusy;
         }
 
-        private async void _state_StateChanged(object sender, ParserStateEventArgs e)
+        private async void _state_StateChanged(object sender, EventArgs e)
         {
-            if (e.State != ParserState.Ready)
+            Debug.WriteLine("InspectionResultsViewModel handles StateChanged...");
+            if (_state.Status != ParserState.Ready)
             {
+                IsBusy = false;
                 return;
             }
 
+            Debug.WriteLine("Running code inspections...");
+            IsBusy = true;
             var results = await _inspector.FindIssuesAsync(_state, CancellationToken.None);
             _dispatcher.Invoke(() =>
             {
@@ -179,12 +195,27 @@ namespace Rubberduck.UI.CodeInspections
 
         private void ExecuteQuickFixes(IEnumerable<CodeInspectionQuickFix> quickFixes)
         {
-            foreach (var quickFix in quickFixes)
+            var fixes = quickFixes.ToList();
+            var completed = 0;
+            var cancelled = 0;
+            foreach (var quickFix in fixes)
             {
+                quickFix.IsCancelled = false;
                 quickFix.Fix();
+                completed++;
+
+                if (quickFix.IsCancelled)
+                {
+                    cancelled++;
+                    break;
+                }
             }
 
-            Task.Run(() => ExecuteRefreshCommandAsync(null));
+            // refresh if any quickfix has completed without cancelling:
+            if (completed != 0 && cancelled < completed)
+            {
+                Task.Run(() => ExecuteRefreshCommandAsync(null));
+            }
         }
 
         private void ExecuteQuickFixCommand(object parameter)

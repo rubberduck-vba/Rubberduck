@@ -1,0 +1,37 @@
+Attribute VB_Name = "vbFnCollectionPri"
+Option Explicit
+Option Private Module
+
+Private Const ThisModule As String = ThisProject & "|vbFnCollectionPri"
+
+Public Function GetCollectionItemIndex(NameValue As tyNameValue _
+                                     , Collection As Object _
+                                     , Count As Long _
+                                     ) As Long
+    Const ThisProcedure As String = ThisModule & "|GetCollectionItemIndex|Function"
+
+    With NameValue
+        Select Case VBA.Sgn(.Value)
+            Case In1
+                If .Value > Count Then
+                    RaiseParamIndexGtCollectionCount NameValue:=NameValue _
+                                                   , Collection:=Collection _
+                                                   , Count:=Count
+                End If
+                GetCollectionItemIndex = .Value
+
+            Case InM1
+                If VBA.Abs(.Value) > Count Then
+                    RaiseParamIndexLtCollection1 NameValue:=NameValue _
+                                               , Collection:=Collection _
+                                               , Count:=Count
+                End If
+                GetCollectionItemIndex = Count + Lo1 + .Value
+
+            Case In0
+                RaiseParamIndexEqCollection0 NameValue:=NameValue _
+                                           , Collection:=Collection _
+                                           , Count:=Count
+        End Select
+    End With
+End Function

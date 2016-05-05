@@ -3,7 +3,7 @@
 #define AddinDLL "Rubberduck.dll"
 #define AppVersion GetFileVersion(SourcePath + "RetailCoder.VBE\bin\release\Rubberduck.dll")
 #define AppPublisher "Rubberduck"
-#define AppURL "http://rubberduck-vba.com"
+#define AppURL "http://rubberduckvba.com"
 #define License SourcePath + "\License.rtf"
 #define OutputDirectory SourcePath + "\Installers"
 #define AddinProgId "Rubberduck.Extension"

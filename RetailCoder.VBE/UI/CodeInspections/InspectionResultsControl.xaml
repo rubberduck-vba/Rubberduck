@@ -15,6 +15,7 @@
              d:DesignHeight="300" d:DesignWidth="300" 
              d:DataContext="{d:DesignInstance codeInspections:InspectionResultsViewModel}">
     <UserControl.Resources>
+        <BitmapImage x:Key="SettingsImage" UriSource="../../Resources/gear.png" />
 
         <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -374,7 +375,9 @@
             <Button Command="{Binding CopyResultsCommand}">
                 <Image Height="16" Source="../../Resources/document-copy.png" />
             </Button>
-                        
+            <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings}" Command="{Binding OpenTodoSettings}" BorderThickness="0" Background="Transparent">
+                <Image Height="16" Source="{StaticResource SettingsImage}" />
+            </Button>
         </ToolBar>
         
         <controls:GroupingGrid Grid.Row="1"
@@ -421,28 +424,32 @@
 
             <StackPanel Orientation="Vertical" MinHeight="48" Background="Gainsboro">
                 
-                <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center" 
+                <Grid Margin="4" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="25" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center" Grid.Column="0"
                            Source="{Binding SelectedItem.Inspection.Severity, Converter={StaticResource SeverityIconConverter}}"/>
-                    <TextBlock Margin="4" Text="{Binding SelectedItem.Inspection.Description}" FontWeight="Bold" TextWrapping="Wrap"/>
-                </StackPanel>
+                    <TextBlock Grid.Column="1" Margin="4" Text="{Binding SelectedItem.Description}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
+                </Grid>
 
-                <TextBlock Margin="4" Text="{Binding SelectedItem.Inspection.Meta}" FontSize="10" TextWrapping="Wrap"/>
-                <TextBlock Margin="8" Text="{Binding SelectedItem.QualifiedSelection}" FontSize="10" TextWrapping="Wrap" />
+                <TextBlock Margin="4" Text="{Binding SelectedItem.Inspection.Meta}" FontSize="10" TextWrapping="WrapWithOverflow"/>
+                <TextBlock Margin="8" Text="{Binding SelectedItem.QualifiedSelection}" FontSize="10" TextWrapping="WrapWithOverflow" />
                 
                 <WrapPanel>
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteQuickFixInModule, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding QuickFixInModuleCommand}"
-                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=QuickFix_ThisModule}" />
+                            Content="{Resx ResxName=Rubberduck.Inspections.InspectionsUI, Key=QuickFix_ThisModule}" />
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding QuickFixInProjectCommand}"
-                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=QuickFix_ThisProject}" />
+                            Content="{Resx ResxName=Rubberduck.Inspections.InspectionsUI, Key=QuickFix_ThisProject}" />
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding DisableInspectionCommand}"
-                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=DisableThisInspection}" />
+                            Content="{Resx ResxName=Rubberduck.Inspections.InspectionsUI, Key=DisableThisInspection}" />
                 </WrapPanel>
             </StackPanel>
         </Border>

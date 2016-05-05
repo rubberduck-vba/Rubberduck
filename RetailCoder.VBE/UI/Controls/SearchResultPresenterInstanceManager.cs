@@ -42,8 +42,15 @@ namespace Rubberduck.UI.Controls
         
         public void Dispose()
         {
+            if (_view.ViewModel != null)
+            {
             _view.ViewModel.LastTabClosed -= viewModel_LastTabClosed;
+            }
+
+            if (_presenter != null)
+            {
             _presenter.Dispose();
         }
     }
+}
 }

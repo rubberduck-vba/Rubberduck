@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Moq;
+using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Mocks
 {
@@ -42,6 +43,7 @@ namespace RubberduckTests.Mocks
             }
 
             _vbe.SetupGet(vbe => vbe.ActiveVBProject).Returns(project.Object);
+            _vbe.SetupGet(vbe => vbe.Version).Returns("7.1");
 
             _vbProjects = CreateProjectsMock();
             _vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
@@ -56,7 +58,12 @@ namespace RubberduckTests.Mocks
         /// <param name="protection">A value that indicates whether the project is protected.</param>
         public MockProjectBuilder ProjectBuilder(string name, vbext_ProjectProtection protection)
         {
-            var result = new MockProjectBuilder(name, protection, () => _vbe.Object, this);
+            return ProjectBuilder(name, string.Empty, protection);
+        }
+
+        public MockProjectBuilder ProjectBuilder(string name, string filename, vbext_ProjectProtection protection)
+        {
+            var result = new MockProjectBuilder(name, filename, protection, () => _vbe.Object, this);
             return result;
         }
 
@@ -75,11 +82,17 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="content">The VBA code associated to the component.</param>
         /// <param name="component">The created <see cref="VBComponent"/></param>
+        /// <param name="selection"></param>
         /// <returns></returns>
-        public Mock<VBE> BuildFromSingleStandardModule(string content, out VBComponent component)
+        public Mock<VBE> BuildFromSingleStandardModule(string content, out VBComponent component, Selection selection = new Selection())
+        {
+            return BuildFromSingleModule(content, vbext_ComponentType.vbext_ct_StdModule, out component, selection);
+        }
+
+        public Mock<VBE> BuildFromSingleModule(string content, vbext_ComponentType type, out VBComponent component, Selection selection)
         {
             var builder = ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
-            builder.AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, content);
+            builder.AddComponent("TestModule1", type, content, selection);
             var project = builder.Build();
             component = project.Object.VBComponents.Item(0);
             return AddProject(project).Build();

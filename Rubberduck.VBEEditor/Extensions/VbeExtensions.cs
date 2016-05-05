@@ -12,24 +12,14 @@ namespace Rubberduck.VBEditor.Extensions
         public static void SetSelection(this VBE vbe, VBProject vbProject, Selection selection, string name,
             ICodePaneWrapperFactory wrapperFactory)
         {
-            var project = vbe.VBProjects.Cast<VBProject>()
-                .SingleOrDefault(p => p.Protection != vbext_ProjectProtection.vbext_pp_locked
-                                      && ReferenceEquals(p, vbProject));
-
-            VBComponent component = null;
-            if (project != null)
-            {
-                component = project.VBComponents.Cast<VBComponent>()
-                    .SingleOrDefault(c => c.Name == name);
-            }
-
-            if (component == null)
-            {
-                return;
-            }
-
             try
             {
+                var component = vbProject.VBComponents.Cast<VBComponent>().SingleOrDefault(c => c.Name == name);
+                if (component == null)
+                {
+                    return;
+                }
+
                 var codePane = wrapperFactory.Create(component.CodeModule.CodePane);
                 codePane.Selection = selection;
             }
@@ -56,7 +46,7 @@ namespace Rubberduck.VBEditor.Extensions
             {
                 const int ctl_view_host = 106;
 
-                CommandBarControl host_app_control = vbe.CommandBars.FindControl(MsoControlType.msoControlButton, ctl_view_host);
+                var host_app_control = vbe.CommandBars.FindControl(MsoControlType.msoControlButton, ctl_view_host);
 
                 if (host_app_control == null)
                 {
@@ -79,12 +69,12 @@ namespace Rubberduck.VBEditor.Extensions
                         case "Microsoft Publisher":
                             return new PublisherApp();
                         case "AutoCAD":
-                            return null; //TODO - Confirm the button caption
+                            return new AutoCADApp();
                         case "CorelDRAW":
-                            return null;
+                            return new CorelDRAWApp();
                     }
                 }
-                return null;
+                return null;// new FallbackApp(vbe);
             }
 
             foreach (var reference in vbe.ActiveVBProject.References.Cast<Reference>()
@@ -111,7 +101,7 @@ namespace Rubberduck.VBEditor.Extensions
                 }
             }
 
-            return null;
+            return null; //new FallbackApp(vbe);
         }
     }
 }

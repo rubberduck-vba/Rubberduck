@@ -385,4 +385,22 @@
   <data name="blue_folder_horizontal_open" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\blue-folder-horizontal-open.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="AddProperty_5538_321_Mask" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\Mask\AddProperty_5538_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ExtractInterface_6778_321_Mask" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\Mask\ExtractInterface_6778_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ImplementInterface_5540_321_Mask" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\Mask\ImplementInterface_5540_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AddVariable_5541_32_Mask" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\Mask\AddVariable_5541_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PromoteLocal_6784_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\PromoteLocal_6784_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PromoteLocal_6784_32_Mask" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\Mask\PromoteLocal_6784_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

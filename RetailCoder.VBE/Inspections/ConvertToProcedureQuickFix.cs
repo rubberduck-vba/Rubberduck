@@ -1,10 +1,12 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Inspections
 {
@@ -25,25 +27,42 @@ namespace Rubberduck.Inspections
 
         public override void Fix()
         {
-            var context = (VBAParser.FunctionStmtContext)Context;
-            var visibility = context.visibility() == null ? string.Empty : context.visibility().GetText() + ' ';
-            var name = ' ' + context.ambiguousIdentifier().GetText();
-            var args = context.argList().GetText();
-            var asType = context.asTypeClause() == null ? string.Empty : ' ' + context.asTypeClause().GetText();
+            dynamic functionContext = Context as VBAParser.FunctionStmtContext;
+            dynamic propertyGetContext = Context as VBAParser.PropertyGetStmtContext;
 
-            var oldSignature = visibility + Tokens.Function + name + args + asType;
-            var newSignature = visibility + Tokens.Sub + name + args;
+            var context = functionContext ?? propertyGetContext;
+            if (context == null)
+            {
+                throw new InvalidOperationException(string.Format(InspectionsUI.InvalidContextTypeInspectionFix, Context.GetType(), GetType()));
+            }
 
-            var procedure = Context.GetText();
+            string token = functionContext != null
+                ? Tokens.Function
+                : Tokens.Property + ' ' + Tokens.Get;
+            string endToken = token == Tokens.Function
+                ? token
+                : Tokens.Property;
+
+            string visibility = context.visibility() == null ? string.Empty : context.visibility().GetText() + ' ';
+            string name = ' ' + context.identifier().GetText();
+            bool hasTypeHint = context.typeHint() != null;
+
+            string args = context.argList().GetText();
+            string asType = context.asTypeClause() == null ? string.Empty : ' ' + context.asTypeClause().GetText();
+
+            string oldSignature = visibility + token + name + (hasTypeHint ? context.typeHint().GetText() : string.Empty) + args + asType;
+            string newSignature = visibility + Tokens.Sub + name + args;
+
+            string procedure = Context.GetText();
             string noReturnStatements = procedure;
             _returnStatements.ToList().ForEach(returnStatement =>
                 noReturnStatements = Regex.Replace(noReturnStatements, @"[ \t\f]*" + returnStatement + @"[ \t\f]*\r?\n?", ""));
-            var result = noReturnStatements.Replace(oldSignature, newSignature)
-                .Replace(Tokens.End + ' ' + Tokens.Function, Tokens.End + ' ' + Tokens.Sub)
-                .Replace(Tokens.Exit + ' ' + Tokens.Function, Tokens.Exit + ' ' + Tokens.Sub);
+            string result = noReturnStatements.Replace(oldSignature, newSignature)
+                .Replace(Tokens.End + ' ' + endToken, Tokens.End + ' ' + Tokens.Sub)
+                .Replace(Tokens.Exit + ' ' + endToken, Tokens.Exit + ' ' + Tokens.Sub);
 
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var selection = Context.GetSelection();
+            CodeModule module = Selection.QualifiedName.Component.CodeModule;
+            Selection selection = Context.GetSelection();
 
             module.DeleteLines(selection.StartLine, selection.LineCount);
             module.InsertLines(selection.StartLine, result);

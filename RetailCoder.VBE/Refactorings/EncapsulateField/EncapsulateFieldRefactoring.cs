@@ -4,19 +4,20 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldRefactoring : IRefactoring
     {
+        private readonly VBE _vbe;
         private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
-        private readonly IActiveCodePaneEditor _editor;
         private EncapsulateFieldModel _model;
 
-        public EncapsulateFieldRefactoring(IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory, IActiveCodePaneEditor editor)
+        public EncapsulateFieldRefactoring(VBE vbe, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
         {
+            _vbe = vbe;
             _factory = factory;
-            _editor = editor;
         }
 
         public void Refactor()
@@ -82,12 +83,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             module.InsertLines(module.CountOfDeclarationLines + 1, newField);
 
-            _editor.SetSelection(_model.TargetDeclaration.QualifiedSelection);
+            _vbe.ActiveCodePane.CodeModule.SetSelection(_model.TargetDeclaration.QualifiedSelection);
             for (var index = 1; index <= module.CountOfDeclarationLines; index++)
             {
                 if (module.Lines[index, 1].Trim() == string.Empty)
                 {
-                    _editor.DeleteLines(new Selection(index, 0, index, 0));
+                    _vbe.ActiveCodePane.CodeModule.DeleteLines(new Selection(index, 0, index, 0));
                 }
             }
         }
@@ -111,7 +112,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     target.Context.Stop.Line, target.Context.Stop.Column);
             }
 
-            var oldLines = _editor.GetLines(selection);
+            var oldLines = _vbe.ActiveCodePane.CodeModule.GetLines(selection);
 
             var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
                 .Remove(selection.StartColumn, declarationText.Length);
@@ -119,17 +120,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
             if (multipleDeclarations)
             {
                 selection = target.GetVariableStmtContextSelection();
-                newLines = RemoveExtraComma(_editor.GetLines(selection).Replace(oldLines, newLines),
+                newLines = RemoveExtraComma(_vbe.ActiveCodePane.CodeModule.GetLines(selection).Replace(oldLines, newLines),
                     target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
             }
 
             newLines = newLines.Replace(" _" + Environment.NewLine, string.Empty);
 
-            _editor.DeleteLines(selection);
+            _vbe.ActiveCodePane.CodeModule.DeleteLines(selection);
 
             if (newLines.Trim() != string.Empty)
             {
-                _editor.InsertLines(selection.StartLine, newLines);
+                _vbe.ActiveCodePane.CodeModule.InsertLines(selection.StartLine, newLines);
             }
         }
 

@@ -80,12 +80,7 @@ namespace Rubberduck.UnitTesting
             {
                 var moduleName = QualifiedMemberName.QualifiedModuleName;
                 var methodName = QualifiedMemberName.MemberName;
-
-                var module = _vbe.VBProjects.Cast<VBProject>()
-                    .Single(project => project == QualifiedMemberName.QualifiedModuleName.Project)
-                    .VBComponents.Cast<VBComponent>()
-                    .Single(component => component.Name == QualifiedMemberName.QualifiedModuleName.ComponentName)
-                    .CodeModule;
+                var module = moduleName.Component.CodeModule;
 
                 var startLine = module.get_ProcStartLine(methodName, vbext_ProcKind.vbext_pk_Proc);
                 var endLine = startLine + module.get_ProcCountLines(methodName, vbext_ProcKind.vbext_pk_Proc);

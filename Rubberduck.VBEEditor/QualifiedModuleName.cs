@@ -9,16 +9,33 @@ namespace Rubberduck.VBEditor
     /// </summary>
     public struct QualifiedModuleName
     {
-        public QualifiedModuleName(VBProject project)  
+        public static string GetProjectId(VBProject project)
+        {
+            if (project == null)
+            {
+                return string.Empty;
+            }
+            return string.IsNullOrEmpty(project.HelpFile) ? project.GetHashCode().ToString() : project.HelpFile;
+        }
+
+        public static string GetProjectId(Reference reference)
+        {
+            var projectName = reference.Name;
+            var path = reference.FullPath;
+            return new QualifiedModuleName(projectName, path, projectName).ProjectId;
+        }
+
+        public QualifiedModuleName(VBProject project)
         {
             _component = null;
             _componentName = null;
             _project = project;
             _projectName = project.Name;
-            _projectHashCode = project.GetHashCode();
-            _documentName = "";
+            _documentName = string.Empty;
+            _projectPath = string.Empty;
+            _projectId = GetProjectId(project);
             _contentHashCode = 0;
-       }
+        }
 
         public QualifiedModuleName(VBComponent component)
         {
@@ -26,9 +43,11 @@ namespace Rubberduck.VBEditor
 
             _component = component;
             _componentName = component == null ? string.Empty : component.Name;
-            _projectName = component == null ? string.Empty : component.Collection.Parent.Name;
-            _projectHashCode = component == null ? 0 : component.Collection.Parent.GetHashCode();
-            _documentName = "";
+            _documentName = string.Empty;
+            _project = component == null ? null : component.Collection.Parent;
+            _projectName = _project == null ? string.Empty : _project.Name;
+            _projectPath = string.Empty;
+            _projectId = GetProjectId(_project);
 
             _contentHashCode = 0;
             if (component == null)
@@ -39,7 +58,7 @@ namespace Rubberduck.VBEditor
             var module = component.CodeModule;
             _contentHashCode = module.CountOfLines > 0
                 // ReSharper disable once UseIndexedProperty
-                ? module.get_Lines(1, module.CountOfLines).GetHashCode() 
+                ? module.get_Lines(1, module.CountOfLines).GetHashCode()
                 : 0;
         }
 
@@ -47,17 +66,16 @@ namespace Rubberduck.VBEditor
         /// Creates a QualifiedModuleName for a built-in declaration.
         /// Do not use this overload for user declarations.
         /// </summary>
-        public QualifiedModuleName(string projectName, string componentName)
+        public QualifiedModuleName(string projectName, string projectPath, string componentName)
         {
-            _project = null; // field is only assigned when the instance refers to a VBProject.
-
+            _project = null;
             _projectName = projectName;
+            _projectPath = projectPath;
+            _projectId = (_projectName + ";" + _projectPath).GetHashCode().ToString();
             _componentName = componentName;
             _component = null;
-            _contentHashCode = componentName.GetHashCode();
-            _projectHashCode = projectName.GetHashCode();
-            _documentName = "";
-
+            _documentName = string.Empty;
+            _contentHashCode = 0;
         }
 
         public QualifiedMemberName QualifyMemberName(string member)
@@ -69,18 +87,16 @@ namespace Rubberduck.VBEditor
         public VBComponent Component { get { return _component; } }
 
         private readonly VBProject _project;
-        public VBProject Project { get { return _project ?? (_component == null ? null : _component.Collection.Parent); } }
-
-        private readonly int _projectHashCode;
-        public int ProjectHashCode { get { return _projectHashCode; } }
+        public VBProject Project { get { return _project; } }
 
         private readonly int _contentHashCode;
+        public int ContentHashCode { get { return _contentHashCode; } }
 
-        private readonly string _projectName;
-        public string ProjectName { get { return _projectName;} }
+        private readonly string _projectId;
+        public string ProjectId { get { return _projectId; } }
 
         private readonly string _componentName;
-        public string ComponentName { get { return _componentName; } }
+        public string ComponentName { get { return _componentName ?? string.Empty; } }
 
         public string Name { get { return ToString(); } }
 
@@ -122,31 +138,52 @@ namespace Rubberduck.VBEditor
             }
         }
             
+        private readonly string _projectName;
+
+        public string ProjectName
+        {
+            get
+            {
+                return _projectName;
+            }
+        }
+        private readonly string _projectPath;
+
+        public string ProjectPath
+        {
+            get
+            {
+                return _projectPath;
+            }
+        }
 
         public override string ToString()
         {
-            return _component == null && string.IsNullOrEmpty(_projectName) ? string.Empty : _projectName + "." + _componentName;
+            return _component == null && string.IsNullOrEmpty(_projectName)
+                ? string.Empty
+                : (string.IsNullOrEmpty(_projectPath) ? string.Empty : System.IO.Path.GetFileName(_projectPath) + ";")
+                     + _projectName + "." + _componentName;
         }
 
         public override int GetHashCode()
         {
-            return _component == null ? 0 : _component.GetHashCode();
+            unchecked
+            {
+                var hash = 17;
+                hash = hash * 23 + _projectId.GetHashCode();
+                hash = hash * 23 + (_componentName ?? string.Empty).GetHashCode();
+                return hash;
+            }
         }
 
         public override bool Equals(object obj)
         {
+            if (obj == null) { return false; }
+
             try
             {
                 var other = (QualifiedModuleName)obj;
-                if (other.Component == null)
-                {
-                    return other.ProjectName == ProjectName && other.ComponentName == ComponentName;
-                }
-
-                var result = other.Project == Project 
-                    && other.ProjectName == ProjectName
-                    && other.ComponentName == ComponentName 
-                    && other._contentHashCode == _contentHashCode;
+                var result = other.ProjectId == ProjectId && other.ComponentName == ComponentName;
                 return result;
             }
             catch (InvalidCastException)

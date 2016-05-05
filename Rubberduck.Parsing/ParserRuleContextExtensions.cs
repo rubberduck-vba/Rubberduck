@@ -20,7 +20,7 @@ namespace Rubberduck.Parsing
             var startLine = context.Start.Line == 0 ? 1 : context.Start.Line;
             var startCol = context.Start.Column + 1;
             var endLine = context.Stop.Line == 0 ? 1 : context.Stop.Line;
-            var endCol = startCol + context.Stop.Text.Length;
+            var endCol = context.Stop.Column + context.Stop.Text.Length + 1;
 
             return new Selection(
                 startLine,
@@ -43,7 +43,7 @@ namespace Rubberduck.Parsing
             var visibility = context.visibility();
             var visibilityText = visibility == null ? string.Empty : visibility.GetText();
 
-            var identifierText = context.ambiguousIdentifier().GetText();
+            var identifierText = context.identifier().GetText();
             var argsText = context.argList().GetText();
             
             var asType = context.asTypeClause();
@@ -57,7 +57,7 @@ namespace Rubberduck.Parsing
             var visibility = context.visibility();
             var visibilityText = visibility == null ? string.Empty : visibility.GetText();
 
-            var identifierText = context.ambiguousIdentifier().GetText();
+            var identifierText = context.identifier().GetText();
             var argsText = context.argList().GetText();
 
             return (visibilityText + ' ' + Tokens.Sub + ' ' + identifierText + argsText).Trim();
@@ -68,7 +68,7 @@ namespace Rubberduck.Parsing
             var visibility = context.visibility();
             var visibilityText = visibility == null ? string.Empty : visibility.GetText();
 
-            var identifierText = context.ambiguousIdentifier().GetText();
+            var identifierText = context.identifier().GetText();
             var argsText = context.argList().GetText();
 
             var asType = context.asTypeClause();
@@ -82,7 +82,7 @@ namespace Rubberduck.Parsing
             var visibility = context.visibility();
             var visibilityText = visibility == null ? string.Empty : visibility.GetText();
 
-            var identifierText = context.ambiguousIdentifier().GetText();
+            var identifierText = context.identifier().GetText();
             var argsText = context.argList().GetText();
 
             return (visibilityText + ' ' + Tokens.Property + ' ' + Tokens.Let + ' ' + identifierText + argsText).Trim();
@@ -93,7 +93,7 @@ namespace Rubberduck.Parsing
             var visibility = context.visibility();
             var visibilityText = visibility == null ? string.Empty : visibility.GetText();
 
-            var identifierText = context.ambiguousIdentifier().GetText();
+            var identifierText = context.identifier().GetText();
             var argsText = context.argList().GetText();
 
             return (visibilityText + ' ' + Tokens.Property + ' ' + Tokens.Set + ' ' + identifierText + argsText).Trim();

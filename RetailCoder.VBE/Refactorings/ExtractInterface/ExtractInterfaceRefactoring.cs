@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
@@ -7,24 +8,24 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
     public class ExtractInterfaceRefactoring : IRefactoring
     {
+        private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory<ExtractInterfacePresenter> _factory;
-        private readonly IActiveCodePaneEditor _editor;
         private ExtractInterfaceModel _model;
 
-        public ExtractInterfaceRefactoring(RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory<ExtractInterfacePresenter> factory,
-            IActiveCodePaneEditor editor)
+        public ExtractInterfaceRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory<ExtractInterfacePresenter> factory)
         {
+            _vbe = vbe;
             _state = state;
             _messageBox = messageBox;
             _factory = factory;
-            _editor = editor;
         }
 
         public void Refactor()
@@ -47,13 +48,13 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public void Refactor(QualifiedSelection target)
         {
-            _editor.SetSelection(target);
+            _vbe.ActiveCodePane.CodeModule.SetSelection(target);
             Refactor();
         }
 
         public void Refactor(Declaration target)
         {
-            _editor.SetSelection(target.QualifiedSelection);
+            _vbe.ActiveCodePane.CodeModule.SetSelection(target.QualifiedSelection);
             Refactor();
         }
 
@@ -62,8 +63,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var interfaceComponent = _model.TargetDeclaration.Project.VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
             interfaceComponent.Name = _model.InterfaceName;
 
-            _editor.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
-            _editor.InsertLines(3, GetInterfaceModuleBody());
+            _vbe.ActiveCodePane.CodeModule.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
+            _vbe.ActiveCodePane.CodeModule.InsertLines(3, GetInterfaceModuleBody());
 
             var module = _model.TargetDeclaration.QualifiedSelection.QualifiedName.Component.CodeModule;
 
@@ -71,21 +72,23 @@ namespace Rubberduck.Refactorings.ExtractInterface
             module.InsertLines(_insertionLine, Tokens.Implements + ' ' + _model.InterfaceName + Environment.NewLine);
 
             _state.StateChanged += _state_StateChanged;
-            _state.OnParseRequested();
+            _state.OnParseRequested(this);
         }
 
         private int _insertionLine;
-        private void _state_StateChanged(object sender, ParserStateEventArgs e)
+        private void _state_StateChanged(object sender, EventArgs e)
         {
-            if (e.State != ParserState.Ready)
+            Debug.WriteLine("ExtractInterfaceRefactoring handles StateChanged...");
+            if (_state.Status != ParserState.Ready)
             {
                 return;
             }
 
+            Debug.WriteLine("Implementing extracted interface...");
             var qualifiedSelection = new QualifiedSelection(_model.TargetDeclaration.QualifiedSelection.QualifiedName, new Selection(_insertionLine, 1, _insertionLine, 1));
-            _editor.SetSelection(qualifiedSelection);
+            _vbe.ActiveCodePane.CodeModule.SetSelection(qualifiedSelection);
 
-            var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_state, _editor, _messageBox);
+            var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_vbe, _state, _messageBox);
             implementInterfaceRefactoring.Refactor(qualifiedSelection);
 
             _state.StateChanged -= _state_StateChanged;

@@ -18,7 +18,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         private static readonly DeclarationType[] ModuleTypes =
         {
-            DeclarationType.Class,
+            DeclarationType.ClassModule,
             DeclarationType.Document,
             DeclarationType.UserForm
         };
@@ -38,8 +38,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var candidates = declarations.Where(item => !item.IsBuiltIn && ModuleTypes.Contains(item.DeclarationType)).ToList();
 
             _targetDeclaration = candidates.SingleOrDefault(item => 
-                           item.Project == selection.QualifiedName.Project
-                        && item.QualifiedSelection.QualifiedName.ComponentName == selection.QualifiedName.ComponentName);
+                        item.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
 
             if (_targetDeclaration == null)
             {
@@ -50,7 +49,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             InterfaceName = "I" + TargetDeclaration.IdentifierName;
 
             _members = declarations.Where(item => !item.IsBuiltIn
-                                                  && item.Project == _targetDeclaration.Project
+                                                  && item.ProjectId == _targetDeclaration.ProjectId
                                                   && item.ComponentName == _targetDeclaration.ComponentName
                                                   && (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Implicit)
                                                   && MemberTypes.Contains(item.DeclarationType))

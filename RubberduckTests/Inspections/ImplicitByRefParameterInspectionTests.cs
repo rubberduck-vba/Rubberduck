@@ -26,7 +26,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -50,7 +50,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -74,7 +74,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -98,7 +98,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -122,7 +122,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -156,7 +156,7 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -186,7 +186,7 @@ End Sub";
             var module = project.VBComponents.Item(0).CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -200,7 +200,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void ImplicitByRefParameter_QuickFixWorks_ParamArrayMustBePassedByRef()
+        public void ImplicitByRefParameter_QuickFixWorks_ParamArrayIsIgnored()
         {
             const string inputCode =
 @"Sub Foo(ParamArray arg1 As Integer)
@@ -212,7 +212,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = new RubberduckParser(vbe.Object, new RubberduckParserState());
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -220,7 +220,7 @@ End Sub";
             var inspection = new ImplicitByRefParameterInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(2, inspectionResults.First().QuickFixes.Count());
+            Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [TestMethod]

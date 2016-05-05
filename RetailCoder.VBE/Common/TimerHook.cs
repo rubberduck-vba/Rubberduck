@@ -4,15 +4,13 @@ using Rubberduck.Common.WinAPI;
 
 namespace Rubberduck.Common
 {
-    public class TimerHook : ITimerHook, IDisposable
+    public class TimerHook : IAttachable, IDisposable
     {
         private readonly IntPtr _mainWindowHandle;
         private readonly User32.TimerProc _timerProc;
 
         private IntPtr _timerId;
         private bool _isAttached;
-
-        public event EventHandler Tick;
 
         public TimerHook(IntPtr mainWindowHandle)
         {
@@ -21,6 +19,7 @@ namespace Rubberduck.Common
         }
 
         public bool IsAttached { get { return _isAttached; } }
+        public event EventHandler<HookEventArgs> MessageReceived;
 
         public void Attach()
         {
@@ -65,10 +64,10 @@ namespace Rubberduck.Common
 
         private void OnTick()
         {
-            var handler = Tick;
+            var handler = MessageReceived;
             if (handler != null)
             {
-                handler.Invoke(this, EventArgs.Empty);
+                handler.Invoke(this, HookEventArgs.Empty);
             }
         }
 

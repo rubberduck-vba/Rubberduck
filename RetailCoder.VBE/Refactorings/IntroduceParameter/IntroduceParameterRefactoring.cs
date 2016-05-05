@@ -11,14 +11,15 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.IntroduceParameter
 {
     public class IntroduceParameterRefactoring : IRefactoring
     {
+        private readonly VBE _vbe;
         private readonly RubberduckParserState _parseResult;
         private readonly IList<Declaration> _declarations;
-        private readonly IActiveCodePaneEditor _editor;
         private readonly IMessageBox _messageBox;
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
@@ -30,17 +31,17 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             DeclarationType.PropertySet
         };
 
-        public IntroduceParameterRefactoring(RubberduckParserState parseResult, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public IntroduceParameterRefactoring(VBE vbe, RubberduckParserState parseResult, IMessageBox messageBox)
         {
+            _vbe = vbe;
             _parseResult = parseResult;
             _declarations = parseResult.AllDeclarations.ToList();
-            _editor = editor;
             _messageBox = messageBox;
         }
 
         public void Refactor()
         {
-            var selection = _editor.GetSelection();
+            var selection = _vbe.ActiveCodePane.CodeModule.GetSelection();
 
             if (!selection.HasValue)
             {
@@ -87,7 +88,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
-            if (new[] { DeclarationType.Class, DeclarationType.Module }.Contains(target.ParentDeclaration.DeclarationType))
+            if (new[] { DeclarationType.ClassModule, DeclarationType.ProceduralModule }.Contains(target.ParentDeclaration.DeclarationType))
             {
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -148,7 +149,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             UpdateSignature(interfaceImplementation, targetVariable);
 
             var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
-                                                    .Where(item => item.Project.Equals(interfaceImplementation.Project)
+                                                    .Where(item => item.ProjectId == interfaceImplementation.ProjectId
                                                            && item.IdentifierName == interfaceImplementation.ComponentName + "_" + interfaceImplementation.IdentifierName
                                                            && !item.Equals(functionDeclaration));
 
@@ -256,7 +257,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                     target.Context.Stop.Line, target.Context.Stop.Column);
             }
 
-            var oldLines = _editor.GetLines(selection);
+            var oldLines = _vbe.ActiveCodePane.CodeModule.GetLines(selection);
 
             var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
                 .Remove(selection.StartColumn, declarationText.Length);
@@ -264,11 +265,11 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             if (multipleDeclarations)
             {
                 selection = target.GetVariableStmtContextSelection();
-                newLines = RemoveExtraComma(_editor.GetLines(selection).Replace(oldLines, newLines),
+                newLines = RemoveExtraComma(_vbe.ActiveCodePane.CodeModule.GetLines(selection).Replace(oldLines, newLines),
                     target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
             }
 
-            var newLinesWithoutExcessSpaces = newLines.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+            var newLinesWithoutExcessSpaces = newLines.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             for (var i = 0; i < newLinesWithoutExcessSpaces.Length; i++)
             {
                 newLinesWithoutExcessSpaces[i] = newLinesWithoutExcessSpaces[i].RemoveExtraSpacesLeavingIndentation();
@@ -289,8 +290,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 break;
             }
 
-            _editor.DeleteLines(selection);
-            _editor.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
+            _vbe.ActiveCodePane.CodeModule.DeleteLines(selection);
+            _vbe.ActiveCodePane.CodeModule.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
         }
 
         private string GetOldSignature(Declaration target)

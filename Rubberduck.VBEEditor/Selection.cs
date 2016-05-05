@@ -77,7 +77,19 @@ namespace Rubberduck.VBEditor
 
         public override string ToString()
         {
-            return string.Format("L{0}C{1} - L{2}C{3}", _startLine, _startColumn, _endLine, _endColumn);
+            return (_startLine == _endLine && _startColumn == _endColumn)
+                ? string.Format(Rubberduck.VBEditor.VBEEditorText.SelectionLocationPosition, _startLine, _startColumn)
+                : string.Format(Rubberduck.VBEditor.VBEEditorText.SelectionLocationRange, _startLine, _startColumn, _endLine, _endColumn);
+        }
+
+        public static bool operator ==(Selection selection1, Selection selection2)
+        {
+            return selection1.Equals(selection2);
+        }
+
+        public static bool operator !=(Selection selection1, Selection selection2)
+        {
+            return !(selection1 == selection2);
         }
 
         public override bool Equals(object obj)

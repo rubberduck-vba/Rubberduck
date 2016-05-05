@@ -1,38 +1,35 @@
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.ExtractInterface;
-using Rubberduck.UI.Refactorings;
+using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class RefactorExtractInterfaceCommand : RefactorCommandBase
+    public class RefactorImplementInterfaceCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _messageBox;
+        private readonly ImplementInterfaceRefactoring _refactoring;
+        private QualifiedSelection? _selection;
 
-        public RefactorExtractInterfaceCommand(VBE vbe, RubberduckParserState state, IActiveCodePaneEditor editor, IMessageBox messageBox)
-            : base (vbe, editor)
+        public RefactorImplementInterfaceCommand(VBE vbe, RubberduckParserState state)
+            :base(vbe)
         {
             _state = state;
-            _messageBox = messageBox;
+            _refactoring = new ImplementInterfaceRefactoring(Vbe, state, new MessageBox());
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            return Vbe.ActiveCodePane != null && _state.Status == ParserState.Ready && _selection.HasValue && _refactoring.CanExecute(_selection.Value);
         }
 
         public override void Execute(object parameter)
         {
-            if (Vbe.ActiveCodePane == null)
-            {
-                return;
-            }
-
-            using (var view = new ExtractInterfaceDialog())
-            {
-                var factory = new ExtractInterfacePresenterFactory(_state, Editor, view);
-                var refactoring = new ExtractInterfaceRefactoring(_state, _messageBox, factory, Editor);
-                refactoring.Refactor();
-            }
+            // ReSharper disable once PossibleInvalidOperationException
+            _refactoring.Refactor(_selection.Value);
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Inspections
 {
@@ -19,11 +20,9 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = UserDeclarations.Where(declaration =>
-                 (declaration.DeclarationType == DeclarationType.Class
-                || declaration.DeclarationType == DeclarationType.Module)
-                && declaration.Annotations.Split('\n').Count(annotation =>
-                    annotation.StartsWith(Parsing.Grammar.Annotations.AnnotationMarker +
-                                          Parsing.Grammar.Annotations.Folder)) > 1);
+                 (declaration.DeclarationType == DeclarationType.ClassModule
+                || declaration.DeclarationType == DeclarationType.ProceduralModule)
+                && declaration.Annotations.Count(annotation => annotation.AnnotationType == AnnotationType.Folder) > 1);
             return issues.Select(issue =>
                 new MultipleFolderAnnotationsInspectionResult(this, issue));
         }

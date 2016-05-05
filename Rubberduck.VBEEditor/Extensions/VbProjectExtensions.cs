@@ -1,18 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Vbe.Interop;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.Extensions
 {
     public static class ProjectExtensions
     {
+        public static IEnumerable<VBProject> UnprotectedProjects(this VBProjects projects)
+        {
+            return projects.Cast<VBProject>().Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none);
+        }
+
         public static IEnumerable<string> ComponentNames(this VBProject project)
         {
-            foreach (VBComponent component in project.VBComponents)
-            {
-                yield return component.Name;
-            }
+            return project.VBComponents.Cast<VBComponent>().Select(component => component.Name);
         }
 
         /// <summary>
@@ -59,7 +61,7 @@ namespace Rubberduck.VBEditor.Extensions
 
             var files = dirInfo.EnumerateFiles()
                                 .Where(f => f.Extension == VBComponentExtensions.StandardExtension ||
-                                            f.Extension == VBComponentExtensions.ClassExtesnion ||
+                                            f.Extension == VBComponentExtensions.ClassExtension ||
                                             f.Extension == VBComponentExtensions.DocClassExtension ||
                                             f.Extension == VBComponentExtensions.FormExtension
                                             );

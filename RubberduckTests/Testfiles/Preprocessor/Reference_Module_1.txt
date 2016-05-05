@@ -1,0 +1,60 @@
+Attribute VB_Name = "fnCheckPri"
+Option Explicit
+Option Private Module
+
+Private Const ThisModule As String = ThisProject & "|fnCheckPri"
+
+#Const aB = "ß" = "ss"
+
+#If aB Then
+Public Function GetLongOrStringValue1(NameValue As tyNameValue) As Variant
+    Const ThisProcedure As String = ThisModule & "|GetLongOrStringValue|Function1"
+#Else
+Public Function GetLongOrStringValue2(NameValue As tyNameValue) As Variant
+    Const ThisProcedure As String = ThisModule & "|GetLongOrStringValue|Function2"
+#End If
+
+    With NameValue
+        .Value = GetVariantValue(Value:=.Value)
+        Select Case VBA.VarType(VarName:=.Value)
+            Case VBA.VbVarType.vbString
+                GetLongOrStringValue = .Value
+                #If Not VBA7 Then
+            Case VBA.VbVarType.vbDouble
+            #Else
+                Case VBA.VbVarType.vbInteger
+            #End If
+                If VBA.Int(.Value) <> .Value Then
+                    RaiseParamIsNotInteger NameValue:=NameValue
+                End If
+                GetLongOrStringValue = VBA.CLng(.Value)
+
+            Case VBA.VbVarType.vbLong, VBA.VbVarType.vbInteger
+                GetLongOrStringValue = VBA.CLng(.Value)
+
+            Case Else
+                RaiseParamTypeInvalid NameValue:=NameValue
+
+        End Select
+    End With
+End Function
+
+#If 2 ^ 5 = 32 Then
+'Public Sub CheckPivotFieldItemIndexPos(ByVal Name As String _
+'                                     , ByVal Value As Long _
+'                                     , ByVal PivotFields As Excel.PivotFields _
+'                                     , PivotFieldOrientation As XlPivotFieldOrientation
+#ElseIf 2 ^ 6 = 64 Then
+'                                     )
+'    If Value < Lo1 Then
+'        RaiseParamValueLt1 Name:=Name, Value:=Value
+'    End If
+'    If Value > PivotFields.Count Then
+'        RaisePivotFieldsItemIndexGtCount Name:=Name _
+'                                       , Value:=Value _
+'                                       , PivotFieldOrientation:=PivotFieldOrientation _
+'                                       , Count:=PivotFields.Count
+'    End If
+#Else
+'End Sub
+#End If

@@ -24,8 +24,8 @@ namespace Rubberduck.Inspections
         {
             var declarations = UserDeclarations.ToList();
 
-            var classes = declarations.Where(item => item.DeclarationType == DeclarationType.Class).ToList();
-            var modules = declarations.Where(item => item.DeclarationType == DeclarationType.Module).ToList();
+            var classes = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule).ToList();
+            var modules = declarations.Where(item => item.DeclarationType == DeclarationType.ProceduralModule).ToList();
 
             var handlers = declarations.Where(item => item.DeclarationType == DeclarationType.Control)
                 .SelectMany(control => declarations.FindEventHandlers(control)).ToList();
@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections
             var withEventFields = declarations.Where(item => item.DeclarationType == DeclarationType.Variable && item.IsWithEvents);
             handlers.AddRange(withEventFields.SelectMany(field => declarations.FindEventProcedures(field)));
 
-            var forms = declarations.Where(item => item.DeclarationType == DeclarationType.Class
+            var forms = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule
                         && item.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_MSForm)
                 .ToList();
 
@@ -42,9 +42,10 @@ namespace Rubberduck.Inspections
                 handlers.AddRange(forms.SelectMany(form => declarations.FindFormEventHandlers(form)));
             }
 
-            var issues = declarations
-                .Where(item => !IsIgnoredDeclaration(declarations, item, handlers, classes, modules))
-                .Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
+            var items = declarations
+                .Where(item => !IsIgnoredDeclaration(declarations, item, handlers, classes, modules)
+                            && !item.IsInspectionDisabled(AnnotationName)).ToList();
+            var issues = items.Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
 
             issues = DocumentNames.DocumentEventHandlerPrefixes.Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains("'" + item)));
 
@@ -82,7 +83,7 @@ namespace Rubberduck.Inspections
                 return false;
             }
 
-            var parent = modules.Where(item => item.Project == procedure.Project)
+            var parent = modules.Where(item => item.ProjectId == procedure.ProjectId)
                         .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
 
             return parent != null;
@@ -101,7 +102,7 @@ namespace Rubberduck.Inspections
                 return false;
             }
 
-            var parent = classes.Where(item => item.Project == procedure.Project)
+            var parent = classes.Where(item => item.ProjectId == procedure.ProjectId)
                         .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
 
             return parent != null;
@@ -117,7 +118,7 @@ namespace Rubberduck.Inspections
         {
             // get the procedure's parent module
             var enumerable = classes as IList<Declaration> ?? classes.ToList();
-            var parent = enumerable.Where(item => item.Project == procedure.Project)
+            var parent = enumerable.Where(item => item.ProjectId == procedure.ProjectId)
                         .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
 
             if (parent == null)
