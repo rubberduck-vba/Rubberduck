@@ -316,15 +316,14 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token, token);
-
-            //var taskFactory = new TaskFactory(new StaTaskScheduler());
+            
             var task = new Task(() => ParseAsyncInternal(component, linkedTokenSource.Token, rewriter));
             _currentTasks.TryAdd(component, Tuple.Create(task, linkedTokenSource));
 
             Tuple<Task, CancellationTokenSource> removedTask;
             task.ContinueWith(t => _currentTasks.TryRemove(component, out removedTask)); // default also executes on cancel
-
-            task.Start(/*taskFactory.Scheduler*/);
+            // See http://stackoverflow.com/questions/6800705/why-is-taskscheduler-current-the-default-taskscheduler
+            task.Start(TaskScheduler.Default);
             return task;
         }
 
@@ -439,6 +438,7 @@ namespace Rubberduck.Parsing.VBA
 
             // walk all parse trees (modified or not) for identifier references
             var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments, _state.AllAnnotations);
+            new TypeAnnotationPass(finder).Annotate();
             foreach (var kvp in _state.ParseTrees)
             {
                 if (token.IsCancellationRequested) return;
@@ -534,7 +534,6 @@ namespace Rubberduck.Parsing.VBA
                 var walker = new ParseTreeWalker();
                 try
                 {
-                    new TypeAnnotationPass(finder).Annotate();
                     walker.Walk(listener, tree);
                     _state.RebuildSelectionCache();
                     state = ParserState.Ready;
