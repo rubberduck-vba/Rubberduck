@@ -39,7 +39,7 @@ End Sub
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
                  .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
-                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                 .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2, selection)
                  .Build();
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents.Item(1);
@@ -53,9 +53,6 @@ End Sub
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents.Item(1).CodeModule;
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
@@ -106,9 +103,6 @@ End Sub
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents.Item(1).CodeModule;
 
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
             //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
@@ -157,9 +151,6 @@ End Function
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents.Item(1).CodeModule;
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
@@ -210,9 +201,6 @@ End Function
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents.Item(1).CodeModule;
 
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
             //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
@@ -261,9 +249,6 @@ End Function
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents.Item(1).CodeModule;
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
@@ -314,9 +299,6 @@ End Property
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents.Item(1).CodeModule;
 
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
             //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
@@ -365,9 +347,6 @@ End Property
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents.Item(1).CodeModule;
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
@@ -418,9 +397,6 @@ End Property
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents.Item(1).CodeModule;
 
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
             //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
@@ -469,9 +445,6 @@ End Property
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents.Item(1).CodeModule;
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
@@ -522,9 +495,6 @@ End Property
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents.Item(1).CodeModule;
 
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
             //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
@@ -574,9 +544,6 @@ End Property
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents.Item(1).CodeModule;
 
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
             //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
@@ -625,9 +592,6 @@ End Property
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents.Item(1).CodeModule;
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
@@ -698,9 +662,6 @@ End Property
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents.Item(1).CodeModule;
-
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
