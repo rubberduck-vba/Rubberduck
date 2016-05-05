@@ -1489,4 +1489,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
     <value>Wechsele Signatur</value>
   </data>
+  <data name="Find" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
 </root>
