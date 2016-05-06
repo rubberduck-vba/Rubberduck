@@ -1445,5 +1445,42 @@ End Sub
 
             Assert.AreEqual(1, usages.Count());
         }
+
+        [TestMethod]
+        public void GivenControlDeclaration_ResolvesUsageInCodeBehind()
+        {
+            var code = @"
+Public Sub DoSomething()
+    TextBox1.Text = ""Test""
+End Sub
+";
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
+            var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
+            project.AddComponent(form);
+            builder.AddProject(project.Build());
+            var vbe = builder.Build();
+
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.ResolverError)
+            {
+                Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+            }
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+            }
+
+            var declaration = parser.State.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Control
+                && item.IdentifierName == "TextBox1");
+
+            var usages = declaration.References.Where(item =>
+                item.ParentNonScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
     }
 }

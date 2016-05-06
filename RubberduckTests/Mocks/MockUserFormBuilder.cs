@@ -16,7 +16,7 @@ namespace RubberduckTests.Mocks
         private readonly Mock<VBComponent> _component;
         private readonly MockProjectBuilder _mockProjectBuilder;
         private readonly Mock<Controls> _vbControls;
-        private readonly ICollection<Mock<Control>> _controls = new List<Mock<Control>>();
+        private readonly ICollection<Control> _controls = new List<Control>();
 
         public MockUserFormBuilder(Mock<VBComponent> component, MockProjectBuilder mockProjectBuilder)
         {
@@ -40,7 +40,7 @@ namespace RubberduckTests.Mocks
             var control = new Mock<Control>();
             control.SetupProperty(m => m.Name, name);
 
-            _controls.Add(control);
+            _controls.Add(control.Object);
             return this;
         }
 
@@ -63,7 +63,7 @@ namespace RubberduckTests.Mocks
         public Mock<VBComponent> Build()
         {
             var designer = CreateMockDesigner();
-            _component.SetupGet(m => m.Designer).Returns(() => designer);
+            _component.SetupGet(m => m.Designer).Returns(() => designer.Object);
 
             return _component;
         }
@@ -71,6 +71,7 @@ namespace RubberduckTests.Mocks
         private Mock<UserForm> CreateMockDesigner()
         {
             var result = new Mock<UserForm>();
+
             result.SetupGet(m => m.Controls).Returns(() => _vbControls.Object);
 
             return result;
@@ -82,7 +83,7 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m.GetEnumerator()).Returns(() => _controls.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _controls.GetEnumerator());
 
-            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _controls.ElementAt(index).Object);
+            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _controls.ElementAt(index));
             result.SetupGet(m => m.Count).Returns(_controls.Count);
             return result;
         }
