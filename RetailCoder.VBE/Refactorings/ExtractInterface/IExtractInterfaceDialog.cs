@@ -3,7 +3,7 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
-    public interface IExtractInterfaceView : IDialogView
+    public interface IExtractInterfaceDialog : IDialogView
     {
         string InterfaceName { get; set; }
         IEnumerable<InterfaceMember> Members { get; set; }

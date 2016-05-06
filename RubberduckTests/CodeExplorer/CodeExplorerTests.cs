@@ -215,7 +215,7 @@ End Sub";
             var configLoader = new Mock<ConfigurationLoader>(null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
-            var view = new Mock<IRenameView>();
+            var view = new Mock<IRenameDialog>();
             view.Setup(r => r.ShowDialog()).Returns(DialogResult.OK);
             view.Setup(r => r.Target);
             view.SetupGet(r => r.NewName).Returns("Fizz");

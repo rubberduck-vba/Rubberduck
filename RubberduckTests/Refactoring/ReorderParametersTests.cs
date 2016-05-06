@@ -1767,7 +1767,7 @@ End Sub";
             var model = new ReorderParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters.Reverse();
 
-            var view = new Mock<IReorderParametersView>();
+            var view = new Mock<IReorderParametersDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
@@ -1802,7 +1802,7 @@ End Sub";
 
             var model = new ReorderParametersModel(parser.State, qualifiedSelection, new MessageBox());
 
-            var view = new Mock<IReorderParametersView>();
+            var view = new Mock<IReorderParametersDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 

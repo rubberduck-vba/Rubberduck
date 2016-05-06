@@ -7,10 +7,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class EncapsulateFieldPresenterFactory : IRefactoringPresenterFactory<EncapsulateFieldPresenter>
     {
         private readonly VBE _vbe;
-        private readonly IEncapsulateFieldView _view;
+        private readonly IEncapsulateFieldDialog _view;
         private readonly RubberduckParserState _parseResult;
 
-        public EncapsulateFieldPresenterFactory(VBE vbe, RubberduckParserState parseResult, IEncapsulateFieldView view)
+        public EncapsulateFieldPresenterFactory(VBE vbe, RubberduckParserState parseResult, IEncapsulateFieldDialog view)
         {
             _vbe = vbe;
             _view = view;

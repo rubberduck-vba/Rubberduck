@@ -15,20 +15,17 @@ using Rubberduck.Inspections;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.Rename;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer;
-using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.UI.Controls;
-using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
@@ -84,8 +81,6 @@ namespace Rubberduck.Root
 
             BindCommandsToMenuItems();
             BindCommandsToCodeExplorer();
-
-            Bind<IRenameView>().To<RenameDialog>().WhenInjectedInto<CodeExplorer_RenameCommand>();
             
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();

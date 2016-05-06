@@ -14,9 +14,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
-        private readonly IRenameView _view;
+        private readonly IRenameDialog _view;
 
-        public CodeExplorer_RenameCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory, IRenameView view)
+        public CodeExplorer_RenameCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory, IRenameDialog view)
         {
             _vbe = vbe;
             _state = state;
