@@ -634,6 +634,7 @@
     </Compile>
     <Compile Include="UI\FolderBrowser.cs" />
     <Compile Include="UI\IMessageBox.cs" />
+    <Compile Include="UI\IOpenFileDialog.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
     <Compile Include="UI\Refactorings\EncapsulateFieldDialog.cs">
       <SubType>Form</SubType>

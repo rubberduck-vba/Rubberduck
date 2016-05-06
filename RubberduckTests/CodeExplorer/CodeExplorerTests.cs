@@ -108,6 +108,45 @@ namespace RubberduckTests.CodeExplorer
         }
 
         [TestMethod]
+        public void ImportModule()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var openFileDialog = new Mock<IOpenFileDialog>();
+            openFileDialog.Setup(o => o.AddExtension);
+            openFileDialog.Setup(o => o.AutoUpgradeEnabled);
+            openFileDialog.Setup(o => o.CheckFileExists);
+            openFileDialog.Setup(o => o.Multiselect);
+            openFileDialog.Setup(o => o.ShowHelp);
+            openFileDialog.Setup(o => o.Filter);
+            openFileDialog.Setup(o => o.CheckFileExists);
+            openFileDialog.Setup(o => o.FileName).Returns("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas");
+            openFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>
+            {
+                new CodeExplorer_ImportCommand(openFileDialog.Object)
+            };
+
+            var vm = new CodeExplorerViewModel(state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+            vm.ImportCommand.Execute(vm.SelectedItem);
+
+            var vbComponents = vbe.Object.VBProjects.Item(0).VBComponents.Cast<VBComponent>();
+            Assert.IsTrue(vbComponents.Count(c => c.Type == vbext_ComponentType.vbext_ct_StdModule) == 2);
+        }
+
+        [TestMethod]
         public void RemoveModule_Cancel()
         {
             var builder = new MockVbeBuilder();

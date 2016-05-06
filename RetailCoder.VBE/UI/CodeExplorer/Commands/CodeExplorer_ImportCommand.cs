@@ -8,9 +8,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class CodeExplorer_ImportCommand : CommandBase
     {
-        private readonly OpenFileDialog _openFileDialog;
+        private readonly IOpenFileDialog _openFileDialog;
 
-        public CodeExplorer_ImportCommand(OpenFileDialog openFileDialog)
+        public CodeExplorer_ImportCommand(IOpenFileDialog openFileDialog)
         {
             _openFileDialog = openFileDialog;
 

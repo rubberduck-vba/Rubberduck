@@ -124,6 +124,7 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
+
         private Mock<VBComponents> CreateComponentsMock()
         {
             var result = new Mock<VBComponents>();
@@ -140,12 +141,28 @@ namespace RubberduckTests.Mocks
 
             result.Setup(m => m.Add(It.IsAny<vbext_ComponentType>())).Callback((vbext_ComponentType c) =>
             {
-                _components.Add(CreateComponentMock("test", c, "", new Selection()).Object);
+                _components.Add(CreateComponentMock("test", c, string.Empty, new Selection()).Object);
             });
 
             result.Setup(m => m.Remove(It.IsAny<VBComponent>())).Callback((VBComponent c) =>
             {
                 _components.Remove(c);
+            });
+
+            result.Setup(m => m.Import(It.IsAny<string>())).Callback((string s) =>
+            {
+                var parts = s.Split('.').ToList();
+                var types = new Dictionary<string, vbext_ComponentType>
+                {
+                    {"bas", vbext_ComponentType.vbext_ct_StdModule},
+                    {"cls", vbext_ComponentType.vbext_ct_ClassModule},
+                    {"frm", vbext_ComponentType.vbext_ct_MSForm}
+                };
+
+                vbext_ComponentType type;
+                types.TryGetValue(parts.Last(), out type);
+
+                _components.Add(CreateComponentMock(s.Split('\\').Last(), type, string.Empty, new Selection()).Object);
             });
 
             return result;
