@@ -8,10 +8,12 @@ using Moq;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
+using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.Extensions;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.CodeExplorer
@@ -136,6 +138,50 @@ namespace RubberduckTests.CodeExplorer
             Assert.IsTrue(vbComponents.Count(c => c.Type == vbext_ComponentType.vbext_ct_StdModule) == 0);
         }
 
+        [TestMethod]
+        public void IndentModule()
+        {
+            var inputCode =
+@"Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            var expectedCode =
+@"Sub Foo()
+    Dim d As Boolean
+    d = True
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+
+            var configLoader = new Mock<ConfigurationLoader>(null, null);
+            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>
+            {
+                new CodeExplorer_IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+            };
+
+            var vm = new CodeExplorerViewModel(state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+            vm.IndenterCommand.Execute(vm.SelectedItem);
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
         #region
         private Configuration GetDefaultUnitTestConfig()
         {
@@ -150,6 +196,32 @@ namespace RubberduckTests.CodeExplorer
 
             var userSettings = new UserSettings(null, null, null, unitTestSettings, null);
             return new Configuration(userSettings);
+        }
+
+
+        private IIndenterSettings GetDefaultIndenterSettings()
+        {
+            var indenterSettings = new IndenterSettings
+            {
+                IndentEntireProcedureBody = true,
+                IndentFirstCommentBlock = true,
+                IndentFirstDeclarationBlock = true,
+                AlignCommentsWithCode = true,
+                AlignContinuations = true,
+                IgnoreOperatorsInContinuations = true,
+                IndentCase = false,
+                ForceDebugStatementsInColumn1 = false,
+                ForceCompilerDirectivesInColumn1 = false,
+                IndentCompilerDirectives = true,
+                AlignDims = false,
+                AlignDimColumn = 15,
+                EnableUndo = true,
+                EndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn,
+                EndOfLineCommentColumnSpaceAlignment = 50,
+                IndentSpaces = 4
+            };
+
+            return indenterSettings;
         }
         #endregion
     }
