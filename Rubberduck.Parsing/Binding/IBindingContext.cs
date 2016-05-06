@@ -5,6 +5,7 @@ namespace Rubberduck.Parsing.Binding
 {
     public interface IBindingContext
     {
-        IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression);
+        IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext);
+        IExpressionBinding BuildTree(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext);
     }
 }

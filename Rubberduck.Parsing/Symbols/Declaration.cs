@@ -19,6 +19,23 @@ namespace Rubberduck.Parsing.Symbols
     [DebuggerDisplay("({DeclarationType}) {Accessibility} {IdentifierName} As {AsTypeName} | {Selection}")]
     public class Declaration : IEquatable<Declaration>
     {
+        public static readonly string[] BASE_TYPES = new string[]
+        {
+                "BOOLEAN",
+                "BYTE",
+                "CURRENCY",
+                "DATE",
+                "DOUBLE",
+                "INTEGER",
+                "LONG",
+                "LONGLONG",
+                "LONGPTR",
+                "SINGLE",
+                "STRING",
+                "VARIANT",
+                "OBJECT"
+        };
+
         public Declaration(
             QualifiedMemberName qualifiedName,
             Declaration parentDeclaration,
@@ -42,33 +59,33 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public Declaration(
-            QualifiedMemberName qualifiedName, 
-            Declaration parentDeclaration, 
+            QualifiedMemberName qualifiedName,
+            Declaration parentDeclaration,
             string parentScope,
-            string asTypeName, 
-            bool isSelfAssigned, 
+            string asTypeName,
+            bool isSelfAssigned,
             bool isWithEvents,
-            Accessibility accessibility, 
-            DeclarationType declarationType, 
+            Accessibility accessibility,
+            DeclarationType declarationType,
             bool isBuiltIn = true,
-            IEnumerable<IAnnotation> annotations = null, 
+            IEnumerable<IAnnotation> annotations = null,
             Attributes attributes = null)
-            :this(qualifiedName, parentDeclaration, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, isBuiltIn, annotations, attributes)
-        {}
+            : this(qualifiedName, parentDeclaration, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, isBuiltIn, annotations, attributes)
+        { }
 
         public Declaration(
-            QualifiedMemberName qualifiedName, 
-            Declaration parentDeclaration, 
+            QualifiedMemberName qualifiedName,
+            Declaration parentDeclaration,
             string parentScope,
-            string asTypeName, 
-            bool isSelfAssigned, 
+            string asTypeName,
+            bool isSelfAssigned,
             bool isWithEvents,
-            Accessibility accessibility, 
-            DeclarationType declarationType, 
-            ParserRuleContext context, 
-            Selection selection, 
+            Accessibility accessibility,
+            DeclarationType declarationType,
+            ParserRuleContext context,
+            Selection selection,
             bool isBuiltIn = false,
-            IEnumerable<IAnnotation> annotations = null, 
+            IEnumerable<IAnnotation> annotations = null,
             Attributes attributes = null)
         {
             _qualifiedName = qualifiedName;
@@ -105,30 +122,40 @@ namespace Rubberduck.Parsing.Symbols
             _customFolder = result;
         }
 
-        public static Declaration GetMemberModule(Declaration member)
+        public static bool HasParameter(DeclarationType declarationType)
         {
-            if (member.ParentDeclaration == null)
-            {
-                return null;
-            }
-            if (member.ParentDeclaration.DeclarationType == DeclarationType.ClassModule || member.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule)
-            {
-                return member.ParentDeclaration;
-            }
-            return GetMemberModule(member.ParentDeclaration);
+            return
+                declarationType.HasFlag(DeclarationType.Property)
+                || declarationType == DeclarationType.Function
+                || declarationType == DeclarationType.Procedure
+                || declarationType == DeclarationType.LibraryFunction
+                || declarationType == DeclarationType.LibraryProcedure;
         }
 
-        public static Declaration GetMemberProject(Declaration declaration)
+        public static Declaration GetModuleParent(Declaration declaration)
         {
-            if (declaration.ParentDeclaration == null)
+            if (declaration == null)
             {
                 return null;
             }
-            if (declaration.ParentDeclaration.DeclarationType == DeclarationType.Project)
+            if (declaration.DeclarationType == DeclarationType.ClassModule || declaration.DeclarationType == DeclarationType.ProceduralModule)
             {
-                return declaration.ParentDeclaration;
+                return declaration;
             }
-            return GetMemberProject(declaration.ParentDeclaration);
+            return GetModuleParent(declaration.ParentDeclaration);
+        }
+
+        public static Declaration GetProjectParent(Declaration declaration)
+        {
+            if (declaration == null)
+            {
+                return null;
+            }
+            if (declaration.DeclarationType == DeclarationType.Project)
+            {
+                return declaration;
+            }
+            return GetProjectParent(declaration.ParentDeclaration);
         }
 
         private readonly bool _isBuiltIn;
@@ -189,43 +216,6 @@ namespace Rubberduck.Parsing.Symbols
         public IReadOnlyDictionary<string, IEnumerable<string>> Attributes { get { return _attributes; } }
 
         /// <summary>
-        /// Gets an attribute value indicating whether a class has a predeclared ID.
-        /// Such classes can be treated as "static classes", or as far as resolving is concerned, as standard modules.
-        /// </summary>
-        public bool HasPredeclaredId
-        {
-            get
-            {
-                IEnumerable<string> value;
-                if (_attributes.TryGetValue("VB_PredeclaredId", out value))
-                {
-                    return value.Single() == "True";
-                }
-
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets an attribute value indicating whether a member is a class' default member.
-        /// If this value is true, any reference to an instance of the class it's the default member of,
-        /// should count as a member call to this member.
-        /// </summary>
-        public bool IsDefaultMember
-        {
-            get
-            {
-                IEnumerable<string> value;
-                if (_attributes.TryGetValue("VB_UserMemId", out value))
-                {
-                    return value.Single() == "0";
-                }
-
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Gets an attribute value that contains the docstring for a member.
         /// </summary>
         public string DescriptionString
@@ -273,10 +263,9 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-
-            if (reference.Context.Parent != _context 
+            if (reference.Context.Parent != _context
                 && !_references.Select(r => r.Context).Contains(reference.Context.Parent)
-                && !_references.Any(r => r.QualifiedModuleName == reference.QualifiedModuleName 
+                && !_references.Any(r => r.QualifiedModuleName == reference.QualifiedModuleName
                     && r.Selection.StartLine == reference.Selection.StartLine
                     && r.Selection.EndLine == reference.Selection.EndLine
                     && r.Selection.StartColumn == reference.Selection.StartColumn
@@ -321,6 +310,19 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public string ProjectId { get { return _projectId; } }
 
+        public string ProjectName
+        {
+            get
+            {
+                if (Project != null)
+                {
+                    return Project.Name;
+                }
+                // Referenced projects have their identifier name set as their project name.
+                return IdentifierName;
+            }
+        }
+
         /// <summary>
         /// Gets the name of the VBComponent the declaration is made in.
         /// </summary>
@@ -353,29 +355,39 @@ namespace Rubberduck.Parsing.Symbols
         /// and <c>Variant</c> if applicable but unspecified.
         /// </remarks>
         public string AsTypeName { get { return _asTypeName; } }
+        
+        public bool AsTypeIsBaseType
+        {
+            get
+            {
+                return string.IsNullOrWhiteSpace(AsTypeName) || BASE_TYPES.Contains(_asTypeName.ToUpperInvariant());
+            }
+        }
+
+        public Declaration AsTypeDeclaration { get; internal set; }
 
         private bool? _isArray;
 
         private readonly IReadOnlyList<DeclarationType> _neverArray = new[]
         {
-            DeclarationType.ClassModule, 
-            DeclarationType.Control, 
-            DeclarationType.Document, 
-            DeclarationType.Enumeration, 
-            DeclarationType.EnumerationMember, 
-            DeclarationType.Event, 
-            DeclarationType.Function, 
-            DeclarationType.LibraryFunction, 
-            DeclarationType.LibraryProcedure, 
-            DeclarationType.LineLabel, 
-            DeclarationType.ProceduralModule, 
-            DeclarationType.ModuleOption, 
-            DeclarationType.Project, 
-            DeclarationType.Procedure, 
-            DeclarationType.PropertyGet, 
-            DeclarationType.PropertyLet, 
-            DeclarationType.PropertyLet, 
-            DeclarationType.UserDefinedType, 
+            DeclarationType.ClassModule,
+            DeclarationType.Control,
+            DeclarationType.Document,
+            DeclarationType.Enumeration,
+            DeclarationType.EnumerationMember,
+            DeclarationType.Event,
+            DeclarationType.Function,
+            DeclarationType.LibraryFunction,
+            DeclarationType.LibraryProcedure,
+            DeclarationType.LineLabel,
+            DeclarationType.ProceduralModule,
+            DeclarationType.ModuleOption,
+            DeclarationType.Project,
+            DeclarationType.Procedure,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertyLet,
+            DeclarationType.UserDefinedType,
             DeclarationType.Constant,
         };
 
@@ -407,19 +419,24 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly IReadOnlyList<DeclarationType> _neverSpecified = new[]
         {
-            DeclarationType.Procedure, 
-            DeclarationType.PropertyLet, 
-            DeclarationType.PropertySet, 
-            DeclarationType.UserDefinedType, 
-            DeclarationType.ClassModule, 
-            DeclarationType.Control, 
-            DeclarationType.Enumeration, 
-            DeclarationType.EnumerationMember, 
-            DeclarationType.LibraryProcedure, 
-            DeclarationType.LineLabel, 
-            DeclarationType.ModuleOption, 
-            DeclarationType.Project, 
+            DeclarationType.Procedure,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet,
+            DeclarationType.UserDefinedType,
+            DeclarationType.ClassModule,
+            DeclarationType.Control,
+            DeclarationType.Enumeration,
+            DeclarationType.EnumerationMember,
+            DeclarationType.LibraryProcedure,
+            DeclarationType.LineLabel,
+            DeclarationType.ModuleOption,
+            DeclarationType.Project,
         };
+
+        public VBAParser.AsTypeClauseContext GetAsTypeContext()
+        {
+            return (VBAParser.AsTypeClauseContext)((dynamic)Context).asTypeClause();
+        }
 
         public virtual bool IsTypeSpecified()
         {
@@ -465,19 +482,19 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly IReadOnlyList<DeclarationType> _neverHinted = new[]
         {
-            DeclarationType.ClassModule, 
-            DeclarationType.LineLabel, 
-            DeclarationType.ModuleOption, 
-            DeclarationType.Project, 
-            DeclarationType.Control, 
-            DeclarationType.Enumeration, 
-            DeclarationType.EnumerationMember, 
-            DeclarationType.LibraryProcedure, 
-            DeclarationType.Procedure, 
-            DeclarationType.PropertyLet, 
-            DeclarationType.PropertySet, 
+            DeclarationType.ClassModule,
+            DeclarationType.LineLabel,
+            DeclarationType.ModuleOption,
+            DeclarationType.Project,
+            DeclarationType.Control,
+            DeclarationType.Enumeration,
+            DeclarationType.EnumerationMember,
+            DeclarationType.LibraryProcedure,
+            DeclarationType.Procedure,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet,
             DeclarationType.UserDefinedType,
-            DeclarationType.UserDefinedTypeMember, 
+            DeclarationType.UserDefinedTypeMember,
         };
 
         public bool HasTypeHint(out string token)
@@ -491,7 +508,7 @@ namespace Rubberduck.Parsing.Symbols
 
             try
             {
-                var hint = ((dynamic) Context).typeHint();
+                var hint = ((dynamic)Context).typeHint();
                 token = hint == null ? null : hint.GetText();
                 _hasTypeHint = hint != null;
                 return _hasTypeHint.Value;
@@ -596,12 +613,12 @@ namespace Rubberduck.Parsing.Symbols
             unchecked
             {
                 var hash = 17;
-                hash = hash*23 + QualifiedName.QualifiedModuleName.GetHashCode();
-                hash = hash*23 + _identifierName.GetHashCode();
-                hash = hash*23 + _declarationType.GetHashCode();
-                hash = hash*23 + Scope.GetHashCode();
-                hash = hash*23 + _parentScope.GetHashCode();
-                hash = hash*23 + _selection.GetHashCode();
+                hash = hash * 23 + QualifiedName.QualifiedModuleName.GetHashCode();
+                hash = hash * 23 + _identifierName.GetHashCode();
+                hash = hash * 23 + _declarationType.GetHashCode();
+                hash = hash * 23 + Scope.GetHashCode();
+                hash = hash * 23 + _parentScope.GetHashCode();
+                hash = hash * 23 + _selection.GetHashCode();
                 return hash;
             }
         }

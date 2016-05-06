@@ -247,6 +247,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="ReachFramework" />
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
@@ -254,6 +255,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Printing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
@@ -298,13 +300,10 @@
     <Compile Include="Common\Hotkeys\IHotkey.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
     <Compile Include="Common\ModuleExporter.cs" />
-    <Compile Include="Common\WinAPI\EnumeratedDevice.cs" />
     <Compile Include="Common\WinAPI\IRawDevice.cs" />
     <Compile Include="Common\WinAPI\KeyMap.cs" />
-    <Compile Include="Common\WinAPI\RawDevice.cs" />
     <Compile Include="Common\WinAPI\RawKeyEventArgs.cs" />
     <Compile Include="Common\WinAPI\RawMouseEventArgs.cs" />
-    <Compile Include="Common\WinAPI\PreMessageFilter.cs" />
     <Compile Include="Common\WinAPI\RawInput.cs" />
     <Compile Include="Common\WinAPI\RawKeyboard.cs" />
     <Compile Include="Common\WinAPI\RawMouse.cs" />
@@ -312,8 +311,6 @@
     <Compile Include="Common\WinAPI\Win32.cs" />
     <Compile Include="Common\RubberduckHooks.cs" />
     <Compile Include="Common\TimerHook.cs" />
-    <Compile Include="Common\WinAPI\BroadcastDeviceInterface.cs" />
-    <Compile Include="Common\WinAPI\BroadcastDeviceType.cs" />
     <Compile Include="Common\WinAPI\DataCommand.cs" />
     <Compile Include="Common\WinAPI\DeviceInfo.cs" />
     <Compile Include="Common\WinAPI\DeviceInfoHid.cs" />
@@ -367,6 +364,7 @@
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInspection.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
+    <Compile Include="Navigation\CodeExplorer\CodeExplorerErrorNodeViewModel.cs" />
     <Compile Include="Settings\RubberduckHotkey.cs" />
     <Compile Include="UI\About\AboutControl.xaml.cs">
       <DependentUpon>AboutControl.xaml</DependentUpon>
@@ -1045,7 +1043,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
-    <Folder Include="UI\ParserProgress\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\rubberduck.config" />

@@ -1,9 +1,11 @@
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
+using Rubberduck.Common;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -11,25 +13,47 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorImplementInterfaceCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly ImplementInterfaceRefactoring _refactoring;
-        private QualifiedSelection? _selection;
 
         public RefactorImplementInterfaceCommand(VBE vbe, RubberduckParserState state)
-            :base(vbe)
+            : base(vbe)
         {
             _state = state;
-            _refactoring = new ImplementInterfaceRefactoring(Vbe, state, new MessageBox());
         }
 
         public override bool CanExecute(object parameter)
         {
-            return Vbe.ActiveCodePane != null && _state.Status == ParserState.Ready && _selection.HasValue && _refactoring.CanExecute(_selection.Value);
+            if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+            {
+                return false;
+            }
+
+            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
+            if (!selection.HasValue)
+            {
+                return false;
+            }
+
+            var targetInterface = _state.AllUserDeclarations.FindInterface(selection.Value);
+
+            var targetClass = _state.AllUserDeclarations.SingleOrDefault(d =>
+                        !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
+                        d.QualifiedSelection.QualifiedName.Equals(selection.Value.QualifiedName));
+
+            var canExecute = targetInterface != null && targetClass != null;
+
+            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
+            return canExecute;
         }
 
         public override void Execute(object parameter)
         {
-            // ReSharper disable once PossibleInvalidOperationException
-            _refactoring.Refactor(_selection.Value);
+            if (Vbe.ActiveCodePane == null)
+            {
+                return;
+            }
+
+            var refactoring = new ImplementInterfaceRefactoring(Vbe, _state, new MessageBox());
+            refactoring.Refactor();
         }
     }
 }

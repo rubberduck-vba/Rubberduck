@@ -65,7 +65,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 Items = declarations.Where(item => SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(declaration))
                                     .OrderBy(item => item.Selection.StartLine)
-                                    .Select(item => new CodeExplorerMemberViewModel(item, null));
+                                    .Select(item => new CodeExplorerMemberViewModel(item, null))
+                                    .ToList<CodeExplorerItemViewModel>();
             }
 
             var modifier = declaration.Accessibility == Accessibility.Global || declaration.Accessibility == Accessibility.Implicit

@@ -732,6 +732,17 @@ public interface IVBAExpressionParserListener : IParseTreeListener {
 	void ExitTypeExpression([NotNull] VBAExpressionParser.TypeExpressionContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAExpressionParser.uncategorizedKeyword"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUncategorizedKeyword([NotNull] VBAExpressionParser.UncategorizedKeywordContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAExpressionParser.uncategorizedKeyword"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUncategorizedKeyword([NotNull] VBAExpressionParser.UncategorizedKeywordContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAExpressionParser.whiteSpace"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -835,6 +846,17 @@ public interface IVBAExpressionParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitArgumentExpression([NotNull] VBAExpressionParser.ArgumentExpressionContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAExpressionParser.callStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCallStmt([NotNull] VBAExpressionParser.CallStmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAExpressionParser.callStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCallStmt([NotNull] VBAExpressionParser.CallStmtContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAExpressionParser.reservedIdentifier"/>.

@@ -29,7 +29,7 @@ namespace RubberduckTests.Binding
                 var vbe = builder.Build();
                 var state = Parse(vbe);
 
-                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.Project.Name == BINDING_TARGET_NAME);
+                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.ProjectName == BINDING_TARGET_NAME);
 
                 // lExpression adds one reference, the MemberAcecssExpression adds another one.
                 Assert.AreEqual(1, declaration.References.Count());
@@ -132,7 +132,7 @@ namespace RubberduckTests.Binding
 
                 Declaration declaration;
 
-                declaration  = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.Project.Name == PROJECT_NAME);
+                declaration  = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.ProjectName == PROJECT_NAME);
                 Assert.AreEqual(1, declaration.References.Count(), "Project reference expected");
 
                 declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.ClassModule && d.IdentifierName == CLASS_NAME);

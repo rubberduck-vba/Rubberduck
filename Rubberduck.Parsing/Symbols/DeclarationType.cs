@@ -24,10 +24,10 @@ namespace Rubberduck.Parsing.Symbols
         Variable = 1 << 16,
         Constant = 1 << 17,
         Enumeration = 1 << 18,
-        EnumerationMember = 1 << 19 | Constant,
+        EnumerationMember = 1 << 19,
         Event = 1 << 20,
         UserDefinedType = 1 << 21,
-        UserDefinedTypeMember = 1 << 22 | Variable,
+        UserDefinedTypeMember = 1 << 22,
         LibraryFunction = 1 << 23 | Function,
         LibraryProcedure = 1 << 24 | Procedure,
         LineLabel = 1 << 25

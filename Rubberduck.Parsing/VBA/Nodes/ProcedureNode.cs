@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing.VBA.Nodes
         }
 
         public ProcedureNode(VBAParser.PropertySetStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.PropertySet, context.visibility(), context.identifier(), null)
+            : this(context, scope, localScope, VBProcedureKind.PropertySet, context.visibility(), context.subroutineName().identifier(), null)
         {
             _argsListContext = context.argList();
             _staticNode = context.STATIC();
@@ -27,7 +27,7 @@ namespace Rubberduck.Parsing.VBA.Nodes
         }
 
         public ProcedureNode(VBAParser.PropertyLetStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.PropertyLet, context.visibility(), context.identifier(), null)
+            : this(context, scope, localScope, VBProcedureKind.PropertyLet, context.visibility(), context.subroutineName().identifier(), null)
         {
             _argsListContext = context.argList();
             _staticNode = context.STATIC();
@@ -35,7 +35,7 @@ namespace Rubberduck.Parsing.VBA.Nodes
         }
 
         public ProcedureNode(VBAParser.PropertyGetStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.PropertyGet, context.visibility(), context.identifier(), () => context.asTypeClause())
+            : this(context, scope, localScope, VBProcedureKind.PropertyGet, context.visibility(), context.functionName().identifier(), () => context.asTypeClause())
         {
             _argsListContext = context.argList();
             _staticNode = context.STATIC();
@@ -44,7 +44,7 @@ namespace Rubberduck.Parsing.VBA.Nodes
         }
 
         public ProcedureNode(VBAParser.FunctionStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.Function, context.visibility(), context.identifier(), () => context.asTypeClause())
+            : this(context, scope, localScope, VBProcedureKind.Function, context.visibility(), context.functionName().identifier(), () => context.asTypeClause())
         {
             _argsListContext = context.argList();
             _staticNode = context.STATIC();
@@ -53,7 +53,7 @@ namespace Rubberduck.Parsing.VBA.Nodes
         }
 
         public ProcedureNode(VBAParser.SubStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.Sub, context.visibility(), context.identifier(), null)
+            : this(context, scope, localScope, VBProcedureKind.Sub, context.visibility(), context.subroutineName().identifier(), null)
         {
             _argsListContext = context.argList();
             _staticNode = context.STATIC();

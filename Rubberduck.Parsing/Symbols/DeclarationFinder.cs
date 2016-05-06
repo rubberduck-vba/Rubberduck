@@ -13,6 +13,7 @@ namespace Rubberduck.Parsing.Symbols
     {
         private readonly IDictionary<QualifiedModuleName, CommentNode[]> _comments;
         private readonly IDictionary<QualifiedModuleName, IAnnotation[]> _annotations;
+        private readonly IReadOnlyList<Declaration> _declarations;
         private readonly IDictionary<string, Declaration[]> _declarationsByName;
 
         public DeclarationFinder(
@@ -24,12 +25,10 @@ namespace Rubberduck.Parsing.Symbols
                 .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
             _annotations = annotations.GroupBy(node => node.QualifiedSelection.QualifiedName)
                 .ToDictionary(grouping => grouping.Key, grouping => grouping.ToArray());
+            _declarations = declarations;
             _declarationsByName = declarations.GroupBy(declaration => new
             {
-                IdentifierName = /*declaration.Project != null &&
-                        declaration.DeclarationType.HasFlag(DeclarationType.Project)
-                            ? declaration.Project.Name.ToLowerInvariant()
-                            : */declaration.IdentifierName.ToLowerInvariant()
+                IdentifierName = declaration.IdentifierName.ToLowerInvariant()
             })
             .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
         }
@@ -43,6 +42,16 @@ namespace Rubberduck.Parsing.Symbols
                 Accessibility.Implicit,
             });
 
+        public IEnumerable<Declaration> FindDeclarationsWithNonBaseAsType()
+        {
+            return _declarations
+                .Where(d => 
+                !string.IsNullOrWhiteSpace(d.AsTypeName) 
+                && !d.AsTypeIsBaseType
+                && d.DeclarationType != DeclarationType.Project
+                && d.DeclarationType != DeclarationType.ProceduralModule).ToList();
+        }
+
         public IEnumerable<CommentNode> ModuleComments(QualifiedModuleName module)
         {
             CommentNode[] result;
@@ -52,6 +61,12 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             return new List<CommentNode>();
+        }
+
+        public Declaration FindParameter(Declaration procedure, string parameterName)
+        {
+            var matches = MatchName(parameterName);
+            return matches.Where(m => procedure.Equals(m.ParentDeclaration) && m.DeclarationType == DeclarationType.Parameter).FirstOrDefault();
         }
 
         public IEnumerable<IAnnotation> ModuleAnnotations(QualifiedModuleName module)
@@ -76,6 +91,18 @@ namespace Rubberduck.Parsing.Symbols
         public bool IsMatch(string declarationName, string potentialMatchName)
         {
             return string.Equals(declarationName, potentialMatchName, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public Declaration FindEvent(Declaration module, string eventName)
+        {
+            var matches = MatchName(eventName);
+            return matches.Where(m => module.Equals(Declaration.GetModuleParent(m)) && m.DeclarationType == DeclarationType.Event).FirstOrDefault();
+        }
+
+        public Declaration FindLabel(Declaration procedure, string label)
+        {
+            var matches = MatchName(label);
+            return matches.Where(m => procedure.Equals(m.ParentDeclaration) && m.DeclarationType == DeclarationType.LineLabel).FirstOrDefault();
         }
 
         public IEnumerable<Declaration> MatchName(string name)
@@ -199,8 +226,19 @@ namespace Rubberduck.Parsing.Symbols
             var nameMatches = MatchName(calleeModuleName);
             var moduleMatches = nameMatches.Where(m => 
                 m.DeclarationType.HasFlag(moduleType)
-                && Declaration.GetMemberProject(m).Equals(callingProject)
+                && Declaration.GetProjectParent(m).Equals(callingProject)
                 && !m.Equals(callingModule));
+            var accessibleModules = moduleMatches.Where(calledModule => AccessibilityCheck.IsModuleAccessible(callingProject, callingModule, calledModule));
+            var match = accessibleModules.FirstOrDefault();
+            return match;
+        }
+
+        public Declaration FindDefaultInstanceVariableClassEnclosingProject(Declaration callingProject, Declaration callingModule, string defaultInstanceVariableClassName)
+        {
+            var nameMatches = MatchName(defaultInstanceVariableClassName);
+            var moduleMatches = nameMatches.Where(m =>
+                m.DeclarationType == DeclarationType.ClassModule && ((ClassModuleDeclaration)m).HasDefaultInstanceVariable
+                && Declaration.GetProjectParent(m).Equals(callingProject));
             var accessibleModules = moduleMatches.Where(calledModule => AccessibilityCheck.IsModuleAccessible(callingProject, callingModule, calledModule));
             var match = accessibleModules.FirstOrDefault();
             return match;
@@ -216,9 +254,20 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindModuleReferencedProject(Declaration callingProject, Declaration callingModule, Declaration referencedProject, string calleeModuleName, DeclarationType moduleType)
         {
-            var moduleMatches = FindAllInReferencedProjectByPriority(callingProject, calleeModuleName, p => referencedProject.Equals(Declaration.GetMemberProject(p)) && p.DeclarationType.HasFlag(moduleType));
+            var moduleMatches = FindAllInReferencedProjectByPriority(callingProject, calleeModuleName, p => referencedProject.Equals(Declaration.GetProjectParent(p)) && p.DeclarationType.HasFlag(moduleType));
             var accessibleModules = moduleMatches.Where(calledModule => AccessibilityCheck.IsModuleAccessible(callingProject, callingModule, calledModule));
             var match = accessibleModules.FirstOrDefault();
+            return match;
+        }
+
+        public Declaration FindMemberWithParent(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration parent, string memberName, DeclarationType memberType)
+        {
+            var allMatches = MatchName(memberName);
+            var memberMatches = allMatches.Where(m =>
+                m.DeclarationType.HasFlag(memberType)
+                && parent.Equals(m.ParentDeclaration));
+            var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
+            var match = accessibleMembers.FirstOrDefault();
             return match;
         }
 
@@ -227,29 +276,41 @@ namespace Rubberduck.Parsing.Symbols
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m =>
                 m.DeclarationType.HasFlag(memberType)
-                && Declaration.GetMemberProject(m).Equals(callingProject)
-                && callingModule.Equals(Declaration.GetMemberModule(m)));
+                && Declaration.GetProjectParent(m).Equals(callingProject)
+                && callingModule.Equals(Declaration.GetModuleParent(m)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
+            return match;
+        }
+
+        public Declaration FindMemberEnclosingProcedure(Declaration enclosingProcedure, string memberName, DeclarationType memberType)
+        {
+            var allMatches = MatchName(memberName);
+            var memberMatches = allMatches.Where(m =>
+                m.DeclarationType.HasFlag(memberType)
+                && enclosingProcedure.Equals(m.ParentDeclaration));
+            var match = memberMatches.FirstOrDefault();
             return match;
         }
 
         public Declaration FindMemberEnclosedProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
         {
-            return FindMemberEnclosedProjectWithoutEnclosingModule(callingProject, callingModule, callingParent, memberName, memberType, DeclarationType.Module);
-        }
-
-        public Declaration FindMemberEnclosedProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType, DeclarationType moduleType)
-        {
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m =>
                 m.DeclarationType.HasFlag(memberType)
-                && Declaration.GetMemberModule(m).DeclarationType.HasFlag(moduleType)
-                && Declaration.GetMemberProject(m).Equals(callingProject)
-                && !callingModule.Equals(Declaration.GetMemberModule(m)));
+                // TODO: Fix this?
+                // Assume no module = built-in, not checkable thus we conservatively include it in the matches.
+                && (Declaration.GetModuleParent(m) == null || Declaration.GetModuleParent(m).DeclarationType == DeclarationType.ProceduralModule)
+                && Declaration.GetProjectParent(m).Equals(callingProject)
+                && !callingModule.Equals(Declaration.GetModuleParent(m)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
             return match;
+        }
+
+        private static bool IsInstanceSensitive(DeclarationType memberType)
+        {
+            return memberType == DeclarationType.Variable || memberType == DeclarationType.Constant || memberType.HasFlag(DeclarationType.Procedure) || memberType.HasFlag(DeclarationType.Function);
         }
 
         public Declaration FindMemberEnclosedProjectInModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration memberModule, string memberName, DeclarationType memberType)
@@ -257,8 +318,8 @@ namespace Rubberduck.Parsing.Symbols
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m =>
                 m.DeclarationType.HasFlag(memberType)
-                && Declaration.GetMemberProject(m).Equals(callingProject)
-                && memberModule.Equals(Declaration.GetMemberModule(m)));
+                && Declaration.GetProjectParent(m).Equals(callingProject)
+                && memberModule.Equals(Declaration.GetModuleParent(m)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
             return match;
@@ -266,7 +327,24 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberReferencedProject(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
         {
-            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType));
+            bool isInstanceSensitive = IsInstanceSensitive(memberType);
+            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => (!isInstanceSensitive || Declaration.GetModuleParent(p) == null || Declaration.GetModuleParent(p).DeclarationType != DeclarationType.ClassModule) &&  p.DeclarationType.HasFlag(memberType));
+            var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
+            var match = accessibleMembers.FirstOrDefault();
+            return match;
+        }
+
+        public Declaration FindMemberReferencedProjectInModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, DeclarationType moduleType, string memberName, DeclarationType memberType)
+        {
+            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType) && (Declaration.GetModuleParent(p) == null || Declaration.GetModuleParent(p).DeclarationType == moduleType));
+            var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
+            var match = accessibleMembers.FirstOrDefault();
+            return match;
+        }
+
+        public Declaration FindMemberReferencedProjectInGlobalClassModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
+        {
+            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType) && (Declaration.GetModuleParent(p) == null || Declaration.GetModuleParent(p).DeclarationType == DeclarationType.ClassModule) && ((ClassModuleDeclaration)Declaration.GetModuleParent(p)).IsGlobalClassModule);
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
             return match;
@@ -274,7 +352,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberReferencedProjectInModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration memberModule, string memberName, DeclarationType memberType)
         {
-            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType) && memberModule.Equals(Declaration.GetMemberModule(p)));
+            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType) && memberModule.Equals(Declaration.GetModuleParent(p)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
             return match;
@@ -282,7 +360,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberReferencedProject(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration referencedProject, string memberName, DeclarationType memberType)
         {
-            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType) && referencedProject.Equals(Declaration.GetMemberProject(p)));
+            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType) && referencedProject.Equals(Declaration.GetProjectParent(p)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
             return match;

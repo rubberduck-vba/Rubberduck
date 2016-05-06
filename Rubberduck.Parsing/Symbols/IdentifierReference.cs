@@ -14,7 +14,7 @@ namespace Rubberduck.Parsing.Symbols
             Declaration parentScopingDeclaration, 
             Declaration parentNonScopingDeclaration, 
             string identifierName,
-            Selection selection, 
+            Selection selection,
             ParserRuleContext context, 
             Declaration declaration, 
             bool isAssignmentTarget = false,
@@ -80,30 +80,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool HasExplicitCallStatement()
         {
-            var memberProcedureCall = Context.Parent as VBAParser.ECS_MemberProcedureCallContext;
-            var procedureCall = Context.Parent as VBAParser.ECS_ProcedureCallContext;
-
-            return HasExplicitCallStatement(memberProcedureCall) || HasExplicitCallStatement(procedureCall);
-        }
-
-        private bool HasExplicitCallStatement(VBAParser.ECS_MemberProcedureCallContext call)
-        {
-            if (call == null)
-            {
-                return false;
-            }
-            var statement = call.CALL();
-            return statement != null && statement.Symbol.Text == Tokens.Call;
-        }
-
-        private bool HasExplicitCallStatement(VBAParser.ECS_ProcedureCallContext call)
-        {
-            if (call == null)
-            {
-                return false;
-            }
-            var statement = call.CALL();
-            return statement != null && statement.Symbol.Text == Tokens.Call;
+            return Context.Parent is VBAParser.ExplicitCallStmtContext;
         }
 
         private bool? _hasTypeHint;

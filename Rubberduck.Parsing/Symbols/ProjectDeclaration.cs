@@ -15,7 +15,7 @@ namespace Rubberduck.Parsing.Symbols
                   qualifiedName,
                   null,
                   (Declaration)null, 
-                  name, 
+                  name,
                   false, 
                   false, 
                   Accessibility.Implicit, 
