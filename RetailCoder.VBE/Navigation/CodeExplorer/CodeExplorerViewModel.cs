@@ -44,7 +44,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             _importCommand = commands.OfType<CodeExplorer_ImportCommand>().First();
             _exportCommand = commands.OfType<CodeExplorer_ExportCommand>().First();
-            _removeCommand = new DelegateCommand(ExecuteRemoveComand, commands.OfType<CodeExplorer_RemoveCommand>().First().CanExecute);
+            _externalRemoveCommand = commands.OfType<CodeExplorer_RemoveCommand>().First();
+            _removeCommand = new DelegateCommand(ExecuteRemoveComand, _externalRemoveCommand.CanExecute);
 
             _printCommand = commands.OfType<CodeExplorer_PrintCommand>().First();
         }
@@ -344,13 +345,15 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly ICommand _printCommand;
         public ICommand PrintCommand { get { return _printCommand; } }
 
+        private readonly ICommand _externalRemoveCommand;
+
         // this is a special case--we have to reset SelectedItem to prevent a crash
         private void ExecuteRemoveComand(object param)
         {
             var node = (CodeExplorerComponentViewModel) SelectedItem;
             SelectedItem = Projects.First(p => ((CodeExplorerProjectViewModel) p).Declaration.Project == node.Declaration.Project);
 
-            _removeCommand.Execute(param);
+            _externalRemoveCommand.Execute(param);
         }
     }
 }
