@@ -190,6 +190,36 @@ namespace RubberduckTests.CodeExplorer
         }
 
         [TestMethod]
+        public void OpenDesigner()
+        {
+            var builder = new MockVbeBuilder();
+            var projectMock = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
+            projectMock.AddComponent(projectMock.MockUserFormBuilder("UserForm1", "").Build());
+
+            var project = projectMock.Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = projectMock.MockComponents.First();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>
+            {
+                new CodeExplorer_OpenDesignerCommand()
+            };
+
+            var vm = new CodeExplorerViewModel(state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+            vm.OpenDesignerCommand.Execute(vm.SelectedItem);
+            
+            component.Verify(c => c.DesignerWindow(), Times.Once);
+            Assert.IsTrue(component.Object.DesignerWindow().Visible);
+        }
+
+        [TestMethod]
         public void RemoveModule_Cancel()
         {
             var builder = new MockVbeBuilder();
