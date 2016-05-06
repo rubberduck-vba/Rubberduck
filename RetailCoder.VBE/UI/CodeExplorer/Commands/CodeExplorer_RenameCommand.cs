@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -15,9 +14,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
-        private readonly RenameDialog _view;
+        private readonly IRenameView _view;
 
-        public CodeExplorer_RenameCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory, RenameDialog view)
+        public CodeExplorer_RenameCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory, IRenameView view)
         {
             _vbe = vbe;
             _state = state;
@@ -61,7 +60,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public void Dispose()
         {
-            if (_view != null && !_view.IsDisposed)
+            if (_view != null)
             {
                 _view.Dispose();
             }

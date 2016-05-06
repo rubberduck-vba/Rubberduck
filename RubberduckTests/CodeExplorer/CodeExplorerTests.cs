@@ -7,13 +7,16 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Rename;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
+using Rubberduck.UI.Refactorings;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.CodeExplorer
@@ -178,6 +181,59 @@ End Sub";
 
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
             vm.IndenterCommand.Execute(vm.SelectedItem);
+
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RenameProcedure()
+        {
+            var inputCode =
+@"Sub Foo()
+End Sub
+
+Sub Bar()
+    Foo
+End Sub";
+
+            var expectedCode =
+@"Sub Fizz()
+End Sub
+
+Sub Bar()
+    Fizz
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
+
+            var configLoader = new Mock<ConfigurationLoader>(null, null);
+            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
+
+            var view = new Mock<IRenameView>();
+            view.Setup(r => r.ShowDialog()).Returns(DialogResult.OK);
+            view.Setup(r => r.Target);
+            view.SetupGet(r => r.NewName).Returns("Fizz");
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>
+            {
+                new CodeExplorer_RenameCommand(vbe.Object, state, new CodePaneWrapperFactory(), view.Object)
+            };
+
+            var vm = new CodeExplorerViewModel(state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First().Items.First();
+            vm.RenameCommand.Execute(vm.SelectedItem);
 
             Assert.AreEqual(expectedCode, module.Lines());
         }
