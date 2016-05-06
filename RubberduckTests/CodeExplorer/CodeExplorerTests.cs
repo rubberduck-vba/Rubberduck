@@ -155,7 +155,7 @@ namespace RubberduckTests.CodeExplorer
             vbComponents.Verify(c => c.Import("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Once);
         }
 
-        /*[TestMethod]
+        [TestMethod]
         public void ExportModule()
         {
             var builder = new MockVbeBuilder();
@@ -164,7 +164,7 @@ namespace RubberduckTests.CodeExplorer
 
             var project = projectMock.Build();
             var vbe = builder.AddProject(project).Build();
-            var component = projectMock.Components.First();
+            var component = projectMock.MockComponents.First();
 
             var saveFileDialog = new Mock<ISaveFileDialog>();
             saveFileDialog.Setup(o => o.OverwritePrompt);
@@ -187,7 +187,7 @@ namespace RubberduckTests.CodeExplorer
             vm.ExportCommand.Execute(vm.SelectedItem);
 
             component.Verify(c => c.Export("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Once);
-        }*/
+        }
 
         [TestMethod]
         public void RemoveModule_Cancel()
