@@ -27,27 +27,30 @@ namespace Rubberduck.Navigation.CodeExplorer
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
-            _refreshCommand = commands.OfType<CodeExplorer_RefreshCommand>().First();
-            _navigateCommand = commands.OfType<CodeExplorer_NavigateCommand>().First();
+            _refreshCommand = commands.OfType<CodeExplorer_RefreshCommand>().FirstOrDefault();
+            _navigateCommand = commands.OfType<CodeExplorer_NavigateCommand>().FirstOrDefault();
 
-            _addTestModuleCommand = commands.OfType<CodeExplorer_AddTestModuleCommand>().First();
-            _addStdModuleCommand = commands.OfType<CodeExplorer_AddStdModuleCommand>().First();
-            _addClassModuleCommand = commands.OfType<CodeExplorer_AddClassModuleCommand>().First();
-            _addUserFormCommand = commands.OfType<CodeExplorer_AddUserFormCommand>().First();
+            _addTestModuleCommand = commands.OfType<CodeExplorer_AddTestModuleCommand>().FirstOrDefault();
+            _addStdModuleCommand = commands.OfType<CodeExplorer_AddStdModuleCommand>().FirstOrDefault();
+            _addClassModuleCommand = commands.OfType<CodeExplorer_AddClassModuleCommand>().FirstOrDefault();
+            _addUserFormCommand = commands.OfType<CodeExplorer_AddUserFormCommand>().FirstOrDefault();
 
-            _openDesignerCommand = commands.OfType<CodeExplorer_OpenDesignerCommand>().First();
-            _renameCommand = commands.OfType<CodeExplorer_RenameCommand>().First();
-            _indenterCommand = commands.OfType<CodeExplorer_IndentCommand>().First();
+            _openDesignerCommand = commands.OfType<CodeExplorer_OpenDesignerCommand>().FirstOrDefault();
+            _renameCommand = commands.OfType<CodeExplorer_RenameCommand>().FirstOrDefault();
+            _indenterCommand = commands.OfType<CodeExplorer_IndentCommand>().FirstOrDefault();
 
-            _findAllReferencesCommand = commands.OfType<CodeExplorer_FindAllReferencesCommand>().First();
-            _findAllImplementationsCommand = commands.OfType<CodeExplorer_FindAllImplementationsCommand>().First();
+            _findAllReferencesCommand = commands.OfType<CodeExplorer_FindAllReferencesCommand>().FirstOrDefault();
+            _findAllImplementationsCommand = commands.OfType<CodeExplorer_FindAllImplementationsCommand>().FirstOrDefault();
 
-            _importCommand = commands.OfType<CodeExplorer_ImportCommand>().First();
-            _exportCommand = commands.OfType<CodeExplorer_ExportCommand>().First();
-            _externalRemoveCommand = commands.OfType<CodeExplorer_RemoveCommand>().First();
-            _removeCommand = new DelegateCommand(ExecuteRemoveComand, _externalRemoveCommand.CanExecute);
+            _importCommand = commands.OfType<CodeExplorer_ImportCommand>().FirstOrDefault();
+            _exportCommand = commands.OfType<CodeExplorer_ExportCommand>().FirstOrDefault();
+            _externalRemoveCommand = commands.OfType<CodeExplorer_RemoveCommand>().FirstOrDefault();
+            if (_externalRemoveCommand != null)
+            {
+                _removeCommand = new DelegateCommand(ExecuteRemoveComand, _externalRemoveCommand.CanExecute);
+            }
 
-            _printCommand = commands.OfType<CodeExplorer_PrintCommand>().First();
+            _printCommand = commands.OfType<CodeExplorer_PrintCommand>().FirstOrDefault();
         }
 
         private CodeExplorerItemViewModel _selectedItem;

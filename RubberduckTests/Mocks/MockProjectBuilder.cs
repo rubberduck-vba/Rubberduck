@@ -138,6 +138,11 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m.Item(It.IsAny<string>())).Returns<string>(name => _components.Single(item => item.Name == name));
             result.SetupGet(m => m.Count).Returns(_components.Count);
 
+            result.Setup(m => m.Add(It.IsAny<vbext_ComponentType>())).Callback((vbext_ComponentType c) =>
+            {
+                _components.Add(CreateComponentMock("test", c, "", new Selection()).Object);
+            });
+
             return result;
         }
 
