@@ -8,6 +8,7 @@ using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.CodeExplorer.Commands;
+using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
 
@@ -73,6 +74,31 @@ namespace RubberduckTests.CodeExplorer
 
             Assert.IsTrue(vbComponents.Count(c => c.Type == vbext_ComponentType.vbext_ct_StdModule) == 1 &&
                 vbComponents.Count(c => c.Type == vbext_ComponentType.vbext_ct_MSForm) == 1);
+        }
+
+        [TestMethod]
+        public void AddTestModule()
+        {
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var configLoader = new Mock<ConfigurationLoader>(null, null);
+            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
+
+            var commands = new List<ICommand>
+            {
+                new CodeExplorer_AddTestModuleCommand(vbe.Object, new NewUnitTestModuleCommand(vbe.Object, configLoader.Object))
+            };
+
+            var vm = new CodeExplorerViewModel(new RubberduckParserState(), commands);
+            vm.AddTestModuleCommand.Execute(null);
+
+            var vbComponents = vbe.Object.VBProjects.Item(0).VBComponents.Cast<VBComponent>();
+
+            Assert.IsTrue(vbComponents.Count(c => c.Type == vbext_ComponentType.vbext_ct_StdModule) == 2);
         }
 
         #region

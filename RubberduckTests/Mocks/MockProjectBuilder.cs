@@ -155,6 +155,7 @@ namespace RubberduckTests.Mocks
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _references.GetEnumerator());
             result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _references.ElementAt(index - 1));
             result.SetupGet(m => m.Count).Returns(() => _references.Count);
+            result.Setup(m => m.AddFromFile(It.IsAny<string>()));
             return result;
         }
 
@@ -202,6 +203,9 @@ namespace RubberduckTests.Mocks
             result.SetupProperty(m => m.Name, name);
 
             codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
+
+            result.Setup(m => m.AddFromFile(It.IsAny<string>()));
+            result.Setup(m => m.AddFromString(It.IsAny<string>()));
             return result;
         }
 
