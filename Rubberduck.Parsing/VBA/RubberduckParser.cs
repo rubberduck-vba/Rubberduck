@@ -193,13 +193,6 @@ namespace Rubberduck.Parsing.VBA
 
             Debug.Assert(vba != null);
             
-            var errObject = finder.FindClass(vba, "ErrObject", true);
-            Debug.Assert(errObject != null);
-
-            var qualifiedName = new QualifiedModuleName(vba.IdentifierName, vba.IdentifierName, errObject.IdentifierName);
-            var errModuleName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
-            var errModule = new ProceduralModuleDeclaration(new QualifiedMemberName(errModuleName, "ErrModule"), vba, "ErrModule", true, new List<IAnnotation>(), new Attributes());
-            var err = new Declaration(new QualifiedMemberName(qualifiedName, Tokens.Err), errModule, "Global", errObject.IdentifierName, true, false, Accessibility.Global, DeclarationType.Variable);
             var debugModuleName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
             var debugModule = new ProceduralModuleDeclaration(new QualifiedMemberName(debugModuleName, "DebugModule"), vba, "DebugModule", true, new List<IAnnotation>(), new Attributes());
             var debugClassName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
@@ -211,8 +204,6 @@ namespace Rubberduck.Parsing.VBA
 
             lock (_state)
             {
-                _state.AddDeclaration(errModule);
-                _state.AddDeclaration(err);
                 _state.AddDeclaration(debugModule);
                 _state.AddDeclaration(debugClass);
                 _state.AddDeclaration(debugObject);
@@ -439,6 +430,7 @@ namespace Rubberduck.Parsing.VBA
             // walk all parse trees (modified or not) for identifier references
             var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments, _state.AllAnnotations);
             new TypeAnnotationPass(finder).Annotate();
+            new TypeHierarchyPass(finder).Annotate();
             foreach (var kvp in _state.ParseTrees)
             {
                 if (token.IsCancellationRequested) return;

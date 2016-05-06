@@ -237,6 +237,7 @@
     <Compile Include="Symbols\PropertyGetDeclaration.cs" />
     <Compile Include="Symbols\FunctionDeclaration.cs" />
     <Compile Include="Symbols\SubroutineDeclaration.cs" />
+    <Compile Include="Symbols\TypeHierarchyPass.cs" />
     <Compile Include="Symbols\TypeAnnotationPass.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
     <Compile Include="Symbols\MemberProcessedEventArgs.cs" />

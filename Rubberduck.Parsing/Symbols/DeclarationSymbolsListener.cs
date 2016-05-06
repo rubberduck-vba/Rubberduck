@@ -8,6 +8,7 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime.Misc;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -257,6 +258,12 @@ namespace Rubberduck.Parsing.Symbols
             _currentScope = _qualifiedName + "." + name;
             _currentScopeDeclaration = procedureDeclaration;
             _parentDeclaration = procedureDeclaration;
+        }
+
+        public override void EnterImplementsStmt(VBAParser.ImplementsStmtContext context)
+        {
+            // The expression will be later resolved to the actual declaration. Have to split the work up because we have to gather/create all declarations first.
+            ((ClassModuleDeclaration)_moduleDeclaration).AddSupertype(context.valueStmt().GetText());
         }
 
         public override void EnterOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
