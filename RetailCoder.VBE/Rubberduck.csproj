@@ -376,7 +376,22 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\CodeExplorer\BoolToHiddenVisibility.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddUserFormCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_RenameCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_FindAllReferencesCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_FindAllImplementationsCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_IndentCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_NavigateCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_RefreshCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_RemoveCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_ExportCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_ImportCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_PrintCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_OpenDesignerCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddClassModuleCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddStdModuleCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddTestModuleCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Converters\BoolToHiddenVisibility.cs" />
     <Compile Include="UI\Command\IndentCurrentModuleCommand.cs" />
     <Compile Include="UI\Command\MenuItems\InspectionResultsCommandMenuItem.cs" />
     <Compile Include="UI\Command\ReparseCommand.cs" />
@@ -438,26 +453,26 @@
     <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldPresenter.cs" />
     <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldPresenterFactory.cs" />
     <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldRefactoring.cs" />
-    <Compile Include="Refactorings\EncapsulateField\IEncapsulateFieldView.cs" />
+    <Compile Include="Refactorings\EncapsulateField\IEncapsulateFieldDialog.cs" />
     <Compile Include="Refactorings\ExtractInterface\ExtractInterfaceRefactoring.cs" />
     <Compile Include="Refactorings\ExtractInterface\ExtractInterfaceModel.cs" />
     <Compile Include="Refactorings\ExtractInterface\ExtractInterfacePresenter.cs" />
     <Compile Include="Refactorings\ExtractInterface\ExtractInterfacePresenterFactory.cs" />
-    <Compile Include="Refactorings\ExtractInterface\IExtractInterfaceView.cs" />
+    <Compile Include="Refactorings\ExtractInterface\IExtractInterfaceDialog.cs" />
     <Compile Include="Refactorings\ExtractInterface\InterfaceMember.cs" />
     <Compile Include="Refactorings\ImplementInterface\ImplementInterfaceRefactoring.cs" />
     <Compile Include="Refactorings\ImplementInterface\Parameter.cs" />
     <Compile Include="Refactorings\IntroduceField\IntroduceFieldRefactoring.cs" />
     <Compile Include="Refactorings\IntroduceParameter\IntroduceParameterRefactoring.cs" />
     <Compile Include="Refactorings\MoveCloserToUsage\MoveCloserToUsageRefactoring.cs" />
-    <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
+    <Compile Include="Refactorings\RemoveParameters\IRemoveParametersDialog.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersPresenter.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersPresenterFactory.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersRefactoring.cs" />
     <Compile Include="Refactorings\Rename\RenameModel.cs" />
-    <Compile Include="Refactorings\ReorderParameters\IReorderParametersView.cs" />
+    <Compile Include="Refactorings\ReorderParameters\IReorderParametersDialog.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersModel.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />
@@ -614,6 +629,8 @@
     </Compile>
     <Compile Include="UI\FolderBrowser.cs" />
     <Compile Include="UI\IMessageBox.cs" />
+    <Compile Include="UI\IOpenFileDialog.cs" />
+    <Compile Include="UI\ISaveFileDialog.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
     <Compile Include="UI\Refactorings\EncapsulateFieldDialog.cs">
       <SubType>Form</SubType>
@@ -771,7 +788,7 @@
     <Compile Include="UI\FileBrowserDialogFactory.cs" />
     <Compile Include="UI\SourceControl\IControlView.cs" />
     <Compile Include="UI\SourceControl\IControlViewModel.cs" />
-    <Compile Include="Refactorings\Rename\IRenameView.cs" />
+    <Compile Include="Refactorings\Rename\IRenameDialog.cs" />
     <Compile Include="UI\Refactorings\RenameDialog.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -7,7 +7,7 @@ using Rubberduck.Refactorings.ReorderParameters;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public partial class ReorderParametersDialog : Form, IReorderParametersView
+    public partial class ReorderParametersDialog : Form, IReorderParametersDialog
     {
         public List<Parameter> Parameters { get; set; }
         private Parameter _selectedItem;

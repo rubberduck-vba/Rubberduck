@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Rubberduck.UI.CodeExplorer
+namespace Rubberduck.UI.CodeExplorer.Converters
 {
     public class BoolToHiddenVisibility : IValueConverter
     {

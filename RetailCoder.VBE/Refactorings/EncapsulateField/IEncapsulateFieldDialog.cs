@@ -3,7 +3,7 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IEncapsulateFieldView :IDialogView
+    public interface IEncapsulateFieldDialog :IDialogView
     {
         Declaration TargetDeclaration { get; set; }
 

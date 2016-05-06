@@ -85,6 +85,7 @@
     <Compile Include="Binding\SimpleNameProcedurePointerBindingTests.cs" />
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
+    <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
     <Compile Include="ComponentTypeExtensionTests.cs" />
     <Compile Include="ConfigurationTests.cs" />
     <Compile Include="Grammar\ResolverTests.cs" />

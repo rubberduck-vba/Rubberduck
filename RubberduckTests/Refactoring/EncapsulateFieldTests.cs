@@ -1002,7 +1002,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
             view.SetupProperty(v => v.ParameterName, "myVal");
 
@@ -1033,7 +1033,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1062,7 +1062,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.NewPropertyName).Returns("MyProperty");
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
@@ -1092,7 +1092,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementLetSetterType, true);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
@@ -1122,7 +1122,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementSetSetterType, true);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
@@ -1152,7 +1152,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementLetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1180,7 +1180,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementSetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1208,7 +1208,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementSetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1236,7 +1236,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementLetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1264,7 +1264,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementLetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1292,7 +1292,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementSetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1323,7 +1323,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementLetSetterType, false);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1354,7 +1354,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementSetSetterType, false);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1385,7 +1385,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementLetSetterType, false);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1416,7 +1416,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementSetSetterType, false);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1444,7 +1444,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1473,7 +1473,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1502,7 +1502,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);

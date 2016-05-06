@@ -7,11 +7,11 @@ namespace Rubberduck.Refactorings.ReorderParameters
     public class ReorderParametersPresenterFactory : IRefactoringPresenterFactory<IReorderParametersPresenter>
     {
         private readonly VBE _vbe;
-        private readonly IReorderParametersView _view;
+        private readonly IReorderParametersDialog _view;
         private readonly RubberduckParserState _parseResult;
         private readonly IMessageBox _messageBox;
 
-        public ReorderParametersPresenterFactory(VBE vbe, IReorderParametersView view,
+        public ReorderParametersPresenterFactory(VBE vbe, IReorderParametersDialog view,
             RubberduckParserState parseResult, IMessageBox messageBox)
         {
             _vbe = vbe;

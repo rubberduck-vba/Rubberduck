@@ -1833,7 +1833,7 @@ End Sub";
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters[1].IsRemoved = true;
 
-            var view = new Mock<IRemoveParametersView>();
+            var view = new Mock<IRemoveParametersDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
@@ -1869,7 +1869,7 @@ End Sub";
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters[1].IsRemoved = true;
 
-            var view = new Mock<IRemoveParametersView>();
+            var view = new Mock<IRemoveParametersDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 

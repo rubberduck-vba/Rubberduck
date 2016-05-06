@@ -906,7 +906,7 @@ End Sub";
             var codePaneFactoryMock = new Mock<ICodePaneWrapperFactory>();
             codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
 
-            var view = new Mock<IRenameView>();
+            var view = new Mock<IRenameDialog>();
             view.Setup(v => v.NewName).Returns(newName);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
@@ -953,7 +953,7 @@ End Sub";
             var codePaneFactoryMock = new Mock<ICodePaneWrapperFactory>();
             codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
 
-            var view = new Mock<IRenameView>();
+            var view = new Mock<IRenameDialog>();
             view.Setup(v => v.NewName).Returns("Goo");
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
 
@@ -1006,7 +1006,7 @@ End Sub";
             var codePaneFactoryMock = new Mock<ICodePaneWrapperFactory>();
             codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
 
-            var view = new Mock<IRenameView>();
+            var view = new Mock<IRenameDialog>();
             view.Setup(v => v.NewName).Returns(newName);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
@@ -1057,7 +1057,7 @@ End Sub";
             var codePaneFactoryMock = new Mock<ICodePaneWrapperFactory>();
             codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
 
-            var view = new Mock<IRenameView>();
+            var view = new Mock<IRenameDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
 
             var factory = new RenamePresenterFactory(vbe.Object, view.Object, parser.State, null, codePaneFactoryMock.Object);
