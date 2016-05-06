@@ -191,8 +191,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 .Where(grouping => grouping.Key != null)
                 .ToList();
 
-            if (
-                userDeclarations.Any(
+            if (userDeclarations.Any(
                     grouping => grouping.All(declaration => declaration.DeclarationType != DeclarationType.Project)))
             {
                 return;

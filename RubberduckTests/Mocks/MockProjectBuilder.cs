@@ -143,6 +143,11 @@ namespace RubberduckTests.Mocks
                 _components.Add(CreateComponentMock("test", c, "", new Selection()).Object);
             });
 
+            result.Setup(m => m.Remove(It.IsAny<VBComponent>())).Callback((VBComponent c) =>
+            {
+                _components.Remove(c);
+            });
+
             return result;
         }
 
