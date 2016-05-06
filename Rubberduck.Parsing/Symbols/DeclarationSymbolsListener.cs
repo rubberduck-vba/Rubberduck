@@ -167,7 +167,7 @@ namespace Rubberduck.Parsing.Symbols
                 result = new ParameterDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, context, selection, asTypeName, isOptional, isByRef, isArray, isParamArray);
                 if (Declaration.HasParameter(_parentDeclaration.DeclarationType))
                 {
-                    ((IDeclarationWithParameter)_parentDeclaration).Add(result);
+                    ((IDeclarationWithParameter)_parentDeclaration).AddParameter(result);
                 }
             }
             else

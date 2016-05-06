@@ -218,7 +218,7 @@ namespace Rubberduck.Parsing.Symbols
                         var parameter = CreateParameterDeclaration(memberNames, paramIndex, memberDescriptor, typeQualifiedModuleName, memberDeclaration);
                         if (Declaration.HasParameter(memberDeclaration.DeclarationType))
                         {
-                            ((IDeclarationWithParameter)memberDeclaration).Add(parameter);
+                            ((IDeclarationWithParameter)memberDeclaration).AddParameter(parameter);
                         }
                         yield return parameter;
                     }

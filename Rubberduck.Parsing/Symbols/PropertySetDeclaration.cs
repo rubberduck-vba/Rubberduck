@@ -48,7 +48,7 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public void Add(Declaration parameter)
+        public void AddParameter(Declaration parameter)
         {
             _parameters.Add(parameter);
         }
