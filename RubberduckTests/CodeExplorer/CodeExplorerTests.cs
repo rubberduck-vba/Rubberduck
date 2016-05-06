@@ -147,7 +147,7 @@ namespace RubberduckTests.CodeExplorer
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
             vm.ImportCommand.Execute(vm.SelectedItem);
@@ -181,7 +181,7 @@ namespace RubberduckTests.CodeExplorer
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
             vm.ExportCommand.Execute(vm.SelectedItem);
@@ -210,7 +210,7 @@ namespace RubberduckTests.CodeExplorer
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
             vm.OpenDesignerCommand.Execute(vm.SelectedItem);
@@ -250,7 +250,7 @@ namespace RubberduckTests.CodeExplorer
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
             vm.RemoveCommand.Execute(vm.SelectedItem);
@@ -291,7 +291,7 @@ End Sub";
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
             vm.IndenterCommand.Execute(vm.SelectedItem);
@@ -341,7 +341,7 @@ End Sub";
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First().Items.First();
             vm.RenameCommand.Execute(vm.SelectedItem);

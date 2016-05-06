@@ -27,7 +27,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new EncapsulatePublicFieldInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -52,7 +52,7 @@ Public buzz As Integer, _
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new EncapsulatePublicFieldInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -75,7 +75,7 @@ Public buzz As Integer, _
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new EncapsulatePublicFieldInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -99,7 +99,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new EncapsulatePublicFieldInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
