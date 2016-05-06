@@ -57,6 +57,12 @@ namespace Rubberduck.Settings
                 AssociateHotkeyCommands(config);
             }
 
+            // 0 is the default, and parses just fine into a `char`.  We require '.' or '/'.
+            if (config.UserSettings.GeneralSettings.Delimiter == 0)
+            {
+                config.UserSettings.GeneralSettings.Delimiter = '.';
+            }
+
             if (config.UserSettings.ToDoListSettings == null)
             {
                 config.UserSettings.ToDoListSettings = new ToDoListSettings(GetDefaultTodoMarkers());
@@ -195,7 +201,7 @@ namespace Rubberduck.Settings
                     new HotkeySetting{Name=RubberduckHotkey.RefactorRename.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="R", Command = commandMappings[RubberduckHotkey.RefactorRename]},
                     new HotkeySetting{Name=RubberduckHotkey.RefactorExtractMethod.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="M", Command = commandMappings[RubberduckHotkey.RefactorExtractMethod]}
                 },
-                false, 10);
+                false, 10, '.');
         }
 
         public ToDoMarker[] GetDefaultTodoMarkers()

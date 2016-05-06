@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -16,14 +17,16 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerViewModel : ViewModelBase, IDisposable
     {
+        private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
         private readonly List<ICommand> _commands;
         private readonly Dispatcher _dispatcher;
 
-        public CodeExplorerViewModel(RubberduckParserState state, List<ICommand> commands)
+        public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<ICommand> commands)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
 
+            _folderHelper = folderHelper;
             _state = state;
             _commands = commands;
             _state.StateChanged += ParserState_StateChanged;
@@ -200,7 +203,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             var newProjects = new ObservableCollection<CodeExplorerItemViewModel>(userDeclarations.Select(grouping =>
-                new CodeExplorerProjectViewModel(
+                new CodeExplorerProjectViewModel(_folderHelper,
                     grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
                     grouping)));
 
