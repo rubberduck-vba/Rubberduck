@@ -1,13 +1,10 @@
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.Common.WinAPI
 {
-    public sealed class RawMouse : RawDevice
+    public sealed class RawMouse : IRawDevice
     {
-        private InputData _rawBuffer;
-
         public RawMouse(IntPtr hwnd, bool captureOnlyInForeground)
         {
             var rid = new RawInputDevice[1];
@@ -23,40 +20,13 @@ namespace Rubberduck.Common.WinAPI
 
         public event EventHandler<RawMouseEventArgs> RawMouseInputReceived;
 
-        public override void EnumerateDevices()
+        public void ProcessRawInput(InputData _rawBuffer)
         {
-            EnumerateDevices(DeviceType.RIM_TYPE_MOUSE);
-        }
-
-        public override void ProcessRawInput(IntPtr hdevice)
-        {
-            if (DeviceList.Count == 0) return;
-            var dwSize = 0;
-            User32.GetRawInputData(hdevice, DataCommand.RID_INPUT, IntPtr.Zero, ref dwSize, Marshal.SizeOf(typeof(RawInputHeader)));
-            if (dwSize != User32.GetRawInputData(hdevice, DataCommand.RID_INPUT, out _rawBuffer, ref dwSize, Marshal.SizeOf(typeof(RawInputHeader))))
-            {
-                Debug.WriteLine("Error getting the rawinput buffer");
-                return;
-            }
-            EnumeratedDevice enumeratedDevice;
-            if (DeviceList.ContainsKey(_rawBuffer.header.hDevice))
-            {
-                lock (PadLock)
-                {
-                    enumeratedDevice = DeviceList[_rawBuffer.header.hDevice];
-                }
-            }
-            else
+            if (_rawBuffer.header.dwType != (uint)DeviceType.RIM_TYPE_MOUSE)
             {
                 return;
             }
-            
             var args = new RawMouseEventArgs(
-                            enumeratedDevice.DeviceName,
-                            enumeratedDevice.DeviceType,
-                            enumeratedDevice.DeviceHandle,
-                            enumeratedDevice.Name,
-                            enumeratedDevice.Source,
                             _rawBuffer.data.keyboard.Message,
                             (UsButtonFlags)_rawBuffer.data.mouse.ulButtons);
 

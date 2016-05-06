@@ -31,14 +31,22 @@ namespace Rubberduck.Inspections
             {
                 var declaration =
                     UserDeclarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Procedure &&
-                                                          d.IdentifierName == c.identifier().GetText() &&
+                                                          d.IdentifierName == c.subroutineName().GetText() &&
                                                           d.Context.GetSelection().Equals(c.GetSelection()));
 
-                var interfaceImplementation = UserDeclarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
+                if (UserDeclarations.FindInterfaceMembers().Contains(declaration))
+                {
+                    return false;
+                }
 
-                if (interfaceImplementation == null) { return true; }
+                var interfaceImplementation = UserDeclarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
+                if (interfaceImplementation == null)
+                {
+                    return true;
+                }
 
                 var interfaceMember = UserDeclarations.FindInterfaceMember(interfaceImplementation);
+
                 return interfaceMember == null;
             });
 
@@ -46,7 +54,7 @@ namespace Rubberduck.Inspections
                 .Where(c =>
                 {
                     var declaration = UserDeclarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Procedure &&
-                                                              d.IdentifierName == c.identifier().GetText() &&
+                                                              d.IdentifierName == c.subroutineName().GetText() &&
                                                               d.Context.GetSelection().Equals(c.GetSelection()));
 
                     if (declaration == null) { return false; }  // rather be safe than sorry
@@ -65,16 +73,6 @@ namespace Rubberduck.Inspections
                         context.Context as VBAParser.ArgListContext),
                     new QualifiedContext<VBAParser.SubStmtContext>(context.ModuleName,
                         context.Context.Parent as VBAParser.SubStmtContext)));
-        }
-
-        private bool IsInterfaceImplementation(Declaration target)
-        {
-            var interfaceImplementation = State.AllUserDeclarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(target));
-
-            if (interfaceImplementation == null) { return false; }
-
-            var interfaceMember = State.AllUserDeclarations.FindInterfaceMember(interfaceImplementation);
-            return interfaceMember != null;
         }
     }
 }

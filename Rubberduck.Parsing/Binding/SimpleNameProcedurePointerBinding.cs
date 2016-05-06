@@ -11,13 +11,14 @@ namespace Rubberduck.Parsing.Binding
         private readonly VBAExpressionParser.SimpleNameExpressionContext _expression;
 
         public SimpleNameProcedurePointerBinding(
-            DeclarationFinder declarationFinder, 
+            DeclarationFinder declarationFinder,
+            Declaration project,
             Declaration module,
             Declaration parent,
             VBAExpressionParser.SimpleNameExpressionContext expression)
         {
             _declarationFinder = declarationFinder;
-            _project = module.ParentDeclaration;
+            _project = project;
             _module = module;
             _parent = parent;
             _expression = expression;
@@ -71,7 +72,7 @@ namespace Rubberduck.Parsing.Binding
                 Enclosing Project namespace: The enclosing project itself or a procedural module contained in 
                 the enclosing project.  
             */
-            if (_declarationFinder.IsMatch(_project.Project.Name, name))
+            if (_declarationFinder.IsMatch(_project.ProjectName, name))
             {
                 return new SimpleNameExpression(_project, ExpressionClassification.Project, _expression);
             }
@@ -94,17 +95,17 @@ namespace Rubberduck.Parsing.Binding
                 subroutine or property with a Property Get defined in a procedural module within the enclosing 
                 project other than the enclosing module.  
             */
-            var function = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Function, DeclarationType.ProceduralModule);
+            var function = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Function);
             if (function != null)
             {
                 return new SimpleNameExpression(function, ExpressionClassification.Function, _expression);
             }
-            var subroutine = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Procedure, DeclarationType.ProceduralModule);
+            var subroutine = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Procedure);
             if (subroutine != null)
             {
                 return new SimpleNameExpression(subroutine, ExpressionClassification.Subroutine, _expression);
             }
-            var propertyGet = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.PropertyGet, DeclarationType.ProceduralModule);
+            var propertyGet = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.PropertyGet);
             if (propertyGet != null)
             {
                 return new SimpleNameExpression(propertyGet, ExpressionClassification.Property, _expression);

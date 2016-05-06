@@ -59,34 +59,50 @@
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
 
-        <Style x:Key="ShinyTreeView" 
+        <Style x:Key="ShinyTreeView"
                TargetType="{x:Type TreeViewItem}">
             <Setter Property="BorderThickness" Value="1.5"/>
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+            <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="ContextMenu">
                 <Setter.Value>
                     <ContextMenu DataContext="{Binding DataContext, Source={x:Reference CodeExplorer}}">
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}"
-                                  Command="{Binding RefreshCommand}">
-                            <MenuItem.Icon>
-                                <Image Source="../../Resources/arrow-circle-double.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Navigate}"
+                                  FontWeight="Bold"
+                                  Command="{Binding ContextMenuNavigateCommand}" />
                         <Separator />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}"
                                   Command="{Binding RenameCommand}" />
                         <Separator />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Navigate}"
-                                  Command="{Binding ContextMenuNavigateCommand}" />
-                        <Separator />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddTestModuleText}"
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}">
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddTestModuleText}"
                                   Command="{Binding AddTestModuleCommand}" />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddStdModuleText}"
+                            <Separator />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddStdModuleText}"
                                   Command="{Binding AddStdModuleCommand}" />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddClassModuleText}"
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddClassModuleText}"
                                   Command="{Binding AddClsModuleCommand}" />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ContextMenu_AddFormText}"
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddFormText}"
                                   Command="{Binding AddFormCommand}" />
+                        </MenuItem>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Find}">
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllReferencesText}"
+                                  Command="{Binding FindAllReferencesCommand}" />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllImplementationsText}"
+                                  Command="{Binding FindAllImplementationsCommand}" />
+                        </MenuItem>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SmartIndenterMenu}"
+                                  Command="{Binding IndenterCommand}" />
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Import}"
+                                  Command="{Binding ImportCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Export}"
+                                  Command="{Binding ExportCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Remove}"
+                                  Command="{Binding RemoveCommand}" />
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Print}"
+                                  Command="{Binding PrintCommand}" />
                     </ContextMenu>
                 </Setter.Value>
             </Setter>
@@ -118,14 +134,22 @@
         
         <Style x:Key="TreeViewItemStyle" TargetType="TextBlock">
             <Setter Property="Text" Value="{Binding Name}" />
+            <Setter Property="MaxWidth" Value="200" />
             <Setter Property="Margin" Value="2,0,2,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="ToolTip" Value="{Binding Name}" />
+            <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
 
         <Style x:Key="TreeViewItemStyleWithSignatures" TargetType="TextBlock">
             <Setter Property="Text" Value="{Binding NameWithSignature}" />
+            <Setter Property="MaxWidth" Value="200" />
             <Setter Property="Margin" Value="2,0,2,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="ToolTip" Value="{Binding NameWithSignature}" />
+            <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
 
         <Style x:Key="TreeViewIconStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">
@@ -388,6 +412,14 @@
                     <Image Height="16" Source="../../Resources/Microsoft/PNG/DisplayFullSignature_13393_32.png" />
                 </ToggleButton>
 
+                <Separator />
+                
+                <Button Command="{Binding OpenDesignerCommand}" IsEnabled="{Binding CanOpenDesigner}">
+                    <Image Height="16" Source="../../Resources/Microsoft/PNG/VSProject_form.png" />
+                    <Button.ToolTip>
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ShowDesignerToolTip}" />
+                    </Button.ToolTip>
+                </Button>
             </ToolBar>
         </ToolBarTray>
 
@@ -409,11 +441,16 @@
 
             <StackPanel Orientation="Vertical" MinHeight="48" Background="Gainsboro">
 
-                <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center" 
-                           Source="{Binding SelectedItem.CollapsedIcon}"/>
-                    <TextBlock Margin="4" Text="{Binding SelectedItem.NameWithSignature}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
-                </StackPanel>
+                <Grid Margin="4" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center"
+                           Source="{Binding SelectedItem.CollapsedIcon}" Grid.Column="0"/>
+                    <TextBlock Margin="4" Text="{Binding PanelTitle}" FontWeight="Bold"
+                               TextWrapping="WrapWithOverflow" Grid.Column="1"/>
+                </Grid>
 
                 <TextBlock Margin="4" Text="{Binding Description}" FontSize="10" TextWrapping="WrapWithOverflow"/>
 
@@ -421,15 +458,15 @@
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}, UpdateSourceTrigger=PropertyChanged}"
                             Command="{Binding IndenterCommand}"
-                            Content="Indent" />
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SmartIndenterMenu}" />
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteRenameCommand, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding RenameCommand}"
-                            Content="Rename" />
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}" />
                     <Button Style="{StaticResource LinkButton}" Margin="4"
                             Visibility="{Binding CanExecuteFindAllReferencesCommand, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding FindAllReferencesCommand}"
-                            Content="Find All References" />
+                            Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllReferencesText}" />
                 </WrapPanel>
             </StackPanel>
         </Border>

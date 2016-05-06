@@ -531,10 +531,10 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Display full &amp;signatures</value>
   </data>
   <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>Find &amp;All Implementations...</value>
+    <value>Find All Implementations...</value>
   </data>
   <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>&amp;Find All References...</value>
+    <value>Find All References...</value>
   </data>
   <data name="Inspect" xml:space="preserve">
     <value>Inspect</value>
@@ -550,9 +550,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
     <value>Run All &amp;Tests</value>
-  </data>
-  <data name="CodeExplorer_ShowDesignerText" xml:space="preserve">
-    <value>&amp;Show Designer</value>
   </data>
   <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
     <value>Open Designer</value>
@@ -949,7 +946,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RegexSearchReplace_Caption" xml:space="preserve">
     <value>Regex Search &amp; Replace</value>
   </data>
-  <data name="RegexSearchReplace_FindButtonLabel" xml:space="preserve">
+  <data name="Find" xml:space="preserve">
     <value>Find</value>
   </data>
   <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
@@ -1509,16 +1506,16 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
     <value>Toggle signatures</value>
   </data>
-  <data name="CodeExplorer_ContextMenu_AddClassModuleText" xml:space="preserve">
-    <value>Add Class module (.cls)</value>
+  <data name="CodeExplorer_Export" xml:space="preserve">
+    <value>Export...</value>
   </data>
-  <data name="CodeExplorer_ContextMenu_AddFormText" xml:space="preserve">
-    <value>Add User form (.frm)</value>
+  <data name="CodeExplorer_Import" xml:space="preserve">
+    <value>Import...</value>
   </data>
-  <data name="CodeExplorer_ContextMenu_AddStdModuleText" xml:space="preserve">
-    <value>Add Standard module (.bas)</value>
+  <data name="CodeExplorer_Print" xml:space="preserve">
+    <value>Print...</value>
   </data>
-  <data name="CodeExplorer_ContextMenu_AddTestModuleText" xml:space="preserve">
-    <value>Add Test module</value>
+  <data name="CodeExplorer_Remove" xml:space="preserve">
+    <value>Remove...</value>
   </data>
 </root>

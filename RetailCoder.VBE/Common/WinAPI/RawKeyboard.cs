@@ -1,13 +1,10 @@
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.Common.WinAPI
 {
-    public sealed class RawKeyboard : RawDevice
+    public sealed class RawKeyboard : IRawDevice
     {
-        private InputData _rawBuffer;
-
         public RawKeyboard(IntPtr hwnd, bool captureOnlyInForeground)
         {
             var rid = new RawInputDevice[1];
@@ -23,49 +20,24 @@ namespace Rubberduck.Common.WinAPI
 
         public event EventHandler<RawKeyEventArgs> RawKeyInputReceived;
 
-        public override void EnumerateDevices()
+        public void ProcessRawInput(InputData _rawBuffer)
         {
-            EnumerateDevices(DeviceType.RIM_TYPE_KEYBOARD);
-        }
-
-        public override void ProcessRawInput(IntPtr hdevice)
-        {
-            if (DeviceList.Count == 0) return;
-
-            var dwSize = 0;
-            User32.GetRawInputData(hdevice, DataCommand.RID_INPUT, IntPtr.Zero, ref dwSize, Marshal.SizeOf(typeof(RawInputHeader)));
-
-            if (dwSize != User32.GetRawInputData(hdevice, DataCommand.RID_INPUT, out _rawBuffer, ref dwSize, Marshal.SizeOf(typeof(RawInputHeader))))
+            if (_rawBuffer.header.dwType != (uint)DeviceType.RIM_TYPE_KEYBOARD)
             {
-                Debug.WriteLine("Error getting the rawinput buffer");
                 return;
             }
             int virtualKey = _rawBuffer.data.keyboard.VKey;
             int makeCode = _rawBuffer.data.keyboard.Makecode;
             int flags = _rawBuffer.data.keyboard.Flags;
-            if (virtualKey == Win32.KEYBOARD_OVERRUN_MAKE_CODE) return;
-            var isE0BitSet = ((flags & Win32.RI_KEY_E0) != 0);
-            EnumeratedDevice enumeratedDevice;
-            if (DeviceList.ContainsKey(_rawBuffer.header.hDevice))
-            {
-                lock (PadLock)
-                {
-                    enumeratedDevice = DeviceList[_rawBuffer.header.hDevice];
-                }
-            }
-            else
+            if (virtualKey == Win32.KEYBOARD_OVERRUN_MAKE_CODE)
             {
                 return;
             }
+            var isE0BitSet = ((flags & Win32.RI_KEY_E0) != 0);
             var isBreakBitSet = ((flags & Win32.RI_KEY_BREAK) != 0);
             var args = new RawKeyEventArgs(
-                            enumeratedDevice.DeviceName,
-                            enumeratedDevice.DeviceType,
-                            enumeratedDevice.DeviceHandle,
-                            enumeratedDevice.Name,
-                            enumeratedDevice.Source,
                             virtualKey,
-                            KeyMap.GetKeyName(VirtualKeyCorrection(virtualKey, isE0BitSet, makeCode)).ToUpper(),
+                            KeyMap.GetKeyName(VirtualKeyCorrection(virtualKey, isE0BitSet, makeCode, _rawBuffer)).ToUpper(),
                             (WM)_rawBuffer.data.keyboard.Message,
                             isBreakBitSet ? "BREAK" : "MAKE");
             if (RawKeyInputReceived != null)
@@ -74,7 +46,7 @@ namespace Rubberduck.Common.WinAPI
             }
         }
 
-        private int VirtualKeyCorrection(int virtualKey, bool isE0BitSet, int makeCode)
+        private int VirtualKeyCorrection(int virtualKey, bool isE0BitSet, int makeCode, InputData _rawBuffer)
         {
             var correctedVKey = virtualKey;
 

@@ -189,19 +189,6 @@ End Sub";
         }
 
         [TestMethod]
-        public void TestDeleteSettingsStatement()
-        {
-            string code = @"
-Sub Test()
-    DELETESETTING ""a""
-    DELETESETTING ""a"", ""b""
-    DELETESETTING ""a"", ""b"", ""c""
-End Sub";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//deleteSettingStmt");
-        }
-
-        [TestMethod]
         public void TestDoLoopStatement()
         {
             string code = @"

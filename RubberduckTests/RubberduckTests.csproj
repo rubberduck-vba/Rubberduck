@@ -77,9 +77,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Binding\IndexDefaultBindingTests.cs" />
+    <Compile Include="Binding\MemberAccessDefaultBindingTests.cs" />
     <Compile Include="Binding\MemberAccessTypeBindingTests.cs" />
     <Compile Include="Binding\MemberAccessProcedurePointerBindingTests.cs" />
     <Compile Include="Binding\SimpleNameProcedurePointerBindingTests.cs" />
+    <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="ComponentTypeExtensionTests.cs" />
     <Compile Include="ConfigurationTests.cs" />

@@ -63,7 +63,13 @@
             {
                 return calleeHasSameParent;
             }
-            var memberModule = Declaration.GetMemberModule(calleeMember);
+            var memberModule = Declaration.GetModuleParent(calleeMember);
+            // TODO: Fix this?
+            // Assume null = built in declaration which is always accessible.
+            if (memberModule == null)
+            {
+                return true;
+            }
             if (IsModuleAccessible(callingProject, callingModule, memberModule) && calleeMember.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
             {
                 if (calleeMember.DeclarationType.HasFlag(DeclarationType.EnumerationMember) || calleeMember.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember))

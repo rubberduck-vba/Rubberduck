@@ -26,10 +26,11 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CodeExplorerProjectViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
         {
             _declaration = declaration;
+            IsExpanded = true;
 
             try
             {
-                Items = FindFolders(declarations.ToList(), '.');
+                Items = FindFolders(declarations.ToList(), '.').ToList();
 
                 _icon = _declaration.Project.Protection == vbext_ProjectProtection.vbext_pp_locked
                     ? GetImageSource(resx.lock__exclamation)
