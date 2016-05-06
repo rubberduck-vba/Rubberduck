@@ -9,7 +9,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class CodeExplorer_RemoveCommand : CommandBase
     {
-        private readonly SaveFileDialog _saveFileDialog;
+        private readonly ISaveFileDialog _saveFileDialog;
         private readonly IMessageBox _messageBox;
 
         private readonly Dictionary<vbext_ComponentType, string> _exportableFileExtensions = new Dictionary<vbext_ComponentType, string>
@@ -20,9 +20,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             { vbext_ComponentType.vbext_ct_MSForm, ".frm" }
         };
 
-        public CodeExplorer_RemoveCommand(SaveFileDialog saveFileDialog, IMessageBox messageBox)
+        public CodeExplorer_RemoveCommand(ISaveFileDialog saveFileDialog, IMessageBox messageBox)
         {
             _saveFileDialog = saveFileDialog;
+            _saveFileDialog.OverwritePrompt = true;
+
             _messageBox = messageBox;
         }
 
