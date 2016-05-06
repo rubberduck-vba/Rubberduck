@@ -12,7 +12,6 @@ using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
-using Rubberduck.UI.Refactorings;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.Extensions;
@@ -164,9 +163,6 @@ End Sub";
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState();
             var commands = new List<ICommand>
             {
@@ -211,9 +207,6 @@ End Sub";
             mockHost.SetupAllProperties();
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-
-            var configLoader = new Mock<ConfigurationLoader>(null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var view = new Mock<IRenameDialog>();
             view.Setup(r => r.ShowDialog()).Returns(DialogResult.OK);
