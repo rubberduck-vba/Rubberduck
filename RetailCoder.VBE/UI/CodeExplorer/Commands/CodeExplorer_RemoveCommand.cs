@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -7,7 +8,7 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorer_RemoveCommand : CommandBase
+    public class CodeExplorer_RemoveCommand : CommandBase, IDisposable
     {
         private readonly ISaveFileDialog _saveFileDialog;
         private readonly IMessageBox _messageBox;
@@ -81,6 +82,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
 
             return result == DialogResult.OK;
+        }
+
+        public void Dispose()
+        {
+            if (_saveFileDialog != null)
+            {
+                _saveFileDialog.Dispose();
+            }
         }
     }
 }

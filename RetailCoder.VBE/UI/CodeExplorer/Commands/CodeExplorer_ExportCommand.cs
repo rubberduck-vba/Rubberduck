@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -7,7 +8,7 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorer_ExportCommand : CommandBase
+    public class CodeExplorer_ExportCommand : CommandBase, IDisposable
     {
         private readonly ISaveFileDialog _saveFileDialog;
         private readonly Dictionary<vbext_ComponentType, string> _exportableFileExtensions = new Dictionary<vbext_ComponentType, string>
@@ -50,6 +51,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             if (result == DialogResult.OK)
             {
                 component.Export(_saveFileDialog.FileName);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_saveFileDialog != null)
+            {
+                _saveFileDialog.Dispose();
             }
         }
     }

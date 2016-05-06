@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Navigation.CodeExplorer;
@@ -6,7 +7,7 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorer_ImportCommand : CommandBase
+    public class CodeExplorer_ImportCommand : CommandBase, IDisposable
     {
         private readonly IOpenFileDialog _openFileDialog;
 
@@ -65,6 +66,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
 
             return null;
+        }
+
+        public void Dispose()
+        {
+            if (_openFileDialog != null)
+            {
+                _openFileDialog.Dispose();
+            }
         }
     }
 }
