@@ -50,39 +50,6 @@ namespace Rubberduck.Navigation.CodeExplorer
             _printCommand = commands.OfType<CodeExplorer_PrintCommand>().First();
         }
 
-        public string Description
-        {
-            get
-            {
-                if (SelectedItem is CodeExplorerProjectViewModel)
-                {
-                    return ((CodeExplorerProjectViewModel) SelectedItem).Declaration.DescriptionString;
-                }
-
-                if (SelectedItem is CodeExplorerComponentViewModel)
-                {
-                    return ((CodeExplorerComponentViewModel) SelectedItem).Declaration.DescriptionString;
-                }
-
-                if (SelectedItem is CodeExplorerMemberViewModel)
-                {
-                    return ((CodeExplorerMemberViewModel) SelectedItem).Declaration.DescriptionString;
-                }
-
-                if (SelectedItem is CodeExplorerCustomFolderViewModel)
-                {
-                    return ((CodeExplorerCustomFolderViewModel) SelectedItem).FolderAttribute;
-                }
-
-                if (SelectedItem is CodeExplorerErrorNodeViewModel)
-                {
-                    return ((CodeExplorerErrorNodeViewModel) SelectedItem).Name;
-                }
-
-                return string.Empty;
-            }
-        }
-
         private CodeExplorerItemViewModel _selectedItem;
         public CodeExplorerItemViewModel SelectedItem
         {
@@ -92,13 +59,9 @@ namespace Rubberduck.Navigation.CodeExplorer
                 _selectedItem = value;
                 OnPropertyChanged();
                 // ReSharper disable ExplicitCallerInfoArgument
-                /*OnPropertyChanged("CanExecuteIndenterCommand");
+                OnPropertyChanged("CanExecuteIndenterCommand");
                 OnPropertyChanged("CanExecuteRenameCommand");
                 OnPropertyChanged("CanExecuteFindAllReferencesCommand");
-                OnPropertyChanged("CanExecuteShowDesignerCommand");
-                OnPropertyChanged("CanExecutePrintCommand");
-                OnPropertyChanged("CanExecuteExportCommand");
-                OnPropertyChanged("CanExecuteRemoveCommand");*/
                 OnPropertyChanged("PanelTitle");
                 OnPropertyChanged("Description");
                 // ReSharper restore ExplicitCallerInfoArgument
@@ -158,6 +121,43 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return SelectedItem.Name;
             }
         }
+        
+        public string Description
+        {
+            get
+            {
+                if (SelectedItem is CodeExplorerProjectViewModel)
+                {
+                    return ((CodeExplorerProjectViewModel) SelectedItem).Declaration.DescriptionString;
+                }
+
+                if (SelectedItem is CodeExplorerComponentViewModel)
+                {
+                    return ((CodeExplorerComponentViewModel) SelectedItem).Declaration.DescriptionString;
+                }
+
+                if (SelectedItem is CodeExplorerMemberViewModel)
+                {
+                    return ((CodeExplorerMemberViewModel) SelectedItem).Declaration.DescriptionString;
+                }
+
+                if (SelectedItem is CodeExplorerCustomFolderViewModel)
+                {
+                    return ((CodeExplorerCustomFolderViewModel) SelectedItem).FolderAttribute;
+                }
+
+                if (SelectedItem is CodeExplorerErrorNodeViewModel)
+                {
+                    return ((CodeExplorerErrorNodeViewModel) SelectedItem).Name;
+                }
+
+                return string.Empty;
+            }
+        }
+
+        public bool CanExecuteIndenterCommand { get { return IndenterCommand.CanExecute(SelectedItem); } }
+        public bool CanExecuteRenameCommand { get { return RenameCommand.CanExecute(SelectedItem); } }
+        public bool CanExecuteFindAllReferencesCommand { get { return FindAllReferencesCommand.CanExecute(SelectedItem); } }
 
         private ObservableCollection<CodeExplorerItemViewModel> _projects;
         public ObservableCollection<CodeExplorerItemViewModel> Projects
