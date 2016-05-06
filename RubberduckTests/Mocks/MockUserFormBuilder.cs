@@ -65,6 +65,10 @@ namespace RubberduckTests.Mocks
             var designer = CreateMockDesigner();
             _component.SetupGet(m => m.Designer).Returns(() => designer.Object);
 
+            var window = new Mock<Window>();
+            window.SetupProperty(w => w.Visible, false);
+            _component.Setup(m => m.DesignerWindow()).Returns(window.Object);
+
             return _component;
         }
 
