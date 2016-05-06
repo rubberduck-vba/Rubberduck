@@ -4,7 +4,7 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerOpenDesignerCommand : CommandBase
+    public class CodeExplorer_OpenDesignerCommand : CommandBase
     {
         public override bool CanExecute(object parameter)
         {

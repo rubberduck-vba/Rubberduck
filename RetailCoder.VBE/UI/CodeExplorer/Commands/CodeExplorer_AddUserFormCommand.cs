@@ -3,11 +3,11 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerAddUserFormCommand : CommandBase
+    public class CodeExplorer_AddUserFormCommand : CommandBase
     {
         private readonly VBE _vbe;
 
-        public CodeExplorerAddUserFormCommand(VBE vbe)
+        public CodeExplorer_AddUserFormCommand(VBE vbe)
         {
             _vbe = vbe;
         }

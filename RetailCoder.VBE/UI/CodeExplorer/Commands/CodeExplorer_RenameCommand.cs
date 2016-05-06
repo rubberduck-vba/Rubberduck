@@ -10,14 +10,14 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerRenameCommand : CommandBase, IDisposable
+    public class CodeExplorer_RenameCommand : CommandBase, IDisposable
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly RenameDialog _view;
 
-        public CodeExplorerRenameCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory, RenameDialog view)
+        public CodeExplorer_RenameCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory, RenameDialog view)
         {
             _vbe = vbe;
             _state = state;

@@ -7,7 +7,7 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerRemoveCommand : CommandBase
+    public class CodeExplorer_RemoveCommand : CommandBase
     {
         private readonly SaveFileDialog _saveFileDialog;
         private readonly IMessageBox _messageBox;
@@ -20,7 +20,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             { vbext_ComponentType.vbext_ct_MSForm, ".frm" }
         };
 
-        public CodeExplorerRemoveCommand(SaveFileDialog saveFileDialog, IMessageBox messageBox)
+        public CodeExplorer_RemoveCommand(SaveFileDialog saveFileDialog, IMessageBox messageBox)
         {
             _saveFileDialog = saveFileDialog;
             _messageBox = messageBox;

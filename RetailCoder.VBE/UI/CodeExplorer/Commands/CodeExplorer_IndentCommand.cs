@@ -5,13 +5,13 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerIndentCommand : CommandBase
+    public class CodeExplorer_IndentCommand : CommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly Indenter _indenter;
+        private readonly IIndenter _indenter;
         private readonly INavigateCommand _navigateCommand;
 
-        public CodeExplorerIndentCommand(RubberduckParserState state, Indenter indenter, INavigateCommand navigateCommand)
+        public CodeExplorer_IndentCommand(RubberduckParserState state, IIndenter indenter, INavigateCommand navigateCommand)
         {
             _state = state;
             _indenter = indenter;

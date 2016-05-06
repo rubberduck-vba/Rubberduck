@@ -3,11 +3,11 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerAddStdModuleCommand : CommandBase
+    public class CodeExplorer_AddClassModuleCommand : CommandBase
     {
         private readonly VBE _vbe;
 
-        public CodeExplorerAddStdModuleCommand(VBE vbe)
+        public CodeExplorer_AddClassModuleCommand(VBE vbe)
         {
             _vbe = vbe;
         }
@@ -19,7 +19,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override void Execute(object parameter)
         {
-            _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
+            _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_ClassModule);
         }
     }
 }

@@ -3,11 +3,11 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerRefreshCommand : CommandBase
+    public class CodeExplorer_RefreshCommand : CommandBase
     {
         private readonly RubberduckParserState _state;
 
-        public CodeExplorerRefreshCommand(RubberduckParserState state)
+        public CodeExplorer_RefreshCommand(RubberduckParserState state)
         {
             _state = state;
         }

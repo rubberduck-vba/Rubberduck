@@ -1,18 +1,15 @@
 using Microsoft.Vbe.Interop;
 using Rubberduck.UI.Command;
-using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerAddTestModuleCommand : CommandBase
+    public class CodeExplorer_AddStdModuleCommand : CommandBase
     {
         private readonly VBE _vbe;
-        private readonly NewUnitTestModuleCommand _newUnitTestModuleCommand;
 
-        public CodeExplorerAddTestModuleCommand(VBE vbe, NewUnitTestModuleCommand newUnitTestModuleCommand)
+        public CodeExplorer_AddStdModuleCommand(VBE vbe)
         {
             _vbe = vbe;
-            _newUnitTestModuleCommand = newUnitTestModuleCommand;
         }
 
         public override bool CanExecute(object parameter)
@@ -22,7 +19,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override void Execute(object parameter)
         {
-            _newUnitTestModuleCommand.NewUnitTestModule();
+            _vbe.ActiveVBProject.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
         }
     }
 }

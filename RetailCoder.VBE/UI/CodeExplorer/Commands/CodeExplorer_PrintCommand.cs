@@ -8,7 +8,7 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerPrintCommand : CommandBase
+    public class CodeExplorer_PrintCommand : CommandBase
     {
         public override bool CanExecute(object parameter)
         {

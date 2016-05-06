@@ -7,7 +7,7 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class CodeExplorerExportCommand : CommandBase
+    public class CodeExplorer_ExportCommand : CommandBase
     {
         private readonly SaveFileDialog _saveFileDialog;
         private readonly Dictionary<vbext_ComponentType, string> _exportableFileExtensions = new Dictionary<vbext_ComponentType, string>
@@ -18,7 +18,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             { vbext_ComponentType.vbext_ct_MSForm, ".frm" }
         };
 
-        public CodeExplorerExportCommand(SaveFileDialog saveFileDialog)
+        public CodeExplorer_ExportCommand(SaveFileDialog saveFileDialog)
         {
             _saveFileDialog = saveFileDialog;
         }
