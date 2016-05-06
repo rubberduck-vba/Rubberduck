@@ -8,6 +8,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         public override bool CanExecute(object parameter)
         {
+            if (parameter == null)
+            {
+                return false;   
+            }
+
             var declaration = GetSelectedDeclaration((CodeExplorerItemViewModel)parameter);
             return declaration != null && declaration.DeclarationType == DeclarationType.ClassModule &&
                     declaration.QualifiedName.QualifiedModuleName.Component.Designer != null;
