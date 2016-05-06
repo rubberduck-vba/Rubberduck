@@ -175,11 +175,6 @@ namespace Rubberduck.UI
             return _openFileDialog.GetLifetimeService();
         }
 
-        public new Type GetType()
-        {
-            return _openFileDialog.GetType();
-        }
-
         public event EventHandler HelpRequest;
         private void OpenFileDialog_HelpRequest(object sender, EventArgs e)
         {

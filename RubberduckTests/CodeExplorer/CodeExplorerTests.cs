@@ -27,8 +27,12 @@ namespace RubberduckTests.CodeExplorer
         public void AddStdModule()
         {
             var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, "");
+
+            var vbComponents = project.MockVBComponents;
+
+            var vbe = builder.AddProject(project.Build()).Build();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
@@ -37,17 +41,19 @@ namespace RubberduckTests.CodeExplorer
             var vm = new CodeExplorerViewModel(new RubberduckParserState(), commands);
             vm.AddStdModuleCommand.Execute(null);
 
-            Assert.IsTrue(vbe.Object.VBProjects.Item(0)
-                    .VBComponents.Cast<VBComponent>()
-                    .Count(c => c.Type == vbext_ComponentType.vbext_ct_StdModule) == 2);
+            vbComponents.Verify(c => c.Add(vbext_ComponentType.vbext_ct_StdModule), Times.Once);
         }
 
         [TestMethod]
         public void AddClassModule()
         {
             var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, "");
+
+            var vbComponents = project.MockVBComponents;
+
+            var vbe = builder.AddProject(project.Build()).Build();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
@@ -56,18 +62,19 @@ namespace RubberduckTests.CodeExplorer
             var vm = new CodeExplorerViewModel(new RubberduckParserState(), commands);
             vm.AddClassModuleCommand.Execute(null);
 
-            var vbComponents = vbe.Object.VBProjects.Item(0).VBComponents.Cast<VBComponent>();
-
-            Assert.IsTrue(vbComponents.Count(c => c.Type == vbext_ComponentType.vbext_ct_StdModule) == 1 &&
-                vbComponents.Count(c => c.Type == vbext_ComponentType.vbext_ct_ClassModule) == 1);
+            vbComponents.Verify(c => c.Add(vbext_ComponentType.vbext_ct_ClassModule), Times.Once);
         }
 
         [TestMethod]
         public void AddUserForm()
         {
             var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, "");
+
+            var vbComponents = project.MockVBComponents;
+
+            var vbe = builder.AddProject(project.Build()).Build();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
@@ -76,18 +83,19 @@ namespace RubberduckTests.CodeExplorer
             var vm = new CodeExplorerViewModel(new RubberduckParserState(), commands);
             vm.AddUserFormCommand.Execute(null);
 
-            var vbComponents = vbe.Object.VBProjects.Item(0).VBComponents.Cast<VBComponent>();
-
-            Assert.IsTrue(vbComponents.Count(c => c.Type == vbext_ComponentType.vbext_ct_StdModule) == 1 &&
-                vbComponents.Count(c => c.Type == vbext_ComponentType.vbext_ct_MSForm) == 1);
+            vbComponents.Verify(c => c.Add(vbext_ComponentType.vbext_ct_MSForm), Times.Once);
         }
 
         [TestMethod]
         public void AddTestModule()
         {
             var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, "");
+
+            var vbComponents = project.MockVBComponents;
+
+            var vbe = builder.AddProject(project.Build()).Build();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
@@ -102,17 +110,19 @@ namespace RubberduckTests.CodeExplorer
             var vm = new CodeExplorerViewModel(new RubberduckParserState(), commands);
             vm.AddTestModuleCommand.Execute(null);
 
-            var vbComponents = vbe.Object.VBProjects.Item(0).VBComponents.Cast<VBComponent>();
-
-            Assert.IsTrue(vbComponents.Count(c => c.Type == vbext_ComponentType.vbext_ct_StdModule) == 2);
+            vbComponents.Verify(c => c.Add(vbext_ComponentType.vbext_ct_StdModule), Times.Once);
         }
 
         [TestMethod]
         public void ImportModule()
         {
             var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("", out component);
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, "");
+
+            var vbComponents = project.MockVBComponents;
+
+            var vbe = builder.AddProject(project.Build()).Build();
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
@@ -142,18 +152,58 @@ namespace RubberduckTests.CodeExplorer
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
             vm.ImportCommand.Execute(vm.SelectedItem);
 
-            var vbComponents = vbe.Object.VBProjects.Item(0).VBComponents.Cast<VBComponent>();
-            Assert.IsTrue(vbComponents.Count(c => c.Type == vbext_ComponentType.vbext_ct_StdModule) == 2);
+            vbComponents.Verify(c => c.Import("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Once);
         }
+
+        /*[TestMethod]
+        public void ExportModule()
+        {
+            var builder = new MockVbeBuilder();
+            var projectMock = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, "");
+
+            var project = projectMock.Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = projectMock.Components.First();
+
+            var saveFileDialog = new Mock<ISaveFileDialog>();
+            saveFileDialog.Setup(o => o.OverwritePrompt);
+            saveFileDialog.Setup(o => o.FileName).Returns("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas");
+            saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>
+            {
+                new CodeExplorer_ExportCommand(saveFileDialog.Object)
+            };
+
+            var vm = new CodeExplorerViewModel(state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+            vm.ExportCommand.Execute(vm.SelectedItem);
+
+            component.Verify(c => c.Export("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Once);
+        }*/
 
         [TestMethod]
         public void RemoveModule_Cancel()
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, "")
-                .Build();
+            var projectMock = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, "");
+
+            var vbComponents = projectMock.MockVBComponents;
+
+            var project = projectMock.Build();
             var vbe = builder.AddProject(project).Build();
+            var component = project.Object.VBComponents.Item(0);
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m =>
@@ -175,8 +225,7 @@ namespace RubberduckTests.CodeExplorer
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
             vm.RemoveCommand.Execute(vm.SelectedItem);
 
-            var vbComponents = vbe.Object.VBProjects.Item(0).VBComponents.Cast<VBComponent>();
-            Assert.IsTrue(vbComponents.Count(c => c.Type == vbext_ComponentType.vbext_ct_StdModule) == 0);
+            vbComponents.Verify(c => c.Remove(component), Times.Once);
         }
 
         [TestMethod]

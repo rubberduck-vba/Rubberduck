@@ -23,6 +23,11 @@ namespace RubberduckTests.Mocks
         private readonly List<VBComponent> _components = new List<VBComponent>();
         private readonly List<Reference> _references = new List<Reference>();
 
+        public Mock<VBComponents> MockVBComponents
+        {
+            get { return _vbComponents; }
+        }
+
         public MockProjectBuilder(string name, string filename, vbext_ProjectProtection protection, Func<VBE> getVbe, MockVbeBuilder mockVbeBuilder)
         {
             _getVbe = getVbe;
@@ -123,7 +128,6 @@ namespace RubberduckTests.Mocks
 
             return result;
         }
-
 
         private Mock<VBComponents> CreateComponentsMock()
         {
