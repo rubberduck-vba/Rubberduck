@@ -144,7 +144,7 @@ namespace Rubberduck.Parsing.Symbols
             // using dynamic typing here, because not only MSForms could have a Controls collection (e.g. MS-Access forms are 'document' modules).
             foreach (var control in ((dynamic)designer).Controls)
             {
-                var declaration = new Declaration(_qualifiedName.QualifyMemberName(control.Name), _parentDeclaration, _currentScopeDeclaration, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home);
+                var declaration = new Declaration(_qualifiedName.QualifyMemberName(control.Name), _parentDeclaration, _currentScopeDeclaration, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home, false);
                 OnNewDeclaration(declaration);
             }
         }
