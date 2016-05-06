@@ -1,4 +1,5 @@
 using Rubberduck.Parsing.Binding;
+using System;
 using System.Diagnostics;
 
 namespace Rubberduck.Parsing.Symbols
@@ -47,7 +48,7 @@ namespace Rubberduck.Parsing.Symbols
             var classModule = (ClassModuleDeclaration)potentialClassModule;
             foreach (var implementedInterfaceName in classModule.SupertypeNames)
             {
-                var implementedInterface = _bindingService.ResolveType(potentialClassModule, potentialClassModule.ParentDeclaration, implementedInterfaceName);
+                var implementedInterface = _bindingService.ResolveType(potentialClassModule, potentialClassModule, implementedInterfaceName);
                 if (implementedInterface != null)
                 {
                     classModule.AddSupertype(implementedInterface.ReferencedDeclaration);
