@@ -44,6 +44,7 @@
     <Reference Include="LibGit2Sharp">
       <HintPath>..\packages\LibGit2Sharp.0.22.0-pre20150516171636\lib\net40\LibGit2Sharp.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Vbe.Interop, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -77,9 +78,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Binding\IndexDefaultBindingTests.cs" />
+    <Compile Include="Binding\MemberAccessDefaultBindingTests.cs" />
     <Compile Include="Binding\MemberAccessTypeBindingTests.cs" />
     <Compile Include="Binding\MemberAccessProcedurePointerBindingTests.cs" />
     <Compile Include="Binding\SimpleNameProcedurePointerBindingTests.cs" />
+    <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
     <Compile Include="ComponentTypeExtensionTests.cs" />

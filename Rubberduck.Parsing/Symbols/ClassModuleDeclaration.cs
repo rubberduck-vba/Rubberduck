@@ -9,6 +9,8 @@ namespace Rubberduck.Parsing.Symbols
     public sealed class ClassModuleDeclaration : Declaration
     {
         private readonly bool _isExposed;
+        private readonly bool _isGlobalClassModule;
+
 
         public ClassModuleDeclaration(
                   QualifiedMemberName qualifiedName,
@@ -17,7 +19,8 @@ namespace Rubberduck.Parsing.Symbols
                   bool isBuiltIn,
                   IEnumerable<IAnnotation> annotations,
                   Attributes attributes,
-                  bool isExposed = false)
+                  bool isExposed = false,
+                  bool isGlobalClassModule = false)
             : base(
                   qualifiedName,
                   projectDeclaration,
@@ -34,6 +37,7 @@ namespace Rubberduck.Parsing.Symbols
                   attributes)
         {
             _isExposed = isExposed;
+            _isGlobalClassModule = isGlobalClassModule;
         }
 
         /// <summary>
@@ -53,5 +57,46 @@ namespace Rubberduck.Parsing.Symbols
                 return _isExposed || attributeIsExposed;
             }
         }
+
+        public bool IsGlobalClassModule
+        {
+            get
+            {
+                bool attributeIsGlobalClassModule = false;
+                IEnumerable<string> value;
+                if (Attributes.TryGetValue("VB_GlobalNamespace", out value))
+                {
+                    attributeIsGlobalClassModule = value.Single() == "True";
+                }
+                return _isGlobalClassModule || attributeIsGlobalClassModule;
+            }
+        }
+
+        /// <summary>
+        /// Gets an attribute value indicating whether a class has a predeclared ID.
+        /// Such classes can be treated as "static classes", or as far as resolving is concerned, as standard modules.
+        /// </summary>
+        public bool HasPredeclaredId
+        {
+            get
+            {
+                IEnumerable<string> value;
+                if (Attributes.TryGetValue("VB_PredeclaredId", out value))
+                {
+                    return value.Single() == "True";
+                }
+                return false;
+            }
+        }
+
+        public bool HasDefaultInstanceVariable
+        {
+            get
+            {
+                return HasPredeclaredId || IsGlobalClassModule;
+            }
+        }
+
+        public Declaration DefaultMember { get; internal set; }
     }
 }

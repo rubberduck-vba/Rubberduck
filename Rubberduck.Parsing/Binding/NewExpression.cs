@@ -11,7 +11,8 @@ namespace Rubberduck.Parsing.Binding
             Declaration referencedDeclaration,
             ParserRuleContext context,
             IBoundExpression typeExpression)
-            : base(referencedDeclaration, ExpressionClassification.Value, context)
+            // Marked as Variable instead of Value to integrate into rest of binding process.
+            : base(referencedDeclaration, ExpressionClassification.Variable, context)
         {
             _typeExpression = typeExpression;
         }

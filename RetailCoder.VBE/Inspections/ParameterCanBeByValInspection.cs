@@ -51,12 +51,12 @@ namespace Rubberduck.Inspections
             var formEventHandlerScopes = declarations.FindFormEventHandlers()
                 .Select(handler => handler.Scope);
 
-            var eventScopes = declarations.Where(item => 
+            var eventScopes = declarations.Where(item =>
                 !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event)
                 .Select(e => e.Scope);
 
-            var declareScopes = declarations.Where(item => 
-                    item.DeclarationType == DeclarationType.LibraryFunction 
+            var declareScopes = declarations.Where(item =>
+                    item.DeclarationType == DeclarationType.LibraryFunction
                     || item.DeclarationType == DeclarationType.LibraryProcedure)
                 .Select(e => e.Scope);
 
@@ -67,10 +67,10 @@ namespace Rubberduck.Inspections
                 && !ignoredScopes.Contains(declaration.ParentScope)
                 && declaration.DeclarationType == DeclarationType.Parameter
                 && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
-                && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
+                && ((VBAParser.ArgContext)declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName));
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue, ((dynamic)issue.Context).unrestrictedIdentifier(), issue.QualifiedName));
 
             return issues;
         }
@@ -97,7 +97,7 @@ namespace Rubberduck.Inspections
 
                 for (var i = 0; i < calledProcedureArgs.Count(); i++)
                 {
-                    if (((VBAParser.ArgContext) calledProcedureArgs[i].Context).BYVAL() != null)
+                    if (((VBAParser.ArgContext)calledProcedureArgs[i].Context).BYVAL() != null)
                     {
                         continue;
                     }
@@ -110,6 +110,10 @@ namespace Rubberduck.Inspections
                             continue;
                         }
 
+                        if (!(reference.Context is VBAParser.ArgCallContext))
+                        {
+                            continue;
+                        }
                         var context = ((dynamic)reference.Context.Parent).argsCall() as VBAParser.ArgsCallContext;
                         if (context == null)
                         {

@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections
             {
                 var declaration =
                     UserDeclarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Procedure &&
-                                                          d.IdentifierName == c.identifier().GetText() &&
+                                                          d.IdentifierName == c.subroutineName().GetText() &&
                                                           d.Context.GetSelection().Equals(c.GetSelection()));
 
                 if (UserDeclarations.FindInterfaceMembers().Contains(declaration))
@@ -54,7 +54,7 @@ namespace Rubberduck.Inspections
                 .Where(c =>
                 {
                     var declaration = UserDeclarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Procedure &&
-                                                              d.IdentifierName == c.identifier().GetText() &&
+                                                              d.IdentifierName == c.subroutineName().GetText() &&
                                                               d.Context.GetSelection().Equals(c.GetSelection()));
 
                     if (declaration == null) { return false; }  // rather be safe than sorry

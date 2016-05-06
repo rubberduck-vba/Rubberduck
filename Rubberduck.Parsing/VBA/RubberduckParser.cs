@@ -197,17 +197,23 @@ namespace Rubberduck.Parsing.VBA
             Debug.Assert(errObject != null);
 
             var qualifiedName = new QualifiedModuleName(vba.IdentifierName, vba.IdentifierName, errObject.IdentifierName);
-            var err = new Declaration(new QualifiedMemberName(qualifiedName, Tokens.Err), vba, "Global", errObject.IdentifierName, true, false, Accessibility.Global, DeclarationType.Variable);
+            var errModuleName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
+            var errModule = new ProceduralModuleDeclaration(new QualifiedMemberName(errModuleName, "ErrModule"), vba, "ErrModule", true, new List<IAnnotation>(), new Attributes());
+            var err = new Declaration(new QualifiedMemberName(qualifiedName, Tokens.Err), errModule, "Global", errObject.IdentifierName, true, false, Accessibility.Global, DeclarationType.Variable);
+            var debugModuleName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
+            var debugModule = new ProceduralModuleDeclaration(new QualifiedMemberName(debugModuleName, "DebugModule"), vba, "DebugModule", true, new List<IAnnotation>(), new Attributes());
             var debugClassName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
             var debugClass = new ClassModuleDeclaration(new QualifiedMemberName(debugClassName, "DebugClass"), vba, "DebugClass", true, new List<IAnnotation>(), new Attributes(), true);
-            var debugObject = new Declaration(new QualifiedMemberName(debugClassName, "Debug"), vba, "Global", "DebugClass", true, false, Accessibility.Global, DeclarationType.Variable);
-            var debugAssert = new Declaration(new QualifiedMemberName(debugClassName, "Assert"), debugObject, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
-            var debugPrint = new Declaration(new QualifiedMemberName(debugClassName, "Print"), debugObject, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
+            var debugObject = new Declaration(new QualifiedMemberName(debugClassName, "Debug"), debugModule, "Global", "DebugClass", true, false, Accessibility.Global, DeclarationType.Variable);
+            var debugAssert = new Declaration(new QualifiedMemberName(debugClassName, "Assert"), debugClass, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
+            var debugPrint = new Declaration(new QualifiedMemberName(debugClassName, "Print"), debugClass, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
 
 
             lock (_state)
             {
+                _state.AddDeclaration(errModule);
                 _state.AddDeclaration(err);
+                _state.AddDeclaration(debugModule);
                 _state.AddDeclaration(debugClass);
                 _state.AddDeclaration(debugObject);
                 _state.AddDeclaration(debugAssert);
@@ -310,15 +316,14 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_central.Token, token);
-
-            //var taskFactory = new TaskFactory(new StaTaskScheduler());
+            
             var task = new Task(() => ParseAsyncInternal(component, linkedTokenSource.Token, rewriter));
             _currentTasks.TryAdd(component, Tuple.Create(task, linkedTokenSource));
 
             Tuple<Task, CancellationTokenSource> removedTask;
             task.ContinueWith(t => _currentTasks.TryRemove(component, out removedTask)); // default also executes on cancel
-
-            task.Start(/*taskFactory.Scheduler*/);
+            // See http://stackoverflow.com/questions/6800705/why-is-taskscheduler-current-the-default-taskscheduler
+            task.Start(TaskScheduler.Default);
             return task;
         }
 
@@ -433,6 +438,7 @@ namespace Rubberduck.Parsing.VBA
 
             // walk all parse trees (modified or not) for identifier references
             var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments, _state.AllAnnotations);
+            new TypeAnnotationPass(finder).Annotate();
             foreach (var kvp in _state.ParseTrees)
             {
                 if (token.IsCancellationRequested) return;
@@ -519,7 +525,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 return;
             }
-
             var qualifiedName = new QualifiedModuleName(component);
             Debug.WriteLine("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
             var resolver = new IdentifierReferenceResolver(qualifiedName, finder);
@@ -530,6 +535,7 @@ namespace Rubberduck.Parsing.VBA
                 try
                 {
                     walker.Walk(listener, tree);
+                    _state.RebuildSelectionCache();
                     state = ParserState.Ready;
                 }
                 catch (Exception exception)
@@ -551,19 +557,6 @@ namespace Rubberduck.Parsing.VBA
 
             public override void ExitExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
             {
-                var procedureCall = context.eCS_ProcedureCall();
-                if (procedureCall != null)
-                {
-                    if (procedureCall.CALL() != null)
-                    {
-                        _contexts.Add(context);
-                        return;
-                    }
-                }
-
-                var memberCall = context.eCS_MemberProcedureCall();
-                if (memberCall == null) return;
-                if (memberCall.CALL() == null) return;
                 _contexts.Add(context);
             }
         }

@@ -82,7 +82,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             foreach (var reference in references.Where(item => item.Context != method.Context))
             {
-                var proc = (dynamic)reference.Context.Parent;
+                var proc = (dynamic)reference.Context;
                 var module = reference.QualifiedModuleName.Component.CodeModule;
                 VBAParser.ArgsCallContext paramList;
 
