@@ -70,6 +70,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             var newMethod = _createProc.createProc(model);
             var newMethodSignature = model.Method.AsString();
+            // TODO : Validate name doesn't already exist in current scope.
             var insertionLine = model.SourceMember.Context.GetSelection().EndLine - selection.LineCount + 2;
 
             _codeModule.DeleteLines(selection);
