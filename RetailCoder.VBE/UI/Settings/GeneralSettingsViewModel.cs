@@ -23,6 +23,8 @@ namespace Rubberduck.UI.Settings
             Hotkeys = new ObservableCollection<HotkeySetting>(config.UserSettings.GeneralSettings.HotkeySettings);
             AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
             AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
+
+            Delimiter = config.UserSettings.GeneralSettings.Delimiter;
         }
 
         public ObservableCollection<DisplayLanguageSetting> Languages { get; set; } 
@@ -83,12 +85,27 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private char _delimiter;
+        public char Delimiter
+        {
+            get { return _delimiter; }
+            set
+            {
+                if (_delimiter != value)
+                {
+                    _delimiter = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public void UpdateConfig(Configuration config)
         {
             config.UserSettings.GeneralSettings.Language = SelectedLanguage;
             config.UserSettings.GeneralSettings.HotkeySettings = Hotkeys.ToArray();
             config.UserSettings.GeneralSettings.AutoSaveEnabled = AutoSaveEnabled;
             config.UserSettings.GeneralSettings.AutoSavePeriod = AutoSavePeriod;
+            config.UserSettings.GeneralSettings.Delimiter = Delimiter;
         }
 
         public void SetToDefaults(Configuration config)
@@ -97,6 +114,7 @@ namespace Rubberduck.UI.Settings
             Hotkeys = new ObservableCollection<HotkeySetting>(config.UserSettings.GeneralSettings.HotkeySettings);
             AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
             AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
+            Delimiter = config.UserSettings.GeneralSettings.Delimiter;
         }
     }
 }

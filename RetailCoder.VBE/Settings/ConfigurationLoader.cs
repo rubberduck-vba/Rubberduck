@@ -58,7 +58,7 @@ namespace Rubberduck.Settings
             }
 
             // 0 is the default, and parses just fine into a `char`.  We require '.' or '/'.
-            if (config.UserSettings.GeneralSettings.Delimiter == 0)
+            if (!new[] {',', '/'}.Contains(config.UserSettings.GeneralSettings.Delimiter))
             {
                 config.UserSettings.GeneralSettings.Delimiter = '.';
             }

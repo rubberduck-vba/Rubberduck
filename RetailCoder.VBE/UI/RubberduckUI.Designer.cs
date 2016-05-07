@@ -1228,6 +1228,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Folder Delimiter:.
+        /// </summary>
+        public static string GeneralSettings_FolderDelimiterLabel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_FolderDelimiterLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Alt.
         /// </summary>
         public static string GeneralSettings_HotkeyAlt {
