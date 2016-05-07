@@ -366,6 +366,13 @@
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
     <Compile Include="Navigation\CodeExplorer\CodeExplorerErrorNodeViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodProc.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodSelectionValidation.cs" />
+    <Compile Include="Refactorings\ExtractMethod\IExtractedMethod.cs" />
+    <Compile Include="Refactorings\ExtractMethod\IExtractMethodModel.cs" />
+    <Compile Include="Refactorings\ExtractMethod\IExtractMethodProc.cs" />
+    <Compile Include="Refactorings\ExtractMethod\IExtractMethodSelectionValidation.cs" />
     <Compile Include="Settings\RubberduckHotkey.cs" />
     <Compile Include="UI\About\AboutControl.xaml.cs">
       <DependentUpon>AboutControl.xaml</DependentUpon>

@@ -5,18 +5,19 @@ using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
-    public class ExtractMethodModel
+    public class ExtractMethodModel : IExtractMethodModel
     {
-        public ExtractMethodModel(VBE vbe, IEnumerable<Declaration> declarations, QualifiedSelection selection)
+        private const string NEW_METHOD = "NewMethod";
+        public ExtractMethodModel(IEnumerable<Declaration> declarations, QualifiedSelection selection, string selectedCode)
         {
             var items = declarations.ToList();
-
             _sourceMember = items.FindSelectedDeclaration(selection, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
             if (_sourceMember == null)
             {
@@ -25,8 +26,9 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             _extractedMethod = new ExtractedMethod();
 
+
             _selection = selection;
-            _selectedCode = vbe.ActiveCodePane.CodeModule.GetLines(selection.Selection);
+            _selectedCode = selectedCode;
 
             var inScopeDeclarations = items.Where(item => item.ParentScope == _sourceMember.Scope).ToList();
 
@@ -69,7 +71,22 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             _input = input.Where(declaration => !output.Contains(declaration))
                 .Select(declaration =>
-                    new ExtractedParameter(declaration.AsTypeName, ExtractedParameter.PassedBy.ByVal, declaration.IdentifierName));
+                    new ExtractedParameter(declaration.AsTypeName, ExtractedParameter.PassedBy.ByRef, declaration.IdentifierName));
+            var newMethodName = NEW_METHOD;
+
+            var newMethodInc = 0;
+            while (declarations.FirstOrDefault(d =>
+                DeclarationExtensions.ProcedureTypes.Contains(d.DeclarationType)
+                && d.IdentifierName.Equals(newMethodName)) != null)
+            {
+                newMethodInc++;
+                newMethodName = NEW_METHOD + newMethodInc;
+            }
+            _extractedMethod.MethodName = newMethodName;
+            _extractedMethod.ReturnValue = null;
+            _extractedMethod.Accessibility = Accessibility.Private;
+            _extractedMethod.SetReturnValue = false;
+            _extractedMethod.Parameters = _output.Union(_input).ToList();
         }
 
         private readonly Declaration _sourceMember;
@@ -82,27 +99,19 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public string SelectedCode { get { return _selectedCode; } }
 
         private readonly List<Declaration> _locals;
-        public IEnumerable<Declaration> Locals { get {return _locals;} }
+        public IEnumerable<Declaration> Locals { get { return _locals; } }
 
         private readonly IEnumerable<ExtractedParameter> _input;
         public IEnumerable<ExtractedParameter> Inputs { get { return _input; } }
 
         private readonly IEnumerable<ExtractedParameter> _output;
-        public IEnumerable<ExtractedParameter> Outputs { get {return _output; } }
+        public IEnumerable<ExtractedParameter> Outputs { get { return _output; } }
 
         private readonly List<Declaration> _declarationsToMove;
         public IEnumerable<Declaration> DeclarationsToMove { get { return _declarationsToMove; } }
 
-        private readonly ExtractedMethod _extractedMethod;
-        public ExtractedMethod Method { get { return _extractedMethod; } }
+        private readonly IExtractedMethod _extractedMethod;
+        public IExtractedMethod Method { get { return _extractedMethod; } }
 
-        public class ExtractedMethod
-        {
-            public string MethodName { get; set; }
-            public Accessibility Accessibility { get; set; }
-            public bool SetReturnValue { get; set; }
-            public ExtractedParameter ReturnValue { get; set; }
-            public IEnumerable<ExtractedParameter> Parameters { get; set; }
-        }
     }
 }
