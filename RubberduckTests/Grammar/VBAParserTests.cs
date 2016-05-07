@@ -96,6 +96,30 @@ END";
         }
 
         [TestMethod]
+        public void TestEmptyRemComment()
+        {
+            string code = @"Rem";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//remComment");
+        }
+
+        [TestMethod]
+        public void TestOneCharRemComment()
+        {
+            string code = @"Rem a";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//remComment");
+        }
+
+        [TestMethod]
+        public void TestCommentThatLooksLikeAnnotation()
+        {
+            string code = @"'@param foo: the value of something";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//comment");
+        }
+
+        [TestMethod]
         public void TestOneCharComment()
         {
             string code = @"'a";

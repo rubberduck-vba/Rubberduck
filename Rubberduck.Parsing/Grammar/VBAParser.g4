@@ -21,7 +21,7 @@ parser grammar VBAParser;
 
 options { tokenVocab = VBALexer; }
 
-startRule : module EOF;
+startRule : module;
 
 module : 
 	whiteSpace?
@@ -31,7 +31,6 @@ module :
 	moduleAttributes? endOfStatement
 	moduleDeclarations? endOfStatement
 	moduleBody? endOfStatement
-	whiteSpace?
 ;
 
 moduleHeader : VERSION whiteSpace numberLiteral whiteSpace? CLASS? endOfStatement;
@@ -675,28 +674,31 @@ statementKeyword :
 ;
 
 endOfLine :
-    whiteSpace? (NEWLINE+ | comment | remComment) whiteSpace?
-    | whiteSpace? annotationList
+    whiteSpace? commentOrAnnotation?
 ;
 
-endOfStatement : (endOfLine | whiteSpace? COLON whiteSpace?)*;
+endOfStatement :
+    (((endOfLine NEWLINE whiteSpace?)|(whiteSpace? COLON whiteSpace?)))*
+    | endOfLine EOF
+;
 
-remComment : REMCOMMENT;
-
-comment : SINGLEQUOTE | COMMENT;
-
-annotationList : SINGLEQUOTE annotation+;
-
-annotation : AT annotationName annotationArgList?;
-
-annotationName : IDENTIFIER;
-
+' Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.
+commentOrAnnotation :
+    annotationList
+    | comment
+    | remComment
+;
+remComment : REM whiteSpace? commentBody;
+comment : SINGLEQUOTE commentBody;
+commentBody : (LINE_CONTINUATION | ~NEWLINE)*;
+annotationList : SINGLEQUOTE (AT annotation whiteSpace?)+;
+annotation : annotationName annotationArgList?;
+annotationName : unrestrictedIdentifier;
 annotationArgList : 
-	 whiteSpace annotationArg whiteSpace?
-	 | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+  whiteSpace?
-	 | whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN whiteSpace?
-	 | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN whiteSpace?;
-	
+	 whiteSpace annotationArg
+	 | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+
+	 | whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN
+	 | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN;
 annotationArg : valueStmt;
 
 whiteSpace : (WS | LINE_CONTINUATION)+;

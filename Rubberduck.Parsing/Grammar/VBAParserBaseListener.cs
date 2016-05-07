@@ -1945,6 +1945,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitVsXor([NotNull] VBAParser.VsXorContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.commentOrAnnotation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCommentOrAnnotation([NotNull] VBAParser.CommentOrAnnotationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.commentOrAnnotation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCommentOrAnnotation([NotNull] VBAParser.CommentOrAnnotationContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.goToStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -2086,6 +2099,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitEraseStmt([NotNull] VBAParser.EraseStmtContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.commentBody"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCommentBody([NotNull] VBAParser.CommentBodyContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.commentBody"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCommentBody([NotNull] VBAParser.CommentBodyContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.enumerationStmt"/>.
