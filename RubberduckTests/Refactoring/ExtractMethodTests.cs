@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -9,72 +12,38 @@ using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
+
     [TestClass]
-    public class ExtractMethodTests : VbeTestBase
+    public class ExtractedMethodTests
     {
-        [TestMethod]
-        public void ExtractMethod_PrivateFunction()
+        [TestClass]
+        public class when_a_method_is_defined : ExtractedMethodTests
         {
-            const string inputCode = @"
-Private Sub Foo()
-    Dim x As Integer
-    x = 1 + 2
-End Sub";
+            const string insertCode = "Call Bar( x )";
 
-            const string expectedCode = @"
-Private Sub Foo()
-    x = Bar()
-End Sub
+            [TestMethod]
+            public void should_return_string_correctly()
+            {
+                var method = new ExtractedMethod();
+                method.Accessibility = Accessibility.Private;
+                method.MethodName = "Bar";
+                method.ReturnValue = null;
+                var newParam = new ExtractedParameter("Integer", ExtractedParameter.PassedBy.ByVal, "x");
+                method.Parameters = new List<ExtractedParameter>() { newParam };
 
-Private Function Bar() As Integer
-    Dim x As Integer
-    x = 1 + 2
-    Bar = x
-End Function
+                var actual = method.AsString();
+                Debug.Print(method.AsString());
 
-";
-            
-            var builder = new MockVbeBuilder();
-            VBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var module = component.CodeModule;
+                Assert.AreEqual(insertCode, actual);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
-            parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(module.Parent), new Selection(4, 1, 4, 20));
-            var model = new ExtractMethodModel(vbe.Object, parser.State.AllDeclarations, qualifiedSelection);
-            model.Method.Accessibility = Accessibility.Private;
-            model.Method.MethodName = "Bar";
-            model.Method.ReturnValue = new ExtractedParameter("Integer", ExtractedParameter.PassedBy.ByVal, "x");
-            model.Method.Parameters = new List<ExtractedParameter>();
-
-            var factory = SetupFactory(model);
-
-            //act
-            var refactoring = new ExtractMethodRefactoring(vbe.Object, factory.Object);
-            refactoring.Refactor(qualifiedSelection);
-
-            //assert
-            Assert.AreEqual(expectedCode, module.Lines());
-        }
-
-        private static Mock<IRefactoringPresenterFactory<IExtractMethodPresenter>> SetupFactory(ExtractMethodModel model)
-        {
-            var presenter = new Mock<IExtractMethodPresenter>();
-            presenter.Setup(p => p.Show()).Returns(model);
-
-            var factory = new Mock<IRefactoringPresenterFactory<IExtractMethodPresenter>>();
-            factory.Setup(f => f.Create()).Returns(presenter.Object);
-            return factory;
+            }
         }
     }
+
 }

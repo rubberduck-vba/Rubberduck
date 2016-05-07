@@ -1,4 +1,5 @@
 using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
 
 namespace Rubberduck.VBEditor.Extensions
 {
@@ -107,6 +108,10 @@ namespace Rubberduck.VBEditor.Extensions
         {
             module.DeleteLines(selection.StartLine, selection.LineCount);
         }
+        public static void DeleteLines(this ICodeModuleWrapper module, Selection selection)
+        {
+            module.CodeModule.DeleteLines(selection);
+        }
 
         public static QualifiedSelection? GetSelection(this CodeModule module)
         {
@@ -120,12 +125,20 @@ namespace Rubberduck.VBEditor.Extensions
         {
             module.CodePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
         }
-
         public static void SetSelection(this CodeModule module, QualifiedSelection selection)
         {
-            module.CodePane.SetSelection(selection.Selection.StartLine, selection.Selection.StartColumn,
-                selection.Selection.EndLine, selection.Selection.EndColumn);
+            module.SetSelection(selection.Selection);
         }
+        public static void SetSelection(this ICodeModuleWrapper module, Selection selection)
+        {
+            module.CodeModule.SetSelection(selection);
+        }
+        public static void SetSelection(this ICodeModuleWrapper module, QualifiedSelection selection)
+        {
+            module.CodeModule.SetSelection(selection.Selection);
+        }
+
+
 
         public static string GetSelectedProcedureScope(this CodeModule module, Selection selection)
         {

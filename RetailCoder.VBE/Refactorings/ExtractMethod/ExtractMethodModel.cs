@@ -5,15 +5,16 @@ using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
-    public class ExtractMethodModel
+    public class ExtractMethodModel : IExtractMethodModel 
     {
-        public ExtractMethodModel(VBE vbe, IEnumerable<Declaration> declarations, QualifiedSelection selection)
+        public ExtractMethodModel(IEnumerable<Declaration> declarations, QualifiedSelection selection, string selectedCode)
         {
             var items = declarations.ToList();
 
@@ -25,8 +26,9 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             _extractedMethod = new ExtractedMethod();
 
+            
             _selection = selection;
-            _selectedCode = vbe.ActiveCodePane.CodeModule.GetLines(selection.Selection);
+            _selectedCode = selectedCode;
 
             var inScopeDeclarations = items.Where(item => item.ParentScope == _sourceMember.Scope).ToList();
 
@@ -69,7 +71,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             _input = input.Where(declaration => !output.Contains(declaration))
                 .Select(declaration =>
-                    new ExtractedParameter(declaration.AsTypeName, ExtractedParameter.PassedBy.ByVal, declaration.IdentifierName));
+                    new ExtractedParameter(declaration.AsTypeName, ExtractedParameter.PassedBy.ByRef, declaration.IdentifierName));
+
+            _extractedMethod.MethodName = "NewMethod";
+            _extractedMethod.ReturnValue = null;
+            _extractedMethod.Accessibility = Accessibility.Private;
+            _extractedMethod.SetReturnValue = false;
+            _extractedMethod.Parameters = _output.Union(_input).ToList();
         }
 
         private readonly Declaration _sourceMember;
@@ -93,16 +101,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
         private readonly List<Declaration> _declarationsToMove;
         public IEnumerable<Declaration> DeclarationsToMove { get { return _declarationsToMove; } }
 
-        private readonly ExtractedMethod _extractedMethod;
-        public ExtractedMethod Method { get { return _extractedMethod; } }
+        private readonly IExtractedMethod _extractedMethod;
+        public IExtractedMethod Method { get { return _extractedMethod; } }
 
-        public class ExtractedMethod
-        {
-            public string MethodName { get; set; }
-            public Accessibility Accessibility { get; set; }
-            public bool SetReturnValue { get; set; }
-            public ExtractedParameter ReturnValue { get; set; }
-            public IEnumerable<ExtractedParameter> Parameters { get; set; }
-        }
     }
 }

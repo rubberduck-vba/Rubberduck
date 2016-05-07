@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule
 {
-    public class CodeModuleWrapper
+    public class CodeModuleWrapper : ICodeModuleWrapper
     {
 
         private readonly CodeModule _codeModule;
@@ -18,7 +19,7 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule
         }
         public CodeModule CodeModule { get { return _codeModule; } }
 
-        void AddFromFile(string FileName)
+        public void AddFromFile(string FileName)
         {
             _codeModule.AddFromFile(FileName);
         }
@@ -66,11 +67,34 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule
             _codeModule.InsertLines(Line, String);
         }
         public string Name { get { return _codeModule.Name; } set { _codeModule.Name = value; } }
-        VBComponent Parent { get { return _codeModule.Parent; } }
+        public VBComponent Parent { get { return _codeModule.Parent; } }
         public void ReplaceLine(int Line, string String)
         {
             _codeModule.ReplaceLine(Line, String);
         }
-        VBE VBE { get { return _codeModule.VBE; } }
+        public VBE VBE { get { return _codeModule.VBE; } }
+
+
+        #region CodeModule extension methods
+        public string GetLines(Selection selection)
+        {
+            return _codeModule.GetLines(selection);
+        }
+        public QualifiedSelection? QualifiedSelection
+        {
+            get { return _codeModule.GetSelection(); }
+        }
+
+        public void DeleteLines(Selection selection)
+        {
+            _codeModule.DeleteLines(selection);
+        }
+        public void SetSelection(QualifiedSelection selection)
+        {
+            _codeModule.SetSelection(selection);
+        }
+        #endregion
+
+
     }
 }

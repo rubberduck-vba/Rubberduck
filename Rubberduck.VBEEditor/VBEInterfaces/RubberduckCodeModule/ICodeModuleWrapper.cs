@@ -4,6 +4,8 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule
 {
     public interface ICodeModuleWrapper
     {
+
+        CodeModule CodeModule { get; }
         void AddFromFile(string FileName);
         void AddFromString(string String);
         CodePane CodePane { get; }
@@ -22,6 +24,13 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule
         VBComponent Parent { get; }
         void ReplaceLine(int Line, string String);
         VBE VBE { get; }
+
+        #region CodeModule extension methods
+        string GetLines(Selection selection);
+        void DeleteLines(Selection selection);
+        QualifiedSelection? QualifiedSelection { get; }
+        void SetSelection(QualifiedSelection selection);
+        #endregion
     }
     
 }
