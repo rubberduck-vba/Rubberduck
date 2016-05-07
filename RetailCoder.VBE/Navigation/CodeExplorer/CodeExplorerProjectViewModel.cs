@@ -28,7 +28,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             _declaration = declaration;
             IsExpanded = true;
-            _folderTree = folderHelper.GetFolderTree();
+            _folderTree = folderHelper.GetFolderTree(declaration);
 
             try
             {
@@ -79,15 +79,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return true;
             }
 
-            foreach (var node in tree.Items.OfType<CodeExplorerCustomFolderViewModel>())
-            {
-                if (AddNodesToTree(node, items, grouping))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return tree.Items.OfType<CodeExplorerCustomFolderViewModel>().Any(node => AddNodesToTree(node, items, grouping));
         }
 
         private readonly BitmapImage _icon;

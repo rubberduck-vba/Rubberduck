@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -26,13 +25,16 @@ namespace Rubberduck.Navigation.Folders
             _configLoader = configLoader;
         }
 
-        public CodeExplorerCustomFolderViewModel GetFolderTree()
+        public CodeExplorerCustomFolderViewModel GetFolderTree(Declaration declaration = null)
         {
             var delimiter = GetDelimiter();
 
             var root = new CodeExplorerCustomFolderViewModel(string.Empty, string.Empty);
 
-            var items = _state.AllUserDeclarations.ToList();
+            var items = declaration == null
+                ? _state.AllUserDeclarations.ToList()
+                : _state.AllUserDeclarations.Where(d => d.ProjectId == declaration.ProjectId).ToList();
+
             var folders = items.Where(item => ComponentTypes.Contains(item.DeclarationType))
                 .Select(item => item.CustomFolder.Replace("\"", string.Empty))
                 .Distinct()
