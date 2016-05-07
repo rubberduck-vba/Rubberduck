@@ -546,10 +546,10 @@ End Function";
             Assert.AreEqual(expectedInterfaceCode, actualInterface, "Interface");
             var implementationModule1 = project.VBComponents.Item(1).CodeModule;
             string actualImplementation1 = implementationModule1.Lines();
-            //Assert.AreEqual(expectedImplementationCode1, actualImplementation1, "Implementation1");
+            Assert.AreEqual(expectedImplementationCode1, actualImplementation1, "Implementation1");
             var implementationModule2 = project.VBComponents.Item(2).CodeModule;
             string actualImplementation2 = implementationModule2.Lines();
-            //Assert.AreEqual(expectedImplementationCode2, actualImplementation2, "Implementation2");
+            Assert.AreEqual(expectedImplementationCode2, actualImplementation2, "Implementation2");
         }
 
         [TestMethod]

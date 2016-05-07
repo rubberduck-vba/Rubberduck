@@ -9,42 +9,40 @@ namespace Rubberduck.Refactorings.ExtractMethod
 {
     public interface IExtractMethodPresenter
     {
-        ExtractMethodModel Show();
+        bool Show(IExtractMethodModel model, IExtractMethodProc createProc);
     }
 
     public class ExtractMethodPresenter : IExtractMethodPresenter
     {
         private readonly IExtractMethodDialog _view;
-        private readonly ExtractMethodModel _model;
         private readonly IIndenter _indenter;
 
-        public ExtractMethodPresenter(IExtractMethodDialog view, ExtractMethodModel model, IIndenter indenter)
+        public ExtractMethodPresenter(IExtractMethodDialog view, IIndenter indenter)
         {
             _view = view;
-            _model = model;
             _indenter = indenter;
         }
 
-        public ExtractMethodModel Show()
+        public bool Show(IExtractMethodModel methodModel, IExtractMethodProc extractMethodProc)
         {
-            PrepareView();
+            PrepareView(methodModel,extractMethodProc);
 
             if (_view.ShowDialog() != DialogResult.OK)
             {
-                return null;
+                return false;
             }
 
-            return _model;
+            return true;
         }
 
-        private void PrepareView()
+        private void PrepareView(IExtractMethodModel extractedMethodModel, IExtractMethodProc extractMethodProc)
         {
-            _view.OldMethodName = _model.SourceMember.IdentifierName;
-            _view.MethodName = _model.SourceMember.IdentifierName + "_1";
-            _view.Inputs = _model.Inputs;
-            _view.Outputs = _model.Outputs;
+            _view.OldMethodName = extractedMethodModel.SourceMember.IdentifierName;
+            _view.MethodName = extractedMethodModel.SourceMember.IdentifierName + "_1";
+            _view.Inputs = extractedMethodModel.Inputs;
+            _view.Outputs = extractedMethodModel.Outputs;
             _view.Locals =
-                _model.Locals.Select(
+                extractedMethodModel.Locals.Select(
                     variable =>
                         new ExtractedParameter(variable.AsTypeName, ExtractedParameter.PassedBy.ByVal, variable.IdentifierName))
                     .ToList();
@@ -55,11 +53,9 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 .ToList();
 
             _view.ReturnValues = returnValues;
-            _view.ReturnValue = (_model.Outputs.Any() && !_model.Outputs.Skip(1).Any())
-                ? _model.Outputs.Single()
-                : returnValues.First();
 
-            _view.RefreshPreview += _view_RefreshPreview;
+            _view.RefreshPreview += (object sender, EventArgs e) => { GeneratePreview(extractedMethodModel, extractMethodProc); };
+
             _view.OnRefreshPreview();
         }
 
@@ -78,26 +74,18 @@ namespace Rubberduck.Refactorings.ExtractMethod
             Tokens.String
         };
 
-        private void _view_RefreshPreview(object sender, EventArgs e)
+        private void GeneratePreview(IExtractMethodModel extractMethodModel,IExtractMethodProc extractMethodProc )
         {
-            var hasReturnValue = _model.Method.ReturnValue != null && _model.Method.ReturnValue.Name != ExtractedParameter.None;
-            _view.CanSetReturnValue =
-                hasReturnValue && !ValueTypes.Contains(_model.Method.ReturnValue.TypeName);
-
-            GeneratePreview();
-        }
-
-        private void GeneratePreview()
-        {
-            _model.Method.MethodName = _view.MethodName;
-            _model.Method.Accessibility = _view.Accessibility;
-            _model.Method.Parameters = _view.Parameters;
-            _model.Method.ReturnValue = _view.ReturnValue;
-            _model.Method.SetReturnValue = _view.SetReturnValue;
-
-            var code = ExtractMethodRefactoring.GetExtractedMethod(_model).Split(new[]{Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+            extractMethodModel.Method.MethodName = _view.MethodName;
+            extractMethodModel.Method.Accessibility = _view.Accessibility;
+            extractMethodModel.Method.Parameters = _view.Parameters;
+            /*
+             * extractMethodModel.Method.ReturnValue = _view.ReturnValue;
+             * extractMethodModel.Method.SetReturnValue = _view.SetReturnValue;
+             */
+            var extractedMethod = extractMethodProc.createProc(extractMethodModel);
+            var code = extractedMethod.Split(new[]{Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
             _indenter.Indent(code, "Preview", false);
-
             _view.Preview = string.Join(Environment.NewLine, code);
         }
     }

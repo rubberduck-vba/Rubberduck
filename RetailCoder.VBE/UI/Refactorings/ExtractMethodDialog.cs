@@ -37,8 +37,6 @@ namespace Rubberduck.UI.Refactorings
             TitleLabel.Text = RubberduckUI.ExtractMethod_TitleText;
             InstructionsLabel.Text = RubberduckUI.ExtractMethod_InstructionsText;
             NameLabel.Text = RubberduckUI.NameLabelText;
-            ReturnLabel.Text = RubberduckUI.ExtractMethod_ReturnLabel;
-            SetReturnValueCheck.Text = RubberduckUI.ExtractMethod_SetBoxLabel;
             AccessibilityLabel.Text = RubberduckUI.ExtractMethod_AccessibilityLabel;
             ParametersLabel.Text = RubberduckUI.ExtractMethod_ParametersLabel;
             PreviewLabel.Text = RubberduckUI.ExtractMethod_PreviewLabel;
@@ -82,10 +80,8 @@ namespace Rubberduck.UI.Refactorings
 
         private void RegisterViewEvents()
         {
-            SetReturnValueCheck.CheckedChanged += SetReturnValueCheck_CheckedChanged;
             MethodNameBox.TextChanged += MethodNameBox_TextChanged;
             MethodAccessibilityCombo.SelectedIndexChanged += MethodAccessibilityCombo_SelectedIndexChanged;
-            MethodReturnValueCombo.SelectedIndexChanged += MethodReturnValueCombo_SelectedIndexChanged;
         }
 
         public event EventHandler RefreshPreview;
@@ -106,25 +102,7 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public bool CanSetReturnValue
-        {
-            get { return SetReturnValueCheck.Enabled; }
-            set
-            {
-                SetReturnValueCheck.Enabled = value;
-                SetReturnValueCheck.Checked = value;
-            }
-        }
 
-        private void SetReturnValueCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            SetReturnValue = SetReturnValueCheck.Checked;
-        }
-
-        private void MethodReturnValueCombo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ReturnValue = (ExtractedParameter) MethodReturnValueCombo.SelectedItem;
-        }
 
         private Accessibility _accessibility;
         public Accessibility Accessibility
@@ -190,24 +168,10 @@ namespace Rubberduck.UI.Refactorings
             {
                 _returnValues = new BindingList<ExtractedParameter>(value.ToList());
                 var items = _returnValues.ToArray();
-                MethodReturnValueCombo.Items.AddRange(items);
-                MethodReturnValueCombo.DisplayMember = "Name";
             }
         }
 
         private ExtractedParameter _returnValue;
-        public ExtractedParameter ReturnValue
-        {
-            get { return _returnValue; }
-            set
-            {
-                _returnValue = value;
-                MethodReturnValueCombo.Text = value.Name;
-                Parameters = Inputs.Where(input => input.Name != _returnValue.Name)
-                                   .Union(Outputs.Where(output => output.Name != _returnValue.Name));
-                OnRefreshPreview();
-            }
-        }
 
         public IEnumerable<ExtractedParameter> Inputs { get; set; }
         public IEnumerable<ExtractedParameter> Outputs { get; set; }
@@ -237,5 +201,6 @@ namespace Rubberduck.UI.Refactorings
 
             InvalidNameValidationIcon.Visible = !OkButton.Enabled;
         }
+
     }
 }

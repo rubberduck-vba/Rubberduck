@@ -7,6 +7,9 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.SmartIndenter;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
+using System;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -30,18 +33,19 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
-            if (!selection.HasValue)
+            var qualifiedSelection = Vbe.ActiveCodePane.GetQualifiedSelection();
+            if (!qualifiedSelection.HasValue)
             {
                 return false;
             }
+            var selection = qualifiedSelection.Value.Selection;
 
-            var code = Vbe.ActiveCodePane.CodeModule.Lines[selection.Value.Selection.StartLine, selection.Value.Selection.LineCount];
+            var code = Vbe.ActiveCodePane.CodeModule.Lines[selection.StartLine, selection.LineCount];
 
-            var parentProcedure = _state.AllDeclarations.FindSelectedDeclaration(selection.Value, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
+            var parentProcedure = _state.AllDeclarations.FindSelectedDeclaration(qualifiedSelection.Value, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
             var canExecute = parentProcedure != null
-                && selection.Value.Selection.StartColumn != selection.Value.Selection.EndColumn
-                && selection.Value.Selection.LineCount > 0
+                && selection.StartColumn != selection.EndColumn
+                && selection.LineCount > 0
                 && !string.IsNullOrWhiteSpace(code);
 
             Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
@@ -50,8 +54,23 @@ namespace Rubberduck.UI.Command.Refactorings
 
         public override void Execute(object parameter)
         {
-            var factory = new ExtractMethodPresenterFactory(Vbe, _state.AllDeclarations, _indenter);
-            var refactoring = new ExtractMethodRefactoring(Vbe, factory);
+            var declarations = _state.AllDeclarations;
+            ICodeModuleWrapper codeModuleWrapper = new CodeModuleWrapper(Vbe.ActiveCodePane.CodeModule);
+            var qualifiedSelection = Vbe.ActiveCodePane.GetQualifiedSelection();
+
+            Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel = ( qs, code) =>
+            {
+                if (qs == null)
+                {
+                    return null;
+                }
+
+                return new ExtractMethodModel(declarations, qs.Value, code);
+            };
+
+            var createProc = new ExtractMethodProc();
+            Func<IExtractMethodModel, string> createProcFunc = (model) => { return createProc.createProc(model); };
+            var refactoring = new ExtractMethodRefactoring(codeModuleWrapper,createMethodModel, createProc);
             refactoring.InvalidSelection += HandleInvalidSelection;
             refactoring.Refactor();
         }
