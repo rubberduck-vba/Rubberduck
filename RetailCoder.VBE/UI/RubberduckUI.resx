@@ -1521,4 +1521,10 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
     <value>Folder Delimiter:</value>
   </data>
+  <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
+    <value>Period (.)</value>
+  </data>
+  <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
+    <value>Slash (/)</value>
+  </data>
 </root>

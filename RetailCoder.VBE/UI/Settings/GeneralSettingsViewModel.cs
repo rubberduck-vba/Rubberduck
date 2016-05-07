@@ -4,6 +4,12 @@ using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
 {
+    public enum DelimiterOptions
+    {
+        Period = 46,
+        Slash = 47
+    }
+
     public class GeneralSettingsViewModel : ViewModelBase, ISettingsViewModel
     {
         public GeneralSettingsViewModel(Configuration config)
@@ -24,7 +30,7 @@ namespace Rubberduck.UI.Settings
             AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
             AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
 
-            Delimiter = config.UserSettings.GeneralSettings.Delimiter;
+            Delimiter = (DelimiterOptions)config.UserSettings.GeneralSettings.Delimiter;
         }
 
         public ObservableCollection<DisplayLanguageSetting> Languages { get; set; } 
@@ -85,8 +91,8 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private char _delimiter;
-        public char Delimiter
+        private DelimiterOptions _delimiter;
+        public DelimiterOptions Delimiter
         {
             get { return _delimiter; }
             set
@@ -105,7 +111,7 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.GeneralSettings.HotkeySettings = Hotkeys.ToArray();
             config.UserSettings.GeneralSettings.AutoSaveEnabled = AutoSaveEnabled;
             config.UserSettings.GeneralSettings.AutoSavePeriod = AutoSavePeriod;
-            config.UserSettings.GeneralSettings.Delimiter = Delimiter;
+            config.UserSettings.GeneralSettings.Delimiter = (char)Delimiter;
         }
 
         public void SetToDefaults(Configuration config)
@@ -114,7 +120,7 @@ namespace Rubberduck.UI.Settings
             Hotkeys = new ObservableCollection<HotkeySetting>(config.UserSettings.GeneralSettings.HotkeySettings);
             AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
             AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
-            Delimiter = config.UserSettings.GeneralSettings.Delimiter;
+            Delimiter = (DelimiterOptions)config.UserSettings.GeneralSettings.Delimiter;
         }
     }
 }

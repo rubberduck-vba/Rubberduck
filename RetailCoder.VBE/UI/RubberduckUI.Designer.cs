@@ -1318,6 +1318,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Period (.).
+        /// </summary>
+        public static string GeneralSettings_PeriodDelimiter {
+            get {
+                return ResourceManager.GetString("GeneralSettings_PeriodDelimiter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slash (/).
+        /// </summary>
+        public static string GeneralSettings_SlashDelimiter {
+            get {
+                return ResourceManager.GetString("GeneralSettings_SlashDelimiter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Go.
         /// </summary>
         public static string Go {

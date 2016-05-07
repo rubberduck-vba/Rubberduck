@@ -660,10 +660,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.sv.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Settings\Converters\AssertModeValueToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\DelimiterToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleValueTextToEnumValueConverter.cs" />
     <Compile Include="UI\Settings\Converters\AssertModeToTextConverter.cs" />
-    <Compile Include="UI\Settings\Converters\AssertModeValueToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\DelimiterValueToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\BindingModeValueToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\BindingModeToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\EndOfLineCommentStyleToVisibilityConverter.cs" />
