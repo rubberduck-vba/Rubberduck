@@ -682,7 +682,7 @@ endOfStatement :
     | endOfLine EOF
 ;
 
-' Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.
+// Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.
 commentOrAnnotation :
     annotationList
     | comment
