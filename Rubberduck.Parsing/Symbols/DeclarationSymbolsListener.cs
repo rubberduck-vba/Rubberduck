@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime.Misc;
+using Microsoft.Vbe.Interop.Forms;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -141,14 +142,16 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-            if (((dynamic)designer).Controls == null)
+            if (!(designer is UserForm))
             {
                 return;
             }
-
-            // using dynamic typing here, because not only MSForms could have a Controls collection (e.g. MS-Access forms are 'document' modules).
-            foreach (var control in ((dynamic)designer).Controls)
+            // "using dynamic typing here, because not only MSForms could have a Controls collection (e.g. MS-Access forms are 'document' modules)."
+            // Note: Dynamic doesn't seem to support explicit interfaces that's why we cast it anyway, MS Access forms apparently have to be treated specially anyway.
+            var userForm = (UserForm)designer;
+            foreach (Control control in userForm.Controls)
             {
+                // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
                 var declaration = new Declaration(_qualifiedName.QualifyMemberName(control.Name), _parentDeclaration, _currentScopeDeclaration, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home, false);
                 OnNewDeclaration(declaration);
             }

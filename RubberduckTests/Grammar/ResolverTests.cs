@@ -1446,6 +1446,8 @@ End Sub
             Assert.AreEqual(1, usages.Count());
         }
 
+        // Ignored because handling forms/hierarchies is an open issue.
+        [Ignore]
         [TestMethod]
         public void GivenControlDeclaration_ResolvesUsageInCodeBehind()
         {
