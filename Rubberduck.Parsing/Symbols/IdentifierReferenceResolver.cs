@@ -154,7 +154,7 @@ namespace Rubberduck.Parsing.Symbols
             var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, expression);
             if (boundExpression != null)
             {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, identifier, declaration) => CreateReference(context, identifier, declaration, RubberduckParserState.CreateBindingSelection(context, boundExpression.Context)));
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, identifier, declaration) => CreateReference(context, identifier, declaration, RubberduckParserState.CreateBindingSelection(context, exprCtx)));
             }
         }
 
@@ -447,9 +447,9 @@ namespace Rubberduck.Parsing.Symbols
             if (firstExpression != null)
             {
                 // each iteration counts as an assignment
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context), true));
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], exprCtx), true));
                 // each iteration also counts as a plain usage
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context)));
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], exprCtx)));
             }
             for (int exprIndex = 1; exprIndex < context.valueStmt().Count; exprIndex++)
             {
@@ -463,9 +463,9 @@ namespace Rubberduck.Parsing.Symbols
             if (firstExpression != null)
             {
                 // each iteration counts as an assignment
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context), true));
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], exprCtx), true));
                 // each iteration also counts as a plain usage
-                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], firstExpression.Context)));
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], exprCtx)));
             }
 
             for (int exprIndex = 1; exprIndex < context.valueStmt().Count; exprIndex++)
