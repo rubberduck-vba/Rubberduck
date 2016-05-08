@@ -47,19 +47,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitSeekStmt([NotNull] VBAParser.SeekStmtContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.deleteSettingStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterDeleteSettingStmt([NotNull] VBAParser.DeleteSettingStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.deleteSettingStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitDeleteSettingStmt([NotNull] VBAParser.DeleteSettingStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.fileNumber"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -84,32 +71,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitConstStmt([NotNull] VBAParser.ConstStmtContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.eCS_MemberProcedureCall"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterECS_MemberProcedureCall([NotNull] VBAParser.ECS_MemberProcedureCallContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.eCS_MemberProcedureCall"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitECS_MemberProcedureCall([NotNull] VBAParser.ECS_MemberProcedureCallContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.setattrStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSetattrStmt([NotNull] VBAParser.SetattrStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.setattrStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSetattrStmt([NotNull] VBAParser.SetattrStmtContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.argDefaultValue"/>.
@@ -162,6 +123,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitTypeStmt_Element([NotNull] VBAParser.TypeStmt_ElementContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.ECS_ProcedureCall"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.ECS_ProcedureCall"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.type"/>.
@@ -294,19 +268,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitRemComment([NotNull] VBAParser.RemCommentContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.timeStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterTimeStmt([NotNull] VBAParser.TimeStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.timeStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitTimeStmt([NotNull] VBAParser.TimeStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.block"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -372,17 +333,17 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitFieldLength([NotNull] VBAParser.FieldLengthContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.eCS_ProcedureCall"/>.
+	/// Enter a parse tree produced by <see cref="VBAParser.ECS_MemberCall"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context) { }
+	public virtual void EnterECS_MemberCall([NotNull] VBAParser.ECS_MemberCallContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.eCS_ProcedureCall"/>.
+	/// Exit a parse tree produced by <see cref="VBAParser.ECS_MemberCall"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context) { }
+	public virtual void ExitECS_MemberCall([NotNull] VBAParser.ECS_MemberCallContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.identifier"/>.
@@ -593,19 +554,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitICS_B_MemberProcedureCall([NotNull] VBAParser.ICS_B_MemberProcedureCallContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.filecopyStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterFilecopyStmt([NotNull] VBAParser.FilecopyStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.filecopyStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitFilecopyStmt([NotNull] VBAParser.FilecopyStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.outputList"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -710,19 +658,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitArgCall([NotNull] VBAParser.ArgCallContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.nameStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterNameStmt([NotNull] VBAParser.NameStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.nameStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitNameStmt([NotNull] VBAParser.NameStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.annotationName"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -760,19 +695,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitConstSubStmt([NotNull] VBAParser.ConstSubStmtContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.dateStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterDateStmt([NotNull] VBAParser.DateStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.dateStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitDateStmt([NotNull] VBAParser.DateStmtContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.endOfStatement"/>.
@@ -814,19 +736,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitRedimStmt([NotNull] VBAParser.RedimStmtContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.saveSettingStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSaveSettingStmt([NotNull] VBAParser.SaveSettingStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.saveSettingStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSaveSettingStmt([NotNull] VBAParser.SaveSettingStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.literal"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -838,6 +747,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitLiteral([NotNull] VBAParser.LiteralContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.iCS_S_ProcedureOrArrayCallUnrestricted"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterICS_S_ProcedureOrArrayCallUnrestricted([NotNull] VBAParser.ICS_S_ProcedureOrArrayCallUnrestrictedContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.iCS_S_ProcedureOrArrayCallUnrestricted"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitICS_S_ProcedureOrArrayCallUnrestricted([NotNull] VBAParser.ICS_S_ProcedureOrArrayCallUnrestrictedContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.asTypeClause"/>.
@@ -931,19 +853,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitEventStmt([NotNull] VBAParser.EventStmtContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.mkdirStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterMkdirStmt([NotNull] VBAParser.MkdirStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.mkdirStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitMkdirStmt([NotNull] VBAParser.MkdirStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.lockStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -968,19 +877,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitResumeStmt([NotNull] VBAParser.ResumeStmtContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.sendkeysStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSendkeysStmt([NotNull] VBAParser.SendkeysStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.sendkeysStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSendkeysStmt([NotNull] VBAParser.SendkeysStmtContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.optionExplicitStmt"/>.
@@ -1022,19 +918,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitVsNot([NotNull] VBAParser.VsNotContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.chdriveStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterChdriveStmt([NotNull] VBAParser.ChdriveStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.chdriveStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitChdriveStmt([NotNull] VBAParser.ChdriveStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.deftypeStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -1059,19 +942,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitEndOfLine([NotNull] VBAParser.EndOfLineContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.randomizeStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterRandomizeStmt([NotNull] VBAParser.RandomizeStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.randomizeStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitRandomizeStmt([NotNull] VBAParser.RandomizeStmtContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.startRule"/>.
@@ -1113,19 +983,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitVsAnd([NotNull] VBAParser.VsAndContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.endStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterEndStmt([NotNull] VBAParser.EndStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.endStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitEndStmt([NotNull] VBAParser.EndStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.annotationList"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -1152,19 +1009,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitBlockIfThenElse([NotNull] VBAParser.BlockIfThenElseContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.savepictureStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSavepictureStmt([NotNull] VBAParser.SavepictureStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.savepictureStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSavepictureStmt([NotNull] VBAParser.SavepictureStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.vsAmp"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -1176,6 +1020,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVsAmp([NotNull] VBAParser.VsAmpContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.subroutineName"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSubroutineName([NotNull] VBAParser.SubroutineNameContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.subroutineName"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSubroutineName([NotNull] VBAParser.SubroutineNameContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.forNextStmt"/>.
@@ -1386,19 +1243,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitVsRelational([NotNull] VBAParser.VsRelationalContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.chdirStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterChdirStmt([NotNull] VBAParser.ChdirStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.chdirStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitChdirStmt([NotNull] VBAParser.ChdirStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.lineInputStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -1436,6 +1280,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitInlineIfThenElse([NotNull] VBAParser.InlineIfThenElseContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStatementKeyword([NotNull] VBAParser.StatementKeywordContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStatementKeyword([NotNull] VBAParser.StatementKeywordContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.iCS_S_MemberCall"/>.
@@ -1529,19 +1386,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitAnnotationArg([NotNull] VBAParser.AnnotationArgContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.unloadStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterUnloadStmt([NotNull] VBAParser.UnloadStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.unloadStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitUnloadStmt([NotNull] VBAParser.UnloadStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.vsAssign"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -1594,17 +1438,17 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitVisibility([NotNull] VBAParser.VisibilityContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.beepStmt"/>.
+	/// Enter a parse tree produced by <see cref="VBAParser.attributeValue"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBeepStmt([NotNull] VBAParser.BeepStmtContext context) { }
+	public virtual void EnterAttributeValue([NotNull] VBAParser.AttributeValueContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.beepStmt"/>.
+	/// Exit a parse tree produced by <see cref="VBAParser.attributeValue"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBeepStmt([NotNull] VBAParser.BeepStmtContext context) { }
+	public virtual void ExitAttributeValue([NotNull] VBAParser.AttributeValueContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.vsTypeOf"/>.
@@ -1711,19 +1555,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitVsMod([NotNull] VBAParser.VsModContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.killStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterKillStmt([NotNull] VBAParser.KillStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.killStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitKillStmt([NotNull] VBAParser.KillStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.vsOr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -1735,19 +1566,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVsOr([NotNull] VBAParser.VsOrContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.rmdirStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterRmdirStmt([NotNull] VBAParser.RmdirStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.rmdirStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitRmdirStmt([NotNull] VBAParser.RmdirStmtContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.variableSubStmt"/>.
@@ -1774,19 +1592,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCaseCondElse([NotNull] VBAParser.CaseCondElseContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.appactivateStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAppactivateStmt([NotNull] VBAParser.AppactivateStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.appactivateStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAppactivateStmt([NotNull] VBAParser.AppactivateStmtContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.getStmt"/>.
@@ -1906,19 +1711,6 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitPropertyGetStmt([NotNull] VBAParser.PropertyGetStmtContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.loadStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterLoadStmt([NotNull] VBAParser.LoadStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.loadStmt"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitLoadStmt([NotNull] VBAParser.LoadStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.baseType"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -1956,6 +1748,32 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitOpenStmt([NotNull] VBAParser.OpenStmtContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.markerKeyword"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMarkerKeyword([NotNull] VBAParser.MarkerKeywordContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.markerKeyword"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMarkerKeyword([NotNull] VBAParser.MarkerKeywordContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.attributeName"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAttributeName([NotNull] VBAParser.AttributeNameContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.attributeName"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAttributeName([NotNull] VBAParser.AttributeNameContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.ifBlockStmt"/>.
@@ -2049,6 +1867,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitSC_Case([NotNull] VBAParser.SC_CaseContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.functionName"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFunctionName([NotNull] VBAParser.FunctionNameContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.functionName"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFunctionName([NotNull] VBAParser.FunctionNameContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.variableListStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -2060,6 +1891,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.iCS_S_VariableOrProcedureCallUnrestricted"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterICS_S_VariableOrProcedureCallUnrestricted([NotNull] VBAParser.ICS_S_VariableOrProcedureCallUnrestrictedContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.iCS_S_VariableOrProcedureCallUnrestricted"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitICS_S_VariableOrProcedureCallUnrestricted([NotNull] VBAParser.ICS_S_VariableOrProcedureCallUnrestrictedContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.iCS_B_ProcedureCall"/>.
@@ -2099,6 +1943,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVsXor([NotNull] VBAParser.VsXorContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.commentOrAnnotation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCommentOrAnnotation([NotNull] VBAParser.CommentOrAnnotationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.commentOrAnnotation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCommentOrAnnotation([NotNull] VBAParser.CommentOrAnnotationContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.goToStmt"/>.
@@ -2244,6 +2101,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitEraseStmt([NotNull] VBAParser.EraseStmtContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.commentBody"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCommentBody([NotNull] VBAParser.CommentBodyContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.commentBody"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCommentBody([NotNull] VBAParser.CommentBodyContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.enumerationStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -2307,6 +2177,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitModuleBodyElement([NotNull] VBAParser.ModuleBodyElementContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.unrestrictedIdentifier"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterUnrestrictedIdentifier([NotNull] VBAParser.UnrestrictedIdentifierContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.unrestrictedIdentifier"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitUnrestrictedIdentifier([NotNull] VBAParser.UnrestrictedIdentifierContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.vsMid"/>.

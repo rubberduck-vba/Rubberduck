@@ -25,15 +25,15 @@ namespace Rubberduck.Inspections
 
             string procedure;
             VBAParser.ArgsCallContext arguments;
-            if (context.eCS_MemberProcedureCall() != null)
+            if (context.explicitCallStmtExpression() is VBAParser.ECS_MemberCallContext)
             {
-                procedure = context.eCS_MemberProcedureCall().identifier().GetText();
-                arguments = context.eCS_MemberProcedureCall().argsCall();
+                procedure = ((VBAParser.ECS_MemberCallContext)context.explicitCallStmtExpression()).identifier().GetText();
+                arguments = ((VBAParser.ECS_MemberCallContext)context.explicitCallStmtExpression()).argsCall();
             }
             else
             {
-                procedure = context.eCS_ProcedureCall().identifier().GetText();
-                arguments = context.eCS_ProcedureCall().argsCall();
+                procedure = ((VBAParser.ECS_ProcedureCallContext)context.explicitCallStmtExpression()).identifier().GetText();
+                arguments = ((VBAParser.ECS_ProcedureCallContext)context.explicitCallStmtExpression()).argsCall();
             }
 
             module.DeleteLines(selection.StartLine, selection.LineCount);

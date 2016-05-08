@@ -272,6 +272,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export....
+        /// </summary>
+        public static string CodeExplorer_Export {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find All Implementations....
         /// </summary>
         public static string CodeExplorer_FindAllImplementationsText {
@@ -286,6 +295,15 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_FindAllReferencesText {
             get {
                 return ResourceManager.GetString("CodeExplorer_FindAllReferencesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import....
+        /// </summary>
+        public static string CodeExplorer_Import {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Import", resourceCulture);
             }
         }
         
@@ -326,11 +344,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Print....
+        /// </summary>
+        public static string CodeExplorer_Print {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Print", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to R&amp;efresh.
         /// </summary>
         public static string CodeExplorer_Refresh {
             get {
                 return ResourceManager.GetString("CodeExplorer_Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove....
+        /// </summary>
+        public static string CodeExplorer_Remove {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Remove", resourceCulture);
             }
         }
         

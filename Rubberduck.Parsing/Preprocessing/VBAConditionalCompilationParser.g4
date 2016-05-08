@@ -6,11 +6,12 @@ compilationUnit : ccBlock EOF;
 
 ccBlock : (ccConst | ccIfBlock | logicalLine)*;
 
-ccConst : WS* HASHCONST WS+ ccVarLhs WS+ EQ WS+ ccExpression ccEol;
+ccConst : HASHCONST ccVarLhs WS+ EQ WS+ ccExpression ccEol;
 
-logicalLine : extendedLine+;
-
-extendedLine : (LINE_CONTINUATION | ~(HASHCONST | HASHIF | HASHELSEIF | HASHELSE | HASHENDIF))+ NEWLINE?;
+logicalLine :
+    ~(HASHCONST | HASHIF | HASHELSEIF | HASHELSE | HASHENDIF)+
+    | NEWLINE
+;
 
 ccVarLhs : name;
 
@@ -36,19 +37,19 @@ ccExpression :
 
 ccIfBlock : ccIf ccBlock ccElseIfBlock* ccElseBlock? ccEndIf;
 
-ccIf : HASHIF WS+ ccExpression WS+ THEN ccEol;
+ccIf : HASHIF ccExpression WS+ THEN WS* ccEol;
 
 ccElseIfBlock : ccElseIf ccBlock;
 
-ccElseIf : HASHELSEIF WS+ ccExpression WS+ THEN ccEol;
+ccElseIf : HASHELSEIF ccExpression WS+ THEN WS* ccEol;
 
 ccElseBlock : ccElse ccBlock;
 
-ccElse : HASHELSE ccEol;
+ccElse : HASHELSE;
 
-ccEndIf : HASHENDIF ccEol;
+ccEndIf : HASHENDIF;
 
-ccEol : (SINGLEQUOTE ~NEWLINE*)? NEWLINE?;
+ccEol : comment? (NEWLINE | EOF);
 
 intrinsicFunction : intrinsicFunctionName LPAREN WS* ccExpression WS* RPAREN;
 
@@ -78,3 +79,5 @@ name : IDENTIFIER typeHint?;
 typeHint : PERCENT | AMPERSAND | POW | EXCLAMATIONPOINT | HASH | AT | DOLLAR;
 
 literal : DATELITERAL | HEXLITERAL | OCTLITERAL | FLOATLITERAL | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL | EMPTY;
+
+comment: SINGLEQUOTE (LINE_CONTINUATION | ~NEWLINE)*;

@@ -3,7 +3,7 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
-    public interface IRemoveParametersView : IDialogView
+    public interface IRemoveParametersDialog : IDialogView
     {
         List<Parameter> Parameters { get; set; }
         void InitializeParameterGrid();

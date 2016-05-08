@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Vbe.Interop;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.SmartIndenter
 {
@@ -106,7 +106,7 @@ namespace Rubberduck.SmartIndenter
         private static bool HasCode(CodeModule module, ref int lineCount)
         {
             lineCount += module.CountOfLines;
-            for (var i = 0; i < module.CountOfLines; i++)
+            for (var i = 1; i <= module.CountOfLines; i++)
             {
                 if (!string.IsNullOrWhiteSpace(module.Lines[i, 1]))
                 {
@@ -118,7 +118,7 @@ namespace Rubberduck.SmartIndenter
 
         private static bool HasCode(CodeModule module)
         {
-            for (var i = 0; i < module.CountOfLines; i++)
+            for (var i = 1; i <= module.CountOfLines; i++)
             {
                 if (!string.IsNullOrWhiteSpace(module.Lines[i, 1]))
                 {

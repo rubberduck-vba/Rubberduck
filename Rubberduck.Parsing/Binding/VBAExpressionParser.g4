@@ -21,7 +21,10 @@ parser grammar VBAExpressionParser;
 
 options { tokenVocab = VBALexer; }
 
-startRule : expression EOF;
+startRule : (expression | callStmt) EOF;
+
+// Call statement is here because its syntax is slightly different than a normal expression
+callStmt : (memberAccessExpression | simpleNameExpression | withExpression) (whiteSpace argumentList)?;
 
 // 5.1 Module Body Structure
 unrestrictedName : name | reservedIdentifierName;
@@ -30,9 +33,9 @@ name : untypedName | typedName;
 reservedIdentifierName : reservedUntypedName | reservedTypedName;
 reservedUntypedName : reservedIdentifier;
 reservedTypedName : reservedIdentifier typeSuffix;
-untypedName : IDENTIFIER | FOREIGNNAME | reservedProcedureName | specialForm | optionCompareArgument | OBJECT;
+untypedName : IDENTIFIER | FOREIGNNAME | reservedProcedureName | specialForm | optionCompareArgument | OBJECT | uncategorizedKeyword | ERROR;
 typedName : typedNameValue typeSuffix;
-typedNameValue : IDENTIFIER | reservedProcedureName | specialForm | optionCompareArgument | OBJECT;
+typedNameValue : IDENTIFIER | reservedProcedureName | specialForm | optionCompareArgument | OBJECT | uncategorizedKeyword | ERROR;
 typeSuffix : PERCENT | AMPERSAND | POW | EXCLAMATIONPOINT | HASH | AT | DOLLAR;
 
 optionCompareArgument : BINARY | TEXT | DATABASE;
@@ -350,6 +353,13 @@ reservedTypeIdentifier :
     | STRING
     | VARIANT
 ;
+
+uncategorizedKeyword : 
+	ALIAS | ATTRIBUTE | 
+	BEGIN | CLASS | COLLECTION |
+	LIB |  ON | TAB | VERSION
+;
+
 literalIdentifier : booleanLiteralIdentifier | objectLiteralIdentifier | variantLiteralIdentifier;
 booleanLiteralIdentifier : TRUE | FALSE;
 objectLiteralIdentifier : NOTHING;

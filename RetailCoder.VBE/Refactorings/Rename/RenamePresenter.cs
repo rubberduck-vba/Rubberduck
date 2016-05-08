@@ -11,10 +11,10 @@ namespace Rubberduck.Refactorings.Rename
 
     public class RenamePresenter : IRenamePresenter
     {
-        private readonly IRenameView _view;
+        private readonly IRenameDialog _view;
         private readonly RenameModel _model;
 
-        public RenamePresenter(IRenameView view, RenameModel model)
+        public RenamePresenter(IRenameDialog view, RenameModel model)
         {
             _view = view;
 

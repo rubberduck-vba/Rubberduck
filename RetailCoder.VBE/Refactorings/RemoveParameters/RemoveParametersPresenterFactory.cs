@@ -7,11 +7,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
     public class RemoveParametersPresenterFactory : IRefactoringPresenterFactory<RemoveParametersPresenter>
     {
         private readonly VBE _vbe;
-        private readonly IRemoveParametersView _view;
+        private readonly IRemoveParametersDialog _view;
         private readonly RubberduckParserState _parseResult;
         private readonly IMessageBox _messageBox;
 
-        public RemoveParametersPresenterFactory(VBE vbe, IRemoveParametersView view,
+        public RemoveParametersPresenterFactory(VBE vbe, IRemoveParametersDialog view,
             RubberduckParserState parseResult, IMessageBox messageBox)
         {
             _vbe = vbe;

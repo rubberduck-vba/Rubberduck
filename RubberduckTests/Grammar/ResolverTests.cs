@@ -113,7 +113,7 @@ End Function
             // arrange
             var code = @"
 Public Sub DoSomething()
-    Debug.Print Foo
+    Foo
 End Sub
 
 Private Function Foo() As String
@@ -139,7 +139,7 @@ End Function
             var code = @"
 Public Sub DoSomething()
     Dim foo As Integer
-    Debug.Print foo
+    a = foo
 End Sub
 ";
             // act
@@ -175,14 +175,40 @@ End Sub
             Assert.IsNotNull(reference);
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
-
+        
         [TestMethod]
+        public void EncapsulatedVariableAssignment_DoesNotResolve()
+        {
+            // arrange
+            var code_class1 = @"
+Public Sub DoSomething()
+    foo = 42
+End Sub
+";
+            var code_class2 = @"
+Option Explicit
+Public foo As Integer
+";
+            var class1 = Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule);
+            var class2 = Tuple.Create(code_class2, vbext_ComponentType.vbext_ct_ClassModule);
+ 
+            // act
+            var state = Resolve(class1, class2);
+ 
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+ 
+            var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
+            Assert.IsNull(reference);
+        }
+
+    [TestMethod]
         public void PublicVariableCall_IsReferenceToVariableDeclaration()
         {
             // arrange
             var code_class1 = @"
 Public Sub DoSomething()
-    Debug.Print foo
+    a = foo
 End Sub
 ";
             var code_class2 = @"
@@ -229,33 +255,6 @@ Public foo As Integer
             var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
             Assert.IsNotNull(reference);
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
-        }
-
-        [TestMethod]
-        public void EncapsulatedVariableAssignment_DoesNotResolve()
-        {
-            // arrange
-            var code_class1 = @"
-Public Sub DoSomething()
-    foo = 42
-End Sub
-";
-            var code_class2 = @"
-Option Explicit
-Public foo As Integer
-";
-            var class1 = Tuple.Create(code_class1, vbext_ComponentType.vbext_ct_ClassModule);
-            var class2 = Tuple.Create(code_class2, vbext_ComponentType.vbext_ct_ClassModule);
-
-            // act
-            var state = Resolve(class1, class2);
-
-            // assert
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
-
-            var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
-            Assert.IsNull(reference);
         }
 
         [TestMethod]
@@ -307,7 +306,7 @@ Option Explicit
             // arrange
             var code = @"
 Public Sub DoSomething(ByVal foo As Integer)
-    Debug.Print foo
+    a = foo
 End Sub
 ";
             // act
@@ -426,7 +425,7 @@ End Property
             var code_class2 = @"
 Public Sub DoSomething()
     With New Class1
-        Debug.Print .Foo
+        a = .Foo
     End With
 End Sub
 ";
@@ -460,7 +459,7 @@ End Property
 Public Sub DoSomething()
     With New Class1
         With .Foo
-            Debug.Print .Bar
+            a = .Bar
         End With
     End With
 End Sub
@@ -548,7 +547,7 @@ End Property
 ";
             var code_class3 = @"
 Public Sub DoSomething(ByVal a As Class1)
-    Debug.Print a.Foo.Bar
+    a = a.Foo.Bar
 End Sub
 ";
             // act
@@ -574,7 +573,7 @@ End Property
 ";
             var code_class2 = @"
 Public Sub DoSomething(ByVal a As Class1)
-    Debug.Print a.Foo
+    b = a.Foo
 End Sub
 ";
             // act
@@ -666,7 +665,7 @@ End Sub
 Public Sub DoSomething(ParamArray values())
     Dim i As Integer
     For i = 0 To 9
-        Debug.Print values(i)
+        a = values(i)
     Next
 End Sub
 ";
@@ -728,7 +727,7 @@ End Property
             var code_class2 = @"
 Public Sub DoSomething()
     Dim bar As New Class1
-    Debug.Print bar.Foo
+    a = bar.Foo
 End Sub
 ";
 
@@ -927,7 +926,7 @@ End Sub
 'note: Dim Foo() As Integer on this line would not compile in VBA
 Public Sub DoSomething()
     Dim Foo() As Integer
-    Debug.Print Foo(0) 'VBA raises index out of bounds error, i.e. VBA resolves to local Foo()
+    a = Foo(0) 'VBA raises index out of bounds error, i.e. VBA resolves to local Foo()
 End Sub
 
 Private Function Foo(ByVal bar As Integer)
@@ -951,7 +950,7 @@ End Function";
 Public Sub DoSomething()
     Dim foo As Integer
     '@Ignore UnassignedVariableUsage
-    Debug.Print foo    
+    a = foo
 End Sub
 ";
             var state = Resolve(code);
@@ -974,7 +973,7 @@ End Sub
             var code = @"
 Public Sub DoSomething()
     Dim foo As Integer
-    Debug.Print foo '@Ignore UnassignedVariableUsage 
+    a = foo '@Ignore UnassignedVariableUsage 
 End Sub
 ";
             var state = Resolve(code);
@@ -1237,7 +1236,7 @@ End Type
 Private Bar As TestModule1
 
 Public Sub DoSomething()
-    Debug.Print Bar.Foo
+    a = Bar.Foo
 End Sub
 ";
             var state = Resolve(code);
@@ -1290,32 +1289,6 @@ Private TestModule1 As TestModule1
 
 Public Sub DoSomething()
     TestModule1.Foo = 42
-End Sub
-";
-            var state = Resolve(code);
-
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedTypeMember
-                && item.IdentifierName == "Foo");
-
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
-
-            Assert.AreEqual(1, usages.Count());
-        }
-
-        [TestMethod]
-        public void GivenUDTField_NamedAmbiguously_FullyQualifiedMemberAssignmentCallResolvesToUDTMember()
-        {
-            var code = @"
-Private Type TestModule1
-    Foo As Integer
-End Type
-
-Private TestModule1 As TestModule1
-
-Public Sub DoSomething()
-    TestProject1.TestModule1.TestModule1.Foo = 42
 End Sub
 ";
             var state = Resolve(code);
@@ -1454,7 +1427,7 @@ Public Something As TSomething
 
             var code_module2 = @"
 Sub DoSomething()
-    Debug.Print Component1.Something.Bar
+    a = Component1.Something.Bar
 End Sub
 ";
 
@@ -1469,6 +1442,45 @@ End Sub
 
             var usages = declaration.References.Where(item =>
                 item.ParentScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        // Ignored because handling forms/hierarchies is an open issue.
+        [Ignore]
+        [TestMethod]
+        public void GivenControlDeclaration_ResolvesUsageInCodeBehind()
+        {
+            var code = @"
+Public Sub DoSomething()
+    TextBox1.Text = ""Test""
+End Sub
+";
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
+            var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
+            project.AddComponent(form);
+            builder.AddProject(project.Build());
+            var vbe = builder.Build();
+
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
+
+            parser.Parse();
+            if (parser.State.Status == ParserState.ResolverError)
+            {
+                Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+            }
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+            }
+
+            var declaration = parser.State.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Control
+                && item.IdentifierName == "TextBox1");
+
+            var usages = declaration.References.Where(item =>
+                item.ParentNonScoping.IdentifierName == "DoSomething");
 
             Assert.AreEqual(1, usages.Count());
         }
