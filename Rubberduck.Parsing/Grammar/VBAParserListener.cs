@@ -1709,6 +1709,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitVsXor([NotNull] VBAParser.VsXorContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.commentOrAnnotation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCommentOrAnnotation([NotNull] VBAParser.CommentOrAnnotationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.commentOrAnnotation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCommentOrAnnotation([NotNull] VBAParser.CommentOrAnnotationContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.goToStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1830,6 +1841,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitEraseStmt([NotNull] VBAParser.EraseStmtContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.commentBody"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCommentBody([NotNull] VBAParser.CommentBodyContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.commentBody"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCommentBody([NotNull] VBAParser.CommentBodyContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.enumerationStmt"/>.

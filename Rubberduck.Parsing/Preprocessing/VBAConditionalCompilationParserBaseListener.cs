@@ -151,19 +151,6 @@ public partial class VBAConditionalCompilationParserBaseListener : IVBACondition
 	public virtual void ExitTypeHint([NotNull] VBAConditionalCompilationParser.TypeHintContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.extendedLine"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExtendedLine([NotNull] VBAConditionalCompilationParser.ExtendedLineContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAConditionalCompilationParser.extendedLine"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExtendedLine([NotNull] VBAConditionalCompilationParser.ExtendedLineContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.literal"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -279,6 +266,19 @@ public partial class VBAConditionalCompilationParserBaseListener : IVBACondition
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCcElse([NotNull] VBAConditionalCompilationParser.CcElseContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.comment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterComment([NotNull] VBAConditionalCompilationParser.CommentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAConditionalCompilationParser.comment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitComment([NotNull] VBAConditionalCompilationParser.CommentContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAConditionalCompilationParser.ccConst"/>.

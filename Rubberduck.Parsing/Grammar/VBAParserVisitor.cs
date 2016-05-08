@@ -1091,6 +1091,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVsXor([NotNull] VBAParser.VsXorContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.commentOrAnnotation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCommentOrAnnotation([NotNull] VBAParser.CommentOrAnnotationContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.goToStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1167,6 +1174,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitEraseStmt([NotNull] VBAParser.EraseStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.commentBody"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCommentBody([NotNull] VBAParser.CommentBodyContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.enumerationStmt"/>.

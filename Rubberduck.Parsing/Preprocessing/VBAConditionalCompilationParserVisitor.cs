@@ -94,13 +94,6 @@ public interface IVBAConditionalCompilationParserVisitor<Result> : IParseTreeVis
 	Result VisitTypeHint([NotNull] VBAConditionalCompilationParser.TypeHintContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.extendedLine"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitExtendedLine([NotNull] VBAConditionalCompilationParser.ExtendedLineContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.literal"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -162,6 +155,13 @@ public interface IVBAConditionalCompilationParserVisitor<Result> : IParseTreeVis
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitCcElse([NotNull] VBAConditionalCompilationParser.CcElseContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.comment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitComment([NotNull] VBAConditionalCompilationParser.CommentContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.ccConst"/>.

@@ -70,6 +70,12 @@
     <None Include="Legacy\frmProgress.frm" />
     <None Include="Legacy\frmVBEOnKey.frm" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
+      <Project>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</Project>
+      <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

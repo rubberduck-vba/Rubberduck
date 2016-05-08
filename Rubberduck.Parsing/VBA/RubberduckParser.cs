@@ -193,31 +193,73 @@ namespace Rubberduck.Parsing.VBA
 
             Debug.Assert(vba != null);
             
-            var errObject = finder.FindClass(vba, "ErrObject", true);
-            Debug.Assert(errObject != null);
-
-            var qualifiedName = new QualifiedModuleName(vba.IdentifierName, vba.IdentifierName, errObject.IdentifierName);
-            var errModuleName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
-            var errModule = new ProceduralModuleDeclaration(new QualifiedMemberName(errModuleName, "ErrModule"), vba, "ErrModule", true, new List<IAnnotation>(), new Attributes());
-            var err = new Declaration(new QualifiedMemberName(qualifiedName, Tokens.Err), errModule, "Global", errObject.IdentifierName, true, false, Accessibility.Global, DeclarationType.Variable);
             var debugModuleName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
             var debugModule = new ProceduralModuleDeclaration(new QualifiedMemberName(debugModuleName, "DebugModule"), vba, "DebugModule", true, new List<IAnnotation>(), new Attributes());
             var debugClassName = new QualifiedModuleName(vba.QualifiedName.QualifiedModuleName.ProjectName, vba.QualifiedName.QualifiedModuleName.ProjectPath, "DebugClass");
             var debugClass = new ClassModuleDeclaration(new QualifiedMemberName(debugClassName, "DebugClass"), vba, "DebugClass", true, new List<IAnnotation>(), new Attributes(), true);
             var debugObject = new Declaration(new QualifiedMemberName(debugClassName, "Debug"), debugModule, "Global", "DebugClass", true, false, Accessibility.Global, DeclarationType.Variable);
-            var debugAssert = new Declaration(new QualifiedMemberName(debugClassName, "Assert"), debugClass, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
-            var debugPrint = new Declaration(new QualifiedMemberName(debugClassName, "Print"), debugClass, debugObject.Scope, null, false, false, Accessibility.Global, DeclarationType.Procedure);
-
+            var debugAssert = new SubroutineDeclaration(new QualifiedMemberName(debugClassName, "Assert"), debugClass, debugClass, null, Accessibility.Global, null, Selection.Home, true, null, new Attributes());
+            var debugPrint = new SubroutineDeclaration(new QualifiedMemberName(debugClassName, "Print"), debugClass, debugClass, null, Accessibility.Global, null, Selection.Home, true, null, new Attributes());
 
             lock (_state)
             {
-                _state.AddDeclaration(errModule);
-                _state.AddDeclaration(err);
                 _state.AddDeclaration(debugModule);
                 _state.AddDeclaration(debugClass);
                 _state.AddDeclaration(debugObject);
                 _state.AddDeclaration(debugAssert);
                 _state.AddDeclaration(debugPrint);
+            }
+
+            AddSpecialFormDeclarations(finder, vba);
+        }
+
+        private void AddSpecialFormDeclarations(DeclarationFinder finder, Declaration vba)
+        {
+            // The Err function is inside this module as well.
+            var informationModule = finder.FindStdModule("Information", vba, true);
+            Debug.Assert(informationModule != null);
+            var arrayFunction = new FunctionDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Array"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
+            var circleFunction = new FunctionDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Circle"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
+            // INPUT is treated as an inputstmt in the grammar thus does not have a declaration created for it.
+            //var inputFunction = new SubroutineDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Input"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
+            //var numberParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Number"), inputFunction, "Integer", false, false);
+            //var filenumberParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Filenumber"), inputFunction, "Integer", false, false);
+            //inputFunction.AddParameter(numberParam);
+            //inputFunction.AddParameter(filenumberParam);
+            var inputBFunction = new SubroutineDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "InputB"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
+            var numberBParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Number"), inputBFunction, "Integer", false, false);
+            var filenumberBParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Filenumber"), inputBFunction, "Integer", false, false);
+            inputBFunction.AddParameter(numberBParam);
+            inputBFunction.AddParameter(filenumberBParam);
+            var lboundFunction = new FunctionDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "LBound"), informationModule, informationModule, "Long", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
+            var arrayNameParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Arrayname"), lboundFunction, "Integer", false, false);
+            var dimensionParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Dimension"), lboundFunction, "Integer", true, false);
+            lboundFunction.AddParameter(arrayNameParam);
+            lboundFunction.AddParameter(dimensionParam);
+            var scaleFunction = new SubroutineDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Scale"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
+            var flagsParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Flags"), scaleFunction, "Integer", false, false);
+            var x1Param = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "X1"), scaleFunction, "Single", false, false);
+            var y1Param = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Y1"), scaleFunction, "Single", false, false);
+            var x2Param = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "X2"), scaleFunction, "Single", false, false);
+            var y2Param = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Y2"), scaleFunction, "Single", false, false);
+            scaleFunction.AddParameter(flagsParam);
+            scaleFunction.AddParameter(x1Param);
+            scaleFunction.AddParameter(y1Param);
+            scaleFunction.AddParameter(x2Param);
+            scaleFunction.AddParameter(y2Param);
+            var uboundFunction = new FunctionDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "UBound"), informationModule, informationModule, "Integer", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
+            var arrayParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Array"), uboundFunction, "Variant", false, false, true);
+            var rankParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Rank"), uboundFunction, "Integer", true, false);
+            uboundFunction.AddParameter(arrayParam);
+            uboundFunction.AddParameter(rankParam);
+            lock (_state)
+            {
+                _state.AddDeclaration(arrayFunction);
+                _state.AddDeclaration(circleFunction);
+                _state.AddDeclaration(inputBFunction);
+                _state.AddDeclaration(lboundFunction);
+                _state.AddDeclaration(scaleFunction);
+                _state.AddDeclaration(uboundFunction);
             }
         }
 
@@ -439,6 +481,7 @@ namespace Rubberduck.Parsing.VBA
             // walk all parse trees (modified or not) for identifier references
             var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments, _state.AllAnnotations);
             new TypeAnnotationPass(finder).Annotate();
+            new TypeHierarchyPass(finder).Annotate();
             foreach (var kvp in _state.ParseTrees)
             {
                 if (token.IsCancellationRequested) return;

@@ -8,6 +8,8 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime.Misc;
+using Microsoft.Vbe.Interop.Forms;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -140,10 +142,16 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-
-            // using dynamic typing here, because not only MSForms could have a Controls collection (e.g. MS-Access forms are 'document' modules).
-            foreach (var control in ((dynamic)designer).Controls)
+            if (!(designer is UserForm))
             {
+                return;
+            }
+            // "using dynamic typing here, because not only MSForms could have a Controls collection (e.g. MS-Access forms are 'document' modules)."
+            // Note: Dynamic doesn't seem to support explicit interfaces that's why we cast it anyway, MS Access forms apparently have to be treated specially anyway.
+            var userForm = (UserForm)designer;
+            foreach (Control control in userForm.Controls)
+            {
+                // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
                 var declaration = new Declaration(_qualifiedName.QualifyMemberName(control.Name), _parentDeclaration, _currentScopeDeclaration, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home, false);
                 OnNewDeclaration(declaration);
             }
@@ -162,7 +170,7 @@ namespace Rubberduck.Parsing.Symbols
                 result = new ParameterDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, context, selection, asTypeName, isOptional, isByRef, isArray, isParamArray);
                 if (Declaration.HasParameter(_parentDeclaration.DeclarationType))
                 {
-                    ((IDeclarationWithParameter)_parentDeclaration).Add(result);
+                    ((IDeclarationWithParameter)_parentDeclaration).AddParameter(result);
                 }
             }
             else
@@ -257,6 +265,12 @@ namespace Rubberduck.Parsing.Symbols
             _currentScope = _qualifiedName + "." + name;
             _currentScopeDeclaration = procedureDeclaration;
             _parentDeclaration = procedureDeclaration;
+        }
+
+        public override void EnterImplementsStmt(VBAParser.ImplementsStmtContext context)
+        {
+            // The expression will be later resolved to the actual declaration. Have to split the work up because we have to gather/create all declarations first.
+            ((ClassModuleDeclaration)_moduleDeclaration).AddSupertype(context.valueStmt().GetText());
         }
 
         public override void EnterOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
