@@ -29,7 +29,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
@@ -56,7 +56,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
@@ -81,7 +81,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
@@ -106,7 +106,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
@@ -140,7 +140,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();
@@ -170,7 +170,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ParameterNotUsedInspection(vbe.Object, parser.State, null);
             var inspectionResults = inspection.GetInspectionResults();

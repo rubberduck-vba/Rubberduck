@@ -48,7 +48,7 @@ End Function
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(module.Parent), new Selection(4, 1, 4, 20));
             var model = new ExtractMethodModel(vbe.Object, parser.State.AllDeclarations, qualifiedSelection);

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
@@ -14,6 +14,7 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private readonly Declaration _declaration;
         public Declaration Declaration { get { return _declaration; } }
+        private readonly CodeExplorerCustomFolderViewModel _folderTree;
 
         private static readonly DeclarationType[] ComponentTypes =
         {
@@ -23,14 +24,16 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.UserForm, 
         };
 
-        public CodeExplorerProjectViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
+        public CodeExplorerProjectViewModel(FolderHelper folderHelper, Declaration declaration, IEnumerable<Declaration> declarations)
         {
             _declaration = declaration;
             IsExpanded = true;
+            _folderTree = folderHelper.GetFolderTree(declaration);
 
             try
             {
-                Items = FindFolders(declarations.ToList(), '.').ToList();
+                FillFolders(declarations.ToList());
+                Items = _folderTree.Items.ToList();
 
                 _icon = _declaration.Project.Protection == vbext_ProjectProtection.vbext_pp_locked
                     ? GetImageSource(resx.lock__exclamation)
@@ -42,44 +45,41 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private static IEnumerable<CodeExplorerItemViewModel> FindFolders(IEnumerable<Declaration> declarations, char delimiter)
+        private void FillFolders(IEnumerable<Declaration> declarations)
         {
-            var root = new CodeExplorerCustomFolderViewModel(string.Empty, string.Empty, new List<Declaration>());
-
             var items = declarations.ToList();
-            var folders = items.Where(item => ComponentTypes.Contains(item.DeclarationType))
+            var groupedItems = items.Where(item => ComponentTypes.Contains(item.DeclarationType))
                                .GroupBy(item => item.CustomFolder)
                                .OrderBy(item => item.Key);
-            foreach (var grouping in folders)
+
+            foreach (var grouping in groupedItems)
             {
-                CodeExplorerItemViewModel node = root;
-                var parts = grouping.Key.Split(delimiter);
-                var path = new StringBuilder();
-                foreach (var part in parts)
+                AddNodesToTree(_folderTree, items, grouping);
+            }
+        }
+
+        private bool AddNodesToTree(CodeExplorerCustomFolderViewModel tree, List<Declaration> items, IGrouping<string, Declaration> grouping)
+        {
+            foreach (var folder in tree.Items.OfType<CodeExplorerCustomFolderViewModel>())
+            {
+                if (grouping.Key.Replace("\"", string.Empty) != folder.FullPath)
                 {
-                    if (path.Length != 0)
-                    {
-                        path.Append(delimiter);
-                    }
-
-                    path.Append(part);
-                    var next = node.GetChild(part);
-                    if (next == null)
-                    {
-                        var currentPath = path.ToString();
-                        var parents = grouping.Where(item => ComponentTypes.Contains(item.DeclarationType) && item.CustomFolder == currentPath).ToList();
-
-                        next = new CodeExplorerCustomFolderViewModel(part, currentPath, items.Where(item => 
-                            parents.Contains(item) || parents.Any(parent => 
-                                (item.ParentDeclaration != null && item.ParentDeclaration.Equals(parent)) || item.ComponentName == parent.ComponentName)));
-                        node.AddChild(next);
-                    }
-
-                    node = next;
+                    continue;
                 }
+
+                var parents = grouping.Where(
+                        item => ComponentTypes.Contains(item.DeclarationType) &&
+                            item.CustomFolder.Replace("\"", string.Empty) == folder.FullPath)
+                        .ToList();
+
+                folder.AddNodes(items.Where(item => parents.Contains(item) || parents.Any(parent =>
+                    (item.ParentDeclaration != null && item.ParentDeclaration.Equals(parent)) ||
+                    item.ComponentName == parent.ComponentName)).ToList());
+
+                return true;
             }
 
-            return root.Items;
+            return tree.Items.OfType<CodeExplorerCustomFolderViewModel>().Any(node => AddNodesToTree(node, items, grouping));
         }
 
         private readonly BitmapImage _icon;

@@ -1228,6 +1228,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Folder Delimiter:.
+        /// </summary>
+        public static string GeneralSettings_FolderDelimiterLabel {
+            get {
+                return ResourceManager.GetString("GeneralSettings_FolderDelimiterLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Alt.
         /// </summary>
         public static string GeneralSettings_HotkeyAlt {
@@ -1305,6 +1314,24 @@ namespace Rubberduck.UI {
         public static string GeneralSettings_LanguageLabel {
             get {
                 return ResourceManager.GetString("GeneralSettings_LanguageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Period (.).
+        /// </summary>
+        public static string GeneralSettings_PeriodDelimiter {
+            get {
+                return ResourceManager.GetString("GeneralSettings_PeriodDelimiter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slash (/).
+        /// </summary>
+        public static string GeneralSettings_SlashDelimiter {
+            get {
+                return ResourceManager.GetString("GeneralSettings_SlashDelimiter", resourceCulture);
             }
         }
         
