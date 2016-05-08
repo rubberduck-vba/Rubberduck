@@ -32,7 +32,7 @@ namespace RubberduckTests.Binding
                 var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.ProjectName == BINDING_TARGET_NAME);
 
                 // lExpression adds one reference, the MemberAcecssExpression adds another one.
-                Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(2, declaration.References.Count());
             }
 
             [TestMethod]
