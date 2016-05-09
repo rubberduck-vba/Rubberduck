@@ -3118,6 +3118,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Commit status.
+        /// </summary>
+        public static string SourceControl_CommitStatus {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit and push succeeded..
+        /// </summary>
+        public static string SourceControl_CommitStatus_CommitAndPushSuccess {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitStatus_CommitAndPushSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit and sync succeeded..
+        /// </summary>
+        public static string SourceControl_CommitStatus_CommitAndSyncSuccess {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitStatus_CommitAndSyncSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit succeeded..
+        /// </summary>
+        public static string SourceControl_CommitStatus_CommitSuccess {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitStatus_CommitSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Create Branch.
         /// </summary>
         public static string SourceControl_CreateNewBranchCaption {

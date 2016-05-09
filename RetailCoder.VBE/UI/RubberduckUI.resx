@@ -1534,4 +1534,16 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="information" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="SourceControl_CommitStatus" xml:space="preserve">
+    <value>Commit status</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitAndPushSuccess" xml:space="preserve">
+    <value>Commit and push succeeded.</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitAndSyncSuccess" xml:space="preserve">
+    <value>Commit and sync succeeded.</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitSuccess" xml:space="preserve">
+    <value>Commit succeeded.</value>
+  </data>
 </root>

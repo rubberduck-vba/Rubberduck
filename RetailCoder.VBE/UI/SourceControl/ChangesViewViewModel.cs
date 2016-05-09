@@ -172,7 +172,18 @@ namespace Rubberduck.UI.SourceControl
                 RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
 
-            CommitMessage = string.Empty;
+            switch (CommitAction)
+            {
+                case CommitAction.Commit:
+                    RaiseErrorEvent(RubberduckUI.SourceControl_CommitStatus, RubberduckUI.SourceControl_CommitStatus_CommitSuccess, NotificationType.Info);
+                    return;
+                case CommitAction.CommitAndPush:
+                    RaiseErrorEvent(RubberduckUI.SourceControl_CommitStatus, RubberduckUI.SourceControl_CommitStatus_CommitAndPushSuccess, NotificationType.Info);
+                    return;
+                case CommitAction.CommitAndSync:
+                    RaiseErrorEvent(RubberduckUI.SourceControl_CommitStatus, RubberduckUI.SourceControl_CommitStatus_CommitAndSyncSuccess, NotificationType.Info);
+                    return;
+            }
         }
 
         private void IncludeChanges(IFileStatusEntry fileStatusEntry)
