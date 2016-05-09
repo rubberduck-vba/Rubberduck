@@ -40,11 +40,6 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-            // TODO: Depending on how the responsibility of looking up built-in interfaces is split up, we might not have to do this here.
-            if (potentialClassModule.IsBuiltIn)
-            {
-                return;
-            }
             var classModule = (ClassModuleDeclaration)potentialClassModule;
             foreach (var implementedInterfaceName in classModule.SupertypeNames)
             {
