@@ -17,6 +17,8 @@ namespace Rubberduck.UI.SourceControl
 
     public interface IControlViewModel
     {
+        SourceControlTab Tab { get; }
+
         ISourceControlProvider Provider { get; set; }
         event EventHandler<ErrorEventArgs> ErrorThrown;
 

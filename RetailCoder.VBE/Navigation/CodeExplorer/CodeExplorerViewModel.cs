@@ -56,6 +56,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             _printCommand = commands.OfType<CodeExplorer_PrintCommand>().FirstOrDefault();
+
+            _commitCommand = commands.OfType<CodeExplorer_CommitCommand>().FirstOrDefault();
         }
 
         private CodeExplorerItemViewModel _selectedItem;
@@ -351,6 +353,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly ICommand _printCommand;
         public ICommand PrintCommand { get { return _printCommand; } }
+
+        private readonly ICommand _commitCommand;
+        public ICommand CommitCommand { get { return _commitCommand; } }
 
         private readonly ICommand _externalRemoveCommand;
 

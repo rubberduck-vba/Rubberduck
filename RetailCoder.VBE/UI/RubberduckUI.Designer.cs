@@ -245,6 +245,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Commit....
+        /// </summary>
+        public static string CodeExplorer_Commit {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Commit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display member &amp;names.
         /// </summary>
         public static string CodeExplorer_DisplayMemberNamesText {
@@ -304,15 +313,6 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_Import {
             get {
                 return ResourceManager.GetString("CodeExplorer_Import", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &amp;Inspect.
-        /// </summary>
-        public static string CodeExplorer_Inspect {
-            get {
-                return ResourceManager.GetString("CodeExplorer_Inspect", resourceCulture);
             }
         }
         

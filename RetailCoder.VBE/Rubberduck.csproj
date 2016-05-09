@@ -365,6 +365,7 @@
     <Compile Include="Inspections\ObjectVariableNotSetInspection.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
     <Compile Include="Navigation\CodeExplorer\CodeExplorerErrorNodeViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
     <Compile Include="Settings\RubberduckHotkey.cs" />
     <Compile Include="UI\About\AboutControl.xaml.cs">
@@ -377,6 +378,7 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_CommitCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddUserFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_RenameCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_FindAllReferencesCommand.cs" />

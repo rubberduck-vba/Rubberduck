@@ -37,6 +37,8 @@ namespace Rubberduck.UI.SourceControl
         public ISourceControlProvider Provider { get; set; }
         public void RefreshView() {} // nothing to refresh here
 
+        public SourceControlTab Tab { get { return SourceControlTab.Settings; } }
+
         private string _userName;
         public string UserName
         {

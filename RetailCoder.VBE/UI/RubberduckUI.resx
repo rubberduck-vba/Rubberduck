@@ -843,9 +843,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_UntrackedFiles" xml:space="preserve">
     <value>Untracked files</value>
   </data>
-  <data name="CodeExplorer_Inspect" xml:space="preserve">
-    <value>&amp;Inspect</value>
-  </data>
   <data name="CodeExplorer_Navigate" xml:space="preserve">
     <value>Na&amp;vigate</value>
   </data>
@@ -1526,5 +1523,8 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
     <value>Slash (/)</value>
+  </data>
+  <data name="CodeExplorer_Commit" xml:space="preserve">
+    <value>Commit...</value>
   </data>
 </root>

@@ -50,6 +50,8 @@ namespace Rubberduck.UI.SourceControl
             DestinationBranch = CurrentBranch;
         }
 
+        public SourceControlTab Tab { get { return SourceControlTab.Branches; } }
+
         public IEnumerable<string> Branches
         {
             get

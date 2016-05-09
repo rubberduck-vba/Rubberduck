@@ -13,6 +13,14 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.SourceControl
 {
+    public enum SourceControlTab
+    {
+        Changes,
+        Branches,
+        UnsyncedCommits,
+        Settings
+    }
+
     public class SourceControlViewViewModel : ViewModelBase
     {
         private readonly VBE _vbe;
@@ -69,6 +77,11 @@ namespace Rubberduck.UI.SourceControl
             ListenForErrors();
         }
 
+        public void SetTab(SourceControlTab tab)
+        {
+            SelectedItem = TabItems.First(t => t.ViewModel.Tab == tab);
+        }
+
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
             if (e.State == ParserState.Parsed)
@@ -97,6 +110,20 @@ namespace Rubberduck.UI.SourceControl
                 if (_tabItems != value)
                 {
                     _tabItems = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private IControlView _selectedItem;
+        public IControlView SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                if (_selectedItem != value)
+                {
+                    _selectedItem = value;
                     OnPropertyChanged();
                 }
             }

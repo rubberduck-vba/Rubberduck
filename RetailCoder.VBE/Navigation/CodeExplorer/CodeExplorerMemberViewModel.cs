@@ -9,7 +9,7 @@ using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerMemberViewModel : CodeExplorerItemViewModel
+    public class CodeExplorerMemberViewModel : CodeExplorerItemViewModel, ICodeExplorerDeclarationViewModel
     {
         private readonly Declaration _declaration;
         public Declaration Declaration { get { return _declaration; } }
