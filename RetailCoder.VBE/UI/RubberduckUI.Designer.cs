@@ -751,6 +751,16 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap cross_circle {
+            get {
+                object obj = ResourceManager.GetObject("cross_circle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to class.
         /// </summary>
         public static string DeclarationType_ClassModule {
@@ -1692,6 +1702,16 @@ namespace Rubberduck.UI {
         public static string IndenterSettings_SpecialOptionsLabel {
             get {
                 return ResourceManager.GetString("IndenterSettings_SpecialOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap information {
+            get {
+                object obj = ResourceManager.GetObject("information", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -3098,6 +3118,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Commit status..
+        /// </summary>
+        public static string SourceControl_CommitStatus {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit and push succeeded..
+        /// </summary>
+        public static string SourceControl_CommitStatus_CommitAndPushSuccess {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitStatus_CommitAndPushSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit and sync succeeded..
+        /// </summary>
+        public static string SourceControl_CommitStatus_CommitAndSyncSuccess {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitStatus_CommitAndSyncSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit succeeded..
+        /// </summary>
+        public static string SourceControl_CommitStatus_CommitSuccess {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitStatus_CommitSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Create Branch.
         /// </summary>
         public static string SourceControl_CreateNewBranchCaption {
@@ -3395,7 +3451,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Merge status.
+        ///   Looks up a localized string similar to Merge status..
         /// </summary>
         public static string SourceControl_MergeStatus {
             get {
@@ -3409,6 +3465,15 @@ namespace Rubberduck.UI {
         public static string SourceControl_Message {
             get {
                 return ResourceManager.GetString("SourceControl_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing credentials..
+        /// </summary>
+        public static string SourceControl_MissingCredentials {
+            get {
+                return ResourceManager.GetString("SourceControl_MissingCredentials", resourceCulture);
             }
         }
         

@@ -108,7 +108,7 @@ namespace Rubberduck.UI.SourceControl
             _configService.SaveConfiguration(_config);
 
             RaiseErrorEvent(RubberduckUI.SourceControl_UpdateSettingsTitle,
-                RubberduckUI.SourceControl_UpdateSettingsMessage);
+                RubberduckUI.SourceControl_UpdateSettingsMessage, NotificationType.Info);
         }
 
         private void ShowGitIgnore()
@@ -194,12 +194,12 @@ namespace Rubberduck.UI.SourceControl
         }
 
         public event EventHandler<ErrorEventArgs> ErrorThrown;
-        private void RaiseErrorEvent(string message, string innerMessage)
+        private void RaiseErrorEvent(string message, string innerMessage, NotificationType notificationType)
         {
             var handler = ErrorThrown;
             if (handler != null)
             {
-                handler(this, new ErrorEventArgs(message, innerMessage));
+                handler(this, new ErrorEventArgs(message, innerMessage, notificationType));
             }
         }
     }

@@ -96,7 +96,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
+                RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
         }
 
@@ -110,7 +110,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
+                RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
         }
 
@@ -124,7 +124,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
+                RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
         }
 
@@ -139,7 +139,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                RaiseErrorEvent(ex.Message, ex.InnerException.Message);
+                RaiseErrorEvent(ex.Message, ex.InnerException.Message, NotificationType.Error);
             }
         }
 
@@ -180,12 +180,12 @@ namespace Rubberduck.UI.SourceControl
         }
 
         public event EventHandler<ErrorEventArgs> ErrorThrown;
-        private void RaiseErrorEvent(string message, string innerMessage)
+        private void RaiseErrorEvent(string message, string innerMessage, NotificationType notificationType)
         {
             var handler = ErrorThrown;
             if (handler != null)
             {
-                handler(this, new ErrorEventArgs(message, innerMessage));
+                handler(this, new ErrorEventArgs(message, innerMessage, notificationType));
             }
         }
     }

@@ -801,6 +801,7 @@
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Refactorings\Rename\RenamePresenter.cs" />
+    <Compile Include="UI\SourceControl\NotificationType.cs" />
     <Compile Include="UI\SourceControl\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
