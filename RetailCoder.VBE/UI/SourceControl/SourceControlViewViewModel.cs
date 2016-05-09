@@ -55,7 +55,8 @@ namespace Rubberduck.UI.SourceControl
             _refreshCommand = new DelegateCommand(_ => Refresh());
             _dismissErrorMessageCommand = new DelegateCommand(_ => DismissErrorMessage());
             _showFilePickerCommand = new DelegateCommand(_ => ShowFilePicker());
-            _closeLoginGridCommand = new DelegateCommand(_ => CloseLoginGrid());
+            _loginGridOkCommand = new DelegateCommand(_ => CloseLoginGrid(), text => !string.IsNullOrEmpty((string)text));
+            _loginGridCancelCommand = new DelegateCommand(_ => CloseLoginGrid());
 
             _cloneRepoOkButtonCommand = new DelegateCommand(_ => CloneRepo(), _ => !IsNotValidRemotePath);
             _cloneRepoCancelButtonCommand = new DelegateCommand(_ => CloseCloneRepoGrid());
@@ -540,12 +541,21 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly ICommand _closeLoginGridCommand;
-        public ICommand CloseLoginGridCommand
+        private readonly ICommand _loginGridOkCommand;
+        public ICommand LoginGridOkCommand
         {
             get
             {
-                return _closeLoginGridCommand;
+                return _loginGridOkCommand;
+            }
+        }
+
+        private readonly ICommand _loginGridCancelCommand;
+        public ICommand LoginGridCancelCommand
+        {
+            get
+            {
+                return _loginGridCancelCommand;
             }
         }
     }
