@@ -15,6 +15,7 @@
         <BitmapImage x:Key="CloneRepoImage" UriSource="../../Resources/drive-download.png" />
         <BitmapImage x:Key="GitIcon" UriSource="../../Resources/icon-github.png" />
         <BitmapImage x:Key="ErrorImage" UriSource="../../Resources/cross-circle.png" />
+        <BitmapImage x:Key="InfoIcon" UriSource="../../Resources/information.png" />
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
@@ -287,7 +288,7 @@
             <Grid Visibility="{Binding DisplayErrorMessageGrid, Converter={StaticResource BoolToVisibility}}"
                   DockPanel.Dock="Top">
                 <StackPanel Background="LightYellow">
-                    <Grid Margin="4" HorizontalAlignment="Stretch">
+                    <Grid HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="25" />
                             <ColumnDefinition />
@@ -309,38 +310,57 @@
                     <Button HorizontalAlignment="Right"
                             Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Dismiss}"
                             Padding="5"
-                            Margin="0,0,9,9"
+                            Margin="0,0,5,5"
                             Command="{Binding DismissErrorMessageCommand}"
                             Style="{StaticResource LinkButton}" />
                 </StackPanel>
             </Grid>
 
-            <Grid Visibility="{Binding DisplayLoginGrid, Converter={StaticResource BoolToVisibility}}"
-                  DockPanel.Dock="Top">
-                <StackPanel VerticalAlignment="Top"
-                            Margin="10,5">
-                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_LoginInstructions}"
+            <!--<Grid Visibility="{Binding DisplayLoginGrid, Converter={StaticResource BoolToVisibility}}"
+                  DockPanel.Dock="Top">-->
+            <Grid DockPanel.Dock="Top">
+                <StackPanel VerticalAlignment="Top">
+                    <Grid HorizontalAlignment="Stretch"
+                          Background="LightYellow">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Image Source="{StaticResource InfoIcon}"
+                               Height="16"
+                               Margin="5"
+                               VerticalAlignment="Top" />
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_MissingCredentials}"
                                TextWrapping="WrapWithOverflow"
-                               FontWeight="Black"
-                               Margin="0,0,0,5" />
+                               FontWeight="Bold"
+                               Margin="5,7,5,3" />
+                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_LoginInstructions}"
+                               TextWrapping="WrapWithOverflow"
+                               Margin="5,0,5,12" />
+                        </StackPanel>
+                    </Grid>
+                    <Border Background="LightGray" Height="2" />
+                    
                     <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UserNameLabel}"
                                FontWeight="SemiBold"
-                               Margin="0,0,0,5" />
+                               Margin="5,5,5,5" />
                     <TextBox Name="UserNameBox"
-                             Margin="0,0,0,10"
+                             Margin="5,0,5,10"
                              Height="18"
                              VerticalContentAlignment="Center" />
 
                     <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PasswordLabel}"
                                FontWeight="SemiBold"
-                               Margin="0,0,0,5" />
+                               Margin="5,0,5,5" />
                     <PasswordBox Name="PasswordBox"
-                                 Margin="0,0,0,10"
+                                 Margin="5,0,5,10"
                                  Height="18"
                                  VerticalContentAlignment="Center" />
 
                     <Grid Grid.IsSharedSizeScope="True"
-                          HorizontalAlignment="Right">
+                          HorizontalAlignment="Right"
+                          Margin="0,0,5,5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition SharedSizeGroup="LoginButtons" />
                             <ColumnDefinition SharedSizeGroup="LoginButtons" />

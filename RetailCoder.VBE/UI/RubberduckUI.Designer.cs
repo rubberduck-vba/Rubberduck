@@ -3469,6 +3469,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing credentials..
+        /// </summary>
+        public static string SourceControl_MissingCredentials {
+            get {
+                return ResourceManager.GetString("SourceControl_MissingCredentials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Branch.
         /// </summary>
         public static string SourceControl_NewBranch {
