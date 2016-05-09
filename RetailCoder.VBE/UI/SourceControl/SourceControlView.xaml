@@ -314,7 +314,7 @@
                 </StackPanel>
             </Grid>
 
-            <Grid 
+            <Grid Visibility="{Binding DisplayLoginGrid, Converter={StaticResource BoolToVisibility}}"
                   DockPanel.Dock="Top">
                 <StackPanel VerticalAlignment="Top">
                     <Grid HorizontalAlignment="Stretch"
