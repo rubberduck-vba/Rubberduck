@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Rubberduck.Parsing.VBA;
@@ -10,6 +12,7 @@ using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using resx = Rubberduck.UI.RubberduckUI;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -68,6 +71,13 @@ namespace Rubberduck.UI.SourceControl
 
             ListenForErrors();
         }
+
+        private static readonly IDictionary<NotificationType, BitmapImage> IconMappings =
+            new Dictionary<NotificationType, BitmapImage>
+            {
+                { NotificationType.Info, GetImageSource(resx.information)},
+                { NotificationType.Error, GetImageSource(resx.cross_circle)}
+            };
 
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
@@ -192,6 +202,20 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        private BitmapImage _errorIcon;
+        public BitmapImage ErrorIcon
+        {
+            get { return _errorIcon; }
+            set
+            {
+                if (_errorIcon != value)
+                {
+                    _errorIcon = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public bool IsNotValidRemotePath
         {
             get
@@ -234,6 +258,8 @@ namespace Rubberduck.UI.SourceControl
             else
             {
                 ErrorMessage = e.Message + ":" + Environment.NewLine + e.InnerMessage;
+                IconMappings.TryGetValue(e.NotificationType, out _errorIcon);
+                OnPropertyChanged("ErrorIcon");
                 DisplayErrorMessageGrid = true;
             }
         }
@@ -271,7 +297,7 @@ namespace Rubberduck.UI.SourceControl
             if (Provider.CurrentBranch == null)
             {
                 ViewModel_ErrorThrown(null,
-                    new ErrorEventArgs(RubberduckUI.SourceControl_NoBranchesTitle, RubberduckUI.SourceControl_NoBranchesMessage));
+                    new ErrorEventArgs(RubberduckUI.SourceControl_NoBranchesTitle, RubberduckUI.SourceControl_NoBranchesMessage, NotificationType.Error));
                 return;
             }
 
@@ -322,7 +348,7 @@ namespace Rubberduck.UI.SourceControl
                 }
                 catch (SourceControlException ex)
                 {
-                    ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message));
+                    ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                     return;
                 }
 
@@ -348,7 +374,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message));
+                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                 return;
             }
 
@@ -385,7 +411,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message));
+                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException.Message, NotificationType.Error));
                 Status = RubberduckUI.Offline;
             }
         }
