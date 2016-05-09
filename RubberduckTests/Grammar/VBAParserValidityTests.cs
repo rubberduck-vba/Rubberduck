@@ -14,6 +14,7 @@ namespace RubberduckTests.Grammar
     [TestClass]
     public class VBAParserValidityTests
     {
+        [TestCategory("GrammarChanges")]
         [TestMethod]
         [TestCategory("LongGrammarTests")]
         [DeploymentItem(@"Testfiles\")]

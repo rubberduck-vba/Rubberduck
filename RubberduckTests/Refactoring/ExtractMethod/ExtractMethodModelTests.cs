@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
@@ -35,7 +34,6 @@ End Sub";
                 var SUT = new ExtractMethodModel(declarations, qSelection.Value, "x = 1 + 2");
 
                 var actual = SUT.Method.MethodName;
-                Debug.WriteLine(actual);
                 var expected = "NewMethod";
 
                 Assert.AreEqual(expected, actual);

@@ -15,6 +15,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
     public class ExtractMethodModel : IExtractMethodModel
     {
         private const string NEW_METHOD = "NewMethod";
+
         public ExtractMethodModel(IEnumerable<Declaration> declarations, QualifiedSelection selection, string selectedCode)
         {
             var items = declarations.ToList();
@@ -72,6 +73,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _input = input.Where(declaration => !output.Contains(declaration))
                 .Select(declaration =>
                     new ExtractedParameter(declaration.AsTypeName, ExtractedParameter.PassedBy.ByRef, declaration.IdentifierName));
+
             var newMethodName = NEW_METHOD;
 
             var newMethodInc = 0;
@@ -82,6 +84,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 newMethodInc++;
                 newMethodName = NEW_METHOD + newMethodInc;
             }
+
             _extractedMethod.MethodName = newMethodName;
             _extractedMethod.ReturnValue = null;
             _extractedMethod.Accessibility = Accessibility.Private;
