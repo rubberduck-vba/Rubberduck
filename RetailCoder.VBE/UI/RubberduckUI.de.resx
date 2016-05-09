@@ -1505,7 +1505,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value>Exportieren...</value>
   </data>
   <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
-    <value>Periode (.)</value>
+    <value>Punkte (.)</value>
   </data>
   <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
     <value>Ordner-Trennzeichen:</value>
