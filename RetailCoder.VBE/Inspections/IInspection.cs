@@ -18,6 +18,5 @@ namespace Rubberduck.Inspections
         /// Gets a string that contains additional/meta information about an inspection.
         /// </summary>
         string Meta { get; }
-
     }
 }
