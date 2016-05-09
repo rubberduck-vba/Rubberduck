@@ -402,6 +402,8 @@ namespace Rubberduck
                 item.Value.Item1.Unadvise(item.Value.Item2);
             }
             _hooks.Dispose();
+
+            _stateBar.Dispose();
         }
     }
 }

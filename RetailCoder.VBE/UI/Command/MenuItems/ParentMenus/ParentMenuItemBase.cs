@@ -195,7 +195,14 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         {
             foreach (var item in _items)
             {
-                item.Value.Delete();
+                try
+                {
+                    item.Value.Delete();
+                }
+                catch (COMException)
+                {
+                    // gulp
+                }
             }
             
             Item.Delete();
