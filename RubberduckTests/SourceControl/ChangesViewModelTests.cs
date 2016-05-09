@@ -65,6 +65,48 @@ namespace RubberduckTests.SourceControl
         }
 
         [TestMethod]
+        public void ProviderCommits_NotificationOnSuccess()
+        {
+            //arrange
+            var vm = new ChangesViewViewModel
+            {
+                Provider = _provider.Object,
+                CommitAction = CommitAction.Commit,
+                IncludedChanges =
+                    new ObservableCollection<IFileStatusEntry>
+                    {
+                        new FileStatusEntry(@"C:\path\to\module.bas", FileStatus.Modified)
+                    }
+            };
+
+            var errorThrown = bool.FalseString; // need a reference type
+
+            vm.ErrorThrown += (sender, e) =>
+            {
+                lock (errorThrown)
+                {
+                    MultiAssert.Aggregate(
+                        () => Assert.AreEqual(e.Message, Rubberduck.UI.RubberduckUI.SourceControl_CommitStatus),
+                        () =>
+                            Assert.AreEqual(e.InnerMessage,
+                                Rubberduck.UI.RubberduckUI.SourceControl_CommitStatus_CommitSuccess),
+                        () => Assert.AreEqual(e.NotificationType, NotificationType.Info));
+
+                    errorThrown = bool.TrueString;
+                }
+            };
+
+            //act
+            vm.CommitCommand.Execute(null);
+
+            //assert
+            lock (errorThrown)
+            {
+                Assert.IsTrue(bool.Parse(errorThrown));
+            }
+        }
+
+        [TestMethod]
         public void ProviderCommitsAndPushes()
         {
             //arrange
