@@ -11,6 +11,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using resx = Rubberduck.UI.RubberduckUI;
 
@@ -84,7 +85,7 @@ namespace Rubberduck.UI.SourceControl
         {
             if (e.State == ParserState.Parsed)
             {
-                Refresh();
+                UiDispatcher.InvokeAsync(Refresh);
             }
         }
 
