@@ -15,7 +15,7 @@
         <BitmapImage x:Key="CloneRepoImage" UriSource="../../Resources/drive-download.png" />
         <BitmapImage x:Key="GitIcon" UriSource="../../Resources/icon-github.png" />
         <BitmapImage x:Key="ErrorImage" UriSource="../../Resources/cross-circle.png" />
-        <BitmapImage x:Key="InfoIcon" UriSource="../../Resources/information.png" />
+        <BitmapImage x:Key="WarningIcon" UriSource="../../Resources/exclamation-white.png" />
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
@@ -316,9 +316,8 @@
                 </StackPanel>
             </Grid>
 
-            <!--<Grid Visibility="{Binding DisplayLoginGrid, Converter={StaticResource BoolToVisibility}}"
-                  DockPanel.Dock="Top">-->
-            <Grid DockPanel.Dock="Top">
+            <Grid Visibility="{Binding DisplayLoginGrid, Converter={StaticResource BoolToVisibility}}"
+                  DockPanel.Dock="Top">
                 <StackPanel VerticalAlignment="Top">
                     <Grid HorizontalAlignment="Stretch"
                           Background="LightYellow">
@@ -326,7 +325,7 @@
                             <ColumnDefinition Width="25" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Image Source="{StaticResource InfoIcon}"
+                        <Image Source="{StaticResource WarningIcon}"
                                Height="16"
                                Margin="5"
                                VerticalAlignment="Top" />
