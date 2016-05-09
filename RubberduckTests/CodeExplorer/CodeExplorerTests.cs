@@ -16,7 +16,6 @@ using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.CodeExplorer
@@ -541,10 +540,14 @@ End Sub";
             view.Setup(r => r.Target);
             view.SetupGet(r => r.NewName).Returns("Fizz");
 
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
             var state = new RubberduckParserState();
             var commands = new List<ICommand>
             {
-                new CodeExplorer_RenameCommand(vbe.Object, state, new CodePaneWrapperFactory(), view.Object)
+                new CodeExplorer_RenameCommand(vbe.Object, state, view.Object, msgbox.Object)
             };
 
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
@@ -553,7 +556,7 @@ End Sub";
             parser.Parse();
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            vm.SelectedItem = vm.Projects.First().Items.First().Items.First().Items.First();
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First().Items.OfType<CodeExplorerMemberViewModel>().Single(item => item.Declaration.IdentifierName == "Foo");
             vm.RenameCommand.Execute(vm.SelectedItem);
 
             Assert.AreEqual(expectedCode, module.Lines());

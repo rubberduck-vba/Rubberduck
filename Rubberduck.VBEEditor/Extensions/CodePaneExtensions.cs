@@ -32,6 +32,11 @@ public static class CodePaneExtensions
 
     public static Selection? GetSelection(this CodePane pane)
     {
+        if (pane == null)
+        {
+            return null;
+        }
+
         int startLine;
         int endLine;
         int startColumn;
