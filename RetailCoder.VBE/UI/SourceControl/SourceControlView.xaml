@@ -262,14 +262,12 @@
                             Background="Transparent">
                         <Image Source="{StaticResource OpenRepoImage}" />
                     </Button>
-                    <Separator />
                     <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_InitRepoButtonToolTip}"
                             Command="{Binding InitRepoCommand, Mode=OneWay}"
                             BorderThickness="0"
                             Background="Transparent">
                         <Image Source="{StaticResource CreateRepoImage}" />
                     </Button>
-                    <Separator />
                     <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CloneRepoButtonToolTip}"
                             Command="{Binding CloneRepoCommand, Mode=OneWay}"
                             BorderThickness="0"
