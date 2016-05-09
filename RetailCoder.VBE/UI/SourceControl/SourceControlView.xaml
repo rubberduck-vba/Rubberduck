@@ -263,10 +263,19 @@
                             <ColumnDefinition Width="25" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Image Source="{Binding ErrorIcon, UpdateSourceTrigger=PropertyChanged}" Height="16" Margin="5" VerticalAlignment="Top" />
-                        <TextBlock Grid.Column="1" Text="{Binding ErrorMessage, UpdateSourceTrigger=PropertyChanged}"
-                               TextWrapping="WrapWithOverflow"
-                               Margin="5" />
+                        <Image Source="{Binding ErrorIcon, UpdateSourceTrigger=PropertyChanged}"
+                               Height="16"
+                               Margin="5"
+                               VerticalAlignment="Top" />
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="{Binding ErrorTitle, UpdateSourceTrigger=PropertyChanged}"
+                                       TextWrapping="WrapWithOverflow"
+                                       Margin="5,7,5,0"
+                                       FontWeight="Bold" />
+                            <TextBlock Text="{Binding ErrorMessage, UpdateSourceTrigger=PropertyChanged}"
+                                       TextWrapping="WrapWithOverflow"
+                                       Margin="5" />
+                        </StackPanel>
                     </Grid>
                     <Button HorizontalAlignment="Right"
                             Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Dismiss}"

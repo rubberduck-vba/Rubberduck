@@ -3118,7 +3118,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Commit status.
+        ///   Looks up a localized string similar to Commit status..
         /// </summary>
         public static string SourceControl_CommitStatus {
             get {
@@ -3451,7 +3451,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Merge status.
+        ///   Looks up a localized string similar to Merge status..
         /// </summary>
         public static string SourceControl_MergeStatus {
             get {

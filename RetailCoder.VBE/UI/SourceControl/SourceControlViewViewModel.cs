@@ -188,6 +188,20 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        private string _errorTitle;
+        public string ErrorTitle
+        {
+            get { return _errorTitle; }
+            set
+            {
+                if (_errorTitle != value)
+                {
+                    _errorTitle = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private string _errorMessage;
         public string ErrorMessage
         {
@@ -257,9 +271,12 @@ namespace Rubberduck.UI.SourceControl
             }
             else
             {
-                ErrorMessage = e.Message + ":" + Environment.NewLine + e.InnerMessage;
+                ErrorTitle = e.Message;
+                ErrorMessage = e.InnerMessage;
+
                 IconMappings.TryGetValue(e.NotificationType, out _errorIcon);
                 OnPropertyChanged("ErrorIcon");
+
                 DisplayErrorMessageGrid = true;
             }
         }
