@@ -394,7 +394,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 var argContext = (VBAParser.ArgContext)target.Context;
                 var rewriter = _model.ParseResult.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
-                rewriter.Replace(argContext.identifier().Start.TokenIndex, _model.NewName);
+                rewriter.Replace(argContext.unrestrictedIdentifier().Start.TokenIndex, _model.NewName);
 
                 // Target.Context is an ArgContext, its parent is an ArgsListContext;
                 // the ArgsListContext's parent is the procedure context and it includes the body.

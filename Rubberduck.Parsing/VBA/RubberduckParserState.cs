@@ -77,7 +77,7 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly ConcurrentDictionary<QualifiedModuleName, IList<IAnnotation>> _annotations =
             new ConcurrentDictionary<QualifiedModuleName, IList<IAnnotation>>();
-        
+
         private readonly ConcurrentDictionary<QualifiedModuleName, SyntaxErrorException> _moduleExceptions =
             new ConcurrentDictionary<QualifiedModuleName, SyntaxErrorException>();
 
@@ -118,7 +118,7 @@ namespace Rubberduck.Parsing.VBA
             foreach (var component in project.VBComponents.Cast<VBComponent>())
             {
                 _moduleStates.TryAdd(new QualifiedModuleName(component), ParserState.Pending);
-        }
+            }
         }
 
         public void RemoveProject(string projectId)
@@ -257,7 +257,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (result == ParserState.Ready && moduleStates.Any(item => item != ParserState.Ready))
             {
-                result = moduleStates.Except(new[] {ParserState.Ready}).Max();
+                result = moduleStates.Except(new[] { ParserState.Ready }).Max();
             }
 
             Debug.Assert(result != ParserState.Ready || moduleStates.All(item => item == ParserState.Ready));
@@ -273,18 +273,18 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private ParserState _status;
-        public ParserState Status 
-        { 
+        public ParserState Status
+        {
             get { return _status; }
             private set
             {
                 if (_status != value)
                 {
-                    _status = value; 
+                    _status = value;
                     Debug.WriteLine("ParserState changed to '{0}', raising OnStateChanged", value);
                     OnStateChanged(_status);
                 }
-            } 
+            }
         }
 
         private IEnumerable<QualifiedContext> _obsoleteCallContexts = new List<QualifiedContext>();
@@ -381,12 +381,12 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// Gets a copy of the collected declarations, including the built-in ones.
         /// </summary>
-        public IReadOnlyList<Declaration> AllDeclarations 
+        public IReadOnlyList<Declaration> AllDeclarations
         {
             get
             {
                 return _declarations.Values.SelectMany(declarations => declarations.Keys).ToList();
-            } 
+            }
         }
 
         /// <summary>
@@ -396,7 +396,7 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                return _declarations.Values.Where(declarations => 
+                return _declarations.Values.Where(declarations =>
                         !declarations.Any(declaration => declaration.Key.IsBuiltIn))
                     .SelectMany(declarations => declarations.Keys)
                     .ToList();
@@ -460,7 +460,7 @@ namespace Rubberduck.Parsing.VBA
         {
             var match = new QualifiedModuleName(component);
             var keys = _declarations.Keys.Where(kvp => kvp.Equals(match))
-                .Union(new[]{match}).Distinct(); // make sure the key is present, even if there are no declarations left
+                .Union(new[] { match }).Distinct(); // make sure the key is present, even if there are no declarations left
 
             var success = true;
             var declarationsRemoved = 0;
@@ -543,7 +543,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             return _parseTrees.Count == expected.Count;
-        }        
+        }
 
         public TokenStreamRewriter GetRewriter(VBComponent component)
         {
@@ -587,7 +587,7 @@ namespace Rubberduck.Parsing.VBA
             var key = new QualifiedModuleName(component);
             return IsNewOrModified(key);
         }
-        
+
         public bool IsNewOrModified(QualifiedModuleName key)
         {
             int current;
@@ -603,9 +603,19 @@ namespace Rubberduck.Parsing.VBA
 
         private QualifiedSelection _lastSelection;
         private Declaration _selectedDeclaration;
+        private List<Tuple<Declaration, Selection, QualifiedModuleName>> _declarationSelections = new List<Tuple<Declaration, Selection, QualifiedModuleName>>();
+
+        public void RebuildSelectionCache()
+        {
+            _declarationSelections.Clear();
+            var declarations = AllDeclarations.Where(d => !d.IsBuiltIn).Select(d => Tuple.Create(d, d.Selection, d.QualifiedSelection.QualifiedName));
+            var references = AllDeclarations.SelectMany(d => d.References.Select(r => Tuple.Create(d, r.Selection, r.QualifiedModuleName)));
+            _declarationSelections.AddRange(declarations.Union(references));
+        }
 
         public Declaration FindSelectedDeclaration(CodePane activeCodePane, bool procedureLevelOnly = false)
         {
+
             var selection = activeCodePane.GetQualifiedSelection();
             if (selection.Equals(_lastSelection))
             {
@@ -622,32 +632,48 @@ namespace Rubberduck.Parsing.VBA
 
             if (!selection.Equals(default(QualifiedSelection)))
             {
-                var matches = AllDeclarations
-                    .Where(item => item.DeclarationType != DeclarationType.Project &&
-                                   item.DeclarationType != DeclarationType.ModuleOption &&
-                                   item.DeclarationType != DeclarationType.ClassModule &&
-                                   item.DeclarationType != DeclarationType.ProceduralModule &&
-                                   (IsSelectedDeclaration(selection.Value, item) ||
-                                    item.References.Any(reference => IsSelectedReference(selection.Value, reference))))
-                    .ToList();
+                var matches = _declarationSelections.Where(t =>
+                                                t.Item3.Equals(selection.Value.QualifiedName)
+                                                && (t.Item2.ContainsFirstCharacter(selection.Value.Selection))).ToList();
                 try
                 {
                     if (matches.Count == 1)
                     {
-                        _selectedDeclaration = matches.Single();
+                        _selectedDeclaration = matches.Single().Item1;
                     }
                     else
                     {
                         Declaration match = null;
                         if (procedureLevelOnly)
                         {
-                            match = matches.SingleOrDefault(item => item.DeclarationType.HasFlag(DeclarationType.Member));
+                            match = matches.Select(p => p.Item1).SingleOrDefault(item => item.DeclarationType.HasFlag(DeclarationType.Member));
                         }
 
-                        // ambiguous (?), or no match - make the module be the current selection
-                        match = match ?? AllUserDeclarations.SingleOrDefault(item =>
-                            (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule)
-                            && item.QualifiedName.QualifiedModuleName.Equals(selection.Value.QualifiedName));
+                        // No match
+                        if (matches.Count == 0)
+                        {
+                            match = match ?? AllUserDeclarations.SingleOrDefault(item =>
+                                (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule)
+                                && item.QualifiedName.QualifiedModuleName.Equals(selection.Value.QualifiedName));
+                        }
+                        else
+                        {
+                            // Idiotic approach to find the best declaration out of a set of overlapping declarations.
+                            // The one closest to the start of the user selection with the smallest width wins.
+                            var userSelection = selection.Value.Selection;
+                            var groupedByStartDistance = matches
+                                .GroupBy(d => Tuple.Create(Math.Abs(userSelection.StartLine - d.Item2.StartLine), Math.Abs(userSelection.StartColumn - d.Item2.StartColumn)))
+                                .OrderBy(g => g.Key.Item1)
+                                .ThenBy(g => g.Key.Item2);
+                            foreach (var closeMatch in groupedByStartDistance)
+                            {
+                                var groupedByLength = closeMatch.Select(d => Tuple.Create(d.Item1, Tuple.Create(Math.Abs(d.Item2.EndLine - d.Item2.StartLine), Math.Abs(d.Item2.EndColumn - d.Item2.StartColumn))))
+                                    .OrderBy(d => d.Item2.Item1)
+                                    .ThenBy(d => d.Item2.Item2).ToList();
+                                match = groupedByLength.Select(p => p.Item1).FirstOrDefault();
+                                break;
+                            }
+                        }
 
                         _selectedDeclaration = match;
                     }
@@ -676,6 +702,24 @@ namespace Rubberduck.Parsing.VBA
         {
             return reference.QualifiedModuleName.Equals(selection.QualifiedName)
                    && reference.Selection.ContainsFirstCharacter(selection.Selection);
+        }
+
+        public static Selection CreateBindingSelection(ParserRuleContext vbaGrammarContext, ParserRuleContext exprContext)
+        {
+            var k = exprContext.GetText();
+            Selection vbaGrammarSelection = vbaGrammarContext.GetSelection();
+            Selection exprSelection = exprContext.GetSelection();
+            int lineOffset = vbaGrammarSelection.StartLine - 1;
+            int columnOffset = 0;
+            if (exprSelection.StartLine == 1)
+            {
+                columnOffset = vbaGrammarSelection.StartColumn - 1;
+            }
+            return new Selection(
+                exprSelection.StartLine + lineOffset,
+                exprSelection.StartColumn + columnOffset,
+                exprSelection.EndLine + lineOffset,
+                exprSelection.EndColumn + columnOffset);
         }
 
         public void RemoveBuiltInDeclarations(Reference reference)

@@ -80,6 +80,7 @@ namespace Rubberduck.Root
             ApplyAbstractFactoryConvention(assemblies);
 
             BindCommandsToMenuItems();
+            BindCommandsToCodeExplorer();
             
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();
@@ -310,6 +311,20 @@ namespace Rubberduck.Root
                 {
                     // rename one of the classes, "FooCommand" is expected to match exactly 1 "FooBarXyzCommandMenuItem"
                 }
+            }
+        }
+
+        private void BindCommandsToCodeExplorer()
+        {
+            var commands = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(type => type.IsClass && type.Namespace != null &&
+                               type.Namespace == "Rubberduck.UI.CodeExplorer.Commands" &&
+                               type.Name.StartsWith("CodeExplorer_") && 
+                               type.Name.EndsWith("Command"));
+
+            foreach (var command in commands)
+            {
+                _kernel.Bind<ICommand>().To(command).InSingletonScope();
             }
         }
 

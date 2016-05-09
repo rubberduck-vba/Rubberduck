@@ -21,7 +21,7 @@ parser grammar VBAParser;
 
 options { tokenVocab = VBALexer; }
 
-startRule : module EOF;
+startRule : module;
 
 module : 
 	whiteSpace?
@@ -31,19 +31,18 @@ module :
 	moduleAttributes? endOfStatement
 	moduleDeclarations? endOfStatement
 	moduleBody? endOfStatement
-	whiteSpace?
 ;
 
 moduleHeader : VERSION whiteSpace numberLiteral whiteSpace? CLASS? endOfStatement;
 
 moduleConfig :
-	BEGIN (whiteSpace GUIDLITERAL whiteSpace identifier whiteSpace?)? endOfStatement
+	BEGIN (whiteSpace GUIDLITERAL whiteSpace unrestrictedIdentifier whiteSpace?)? endOfStatement
 	moduleConfigElement+
 	END
 ;
 
 moduleConfigElement :
-	identifier whiteSpace* EQ whiteSpace* literal (COLON numberLiteral)? endOfStatement
+	unrestrictedIdentifier whiteSpace* EQ whiteSpace* valueStmt (COLON numberLiteral)? endOfStatement
 ;
 
 moduleAttributes : (attributeStmt endOfStatement)+;
@@ -79,29 +78,23 @@ moduleBodyElement :
 	| subStmt 
 ;
 
-attributeStmt : ATTRIBUTE whiteSpace implicitCallStmt_InStmt whiteSpace? EQ whiteSpace? literal (whiteSpace? COMMA whiteSpace? literal)*;
+attributeStmt : ATTRIBUTE whiteSpace attributeName whiteSpace? EQ whiteSpace? attributeValue (whiteSpace? COMMA whiteSpace? attributeValue)*;
+attributeName : implicitCallStmt_InStmt;
+attributeValue : valueStmt;
 
 block : blockStmt (endOfStatement blockStmt)* endOfStatement;
 
 blockStmt :
 	lineLabel
-    | appactivateStmt
 	| attributeStmt
-	| beepStmt
-	| chdirStmt
-	| chdriveStmt
 	| closeStmt
 	| constStmt
-	| dateStmt
-	| deleteSettingStmt
 	| deftypeStmt
 	| doLoopStmt
-	| endStmt
 	| eraseStmt
 	| errorStmt
-	| exitStmt
+    | exitStmt
 	| explicitCallStmt
-	| filecopyStmt
 	| forEachStmt
 	| forNextStmt
 	| getStmt
@@ -110,15 +103,11 @@ blockStmt :
 	| ifThenElseStmt
 	| implementsStmt
 	| inputStmt
-	| killStmt
 	| letStmt
 	| lineInputStmt
-	| loadStmt
 	| lockStmt
 	| lsetStmt
 	| midStmt
-	| mkdirStmt
-	| nameStmt
 	| onErrorStmt
 	| onGoToStmt
 	| onGoSubStmt
@@ -126,23 +115,15 @@ blockStmt :
 	| printStmt
 	| putStmt
 	| raiseEventStmt
-	| randomizeStmt
 	| redimStmt
 	| resetStmt
 	| resumeStmt
 	| returnStmt
-	| rmdirStmt
 	| rsetStmt
-	| savepictureStmt
-	| saveSettingStmt
 	| seekStmt
 	| selectCaseStmt
-	| sendkeysStmt
-	| setattrStmt
 	| setStmt
-	| stopStmt
-	| timeStmt
-	| unloadStmt
+    | stopStmt
 	| unlockStmt
 	| variableStmt
 	| whileWendStmt
@@ -152,21 +133,11 @@ blockStmt :
 	| implicitCallStmt_InBlock
 ;
 
-appactivateStmt : APPACTIVATE whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)?;
-
-beepStmt : BEEP;
-
-chdirStmt : CHDIR whiteSpace valueStmt;
-
-chdriveStmt : CHDRIVE whiteSpace valueStmt;
-
 closeStmt : CLOSE (whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? fileNumber)*)?;
 
 constStmt : (visibility whiteSpace)? CONST whiteSpace constSubStmt (whiteSpace? COMMA whiteSpace? constSubStmt)*;
 
 constSubStmt : identifier typeHint? (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? valueStmt;
-
-dateStmt : DATE whiteSpace? EQ whiteSpace? valueStmt;
 
 declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? ((FUNCTION typeHint?) | SUB) whiteSpace identifier typeHint? whiteSpace LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)?;
 
@@ -178,11 +149,6 @@ deftypeStmt :
 	) whiteSpace
 	letterrange (whiteSpace? COMMA whiteSpace? letterrange)*
 ;
-
-deleteSettingStmt :
-    DELETESETTING whiteSpace valueStmt whiteSpace?
-    | DELETESETTING whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt
-    | DELETESETTING whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt whiteSpace? COMMA whiteSpace? valueStmt;
 
 doLoopStmt :
 	DO endOfStatement 
@@ -197,8 +163,6 @@ doLoopStmt :
 	block?
 	LOOP whiteSpace (WHILE | UNTIL) whiteSpace valueStmt
 ;
-
-endStmt : END;
 
 enumerationStmt: 
 	(visibility whiteSpace)? ENUM whiteSpace identifier endOfStatement 
@@ -216,25 +180,24 @@ eventStmt : (visibility whiteSpace)? EVENT whiteSpace identifier whiteSpace? arg
 
 exitStmt : EXIT_DO | EXIT_FOR | EXIT_FUNCTION | EXIT_PROPERTY | EXIT_SUB;
 
-filecopyStmt : FILECOPY whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt;
-
 forEachStmt : 
-	FOR whiteSpace EACH whiteSpace identifier typeHint? whiteSpace IN whiteSpace valueStmt endOfStatement
+	FOR whiteSpace EACH whiteSpace valueStmt whiteSpace IN whiteSpace valueStmt endOfStatement
 	block?
-	NEXT (whiteSpace identifier)?
+	NEXT (whiteSpace valueStmt)?
 ;
 
 forNextStmt : 
-	FOR whiteSpace identifier typeHint? (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? valueStmt whiteSpace TO whiteSpace valueStmt (whiteSpace STEP whiteSpace valueStmt)? endOfStatement 
+	FOR whiteSpace valueStmt whiteSpace? EQ whiteSpace? valueStmt whiteSpace TO whiteSpace valueStmt (whiteSpace STEP whiteSpace valueStmt)? endOfStatement 
 	block?
-	NEXT (whiteSpace identifier typeHint?)?
+	NEXT (whiteSpace valueStmt)?
 ; 
 
 functionStmt :
-	(visibility whiteSpace)? (STATIC whiteSpace)? FUNCTION whiteSpace? identifier typeHint? (whiteSpace? argList)? (whiteSpace? asTypeClause)? endOfStatement
+	(visibility whiteSpace)? (STATIC whiteSpace)? FUNCTION whiteSpace? functionName typeHint? (whiteSpace? argList)? (whiteSpace? asTypeClause)? endOfStatement
 	block?
 	END_FUNCTION
 ;
+functionName : identifier;
 
 getStmt : GET whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt? whiteSpace? COMMA whiteSpace? valueStmt;
 
@@ -268,26 +231,19 @@ implementsStmt : IMPLEMENTS whiteSpace valueStmt;
 
 inputStmt : INPUT whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? valueStmt)+;
 
-killStmt : KILL whiteSpace valueStmt;
-
-letStmt : (LET whiteSpace)? implicitCallStmt_InStmt whiteSpace? EQ whiteSpace? valueStmt;
+letStmt : (LET whiteSpace)? valueStmt whiteSpace? EQ whiteSpace? valueStmt;
 
 lineInputStmt : LINE_INPUT whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt;
 
-loadStmt : LOAD whiteSpace valueStmt;
-
 lockStmt : LOCK whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt (whiteSpace TO whiteSpace valueStmt)?)?;
 
-lsetStmt : LSET whiteSpace implicitCallStmt_InStmt whiteSpace? EQ whiteSpace? valueStmt;
+lsetStmt : LSET whiteSpace valueStmt whiteSpace? EQ whiteSpace? valueStmt;
 
 midStmt : MID whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN;
 
-mkdirStmt : MKDIR whiteSpace valueStmt;
-
-nameStmt : NAME whiteSpace valueStmt whiteSpace AS whiteSpace valueStmt;
-
 onErrorStmt : (ON_ERROR | ON_LOCAL_ERROR) whiteSpace (GOTO whiteSpace valueStmt | RESUME whiteSpace NEXT);
 
+// TODO: only first valueStmt is correct, rest should be IDENTIFIER/INTEGERs?
 onGoToStmt : ON whiteSpace valueStmt whiteSpace GOTO whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)*;
 
 onGoSubStmt : ON whiteSpace valueStmt whiteSpace GOSUB whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)*;
@@ -313,19 +269,19 @@ outputList_Expression :
 printStmt : PRINT whiteSpace fileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
 
 propertyGetStmt : 
-	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_GET whiteSpace identifier typeHint? (whiteSpace? argList)? (whiteSpace asTypeClause)? endOfStatement 
+	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_GET whiteSpace functionName typeHint? (whiteSpace? argList)? (whiteSpace asTypeClause)? endOfStatement 
 	block? 
 	END_PROPERTY
 ;
 
 propertySetStmt : 
-	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_SET whiteSpace identifier (whiteSpace? argList)? endOfStatement 
+	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_SET whiteSpace subroutineName (whiteSpace? argList)? endOfStatement 
 	block? 
 	END_PROPERTY
 ;
 
 propertyLetStmt : 
-	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_LET whiteSpace identifier (whiteSpace? argList)? endOfStatement 
+	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_LET whiteSpace subroutineName (whiteSpace? argList)? endOfStatement 
 	block? 
 	END_PROPERTY
 ;
@@ -334,25 +290,20 @@ putStmt : PUT whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt? whi
 
 raiseEventStmt : RAISEEVENT whiteSpace identifier (whiteSpace? LPAREN whiteSpace? (argsCall whiteSpace?)? RPAREN)?;
 
-randomizeStmt : RANDOMIZE (whiteSpace valueStmt)?;
-
 redimStmt : REDIM whiteSpace (PRESERVE whiteSpace)? redimSubStmt (whiteSpace? COMMA whiteSpace? redimSubStmt)*;
 
 redimSubStmt : implicitCallStmt_InStmt whiteSpace? LPAREN whiteSpace? subscripts whiteSpace? RPAREN (whiteSpace asTypeClause)?;
 
 resetStmt : RESET;
 
-resumeStmt : RESUME (whiteSpace (NEXT | identifier))?;
+resumeStmt : RESUME (whiteSpace (NEXT | valueStmt))?;
 
 returnStmt : RETURN;
 
-rmdirStmt : RMDIR whiteSpace valueStmt;
+rsetStmt : RSET whiteSpace valueStmt whiteSpace? EQ whiteSpace? valueStmt;
 
-rsetStmt : RSET whiteSpace implicitCallStmt_InStmt whiteSpace? EQ whiteSpace? valueStmt;
-
-savepictureStmt : SAVEPICTURE whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt;
-
-saveSettingStmt : SAVESETTING whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt whiteSpace? COMMA whiteSpace? valueStmt whiteSpace? COMMA whiteSpace? valueStmt;
+// 5.4.2.11 Stop Statement
+stopStmt : STOP;
 
 seekStmt : SEEK whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt;
 
@@ -378,21 +329,14 @@ sC_Cond :
     | sC_Selection (whiteSpace? COMMA whiteSpace? sC_Selection)*                   # caseCondSelection
 ;
 
-sendkeysStmt : SENDKEYS whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)?;
-
-setattrStmt : SETATTR whiteSpace valueStmt whiteSpace? COMMA whiteSpace? valueStmt;
-
-setStmt : SET whiteSpace implicitCallStmt_InStmt whiteSpace? EQ whiteSpace? valueStmt;
-
-stopStmt : STOP;
+setStmt : SET whiteSpace valueStmt whiteSpace? EQ whiteSpace? valueStmt;
 
 subStmt : 
-	(visibility whiteSpace)? (STATIC whiteSpace)? SUB whiteSpace? identifier (whiteSpace? argList)? endOfStatement
+	(visibility whiteSpace)? (STATIC whiteSpace)? SUB whiteSpace? subroutineName (whiteSpace? argList)? endOfStatement
 	block? 
 	END_SUB
 ;
-
-timeStmt : TIME whiteSpace? EQ whiteSpace? valueStmt;
+subroutineName : identifier;
 
 typeStmt : 
 	(visibility whiteSpace)? TYPE whiteSpace identifier endOfStatement
@@ -401,8 +345,6 @@ typeStmt :
 ;
 
 typeStmt_Element : identifier (whiteSpace? LPAREN (whiteSpace? subscripts)? whiteSpace? RPAREN)? (whiteSpace asTypeClause)? endOfStatement;
-
-unloadStmt : UNLOAD whiteSpace valueStmt;
 
 unlockStmt : UNLOCK whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? valueStmt (whiteSpace TO whiteSpace valueStmt)?)?;
 
@@ -414,7 +356,7 @@ valueStmt :
 	| typeOfIsExpression                                                                            # vsTypeOf
 	| midStmt                                                                                       # vsMid
 	| ADDRESSOF whiteSpace? valueStmt                                                               # vsAddressOf
-	| implicitCallStmt_InStmt whiteSpace? ASSIGN whiteSpace? valueStmt                              # vsAssign
+	| unrestrictedIdentifier whiteSpace? ASSIGN whiteSpace? valueStmt                              # vsAssign
 	| valueStmt whiteSpace? POW whiteSpace? valueStmt                                               # vsPow
 	| MINUS whiteSpace? valueStmt                                                                   # vsNegation
 	| valueStmt whiteSpace? (MULT | DIV) whiteSpace? valueStmt                                      # vsMult
@@ -448,33 +390,30 @@ whileWendStmt :
 widthStmt : WIDTH whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt;
 
 withStmt :
-    // TODO: withStmtExpression should actually be an expression, i.e. a valueStmt.
 	WITH whiteSpace withStmtExpression endOfStatement 
 	block? 
 	END_WITH
 ;
 
-withStmtExpression : (implicitCallStmt_InStmt | (NEW whiteSpace type));
+withStmtExpression : valueStmt;
 
 writeStmt : WRITE whiteSpace fileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
 
 fileNumber : HASH? valueStmt;
 
-explicitCallStmt : 
-	eCS_ProcedureCall 
-	| eCS_MemberProcedureCall 
+explicitCallStmt : CALL whiteSpace explicitCallStmtExpression;
+
+explicitCallStmtExpression : 
+    implicitCallStmt_InStmt? DOT identifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*   # ECS_MemberCall
+    | identifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*                              # ECS_ProcedureCall
 ;
-
-eCS_ProcedureCall : CALL whiteSpace identifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*;
-
-eCS_MemberProcedureCall : CALL whiteSpace implicitCallStmt_InStmt? DOT identifier typeHint? (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
 implicitCallStmt_InBlock :
 	iCS_B_MemberProcedureCall 
 	| iCS_B_ProcedureCall
 ;
 
-iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? whiteSpace? DOT whiteSpace? identifier typeHint? (whiteSpace argsCall)? (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
+iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? whiteSpace? DOT whiteSpace? unrestrictedIdentifier typeHint? (whiteSpace argsCall)? (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
 iCS_B_ProcedureCall : identifier (whiteSpace argsCall)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
@@ -486,12 +425,14 @@ implicitCallStmt_InStmt :
 ;
 
 iCS_S_VariableOrProcedureCall : identifier typeHint? (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
-
 iCS_S_ProcedureOrArrayCall : (identifier | baseType) typeHint? whiteSpace? LPAREN whiteSpace? (argsCall whiteSpace?)? RPAREN (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
+
+iCS_S_VariableOrProcedureCallUnrestricted : unrestrictedIdentifier typeHint? (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
+iCS_S_ProcedureOrArrayCallUnrestricted : (unrestrictedIdentifier | baseType) typeHint? whiteSpace? LPAREN whiteSpace? (argsCall whiteSpace?)? RPAREN (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
 iCS_S_MembersCall : (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall)? (iCS_S_MemberCall whiteSpace?)+ (whiteSpace? dictionaryCallStmt)? (whiteSpace? LPAREN subscripts RPAREN)*;
 
-iCS_S_MemberCall : (DOT | EXCLAMATIONPOINT) whiteSpace? (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall);
+iCS_S_MemberCall : (DOT | EXCLAMATIONPOINT) whiteSpace? (iCS_S_VariableOrProcedureCallUnrestricted | iCS_S_ProcedureOrArrayCallUnrestricted);
 
 iCS_S_DictionaryCall : whiteSpace? dictionaryCallStmt;
 
@@ -499,17 +440,19 @@ argsCall : (argCall? whiteSpace? (COMMA | SEMICOLON) whiteSpace?)* argCall (whit
 
 argCall : LPAREN? ((BYVAL | BYREF | PARAMARRAY) whiteSpace)? RPAREN? valueStmt;
 
-dictionaryCallStmt : EXCLAMATIONPOINT whiteSpace? identifier typeHint?;
+dictionaryCallStmt : EXCLAMATIONPOINT whiteSpace? unrestrictedIdentifier typeHint?;
 
 argList : LPAREN (whiteSpace? arg (whiteSpace? COMMA whiteSpace? arg)*)? whiteSpace? RPAREN;
 
-arg : (OPTIONAL whiteSpace)? ((BYVAL | BYREF) whiteSpace)? (PARAMARRAY whiteSpace)? identifier typeHint? (whiteSpace? LPAREN whiteSpace? RPAREN)? (whiteSpace? asTypeClause)? (whiteSpace? argDefaultValue)?;
+arg : (OPTIONAL whiteSpace)? ((BYVAL | BYREF) whiteSpace)? (PARAMARRAY whiteSpace)? unrestrictedIdentifier typeHint? (whiteSpace? LPAREN whiteSpace? RPAREN)? (whiteSpace? asTypeClause)? (whiteSpace? argDefaultValue)?;
 
 argDefaultValue : EQ whiteSpace? valueStmt;
 
 subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 
 subscript : (valueStmt whiteSpace TO whiteSpace)? valueStmt;
+
+unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
 
 identifier : IDENTIFIER | keyword;
 
@@ -538,55 +481,224 @@ typeHint : PERCENT | AMPERSAND | POW | EXCLAMATIONPOINT | HASH | AT | DOLLAR;
 visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 
 keyword : 
-	ACCESS | ADDRESSOF | ALIAS | AND | ATTRIBUTE | APPACTIVATE | APPEND | AS |
-	BEEP | BEGIN | BINARY | BOOLEAN | BYVAL | BYREF | BYTE | 
-	CALL | CASE | CLASS | CLOSE | CHDIR | CHDRIVE | COLLECTION | CONST | 
-	DATABASE | DATE | DECLARE | DEFBOOL | DEFBYTE | DEFCUR | DEFDBL | DEFDATE | DEFINT | DEFLNG | DEFLNGLNG | DEFLNGPTR | DEFOBJ | DEFSNG | DEFSTR | DEFVAR | DELETESETTING | DIM | DO | DOUBLE | 
-	EACH | ELSE | ELSEIF | END | ENUM | EQV | ERASE | ERROR | EVENT | 
-	FALSE | FILECOPY | FRIEND | FOR | FUNCTION | 
-	GET | GLOBAL | GOSUB | GOTO | 
-	IF | IMP | IMPLEMENTS | IN | INPUT | IS | INTEGER |
-	KILL | 
-	LOAD | LOCK | LONG | LOOP | LEN | LET | LIB | LIKE | LSET |
-	ME | MID | MKDIR | MOD | 
-	NAME | NEXT | NEW | NOT | NOTHING | NULL | 
-	ON | OPEN | OPTIONAL | OR | OUTPUT | 
-	PARAMARRAY | PRESERVE | PRINT | PRIVATE | PUBLIC | PUT |
-	RANDOM | RANDOMIZE | RAISEEVENT | READ | REDIM | REM | RESET | RESUME | RETURN | RMDIR | RSET |
-	SAVEPICTURE | SAVESETTING | SEEK | SELECT | SENDKEYS | SET | SETATTR | SHARED | SINGLE | SPC | STATIC | STEP | STOP | STRING | SUB | 
-	TAB | TEXT | THEN | TIME | TO | TRUE | TYPE | TYPEOF | 
-	UNLOAD | UNLOCK | UNTIL | 
-	VARIANT | VERSION | 
-	WEND | WHILE | WIDTH | WITH | WITHEVENTS | WRITE |
-	XOR | ABS | ANY | ARRAY | CBOOL | CBYTE | CCUR | 
-    CDATE |  CDBL | CDEC | CINT | CIRCLE | CLNG | CLNGLNG | CLNGPTR | CSNG | CSTR | CURRENCY | CVAR | 
-    CVERR | DEBUG | DOEVENTS | END_IF | EXIT | FIX | INPUTB | INT | LBOUND | 
-    LEN | LENB | LONGLONG | LONGPTR | MIDB | MIDBTYPESUFFIX | MIDTYPESUFFIX | OPTION | PSET | SCALE | SGN | UBOUND
+       ABS
+     | ADDRESSOF
+     | ALIAS
+     | AND
+     | ANY
+     | ARRAY
+     | ATTRIBUTE
+     | BEGIN
+     | BOOLEAN
+     | BYREF
+     | BYTE
+     | BYVAL
+     | CBOOL
+     | CBYTE
+     | CCUR
+     | CDATE
+     | CDBL
+     | CDEC
+     | CINT
+     | CIRCLE
+     | CLASS
+     | CLNG
+     | CLNGLNG
+     | CLNGPTR
+     | COLLECTION
+     | CSNG
+     | CSTR
+     | CURRENCY
+     | CVAR
+     | CVERR
+     | DATABASE
+     | DATE
+     | DEBUG
+     | DELETESETTING
+     | DOEVENTS
+     | DOUBLE
+     | END_IF
+     | EQV
+     | FALSE
+     | FIX
+     | IMP
+     | IN
+     | INPUTB
+     | INT
+     | INTEGER
+     | IS
+     | LBOUND
+     | LEN
+     | LEN
+     | LENB
+     | LIB
+     | LIKE
+     | LOAD
+     | LONG
+     | LONGLONG
+     | LONGPTR
+     | ME
+     | MID
+     | MIDB
+     | MIDBTYPESUFFIX
+     | MIDTYPESUFFIX
+     | MOD
+     | NEW
+     | NOT
+     | NOTHING
+     | NULL
+     | OPTIONAL
+     | OR
+     | PARAMARRAY
+     | PRESERVE
+     | PSET
+     | REM
+     | RMDIR
+     | SCALE
+     | SENDKEYS
+     | SETATTR
+     | SGN
+     | SINGLE
+     | SPC
+     | STRING
+     | TAB
+     | TEXT
+     | THEN
+     | TO
+     | TRUE
+     | TYPEOF
+     | UBOUND
+     | UNTIL
+     | VARIANT
+     | VERSION
+     | WITHEVENTS
+     | XOR
+;
+
+markerKeyword : AS;
+
+statementKeyword :
+    CALL
+    | CASE
+    | CLOSE
+    | CONST
+    | DECLARE
+    | DEFBOOL
+    | DEFBYTE
+    | DEFCUR
+    | DEFDATE
+    | DEFDBL
+    | DEFINT
+    | DEFLNG
+    | DEFLNGLNG
+    | DEFLNGPTR
+    | DEFOBJ
+    | DEFSNG
+    | DEFSTR
+    | DEFVAR
+    | DIM
+    | DO
+    | ELSE
+    | ELSEIF
+    | END
+    | ENDIF
+    | ENUM
+    | ERASE
+    | EVENT
+    | EXIT
+    | FOR
+    | FRIEND
+    | FUNCTION
+    | GET
+    | GLOBAL
+    | GOSUB
+    | GOTO
+    | IF
+    | IMPLEMENTS
+    | INPUT
+    | LET
+    | LOCK
+    | LOOP
+    | LSET
+    | NEXT
+    | ON
+    | OPEN
+    | OPTION
+    | PRINT
+    | PRIVATE
+    | PUBLIC
+    | PUT
+    | RAISEEVENT
+    | REDIM
+    | RESUME
+    | RETURN
+    | RSET
+    | SEEK
+    | SELECT
+    | SET
+    | STATIC
+    | STOP
+    | SUB
+    | TYPE
+    | UNLOCK
+    | WEND
+    | WHILE
+    | WITH
+    | WRITE
+    | STEP
+    | EXIT_DO 
+    | EXIT_FOR 
+    | EXIT_FUNCTION 
+    | EXIT_PROPERTY 
+    | EXIT_SUB
+    | END_SELECT
+    | END_WITH
+    | ON_ERROR
+    | RESUME_NEXT
+    | ERROR
+    | APPEND
+    | BINARY
+    | OUTPUT
+    | RANDOM
+    | ACCESS
+    | READ
+    | WRITE
+    | READ_WRITE
+    | SHARED
+    | LOCK_READ
+    | LOCK_WRITE
+    | LOCK_READ_WRITE
+    | RESET
+    | LINE_INPUT
+    | WIDTH
 ;
 
 endOfLine :
-    whiteSpace? (NEWLINE+ | comment | remComment) whiteSpace?
-    | whiteSpace? annotationList
+    whiteSpace? commentOrAnnotation?
 ;
 
-endOfStatement : (endOfLine | whiteSpace? COLON whiteSpace?)*;
+endOfStatement :
+    (((endOfLine NEWLINE whiteSpace?)|(whiteSpace? COLON whiteSpace?)))*
+    | endOfLine EOF
+;
 
-remComment : REMCOMMENT;
-
-comment : SINGLEQUOTE | COMMENT;
-
-annotationList : SINGLEQUOTE annotation+;
-
-annotation : AT annotationName annotationArgList?;
-
-annotationName : IDENTIFIER;
-
+// Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.
+commentOrAnnotation :
+    annotationList
+    | comment
+    | remComment
+;
+remComment : REM whiteSpace? commentBody;
+comment : SINGLEQUOTE commentBody;
+commentBody : (LINE_CONTINUATION | ~NEWLINE)*;
+annotationList : SINGLEQUOTE (AT annotation whiteSpace?)+;
+annotation : annotationName annotationArgList?;
+annotationName : unrestrictedIdentifier;
 annotationArgList : 
-	 whiteSpace annotationArg whiteSpace?
-	 | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+  whiteSpace?
-	 | whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN whiteSpace?
-	 | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN whiteSpace?;
-	
-annotationArg : IDENTIFIER | literal;
+	 whiteSpace annotationArg
+	 | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+
+	 | whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN
+	 | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN;
+annotationArg : valueStmt;
 
 whiteSpace : (WS | LINE_CONTINUATION)+;

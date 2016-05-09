@@ -50,6 +50,9 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Vbe.Interop.Forms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
@@ -74,16 +77,37 @@
     <Compile Include="Annotations\TestMethodAnnotation.cs" />
     <Compile Include="Annotations\TestModuleAnnotation.cs" />
     <Compile Include="Annotations\VBAParserAnnotationFactory.cs" />
+    <Compile Include="Binding\ArgumentList.cs" />
+    <Compile Include="Binding\ArgumentListArgument.cs" />
+    <Compile Include="Binding\ArgumentListArgumentType.cs" />
+    <Compile Include="Binding\LiteralDefaultBinding.cs" />
+    <Compile Include="Binding\InstanceDefaultBinding.cs" />
+    <Compile Include="Binding\ResolutionStatementContext.cs" />
+    <Compile Include="Binding\StatementContext.cs" />
+    <Compile Include="Binding\UnaryOpDefaultBinding.cs" />
+    <Compile Include="Binding\LiteralExpression.cs" />
+    <Compile Include="Binding\InstanceExpression.cs" />
+    <Compile Include="Binding\UnaryOpExpression.cs" />
     <Compile Include="Binding\BindingService.cs" />
     <Compile Include="Binding\BoundExpression.cs" />
+    <Compile Include="Binding\IndexDefaultBinding.cs" />
+    <Compile Include="Binding\IndexExpression.cs" />
     <Compile Include="Binding\MemberAccessExpression.cs" />
     <Compile Include="Binding\MemberAccessProcedurePointerBinding.cs" />
     <Compile Include="Binding\MemberAccessTypeBinding.cs" />
     <Compile Include="Binding\NewExpression.cs" />
+    <Compile Include="Binding\BinaryOpDefaultBinding.cs" />
+    <Compile Include="Binding\TypeOfIsDefaultBinding.cs" />
+    <Compile Include="Binding\BinaryOpExpression.cs" />
+    <Compile Include="Binding\TypeOfIsExpression.cs" />
     <Compile Include="Binding\ProcedurePointerBindingContext.cs" />
+    <Compile Include="Binding\MemberAccessDefaultBinding.cs" />
+    <Compile Include="Binding\SimpleNameDefaultBinding.cs" />
+    <Compile Include="Binding\ParenthesizedExpression.cs" />
     <Compile Include="Binding\SimpleNameProcedurePointerBinding.cs" />
     <Compile Include="Binding\NewTypeBinding.cs" />
     <Compile Include="Binding\DefaultBindingContext.cs" />
+    <Compile Include="Binding\ParenthesizedDefaultBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
     <Compile Include="Binding\ExpressionName.cs" />
@@ -201,13 +225,23 @@
     <Compile Include="Preprocessing\VBAPreprocessorVisitor.cs" />
     <Compile Include="StaTaskScheduler.cs" />
     <Compile Include="Symbols\AccessibilityCheck.cs" />
-    <Compile Include="Symbols\BindingMigrationHelper.cs" />
+    <Compile Include="Symbols\ExternalProcedureDeclaration.cs" />
+    <Compile Include="Symbols\ParserRuleContextHelper.cs" />
     <Compile Include="Symbols\BoundExpressionVisitor.cs" />
     <Compile Include="Symbols\ClassModuleDeclaration.cs" />
     <Compile Include="Symbols\CommentExtensions.cs" />
     <Compile Include="Symbols\DeclarationEventArgs.cs" />
     <Compile Include="Symbols\DeclarationFinder.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
+    <Compile Include="Symbols\ICanBeDefaultMember.cs" />
+    <Compile Include="Symbols\IDeclarationWithParameter.cs" />
+    <Compile Include="Symbols\PropertyLetDeclaration.cs" />
+    <Compile Include="Symbols\PropertySetDeclaration.cs" />
+    <Compile Include="Symbols\PropertyGetDeclaration.cs" />
+    <Compile Include="Symbols\FunctionDeclaration.cs" />
+    <Compile Include="Symbols\SubroutineDeclaration.cs" />
+    <Compile Include="Symbols\TypeHierarchyPass.cs" />
+    <Compile Include="Symbols\TypeAnnotationPass.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
     <Compile Include="Symbols\MemberProcessedEventArgs.cs" />
     <Compile Include="Symbols\ParameterDeclaration.cs" />

@@ -1,87 +1,44 @@
-using System;
+using Antlr4.Runtime;
+using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Binding;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
-using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Binding;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public class IdentifierReferenceResolver
+    public sealed class IdentifierReferenceResolver
     {
         private readonly DeclarationFinder _declarationFinder;
-
-        private enum ContextAccessorType
-        {
-            GetValueOrReference,
-            AssignValue,
-            AssignReference,
-            AssignValueOrReference = AssignValue | AssignReference
-        }
-
         private readonly QualifiedModuleName _qualifiedModuleName;
-
-        private readonly IReadOnlyList<DeclarationType> _moduleTypes;
-        private readonly IReadOnlyList<DeclarationType> _memberTypes;
-        private readonly IReadOnlyList<DeclarationType> _returningMemberTypes;
-
-        private readonly Stack<Declaration> _withBlockQualifiers;
-        private readonly HashSet<RuleContext> _alreadyResolved;
-
+        private readonly Stack<IBoundExpression> _withBlockExpressions;
         private readonly Declaration _moduleDeclaration;
-
         private Declaration _currentScope;
         private Declaration _currentParent;
-
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
 
         public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, DeclarationFinder finder)
         {
             _declarationFinder = finder;
-
             _qualifiedModuleName = qualifiedModuleName;
-
-            _withBlockQualifiers = new Stack<Declaration>();
-            _alreadyResolved = new HashSet<RuleContext>();
-
-            _moduleTypes = new[]
-            {
-                DeclarationType.ProceduralModule,
-                DeclarationType.ClassModule,
-            };
-
-            _memberTypes = new[]
-            {
-                DeclarationType.Procedure,
-                DeclarationType.Function,
-                DeclarationType.PropertyGet,
-                DeclarationType.PropertyLet,
-                DeclarationType.PropertySet,
-            };
-
-            _returningMemberTypes = new[]
-            {
-                DeclarationType.Function,
-                DeclarationType.PropertyGet,
-            };
-
+            _withBlockExpressions = new Stack<IBoundExpression>();
             _moduleDeclaration = finder.MatchName(_qualifiedModuleName.ComponentName)
                 .SingleOrDefault(item =>
                     (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule)
                 && item.QualifiedName.QualifiedModuleName.Equals(_qualifiedModuleName));
-
             SetCurrentScope();
-
+            var typeBindingContext = new TypeBindingContext(_declarationFinder);
+            var procedurePointerBindingContext = new ProcedurePointerBindingContext(_declarationFinder);
             _bindingService = new BindingService(
-                new DefaultBindingContext(_declarationFinder),
-                new TypeBindingContext(_declarationFinder),
-                new ProcedurePointerBindingContext(_declarationFinder));
+                _declarationFinder,
+                new DefaultBindingContext(_declarationFinder, typeBindingContext, procedurePointerBindingContext),
+                typeBindingContext,
+                procedurePointerBindingContext);
             _boundExpressionVisitor = new BoundExpressionVisitor();
         }
 
@@ -89,7 +46,6 @@ namespace Rubberduck.Parsing.Symbols
         {
             _currentScope = _moduleDeclaration;
             _currentParent = _moduleDeclaration;
-            _alreadyResolved.Clear();
         }
 
         public void SetCurrentScope(string memberName, DeclarationType type)
@@ -109,46 +65,39 @@ namespace Rubberduck.Parsing.Symbols
         {
             Declaration qualifier = null;
             var expr = context.withStmtExpression();
-
-            if (expr.NEW() == null)
-            {
-                // TODO: Use valueStmt and resolve expression.
-                qualifier = ResolveInternal(expr.implicitCallStmt_InStmt(), _currentScope, ContextAccessorType.GetValueOrReference);
-            }
-            else
-            {
-                var type = expr.type();
-                var baseType = type.baseType();
-                if (baseType == null)
-                {
-                    string typeExpression = expr.GetText();
-                    var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentScope, typeExpression);
+            var typeExpression = expr.GetText();
+            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, typeExpression, GetInnerMostWithExpression(), ResolutionStatementContext.Undefined);
                     if (boundExpression != null)
                     {
-                        _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(type.complexType(), declaration));
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, identifier, declaration) => CreateReference(expr, identifier, declaration, RubberduckParserState.CreateBindingSelection(expr, exprCtx)));
                         qualifier = boundExpression.ReferencedDeclaration;
                     }
-                }
-            }
             // note: pushes null if unresolved
-            _withBlockQualifiers.Push(qualifier);
+            _withBlockExpressions.Push(boundExpression);
+                }
+
+        private IBoundExpression GetInnerMostWithExpression()
+        {
+            if (_withBlockExpressions.Any())
+            {
+                return _withBlockExpressions.Peek();
+            }
+            return null;
         }
 
         public void ExitWithBlock()
         {
-            _withBlockQualifiers.Pop();
+            _withBlockExpressions.Pop();
         }
 
-        private IdentifierReference CreateReference(ParserRuleContext callSiteContext, Declaration callee, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
+        private IdentifierReference CreateReference(ParserRuleContext callSiteContext, string identifier, Declaration callee, Selection selection, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
         {
-            if (callSiteContext == null || _currentScope == null || _alreadyResolved.Contains(callSiteContext))
+            if (callSiteContext == null || _currentScope == null)
             {
                 return null;
             }
-            var name = callSiteContext.GetText();
-            var selection = callSiteContext.GetSelection();
             var annotations = FindAnnotations(selection.StartLine);
-            return new IdentifierReference(_qualifiedModuleName, _currentScope, _currentParent, name, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement, annotations);
+            return new IdentifierReference(_qualifiedModuleName, _currentScope, _currentParent, identifier, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement, annotations);
         }
 
         private IEnumerable<IAnnotation> FindAnnotations(int line)
@@ -164,811 +113,311 @@ namespace Rubberduck.Parsing.Symbols
             return new List<IAnnotation>();
         }
 
-        private void ResolveType(VBAParser.ICS_S_MembersCallContext context)
+        public void Resolve(VBAParser.OnErrorStmtContext context)
         {
-            var first = context.iCS_S_VariableOrProcedureCall().identifier();
-            var identifiers = new[] { first }.Concat(context.iCS_S_MemberCall()
-                        .Select(member => member.iCS_S_VariableOrProcedureCall().identifier()))
-                        .ToList();
-            ResolveType(identifiers);
-        }
-
-        private Declaration ResolveType(VBAParser.ComplexTypeContext context)
+            if (context.valueStmt() == null)
         {
-            if (context == null)
-            {
-                return null;
+                return;
             }
-
-            var identifiers = context.identifier()
-                .Select(identifier => identifier)
-                .ToList();
-
-            // if there's only 1 identifier, resolve to the tightest-scope match:
-            if (identifiers.Count == 1)
-            {
-                var type = ResolveInScopeType(identifiers.Single().GetText(), _currentScope);
-                if (type != null && !_alreadyResolved.Contains(context))
-                {
-                    type.AddReference(CreateReference(context, type));
-                    _alreadyResolved.Add(context);
+            ResolveLabel(context.valueStmt(), context.valueStmt().GetText());
                 }
-                return type;
-            }
 
-            // if there's 2 or more identifiers, resolve to the deepest path:
-            return ResolveType(identifiers);
-        }
-
-        private Declaration ResolveType(IList<VBAParser.IdentifierContext> identifiers)
+        public void Resolve(VBAParser.ErrorStmtContext context)
         {
-            var first = identifiers[0].GetText();
-            var projectMatch = _declarationFinder.FindProject(first, _currentScope);
-
-            if (projectMatch != null)
-            {
-                var projectReference = CreateReference(identifiers[0], projectMatch);
-
-                // matches current project. 2nd identifier could be:
-                // - standard module (only if there's a 3rd identifier)
-                // - class module
-                // - UDT
-                // - Enum
-                if (identifiers.Count == 3)
-                {
-                    var moduleMatch = _declarationFinder.FindStdModule(identifiers[1].GetText(), _currentScope);
-                    if (moduleMatch != null)
-                    {
-                        var moduleReference = CreateReference(identifiers[1], moduleMatch);
-
-                        // 3rd identifier can only be a UDT
-                        var udtMatch = _declarationFinder.FindUserDefinedType(identifiers[2].GetText(), moduleMatch);
-                        if (udtMatch != null)
-                        {
-                            var udtReference = CreateReference(identifiers[2], udtMatch);
-
-                            if (!_alreadyResolved.Contains(projectReference.Context))
-                            {
-                                projectMatch.AddReference(projectReference);
-                                _alreadyResolved.Add(projectReference.Context);
+            ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
                             }
 
-                            if (!_alreadyResolved.Contains(moduleReference.Context))
+        private void ResolveLabel(ParserRuleContext context, string label)
                             {
-                                moduleMatch.AddReference(moduleReference);
-                                _alreadyResolved.Add(moduleReference.Context);
-                            }
-
-                            if (!_alreadyResolved.Contains(udtReference.Context))
+            var labelDeclaration = _bindingService.ResolveGoTo(_currentParent, label);
+            if (labelDeclaration != null)
                             {
-                                udtMatch.AddReference(udtReference);
-                                _alreadyResolved.Add(udtReference.Context);
+                labelDeclaration.AddReference(CreateReference(context, context.GetText(), labelDeclaration, context.GetSelection()));
                             }
-
-                            return udtMatch;
                         }
-                        var enumMatch = _declarationFinder.FindEnum(identifiers[2].GetText(), moduleMatch);
-                        if (enumMatch != null)
-                        {
-                            var enumReference = CreateReference(identifiers[2], enumMatch);
 
-                            if (!_alreadyResolved.Contains(projectReference.Context))
+        private void ResolveDefault(ParserRuleContext context, string expression, ResolutionStatementContext statementContext = ResolutionStatementContext.Undefined, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
                             {
-                                projectMatch.AddReference(projectReference);
-                                _alreadyResolved.Add(projectReference.Context);
-                            }
-
-                            if (!_alreadyResolved.Contains(moduleReference.Context))
+            var boundExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, expression, GetInnerMostWithExpression(), statementContext);
+            if (boundExpression != null)
                             {
-                                moduleMatch.AddReference(moduleReference);
-                                _alreadyResolved.Add(moduleReference.Context);
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, identifier, declaration) => CreateReference(context, identifier, declaration, RubberduckParserState.CreateBindingSelection(context, exprCtx), isAssignmentTarget, hasExplicitLetStatement));
                             }
-
-                            if (!_alreadyResolved.Contains(enumReference.Context))
-                            {
-                                enumMatch.AddReference(enumReference);
-                                _alreadyResolved.Add(enumReference.Context);
-                            }
-
-                            return enumMatch;
-                        }
-                    }
-                }
                 else
                 {
-                    if (projectReference != null && !_alreadyResolved.Contains(projectReference.Context))
-                    {
-                        projectMatch.AddReference(projectReference);
-                        _alreadyResolved.Add(projectReference.Context);
+                Debug.WriteLine(string.Format("Failed to resolve {0}. Possible causes include: COM Coclass/Interface mixup / Alias / Bug in the resolver.", expression));
                     }
-
-                    var match = _declarationFinder.FindClass(projectMatch, identifiers[1].GetText())
-                                ?? _declarationFinder.FindUserDefinedType(identifiers[1].GetText())
-                                ?? _declarationFinder.FindEnum(identifiers[1].GetText());
-                    if (match != null)
-                    {
-                        var reference = CreateReference(identifiers[1], match);
-                        if (reference != null && !_alreadyResolved.Contains(reference.Context))
-                        {
-                            match.AddReference(reference);
-                            _alreadyResolved.Add(reference.Context);
-                        }
-                        return match;
-                    }
-                }
-            }
-
-            // first identifier didn't match current project.
-            // if there are 3 identifiers, type isn't in current project.
-            if (identifiers.Count != 3)
-            {
-
-                var moduleMatch = _declarationFinder.FindStdModule(identifiers[0].GetText(), projectMatch);
-                if (moduleMatch != null)
-                {
-                    var moduleReference = CreateReference(identifiers[0], moduleMatch);
-
-                    // 2nd identifier can only be a UDT or enum
-                    var match = _declarationFinder.FindUserDefinedType(identifiers[1].GetText(), moduleMatch)
-                            ?? _declarationFinder.FindEnum(identifiers[1].GetText(), moduleMatch);
-                    if (match != null)
-                    {
-                        var reference = CreateReference(identifiers[1], match);
-
-                        if (!_alreadyResolved.Contains(moduleReference.Context))
-                        {
-                            moduleMatch.AddReference(moduleReference);
-                            _alreadyResolved.Add(moduleReference.Context);
                         }
 
-                        if (!_alreadyResolved.Contains(reference.Context))
-                        {
-                            match.AddReference(reference);
-                            _alreadyResolved.Add(reference.Context);
+        private void ResolveType(ParserRuleContext context, string expression)
+            {
+            var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, expression);
+            if (boundExpression != null)
+                {
+                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, (exprCtx, identifier, declaration) => CreateReference(context, identifier, declaration, RubberduckParserState.CreateBindingSelection(context, exprCtx)));
+                        }
                         }
 
-                        return match;
-                    }
-                }
+        public void Resolve(VBAParser.GoToStmtContext context)
+        {
+            ResolveLabel(context.valueStmt(), context.valueStmt().GetText());
             }
 
-            return null;
+        public void Resolve(VBAParser.OnGoToStmtContext context)
+            {
+            ResolveDefault(context.valueStmt()[0], context.valueStmt()[0].GetText());
+            for (int labelIndex = 1; labelIndex < context.valueStmt().Count; labelIndex++)
+            {
+                ResolveLabel(context.valueStmt()[labelIndex], context.valueStmt()[labelIndex].GetText());
+            }
         }
 
-        private Declaration ResolveInScopeType(string identifier, Declaration scope)
+        public void Resolve(VBAParser.GoSubStmtContext context)
         {
-            var matches = _declarationFinder.MatchTypeName(identifier).ToList();
-            if (matches.Count == 1)
-            {
-                return matches.Single();
+            ResolveLabel(context.valueStmt(), context.valueStmt().GetText());
             }
 
-            if (matches.Count(match => match.ProjectId == scope.ProjectId) == 1)
+        public void Resolve(VBAParser.OnGoSubStmtContext context)
             {
-                return matches.Single(match => match.ProjectId == scope.ProjectId);
+            ResolveDefault(context.valueStmt()[0], context.valueStmt()[0].GetText());
+            for (int labelIndex = 1; labelIndex < context.valueStmt().Count; labelIndex++)
+            {
+                ResolveLabel(context.valueStmt()[labelIndex], context.valueStmt()[labelIndex].GetText());
+            }
             }
 
-            // more than one matching identifiers found.
-            // if it matches a UDT or enum in the current scope, resolve to that type.
-            var sameScopeUdt = matches.Where(declaration =>
-                declaration.ProjectId == scope.ProjectId
-                && (declaration.DeclarationType == DeclarationType.UserDefinedType
-                || declaration.DeclarationType == DeclarationType.Enumeration)
-                && declaration.ParentDeclaration.Equals(scope))
-                .ToList();
-
-            if (sameScopeUdt.Count == 1)
+        public void Resolve(VBAParser.RedimStmtContext context)
             {
-                return sameScopeUdt.Single();
-            }
-
-            // todo: try to resolve identifier using referenced projects
-
-            return null;
-        }
-
-        private Declaration ResolveType(Declaration parent)
+            foreach (var redimStmt in context.redimSubStmt())
         {
-            if (parent != null && (parent.DeclarationType == DeclarationType.UserDefinedType
-                                || parent.DeclarationType == DeclarationType.Enumeration
-                                || parent.DeclarationType == DeclarationType.Project
-                                || parent.DeclarationType == DeclarationType.ProceduralModule
-                                || (parent.DeclarationType == DeclarationType.ClassModule && (parent.IsBuiltIn || parent.HasPredeclaredId))))
-            {
-                return parent;
-            }
-
-            if (parent == null || parent.AsTypeName == null)
-            {
-                return null;
-            }
-
-            var identifier = parent.AsTypeName.Contains(".")
-                ? parent.AsTypeName.Split('.').Last() // bug: this can't be right
-                : parent.AsTypeName;
-
-            identifier = identifier.StartsWith("VT_") ? parent.IdentifierName : identifier;
-
-            var matches = _declarationFinder.MatchTypeName(identifier).ToList();
-            if (matches.Count == 1)
-            {
-                return matches.Single();
-            }
-
-            var result = matches.Where(item =>
-                (item.DeclarationType == DeclarationType.UserDefinedType
-                || item.DeclarationType == DeclarationType.Enumeration)
-                && item.ProjectId == _currentScope.ProjectId
-                && item.ComponentName == _currentScope.ComponentName)
-            .ToList();
-
-            if (!result.Any())
-            {
-                result = matches.Where(item =>
-                    _moduleTypes.Contains(item.DeclarationType)
-                    && item.ProjectId == _currentScope.ProjectId)
-                .ToList();
-            }
-
-            if (!result.Any())
-            {
-                result = matches.Where(item =>
-                    _moduleTypes.Contains(item.DeclarationType))
-                .ToList();
-            }
-
-            return result.Count == 1 ? result.SingleOrDefault() :
-                matches.Count == 1 ? matches.First() : null;
-        }
-
-        private static readonly Type[] IdentifierContexts =
+                foreach (var dimSpec in redimStmt.subscripts().subscript())
         {
-            typeof (VBAParser.IdentifierContext),
-        };
-
-        private Declaration ResolveInternal(ParserRuleContext callSiteContext, Declaration localScope, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, VBAParser.DictionaryCallStmtContext fieldCall = null, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
-        {
-            if (callSiteContext == null)
+                    foreach (var expr in dimSpec.valueStmt())
             {
-                return null;
+                        ResolveDefault(expr, expr.GetText());
+            }
+            }
+            }
             }
 
-            if (!IdentifierContexts.Contains(callSiteContext.GetType()))
+        public void Resolve(VBAParser.WhileWendStmtContext context)
             {
-                throw new ArgumentException("'" + callSiteContext.GetType().Name + "' is not an identifier context.", "callSiteContext");
+            ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
             }
 
-            if (localScope == null)
+        public void Resolve(VBAParser.DoLoopStmtContext context)
             {
-                localScope = _currentScope;
-            }
-
-            if (localScope == null)
-            {
-                return null;
-            }
-
-            var parentContext = callSiteContext.Parent;
-            var identifierName = callSiteContext.GetText();
-            if (identifierName.StartsWith("[") && identifierName.EndsWith("]"))
-            {
-                // square-bracketed identifier may contain a '!' symbol; identifier name is at the left of it.
-                identifierName = identifierName.Substring(1, identifierName.Length - 2)/*.Split('!').First()*/;
-                // problem, is that IdentifierReference should work off IDENTIFIER tokens, not AmbiguousIdentifierContext.
-                // not sure what the better fix is. 
-            }
-
-            var sibling = parentContext.ChildCount > 1 ? parentContext.GetChild(1) : null;
-            var hasStringQualifier = sibling is VBAParser.TypeHintContext && sibling.GetText() == "$";
-
-            Declaration callee = null;
-            if (localScope.DeclarationType == DeclarationType.UserDefinedType)
-            {
-                callee = _declarationFinder.MatchName(identifierName).SingleOrDefault(item => item.Context != null && item.Context.Parent == localScope.Context);
-            }
-            else
-            {
-                callee = Resolve(identifierName, localScope, accessorType, parentContext is VBAParser.ICS_S_VariableOrProcedureCallContext, isAssignmentTarget, hasStringQualifier);
-            }
-
-
-            if (callee == null)
-            {
-                // calls inside With block can still refer to identifiers in _currentScope
-                localScope = _currentScope;
-                identifierName = callSiteContext.GetText();
-                callee = FindLocalScopeDeclaration(identifierName, localScope, parentContext is VBAParser.ICS_S_VariableOrProcedureCallContext, isAssignmentTarget)
-                      ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
-                      ?? FindModuleScopeDeclaration(identifierName, localScope)
-                      ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, accessorType, hasStringQualifier);
-            }
-
-            if (callee == null)
-            {
-                return null;
-            }
-
-            var reference = CreateReference(callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement);
-            if (reference != null && !_alreadyResolved.Contains(reference.Context))
-            {
-                callee.AddReference(reference);
-                _alreadyResolved.Add(reference.Context);
-                _alreadyResolved.Add(callSiteContext);
-            }
-
-            if (fieldCall != null)
-            {
-                return ResolveInternal(fieldCall, callee);
-            }
-
-            return callee;
-        }
-
-        private Declaration Resolve(string identifierName, Declaration localScope, ContextAccessorType accessorType, bool parentContextIsVariableOrProcedureCall = false, bool isAssignmentTarget = false, bool hasStringQualifier = false)
-        {
-            return FindLocalScopeDeclaration(identifierName, localScope, parentContextIsVariableOrProcedureCall, isAssignmentTarget)
-                ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
-                ?? FindModuleScopeDeclaration(identifierName, localScope)
-                ?? FindProjectScopeDeclaration(identifierName, Equals(localScope, _currentScope) ? null : localScope, accessorType, hasStringQualifier);
-        }
-
-        private Declaration ResolveInternal(VBAParser.ICS_S_VariableOrProcedureCallContext context, Declaration localScope, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-            if (BindingMigrationHelper.HasParent<VBAParser.ImplementsStmtContext>(context))
-            {
-                return null;
-            }
-            if (BindingMigrationHelper.HasParent<VBAParser.VsAddressOfContext>(context))
-            {
-                return null;
-            }
-
-            var identifierContext = context.identifier();
-            var fieldCall = context.dictionaryCallStmt();
-
-            var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
-            if (result != null && localScope != null /*&& !localScope.DeclarationType.HasFlag(DeclarationType.Member)*/)
-            {
-                var reference = CreateReference(context.identifier(), result, isAssignmentTarget);
-                if (reference != null)
-                {
-                    result.AddReference(reference);
-                    //localScope.AddMemberCall(reference);
-                }
-            }
-
-            return result;
-        }
-
-        private Declaration ResolveInternal(VBAParser.DictionaryCallStmtContext fieldCall, Declaration parent, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
-        {
-            if (fieldCall == null)
-            {
-                return null;
-            }
-
-            var parentType = ResolveType(parent);
-            if (parentType == null)
-            {
-                return null;
-            }
-
-            var fieldName = fieldCall.identifier().GetText();
-            var result = _declarationFinder.MatchName(fieldName).SingleOrDefault(declaration => declaration.ParentScope == parentType.Scope);
-            if (result == null)
-            {
-                return null;
-            }
-
-            var identifierContext = fieldCall.identifier();
-            var reference = CreateReference(identifierContext, result, isAssignmentTarget, hasExplicitLetStatement);
-            result.AddReference(reference);
-            _alreadyResolved.Add(reference.Context);
-
-            return result;
-        }
-
-        private Declaration ResolveInternal(VBAParser.ICS_S_ProcedureOrArrayCallContext context, Declaration localScope, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-
-            var identifierContext = context.identifier();
-            var fieldCall = context.dictionaryCallStmt();
-            // todo: understand WTF [baseType] is doing in that grammar rule...
-
-            if (localScope == null)
-            {
-                localScope = _currentScope;
-            }
-
-            var result = ResolveInternal(identifierContext, localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
-            if (result != null && !localScope.DeclarationType.HasFlag(DeclarationType.Member))
-            {
-                localScope.AddMemberCall(CreateReference(context.identifier(), result));
-            }
-
-            return result;
-        }
-
-        private Declaration ResolveInternal(VBAParser.ICS_S_MembersCallContext context, ContextAccessorType accessorType, Declaration localScope = null, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-
-            Declaration parent;
-            if (_withBlockQualifiers.Any())
-            {
-                parent = _withBlockQualifiers.Peek();
-                if (parent == null)
-                {
-                    // if parent is an unknown type, continuing any further will only cause issues.
-                    return null;
-                }
-            }
-            else
-            {
-                if (localScope == null)
-                {
-                    localScope = _currentScope;
-                }
-                parent = ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), localScope, accessorType, hasExplicitLetStatement)
-                      ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), localScope, accessorType, hasExplicitLetStatement);
-            }
-
-            var chainedCalls = context.iCS_S_MemberCall();
-            var lastCall = chainedCalls.Last();
-            foreach (var memberCall in chainedCalls)
-            {
-                // if we're on the left side of an assignment, only the last memberCall is the assignment target.
-                var isLast = memberCall.Equals(lastCall);
-                var accessor = isLast
-                    ? accessorType
-                    : ContextAccessorType.GetValueOrReference;
-                var isTarget = isLast && isAssignmentTarget;
-
-                var parentType = ResolveType(parent);
-
-                var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType, accessor, hasExplicitLetStatement, isTarget)
-                             ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType, accessor, hasExplicitLetStatement, isTarget);
-
-                if (member == null && parent != null)
-                {
-                    var parentComTypeName = string.Empty;
-                    Property property = null;
-                    try
-                    {
-                        property = parent.QualifiedName.QualifiedModuleName.Component.Properties.Item("Parent");
-                    }
-                    catch (NotSupportedException)
-                    {
-                        // okay, no "Parent" property. tough luck.
-                    }
-
-                    if (property != null)
-                    {
-                        parentComTypeName = ComHelper.GetTypeName(property.Object);
-                    }
-
-                    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
-                    parentType = _declarationFinder.FindClass(_moduleDeclaration.ParentDeclaration, parentComTypeName);
-                    member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType, accessor, hasExplicitLetStatement, isTarget)
-                                 ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType, accessor, hasExplicitLetStatement, isTarget);
-                }
-
-                if (member == null)
-                {
-                    // if member still can't be found, it's hopeless
-                    return null;
-                }
-
-                var memberReference = CreateReference(GetMemberCallIdentifierContext(memberCall), parent);
-                member.AddMemberCall(memberReference);
-                parent = ResolveType(member);
-            }
-
-            var fieldCall = context.dictionaryCallStmt();
-            if (fieldCall == null)
-            {
-                return parent;
-            }
-
-            return ResolveInternal(fieldCall, parent, hasExplicitLetStatement, isAssignmentTarget);
-        }
-
-        private Declaration ResolveInternal(VBAParser.ImplicitCallStmt_InStmtContext callSiteContext, Declaration localScope, ContextAccessorType accessorType, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
-        {
-            if (callSiteContext == null)
-            {
-                return null;
-            }
-
-            var dictionaryCall = callSiteContext.iCS_S_DictionaryCall();
-            var fieldCall = dictionaryCall == null ? null : dictionaryCall.dictionaryCallStmt();
-
-            return ResolveInternal(callSiteContext.iCS_S_VariableOrProcedureCall(), localScope, accessorType, hasExplicitLetStatement, isAssignmentTarget)
-                   ?? ResolveInternal(callSiteContext.iCS_S_ProcedureOrArrayCall(), localScope, accessorType, hasExplicitLetStatement, isAssignmentTarget)
-                   ?? ResolveInternal(callSiteContext.iCS_S_MembersCall(), accessorType, localScope, hasExplicitLetStatement, isAssignmentTarget)
-                   ?? ResolveInternal(callSiteContext.iCS_S_DictionaryCall(), localScope, accessorType, fieldCall, hasExplicitLetStatement, isAssignmentTarget);
-        }
-
-        private Declaration ResolveInternal(VBAParser.ICS_B_ProcedureCallContext context)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-
-            var identifierContext = context.identifier();
-            var callee = ResolveInternal(identifierContext, _currentScope);
-            if (callee == null)
-            {
-                return null;
-            }
-
-            var reference = CreateReference(identifierContext, callee);
-            if (reference != null)
-            {
-                callee.AddReference(reference);
-                _alreadyResolved.Add(reference.Context);
-            }
-            return callee;
-        }
-
-        public void Resolve(VBAParser.ICS_B_ProcedureCallContext context)
-        {
-            if (_alreadyResolved.Contains(context))
+            if (context.valueStmt() == null)
             {
                 return;
             }
+            ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
+            }
 
-            ResolveInternal(context);
+        public void Resolve(VBAParser.BlockIfThenElseContext context)
+            {
+            ResolveDefault(context.ifBlockStmt().ifConditionStmt(), context.ifBlockStmt().ifConditionStmt().GetText());
+            if (context.ifElseIfBlockStmt() != null)
+            {
+                foreach (var elseIfBlock in context.ifElseIfBlockStmt())
+            {
+                    ResolveDefault(elseIfBlock.ifConditionStmt(), elseIfBlock.ifConditionStmt().GetText());
+            }
+        }
         }
 
-        public void Resolve(VBAParser.ICS_B_MemberProcedureCallContext context)
+        public void Resolve(VBAParser.InlineIfThenElseContext context)
         {
-            if (_alreadyResolved.Contains(context))
-            {
-                return;
-            }
+            ResolveDefault(context.ifConditionStmt(), context.ifConditionStmt().GetText());
+        }
 
-            var parentScope = ResolveInternal(context.implicitCallStmt_InStmt(), _currentScope, ContextAccessorType.GetValueOrReference);
-            var parentType = ResolveType(parentScope);
-
-            if (_withBlockQualifiers.Any())
+        public void Resolve(VBAParser.SelectCaseStmtContext context)
+        {
+            ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
+            if (context.sC_Case() != null)
             {
-                parentType = ResolveType(_withBlockQualifiers.Peek());
-                parentScope = ResolveInternal(context.implicitCallStmt_InStmt(), parentType, ContextAccessorType.GetValueOrReference)
-                              ?? ResolveInternal(context.identifier(), parentType);
-                parentType = ResolveType(parentScope);
-            }
-
-            var identifierContext = context.identifier();
-            Declaration member = null;
-            if (parentType != null)
+                foreach (var caseClauseBlock in context.sC_Case())
             {
-                member = _declarationFinder
-                    .MatchName(identifierContext.GetText())
-                    .SingleOrDefault(item => 
-                        item.QualifiedName.QualifiedModuleName == parentType.QualifiedName.QualifiedModuleName
-                        && item.DeclarationType != DeclarationType.Event);
-            }
-            else
+                    var caseClause = caseClauseBlock.sC_Cond();
+                    if (caseClause is VBAParser.CaseCondSelectionContext)
             {
-                if (parentScope != null)
+                        foreach (var selectClause in ((VBAParser.CaseCondSelectionContext)caseClause).sC_Selection())
+            {
+                            if (selectClause is VBAParser.CaseCondIsContext)
                 {
-                    var parentComTypeName = string.Empty;
-                    Property property = null;
-                    try
-                    {
-                        property = parentScope.QualifiedName.QualifiedModuleName.Component.Properties.Item("Parent");
-                    }
-                    catch (NotSupportedException)
-                    {
-                        // okay, there's no "Parent" property there. move on.
-                    }
-
-                    if (property != null)
-                    {
-                        parentComTypeName = ComHelper.GetTypeName(property.Object);
-                    }
-
-                    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
-                    parentType = _declarationFinder.FindClass(_moduleDeclaration.ParentDeclaration, parentComTypeName);
-                    member = ResolveInternal(identifierContext, parentType);
+                                var ctx = (VBAParser.CaseCondIsContext)selectClause;
+                                ResolveDefault(ctx.valueStmt(), ctx.valueStmt().GetText());
                 }
-            }
-
-            if (member != null)
-            {
-                var reference = CreateReference(identifierContext, member);
-
-                parentScope.AddMemberCall(CreateReference(context.identifier(), member));
-                member.AddReference(reference);
-                _alreadyResolved.Add(reference.Context);
-            }
-            else
-            {
-                return;
-            }
-
-            var fieldCall = context.dictionaryCallStmt();
-            ResolveInternal(fieldCall, member);
-        }
-
-        public void Resolve(VBAParser.ICS_S_VariableOrProcedureCallContext context)
+                            else if (selectClause is VBAParser.CaseCondToContext)
         {
-            ResolveInternal(context, _currentScope);
+                                var ctx = (VBAParser.CaseCondToContext)selectClause;
+                                ResolveDefault(ctx.valueStmt()[0], ctx.valueStmt()[0].GetText());
+                                ResolveDefault(ctx.valueStmt()[0], ctx.valueStmt()[0].GetText());
+            }
+                            else
+            {
+                                var ctx = (VBAParser.CaseCondValueContext)selectClause;
+                                ResolveDefault(ctx.valueStmt(), ctx.valueStmt().GetText());
+            }
+            }
         }
-
-        public void Resolve(VBAParser.ICS_S_ProcedureOrArrayCallContext context)
-        {
-            ResolveInternal(context, _currentScope);
-        }
-
-        public void Resolve(VBAParser.ICS_S_MembersCallContext context)
-        {
-            if (context == null || _alreadyResolved.Contains(context))
-            {
-                return;
             }
-
-            if (context.Parent.Parent.Parent is VBAParser.VsNewContext)
-            {
-                // if we're in a ValueStatement/New context, we're actually resolving for a type:
-                ResolveType(context);
-                return;
             }
-
-            Declaration parent;
-            if (_withBlockQualifiers.Any())
-            {
-                parent = ResolveType(_withBlockQualifiers.Peek());
-                if (parent == null)
-                {
-                    return;
-                }
-            }
-            else
-            {
-                parent = ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), _currentScope)
-                        ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), _currentScope);
-                parent = ResolveType(parent);
-            }
-
-            if (parent != null && parent.Context != null)
-            {
-                var identifierContext = ((dynamic)parent.Context).identifier() as VBAParser.IdentifierContext;
-
-                var parentReference = CreateReference(identifierContext, parent);
-                if (parentReference != null)
-                {
-                    parent.AddReference(parentReference);
-                    _alreadyResolved.Add(parentReference.Context);
-                }
-            }
-
-            if (parent == null)
-            {
-
-
-                return;
-            }
-
-            var chainedCalls = context.iCS_S_MemberCall();
-            foreach (var memberCall in chainedCalls)
-            {
-                var notationToken = memberCall.children[0];
-                if (notationToken.GetText() == "!")
-                {
-                    // the memberCall is a shorthand reference to the type's default member.
-                    // since the reference isn't explicit, we don't need to care for it.
-                    // (and we couldn't handle it if we wanted to, since we aren't parsing member attributes)
-                    return;
-                }
-
-                var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parent)
-                          ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parent);
-
-                if (member == null && parent != null && parent.QualifiedName.QualifiedModuleName.Component != null)
-                {
-                    var parentComTypeName = string.Empty;
-                    Property property = null;
-                    try
-                    {
-                        property = parent.QualifiedName.QualifiedModuleName.Component.Properties.Item("Parent");
-                    }
-                    catch
-                    {
-                        // not all document components have a "Parent" property - that will blow up
-                    }
-
-                    if (property != null)
-                    {
-                        parentComTypeName = ComHelper.GetTypeName(property.Object);
-                    }
-
-                    // if the member can't be found on the parentType, maybe we're looking at a document or form module?
-                    var parentType = _declarationFinder.FindClass(null, parentComTypeName);
-                    member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parentType)
-                                    ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parentType);
-                }
-
-                if (member == null)
-                {
-                    return;
-                }
-
-                member.AddReference(CreateReference(GetMemberCallIdentifierContext(memberCall), member));
-                parent = ResolveType(member);
-            }
-
-            var fieldCall = context.dictionaryCallStmt();
-            if (fieldCall == null)
-            {
-                return;
-            }
-
-            ResolveInternal(fieldCall, parent);
-            _alreadyResolved.Add(context);
-        }
-
-        private VBAParser.IdentifierContext GetMemberCallIdentifierContext(VBAParser.ICS_S_MemberCallContext callContext)
-        {
-            if (callContext == null)
-            {
-                return null;
-            }
-
-            var procedureOrArrayCall = callContext.iCS_S_ProcedureOrArrayCall();
-            if (procedureOrArrayCall != null)
-            {
-                return procedureOrArrayCall.identifier();
-            }
-
-            var variableOrProcedureCall = callContext.iCS_S_VariableOrProcedureCall();
-            if (variableOrProcedureCall != null)
-            {
-                return variableOrProcedureCall.identifier();
-            }
-
-            return null;
-        }
-
-        public void Resolve(VBAParser.ICS_S_DictionaryCallContext context)
-        {
-            TryResolve(context);
-        }
-
-        private void TryResolve<TContext>(TContext context) where TContext : ParserRuleContext
-        {
-            if (context == null || _alreadyResolved.Contains(context))
-            {
-                return;
-            }
-
-            ResolveInternal(context, _currentScope);
         }
 
         public void Resolve(VBAParser.LetStmtContext context)
-        {
-            var leftSide = context.implicitCallStmt_InStmt();
+            {
             var letStatement = context.LET();
-            ResolveInternal(leftSide, _currentScope, ContextAccessorType.AssignValue, letStatement != null, true);
-        }
+            ResolveDefault(context.valueStmt()[0], context.valueStmt()[0].GetText(), ResolutionStatementContext.LetStatement, true, letStatement != null);
+            ResolveDefault(context.valueStmt()[1], context.valueStmt()[1].GetText());
+            }
 
         public void Resolve(VBAParser.SetStmtContext context)
         {
-            var leftSide = context.implicitCallStmt_InStmt();
-            ResolveInternal(leftSide, _currentScope, ContextAccessorType.AssignReference, false, true);
+            ResolveDefault(context.valueStmt()[0], context.valueStmt()[0].GetText(), ResolutionStatementContext.SetStatement, true, false);
+            ResolveDefault(context.valueStmt()[1], context.valueStmt()[1].GetText());
+            }
+
+        public void Resolve(VBAParser.ExplicitCallStmtContext context)
+            {
+            ResolveDefault(context.explicitCallStmtExpression(), context.explicitCallStmtExpression().GetText(), ResolutionStatementContext.CallStatement);
+                }
+
+        public void Resolve(VBAParser.ConstStmtContext context)
+            {
+            foreach (var constStmt in context.constSubStmt())
+                {
+                ResolveDefault(constStmt.valueStmt(), constStmt.valueStmt().GetText());
+                    }
+                    }
+
+        public void Resolve(VBAParser.EraseStmtContext context)
+                    {
+            foreach (var expr in context.valueStmt())
+                {
+                ResolveDefault(expr, expr.GetText());
+                }
+            }
+
+        public void Resolve(VBAParser.OpenStmtContext context)
+            {
+            foreach (var expr in context.valueStmt())
+        {
+                ResolveDefault(expr, expr.GetText());
+            }
+            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
+        }
+
+        public void Resolve(VBAParser.CloseStmtContext context)
+        {
+            foreach (var expr in context.fileNumber())
+            {
+                ResolveDefault(expr.valueStmt(), expr.valueStmt().GetText());
+            }
+            }
+
+        public void Resolve(VBAParser.SeekStmtContext context)
+            {
+            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
+            ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
+            }
+
+        public void Resolve(VBAParser.LockStmtContext context)
+        {
+            foreach (var expr in context.valueStmt())
+            {
+                ResolveDefault(expr, expr.GetText());
+            }
+        }
+
+        public void Resolve(VBAParser.UnlockStmtContext context)
+        {
+            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
+            foreach (var expr in context.valueStmt())
+            {
+                ResolveDefault(expr, expr.GetText());
+            }
+            }
+
+        public void Resolve(VBAParser.LineInputStmtContext context)
+                    {
+            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
+            ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
+                    }
+
+        public void Resolve(VBAParser.WidthStmtContext context)
+                    {
+            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
+            ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
+            }
+
+        public void Resolve(VBAParser.PrintStmtContext context)
+            {
+            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
+            foreach (var expr in context.outputList().outputList_Expression())
+            {
+                if (expr.valueStmt() != null)
+        {
+                    ResolveDefault(expr.valueStmt(), expr.valueStmt().GetText());
+        }
+                ResolveArgsCall(expr.argsCall());
+        }
+            }
+
+        public void Resolve(VBAParser.WriteStmtContext context)
+            {
+            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
+            foreach (var expr in context.outputList().outputList_Expression())
+            {
+                if (expr.valueStmt() != null)
+                {
+                    ResolveDefault(expr.valueStmt(), expr.valueStmt().GetText());
+                }
+                ResolveArgsCall(expr.argsCall());
+            }
+            }
+
+        public void Resolve(VBAParser.InputStmtContext context)
+                {
+            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
+            foreach (var expr in context.valueStmt())
+            {
+                ResolveDefault(expr, expr.GetText());
+            }
+                }
+
+        public void Resolve(VBAParser.PutStmtContext context)
+                    {
+            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
+            foreach (var expr in context.valueStmt())
+                    {
+                ResolveDefault(expr, expr.GetText());
+                    }
+                }
+
+        public void Resolve(VBAParser.GetStmtContext context)
+                {
+            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
+            foreach (var expr in context.valueStmt())
+            {
+                ResolveDefault(expr, expr.GetText());
+        }
+            }
+
+        public void Resolve(VBAParser.LsetStmtContext context)
+            {
+            foreach (var expr in context.valueStmt())
+            {
+                ResolveDefault(expr, expr.GetText());
+        }
+        }
+
+        public void Resolve(VBAParser.RsetStmtContext context)
+            {
+            foreach (var expr in context.valueStmt())
+        {
+                ResolveDefault(expr, expr.GetText());
+        }
         }
 
         public void Resolve(VBAParser.AsTypeClauseContext context)
@@ -981,453 +430,120 @@ namespace Rubberduck.Parsing.Symbols
             var baseType = asType.baseType();
             if (baseType != null)
             {
+                // Fixed-Length strings can have a constant-name as length that is a simple-name-expression that also has to be resolved.
+                var length = context.fieldLength();
+                if (context.fieldLength() != null && context.fieldLength().identifier() != null)
+                {
+                    ResolveDefault(context.fieldLength().identifier(), context.fieldLength().identifier().GetText());
+                }
                 return;
             }
-            string typeExpression = asType.complexType().GetText();
-            var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentScope, typeExpression);
-            if (boundExpression != null)
-            {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(asType.complexType(), declaration));
-            }
+            ResolveType(asType.complexType(), asType.complexType().GetText());
         }
 
         public void Resolve(VBAParser.ForNextStmtContext context)
         {
-            var identifiers = context.identifier();
-            var identifier = ResolveInternal(identifiers[0], _currentScope, ContextAccessorType.AssignValue, null, false, true);
-            if (identifier == null)
+            var firstExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt()[0].GetText(), GetInnerMostWithExpression(), ResolutionStatementContext.Undefined);
+            if (firstExpression != null)
             {
-                return;
-            }
-
             // each iteration counts as an assignment
-            var assignmentReference = CreateReference(identifiers[0], identifier, true);
-            identifier.AddReference(assignmentReference);
-
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], exprCtx), true));
             // each iteration also counts as a plain usage
-            var usageReference = CreateReference(identifiers[0], identifier);
-            identifier.AddReference(usageReference);
-
-            if (identifiers.Count > 1)
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], exprCtx)));
+            }
+            for (int exprIndex = 1; exprIndex < context.valueStmt().Count; exprIndex++)
             {
-                var endForBlockReference = CreateReference(identifiers[1], identifier);
-                identifier.AddReference(endForBlockReference);
+                ResolveDefault(context.valueStmt()[exprIndex], context.valueStmt()[exprIndex].GetText());
             }
         }
 
         public void Resolve(VBAParser.ForEachStmtContext context)
         {
-            var identifiers = context.identifier();
-            var identifier = ResolveInternal(identifiers[0], _currentScope, ContextAccessorType.AssignValue, null, false, true);
-            if (identifier == null)
+            var firstExpression = _bindingService.ResolveDefault(_moduleDeclaration, _currentParent, context.valueStmt()[0].GetText(), GetInnerMostWithExpression(), ResolutionStatementContext.Undefined);
+            if (firstExpression != null)
             {
-                return;
+                // each iteration counts as an assignment
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], exprCtx), true));
+                // each iteration also counts as a plain usage
+                _boundExpressionVisitor.AddIdentifierReferences(firstExpression, (exprCtx, identifier, declaration) => CreateReference(context.valueStmt()[0], identifier, declaration, RubberduckParserState.CreateBindingSelection(context.valueStmt()[0], exprCtx)));
             }
 
-            // each iteration counts as an assignment
-            var assignmentReference = CreateReference(identifiers[0], identifier, true);
-            identifier.AddReference(assignmentReference);
-
-            // each iteration also counts as a plain usage - CreateReference will return null here, need to create it manually.
-            var name = identifiers[0].GetText();
-            var selection = identifiers[0].GetSelection();
-            var annotations = FindAnnotations(selection.StartLine);
-            var usageReference = new IdentifierReference(_qualifiedModuleName, _currentScope, _currentParent, name, selection, identifiers[0], identifier, false, false, annotations);
-            identifier.AddReference(usageReference);
-
-            if (identifiers.Count > 1)
+            for (int exprIndex = 1; exprIndex < context.valueStmt().Count; exprIndex++)
             {
-                identifier.AddReference(CreateReference(identifiers[1], identifier));
+                ResolveDefault(context.valueStmt()[exprIndex], context.valueStmt()[exprIndex].GetText());
             }
         }
 
         public void Resolve(VBAParser.ImplementsStmtContext context)
         {
-            var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentScope, context.valueStmt().GetText());
-            if (boundExpression != null)
-            {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.valueStmt(), declaration));
-            }
-        }
-
-        public void Resolve(VBAParser.VsAddressOfContext context)
-        {
-            var boundExpression = _bindingService.ResolveProcedurePointer(_moduleDeclaration, _currentScope, context.valueStmt().GetText());
-            if (boundExpression != null)
-            {
-                _boundExpressionVisitor.AddIdentifierReferences(boundExpression, declaration => CreateReference(context.valueStmt(), declaration));
-            }
+            ResolveType(context.valueStmt(), context.valueStmt().GetText());
         }
 
         public void Resolve(VBAParser.RaiseEventStmtContext context)
         {
-            ResolveInternal(context.identifier(), _currentScope);
+            var eventDeclaration = _bindingService.ResolveEvent(_moduleDeclaration, context.identifier().GetText());
+            if (eventDeclaration != null)
+            {
+                eventDeclaration.AddReference(CreateReference(context.identifier(), context.identifier().GetText(), eventDeclaration, context.identifier().GetSelection()));
+        }
+            ResolveArgsCall(context.argsCall());
+        }
+
+        public void Resolve(VBAParser.MidStmtContext context)
+            {
+            ResolveArgsCall(context.argsCall());
+            }
+
+        private void ResolveArgsCall(VBAParser.ArgsCallContext argsCall)
+            {
+            if (argsCall == null)
+        {
+                return;
+        }
+            foreach (var argCall in argsCall.argCall())
+        {
+                ResolveDefault(argCall.valueStmt(), argCall.valueStmt().GetText());
+        }
         }
 
         public void Resolve(VBAParser.ResumeStmtContext context)
-        {
-            ResolveInternal(context.identifier(), _currentScope);
-        }
-
-        public void Resolve(VBAParser.FieldLengthContext context)
-        {
-            ResolveInternal(context.identifier(), _currentScope);
-        }
-
-        public void Resolve(VBAParser.VsAssignContext context)
-        {
-            // named parameter reference must be scoped to called procedure
-            var callee = FindParentCall(context);
-            ResolveInternal(context.implicitCallStmt_InStmt(), callee, ContextAccessorType.AssignValueOrReference);
-        }
-
-        private Declaration FindParentCall(VBAParser.VsAssignContext context)
-        {
-            var calleeContext = context.Parent.Parent.Parent;
-            return ResolveInternal(calleeContext as VBAParser.ICS_B_ProcedureCallContext)
-                   ?? ResolveInternal(calleeContext as VBAParser.ICS_S_VariableOrProcedureCallContext, _currentScope)
-                   ?? ResolveInternal(calleeContext as VBAParser.ICS_S_ProcedureOrArrayCallContext, _currentScope)
-                   ?? ResolveInternal(calleeContext as VBAParser.ICS_S_MembersCallContext, _currentScope);
-        }
-
-        private Declaration FindFunctionOrPropertyGetter(string identifierName, Declaration localScope = null)
-        {
-            if (localScope == null)
             {
-                localScope = _currentScope;
+            if (context.valueStmt() == null)
+            {
+                return;
+            }
+            ResolveLabel(context.valueStmt(), context.valueStmt().GetText());
             }
 
-            var matches = _declarationFinder.MatchName(identifierName);
-            var parent = matches.SingleOrDefault(item =>
-                (item.DeclarationType.HasFlag(DeclarationType.Function) || item.DeclarationType.HasFlag(DeclarationType.PropertyGet))
-                && item.Equals(localScope));
-
-            return parent;
-        }
-
-        private Declaration FindLocalScopeDeclaration(string identifierName, Declaration localScope = null, bool parentContextIsVariableOrProcedureCall = false, bool isAssignmentTarget = false)
-        {
-            if (localScope == null)
-            {
-                localScope = _currentScope;
-            }
-
-            if (_moduleTypes.Contains(localScope.DeclarationType) || localScope.DeclarationType.HasFlag(DeclarationType.Project))
-            {
-                // "local scope" is not intended to be module level.
-                return null;
-            }
-
-            var matches = _declarationFinder.MatchName(identifierName);
-
-            var results = matches.Where(item =>
-                ((localScope.Equals(item.ParentDeclaration)
-                || (item.DeclarationType.HasFlag(DeclarationType.Parameter) && localScope.Equals(item.ParentScopeDeclaration)))
-                || (isAssignmentTarget && item.Scope == localScope.Scope))
-                && localScope.Context.GetSelection().Contains(item.Selection)
-                && !_moduleTypes.Contains(item.DeclarationType))
-                .ToList();
-
-            if (results.Count >= 1 && isAssignmentTarget
-                && _returningMemberTypes.Contains(localScope.DeclarationType)
-                && localScope.IdentifierName == identifierName
-                && parentContextIsVariableOrProcedureCall)
-            {
-                // if we have multiple matches and we're in a returning member,
-                // in an in-statement variable or procedure call context that's
-                // the target of an assignment, then we have to assume we're looking
-                // at the assignment of the member's return value, i.e.:
-                /*
-                    *    Property Get Foo() As Integer
-                    *        Foo = 42 '<~ this Foo here
-                    *    End Sub
-                    */
-                return FindFunctionOrPropertyGetter(identifierName, localScope);
-            }
-
-            // if we're not returning a function/getter value, then there can be only one:
-            var result = results.Where(item => !item.Equals(localScope)).ToList();
-            return result.Count == 1 ? result.SingleOrDefault() : null;
-        }
-
-        private Declaration FindModuleScopeDeclaration(string identifierName, Declaration localScope = null)
-        {
-            if (localScope == null)
-            {
-                localScope = _currentScope;
-            }
-
-            if (localScope.DeclarationType.HasFlag(DeclarationType.Project))
-            {
-                return null;
-            }
-
-            if (identifierName == "Me" && _moduleDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule))
-            {
-                return _moduleDeclaration;
-            }
-
-            var scope = localScope; // avoid implicitly capturing 'this'
-            var matches = _declarationFinder.MatchName(identifierName).Where(item => !item.Equals(scope)).ToList();
-
-            var result = matches.Where(item =>
-                (localScope.ParentScopeDeclaration == null || localScope.ParentScopeDeclaration.Equals(item.ParentScopeDeclaration))
-                && !item.DeclarationType.HasFlag(DeclarationType.Member)
-                && !_moduleTypes.Contains(item.DeclarationType)
-                && item.DeclarationType != DeclarationType.UserDefinedType && item.DeclarationType != DeclarationType.Enumeration
-                && (item.DeclarationType != DeclarationType.Event || IsLocalEvent(item, localScope)))
-            .ToList();
-
-            if (matches.Any() && !result.Any())
-            {
-                result = matches.Where(item =>
-                    (localScope != null && localScope.Equals(item.ParentScopeDeclaration))
-                    && !item.DeclarationType.HasFlag(DeclarationType.Member)
-                    && !_moduleTypes.Contains(item.DeclarationType)
-                    && item.DeclarationType != DeclarationType.UserDefinedType && item.DeclarationType != DeclarationType.Enumeration
-                    && (item.DeclarationType != DeclarationType.Event || IsLocalEvent(item, localScope)))
-                .ToList();
-            }
-
-            return result.Count == 1 ? result.SingleOrDefault() : null; // return null for multiple matches
-        }
-
-        private bool IsLocalEvent(Declaration item, Declaration localScope)
-        {
-            return item.DeclarationType == DeclarationType.Event
-                   && localScope.ProjectId == _currentScope.ProjectId
-                   && localScope.ComponentName == _currentScope.ComponentName;
-        }
-
-        private Declaration FindModuleScopeProcedure(string identifierName, Declaration localScope, ContextAccessorType accessorType, bool isAssignmentTarget = false)
-        {
-            if (localScope == null)
-            {
-                localScope = _currentScope;
-            }
-
-            if (localScope.DeclarationType == DeclarationType.Project)
-            {
-                return null;
-            }
-
-            var matches = _declarationFinder.MatchName(identifierName);
-            var result = matches.Where(item =>
-                _memberTypes.Contains(item.DeclarationType)
-                && localScope.ProjectId == item.ProjectId
-                && (localScope.ComponentName.Replace("_", string.Empty) == item.ComponentName.Replace("_", string.Empty))
-                && (IsProcedure(item, localScope) || IsPropertyAccessor(item, accessorType, localScope, isAssignmentTarget)))
-            .ToList();
-
-            return result.Count == 1 ? result.SingleOrDefault() : null;
-        }
-
-        private bool IsStdModuleMember(Declaration declaration)
-        {
-            return declaration.ParentDeclaration != null
-                   && declaration.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule;
-        }
-
-        private bool IsPublicEnum(Declaration declaration)
-        {
-            return (IsPublicOrGlobal(declaration) || declaration.Accessibility == Accessibility.Implicit)
-                   && (declaration.DeclarationType == DeclarationType.Enumeration
-                       || declaration.DeclarationType == DeclarationType.EnumerationMember);
-        }
-
-        private bool IsStaticClass(Declaration declaration)
-        {
-            var isDocumentOrForm = !declaration.IsBuiltIn &&
-                (declaration.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_Document
-                ||
-                declaration.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_MSForm);
-
-            return isDocumentOrForm || (declaration.ParentDeclaration != null
-                   && declaration.ParentDeclaration.DeclarationType == DeclarationType.ClassModule
-                   && declaration.ParentDeclaration.HasPredeclaredId);
-
-        }
-
-        private readonly IReadOnlyList<string> SpecialCasedTokens = new[]{
-            Tokens.Error,
-            Tokens.Hex,
-            Tokens.Oct,
-            Tokens.Str,
-            Tokens.CurDir,
-            Tokens.Command,
-            Tokens.Environ,
-            Tokens.Chr,
-            Tokens.ChrW,
-            Tokens.Format,
-            Tokens.LCase,
-            Tokens.Left,
-            Tokens.LeftB,
-            Tokens.LTrim,
-            Tokens.Mid,
-            Tokens.MidB,
-            Tokens.Trim,
-            Tokens.Right,
-            Tokens.RightB,
-            Tokens.RTrim,
-            Tokens.UCase
-        };
-
-        private Declaration FindProjectScopeDeclaration(string identifierName, Declaration localScope = null, ContextAccessorType accessorType = ContextAccessorType.GetValueOrReference, bool hasStringQualifier = false)
-        {
-            var matches = _declarationFinder.MatchName(identifierName).Where(item =>
-                item.DeclarationType == DeclarationType.Project
-                || item.DeclarationType == DeclarationType.ProceduralModule
-                || IsPublicEnum(item)
-                || IsStaticClass(item) 
-                || IsStdModuleMember(item)
-                || (item.ParentScopeDeclaration != null && item.ParentScopeDeclaration.Equals(localScope))).ToList();
-
-            if (matches.Count == 1 && !SpecialCasedTokens.Contains(matches.Single().IdentifierName))
-            {
-                return matches.Single();
-            }
-
-            if (localScope == null && _withBlockQualifiers.Any())
-            {
-                localScope = _withBlockQualifiers.Peek();
-            }
-
-            var result = matches.Where(IsUserDeclarationInProjectScope).ToList();
-            if (result.Count == 1)
-            {
-                return result.SingleOrDefault();
-            }
-
-            result = matches.Where(item => IsBuiltInDeclarationInScope(item, localScope)).ToList();
-            if (result.Count == 1 && !SpecialCasedTokens.Contains(result.Single().IdentifierName))
-            {
-                return result.SingleOrDefault();
-            }
-            else
-            {
-                var nonModules = matches.Where(item => !_moduleTypes.Contains(item.DeclarationType)).ToList();
-                var temp = nonModules.Where(item => item.DeclarationType ==
-                                                    (accessorType == ContextAccessorType.GetValueOrReference
-                                                        ? DeclarationType.PropertyGet
-                                                        : item.DeclarationType))
-                    .ToList();
-                if (temp.Count > 1)
-                {
-                    if (localScope == null)
+        public void Resolve(VBAParser.ImplicitCallStmt_InBlockContext context)
                     {
-                        var names = new[] { "Global", "_Global" };
-                        var appGlobals = temp.Where(item => names.Contains(item.ParentDeclaration.IdentifierName)).ToList();
-                        if (appGlobals.Count == 1)
+            ParserRuleContext subContext;
+            if (context.iCS_B_MemberProcedureCall() != null)
                         {
-                            return appGlobals.Single();
-                        }
+                subContext = context.iCS_B_MemberProcedureCall();
                     }
                     else
                     {
-                        var names = new[] { localScope.IdentifierName, "I" + localScope.IdentifierName };
-                        var members = temp.Where(item => names.Contains(item.ParentScopeDeclaration.IdentifierName)
-                                                         && item.DeclarationType == (accessorType == ContextAccessorType.GetValueOrReference
-                                                             ? DeclarationType.PropertyGet
-                                                             : item.DeclarationType)).ToList();
-                        if (members.Count == 1)
-                        {
-                            return members.Single();
-                        }
-                    }
+                subContext = context.iCS_B_ProcedureCall();
+        }
+            string expr = subContext.GetText();
+            // This represents a CALL statement without the CALL keyword which is slightly different than a normal expression because it does not allow parentheses around its argument list.
+            ResolveDefault(subContext, expr, ResolutionStatementContext.CallStatement);
+        }
 
-                    Debug.WriteLine("Ambiguous match in '{0}': '{1}'", localScope == null ? "(unknown)" : localScope.IdentifierName, identifierName);
-                }
-            }
-
-            // VBA.Strings.Left function is actually called _B_var_Left;
-            // VBA.Strings.Left$ is _B_str_Left.
-            // same for all $-terminated functions.
-            var surrogateName = hasStringQualifier
-                ? "_B_str_" + identifierName
-                : "_B_var_" + identifierName;
-
-            matches = _declarationFinder.MatchName(surrogateName).ToList();
-            if (matches.Count == 1)
+        public void Resolve(VBAParser.EnumerationStmtContext context)
+        {
+            if (context.enumerationStmt_Constant() == null)
+        {
+                return;
+        }
+            foreach (var enumMember in context.enumerationStmt_Constant())
             {
-                return matches.Single();
-            }
-
-            Debug.WriteLine("Unknown identifier in '{0}': '{1}'", localScope == null ? "(unknown)" : localScope.IdentifierName, identifierName);
-            return null;
-        }
-
-        private static bool IsPublicOrGlobal(Declaration item)
-        {
-            return item.Accessibility == Accessibility.Global
-                || item.Accessibility == Accessibility.Public;
-        }
-
-        private bool IsUserDeclarationInProjectScope(Declaration item)
-        {
-            var isNonMemberUserDeclaration = !item.IsBuiltIn
-                && !item.DeclarationType.HasFlag(DeclarationType.Member)
-                // events can't be called outside the class they're declared in, exclude them as well:
-                && item.DeclarationType != DeclarationType.Event;
-
-            // declaration is in-scope if it's public/global, or if it's a module/class:
-            return isNonMemberUserDeclaration && (IsPublicOrGlobal(item) || _moduleTypes.Contains(item.DeclarationType));
-        }
-
-        private static bool IsBuiltInDeclarationInScope(Declaration item, Declaration localScope)
-        {
-            var isBuiltInNonEvent = item.IsBuiltIn && item.DeclarationType != DeclarationType.Event;
-
-            // if localScope is null, we can only resolve to a global:
-            // note: built-in declarations are designed that way
-            var isBuiltInGlobal = localScope == null && item.Accessibility == Accessibility.Global;
-
-            // if localScope is not null, we can resolve to any public or global in that scope:
-            var isInLocalScope = (localScope != null && item.Accessibility == Accessibility.Global
-                && localScope.IdentifierName == item.ParentDeclaration.IdentifierName)
-                || (localScope != null && localScope.QualifiedName.QualifiedModuleName.Component != null
-                    && localScope.QualifiedName.QualifiedModuleName.Component.Type == Microsoft.Vbe.Interop.vbext_ComponentType.vbext_ct_Document
-                 && item.Accessibility == Accessibility.Public && item.ParentDeclaration.DeclarationType == localScope.DeclarationType);
-
-            return isBuiltInNonEvent && (isBuiltInGlobal || isInLocalScope);
-        }
-
-        private static bool IsProcedure(Declaration item, Declaration localScope)
-        {
-            var isProcedure = item.DeclarationType == DeclarationType.Procedure
-                              || item.DeclarationType == DeclarationType.Function;
-            var isSameModule = item.ProjectId == localScope.ProjectId
-                               && item.ComponentName == localScope.ComponentName;
-            return isProcedure && isSameModule;
-        }
-
-        private bool IsPropertyAccessor(Declaration item, ContextAccessorType accessorType, Declaration localScope, bool isAssignmentTarget = false)
-        {
-            var isProperty = item.DeclarationType.HasFlag(DeclarationType.Property);
-            if (!isProperty)
+                if (enumMember.valueStmt() != null)
             {
-                return false;
+                    ResolveDefault(enumMember.valueStmt(), enumMember.valueStmt().GetText());
             }
-
-            if (item.Equals(localScope) && item.DeclarationType == DeclarationType.PropertyGet)
-            {
-                // we're resolving the getter's return value assignment
-                return true;
             }
-            if (item.Equals(localScope))
-            {
-                // getter can't reference setter.. right?
-                return false;
-            }
-
-            return (accessorType == ContextAccessorType.AssignValue &&
-                    item.DeclarationType == DeclarationType.PropertyLet)
-                   ||
-                   (accessorType == ContextAccessorType.AssignReference &&
-                    item.DeclarationType == DeclarationType.PropertySet)
-                   ||
-                   (accessorType == ContextAccessorType.GetValueOrReference &&
-                    item.DeclarationType == DeclarationType.PropertyGet &&
-                    !isAssignmentTarget);
         }
     }
 }

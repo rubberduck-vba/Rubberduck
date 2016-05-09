@@ -10,11 +10,11 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
     public class ReorderParametersPresenter : IReorderParametersPresenter
     {
-        private readonly IReorderParametersView _view;
+        private readonly IReorderParametersDialog _view;
         private readonly ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
 
-        public ReorderParametersPresenter(IReorderParametersView view, ReorderParametersModel model, IMessageBox messageBox)
+        public ReorderParametersPresenter(IReorderParametersDialog view, ReorderParametersModel model, IMessageBox messageBox)
         {
             _view = view;
             _model = model;

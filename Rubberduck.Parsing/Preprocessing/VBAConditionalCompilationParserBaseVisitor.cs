@@ -132,17 +132,6 @@ public partial class VBAConditionalCompilationParserBaseVisitor<Result> : Abstra
 	public virtual Result VisitTypeHint([NotNull] VBAConditionalCompilationParser.TypeHintContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.extendedLine"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitExtendedLine([NotNull] VBAConditionalCompilationParser.ExtendedLineContext context) { return VisitChildren(context); }
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.literal"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -240,6 +229,17 @@ public partial class VBAConditionalCompilationParserBaseVisitor<Result> : Abstra
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitCcElse([NotNull] VBAConditionalCompilationParser.CcElseContext context) { return VisitChildren(context); }
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.comment"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitComment([NotNull] VBAConditionalCompilationParser.CommentContext context) { return VisitChildren(context); }
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAConditionalCompilationParser.ccConst"/>.

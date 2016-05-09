@@ -22,7 +22,7 @@ namespace RubberduckTests.Grammar
             {
                 var filename = testfile.Item1;
                 var code = testfile.Item2;
-                AssertParseResult(filename, code, Parse(code));
+                AssertParseResult(filename, code, Parse(code, filename));
             }
         }
 
@@ -36,7 +36,7 @@ namespace RubberduckTests.Grammar
             return Directory.EnumerateFiles("Grammar").Select(file => Tuple.Create(file, File.ReadAllText(file))).ToList();
         }
 
-        private string Parse(string code)
+        private string Parse(string code, string filename)
         {
             var builder = new MockVbeBuilder();
             VBComponent component;
@@ -46,7 +46,7 @@ namespace RubberduckTests.Grammar
             var state = new RubberduckParserState();
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error: " + filename); }
             var tree = state.GetParseTree(component);
             var parsed = tree.GetText();
             var withoutEOF = parsed.Substring(0, parsed.Length - 5);

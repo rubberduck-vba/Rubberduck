@@ -10,6 +10,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerCustomFolderViewModel : CodeExplorerItemViewModel
     {
+        private readonly string _fullPath;
         private readonly string _name;
         private readonly string _folderAttribute;
         private static readonly DeclarationType[] ComponentTypes =
@@ -20,25 +21,27 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.UserForm, 
         };
 
-        public CodeExplorerCustomFolderViewModel(string name, string fullPath, IEnumerable<Declaration> declarations)
+        public CodeExplorerCustomFolderViewModel(string name, string fullPath)
         {
+            _fullPath = fullPath;
             _name = name.Replace("\"", string.Empty);
             _folderAttribute = string.Format("@Folder(\"{0}\")", fullPath.Replace("\"", string.Empty));
 
             _collapsedIcon = GetImageSource(resx.folder_horizontal);
             _expandedIcon = GetImageSource(resx.folder_horizontal_open);
+        }
 
-            var items = declarations.ToList();
-
-            var parents = items.GroupBy(item => item.ComponentName).OrderBy(item => item.Key).ToList();
+        public void AddNodes(List<Declaration> declarations)
+        {
+            var parents = declarations.GroupBy(item => item.ComponentName).OrderBy(item => item.Key).ToList();
             foreach (var component in parents)
             {
                 try
                 {
                     var moduleName = component.Key;
-                    var parent = items.Single(item =>
+                    var parent = declarations.Single(item =>
                         ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
-                    var members = items.Where(item =>
+                    var members = declarations.Where(item =>
                         !ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
 
                     AddChild(new CodeExplorerComponentViewModel(parent, members));
@@ -51,6 +54,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         public string FolderAttribute { get { return _folderAttribute; } }
+
+        public string FullPath { get { return _fullPath; } }
 
         public override string Name { get { return _name; } }
         public override string NameWithSignature { get { return Name; } }

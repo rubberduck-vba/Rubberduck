@@ -45,7 +45,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -88,7 +88,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -131,7 +131,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -174,7 +174,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -227,7 +227,7 @@ End Sub
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -270,7 +270,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -313,7 +313,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -366,7 +366,7 @@ End Sub
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -409,7 +409,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -452,7 +452,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -494,7 +494,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -547,7 +547,7 @@ End Sub
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -600,7 +600,7 @@ End Sub
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -665,7 +665,7 @@ End Sub
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -702,7 +702,7 @@ End Property";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -730,7 +730,7 @@ End Property";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -770,7 +770,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -819,7 +819,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -870,7 +870,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -915,7 +915,7 @@ End Sub";   // note: VBE removes excess spaces
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -960,7 +960,7 @@ End Sub";   // note: VBE removes excess spaces
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1005,7 +1005,7 @@ End Sub";   // note: VBE removes excess spaces
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1050,7 +1050,7 @@ End Sub";   // note: VBE removes excess spaces
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1109,7 +1109,7 @@ End Sub
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1167,7 +1167,7 @@ End Sub";   // note: IDE removes excess spaces
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1229,7 +1229,7 @@ End Sub";   // note: IDE removes excess spaces
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1302,7 +1302,7 @@ End Sub";   // note: IDE removes excess spaces
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1366,7 +1366,7 @@ End Sub";   // note: IDE removes excess spaces
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1428,7 +1428,7 @@ End Sub";   // note: IDE removes excess spaces
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
@@ -1489,7 +1489,7 @@ End Sub";   // note: IDE removes excess spaces
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1562,7 +1562,7 @@ End Sub";   // note: IDE removes excess spaces
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1627,7 +1627,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1683,7 +1683,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1714,7 +1714,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1760,7 +1760,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var factory = new RemoveParametersPresenterFactory(vbe.Object, null, parser.State, null);
 
@@ -1790,7 +1790,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1826,14 +1826,14 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters[1].IsRemoved = true;
 
-            var view = new Mock<IRemoveParametersView>();
+            var view = new Mock<IRemoveParametersDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
@@ -1862,14 +1862,14 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var model = new RemoveParametersModel(parser.State, qualifiedSelection, new MessageBox());
             model.Parameters[1].IsRemoved = true;
 
-            var view = new Mock<IRemoveParametersView>();
+            var view = new Mock<IRemoveParametersDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
@@ -1898,7 +1898,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -1934,7 +1934,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
@@ -1968,7 +1968,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var codePane = project.Object.VBComponents.Item(0).CodeModule.CodePane;
             var codePaneFactory = new CodePaneWrapperFactory();
@@ -2005,7 +2005,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var factory = new RemoveParametersPresenterFactory(vbe.Object, null, parser.State, null);
 

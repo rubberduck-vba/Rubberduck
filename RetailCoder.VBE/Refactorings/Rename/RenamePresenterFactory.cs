@@ -9,12 +9,12 @@ namespace Rubberduck.Refactorings.Rename
     public class RenamePresenterFactory : IRefactoringPresenterFactory<RenamePresenter>
     {
         private readonly VBE _vbe;
-        private readonly IRenameView _view;
+        private readonly IRenameDialog _view;
         private readonly RubberduckParserState _parseResult;
         private readonly IMessageBox _messageBox;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public RenamePresenterFactory(VBE vbe, IRenameView view, RubberduckParserState parseResult, IMessageBox messageBox, ICodePaneWrapperFactory wrapperFactory)
+        public RenamePresenterFactory(VBE vbe, IRenameDialog view, RubberduckParserState parseResult, IMessageBox messageBox, ICodePaneWrapperFactory wrapperFactory)
         {
             _vbe = vbe;
             _view = view;
