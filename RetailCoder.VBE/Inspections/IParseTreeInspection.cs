@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.Inspections
 {
@@ -10,9 +11,17 @@ namespace Rubberduck.Inspections
 
     public sealed class ParseTreeResults
     {
-        public IList<QualifiedContext> ObsoleteCallContexts;
-        public IList<QualifiedContext> ObsoleteLetContexts;
-        public IList<QualifiedContext> ArgListsWithOneByRefParam;
-        public IList<QualifiedContext> EmptyStringLiterals;
+        public ParseTreeResults()
+        {
+            ObsoleteCallContexts = Enumerable.Empty<QualifiedContext>();
+            ObsoleteLetContexts = Enumerable.Empty<QualifiedContext>();
+            ArgListsWithOneByRefParam = Enumerable.Empty<QualifiedContext>();
+            EmptyStringLiterals = Enumerable.Empty<QualifiedContext>();
+        }
+
+        public IEnumerable<QualifiedContext> ObsoleteCallContexts;
+        public IEnumerable<QualifiedContext> ObsoleteLetContexts;
+        public IEnumerable<QualifiedContext> ArgListsWithOneByRefParam;
+        public IEnumerable<QualifiedContext> EmptyStringLiterals;
     }
 }

@@ -7,6 +7,9 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 using RubberduckTests.Mocks;
+using Rubberduck.Settings;
+using Rubberduck.Inspections.Rubberduck.Inspections;
+using System.Threading;
 
 namespace RubberduckTests.Inspections
 {
@@ -25,6 +28,10 @@ Public Sub Foo(ByRef arg1 As String)
 End Sub";
 
             //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
@@ -36,7 +43,9 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new EmptyStringLiteralInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -50,6 +59,10 @@ End Sub";
 End Sub";
 
             //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
@@ -61,7 +74,9 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new EmptyStringLiteralInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -75,6 +90,10 @@ End Sub";
 End Sub";
 
             //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
@@ -86,7 +105,9 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new EmptyStringLiteralInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -105,6 +126,10 @@ End Sub";
 End Sub";
 
             //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
             var builder = new MockVbeBuilder();
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
@@ -118,7 +143,9 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new EmptyStringLiteralInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             inspectionResults.First().QuickFixes.First().Fix();
 
@@ -139,6 +166,22 @@ End Sub";
             var inspection = new EmptyStringLiteralInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        private Configuration GetTestConfig()
+        {
+            return new Configuration
+            {
+                UserSettings = new UserSettings
+                {
+                    CodeInspectionSettings = new CodeInspectionSettings
+                    {
+                        CodeInspections = new[] {
+                           new CodeInspectionSetting { Description = new EmptyStringLiteralInspection(null).Description, Severity=CodeInspectionSeverity.Suggestion,  }
+                        }
+                    }
+                }
+            };
         }
     }
 }
