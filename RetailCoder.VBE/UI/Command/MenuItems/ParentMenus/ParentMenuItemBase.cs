@@ -11,7 +11,7 @@ using stdole;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
-    public abstract class ParentMenuItemBase : IParentMenuItem
+    public abstract class ParentMenuItemBase : IParentMenuItem, IDisposable
     {
         private readonly string _key;
         private readonly int? _beforeIndex;
@@ -189,6 +189,16 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             {
                 return GetPictureFromIPicture(pictureDisp);
             }
+        }
+
+        public void Dispose()
+        {
+            foreach (var item in _items)
+            {
+                item.Value.Delete();
+            }
+            
+            Item.Delete();
         }
     }
 }
