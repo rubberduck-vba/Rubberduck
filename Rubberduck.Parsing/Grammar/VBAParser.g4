@@ -517,7 +517,6 @@ keyword :
      | DELETESETTING
      | DOEVENTS
      | DOUBLE
-     | END_IF
      | EQV
      | FALSE
      | FIX
@@ -627,7 +626,6 @@ statementKeyword :
     | ELSE
     | ELSEIF
     | END
-    | ENDIF
     | ENUM
     | ERASE
     | EVENT
