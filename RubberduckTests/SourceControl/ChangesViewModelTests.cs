@@ -202,29 +202,6 @@ namespace RubberduckTests.SourceControl
         }
 
         [TestMethod]
-        public void ClearCommitMessageAfterSuccessfulCommit()
-        {
-            //arrange
-            var vm = new ChangesViewViewModel
-            {
-                Provider = _provider.Object,
-                CommitMessage = "Test Message",
-                CommitAction = CommitAction.Commit,
-                IncludedChanges =
-                    new ObservableCollection<IFileStatusEntry>
-                    {
-                        new FileStatusEntry(@"C:\path\to\module.bas", FileStatus.Modified)
-                    }
-            };
-
-            //act
-            vm.CommitCommand.Execute(null);
-
-            //assert
-            Assert.AreEqual(string.Empty, vm.CommitMessage);
-        }
-
-        [TestMethod]
         public void RefreshChangesAfterCommit()
         {
             //arrange
