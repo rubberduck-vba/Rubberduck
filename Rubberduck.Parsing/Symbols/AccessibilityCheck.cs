@@ -23,29 +23,30 @@
             {
                 return true;
             }
-            bool sameProject = callingModule.ParentScopeDeclaration.Equals(calleeModule.ParentScopeDeclaration);
+            bool sameProject = calleeModule != null && callingModule.ParentScopeDeclaration.Equals(calleeModule.ParentScopeDeclaration);
             if (sameProject)
             {
                 return validAccessibility;
             }
-            if (calleeModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule))
+            if (calleeModule != null && calleeModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule))
             {
                 bool isPrivate = ((ProceduralModuleDeclaration)calleeModule).IsPrivateModule;
                 return validAccessibility && !isPrivate;
             }
             else
             {
-                bool isExposed = ((ClassModuleDeclaration)calleeModule).IsExposed;
+                bool isExposed = calleeModule != null && ((ClassModuleDeclaration)calleeModule).IsExposed;
                 return validAccessibility && isExposed;
             }
         }
 
         public static bool IsValidAccessibility(Declaration moduleOrMember)
         {
-            return moduleOrMember.Accessibility == Accessibility.Global
-                            || moduleOrMember.Accessibility == Accessibility.Public
-                            || moduleOrMember.Accessibility == Accessibility.Friend
-                            || moduleOrMember.Accessibility == Accessibility.Implicit;
+            return moduleOrMember != null
+                   && (moduleOrMember.Accessibility == Accessibility.Global
+                       || moduleOrMember.Accessibility == Accessibility.Public
+                       || moduleOrMember.Accessibility == Accessibility.Friend
+                       || moduleOrMember.Accessibility == Accessibility.Implicit);
         }
 
         public static bool IsMemberAccessible(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration calleeMember)

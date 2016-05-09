@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Antlr4.Runtime;
@@ -129,12 +130,11 @@ namespace Rubberduck.Refactorings.Rename
 
         private void Rename()
         {
-            var declaration = FindDeclarationForIdentifier();
+            var declaration = _model.Target ?? FindDeclarationForIdentifier();
             if (declaration != null)
             {
                 var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName, declaration.IdentifierName);
-                var rename = _messageBox.Show(message, RubberduckUI.RenameDialog_Caption,
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                var rename = _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 
                 if (rename == DialogResult.No)
                 {
@@ -144,6 +144,7 @@ namespace Rubberduck.Refactorings.Rename
 
             // must rename usages first; if target is a module or a project,
             // then renaming the declaration first would invalidate the parse results.
+            Debug.Assert(_model.Target != null);
 
             if (_model.Target.DeclarationType.HasFlag(DeclarationType.Property))
             {
