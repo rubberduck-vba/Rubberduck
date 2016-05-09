@@ -49,7 +49,7 @@ End Property
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -104,7 +104,7 @@ End Property
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -155,7 +155,7 @@ End Property
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -223,7 +223,7 @@ End Function";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -297,7 +297,7 @@ End Property";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -354,7 +354,7 @@ End Property
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -416,7 +416,7 @@ End Property
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -474,7 +474,7 @@ End Property
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -532,7 +532,7 @@ End Property
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -587,7 +587,7 @@ End Property
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -657,7 +657,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -743,7 +743,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -805,7 +805,7 @@ End Property
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -845,7 +845,7 @@ End Property
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, null);
 
@@ -874,7 +874,7 @@ End Property
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -909,7 +909,7 @@ End Property
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, null);
 
@@ -938,7 +938,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, null);
             var presenter = factory.Create();
@@ -970,7 +970,7 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var codePane = project.Object.VBComponents.Item(0).CodeModule.CodePane;
             var ext = codePaneFactory.Create(codePane);
@@ -1000,9 +1000,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
             view.SetupProperty(v => v.ParameterName, "myVal");
 
@@ -1031,9 +1031,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1060,9 +1060,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.NewPropertyName).Returns("MyProperty");
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
@@ -1090,9 +1090,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementLetSetterType, true);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
@@ -1120,9 +1120,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementSetSetterType, true);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
@@ -1150,9 +1150,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementLetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1178,9 +1178,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementSetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1206,9 +1206,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementSetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1234,9 +1234,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementLetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1262,9 +1262,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementLetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1290,9 +1290,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.CanImplementSetSetterType, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1321,9 +1321,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementLetSetterType, false);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1352,9 +1352,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementSetSetterType, false);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1383,9 +1383,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementLetSetterType, false);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1414,9 +1414,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.SetupProperty(v => v.MustImplementSetSetterType, false);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1442,9 +1442,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1471,9 +1471,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);
@@ -1500,9 +1500,9 @@ End Sub";
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldView>();
+            var view = new Mock<IEncapsulateFieldDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, parser.State, view.Object);

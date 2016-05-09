@@ -11,36 +11,43 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _parent;
         private readonly VBAExpressionParser.MemberAccessExpressionContext _memberAccessExpression;
         private readonly VBAExpressionParser.MemberAccessExprContext _memberAccessExpr;
+        private ParserRuleContext _unrestrictedNameContext;
         private readonly IExpressionBinding _lExpressionBinding;
 
         public MemberAccessProcedurePointerBinding(
             DeclarationFinder declarationFinder,
+            Declaration project,
             Declaration module,
             Declaration parent,
             VBAExpressionParser.MemberAccessExpressionContext expression,
+            ParserRuleContext unrestrictedNameContext,
             IExpressionBinding lExpressionBinding)
         {
             _declarationFinder = declarationFinder;
-            _project = module.ParentDeclaration;
+            _project = project;
             _module = module;
             _parent = parent;
             _memberAccessExpression = expression;
             _lExpressionBinding = lExpressionBinding;
+            _unrestrictedNameContext = unrestrictedNameContext;
         }
 
         public MemberAccessProcedurePointerBinding(
             DeclarationFinder declarationFinder,
+            Declaration project,
             Declaration module,
             Declaration parent,
             VBAExpressionParser.MemberAccessExprContext expression,
+            ParserRuleContext unrestrictedNameContext,
             IExpressionBinding lExpressionBinding)
         {
             _declarationFinder = declarationFinder;
-            _project = module.ParentDeclaration;
+            _project = project;
             _module = module;
             _parent = parent;
             _memberAccessExpr = expression;
             _lExpressionBinding = lExpressionBinding;
+            _unrestrictedNameContext = unrestrictedNameContext;
         }
 
         private ParserRuleContext GetExpressionContext()
@@ -101,7 +108,7 @@ namespace Rubberduck.Parsing.Binding
             var enclosingProjectType = _declarationFinder.FindMemberEnclosedProjectInModule(_project, _module, _parent, module, name, memberType);
             if (enclosingProjectType != null)
             {
-                return new MemberAccessExpression(enclosingProjectType, classification, GetExpressionContext(), lExpression);
+                return new MemberAccessExpression(enclosingProjectType, classification, GetExpressionContext(), _unrestrictedNameContext, lExpression);
             }
             return null;
         }

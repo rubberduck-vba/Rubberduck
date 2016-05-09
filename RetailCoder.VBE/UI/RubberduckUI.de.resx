@@ -1489,4 +1489,28 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
     <value>Wechsele Signatur</value>
   </data>
+  <data name="Find" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
+  <data name="CodeExplorer_Remove" xml:space="preserve">
+    <value>Entfernen...</value>
+  </data>
+  <data name="CodeExplorer_Print" xml:space="preserve">
+    <value>Drucken...</value>
+  </data>
+  <data name="CodeExplorer_Import" xml:space="preserve">
+    <value>Importieren...</value>
+  </data>
+  <data name="CodeExplorer_Export" xml:space="preserve">
+    <value>Exportieren...</value>
+  </data>
+  <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
+    <value>Periode (.)</value>
+  </data>
+  <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
+    <value>Ordner-Trennzeichen:</value>
+  </data>
+  <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
+    <value>Slash (/)</value>
+  </data>
 </root>

@@ -45,8 +45,7 @@ namespace Rubberduck.Common
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.GeneralSettings.HotkeySettings;
 
-            _rawinput = new RawInput(_mainWindowHandle, true);
-            _rawinput.AddMessageFilter();
+            _rawinput = new RawInput(_mainWindowHandle);
 
             var kb = (RawKeyboard)_rawinput.CreateKeyboard();
             _rawinput.AddDevice(kb);
@@ -69,7 +68,7 @@ namespace Rubberduck.Common
         {
             if (e.UlButtons.HasFlag(UsButtonFlags.RI_MOUSE_LEFT_BUTTON_UP) || e.UlButtons.HasFlag(UsButtonFlags.RI_MOUSE_RIGHT_BUTTON_UP))
             {
-                MessageReceived(this, HookEventArgs.Empty);
+                OnMessageReceived(this, HookEventArgs.Empty);
             }
         }
 
@@ -77,7 +76,7 @@ namespace Rubberduck.Common
         {
             if (e.Message == WM.KEYUP)
             {
-                MessageReceived(this, HookEventArgs.Empty);
+                OnMessageReceived(this, HookEventArgs.Empty);
             }
         }
 

@@ -1,3 +1,4 @@
+using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
@@ -24,7 +25,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
-            SetCurrentScope(context.identifier().GetText(), DeclarationType.Procedure);
+            SetCurrentScope(context.subroutineName().GetText(), DeclarationType.Procedure);
         }
 
         public override void ExitSubStmt(VBAParser.SubStmtContext context)
@@ -34,7 +35,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
-            SetCurrentScope(context.identifier().GetText(), DeclarationType.Function);
+            SetCurrentScope(context.functionName().identifier().GetText(), DeclarationType.Function);
         }
 
         public override void ExitFunctionStmt(VBAParser.FunctionStmtContext context)
@@ -44,7 +45,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
-            SetCurrentScope(context.identifier().GetText(), DeclarationType.PropertyGet);
+            SetCurrentScope(context.functionName().identifier().GetText(), DeclarationType.PropertyGet);
         }
 
         public override void ExitPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
@@ -54,7 +55,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
-            SetCurrentScope(context.identifier().GetText(), DeclarationType.PropertyLet);
+            SetCurrentScope(context.subroutineName().GetText(), DeclarationType.PropertyLet);
         }
 
         public override void ExitPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
@@ -64,7 +65,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
-            SetCurrentScope(context.identifier().GetText(), DeclarationType.PropertySet);
+            SetCurrentScope(context.subroutineName().GetText(), DeclarationType.PropertySet);
         }
 
         public override void ExitPropertySetStmt(VBAParser.PropertySetStmtContext context)
@@ -75,6 +76,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterEnumerationStmt(VBAParser.EnumerationStmtContext context)
         {
             SetCurrentScope(context.identifier().GetText(), DeclarationType.Enumeration);
+            _resolver.Resolve(context);
         }
 
         public override void ExitEnumerationStmt(VBAParser.EnumerationStmtContext context)
@@ -101,50 +103,155 @@ namespace Rubberduck.Parsing.Symbols
         {
             _resolver.ExitWithBlock();
         }
+
+        public override void EnterBlockIfThenElse(VBAParser.BlockIfThenElseContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterInlineIfThenElse(VBAParser.InlineIfThenElseContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterSelectCaseStmt(VBAParser.SelectCaseStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterGoToStmt(VBAParser.GoToStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterOnGoToStmt(VBAParser.OnGoToStmtContext context)
+        {       
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterGoSubStmt([NotNull] VBAParser.GoSubStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterOnGoSubStmt(VBAParser.OnGoSubStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterConstStmt(VBAParser.ConstStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterRedimStmt(VBAParser.RedimStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterEraseStmt(VBAParser.EraseStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterMidStmt(VBAParser.MidStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterLsetStmt(VBAParser.LsetStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterRsetStmt(VBAParser.RsetStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterImplicitCallStmt_InBlock(VBAParser.ImplicitCallStmt_InBlockContext context)
+        {
+            _resolver.Resolve(context);
+        }
         
-        public override void EnterICS_B_ProcedureCall(VBAParser.ICS_B_ProcedureCallContext context)
+        public override void EnterWhileWendStmt(VBAParser.WhileWendStmtContext context)
         {
             _resolver.Resolve(context);
         }
 
-        public override void EnterICS_B_MemberProcedureCall(VBAParser.ICS_B_MemberProcedureCallContext context)
+        public override void EnterOpenStmt(VBAParser.OpenStmtContext context)
         {
             _resolver.Resolve(context);
         }
 
-        public override void EnterICS_S_VariableOrProcedureCall(VBAParser.ICS_S_VariableOrProcedureCallContext context)
+        public override void EnterCloseStmt(VBAParser.CloseStmtContext context)
         {
-            if (context.Parent.GetType() != typeof(VBAParser.ICS_S_MemberCallContext))
-            {
-                _resolver.Resolve(context);
-            }
-        }
-
-        public override void EnterICS_S_ProcedureOrArrayCall(VBAParser.ICS_S_ProcedureOrArrayCallContext context)
-        {
-            if (context.Parent.GetType() != typeof(VBAParser.ICS_S_MemberCallContext))
-            {
-                _resolver.Resolve(context);
-            }
-        }
-
-        public override void EnterICS_S_MembersCall(VBAParser.ICS_S_MembersCallContext context)
-        {
-            // Implement statements are handled separately and directly through new binding expressions.
-            // Prevent duplicate references.
-            if (BindingMigrationHelper.HasParent<VBAParser.ImplementsStmtContext>(context))
-            {
-                return;
-            }
             _resolver.Resolve(context);
         }
 
-        public override void EnterICS_S_DictionaryCall(VBAParser.ICS_S_DictionaryCallContext context)
+        public override void EnterSeekStmt([NotNull] VBAParser.SeekStmtContext context)
         {
-            if (context.Parent.GetType() != typeof(VBAParser.ICS_S_MemberCallContext))
-            {
-                _resolver.Resolve(context);
-            }
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterLockStmt([NotNull] VBAParser.LockStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterUnlockStmt([NotNull] VBAParser.UnlockStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterLineInputStmt([NotNull] VBAParser.LineInputStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterWidthStmt([NotNull] VBAParser.WidthStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterPrintStmt([NotNull] VBAParser.PrintStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterWriteStmt([NotNull] VBAParser.WriteStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterInputStmt([NotNull] VBAParser.InputStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterPutStmt([NotNull] VBAParser.PutStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterGetStmt([NotNull] VBAParser.GetStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterOnErrorStmt(VBAParser.OnErrorStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterErrorStmt(VBAParser.ErrorStmtContext context)
+        {
+            _resolver.Resolve(context);
         }
 
         public override void EnterLetStmt(VBAParser.LetStmtContext context)
@@ -172,13 +279,13 @@ namespace Rubberduck.Parsing.Symbols
             _resolver.Resolve(context);
         }
 
-        public override void EnterImplementsStmt(VBAParser.ImplementsStmtContext context)
+        public override void EnterDoLoopStmt([NotNull] VBAParser.DoLoopStmtContext context)
         {
             _resolver.Resolve(context);
         }
 
-        public override void EnterVsAddressOf(VBAParser.VsAddressOfContext context)
-        {        
+        public override void EnterImplementsStmt(VBAParser.ImplementsStmtContext context)
+        {
             _resolver.Resolve(context);
         }
 
@@ -188,16 +295,6 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public override void EnterResumeStmt(VBAParser.ResumeStmtContext context)
-        {
-            _resolver.Resolve(context);
-        }
-
-        public override void EnterFieldLength(VBAParser.FieldLengthContext context)
-        {
-            _resolver.Resolve(context);
-        }
-
-        public override void EnterVsAssign(VBAParser.VsAssignContext context)
         {
             _resolver.Resolve(context);
         }

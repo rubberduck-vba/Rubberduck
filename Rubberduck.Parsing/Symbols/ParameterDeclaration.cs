@@ -15,7 +15,7 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public ParameterDeclaration(QualifiedMemberName qualifiedName, 
             Declaration parentDeclaration, 
-            string asTypeName, 
+            string asTypeName,
             bool isOptional, 
             bool isByRef, 
             bool isArray = false, 
@@ -35,8 +35,8 @@ namespace Rubberduck.Parsing.Symbols
             Declaration parentDeclaration,
             ParserRuleContext context, 
             Selection selection, 
-            string asTypeName, 
-            bool isOptional, 
+            string asTypeName,
+            bool isOptional,
             bool isByRef,
             bool isArray = false, 
             bool isParamArray = false)

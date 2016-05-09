@@ -7,7 +7,7 @@ using Rubberduck.Refactorings.Rename;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public partial class RenameDialog : Form, IRenameView
+    public partial class RenameDialog : Form, IRenameDialog
     {
         public RenameDialog()
         {

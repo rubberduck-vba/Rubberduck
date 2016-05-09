@@ -92,7 +92,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
         {
             foreach (var reference in references.Where(item => item.Context != _model.TargetDeclaration.Context))
             {
-                var proc = (dynamic)reference.Context.Parent;
+                dynamic proc = reference.Context;
                 var module = reference.QualifiedModuleName.Component.CodeModule;
                 VBAParser.ArgsCallContext paramList;
 

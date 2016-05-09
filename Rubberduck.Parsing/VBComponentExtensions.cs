@@ -33,7 +33,7 @@ namespace Rubberduck.Parsing
         private static IEnumerable<Member> GetMembers(this CodeModule module, vbext_ProcKind? procedureKind = null)
         {
             var currentLine = module.CountOfDeclarationLines + 1;
-            while (currentLine < module.CountOfLines)
+            while (currentLine <= module.CountOfLines)
             {
                 vbext_ProcKind kind;
                 var name = module.get_ProcOfLine(currentLine, out kind);

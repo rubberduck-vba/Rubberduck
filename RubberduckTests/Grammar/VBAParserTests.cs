@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace RubberduckTests.Grammar
 {
@@ -90,6 +91,30 @@ END";
         public void TestEmptyComment()
         {
             string code = @"'";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//comment");
+        }
+
+        [TestMethod]
+        public void TestEmptyRemComment()
+        {
+            string code = @"Rem";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//remComment");
+        }
+
+        [TestMethod]
+        public void TestOneCharRemComment()
+        {
+            string code = @"Rem a";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//remComment");
+        }
+
+        [TestMethod]
+        public void TestCommentThatLooksLikeAnnotation()
+        {
+            string code = @"'@param foo: the value of something";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//comment");
         }
@@ -189,19 +214,6 @@ End Sub";
         }
 
         [TestMethod]
-        public void TestDeleteSettingsStatement()
-        {
-            string code = @"
-Sub Test()
-    DELETESETTING ""a""
-    DELETESETTING ""a"", ""b""
-    DELETESETTING ""a"", ""b"", ""c""
-End Sub";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//deleteSettingStmt");
-        }
-
-        [TestMethod]
         public void TestDoLoopStatement()
         {
             string code = @"
@@ -262,6 +274,22 @@ End Sub";
             return Tuple.Create<VBAParser, ParserRuleContext>(parser, root);
         }
 
+        [TestMethod]
+        public void GivenIfElseBlock_ParsesElseBlockAsElseStatement()
+        {
+            var code = @"
+Private Sub DoSomething()
+    If Not True Then
+        Debug.Print False
+    Else
+        Debug.Print True
+    End If
+End Sub
+";
+            var parser = Parse(code);
+            AssertTree(parser.Item1, parser.Item2, "//ifElseBlockStmt", matches => matches.Count == 1);
+        }
+
         private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath)
         {
             AssertTree(parser, root, xpath, matches => matches.Count >= 1);
@@ -270,7 +298,8 @@ End Sub";
         private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath, Predicate<ICollection<IParseTree>> assertion)
         {
             var matches = new XPath(parser, xpath).Evaluate(root);
-            Assert.IsTrue(assertion(matches));
+            var actual = matches.Count;
+            Assert.IsTrue(assertion(matches), string.Format("{0} matches found.", actual));
         }
     }
 }

@@ -364,8 +364,8 @@ namespace RubberduckTests.Preprocessing
 #Const c = CStr(True)
 #Const d = CStr(False)
 #Const e = CStr(345.23)
-#Const f = CStr(#30-12-1899 02:01#) #30-12-1899 02:01#
-#Const g = CStr(#1/31/2016#) 31.01.2016
+#Const f = CStr(#30-12-1899 02:01#)
+#Const g = CStr(#1/31/2016#)
 ";
             var result = Preprocess(code);
             Assert.AreEqual(null, result.Item1.Get("a"));
@@ -999,8 +999,8 @@ namespace RubberduckTests.Preprocessing
         public void TestNumberLiteral()
         {
             string code = @"
-#Const a = &HAF$
-#Const b = &O423#
+#Const a = &HAF%
+#Const b = &O423^
 #Const c = -50.323e5
 ";
             var result = Preprocess(code);
@@ -1179,6 +1179,27 @@ End Sub
             var result = Preprocess(code);
             Assert.AreEqual(evaluated, result.Item2.AsString);
         }
+
+        [TestMethod]
+        public void TestLogicalLinesHasConditionalCompilationKeywords()
+        {
+            string code = @"
+Sub FileTest()
+    Open ""TESTFILE"" For Input As #iFile
+    Close #iFile
+End Sub
+";
+
+            string evaluated = @"
+Sub FileTest()
+    Open ""TESTFILE"" For Input As #iFile
+    Close #iFile
+End Sub
+";
+            var result = Preprocess(code);
+            Assert.AreEqual(evaluated, result.Item2.AsString);
+        }
+
         private Tuple<SymbolTable<string, IValue>, IValue> Preprocess(string code)
         {
             SymbolTable<string, IValue> symbolTable = new SymbolTable<string, IValue>();

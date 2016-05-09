@@ -29,7 +29,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new DefaultProjectNameInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
@@ -54,7 +54,7 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             parser.Parse();
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new DefaultProjectNameInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
