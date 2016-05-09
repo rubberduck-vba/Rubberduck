@@ -573,6 +573,32 @@ keyword :
      | VERSION
      | WITHEVENTS
      | XOR
+     | STEP
+     | EXIT_DO 
+     | EXIT_FOR 
+     | EXIT_FUNCTION 
+     | EXIT_PROPERTY 
+     | EXIT_SUB
+     | END_SELECT
+     | END_WITH
+     | ON_ERROR
+     | RESUME_NEXT
+     | ERROR
+     | APPEND
+     | BINARY
+     | OUTPUT
+     | RANDOM
+     | ACCESS
+     | READ
+     | WRITE
+     | READ_WRITE
+     | SHARED
+     | LOCK_READ
+     | LOCK_WRITE
+     | LOCK_READ_WRITE
+     | LINE_INPUT    
+     | RESET
+     | WIDTH
 ;
 
 markerKeyword : AS;
@@ -645,32 +671,6 @@ statementKeyword :
     | WHILE
     | WITH
     | WRITE
-    | STEP
-    | EXIT_DO 
-    | EXIT_FOR 
-    | EXIT_FUNCTION 
-    | EXIT_PROPERTY 
-    | EXIT_SUB
-    | END_SELECT
-    | END_WITH
-    | ON_ERROR
-    | RESUME_NEXT
-    | ERROR
-    | APPEND
-    | BINARY
-    | OUTPUT
-    | RANDOM
-    | ACCESS
-    | READ
-    | WRITE
-    | READ_WRITE
-    | SHARED
-    | LOCK_READ
-    | LOCK_WRITE
-    | LOCK_READ_WRITE
-    | RESET
-    | LINE_INPUT
-    | WIDTH
 ;
 
 endOfLine :
