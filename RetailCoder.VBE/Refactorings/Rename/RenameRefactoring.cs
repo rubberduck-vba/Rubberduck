@@ -130,16 +130,22 @@ namespace Rubberduck.Refactorings.Rename
 
         private void Rename()
         {
-            var declaration = _model.Target ?? FindDeclarationForIdentifier();
+            var declaration = FindDeclarationForIdentifier();
             if (declaration != null)
             {
-                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName, declaration.IdentifierName);
-                var rename = _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
+                    declaration.IdentifierName);
+                var rename = _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Exclamation);
 
                 if (rename == DialogResult.No)
                 {
                     return;
                 }
+            }
+            else if(_model.Target == null)
+            {
+                return;
             }
 
             // must rename usages first; if target is a module or a project,
