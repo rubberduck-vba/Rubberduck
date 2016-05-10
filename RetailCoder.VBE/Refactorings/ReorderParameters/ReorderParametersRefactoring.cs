@@ -45,6 +45,8 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             AdjustReferences(_model.TargetDeclaration.References);
             AdjustSignatures();
+
+            _model.State.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)
@@ -244,7 +246,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         private string GetOldSignature(Declaration target)
         {
-            var rewriter = _model.ParseResult.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
+            var rewriter = _model.State.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
 
             var context = target.Context;
             var firstTokenIndex = context.Start.TokenIndex;
