@@ -493,30 +493,9 @@ namespace Rubberduck.Parsing.VBA
         private void ResolveDeclarations(VBComponent component, IParseTree tree)
         {
             var qualifiedModuleName = new QualifiedModuleName(component);
-
-            var obsoleteCallStatementListener = new ObsoleteCallStatementListener();
-            var obsoleteLetStatementListener = new ObsoleteLetStatementListener();
-            var emptyStringLiteralListener = new EmptyStringLiteralListener();
-            var argListWithOneByRefParamListener = new ArgListWithOneByRefParamListener();
             
             try
             {
-                ParseTreeWalker.Default.Walk(new CombinedParseTreeListener(new IParseTreeListener[]{
-                    obsoleteCallStatementListener,
-                    obsoleteLetStatementListener,
-                    emptyStringLiteralListener,
-                    argListWithOneByRefParamListener,
-                }), tree);
-                // TODO: these are actually (almost) inspection results.. we should handle them as such
-                lock (_state)
-                lock (component)
-                {
-                    _state.ArgListsWithOneByRefParam = argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-                    _state.EmptyStringLiterals = emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-                    _state.ObsoleteLetContexts = obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-                    _state.ObsoleteCallContexts = obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext(qualifiedModuleName, context));
-                }
-
                 var project = component.Collection.Parent;
                 var projectQualifiedName = new QualifiedModuleName(project);
                 Declaration projectDeclaration;
@@ -591,62 +570,5 @@ namespace Rubberduck.Parsing.VBA
             _state.SetModuleState(component, state);
             Debug.WriteLine("'{0}' is {1} (thread {2})", component.Name, _state.GetModuleState(component), Thread.CurrentThread.ManagedThreadId);
         }
-
-        #region Listener classes
-        private class ObsoleteCallStatementListener : VBAParserBaseListener
-        {
-            private readonly IList<VBAParser.ExplicitCallStmtContext> _contexts = new List<VBAParser.ExplicitCallStmtContext>();
-            public IEnumerable<VBAParser.ExplicitCallStmtContext> Contexts { get { return _contexts; } }
-
-            public override void ExitExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
-            {
-                _contexts.Add(context);
-            }
-        }
-
-        private class ObsoleteLetStatementListener : VBAParserBaseListener
-        {
-            private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
-            public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
-
-            public override void ExitLetStmt(VBAParser.LetStmtContext context)
-            {
-                if (context.LET() != null)
-                {
-                    _contexts.Add(context);
-                }
-            }
-        }
-
-        private class EmptyStringLiteralListener : VBAParserBaseListener
-        {
-            private readonly IList<VBAParser.LiteralContext> _contexts = new List<VBAParser.LiteralContext>();
-            public IEnumerable<VBAParser.LiteralContext> Contexts { get { return _contexts; } }
-
-            public override void ExitLiteral(VBAParser.LiteralContext context)
-            {
-                var literal = context.STRINGLITERAL();
-                if (literal != null && literal.GetText() == "\"\"")
-                {
-                    _contexts.Add(context);
-                }
-            }
-        }
-
-        private class ArgListWithOneByRefParamListener : VBAParserBaseListener
-        {
-            private readonly IList<VBAParser.ArgListContext> _contexts = new List<VBAParser.ArgListContext>();
-            public IEnumerable<VBAParser.ArgListContext> Contexts { get { return _contexts; } }
-
-            public override void ExitArgList(VBAParser.ArgListContext context)
-            {
-                if (context.arg() != null && context.arg().Count(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)) == 1)
-                {
-                    _contexts.Add(context);
-                }
-            }
-        }
-
-        #endregion
     }
 }

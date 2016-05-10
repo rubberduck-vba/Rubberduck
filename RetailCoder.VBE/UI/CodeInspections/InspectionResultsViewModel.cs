@@ -155,6 +155,7 @@ namespace Rubberduck.UI.CodeInspections
             {
                 return;
             }
+            await Task.Yield();
 
             IsBusy = true;
 

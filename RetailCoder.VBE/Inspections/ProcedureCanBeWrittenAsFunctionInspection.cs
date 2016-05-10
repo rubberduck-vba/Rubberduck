@@ -5,10 +5,11 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using System.Diagnostics;
 
 namespace Rubberduck.Inspections
 {
-    public sealed class ProcedureCanBeWrittenAsFunctionInspection : InspectionBase
+    public sealed class ProcedureCanBeWrittenAsFunctionInspection : InspectionBase, IParseTreeInspection
     {
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion)
@@ -19,9 +20,16 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionResultFormat; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
+        public ParseTreeResults ParseTreeResults { get; set; }
+
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var subStmts = State.ArgListsWithOneByRefParam
+            if (ParseTreeResults == null)
+            {
+                Debug.WriteLine("Aborting GetInspectionResults because ParseTree results were not passed");
+                return new InspectionResultBase[] { };
+            }
+            var subStmts = ParseTreeResults.ArgListsWithOneByRefParam
                 .Where(context => context.Context.Parent is VBAParser.SubStmtContext)
                 .Select(context => (VBAParser.SubStmtContext)context.Context.Parent)
                 .ToList();
@@ -63,7 +71,7 @@ namespace Rubberduck.Inspections
                             .All(withEvents => UserDeclarations.FindEventProcedures(withEvents) == null);
                 });
 
-            return State.ArgListsWithOneByRefParam
+            return ParseTreeResults.ArgListsWithOneByRefParam
                 .Where(context => context.Context.Parent is VBAParser.SubStmtContext &&
                                   subStmtsNotImplementingInterfaces.Contains(context.Context.Parent) &&
                                   subStmtsNotImplementingEvents.Contains(context.Context.Parent))
@@ -73,6 +81,20 @@ namespace Rubberduck.Inspections
                         context.Context as VBAParser.ArgListContext),
                     new QualifiedContext<VBAParser.SubStmtContext>(context.ModuleName,
                         context.Context.Parent as VBAParser.SubStmtContext)));
+        }
+
+        public class ArgListWithOneByRefParamListener : VBAParserBaseListener
+        {
+            private readonly IList<VBAParser.ArgListContext> _contexts = new List<VBAParser.ArgListContext>();
+            public IEnumerable<VBAParser.ArgListContext> Contexts { get { return _contexts; } }
+
+            public override void ExitArgList(VBAParser.ArgListContext context)
+            {
+                if (context.arg() != null && context.arg().Count(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)) == 1)
+                {
+                    _contexts.Add(context);
+                }
+            }
         }
     }
 }

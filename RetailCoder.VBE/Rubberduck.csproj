@@ -361,6 +361,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Inspections\IParseTreeInspection.cs" />
     <Compile Include="Inspections\MakeSingleLineParameterQuickFix.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInspection.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
