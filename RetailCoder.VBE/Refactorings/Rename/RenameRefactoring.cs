@@ -174,6 +174,8 @@ namespace Rubberduck.Refactorings.Rename
             {
                 RenameDeclaration(_model.Target, _model.NewName);
             }
+
+            _state.OnParseRequested(this);
         }
 
         private void RenameModule()
@@ -393,7 +395,7 @@ namespace Rubberduck.Refactorings.Rename
             if (target.DeclarationType == DeclarationType.Parameter)
             {
                 var argContext = (VBAParser.ArgContext)target.Context;
-                var rewriter = _model.ParseResult.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
+                var rewriter = _model.State.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
                 rewriter.Replace(argContext.unrestrictedIdentifier().Start.TokenIndex, _model.NewName);
 
                 // Target.Context is an ArgContext, its parent is an ArgsListContext;

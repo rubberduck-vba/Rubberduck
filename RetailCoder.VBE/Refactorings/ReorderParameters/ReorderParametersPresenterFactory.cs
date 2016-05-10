@@ -8,15 +8,15 @@ namespace Rubberduck.Refactorings.ReorderParameters
     {
         private readonly VBE _vbe;
         private readonly IReorderParametersDialog _view;
-        private readonly RubberduckParserState _parseResult;
+        private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
         public ReorderParametersPresenterFactory(VBE vbe, IReorderParametersDialog view,
-            RubberduckParserState parseResult, IMessageBox messageBox)
+            RubberduckParserState state, IMessageBox messageBox)
         {
             _vbe = vbe;
             _view = view;
-            _parseResult = parseResult;
+            _state = state;
             _messageBox = messageBox;
         }
 
@@ -29,7 +29,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 return null;
             }
 
-            var model = new ReorderParametersModel(_parseResult, selection.Value, _messageBox);
+            var model = new ReorderParametersModel(_state, selection.Value, _messageBox);
             return new ReorderParametersPresenter(_view, model, _messageBox);
         }
     }

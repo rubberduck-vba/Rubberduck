@@ -4,6 +4,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
@@ -17,11 +18,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
     public class ExtractMethodRefactoring : IRefactoring
     {
         private readonly VBE _vbe;
+        private readonly RubberduckParserState _state;
         private readonly IRefactoringPresenterFactory<IExtractMethodPresenter> _factory;
 
-        public ExtractMethodRefactoring(VBE vbe, IRefactoringPresenterFactory<IExtractMethodPresenter> factory)
+        public ExtractMethodRefactoring(VBE vbe, RubberduckParserState state, IRefactoringPresenterFactory<IExtractMethodPresenter> factory)
         {
             _vbe = vbe;
+            _state = state;
             _factory = factory;
         }
 
@@ -41,6 +44,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
 
             ExtractMethod(model);
+
+            _state.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)
