@@ -1513,4 +1513,19 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
     <value>Slash (/)</value>
   </data>
+  <data name="SourceControl_MissingCredentials" xml:space="preserve">
+    <value>Fehlende Zugangsdaten</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitAndSyncSuccess" xml:space="preserve">
+    <value>Commit und Synchronisation erfolgreich.</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitSuccess" xml:space="preserve">
+    <value>Commit erfolgreich.</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitAndPushSuccess" xml:space="preserve">
+    <value>Commit und Push erfolgreich.</value>
+  </data>
+  <data name="SourceControl_CommitStatus" xml:space="preserve">
+    <value>Commit Status.</value>
+  </data>
 </root>
