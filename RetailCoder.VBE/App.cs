@@ -274,7 +274,7 @@ namespace Rubberduck
 
             Debug.WriteLine(string.Format("Component '{0}' was renamed.", e.Item.Name));
 
-            _parser.State.OnParseRequested(sender, e.Item);
+            _parser.State.RemoveRenamedComponent(e.Item, e.OldName);
         }
 
         async void sink_ComponentRemoved(object sender, DispatcherEventArgs<VBComponent> e)

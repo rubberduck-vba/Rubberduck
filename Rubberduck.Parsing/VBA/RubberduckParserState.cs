@@ -517,6 +517,47 @@ namespace Rubberduck.Parsing.VBA
             return success;
         }
 
+        public bool RemoveRenamedComponent(VBComponent component, string oldComponentName)
+        {
+            var match = new QualifiedModuleName(component, oldComponentName);
+            var keys = _declarations.Keys.Where(kvp => kvp.ComponentName == oldComponentName && kvp.ProjectId == match.ProjectId);
+
+            var success = true;
+            var declarationsRemoved = 0;
+            foreach (var key in keys)
+            {
+                ConcurrentDictionary<Declaration, byte> declarations = null;
+                success = success && (!_declarations.ContainsKey(key) || _declarations.TryRemove(key, out declarations));
+                declarationsRemoved = declarations == null ? 0 : declarations.Count;
+
+                IParseTree tree;
+                success = success && (!_parseTrees.ContainsKey(key) || _parseTrees.TryRemove(key, out tree));
+
+                int contentHash;
+                success = success && (!_moduleContentHashCodes.ContainsKey(key) || _moduleContentHashCodes.TryRemove(key, out contentHash));
+
+                IList<IAnnotation> annotations;
+                success = success && (!_annotations.ContainsKey(key) || _annotations.TryRemove(key, out annotations));
+
+                ITokenStream stream;
+                success = success && (!_tokenStreams.ContainsKey(key) || _tokenStreams.TryRemove(key, out stream));
+
+                ParserState state;
+                success = success && (!_moduleStates.ContainsKey(key) || _moduleStates.TryRemove(key, out state));
+
+                SyntaxErrorException exception;
+                success = success && (!_moduleExceptions.ContainsKey(key) || _moduleExceptions.TryRemove(key, out exception));
+
+                IList<CommentNode> nodes;
+                success = success && (!_comments.ContainsKey(key) || _comments.TryRemove(key, out nodes));
+            }
+
+            OnStateChanged();
+
+            Debug.WriteLine("RemoveRenamedComponent({0}): {1} - {2} declarations removed", oldComponentName, success ? "succeeded" : "failed", declarationsRemoved);
+            return success;
+        }
+
         public void AddTokenStream(VBComponent component, ITokenStream stream)
         {
             _tokenStreams[new QualifiedModuleName(component)] = stream;
