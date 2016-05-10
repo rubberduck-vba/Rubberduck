@@ -15,6 +15,7 @@
         <BitmapImage x:Key="CloneRepoImage" UriSource="../../Resources/drive-download.png" />
         <BitmapImage x:Key="GitIcon" UriSource="../../Resources/icon-github.png" />
         <BitmapImage x:Key="ErrorImage" UriSource="../../Resources/cross-circle.png" />
+        <BitmapImage x:Key="WarningIcon" UriSource="../../Resources/exclamation-white.png" />
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
@@ -28,6 +29,35 @@
         </LinearGradientBrush>
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+
+        <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
+            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter Content="{TemplateBinding Content}" 
+                                  ContentTemplate="{TemplateBinding  ContentTemplate}"
+                                  VerticalAlignment="Center">
+                            <ContentPresenter.Resources>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="TextDecorations" Value="Underline" />
+                                </Style>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="Blue" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Foreground" Value="Gray" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
         <SolidColorBrush x:Key="ToolBarHorizontalBackground" Color="#FFEEF5FD"/>
         <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackground" Color="#FFEEF5FD"/>
@@ -232,14 +262,12 @@
                             Background="Transparent">
                         <Image Source="{StaticResource OpenRepoImage}" />
                     </Button>
-                    <Separator />
                     <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_InitRepoButtonToolTip}"
                             Command="{Binding InitRepoCommand, Mode=OneWay}"
                             BorderThickness="0"
                             Background="Transparent">
                         <Image Source="{StaticResource CreateRepoImage}" />
                     </Button>
-                    <Separator />
                     <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_CloneRepoButtonToolTip}"
                             Command="{Binding CloneRepoCommand, Mode=OneWay}"
                             BorderThickness="0"
@@ -258,42 +286,78 @@
             <Grid Visibility="{Binding DisplayErrorMessageGrid, Converter={StaticResource BoolToVisibility}}"
                   DockPanel.Dock="Top">
                 <StackPanel Background="LightYellow">
-                    <TextBlock Text="{Binding ErrorMessage, UpdateSourceTrigger=PropertyChanged}"
-                               TextWrapping="WrapWithOverflow"
-                               Margin="5" />
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Image Source="{Binding ErrorIcon, UpdateSourceTrigger=PropertyChanged}"
+                               Height="16"
+                               Margin="5"
+                               VerticalAlignment="Top" />
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="{Binding ErrorTitle, UpdateSourceTrigger=PropertyChanged}"
+                                       TextWrapping="WrapWithOverflow"
+                                       Margin="5,7,5,0"
+                                       FontWeight="Bold" />
+                            <TextBlock Text="{Binding ErrorMessage, UpdateSourceTrigger=PropertyChanged}"
+                                       TextWrapping="WrapWithOverflow"
+                                       Margin="5" />
+                        </StackPanel>
+                    </Grid>
                     <Button HorizontalAlignment="Right"
                             Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Dismiss}"
                             Padding="5"
-                            Command="{Binding DismissErrorMessageCommand}" />
+                            Margin="0,0,5,5"
+                            Command="{Binding DismissErrorMessageCommand}"
+                            Style="{StaticResource LinkButton}" />
                 </StackPanel>
             </Grid>
 
             <Grid Visibility="{Binding DisplayLoginGrid, Converter={StaticResource BoolToVisibility}}"
                   DockPanel.Dock="Top">
-                <StackPanel VerticalAlignment="Top"
-                            Margin="10,5">
-                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_LoginInstructions}"
+                <StackPanel VerticalAlignment="Top">
+                    <Grid HorizontalAlignment="Stretch"
+                          Background="LightYellow">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Image Source="{StaticResource WarningIcon}"
+                               Height="16"
+                               Margin="5"
+                               VerticalAlignment="Top" />
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_MissingCredentials}"
                                TextWrapping="WrapWithOverflow"
-                               FontWeight="Black"
-                               Margin="0,0,0,5" />
+                               FontWeight="Bold"
+                               Margin="5,7,5,3" />
+                            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_LoginInstructions}"
+                               TextWrapping="WrapWithOverflow"
+                               Margin="5,0,5,12" />
+                        </StackPanel>
+                    </Grid>
+                    <Border Background="LightGray" Height="2" />
+                    
                     <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UserNameLabel}"
                                FontWeight="SemiBold"
-                               Margin="0,0,0,5" />
+                               Margin="5,5,5,5" />
                     <TextBox Name="UserNameBox"
-                             Margin="0,0,0,10"
+                             Margin="5,0,5,10"
                              Height="18"
                              VerticalContentAlignment="Center" />
 
                     <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_PasswordLabel}"
                                FontWeight="SemiBold"
-                               Margin="0,0,0,5" />
+                               Margin="5,0,5,5" />
                     <PasswordBox Name="PasswordBox"
-                                 Margin="0,0,0,10"
+                                 Margin="5,0,5,10"
                                  Height="18"
                                  VerticalContentAlignment="Center" />
 
                     <Grid Grid.IsSharedSizeScope="True"
-                          HorizontalAlignment="Right">
+                          HorizontalAlignment="Right"
+                          Margin="0,0,5,5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition SharedSizeGroup="LoginButtons" />
                             <ColumnDefinition SharedSizeGroup="LoginButtons" />
@@ -301,13 +365,14 @@
                         <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
                                 Padding="5"
                                 Click="Login_Click"
-                                Command="{Binding CloseLoginGridCommand}">
+                                Command="{Binding LoginGridOkCommand}"
+                                CommandParameter="{Binding ElementName=UserNameBox, Path=Text}">
                         </Button>
                         <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
                                 Grid.Column="1"
                                 Margin="10,0,0,0"
                                 Padding="5"
-                                Command="{Binding CloseLoginGridCommand}">
+                                Command="{Binding LoginGridCancelCommand}">
                         </Button>
                     </Grid>
                 </StackPanel>
