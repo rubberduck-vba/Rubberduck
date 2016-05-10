@@ -60,6 +60,7 @@ namespace Rubberduck.Root
             // bind VBE and AddIn dependencies to host-provided instances.
             _kernel.Bind<VBE>().ToConstant(_vbe);
             _kernel.Bind<AddIn>().ToConstant(_addin);
+            _kernel.Bind<App>().ToSelf().InSingletonScope();
             _kernel.Bind<RubberduckParserState>().ToSelf().InSingletonScope();
             _kernel.Bind<GitProvider>().ToSelf().InSingletonScope();
             _kernel.Bind<NewUnitTestModuleCommand>().ToSelf().InSingletonScope();
