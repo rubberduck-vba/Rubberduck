@@ -216,6 +216,11 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var moduleStates = _moduleStates.Values.ToList();
+            if (!moduleStates.Any())
+            {
+                return ParserState.Pending;
+            }
+
             var state = States.SingleOrDefault(value => moduleStates.All(ps => ps == value));
 
             if (state != default(ParserState))

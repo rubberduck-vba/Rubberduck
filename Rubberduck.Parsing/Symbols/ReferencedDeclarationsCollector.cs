@@ -174,7 +174,6 @@ namespace Rubberduck.Parsing.Symbols
                 info.GetTypeAttr(out typeAttributesPointer);
 
                 var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
-                //var implements = GetImplementedInterfaceNames(typeAttributes, info);
 
                 var attributes = new Attributes();
                 if (typeAttributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FPREDECLID))
@@ -189,12 +188,19 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 else if (typeDeclarationType == DeclarationType.ClassModule)
                 {
-                    moduleDeclaration = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes, isExposed: true, isGlobalClassModule: true);
+                    var module = new ClassModuleDeclaration(typeQualifiedMemberName, projectDeclaration, typeName, true, new List<IAnnotation>(), attributes, isExposed: true, isGlobalClassModule: true);
+                    var implements = GetImplementedInterfaceNames(typeAttributes, info);
+                    foreach (var supertypeName in implements)
+                    {
+                        module.AddSupertype(supertypeName);
+                    }
+                    moduleDeclaration = module;
                 }
                 else
                 {
                     moduleDeclaration = new Declaration(typeQualifiedMemberName, projectDeclaration, projectDeclaration, typeName, false, false, Accessibility.Global, typeDeclarationType, null, Selection.Home, true, null, attributes);
                 }
+
                 yield return moduleDeclaration;
 
                 for (var memberIndex = 0; memberIndex < typeAttributes.cFuncs; memberIndex++)
@@ -441,22 +447,25 @@ namespace Rubberduck.Parsing.Symbols
             return new ParameterDeclaration(new QualifiedMemberName(typeQualifiedModuleName, paramName), memberDeclaration, asParamTypeName, isOptional, isByRef, isArray);
         }
 
-        //private IEnumerable<string> GetImplementedInterfaceNames(TYPEATTR typeAttr, ITypeInfo info)
-        //{
-        //    for (var implIndex = 0; implIndex < typeAttr.cImplTypes; implIndex++)
-        //    {
-        //        int href;
-        //        info.GetRefTypeOfImplType(implIndex, out href);
+        private IEnumerable<string> GetImplementedInterfaceNames(TYPEATTR typeAttr, ITypeInfo info)
+        {
+            for (var implIndex = 0; implIndex < typeAttr.cImplTypes; implIndex++)
+            {
+                int href;
+                info.GetRefTypeOfImplType(implIndex, out href);
 
-        //        ITypeInfo implTypeInfo;
-        //        info.GetRefTypeInfo(href, out implTypeInfo);
+                ITypeInfo implTypeInfo;
+                info.GetRefTypeInfo(href, out implTypeInfo);
 
-        //        var implTypeName = GetTypeName(implTypeInfo);
-
-        //        yield return implTypeName;
-        //        //Debug.WriteLine(string.Format("\tImplements {0}", implTypeName));
-        //    }
-        //}
+                var implTypeName = GetTypeName(implTypeInfo);
+                if (implTypeName != "IDispatch" && implTypeName != "IUnknown")
+                {
+                    // skip IDispatch.. just about everything implements it and RD doesn't need to care about it; don't care about IUnknown either
+                    yield return implTypeName;
+                }
+                //Debug.WriteLine(string.Format("\tImplements {0}", implTypeName));
+            }
+        }
 
         private DeclarationType GetDeclarationType(ITypeLib typeLibrary, int i)
         {

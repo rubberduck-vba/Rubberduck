@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -13,15 +12,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly IRenameDialog _view;
+        private readonly IMessageBox _msgBox;
 
-        public CodeExplorer_RenameCommand(VBE vbe, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory, IRenameDialog view)
+        public CodeExplorer_RenameCommand(VBE vbe, RubberduckParserState state, IRenameDialog view, IMessageBox msgBox)
         {
             _vbe = vbe;
             _state = state;
-            _wrapperFactory = wrapperFactory;
             _view = view;
+            _msgBox = msgBox;
         }
 
         public override bool CanExecute(object parameter)
@@ -32,8 +31,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override void Execute(object parameter)
         {
-            var factory = new RenamePresenterFactory(_vbe, _view, _state, new MessageBox(), _wrapperFactory);
-            var refactoring = new RenameRefactoring(_vbe, factory, new MessageBox(), _state);
+            var factory = new RenamePresenterFactory(_vbe, _view, _state, _msgBox);
+            var refactoring = new RenameRefactoring(_vbe, factory, _msgBox, _state);
 
             refactoring.Refactor(GetSelectedDeclaration((CodeExplorerItemViewModel)parameter));
         }

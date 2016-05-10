@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.Command.MenuItems;
 
 namespace Rubberduck.API
 {
@@ -49,6 +50,7 @@ namespace Rubberduck.API
 
         public ParserState()
         {
+            UiDispatcher.Initialize();
             _state = new RubberduckParserState();
             _attributeParser = new AttributeParser(new ModuleExporter());
             
@@ -80,7 +82,7 @@ namespace Rubberduck.API
         public void BeginParse()
         {
             // non-blocking call
-            _state.OnParseRequested(this);
+            UiDispatcher.Invoke(() => _state.OnParseRequested(this));
         }
 
         public event Action OnParsed;
@@ -100,19 +102,19 @@ namespace Rubberduck.API
             var errorHandler = OnError;
             if (_state.Status == Parsing.VBA.ParserState.Error && errorHandler != null)
             {
-                errorHandler.Invoke();
+                UiDispatcher.Invoke(errorHandler.Invoke);
             }
 
             var parsedHandler = OnParsed;
             if (_state.Status == Parsing.VBA.ParserState.Parsed && parsedHandler != null)
             {
-                parsedHandler.Invoke();
+                UiDispatcher.Invoke(parsedHandler.Invoke);
             }
 
             var readyHandler = OnReady;
             if (_state.Status == Parsing.VBA.ParserState.Ready && readyHandler != null)
             {
-                readyHandler.Invoke();
+                UiDispatcher.Invoke(readyHandler.Invoke);
             }
         }
 
@@ -120,14 +122,14 @@ namespace Rubberduck.API
 
         public Declaration[] AllDeclarations
         {
-            [return: MarshalAs(UnmanagedType.SafeArray, SafeArraySubType = VarEnum.VT_VARIANT)]
+            //[return: MarshalAs(UnmanagedType.SafeArray/*, SafeArraySubType = VarEnum.VT_VARIANT*/)]
             get { return _allDeclarations; }
         }
 
         private Declaration[] _userDeclarations;
         public Declaration[] UserDeclarations
         {
-            [return: MarshalAs(UnmanagedType.SafeArray, SafeArraySubType = VarEnum.VT_VARIANT)]
+            //[return: MarshalAs(UnmanagedType.SafeArray/*, SafeArraySubType = VarEnum.VT_VARIANT*/)]
             get { return _userDeclarations; }
         }
     }

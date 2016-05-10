@@ -216,7 +216,7 @@ namespace Rubberduck.Parsing.Symbols
         public Declaration FindModuleEnclosingProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, string calleeModuleName, DeclarationType moduleType)
         {
             var nameMatches = MatchName(calleeModuleName);
-            var moduleMatches = nameMatches.Where(m =>
+            var moduleMatches = nameMatches.Where(m => 
                 m.DeclarationType.HasFlag(moduleType)
                 && Declaration.GetProjectParent(m).Equals(callingProject)
                 && !m.Equals(callingModule));
@@ -303,6 +303,10 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberEnclosedProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
         {
+            var project = callingProject;
+            var module = callingModule;
+            var parent = callingParent;
+
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m =>
                 m.DeclarationType.HasFlag(memberType)
