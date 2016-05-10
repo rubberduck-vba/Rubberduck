@@ -70,7 +70,6 @@ namespace Rubberduck
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
         {
             _app.Shutdown();
-            _app.Dispose();
             _kernel.Dispose();
         }
     }
