@@ -19,7 +19,6 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
-        private readonly List<ICommand> _commands;
         private readonly Dispatcher _dispatcher;
 
         public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<ICommand> commands)
@@ -28,7 +27,6 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             _folderHelper = folderHelper;
             _state = state;
-            _commands = commands;
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
