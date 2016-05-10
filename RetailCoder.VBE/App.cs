@@ -285,7 +285,7 @@ namespace Rubberduck
             }
 
             Debug.WriteLine(string.Format("Component '{0}' was removed.", e.Item.Name));
-            _parser.State.ClearStateCache(e.Item);
+            _parser.State.ClearStateCache(e.Item, true);
         }
 
         async void sink_ComponentReloaded(object sender, DispatcherEventArgs<VBComponent> e)

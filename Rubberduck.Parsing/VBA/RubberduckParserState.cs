@@ -430,7 +430,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void ClearStateCache(VBProject project)
+        public void ClearStateCache(VBProject project, bool setStateChanged = false)
         {
             try
             {
@@ -447,7 +447,10 @@ namespace Rubberduck.Parsing.VBA
                 _declarations.Clear();
             }
 
-            OnStateChanged();
+            if (setStateChanged)
+            {
+                OnStateChanged();
+            }
         }
 
         public void ClearBuiltInReferences()
@@ -458,7 +461,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public bool ClearStateCache(VBComponent component)
+        public bool ClearStateCache(VBComponent component, bool setStateChanged = false)
         {
             var match = new QualifiedModuleName(component);
             var keys = _declarations.Keys.Where(kvp => kvp.Equals(match))
@@ -492,8 +495,6 @@ namespace Rubberduck.Parsing.VBA
 
                 IList<CommentNode> nodes;
                 success = success && (!_comments.ContainsKey(key) || _comments.TryRemove(key, out nodes));
-
-                OnStateChanged();
             }
 
             var projectId = component.Collection.Parent.HelpFile;
@@ -505,6 +506,11 @@ namespace Rubberduck.Parsing.VBA
                 _declarations.TryRemove(sameProjectDeclarations.Single().Key, out declarations);
                 _projects.Remove(projectId);
                 Debug.WriteLine(string.Format("Removed Project declaration for project Id {0}", projectId));
+            }
+
+            if (setStateChanged)
+            {
+                OnStateChanged();
             }
 
             Debug.WriteLine("ClearDeclarations({0}): {1} - {2} declarations removed", component.Name, success ? "succeeded" : "failed", declarationsRemoved);
