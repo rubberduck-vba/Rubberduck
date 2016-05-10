@@ -441,6 +441,8 @@ namespace Rubberduck.Parsing.VBA
             {
                 _declarations.Clear();
             }
+
+            OnStateChanged();
         }
 
         public void ClearBuiltInReferences()
@@ -485,6 +487,8 @@ namespace Rubberduck.Parsing.VBA
 
                 IList<CommentNode> nodes;
                 success = success && (!_comments.ContainsKey(key) || _comments.TryRemove(key, out nodes));
+
+                OnStateChanged();
             }
 
             var projectId = component.Collection.Parent.HelpFile;
