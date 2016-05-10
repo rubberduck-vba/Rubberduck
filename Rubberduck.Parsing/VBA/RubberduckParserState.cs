@@ -287,47 +287,9 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private IEnumerable<QualifiedContext> _obsoleteCallContexts = new List<QualifiedContext>();
-
-        /// <summary>
-        /// Gets <see cref="ParserRuleContext"/> objects representing 'Call' statements in the parse tree.
-        /// </summary>
-        public IEnumerable<QualifiedContext> ObsoleteCallContexts
-        {
-            get { return _obsoleteCallContexts; }
-            internal set { _obsoleteCallContexts = value; }
-        }
-
-        private IEnumerable<QualifiedContext> _obsoleteLetContexts = new List<QualifiedContext>();
-
-        /// <summary>
-        /// Gets <see cref="ParserRuleContext"/> objects representing explicit 'Let' statements in the parse tree.
-        /// </summary>
-        public IEnumerable<QualifiedContext> ObsoleteLetContexts
-        {
-            get { return _obsoleteLetContexts; }
-            internal set { _obsoleteLetContexts = value; }
-        }
-
         internal void SetModuleAttributes(VBComponent component, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
         {
             _moduleAttributes.AddOrUpdate(new QualifiedModuleName(component), attributes, (c, s) => attributes);
-        }
-
-        private IEnumerable<QualifiedContext> _emptyStringLiterals = new List<QualifiedContext>();
-
-        public IEnumerable<QualifiedContext> EmptyStringLiterals
-        {
-            get { return _emptyStringLiterals; }
-            internal set { _emptyStringLiterals = value; }
-        }
-
-        private IEnumerable<QualifiedContext> _argListsWithOneByRefParam = new List<QualifiedContext>();
-
-        public IEnumerable<QualifiedContext> ArgListsWithOneByRefParam
-        {
-            get { return _argListsWithOneByRefParam; }
-            internal set { _argListsWithOneByRefParam = value; }
         }
 
         public IEnumerable<CommentNode> AllComments
