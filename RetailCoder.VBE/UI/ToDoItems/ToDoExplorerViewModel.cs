@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -17,20 +15,29 @@ namespace Rubberduck.UI.ToDoItems
 {
     public class ToDoExplorerViewModel : ViewModelBase, INavigateSelection
     {
-        private readonly Dispatcher _dispatcher;
         private readonly RubberduckParserState _state;
         private readonly IGeneralConfigService _configService;
 
         public ToDoExplorerViewModel(RubberduckParserState state, IGeneralConfigService configService)
         {
-            _dispatcher = Dispatcher.CurrentDispatcher;
             _state = state;
             _configService = configService;
             _state.StateChanged += _state_StateChanged;
         }
 
-        private readonly ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
-        public ObservableCollection<ToDoItem> Items { get { return _items; } } 
+        private ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
+        public ObservableCollection<ToDoItem> Items
+        {
+            get { return _items; }
+            set
+            {
+                if (_items != value)
+                {
+                    _items = value;
+                    OnPropertyChanged();
+                }
+            }
+        } 
 
         private ICommand _refreshCommand;
         public ICommand RefreshCommand
@@ -48,23 +55,14 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
-        private async void _state_StateChanged(object sender, EventArgs e)
+        private void _state_StateChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("ToDoExplorerViewModel handles StateChanged...");
             if (_state.Status != ParserState.Ready)
             {
                 return;
             }
 
-            Debug.WriteLine("Refreshing TODO items...");
-            _dispatcher.Invoke(() =>
-            {
-                Items.Clear();
-                foreach (var item in GetItems())
-                {
-                    Items.Add(item);
-                }
-            });
+            Items = new ObservableCollection<ToDoItem>(GetItems());
         }
 
         private ToDoItem _selectedItem;

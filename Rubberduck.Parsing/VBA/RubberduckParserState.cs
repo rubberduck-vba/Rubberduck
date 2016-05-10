@@ -52,7 +52,7 @@ namespace Rubberduck.Parsing.VBA
         public string Message { get { return _message; } }
     }
 
-    public sealed class RubberduckParserState
+    public sealed class RubberduckParserState : IDisposable
     {
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
         private readonly IDictionary<string, Func<VBProject>> _projects = new Dictionary<string, Func<VBProject>>();
@@ -446,6 +446,8 @@ namespace Rubberduck.Parsing.VBA
             {
                 _declarations.Clear();
             }
+
+            OnStateChanged();
         }
 
         public void ClearBuiltInReferences()
@@ -490,6 +492,8 @@ namespace Rubberduck.Parsing.VBA
 
                 IList<CommentNode> nodes;
                 success = success && (!_comments.ContainsKey(key) || _comments.TryRemove(key, out nodes));
+
+                OnStateChanged();
             }
 
             var projectId = component.Collection.Parent.HelpFile;
@@ -731,6 +735,29 @@ namespace Rubberduck.Parsing.VBA
             {
                 Debug.WriteLine("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));
             }
+        }
+
+        private bool _isDisposed;
+        public void Dispose()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            _declarations.Clear();
+            _tokenStreams.Clear();
+            _parseTrees.Clear();
+            _moduleStates.Clear();
+            _moduleContentHashCodes.Clear();
+            _comments.Clear();
+            _annotations.Clear();
+            _moduleExceptions.Clear();
+            _moduleAttributes.Clear();
+            _declarationSelections.Clear();
+            _projects.Clear();
+
+            _isDisposed = true;
         }
     }
 }

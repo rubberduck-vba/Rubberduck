@@ -51,7 +51,7 @@ namespace Rubberduck.UI.Command.Refactorings
         public override void Execute(object parameter)
         {
             var factory = new ExtractMethodPresenterFactory(Vbe, _state.AllDeclarations, _indenter);
-            var refactoring = new ExtractMethodRefactoring(Vbe, factory);
+            var refactoring = new ExtractMethodRefactoring(Vbe, _state, factory);
             refactoring.InvalidSelection += HandleInvalidSelection;
             refactoring.Refactor();
         }

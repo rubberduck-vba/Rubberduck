@@ -64,6 +64,7 @@ namespace Rubberduck.Root
             _kernel.Bind<GitProvider>().ToSelf().InSingletonScope();
             _kernel.Bind<NewUnitTestModuleCommand>().ToSelf().InSingletonScope();
             _kernel.Bind<NewTestMethodCommand>().ToSelf().InSingletonScope();
+            _kernel.Bind<RubberduckCommandBar>().ToSelf().InSingletonScope();
             
             BindCodeInspectionTypes();
 
