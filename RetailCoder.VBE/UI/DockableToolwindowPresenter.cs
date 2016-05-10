@@ -119,7 +119,7 @@ namespace Rubberduck.UI
             }
 
             if (_window != null)
-            { 
+            {
                 Marshal.ReleaseComObject(_window);
             }
         }

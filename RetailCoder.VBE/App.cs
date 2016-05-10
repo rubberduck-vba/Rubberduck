@@ -35,6 +35,7 @@ namespace Rubberduck
 
         private readonly Logger _logger;
 
+        private VBProjectsEventsSink _sink;
         private Configuration _config;
 
         private readonly IConnectionPoint _projectsEventsConnectionPoint;
@@ -71,17 +72,17 @@ namespace Rubberduck
             _parser.State.StatusMessageUpdate += State_StatusMessageUpdate;
             _stateBar.Refresh += _stateBar_Refresh;
 
-            var sink = new VBProjectsEventsSink();
+            _sink = new VBProjectsEventsSink();
             var connectionPointContainer = (IConnectionPointContainer)_vbe.VBProjects;
             var interfaceId = typeof (_dispVBProjectsEvents).GUID;
             connectionPointContainer.FindConnectionPoint(ref interfaceId, out _projectsEventsConnectionPoint);
-            
-            sink.ProjectAdded += sink_ProjectAdded;
-            sink.ProjectRemoved += sink_ProjectRemoved;
-            sink.ProjectActivated += sink_ProjectActivated;
-            sink.ProjectRenamed += sink_ProjectRenamed;
 
-            _projectsEventsConnectionPoint.Advise(sink, out _projectsEventsCookie);
+            _sink.ProjectAdded += sink_ProjectAdded;
+            _sink.ProjectRemoved += sink_ProjectRemoved;
+            _sink.ProjectActivated += sink_ProjectActivated;
+            _sink.ProjectRenamed += sink_ProjectRenamed;
+
+            _projectsEventsConnectionPoint.Advise(_sink, out _projectsEventsCookie);
             UiDispatcher.Initialize();
         }
 
@@ -225,7 +226,7 @@ namespace Rubberduck
         private void RegisterComponentsEventSink(VBComponents components, string projectId)
         {
             if (_componentsEventsSinks.ContainsKey(projectId))
-        {
+            {
                 // already registered - this is caused by the initial load+rename of a project in the VBE
                 Debug.WriteLine("Components sink already registered.");
                 return;
@@ -388,8 +389,28 @@ namespace Rubberduck
 
         public void Dispose()
         {
+            _hooks.MessageReceived -= _hooks_MessageReceived;
+            _configService.SettingsChanged -= _configService_SettingsChanged;
             _configService.LanguageChanged -= ConfigServiceLanguageChanged;
             _parser.State.StateChanged -= Parser_StateChanged;
+            _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
+            _stateBar.Refresh -= _stateBar_Refresh;
+
+            _sink.ProjectAdded -= sink_ProjectAdded;
+            _sink.ProjectRemoved -= sink_ProjectRemoved;
+            _sink.ProjectActivated -= sink_ProjectActivated;
+            _sink.ProjectRenamed -= sink_ProjectRenamed;
+
+            foreach (var item in _componentsEventsSinks)
+            {
+                item.Value.ComponentActivated -= sink_ComponentActivated;
+                item.Value.ComponentAdded -= sink_ComponentAdded;
+                item.Value.ComponentReloaded -= sink_ComponentReloaded;
+                item.Value.ComponentRemoved -= sink_ComponentRemoved;
+                item.Value.ComponentRenamed -= sink_ComponentRenamed;
+                item.Value.ComponentSelected -= sink_ComponentSelected;
+            }
+
             _autoSave.Dispose();
 
             _projectsEventsConnectionPoint.Unadvise(_projectsEventsCookie);
