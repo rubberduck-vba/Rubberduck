@@ -8,15 +8,15 @@ namespace Rubberduck.Refactorings.RemoveParameters
     {
         private readonly VBE _vbe;
         private readonly IRemoveParametersDialog _view;
-        private readonly RubberduckParserState _state;
+        private readonly RubberduckParserState _parseResult;
         private readonly IMessageBox _messageBox;
 
         public RemoveParametersPresenterFactory(VBE vbe, IRemoveParametersDialog view,
-            RubberduckParserState state, IMessageBox messageBox)
+            RubberduckParserState parseResult, IMessageBox messageBox)
         {
             _vbe = vbe;
             _view = view;
-            _state = state;
+            _parseResult = parseResult;
             _messageBox = messageBox;
         }
 
@@ -29,7 +29,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 return null;
             }
 
-            var model = new RemoveParametersModel(_state, selection.Value, _messageBox);
+            var model = new RemoveParametersModel(_parseResult, selection.Value, _messageBox);
             return new RemoveParametersPresenter(_view, model, _messageBox);
         }
     }

@@ -41,8 +41,6 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             RemoveParameters();
-
-            _model.State.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)
@@ -62,9 +60,9 @@ namespace Rubberduck.Refactorings.RemoveParameters
             Refactor();
         }
 
-        public void QuickFix(RubberduckParserState state, QualifiedSelection selection)
+        public void QuickFix(RubberduckParserState parseResult, QualifiedSelection selection)
         {
-            _model = new RemoveParametersModel(state, selection, new MessageBox());
+            _model = new RemoveParametersModel(parseResult, selection, new MessageBox());
             var target = _model.Declarations.FindTarget(selection, new[] { DeclarationType.Parameter });
 
             // ReSharper disable once PossibleUnintendedReferenceComparison
@@ -156,7 +154,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             {
                 throw new InvalidOperationException("Component is null for specified target.");
             }
-            var rewriter = _model.State.GetRewriter(module);
+            var rewriter = _model.ParseResult.GetRewriter(module);
 
             var context = target.Context;
             var firstTokenIndex = context.Start.TokenIndex;

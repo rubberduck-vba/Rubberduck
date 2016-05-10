@@ -8,13 +8,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private readonly VBE _vbe;
         private readonly IEncapsulateFieldDialog _view;
-        private readonly RubberduckParserState _state;
+        private readonly RubberduckParserState _parseResult;
 
-        public EncapsulateFieldPresenterFactory(VBE vbe, RubberduckParserState state, IEncapsulateFieldDialog view)
+        public EncapsulateFieldPresenterFactory(VBE vbe, RubberduckParserState parseResult, IEncapsulateFieldDialog view)
         {
             _vbe = vbe;
             _view = view;
-            _state = state;
+            _parseResult = parseResult;
         }
 
         public EncapsulateFieldPresenter Create()
@@ -25,7 +25,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 return null;
             }
 
-            var model = new EncapsulateFieldModel(_state, selection.Value);
+            var model = new EncapsulateFieldModel(_parseResult, selection.Value);
             return new EncapsulateFieldPresenter(_view, model);
         }
     }

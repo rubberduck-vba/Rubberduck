@@ -44,8 +44,6 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
 
             AddInterface();
-
-            _state.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)

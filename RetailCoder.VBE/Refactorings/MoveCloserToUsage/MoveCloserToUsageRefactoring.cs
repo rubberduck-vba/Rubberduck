@@ -18,14 +18,14 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
     {
         private readonly List<Declaration> _declarations;
         private readonly VBE _vbe;
-        private readonly RubberduckParserState _state;
+        private readonly RubberduckParserState _parseResult;
         private readonly IMessageBox _messageBox;
 
-        public MoveCloserToUsageRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public MoveCloserToUsageRefactoring(VBE vbe, RubberduckParserState parseResult, IMessageBox messageBox)
         {
-            _declarations = state.AllUserDeclarations.ToList();
+            _declarations = parseResult.AllUserDeclarations.ToList();
             _vbe = vbe;
-            _state = state;
+            _parseResult = parseResult;
             _messageBox = messageBox;
         }
 
@@ -105,11 +105,11 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             if (target.QualifiedName.QualifiedModuleName.Component !=
                 target.References.First().QualifiedModuleName.Component)
             {
-                _state.StateChanged += (sender, e) =>
+                _parseResult.StateChanged += (sender, e) =>
                 {
                     if (e.State == ParserState.Ready)
                     {
-                        foreach (var newTarget in _state.AllUserDeclarations.Where(newTarget => newTarget.ComponentName == target.ComponentName &&
+                        foreach (var newTarget in _parseResult.AllUserDeclarations.Where(newTarget => newTarget.ComponentName == target.ComponentName &&
                                                                                                       newTarget.IdentifierName == target.IdentifierName &&
                                                                                                       newTarget.ParentScope == target.ParentScope &&
                                                                                                       newTarget.Project == target.Project &&
@@ -122,14 +122,12 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                     }
                 };
 
-                _state.OnParseRequested(this);
+                _parseResult.OnParseRequested(this);
             }
             else
             {
                 RemoveField(target);
             }
-
-            _state.OnParseRequested(this);
         }
 
         private void InsertDeclaration(Declaration target)

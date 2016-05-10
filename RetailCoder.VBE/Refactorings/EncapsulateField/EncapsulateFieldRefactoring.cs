@@ -33,8 +33,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             if (_model == null) { return; }
 
             AddProperty();
-
-            _model.State.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)

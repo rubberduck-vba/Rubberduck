@@ -60,7 +60,7 @@ End Function
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new ExtractMethodRefactoring(vbe.Object, parser.State, factory.Object);
+            var refactoring = new ExtractMethodRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //assert

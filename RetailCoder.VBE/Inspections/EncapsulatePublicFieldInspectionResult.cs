@@ -14,12 +14,12 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public EncapsulatePublicFieldInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory)
+        public EncapsulatePublicFieldInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
             : base(inspection, target)
         {
             _quickFixes = new[]
             {
-                new EncapsulateFieldQuickFix(target.Context, target.QualifiedSelection, target, state, wrapperFactory),
+                new EncapsulateFieldQuickFix(target.Context, target.QualifiedSelection, target, parseResult, wrapperFactory),
             };
         }
 
@@ -37,14 +37,14 @@ namespace Rubberduck.Inspections
     public class EncapsulateFieldQuickFix : CodeInspectionQuickFix
     {
         private readonly Declaration _target;
-        private readonly RubberduckParserState _state;
+        private readonly RubberduckParserState _parseResult;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public EncapsulateFieldQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory)
+        public EncapsulateFieldQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
             : base(context, selection, string.Format(InspectionsUI.EncapsulatePublicFieldInspectionQuickFix, target.IdentifierName))
         {
             _target = target;
-            _state = state;
+            _parseResult = parseResult;
             _wrapperFactory = wrapperFactory;
         }
 
@@ -54,7 +54,7 @@ namespace Rubberduck.Inspections
 
             using (var view = new EncapsulateFieldDialog())
             {
-                var factory = new EncapsulateFieldPresenterFactory(vbe, _state, view);
+                var factory = new EncapsulateFieldPresenterFactory(vbe, _parseResult, view);
                 var refactoring = new EncapsulateFieldRefactoring(vbe, factory);
                 refactoring.Refactor(_target);
                 IsCancelled = view.DialogResult != DialogResult.OK;

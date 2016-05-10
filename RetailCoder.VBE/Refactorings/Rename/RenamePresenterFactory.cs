@@ -10,15 +10,15 @@ namespace Rubberduck.Refactorings.Rename
     {
         private readonly VBE _vbe;
         private readonly IRenameDialog _view;
-        private readonly RubberduckParserState _state;
+        private readonly RubberduckParserState _parseResult;
         private readonly IMessageBox _messageBox;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public RenamePresenterFactory(VBE vbe, IRenameDialog view, RubberduckParserState state, IMessageBox messageBox, ICodePaneWrapperFactory wrapperFactory)
+        public RenamePresenterFactory(VBE vbe, IRenameDialog view, RubberduckParserState parseResult, IMessageBox messageBox, ICodePaneWrapperFactory wrapperFactory)
         {
             _vbe = vbe;
             _view = view;
-            _state = state;
+            _parseResult = parseResult;
             _messageBox = messageBox;
             _wrapperFactory = wrapperFactory;
         }
@@ -27,7 +27,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             var codePane = _wrapperFactory.Create(_vbe.ActiveCodePane);
             var selection = _vbe.ActiveCodePane == null ? new QualifiedSelection() : new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
-            return new RenamePresenter(_view, new RenameModel(_vbe, _state, selection, _messageBox));
+            return new RenamePresenter(_view, new RenameModel(_vbe, _parseResult, selection, _messageBox));
         }
     }
 }

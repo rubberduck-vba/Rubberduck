@@ -16,16 +16,14 @@ namespace Rubberduck.Refactorings.IntroduceField
     {
         private readonly IList<Declaration> _declarations;
         private readonly VBE _vbe;
-        private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public IntroduceFieldRefactoring(VBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public IntroduceFieldRefactoring(VBE vbe, RubberduckParserState parserState, IMessageBox messageBox)
         {
             _declarations =
-                state.AllDeclarations.Where(i => !i.IsBuiltIn && i.DeclarationType == DeclarationType.Variable)
+                parserState.AllDeclarations.Where(i => !i.IsBuiltIn && i.DeclarationType == DeclarationType.Variable)
                     .ToList();
             _vbe = vbe;
-            _state = state;
             _messageBox = messageBox;
         }
 
@@ -82,8 +80,6 @@ namespace Rubberduck.Refactorings.IntroduceField
 
             RemoveVariable(target);
             AddField(target);
-
-            _state.OnParseRequested(this);
         }
 
         private void AddField(Declaration target)

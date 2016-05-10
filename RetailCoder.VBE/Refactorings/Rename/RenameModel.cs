@@ -28,18 +28,18 @@ namespace Rubberduck.Refactorings.Rename
         private readonly QualifiedSelection _selection;
         public QualifiedSelection Selection { get { return _selection; } }
 
-        private readonly RubberduckParserState _state;
-        public RubberduckParserState State { get { return _state; } }
+        private readonly RubberduckParserState _parseResult;
+        public RubberduckParserState ParseResult { get { return _parseResult; } }
 
         public string NewName { get; set; }
 
         private readonly IMessageBox _messageBox;
 
-        public RenameModel(VBE vbe, RubberduckParserState state, QualifiedSelection selection, IMessageBox messageBox)
+        public RenameModel(VBE vbe, RubberduckParserState parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {
             _vbe = vbe;
-            _state = state;
-            _declarations = state.AllDeclarations.ToList();
+            _parseResult = parseResult;
+            _declarations = parseResult.AllDeclarations.ToList();
             _selection = selection;
             _messageBox = messageBox;
 
