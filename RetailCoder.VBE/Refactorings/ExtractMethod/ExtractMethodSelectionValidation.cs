@@ -39,10 +39,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
 
             var procEndContext = procEnd.Context as ParserRuleContext;
-            if (procEndContext == null)
-            {
-                procEndContext = procEnd.Context as VBAParser.SubStmtContext;
-            }
             var procEndLine = procEndContext.Stop.Line;
 
             /* Handle: function signature continuations
