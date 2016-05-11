@@ -38,7 +38,7 @@ namespace Rubberduck.API
     [ComDefaultInterface(typeof(IParserState))]
     [ComSourceInterfaces(typeof(IParserStateEvents))]
     [EditorBrowsable(EditorBrowsableState.Always)]
-    public class ParserState : IParserState, IDisposable
+    public sealed class ParserState : IParserState, IDisposable
     {
         private const string ClassId = "28754D11-10CC-45FD-9F6A-525A65412B7A";
         private const string ProgId = "Rubberduck.ParserState";
@@ -133,16 +133,10 @@ namespace Rubberduck.API
             get { return _userDeclarations; }
         }
 
-        private bool _dispose = true;
+        private bool _disposed;
         public void Dispose()
         {
-            Dispose(_dispose);
-            _dispose = false;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing)
+            if (_disposed)
             {
                 return;
             }
@@ -151,6 +145,8 @@ namespace Rubberduck.API
             {
                 _state.StateChanged -= _state_StateChanged;
             }
+
+            _disposed = true;
         }
     }
 }
