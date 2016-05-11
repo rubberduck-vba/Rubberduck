@@ -8,8 +8,7 @@ namespace Rubberduck.UI.SourceControl
     /// </summary>
     public class SourceControlDockablePresenter : DockableToolwindowPresenter
     {
-
-        public SourceControlDockablePresenter(VBE vbe, AddIn addin, IDockableUserControl window)
+        public SourceControlDockablePresenter(VBE vbe, AddIn addin, SourceControlPanel window)
             : base(vbe, addin, window)
         {
         }

@@ -67,7 +67,6 @@ namespace Rubberduck.Root
             _kernel.Bind<NewUnitTestModuleCommand>().ToSelf().InSingletonScope();
             _kernel.Bind<NewTestMethodCommand>().ToSelf().InSingletonScope();
             _kernel.Bind<RubberduckCommandBar>().ToSelf().InSingletonScope();
-            _kernel.Bind<SourceControlDockablePresenter>().ToSelf().InSingletonScope();
             
             BindCodeInspectionTypes();
 
@@ -122,16 +121,16 @@ namespace Rubberduck.Root
             Bind<ISourceControlProviderFactory>().To<SourceControlProviderFactory>()
                 .WhenInjectedInto<SourceControlViewViewModel>();
 
-            Bind<IPresenter>().To<SourceControlDockablePresenter>()
-                .WhenInjectedInto<ShowSourceControlPanelCommand>()
+            Bind<SourceControlDockablePresenter>().ToSelf()
                 .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new SourceControlPanel { ViewModel = _kernel.Get<SourceControlViewViewModel>() });
+                .WithConstructorArgument(new SourceControlPanel { ViewModel = _kernel.Get<SourceControlViewViewModel>() });
 
-            Bind<IPresenter>().To<SourceControlDockablePresenter>()
-                .WhenInjectedInto<CodeExplorer_CommitCommand>()
-                .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new SourceControlPanel { ViewModel = _kernel.Get<SourceControlViewViewModel>() });
+            Bind<ShowSourceControlPanelCommand>().ToSelf()
+                .WithConstructorArgument<IPresenter>(_kernel.Get<SourceControlDockablePresenter>());
 
+            Bind<CodeExplorer_CommitCommand>().ToSelf()
+                .WithConstructorArgument(_kernel.Get<SourceControlDockablePresenter>());
+            
             BindCommandsToCodeExplorer();
             Bind<IPresenter>().To<CodeExplorerDockablePresenter>()
                 .WhenInjectedInto<CodeExplorerCommand>()

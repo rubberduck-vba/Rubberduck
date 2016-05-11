@@ -77,6 +77,8 @@ namespace Rubberduck.UI.SourceControl
                 unsyncedCommitsView,
                 settingsView
             };
+            SetTab(SourceControlTab.Changes);
+
             Status = RubberduckUI.Offline;
 
             ListenForErrors();

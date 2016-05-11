@@ -92,14 +92,7 @@ namespace Rubberduck.UI
 
         public virtual void Show()
         {
-            try
-            {
-                _window.Visible = true;
-            }
-            catch
-            {
-                
-            }
+            _window.Visible = true;
         }
 
         public void Hide()
