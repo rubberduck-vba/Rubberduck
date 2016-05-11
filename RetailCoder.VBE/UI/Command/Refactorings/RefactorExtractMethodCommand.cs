@@ -44,7 +44,6 @@ namespace Rubberduck.UI.Command.Refactorings
                 && selection.Value.Selection.LineCount > 0
                 && !string.IsNullOrWhiteSpace(code);
 
-            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;
         }
 
