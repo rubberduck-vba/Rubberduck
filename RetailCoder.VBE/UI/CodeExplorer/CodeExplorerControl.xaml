@@ -116,6 +116,9 @@
                             <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Commit}"
                                   Command="{Binding CommitCommand}"
                                   CommandParameter="{Binding SelectedItem}" />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Undo}"
+                                  Command="{Binding UndoCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
                         </MenuItem>
                     </ContextMenu>
                 </Setter.Value>

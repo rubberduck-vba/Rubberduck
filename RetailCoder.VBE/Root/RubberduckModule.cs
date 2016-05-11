@@ -124,12 +124,6 @@ namespace Rubberduck.Root
             Bind<SourceControlDockablePresenter>().ToSelf()
                 .InSingletonScope()
                 .WithConstructorArgument(new SourceControlPanel { ViewModel = _kernel.Get<SourceControlViewViewModel>() });
-
-            Bind<ShowSourceControlPanelCommand>().ToSelf()
-                .WithConstructorArgument<IPresenter>(_kernel.Get<SourceControlDockablePresenter>());
-
-            Bind<CodeExplorer_CommitCommand>().ToSelf()
-                .WithConstructorArgument(_kernel.Get<SourceControlDockablePresenter>());
             
             BindCommandsToCodeExplorer();
             Bind<IPresenter>().To<CodeExplorerDockablePresenter>()

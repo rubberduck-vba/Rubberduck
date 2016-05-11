@@ -103,7 +103,7 @@ namespace Rubberduck.SourceControl
         {
             var componentName = Path.GetFileNameWithoutExtension(filePath);
 
-            if (!File.Exists(filePath))
+            if (File.Exists(filePath))
             {
                 var component = Project.VBComponents.Item(componentName);
                 Project.VBComponents.RemoveSafely(component);
