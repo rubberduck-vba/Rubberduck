@@ -29,7 +29,7 @@ Private Sub Foo()
 End Sub";
 
         const string extractCode = "x = 1 + 2";
-        const string insertCode = "Call Bar( x )";
+        const string insertCode = "Bar x ";
         const string newMethod = @"
 Private Function Bar(byref integer x) As Integer
     x = 1 + 2
@@ -45,6 +45,8 @@ End Function
         x = 1 + 2
     End Sub
     ";
+
+            [TestCategory("ExtractedMethodRefactoringTests")]
             [TestMethod]
             public void ShouldInsertAndDeleteAtAppropriateLines()
             {
@@ -58,6 +60,7 @@ End Function
                 var codeModule = new Mock<ICodeModuleWrapper>();
                 IExtractMethodModel model = new ExtractMethodModel(declarations, qualifiedSelection.Value, extractCode);
                 model.Method.MethodName = "Bar";
+                var insertCode = "Bar x ";
                 var createProc = new Mock<IExtractMethodProc>();
 
 

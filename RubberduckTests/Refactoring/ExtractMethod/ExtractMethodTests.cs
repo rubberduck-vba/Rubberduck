@@ -22,17 +22,18 @@ namespace RubberduckTests.Refactoring.ExtractMethod
     public class ExtractedMethodTests
     {
         [TestClass]
-        public class when_a_method_is_defined : ExtractedMethodTests
+        public class WhenAMethodIsDefined: ExtractedMethodTests
         {
-            const string insertCode = "Call Bar( x )";
 
+            [TestCategory("ExtractedMethodTests")]
             [TestMethod]
-            public void should_return_string_correctly()
+            public void shouldReturnStringCorreclt()
             {
                 var method = new ExtractedMethod();
                 method.Accessibility = Accessibility.Private;
                 method.MethodName = "Bar";
                 method.ReturnValue = null;
+                var insertCode = "Bar x ";
                 var newParam = new ExtractedParameter("Integer", ExtractedParameter.PassedBy.ByVal, "x");
                 method.Parameters = new List<ExtractedParameter>() { newParam };
 
