@@ -17,12 +17,6 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
     [TestClass]
-    public class ExtractMethodPresenterTests
-    {
-
-    }
-
-    [TestClass]
     public class ExtractedMethodRefactoringTests
     {
 
@@ -43,7 +37,7 @@ End Function
 ";
         #endregion codeparts
         [TestClass]
-        public class when_a_simple_example_is_run : ExtractedMethodRefactoringTests
+        public class WhenASimpleExampleIsRun : ExtractedMethodRefactoringTests
         {
             const string inputCode = @"
     Public Sub ChangeMeIntoDecs()
@@ -52,7 +46,7 @@ End Function
     End Sub
     ";
             [TestMethod]
-            public void should_insert_and_delete_at_appropriate_lines()
+            public void ShouldInsertAndDeleteAtAppropriateLines()
             {
                 QualifiedModuleName qualifiedModuleName;
                 RubberduckParserState state;
@@ -94,22 +88,22 @@ End Function
          * - When there are multiple possible outputs, refactoring extracts a Function and returns whichever selected output the user selected; other outputs are ByRef parameters *
          * - When the return value is a reference - the return assignment is Set initially implement with return values returned as ByRef */
 
-        [TestClass]
-        public class when_selection_spans_a_code_block_boundaries : ExtractedMethodRefactoringTests
+        //[TestClass]
+        public class WhenSelectionSpansCodeBlockBoundaries: ExtractedMethodRefactoringTests
         {
             [TestMethod]
-            public void should_return_null()
+            public void shouldReturnNull()
             {
 
             }
             [TestMethod]
-            public void should_report_invalid_selection_spans_code_block_boundaries()
+            public void shouldReportInvalidSelectionSpansCodeBlockBoundaries()
             {
 
             }
         }
 
-        [TestClass]
+        //[TestClass]
         public class when_local_variable_constant_is_internal : ExtractedMethodRefactoringTests
         {
             /* When a local variable/constant is only used within the selection
@@ -120,7 +114,7 @@ End Function
             }
         }
 
-        [TestClass]
+        //[TestClass]
         public class when_local_variable_is_only_used_before_the_selection : ExtractedMethodRefactoringTests
         {
             /* When a local variable/constant is only used before the selection, 
@@ -131,7 +125,7 @@ End Function
             {
             }
         }
-        [TestClass]
+        //[TestClass]
         public class when_local_variable_is_only_used_after_the_selection : ExtractedMethodRefactoringTests
         {
             /* When a local variable/constant is only used after the selection, 
@@ -143,7 +137,7 @@ End Function
             }
 
         }
-        [TestClass]
+        //[TestClass]
         public class when_local_variable_is_used_before_and_within_the_selection : ExtractedMethodRefactoringTests
         {
             /* When a local variable is used before and within the selction, 
@@ -153,7 +147,7 @@ End Function
             {
             }
         }
-        [TestClass]
+        //[TestClass]
         public class when_local_variable_is_used_after_and_within_the_selection : ExtractedMethodRefactoringTests
         {
             /* When a local variable is used after and within the selection, 
@@ -166,7 +160,7 @@ End Function
 
 
 
-        [TestClass]
+        //[TestClass]
         public class when_multiple_values_are_updated_within_selection : ExtractedMethodRefactoringTests
         {
             public void should_add_byref_param_for_each()
@@ -175,7 +169,7 @@ End Function
 
         }
 
-        [TestClass]
+        //[TestClass]
         public class when_selection_contains_a_line_label_refered_to_before_the_selection : ExtractedMethodRefactoringTests
         {
             /* This rules out extracting ErrHandler subroutines 
@@ -189,7 +183,7 @@ End Function
 
         }
 
-        [TestClass]
+        //[TestClass]
         public class when_selection_contains_a_line_label_only_referred_to_within_the_selection : ExtractedMethodRefactoringTests
         {
             [TestMethod]

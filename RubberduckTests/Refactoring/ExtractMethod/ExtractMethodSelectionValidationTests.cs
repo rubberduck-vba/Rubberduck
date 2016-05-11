@@ -15,14 +15,14 @@ namespace RubberduckTests.Refactoring.ExtractMethod
     public class ExtractMethodSelectionValidationTests
     {
         [TestClass]
-        public class spansSingleMethod : ExtractMethodSelectionValidationTests
+        public class SpansSingleMethod : ExtractMethodSelectionValidationTests
         {
-            //[TestClass]
-            public class when_selection_spans_more_than_single_method : spansSingleMethod
+            [TestClass]
+            public class WhenSelectionSpansMoreThanASingleMethod: SpansSingleMethod
             {
 
                 [TestMethod]
-                public void should_return_false()
+                public void shouldReturnFalse()
                 {
                     QualifiedModuleName qualifiedModuleName;
                     RubberduckParserState state;
@@ -61,10 +61,10 @@ End Sub";
                 }
             }
             //[TestClass]
-            public class when_selection_spans_within_method : spansSingleMethod
+            public class WhenSeletionSpansWithinMethod : SpansSingleMethod
             {
                 [TestMethod]
-                public void should_return_true()
+                public void shouldReturnTrue()
                 {
 
                     QualifiedModuleName qualifiedModuleName;
@@ -105,11 +105,11 @@ End Sub";
             }
 
             //[TestClass]
-            public class when_selection_spans_method_signaturelines
+            public class WhenSelectionSpansMethodSignatureLines
             {
 
                 [TestMethod]
-                public void should_return_false()
+                public void shouldReturnFalse()
                 {
 
                     QualifiedModuleName qualifiedModuleName;

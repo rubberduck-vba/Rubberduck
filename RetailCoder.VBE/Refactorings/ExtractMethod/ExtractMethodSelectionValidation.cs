@@ -9,16 +9,19 @@ namespace Rubberduck.Refactorings.ExtractMethod
 {
     public class ExtractMethodSelectionValidation : IExtractMethodSelectionValidation
     {
-        private IEnumerable<Declaration> declarations;
+        private IEnumerable<Declaration> _declarations;
 
         public ExtractMethodSelectionValidation(IEnumerable<Declaration> declarations)
         {
-            // TODO: Complete member initialization
-            this.declarations = declarations;
+            _declarations = declarations;
         }
         public bool withinSingleProcedure(QualifiedSelection qualifiedSelection)
         {
-            throw new NotImplementedException();
+
+            var selection = qualifiedSelection.Selection;
+
+
+            return false;
         }
     }
 }
