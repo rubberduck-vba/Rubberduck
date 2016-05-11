@@ -7,7 +7,7 @@ using Rubberduck.Settings;
 
 namespace Rubberduck.AutoSave
 {
-    public class AutoSave : IDisposable
+    public sealed class AutoSave : IDisposable
     {
         private readonly VBE _vbe;
         private readonly IGeneralConfigService _configService;
@@ -54,16 +54,10 @@ namespace Rubberduck.AutoSave
             }
         }
 
-        private bool _dispose = true;
+        private bool _disposed;
         public void Dispose()
         {
-            Dispose(_dispose);
-            _dispose = false;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing)
+            if (_disposed)
             {
                 return;
             }
@@ -79,6 +73,8 @@ namespace Rubberduck.AutoSave
                 _timer.Dispose();
                 _timer = null;
             }
+
+            _disposed = true;
         }
     }
 }

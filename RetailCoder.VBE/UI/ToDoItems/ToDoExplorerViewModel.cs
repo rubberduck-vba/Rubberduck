@@ -13,7 +13,7 @@ using Rubberduck.UI.Settings;
 
 namespace Rubberduck.UI.ToDoItems
 {
-    public class ToDoExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
+    public sealed class ToDoExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly RubberduckParserState _state;
         private readonly IGeneralConfigService _configService;
@@ -148,24 +148,17 @@ namespace Rubberduck.UI.ToDoItems
             return _state.AllComments.SelectMany(GetToDoMarkers);
         }
 
-        private bool _dispose = true;
+        private bool _disposed;
         public void Dispose()
         {
-            Dispose(_dispose);
-            _dispose = false;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing)
-            {
-                return;
-            }
+            if (_disposed) { return; }
 
             if (_state != null)
             {
                 _state.StateChanged -= _state_StateChanged;
             }
+
+            _disposed = true;
         }
     }
 }

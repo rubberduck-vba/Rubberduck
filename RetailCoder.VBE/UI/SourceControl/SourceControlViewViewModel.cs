@@ -17,7 +17,7 @@ using resx = Rubberduck.UI.RubberduckUI;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class SourceControlViewViewModel : ViewModelBase, IDisposable
+    public sealed class SourceControlViewViewModel : ViewModelBase, IDisposable
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
@@ -560,24 +560,17 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private bool _dispose = true;
+        private bool _disposed;
         public void Dispose()
         {
-            Dispose(_dispose);
-            _dispose = false;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing)
-            {
-                return;
-            }
+            if (_disposed) { return; }
 
             if (_state != null)
             {
                 _state.StateChanged -= _state_StateChanged;
             }
+
+            _disposed = true;
         }
     }
 }
