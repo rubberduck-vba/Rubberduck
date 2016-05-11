@@ -141,6 +141,8 @@ namespace Rubberduck.UI.Command.MenuItems
                 return;
             }
 
+            _state.StateChanged -= State_StateChanged;
+
             _refreshButton.Delete();
             _selectionButton.Delete();
             _statusButton.Delete();

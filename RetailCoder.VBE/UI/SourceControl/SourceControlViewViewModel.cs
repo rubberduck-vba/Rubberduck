@@ -17,7 +17,7 @@ using resx = Rubberduck.UI.RubberduckUI;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class SourceControlViewViewModel : ViewModelBase
+    public class SourceControlViewViewModel : ViewModelBase, IDisposable
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
@@ -558,6 +558,11 @@ namespace Rubberduck.UI.SourceControl
             {
                 return _loginGridCancelCommand;
             }
+        }
+
+        public void Dispose()
+        {
+            _state.StateChanged -= _state_StateChanged;
         }
     }
 }

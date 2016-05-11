@@ -13,7 +13,7 @@ using Rubberduck.UI.Settings;
 
 namespace Rubberduck.UI.ToDoItems
 {
-    public class ToDoExplorerViewModel : ViewModelBase, INavigateSelection
+    public class ToDoExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly RubberduckParserState _state;
         private readonly IGeneralConfigService _configService;
@@ -146,6 +146,11 @@ namespace Rubberduck.UI.ToDoItems
         private IEnumerable<ToDoItem> GetItems()
         {
             return _state.AllComments.SelectMany(GetToDoMarkers);
+        }
+
+        public void Dispose()
+        {
+            _state.StateChanged -= _state_StateChanged;
         }
     }
 }

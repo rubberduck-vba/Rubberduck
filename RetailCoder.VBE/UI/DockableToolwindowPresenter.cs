@@ -116,11 +116,13 @@ namespace Rubberduck.UI
             if (UserControl != null)
             {
                 UserControl.Dispose();
+                GC.SuppressFinalize(UserControl);
             }
 
             if (_window != null)
             {
-                Marshal.ReleaseComObject(_window);
+                _window.Close();
+                Marshal.FinalReleaseComObject(_window);
             }
         }
     }

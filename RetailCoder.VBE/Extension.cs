@@ -69,8 +69,13 @@ namespace Rubberduck
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
         {
+            var addin = _kernel.Get<AddIn>();
+
             _app.Shutdown();
             _kernel.Dispose();
+
+            Marshal.FinalReleaseComObject(addin);
+            GC.SuppressFinalize(addin);
         }
     }
 }
