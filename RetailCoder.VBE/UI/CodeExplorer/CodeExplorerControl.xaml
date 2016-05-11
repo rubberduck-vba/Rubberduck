@@ -64,65 +64,6 @@
             <Setter Property="BorderThickness" Value="1.5"/>
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
             <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="ContextMenu">
-                <Setter.Value>
-                    <ContextMenu DataContext="{Binding DataContext, Source={x:Reference CodeExplorer}}">
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Navigate}"
-                                  FontWeight="Bold"
-                                  Command="{Binding NavigateCommand}"
-                                  CommandParameter="{Binding SelectedItem}"/>
-                        <Separator />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}"
-                                  Command="{Binding RenameCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                        <Separator />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}">
-                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddTestModuleText}"
-                                  Command="{Binding AddTestModuleCommand}" />
-                            <Separator />
-                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddStdModuleText}"
-                                  Command="{Binding AddStdModuleCommand}" />
-                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddClassModuleText}"
-                                  Command="{Binding AddClsModuleCommand}" />
-                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddFormText}"
-                                  Command="{Binding AddFormCommand}" />
-                        </MenuItem>
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Find}">
-                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllReferencesText}"
-                                  Command="{Binding FindAllReferencesCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllImplementationsText}"
-                                  Command="{Binding FindAllImplementationsCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                        </MenuItem>
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SmartIndenterMenu}"
-                                  Command="{Binding IndenterCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                        <Separator />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Import}"
-                                  Command="{Binding ImportCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Export}"
-                                  Command="{Binding ExportCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Remove}"
-                                  Command="{Binding RemoveCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                        <Separator />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Print}"
-                                  Command="{Binding PrintCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControlPanel_Caption}">
-                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Commit}"
-                                  Command="{Binding CommitCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Undo}"
-                                  Command="{Binding UndoCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                        </MenuItem>
-                    </ContextMenu>
-                </Setter.Value>
-            </Setter>
             <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
@@ -201,6 +142,65 @@
         <Style x:Key="CodeExplorerTreeViewStyle" TargetType="TreeView">
             <Setter Property="ItemTemplate" Value="{StaticResource CodeExplorerTemplate}" />
             <Setter Property="ItemsSource" Value="{Binding Projects, UpdateSourceTrigger=PropertyChanged}" />
+            <Setter Property="ContextMenu">
+                <Setter.Value>
+                    <ContextMenu DataContext="{Binding DataContext, Source={x:Reference CodeExplorer}}">
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Navigate}"
+                                  FontWeight="Bold"
+                                  Command="{Binding NavigateCommand}"
+                                  CommandParameter="{Binding SelectedItem}"/>
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}"
+                                  Command="{Binding RenameCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}">
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddTestModuleText}"
+                                  Command="{Binding AddTestModuleCommand}" />
+                            <Separator />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddStdModuleText}"
+                                  Command="{Binding AddStdModuleCommand}" />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddClassModuleText}"
+                                  Command="{Binding AddClsModuleCommand}" />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddFormText}"
+                                  Command="{Binding AddFormCommand}" />
+                        </MenuItem>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Find}">
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllReferencesText}"
+                                  Command="{Binding FindAllReferencesCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllImplementationsText}"
+                                  Command="{Binding FindAllImplementationsCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
+                        </MenuItem>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SmartIndenterMenu}"
+                                  Command="{Binding IndenterCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Import}"
+                                  Command="{Binding ImportCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Export}"
+                                  Command="{Binding ExportCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Remove}"
+                                  Command="{Binding RemoveCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Print}"
+                                  Command="{Binding PrintCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControlPanel_Caption}">
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Commit}"
+                                  Command="{Binding CommitCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Undo}"
+                                  Command="{Binding UndoCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
+                        </MenuItem>
+                    </ContextMenu>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <SolidColorBrush x:Key="ToolBarHorizontalBackground" Color="#FFEEF5FD"/>
