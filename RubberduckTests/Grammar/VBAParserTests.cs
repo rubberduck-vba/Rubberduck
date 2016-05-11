@@ -64,6 +64,38 @@ Attribute VB_Exposed = False
         }
 
         [TestMethod]
+        public void TestDefDirectiveSingleLetter()
+        {
+            string code = @"DefBool B: DefByte Y: DefInt I: DefLng L: DefLngLng N: DefLngPtr P: DefCur C: DefSng G: DefDbl D: DefDate T: DefStr E: DefObj O: DefVar V";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//defDirective", matches => matches.Count == 13);
+        }
+
+        [TestMethod]
+        public void TestDefDirectiveSameDefDirectiveMultipleLetterSpec()
+        {
+            string code = @"DefBool B, C, D";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLetter", matches => matches.Count == 3);
+        }
+
+        [TestMethod]
+        public void TestDefDirectiveLetterRange()
+        {
+            string code = @"DefBool B-C: DefByte Y-X: DefInt I-J: DefLng L-M: DefLngLng N-O: DefLngPtr P-Q: DefCur C-D: DefSng G-H: DefDbl D-E: DefDate T-U: DefStr E-F: DefObj O-P: DefVar V-W";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//letterRange", matches => matches.Count == 13);
+        }
+
+        [TestMethod]
+        public void TestDefDirectiveUniversalLetterRange()
+        {
+            string code = @"DefBool A - Z";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//universalLetterRange");
+        }
+
+        [TestMethod]
         public void TestModuleOption()
         {
             string code = @"

@@ -58,6 +58,7 @@ moduleOption :
 
 moduleDeclarationsElement :
     declareStmt
+    | defDirective
 	| enumerationStmt 
 	| eventStmt
 	| constStmt
@@ -89,7 +90,6 @@ blockStmt :
 	| attributeStmt
 	| closeStmt
 	| constStmt
-	| deftypeStmt
 	| doLoopStmt
 	| eraseStmt
 	| errorStmt
@@ -141,14 +141,27 @@ constSubStmt : identifier typeHint? (whiteSpace asTypeClause)? whiteSpace? EQ wh
 
 declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? ((FUNCTION typeHint?) | SUB) whiteSpace identifier typeHint? whiteSpace LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)?;
 
-deftypeStmt : 
-	(
+// 5.2.2 Implicit Definition Directives
+defDirective : defType whiteSpace letterSpec (whiteSpace? COMMA whiteSpace? letterSpec)*;
+defType :
 		DEFBOOL | DEFBYTE | DEFINT | DEFLNG | DEFLNGLNG | DEFLNGPTR | DEFCUR |
 		DEFSNG | DEFDBL | DEFDATE | 
 		DEFSTR | DEFOBJ | DEFVAR
-	) whiteSpace
-	letterrange (whiteSpace? COMMA whiteSpace? letterrange)*
 ;
+// universalLetterRange must appear before letterRange because they both match the same amount in the case of A-Z but we prefer the universalLetterRange.
+letterSpec : singleLetter | universalLetterRange | letterRange;
+singleLetter : unrestrictedIdentifier;
+// We make a separate universalLetterRange rule because it is treated specially in VBA. This makes it easy for users of the parser
+// to identify this case. Quoting MS VBAL:
+// "A <universal-letter-range> defines a single implicit declared type for every <IDENTIFIER> within 
+// a module, even those with a first character that would otherwise fall outside this range if it was 
+// interpreted as a <letter-range> from A-Z.""
+universalLetterRange : upperCaseA whiteSpace? MINUS whiteSpace? upperCaseZ;
+upperCaseA : {_input.Lt(1).Text.Equals("A")}? unrestrictedIdentifier;
+upperCaseZ : {_input.Lt(1).Text.Equals("Z")}? unrestrictedIdentifier;
+letterRange : firstLetter whiteSpace? MINUS whiteSpace? lastLetter;
+firstLetter : unrestrictedIdentifier;
+lastLetter : unrestrictedIdentifier;
 
 doLoopStmt :
 	DO endOfStatement 
@@ -243,7 +256,6 @@ midStmt : MID whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN;
 
 onErrorStmt : (ON_ERROR | ON_LOCAL_ERROR) whiteSpace (GOTO whiteSpace valueStmt | RESUME whiteSpace NEXT);
 
-// TODO: only first valueStmt is correct, rest should be IDENTIFIER/INTEGERs?
 onGoToStmt : ON whiteSpace valueStmt whiteSpace GOTO whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)*;
 
 onGoSubStmt : ON whiteSpace valueStmt whiteSpace GOSUB whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)*;
@@ -465,8 +477,6 @@ comparisonOperator : LT | LEQ | GT | GEQ | EQ | NEQ | IS | LIKE;
 complexType : identifier ((DOT | EXCLAMATIONPOINT) identifier)*;
 
 fieldLength : MULT whiteSpace? (numberLiteral | identifier);
-
-letterrange : identifier (whiteSpace? MINUS whiteSpace? identifier)?;
 
 lineLabel : (identifier | numberLiteral) COLON;
 
