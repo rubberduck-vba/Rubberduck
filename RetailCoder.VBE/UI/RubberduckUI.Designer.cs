@@ -3667,6 +3667,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to undo your changes to {0}?.
+        /// </summary>
+        public static string SourceControl_UndoPrompt {
+            get {
+                return ResourceManager.GetString("SourceControl_UndoPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source Control - Undo.
+        /// </summary>
+        public static string SourceControl_UndoTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_UndoTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unpublish.
         /// </summary>
         public static string SourceControl_UnpublishBranchButton {

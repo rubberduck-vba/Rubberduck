@@ -11,10 +11,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     public class CodeExplorer_UndoCommand : CommandBase
     {
         private readonly SourceControlDockablePresenter _presenter;
+        private readonly IMessageBox _messageBox;
 
-        public CodeExplorer_UndoCommand(SourceControlDockablePresenter presenter)
+        public CodeExplorer_UndoCommand(SourceControlDockablePresenter presenter, IMessageBox messageBox)
         {
             _presenter = presenter;
+            _messageBox = messageBox;
         }
 
         public override bool CanExecute(object parameter)
@@ -45,8 +47,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override void Execute(object parameter)
         {
-            _presenter.Show();
-
             var panel = _presenter.Window() as SourceControlPanel;
             if (panel == null)
             {
@@ -66,7 +66,18 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            changesVM.UndoChangesToolbarButtonCommand.Execute(new FileStatusEntry(GetFileName((CodeExplorerComponentViewModel)parameter), FileStatus.Modified));
+            var fileName = GetFileName((CodeExplorerComponentViewModel) parameter);
+            var result = _messageBox.Show(string.Format(RubberduckUI.SourceControl_UndoPrompt, fileName),
+                RubberduckUI.SourceControl_UndoTitle, System.Windows.Forms.MessageBoxButtons.OKCancel,
+                System.Windows.Forms.MessageBoxIcon.Warning, System.Windows.Forms.MessageBoxDefaultButton.Button2);
+
+            if (result != System.Windows.Forms.DialogResult.OK)
+            {
+                return;
+            }
+
+            changesVM.UndoChangesToolbarButtonCommand.Execute(new FileStatusEntry(fileName, FileStatus.Modified));
+            _presenter.Show();
         }
 
         private string GetFileName(CodeExplorerComponentViewModel node)
