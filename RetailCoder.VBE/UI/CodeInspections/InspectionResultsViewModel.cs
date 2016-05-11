@@ -342,8 +342,20 @@ namespace Rubberduck.UI.CodeInspections
             return !IsBusy && _results != null && _results.Any();
         }
 
+        private bool _dispose = true;
         public void Dispose()
         {
+            Dispose(_dispose);
+            _dispose = false;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
             _state.StateChanged -= _state_StateChanged;
         }
     }

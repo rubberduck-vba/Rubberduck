@@ -133,9 +133,24 @@ namespace Rubberduck.API
             get { return _userDeclarations; }
         }
 
+        private bool _dispose = true;
         public void Dispose()
         {
-            _state.StateChanged -= _state_StateChanged;
+            Dispose(_dispose);
+            _dispose = false;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
+            if (_state != null)
+            {
+                _state.StateChanged -= _state_StateChanged;
+            }
         }
     }
 }

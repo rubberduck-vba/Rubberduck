@@ -26,12 +26,12 @@ namespace Rubberduck
         private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
         private readonly IRubberduckParser _parser;
-        private readonly AutoSave.AutoSave _autoSave;
-        private readonly IGeneralConfigService _configService;
-        private readonly IAppMenu _appMenus;
-        private readonly RubberduckCommandBar _stateBar;
+        private AutoSave.AutoSave _autoSave;
+        private IGeneralConfigService _configService;
+        private IAppMenu _appMenus;
+        private RubberduckCommandBar _stateBar;
         private readonly IIndenter _indenter;
-        private readonly IRubberduckHooks _hooks;
+        private IRubberduckHooks _hooks;
 
         private readonly Logger _logger;
 
@@ -387,19 +387,56 @@ namespace Rubberduck
             }
         }
 
+        private bool _dispose = true;
         public void Dispose()
         {
-            _hooks.MessageReceived -= _hooks_MessageReceived;
-            _configService.SettingsChanged -= _configService_SettingsChanged;
-            _configService.LanguageChanged -= ConfigServiceLanguageChanged;
-            _parser.State.StateChanged -= Parser_StateChanged;
-            _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
-            _stateBar.Refresh -= _stateBar_Refresh;
+            Dispose(_dispose);
+            _dispose = false;
+        }
 
-            _sink.ProjectAdded -= sink_ProjectAdded;
-            _sink.ProjectRemoved -= sink_ProjectRemoved;
-            _sink.ProjectActivated -= sink_ProjectActivated;
-            _sink.ProjectRenamed -= sink_ProjectRenamed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
+            if (_hooks != null)
+            {
+                _hooks.MessageReceived -= _hooks_MessageReceived;
+                _hooks.Dispose();
+                _hooks = null;
+            }
+
+            if (_configService != null)
+            {
+                _configService.SettingsChanged -= _configService_SettingsChanged;
+                _configService.LanguageChanged -= ConfigServiceLanguageChanged;
+                _configService = null;
+            }
+
+            if (_parser != null && _parser.State != null)
+            {
+                _parser.State.StateChanged -= Parser_StateChanged;
+                _parser.State.StatusMessageUpdate -= State_StatusMessageUpdate;
+                // I won't set this to null because other components may try to release things
+            }
+
+            if (_stateBar != null)
+            {
+                _stateBar.Refresh -= _stateBar_Refresh;
+                _stateBar.Dispose();
+                _stateBar = null;
+            }
+
+            if (_sink != null)
+            {
+                _sink.ProjectAdded -= sink_ProjectAdded;
+                _sink.ProjectRemoved -= sink_ProjectRemoved;
+                _sink.ProjectActivated -= sink_ProjectActivated;
+                _sink.ProjectRenamed -= sink_ProjectRenamed;
+                _sink = null;
+            }
 
             foreach (var item in _componentsEventsSinks)
             {
@@ -411,7 +448,11 @@ namespace Rubberduck
                 item.Value.ComponentSelected -= sink_ComponentSelected;
             }
 
-            _autoSave.Dispose();
+            if (_autoSave != null)
+            { 
+                _autoSave.Dispose();
+                _autoSave = null;
+            }
 
             _projectsEventsConnectionPoint.Unadvise(_projectsEventsCookie);
             foreach (var item in _componentsEventsConnectionPoints)
@@ -422,9 +463,6 @@ namespace Rubberduck
             {
                 item.Value.Item1.Unadvise(item.Value.Item2);
             }
-            _hooks.Dispose();
-
-            _stateBar.Dispose();
         }
     }
 }

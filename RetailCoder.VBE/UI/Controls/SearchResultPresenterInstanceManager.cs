@@ -39,18 +39,30 @@ namespace Rubberduck.UI.Controls
         {
             _presenter.Hide();
         }
-        
+
+        private bool _dispose = true;
         public void Dispose()
         {
+            Dispose(_dispose);
+            _dispose = false;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
             if (_view.ViewModel != null)
             {
-            _view.ViewModel.LastTabClosed -= viewModel_LastTabClosed;
+                _view.ViewModel.LastTabClosed -= viewModel_LastTabClosed;
             }
 
             if (_presenter != null)
             {
-            _presenter.Dispose();
+                _presenter.Dispose();
+            }
         }
     }
-}
 }

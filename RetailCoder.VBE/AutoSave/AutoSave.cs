@@ -11,8 +11,7 @@ namespace Rubberduck.AutoSave
     {
         private readonly VBE _vbe;
         private readonly IGeneralConfigService _configService;
-        private readonly Timer _timer = new Timer();
-        private Configuration _config;
+        private Timer _timer = new Timer();
 
         private const int VbeSaveCommandId = 3;
 
@@ -29,12 +28,12 @@ namespace Rubberduck.AutoSave
 
         private void ConfigServiceSettingsChanged(object sender, EventArgs e)
         {
-            _config = _configService.LoadConfiguration();
+            var config = _configService.LoadConfiguration();
 
-            _timer.Enabled = _config.UserSettings.GeneralSettings.AutoSaveEnabled
-                && _config.UserSettings.GeneralSettings.AutoSavePeriod != 0;
+            _timer.Enabled = config.UserSettings.GeneralSettings.AutoSaveEnabled
+                && config.UserSettings.GeneralSettings.AutoSavePeriod != 0;
 
-            _timer.Interval = _config.UserSettings.GeneralSettings.AutoSavePeriod * 1000;
+            _timer.Interval = config.UserSettings.GeneralSettings.AutoSavePeriod * 1000;
         }
 
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -55,12 +54,31 @@ namespace Rubberduck.AutoSave
             }
         }
 
+        private bool _dispose = true;
         public void Dispose()
         {
-            _configService.LanguageChanged -= ConfigServiceSettingsChanged;
-            _timer.Elapsed -= _timer_Elapsed;
+            Dispose(_dispose);
+            _dispose = false;
+        }
 
-            _timer.Dispose();
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
+            if (_configService != null)
+            {
+                _configService.LanguageChanged -= ConfigServiceSettingsChanged;
+            }
+
+            if (_timer != null)
+            {
+                _timer.Elapsed -= _timer_Elapsed;
+                _timer.Dispose();
+                _timer = null;
+            }
         }
     }
 }

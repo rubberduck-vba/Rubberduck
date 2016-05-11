@@ -132,9 +132,11 @@ namespace Rubberduck.Inspections
                 return result;
             }
 
+            private bool _dispose = true;
             public void Dispose()
             {
-                Dispose(true);
+                Dispose(_dispose);
+                _dispose = false;
             }
 
             protected virtual void Dispose(bool disposing)
