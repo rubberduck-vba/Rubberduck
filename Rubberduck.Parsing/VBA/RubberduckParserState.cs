@@ -430,7 +430,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void ClearStateCache(VBProject project, bool setStateChanged = false)
+        public void ClearStateCache(VBProject project, bool notifyStateChanged = false)
         {
             try
             {
@@ -447,7 +447,7 @@ namespace Rubberduck.Parsing.VBA
                 _declarations.Clear();
             }
 
-            if (setStateChanged)
+            if (notifyStateChanged)
             {
                 OnStateChanged();
             }
@@ -461,45 +461,18 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public bool ClearStateCache(VBComponent component, bool setStateChanged = false)
+        public bool ClearStateCache(VBComponent component, bool notifyStateChanged = false)
         {
             var match = new QualifiedModuleName(component);
             var keys = _declarations.Keys.Where(kvp => kvp.Equals(match))
                 .Union(new[] { match }).Distinct(); // make sure the key is present, even if there are no declarations left
 
-            var success = true;
-            var declarationsRemoved = 0;
-            foreach (var key in keys)
-            {
-                ConcurrentDictionary<Declaration, byte> declarations = null;
-                success = success && (!_declarations.ContainsKey(key) || _declarations.TryRemove(key, out declarations));
-                declarationsRemoved = declarations == null ? 0 : declarations.Count;
-
-                IParseTree tree;
-                success = success && (!_parseTrees.ContainsKey(key) || _parseTrees.TryRemove(key, out tree));
-
-                int contentHash;
-                success = success && (!_moduleContentHashCodes.ContainsKey(key) || _moduleContentHashCodes.TryRemove(key, out contentHash));
-
-                IList<IAnnotation> annotations;
-                success = success && (!_annotations.ContainsKey(key) || _annotations.TryRemove(key, out annotations));
-
-                ITokenStream stream;
-                success = success && (!_tokenStreams.ContainsKey(key) || _tokenStreams.TryRemove(key, out stream));
-
-                ParserState state;
-                success = success && (!_moduleStates.ContainsKey(key) || _moduleStates.TryRemove(key, out state));
-
-                SyntaxErrorException exception;
-                success = success && (!_moduleExceptions.ContainsKey(key) || _moduleExceptions.TryRemove(key, out exception));
-
-                IList<CommentNode> nodes;
-                success = success && (!_comments.ContainsKey(key) || _comments.TryRemove(key, out nodes));
-            }
+            var success = RemoveKeysFromCollections(keys);
 
             var projectId = component.Collection.Parent.HelpFile;
             var sameProjectDeclarations = _declarations.Where(item => item.Key.ProjectId == projectId).ToList();
-            if (sameProjectDeclarations.Any() && sameProjectDeclarations.Count(item => item.Value.Any(key => key.Key.DeclarationType == DeclarationType.Project)) == sameProjectDeclarations.Count)
+            if (sameProjectDeclarations.Any() &&
+                sameProjectDeclarations.Count(item => item.Value.Any(key => key.Key.DeclarationType == DeclarationType.Project)) == sameProjectDeclarations.Count)
             {
                 // only the project declaration is left; remove it.
                 ConcurrentDictionary<Declaration, byte> declarations;
@@ -508,12 +481,11 @@ namespace Rubberduck.Parsing.VBA
                 Debug.WriteLine(string.Format("Removed Project declaration for project Id {0}", projectId));
             }
 
-            if (setStateChanged)
+            if (notifyStateChanged)
             {
                 OnStateChanged();
             }
 
-            Debug.WriteLine("ClearDeclarations({0}): {1} - {2} declarations removed", component.Name, success ? "succeeded" : "failed", declarationsRemoved);
             return success;
         }
 
@@ -522,13 +494,19 @@ namespace Rubberduck.Parsing.VBA
             var match = new QualifiedModuleName(component, oldComponentName);
             var keys = _declarations.Keys.Where(kvp => kvp.ComponentName == oldComponentName && kvp.ProjectId == match.ProjectId);
 
+            var success = RemoveKeysFromCollections(keys);
+
+            OnStateChanged();
+            return success;
+        }
+
+        private bool RemoveKeysFromCollections(IEnumerable<QualifiedModuleName> keys)
+        {
             var success = true;
-            var declarationsRemoved = 0;
             foreach (var key in keys)
             {
-                ConcurrentDictionary<Declaration, byte> declarations = null;
+                ConcurrentDictionary<Declaration, byte> declarations;
                 success = success && (!_declarations.ContainsKey(key) || _declarations.TryRemove(key, out declarations));
-                declarationsRemoved = declarations == null ? 0 : declarations.Count;
 
                 IParseTree tree;
                 success = success && (!_parseTrees.ContainsKey(key) || _parseTrees.TryRemove(key, out tree));
@@ -552,9 +530,6 @@ namespace Rubberduck.Parsing.VBA
                 success = success && (!_comments.ContainsKey(key) || _comments.TryRemove(key, out nodes));
             }
 
-            OnStateChanged();
-
-            Debug.WriteLine("RemoveRenamedComponent({0}): {1} - {2} declarations removed", oldComponentName, success ? "succeeded" : "failed", declarationsRemoved);
             return success;
         }
 
