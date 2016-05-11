@@ -54,11 +54,10 @@ namespace Rubberduck.AutoSave
             }
         }
 
-        private bool _disposed;
         public void Dispose()
         {
-            Dispose(_disposed);
-            _disposed = true;
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         private void Dispose(bool disposing)
