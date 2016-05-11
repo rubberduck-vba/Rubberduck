@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 
@@ -39,7 +37,7 @@ namespace Rubberduck.Inspections
             }
 
             var matches = BuiltInDeclarations.Where(item =>
-                (item.ParentScope == "Excel.Global" || item.ParentScope == "Excel.Application")
+                item.ParentScope.StartsWith("EXCEL.EXE;")
                 && Targets.Contains(item.IdentifierName)).ToList();
 
             var issues = matches.Where(item => item.References.Any())

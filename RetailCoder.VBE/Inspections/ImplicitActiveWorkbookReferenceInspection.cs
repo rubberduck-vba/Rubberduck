@@ -36,8 +36,7 @@ namespace Rubberduck.Inspections
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 
-            var issues = Declarations.Where(item => item.IsBuiltIn 
-                                            && item.ParentScope == "Excel.Global"
+            var issues = BuiltInDeclarations.Where(item => item.ParentScope.StartsWith("EXCEL.EXE;")
                                             && Targets.Contains(item.IdentifierName)
                                             && item.References.Any())
                 .SelectMany(declaration => declaration.References);
