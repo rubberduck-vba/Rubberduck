@@ -16,7 +16,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         {
             string result;
             var argsList = string.Join(", ", Parameters.Select(p => p.Name));
-            result = "Call " + MethodName + "( " + argsList + " )";
+            result = "" + MethodName + " " + argsList + " ";
             return result;
         }
 
