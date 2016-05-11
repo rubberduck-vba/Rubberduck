@@ -18,10 +18,11 @@ namespace RubberduckTests.Refactoring.ExtractMethod
         public class SpansSingleMethod : ExtractMethodSelectionValidationTests
         {
             [TestClass]
-            public class WhenSelectionSpansMoreThanASingleMethod: SpansSingleMethod
+            public class WhenSelectionSpansMoreThanASingleMethod : SpansSingleMethod
             {
 
                 [TestMethod]
+                [TestCategory("ExtractMethodSelectionValidationTests")]
                 public void shouldReturnFalse()
                 {
                     QualifiedModuleName qualifiedModuleName;
@@ -34,10 +35,10 @@ Private Sub Foo()
 End Sub
 
 
-Private Sub NewMethod
+Private Function NewMethod
     dim a as string
     Debug.Print a
-End Sub
+End Function
 
 
 Private Sub NewMethod4
@@ -48,22 +49,22 @@ End Sub";
 
                     MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
                     var declarations = state.AllDeclarations;
-                    var selection = new Selection(4, 4, 7, 14);
+                    var selection = new Selection(4, 4, 10, 14);
                     QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
                     var SUT = new ExtractMethodSelectionValidation(declarations);
 
                     var actual = SUT.withinSingleProcedure(qSelection.Value);
-
                     var expected = false;
                     Assert.AreEqual(expected, actual);
 
                 }
             }
-            //[TestClass]
+            [TestClass]
             public class WhenSeletionSpansWithinMethod : SpansSingleMethod
             {
                 [TestMethod]
+                [TestCategory("ExtractMethodSelectionValidationTests")]
                 public void shouldReturnTrue()
                 {
 
@@ -102,13 +103,9 @@ End Sub";
                     Assert.AreEqual(expected, actual);
 
                 }
-            }
-
-            //[TestClass]
-            public class WhenSelectionSpansMethodSignatureLines
-            {
 
                 [TestMethod]
+                [TestCategory("ExtractMethodSelectionValidationTests")]
                 public void shouldReturnFalse()
                 {
 
@@ -137,7 +134,7 @@ End Sub";
 
                     var actual = SUT.withinSingleProcedure(qSelection.Value);
 
-                    var expected = true;
+                    var expected = false;
                     Assert.AreEqual(expected, actual);
                 }
             }
