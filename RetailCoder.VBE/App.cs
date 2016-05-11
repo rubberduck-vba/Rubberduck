@@ -21,7 +21,7 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck
 {
-    public class App : IDisposable
+    public sealed class App : IDisposable
     {
         private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
@@ -387,16 +387,10 @@ namespace Rubberduck
             }
         }
 
-        private bool _dispose = true;
+        private bool _disposed;
         public void Dispose()
         {
-            Dispose(_dispose);
-            _dispose = false;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing)
+            if (_disposed)
             {
                 return;
             }
@@ -463,6 +457,8 @@ namespace Rubberduck
             {
                 item.Value.Item1.Unadvise(item.Value.Item2);
             }
+
+            _disposed = true;
         }
     }
 }
