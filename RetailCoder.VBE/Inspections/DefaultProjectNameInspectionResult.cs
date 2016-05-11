@@ -16,12 +16,12 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
 
-        public DefaultProjectNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState parseResult, ICodePaneWrapperFactory wrapperFactory)
+        public DefaultProjectNameInspectionResult(IInspection inspection, Declaration target, RubberduckParserState state, ICodePaneWrapperFactory wrapperFactory)
             : base(inspection, target)
         {
             _quickFixes = new[]
             {
-                new RenameProjectQuickFix(target.Context, target.QualifiedSelection, target, parseResult, wrapperFactory),
+                new RenameProjectQuickFix(target.Context, target.QualifiedSelection, target, state, wrapperFactory),
             };
         }
 
@@ -56,7 +56,7 @@ namespace Rubberduck.Inspections
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(vbe, view, _state, new MessageBox(), _wrapperFactory);
+                var factory = new RenamePresenterFactory(vbe, view, _state, new MessageBox());
                 var refactoring = new RenameRefactoring(vbe, factory, new MessageBox(), _state);
                 refactoring.Refactor(_target);
                 IsCancelled = view.DialogResult == DialogResult.Cancel;

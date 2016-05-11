@@ -52,7 +52,7 @@ namespace Rubberduck.Parsing.VBA
         public string Message { get { return _message; } }
     }
 
-    public sealed class RubberduckParserState
+    public sealed class RubberduckParserState : IDisposable
     {
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
         private readonly IDictionary<string, Func<VBProject>> _projects = new Dictionary<string, Func<VBProject>>();
@@ -216,6 +216,11 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var moduleStates = _moduleStates.Values.ToList();
+            if (!moduleStates.Any())
+            {
+                return ParserState.Pending;
+            }
+
             var state = States.SingleOrDefault(value => moduleStates.All(ps => ps == value));
 
             if (state != default(ParserState))
@@ -282,47 +287,9 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private IEnumerable<QualifiedContext> _obsoleteCallContexts = new List<QualifiedContext>();
-
-        /// <summary>
-        /// Gets <see cref="ParserRuleContext"/> objects representing 'Call' statements in the parse tree.
-        /// </summary>
-        public IEnumerable<QualifiedContext> ObsoleteCallContexts
-        {
-            get { return _obsoleteCallContexts; }
-            internal set { _obsoleteCallContexts = value; }
-        }
-
-        private IEnumerable<QualifiedContext> _obsoleteLetContexts = new List<QualifiedContext>();
-
-        /// <summary>
-        /// Gets <see cref="ParserRuleContext"/> objects representing explicit 'Let' statements in the parse tree.
-        /// </summary>
-        public IEnumerable<QualifiedContext> ObsoleteLetContexts
-        {
-            get { return _obsoleteLetContexts; }
-            internal set { _obsoleteLetContexts = value; }
-        }
-
         internal void SetModuleAttributes(VBComponent component, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
         {
             _moduleAttributes.AddOrUpdate(new QualifiedModuleName(component), attributes, (c, s) => attributes);
-        }
-
-        private IEnumerable<QualifiedContext> _emptyStringLiterals = new List<QualifiedContext>();
-
-        public IEnumerable<QualifiedContext> EmptyStringLiterals
-        {
-            get { return _emptyStringLiterals; }
-            internal set { _emptyStringLiterals = value; }
-        }
-
-        private IEnumerable<QualifiedContext> _argListsWithOneByRefParam = new List<QualifiedContext>();
-
-        public IEnumerable<QualifiedContext> ArgListsWithOneByRefParam
-        {
-            get { return _argListsWithOneByRefParam; }
-            internal set { _argListsWithOneByRefParam = value; }
         }
 
         public IEnumerable<CommentNode> AllComments
@@ -441,6 +408,8 @@ namespace Rubberduck.Parsing.VBA
             {
                 _declarations.Clear();
             }
+
+            OnStateChanged();
         }
 
         public void ClearBuiltInReferences()
@@ -485,6 +454,8 @@ namespace Rubberduck.Parsing.VBA
 
                 IList<CommentNode> nodes;
                 success = success && (!_comments.ContainsKey(key) || _comments.TryRemove(key, out nodes));
+
+                OnStateChanged();
             }
 
             var projectId = component.Collection.Parent.HelpFile;
@@ -726,6 +697,29 @@ namespace Rubberduck.Parsing.VBA
             {
                 Debug.WriteLine("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));
             }
+        }
+
+        private bool _isDisposed;
+        public void Dispose()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            _declarations.Clear();
+            _tokenStreams.Clear();
+            _parseTrees.Clear();
+            _moduleStates.Clear();
+            _moduleContentHashCodes.Clear();
+            _comments.Clear();
+            _annotations.Clear();
+            _moduleExceptions.Clear();
+            _moduleAttributes.Clear();
+            _declarationSelections.Clear();
+            _projects.Clear();
+
+            _isDisposed = true;
         }
     }
 }

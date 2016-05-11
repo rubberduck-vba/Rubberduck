@@ -8,15 +8,15 @@ namespace Rubberduck.Inspections
 {
     public interface IInspector
     {
-        Task<IList<ICodeInspectionResult>> FindIssuesAsync(RubberduckParserState state, CancellationToken token);
+        Task<IEnumerable<ICodeInspectionResult>> FindIssuesAsync(RubberduckParserState state, CancellationToken token);
     }
 
     public class InspectorIssuesFoundEventArg : EventArgs
     {
-        private readonly IList<InspectionResultBase> _issues;
-        public IList<InspectionResultBase> Issues { get { return _issues; } }
+        private readonly IEnumerable<InspectionResultBase> _issues;
+        public IEnumerable<InspectionResultBase> Issues { get { return _issues; } }
 
-        public InspectorIssuesFoundEventArg(IList<InspectionResultBase> issues)
+        public InspectorIssuesFoundEventArg(IEnumerable<InspectionResultBase> issues)
         {
             _issues = issues;
         }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -517,13 +517,13 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="CodeExplorer_AddFormText" xml:space="preserve">
     <value>User form (.frm)</value>
-  </data>
+  <comment>TC</comment></data>
   <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
     <value>Standard module (.bas)</value>
-  </data>
+  <comment>TC</comment></data>
   <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
     <value>Test module</value>
-  </data>
+  <comment>TC</comment></data>
   <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
     <value>Display member &amp;names</value>
   </data>
@@ -532,10 +532,10 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
     <value>Find All Implementations...</value>
-  </data>
+  <comment>TC</comment></data>
   <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
     <value>Find All References...</value>
-  </data>
+  <comment>TC</comment></data>
   <data name="Inspect" xml:space="preserve">
     <value>Inspect</value>
   </data>

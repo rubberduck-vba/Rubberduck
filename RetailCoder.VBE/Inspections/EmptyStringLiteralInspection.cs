@@ -3,10 +3,11 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections
 {
-    public sealed class EmptyStringLiteralInspection : InspectionBase
+    public sealed class EmptyStringLiteralInspection : InspectionBase, IParseTreeInspection
     {
         public EmptyStringLiteralInspection(RubberduckParserState state)
             : base(state)
@@ -17,11 +18,32 @@ namespace Rubberduck.Inspections
         public override string Description { get { return InspectionsUI.EmptyStringLiteralInspection; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
+        public ParseTreeResults ParseTreeResults { get; set; }
+
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {   
-            return State.EmptyStringLiterals.Select(
+            if (ParseTreeResults == null)
+            {
+                return new InspectionResultBase[] { };
+            }
+            return ParseTreeResults.EmptyStringLiterals.Select(
                     context => new EmptyStringLiteralInspectionResult(this,
                             new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
+        }
+
+        public class EmptyStringLiteralListener : VBAParserBaseListener
+        {
+            private readonly IList<VBAParser.LiteralContext> _contexts = new List<VBAParser.LiteralContext>();
+            public IEnumerable<VBAParser.LiteralContext> Contexts { get { return _contexts; } }
+
+            public override void ExitLiteral(VBAParser.LiteralContext context)
+            {
+                var literal = context.STRINGLITERAL();
+                if (literal != null && literal.GetText() == "\"\"")
+                {
+                    _contexts.Add(context);
+                }
+            }
         }
     }
 }

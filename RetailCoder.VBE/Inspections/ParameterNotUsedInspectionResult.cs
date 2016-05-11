@@ -13,12 +13,12 @@ namespace Rubberduck.Inspections
 
         public ParameterNotUsedInspectionResult(IInspection inspection, Declaration target,
             ParserRuleContext context, QualifiedMemberName qualifiedName, bool isInterfaceImplementation, 
-            RemoveParametersRefactoring refactoring, RubberduckParserState parseResult)
+            RemoveParametersRefactoring refactoring, RubberduckParserState state)
             : base(inspection, qualifiedName.QualifiedModuleName, context, target)
         {
             _quickFixes = isInterfaceImplementation ? new CodeInspectionQuickFix[] {} : new CodeInspectionQuickFix[]
             {
-                new RemoveUnusedParameterQuickFix(Context, QualifiedSelection, refactoring, parseResult),
+                new RemoveUnusedParameterQuickFix(Context, QualifiedSelection, refactoring, state),
                 new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName), 
             };
         }
@@ -34,19 +34,19 @@ namespace Rubberduck.Inspections
     public class RemoveUnusedParameterQuickFix : CodeInspectionQuickFix
     {
         private readonly RemoveParametersRefactoring _quickFixRefactoring;
-        private readonly RubberduckParserState _parseResult;
+        private readonly RubberduckParserState _state;
 
         public RemoveUnusedParameterQuickFix(ParserRuleContext context, QualifiedSelection selection, 
-            RemoveParametersRefactoring quickFixRefactoring, RubberduckParserState parseResult)
+            RemoveParametersRefactoring quickFixRefactoring, RubberduckParserState state)
             : base(context, selection, InspectionsUI.RemoveUnusedParameterQuickFix)
         {
             _quickFixRefactoring = quickFixRefactoring;
-            _parseResult = parseResult;
+            _state = state;
         }
 
         public override void Fix()
         {
-            _quickFixRefactoring.QuickFix(_parseResult, Selection);
+            _quickFixRefactoring.QuickFix(_state, Selection);
         }
     }
 }

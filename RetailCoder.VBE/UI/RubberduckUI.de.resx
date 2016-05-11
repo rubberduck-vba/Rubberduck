@@ -495,13 +495,13 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>&amp;Klassenmodul (.cls)</value>
   </data>
   <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>Nutzer&amp;formular</value>
+    <value>Benutzerdefiniertes Formular</value>
   </data>
   <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>&amp;Standardmodul (.bas)</value>
+    <value>Standardmodul (.bas)</value>
   </data>
   <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>&amp;Testmodul</value>
+    <value>Testmodul</value>
   </data>
   <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
     <value>Member&amp;namen anzeigen</value>
@@ -510,10 +510,10 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Volle &amp;Signaturen anzeigen</value>
   </data>
   <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>&amp;Alle Implementierungen finden...</value>
+    <value>Alle Implementierungen finden...</value>
   </data>
   <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>Alle Referenzen &amp;finden...</value>
+    <value>Alle Referenzen finden...</value>
   </data>
   <data name="Inspect" xml:space="preserve">
     <value>Inspizieren</value>
@@ -1491,5 +1491,41 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="Find" xml:space="preserve">
     <value>Suchen</value>
+  </data>
+  <data name="CodeExplorer_Remove" xml:space="preserve">
+    <value>Entfernen...</value>
+  </data>
+  <data name="CodeExplorer_Print" xml:space="preserve">
+    <value>Drucken...</value>
+  </data>
+  <data name="CodeExplorer_Import" xml:space="preserve">
+    <value>Importieren...</value>
+  </data>
+  <data name="CodeExplorer_Export" xml:space="preserve">
+    <value>Exportieren...</value>
+  </data>
+  <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
+    <value>Punkte (.)</value>
+  </data>
+  <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
+    <value>Ordner-Trennzeichen:</value>
+  </data>
+  <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
+    <value>Slash (/)</value>
+  </data>
+  <data name="SourceControl_MissingCredentials" xml:space="preserve">
+    <value>Fehlende Zugangsdaten</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitAndSyncSuccess" xml:space="preserve">
+    <value>Commit und Synchronisation erfolgreich.</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitSuccess" xml:space="preserve">
+    <value>Commit erfolgreich.</value>
+  </data>
+  <data name="SourceControl_CommitStatus_CommitAndPushSuccess" xml:space="preserve">
+    <value>Commit und Push erfolgreich.</value>
+  </data>
+  <data name="SourceControl_CommitStatus" xml:space="preserve">
+    <value>Commit Status.</value>
   </data>
 </root>

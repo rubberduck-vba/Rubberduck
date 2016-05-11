@@ -517,7 +517,6 @@ keyword :
      | DELETESETTING
      | DOEVENTS
      | DOUBLE
-     | END_IF
      | EQV
      | FALSE
      | FIX
@@ -573,6 +572,32 @@ keyword :
      | VERSION
      | WITHEVENTS
      | XOR
+     | STEP
+     | EXIT_DO 
+     | EXIT_FOR 
+     | EXIT_FUNCTION 
+     | EXIT_PROPERTY 
+     | EXIT_SUB
+     | END_SELECT
+     | END_WITH
+     | ON_ERROR
+     | RESUME_NEXT
+     | ERROR
+     | APPEND
+     | BINARY
+     | OUTPUT
+     | RANDOM
+     | ACCESS
+     | READ
+     | WRITE
+     | READ_WRITE
+     | SHARED
+     | LOCK_READ
+     | LOCK_WRITE
+     | LOCK_READ_WRITE
+     | LINE_INPUT    
+     | RESET
+     | WIDTH
 ;
 
 markerKeyword : AS;
@@ -601,7 +626,6 @@ statementKeyword :
     | ELSE
     | ELSEIF
     | END
-    | ENDIF
     | ENUM
     | ERASE
     | EVENT
@@ -645,32 +669,6 @@ statementKeyword :
     | WHILE
     | WITH
     | WRITE
-    | STEP
-    | EXIT_DO 
-    | EXIT_FOR 
-    | EXIT_FUNCTION 
-    | EXIT_PROPERTY 
-    | EXIT_SUB
-    | END_SELECT
-    | END_WITH
-    | ON_ERROR
-    | RESUME_NEXT
-    | ERROR
-    | APPEND
-    | BINARY
-    | OUTPUT
-    | RANDOM
-    | ACCESS
-    | READ
-    | WRITE
-    | READ_WRITE
-    | SHARED
-    | LOCK_READ
-    | LOCK_WRITE
-    | LOCK_READ_WRITE
-    | RESET
-    | LINE_INPUT
-    | WIDTH
 ;
 
 endOfLine :
@@ -682,7 +680,7 @@ endOfStatement :
     | endOfLine EOF
 ;
 
-' Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.
+// Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.
 commentOrAnnotation :
     annotationList
     | comment

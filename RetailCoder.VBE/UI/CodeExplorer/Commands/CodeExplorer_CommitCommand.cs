@@ -8,9 +8,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private readonly SourceControlDockablePresenter _presenter;
 
-        public CodeExplorer_CommitCommand(SourceControlDockablePresenter presenter)
+        public CodeExplorer_CommitCommand(IPresenter presenter)
         {
-            _presenter = presenter;
+            _presenter = (SourceControlDockablePresenter)presenter;
         }
 
         public override bool CanExecute(object parameter)

@@ -92,7 +92,14 @@ namespace Rubberduck.UI
 
         public virtual void Show()
         {
-            _window.Visible = true;
+            try
+            {
+                _window.Visible = true;
+            }
+            catch
+            {
+                
+            }
         }
 
         public void Hide()
@@ -119,7 +126,7 @@ namespace Rubberduck.UI
             }
 
             if (_window != null)
-            { 
+            {
                 Marshal.ReleaseComObject(_window);
             }
         }

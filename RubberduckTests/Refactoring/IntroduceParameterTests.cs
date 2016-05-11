@@ -802,7 +802,7 @@ End Sub";
                     m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                     It.IsAny<MessageBoxIcon>()), Times.Once);
 
-                Assert.AreEqual("Invalid declaration type\r\nParameter name: target", e.Message);
+                Assert.AreEqual("target", e.ParamName);
                 Assert.AreEqual(inputCode, module.Lines());
                 return;
             }

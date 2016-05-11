@@ -70,7 +70,7 @@ namespace Rubberduck.Parsing.Binding
                 Procedure namespace: A local variable, reference parameter binding or constant whose implicit 
                 or explicit definition precedes this expression in an enclosing procedure.                
             */
-            if (_parent.DeclarationType != DeclarationType.Function && _parent.DeclarationType != DeclarationType.Procedure)
+            if (!_parent.DeclarationType.HasFlag(DeclarationType.Function) && !_parent.DeclarationType.HasFlag(DeclarationType.Procedure))
             {
                 return null;
             }

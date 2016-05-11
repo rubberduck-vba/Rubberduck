@@ -113,7 +113,7 @@
                                   Command="{Binding PrintCommand}"
                                   CommandParameter="{Binding SelectedItem}" />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControlPanel_Caption}">
-                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllReferencesText}"
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Commit}"
                                   Command="{Binding CommitCommand}"
                                   CommandParameter="{Binding SelectedItem}" />
                         </MenuItem>
