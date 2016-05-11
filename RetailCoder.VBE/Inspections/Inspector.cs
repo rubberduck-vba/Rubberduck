@@ -132,17 +132,12 @@ namespace Rubberduck.Inspections
                 return result;
             }
 
-            private bool _disposed;
             public void Dispose()
             {
-                if (_disposed) { return; }
-
                 if (_configService != null)
                 {
                     _configService.LanguageChanged -= ConfigServiceLanguageChanged;
                 }
-
-                _disposed = true;
             }
         }
     }

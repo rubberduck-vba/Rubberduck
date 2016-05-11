@@ -560,17 +560,12 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private bool _disposed;
         public void Dispose()
         {
-            if (_disposed) { return; }
-
             if (_state != null)
             {
                 _state.StateChanged -= _state_StateChanged;
             }
-
-            _disposed = true;
         }
     }
 }

@@ -57,7 +57,13 @@ namespace Rubberduck.AutoSave
         private bool _disposed;
         public void Dispose()
         {
-            if (_disposed)
+            Dispose(_disposed);
+            _disposed = true;
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!disposing)
             {
                 return;
             }
@@ -73,8 +79,6 @@ namespace Rubberduck.AutoSave
                 _timer.Dispose();
                 _timer = null;
             }
-
-            _disposed = true;
         }
     }
 }

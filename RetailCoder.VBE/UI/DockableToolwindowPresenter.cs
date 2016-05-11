@@ -103,12 +103,11 @@ namespace Rubberduck.UI
         private bool _disposed;
         public void Dispose()
         {
-            Dispose(true);
+            Dispose(_disposed);
             _disposed = true;
         }
 
         public bool IsDisposed { get { return _disposed; } }
-
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing) { return; }

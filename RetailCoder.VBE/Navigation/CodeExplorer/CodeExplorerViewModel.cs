@@ -361,18 +361,13 @@ namespace Rubberduck.Navigation.CodeExplorer
             _externalRemoveCommand.Execute(param);
         }
 
-        private bool _disposed;
         public void Dispose()
         {
-            if (_disposed) { return; }
-
             if (_state != null)
             {
                 _state.StateChanged -= ParserState_StateChanged;
                 _state.ModuleStateChanged -= ParserState_ModuleStateChanged;
             }
-
-            _disposed = true;
         }
     }
 }

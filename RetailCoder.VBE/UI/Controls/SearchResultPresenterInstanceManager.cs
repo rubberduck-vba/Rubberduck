@@ -43,7 +43,13 @@ namespace Rubberduck.UI.Controls
         private bool _disposed;
         public void Dispose()
         {
-            if (_disposed) { return; }
+            Dispose(_disposed);
+            _disposed = true;
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing) { return; }
 
             if (_view.ViewModel != null)
             {
@@ -53,9 +59,8 @@ namespace Rubberduck.UI.Controls
             if (_presenter != null)
             {
                 _presenter.Dispose();
+                _presenter = null;
             }
-
-            _disposed = true;
         }
     }
 }

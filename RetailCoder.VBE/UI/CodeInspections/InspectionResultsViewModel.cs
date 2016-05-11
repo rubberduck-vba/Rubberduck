@@ -342,14 +342,12 @@ namespace Rubberduck.UI.CodeInspections
             return !IsBusy && _results != null && _results.Any();
         }
 
-        private bool _disposed;
         public void Dispose()
         {
-            if (_disposed) { return; }
-
-            _state.StateChanged -= _state_StateChanged;
-
-            _disposed = true;
+            if (_state != null)
+            {
+                _state.StateChanged -= _state_StateChanged;
+            }
         }
     }
 }
