@@ -1560,10 +1560,13 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeExplorer_Sort" xml:space="preserve">
     <value>Sort</value>
   </data>
-  <data name="SortStyle_Alphabetical" xml:space="preserve">
-    <value>Alphabetical</value>
+  <data name="SortStyle_ByName" xml:space="preserve">
+    <value>By name</value>
   </data>
   <data name="SortStyle_ByType" xml:space="preserve">
     <value>By type</value>
+  </data>
+  <data name="SortStyle_BySelection" xml:space="preserve">
+    <value>By selection</value>
   </data>
 </root>

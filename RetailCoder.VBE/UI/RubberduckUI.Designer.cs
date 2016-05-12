@@ -3028,11 +3028,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Alphabetical.
+        ///   Looks up a localized string similar to By name.
         /// </summary>
-        public static string SortStyle_Alphabetical {
+        public static string SortStyle_ByName {
             get {
-                return ResourceManager.GetString("SortStyle_Alphabetical", resourceCulture);
+                return ResourceManager.GetString("SortStyle_ByName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By selection.
+        /// </summary>
+        public static string SortStyle_BySelection {
+            get {
+                return ResourceManager.GetString("SortStyle_BySelection", resourceCulture);
             }
         }
         

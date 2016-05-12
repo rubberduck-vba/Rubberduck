@@ -366,6 +366,7 @@
     <Compile Include="Inspections\ObjectVariableNotSetInspection.cs" />
     <Compile Include="Inspections\RemoveExplicitCallStatmentQuickFix.cs" />
     <Compile Include="Navigation\CodeExplorer\CodeExplorerErrorNodeViewModel.cs" />
+    <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
     <Compile Include="Settings\RubberduckHotkey.cs" />
     <Compile Include="UI\About\AboutControl.xaml.cs">
@@ -393,7 +394,8 @@
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddClassModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddTestModuleCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Converters\BoolToHiddenVisibility.cs" />
+    <Compile Include="UI\CodeExplorer\Converters\InvertBoolValueConverter.cs" />
+    <Compile Include="UI\CodeExplorer\Converters\BoolToHiddenVisibilityConverter.cs" />
     <Compile Include="UI\Command\MenuItems\NoIndentAnnotationCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\IndentCurrentModuleCommandMenuItem.cs" />
     <Compile Include="UI\Command\NoIndentAnnotationCommand.cs" />

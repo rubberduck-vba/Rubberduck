@@ -74,6 +74,41 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        private bool _sortByName = true;
+        public bool SortByName
+        {
+            get { return _sortByName; }
+            set
+            {
+                if (_sortByName == value)
+                {
+                    return;
+                }
+
+                _sortByName = value;
+                OnPropertyChanged();
+
+                ReorderChildNodes(Projects);
+                Projects = new ObservableCollection<CodeExplorerItemViewModel>(Projects.OrderBy(o => o.NameWithSignature));
+            }
+        }
+
+        private bool _sortByType = true;
+        public bool SortByType
+        {
+            get { return _sortByType; }
+            set
+            {
+                if (_sortByType != value)
+                {
+                    _sortByType = value;
+                    OnPropertyChanged();
+
+                    ReorderChildNodes(Projects);
+                }
+            }
+        }
+
         private bool _isBusy;
         public bool IsBusy
         {
@@ -172,6 +207,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             set
             {
                 _projects = value;
+                
+                ReorderChildNodes(_projects);
                 OnPropertyChanged();
             }
         }
@@ -200,13 +237,17 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            var newProjects = new ObservableCollection<CodeExplorerItemViewModel>(userDeclarations.Select(grouping =>
+            var newProjects = userDeclarations.Select(grouping =>
                 new CodeExplorerProjectViewModel(_folderHelper,
                     grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
-                    grouping)));
+                    grouping)).ToList();
 
             UpdateNodes(Projects, newProjects);
-            Projects = newProjects;
+            
+            Projects = new ObservableCollection<CodeExplorerItemViewModel>(
+                    SortByName
+                        ? newProjects.OrderBy(o => o.NameWithSignature).ToList()
+                        : newProjects);
         }
 
         private void UpdateNodes(IEnumerable<CodeExplorerItemViewModel> oldList,
@@ -274,6 +315,20 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             folderNode.AddChild(new CodeExplorerErrorNodeViewModel(componentName));
             Projects.Add(projectNode);
+
+            if (SortByName)
+            {
+                Projects = new ObservableCollection<CodeExplorerItemViewModel>(Projects.OrderBy(o => o.NameWithSignature));
+            }
+        }
+
+        private void ReorderChildNodes(IEnumerable<CodeExplorerItemViewModel> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                node.ReorderItems(SortByName, SortByType);
+                ReorderChildNodes(node.Items);
+            }
         }
 
         private bool _removedNode;

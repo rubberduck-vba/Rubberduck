@@ -15,7 +15,8 @@
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeExplorer:CodeExplorerViewModel}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-        <converters:BoolToHiddenVisibility x:Key="BoolToHiddenVisibility" />
+        <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
+        <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
 
         <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -656,12 +657,21 @@
                             <Image Height="16" Source="../../Resources/edit-list-order.png" />
                         </MenuItem.Icon>
 
-                        <MenuItem x:Name="AlphabeticalSort" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
-                              Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SortStyle_Alphabetical}" IsChecked="True" 
-                              IsCheckable="True" />
-                        <MenuItem x:Name="TypeSort" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
-                              Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SortStyle_ByType}" IsChecked="True" 
-                              IsCheckable="True" />
+                        <MenuItem Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
+                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SortStyle_ByName}"
+                                  IsChecked="{Binding SortByName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                  IsCheckable="True" />
+                        <MenuItem Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
+                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SortStyle_BySelection}"
+                                  IsChecked="{Binding SortByName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBoolValue}}" 
+                                  IsCheckable="True" />
+                        
+                        <Separator />
+                        
+                        <MenuItem Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
+                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SortStyle_ByType}"
+                                  IsChecked="{Binding SortByType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                  IsCheckable="True" />
                     </MenuItem>
                 </Menu>
                 <ToggleButton Name="DisplaySignatures" IsEnabled="{Binding CanRefresh}" ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ShowSignaturesToolTip}" IsChecked="True">
