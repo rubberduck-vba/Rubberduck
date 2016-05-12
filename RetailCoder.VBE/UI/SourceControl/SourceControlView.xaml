@@ -434,7 +434,9 @@
                     </Grid>
                 </StackPanel>
             </Grid>
-            <TabControl DockPanel.Dock="Bottom" ItemsSource="{Binding TabItems}" />
+            <TabControl DockPanel.Dock="Bottom"
+                        ItemsSource="{Binding TabItems}"
+                        SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </DockPanel>
     </Grid>
 </UserControl>

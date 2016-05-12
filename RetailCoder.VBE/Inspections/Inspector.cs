@@ -134,13 +134,6 @@ namespace Rubberduck.Inspections
 
             public void Dispose()
             {
-                Dispose(true);
-            }
-
-            protected virtual void Dispose(bool disposing)
-            {
-                if (!disposing) { return; }
-
                 if (_configService != null)
                 {
                     _configService.LanguageChanged -= ConfigServiceLanguageChanged;

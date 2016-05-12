@@ -11,7 +11,7 @@ using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel
+    public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel, ICodeExplorerDeclarationViewModel
     {
         private readonly Declaration _declaration;
         public Declaration Declaration { get { return _declaration; } }

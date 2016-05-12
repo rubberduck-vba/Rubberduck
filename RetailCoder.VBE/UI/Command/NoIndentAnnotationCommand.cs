@@ -4,23 +4,19 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
-using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.UI.Command
 {
     [ComVisible(false)]
-    public class IndentCurrentModuleCommand : CommandBase
+    public class NoIndentAnnotationCommand : CommandBase
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly IIndenter _indenter;
 
-        public IndentCurrentModuleCommand(VBE vbe, RubberduckParserState state, IIndenter indenter)
+        public NoIndentAnnotationCommand(VBE vbe, RubberduckParserState state)
         {
             _vbe = vbe;
             _state = state;
-            _indenter = indenter;
         }
 
         public override bool CanExecute(object parameter)
@@ -33,10 +29,8 @@ namespace Rubberduck.UI.Command
 
         public override void Execute(object parameter)
         {
-            _indenter.IndentCurrentModule();
+            _vbe.ActiveCodePane.CodeModule.InsertLines(1, "'@NoIndent");
         }
-
-        public RubberduckHotkey Hotkey { get { return RubberduckHotkey.IndentModule; } }
 
         private Declaration FindTarget(object parameter)
         {

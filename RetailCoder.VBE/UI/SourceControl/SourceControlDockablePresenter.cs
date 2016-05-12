@@ -1,4 +1,5 @@
-﻿using Microsoft.Vbe.Interop;
+﻿using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -7,10 +8,14 @@ namespace Rubberduck.UI.SourceControl
     /// </summary>
     public class SourceControlDockablePresenter : DockableToolwindowPresenter
     {
-
-        public SourceControlDockablePresenter(VBE vbe, AddIn addin, IDockableUserControl window)
+        public SourceControlDockablePresenter(VBE vbe, AddIn addin, SourceControlPanel window)
             : base(vbe, addin, window)
         {
+        }
+
+        public UserControl Window()
+        {
+            return UserControl;
         }
     }
 }

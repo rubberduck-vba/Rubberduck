@@ -2,6 +2,9 @@ using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
+using System.Linq;
+using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -20,6 +23,23 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override bool CanExecute(object parameter)
         {
+            if (parameter is CodeExplorerComponentViewModel)
+            {
+                var node = (CodeExplorerComponentViewModel)parameter;
+                if (node.Declaration.Annotations.Any(a => a.AnnotationType == Parsing.Annotations.AnnotationType.NoIndent))
+                {
+                    return false;
+                }
+            }
+
+            if (parameter is CodeExplorerProjectViewModel)
+            {
+                return _state.Status == ParserState.Ready &&
+                    _state.AllUserDeclarations.Any(c =>
+                            c.DeclarationType.HasFlag(DeclarationType.Module) &&
+                            c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent));
+            }
+
             return _state.Status == ParserState.Ready && !(parameter is CodeExplorerCustomFolderViewModel) &&
                    !(parameter is CodeExplorerErrorNodeViewModel);
         }
@@ -35,7 +55,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             if (node is CodeExplorerProjectViewModel)
             {
-                _indenter.Indent(node.QualifiedSelection.Value.QualifiedName.Project);
+                var components = _state.AllUserDeclarations.Where(c => 
+                            c.DeclarationType.HasFlag(DeclarationType.Module) &&
+                            c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent));
+
+                foreach (var component in components)
+                {
+                    _indenter.Indent(component.QualifiedName.QualifiedModuleName.Component);
+                }
             }
 
             if (node is CodeExplorerComponentViewModel)
