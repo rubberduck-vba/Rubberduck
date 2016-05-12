@@ -11,8 +11,8 @@ namespace Rubberduck.Parsing.Symbols
         private readonly bool _isExposed;
         private readonly bool _isGlobalClassModule;
         private readonly List<string> _supertypeNames;
-        private readonly List<Declaration> _supertypes;
-        private readonly List<Declaration> _subtypes;
+        private readonly HashSet<Declaration> _supertypes;
+        private readonly HashSet<Declaration> _subtypes;
 
         public ClassModuleDeclaration(
                   QualifiedMemberName qualifiedName,
@@ -41,8 +41,8 @@ namespace Rubberduck.Parsing.Symbols
             _isExposed = isExposed;
             _isGlobalClassModule = isGlobalClassModule;
             _supertypeNames = new List<string>();
-            _supertypes = new List<Declaration>();
-            _subtypes = new List<Declaration>();
+            _supertypes = new HashSet<Declaration>();
+            _subtypes = new HashSet<Declaration>();
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration DefaultMember { get; internal set; }
 
-        public List<string> SupertypeNames
+        public IReadOnlyList<string> SupertypeNames
         {
             get
             {
@@ -112,19 +112,19 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public List<Declaration> Supertypes
+        public IReadOnlyList<Declaration> Supertypes
         {
             get
             {
-                return _supertypes;
+                return _supertypes.ToList();
             }
         }
 
-        public List<Declaration> Subtypes
+        public IReadOnlyList<Declaration> Subtypes
         {
             get
             {
-                return _subtypes;
+                return _subtypes.ToList();
             }
         }
 

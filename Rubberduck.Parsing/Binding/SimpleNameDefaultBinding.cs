@@ -152,6 +152,10 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(referencedProject, ExpressionClassification.Project, _expression);
             }
+            if (_module.DeclarationType == DeclarationType.ProceduralModule && _declarationFinder.IsMatch(_module.IdentifierName, name))
+            {
+                return new SimpleNameExpression(_module, ExpressionClassification.ProceduralModule, _expression);
+            }
             var proceduralModuleEnclosingProject = _declarationFinder.FindModuleEnclosingProjectWithoutEnclosingModule(_project, _module, name, DeclarationType.ProceduralModule);
             if (proceduralModuleEnclosingProject != null)
             {
@@ -220,6 +224,11 @@ namespace Rubberduck.Parsing.Binding
             if (accessibleModule != null)
             {
                 return new SimpleNameExpression(accessibleModule, ExpressionClassification.ProceduralModule, _expression);
+            }
+            var defaultInstanceVariableClass = _declarationFinder.FindDefaultInstanceVariableClassReferencedProject(_project, _module, name);
+            if (defaultInstanceVariableClass != null)
+            {
+                return new SimpleNameExpression(defaultInstanceVariableClass, ExpressionClassification.Type, _expression);
             }
             return null;
         }
