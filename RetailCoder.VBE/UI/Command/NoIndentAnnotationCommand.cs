@@ -42,13 +42,7 @@ namespace Rubberduck.UI.Command
 
             var selectedDeclaration = _state.FindSelectedDeclaration(_vbe.ActiveCodePane);
 
-            var moduleTypes = new[]
-            {
-                DeclarationType.ClassModule,
-                DeclarationType.Module
-            };
-
-            while (selectedDeclaration != null && !moduleTypes.Contains(selectedDeclaration.DeclarationType))
+            while (selectedDeclaration != null && selectedDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
             {
                 selectedDeclaration = selectedDeclaration.ParentDeclaration;
             }
