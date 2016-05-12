@@ -267,26 +267,28 @@ namespace Rubberduck.Parsing.VBA
             return result;
         }
 
-        public ParserState GetModuleState(VBComponent component)
+        public ParserState GetOrCreateModuleState(VBComponent component)
         {
             var key = new QualifiedModuleName(component);
-
-            var isDirty = IsNewOrModified(key);
             var state = _moduleStates.GetOrAdd(key, ParserState.Pending);
-            
-            if (!isDirty)
-            {
-                return state;
-            }
 
             if (state == ParserState.Pending)
             {
                 return state;   // we are slated for a reparse already
             }
 
-            _moduleStates.TryUpdate(key, ParserState.Pending, state);
+            if (!IsNewOrModified(key))
+            {
+                return state;
+            }
 
+            _moduleStates.TryUpdate(key, ParserState.Pending, state);
             return ParserState.Pending;
+        }
+
+        public ParserState GetModuleState(VBComponent component)
+        {
+            return _moduleStates.GetOrAdd(new QualifiedModuleName(component), ParserState.Pending);
         }
 
         private ParserState _status;

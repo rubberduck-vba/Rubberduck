@@ -18,7 +18,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             var node = parameter as CodeExplorerComponentViewModel;
 
             return node != null && node.QualifiedSelection.HasValue &&
-                   _state.GetModuleState(node.QualifiedSelection.Value.QualifiedName.Component) == ParserState.Pending;
+                   _state.GetOrCreateModuleState(node.QualifiedSelection.Value.QualifiedName.Component) == ParserState.Pending;
         }
 
         public override void Execute(object parameter)
