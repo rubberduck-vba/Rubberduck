@@ -1566,4 +1566,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="NoIndentAnnotation" xml:space="preserve">
     <value>Add '@NoIndent</value>
   </data>
+  <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
+    <value>Refresh component</value>
+  </data>
 </root>

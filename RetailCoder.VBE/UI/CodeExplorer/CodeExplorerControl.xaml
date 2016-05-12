@@ -145,6 +145,9 @@
             <Setter Property="ContextMenu">
                 <Setter.Value>
                     <ContextMenu DataContext="{Binding DataContext, Source={x:Reference CodeExplorer}}">
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_RefreshComponent}"
+                                  Command="{Binding RefreshComponentCommand}"
+                                  CommandParameter="{Binding SelectedItem}"/>
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Navigate}"
                                   FontWeight="Bold"
                                   Command="{Binding NavigateCommand}"

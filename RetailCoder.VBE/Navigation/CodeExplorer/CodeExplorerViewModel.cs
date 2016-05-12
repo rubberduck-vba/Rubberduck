@@ -31,6 +31,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
             _refreshCommand = commands.OfType<CodeExplorer_RefreshCommand>().FirstOrDefault();
+            _refreshComponentCommand = commands.OfType<CodeExplorer_RefreshComponentCommand>().FirstOrDefault();
             _navigateCommand = commands.OfType<CodeExplorer_NavigateCommand>().FirstOrDefault();
 
             _addTestModuleCommand = commands.OfType<CodeExplorer_AddTestModuleCommand>().FirstOrDefault();
@@ -310,6 +311,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly ICommand _refreshCommand;
         public ICommand RefreshCommand { get { return _refreshCommand; } }
+
+        private readonly ICommand _refreshComponentCommand;
+        public ICommand RefreshComponentCommand { get { return _refreshComponentCommand; } }
 
         private readonly ICommand _navigateCommand;
         public ICommand NavigateCommand { get { return _navigateCommand; } }
