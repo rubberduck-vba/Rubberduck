@@ -470,6 +470,17 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt", matches => matches.Count == 2);
         }
 
+        [TestMethod]
+        public void TestEndStmt()
+        {
+            string code = @"
+Sub Test()
+    End
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//endStmt");
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);

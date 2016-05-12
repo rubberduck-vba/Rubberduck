@@ -91,6 +91,7 @@ blockStmt :
 	| closeStmt
 	| constStmt
 	| doLoopStmt
+    | endStmt
 	| eraseStmt
 	| errorStmt
     | exitStmt
@@ -185,6 +186,9 @@ enumerationStmt:
 ;
 
 enumerationStmt_Constant : identifier (whiteSpace? EQ whiteSpace? valueStmt)? endOfStatement;
+
+// We add "END" as a statement so that it does not get resolved to some nonsensical property.
+endStmt : END;
 
 eraseStmt : ERASE whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)*;
 
@@ -542,6 +546,7 @@ keyword :
      | DELETESETTING
      | DOEVENTS
      | DOUBLE
+     | END
      | EQV
      | FALSE
      | FIX
@@ -650,7 +655,6 @@ statementKeyword :
     | DO
     | ELSE
     | ELSEIF
-    | END
     | ENUM
     | ERASE
     | EVENT
