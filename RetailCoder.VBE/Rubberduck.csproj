@@ -394,6 +394,9 @@
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddTestModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Converters\BoolToHiddenVisibility.cs" />
+    <Compile Include="UI\Command\MenuItems\NoIndentAnnotationCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\IndentCurrentModuleCommandMenuItem.cs" />
+    <Compile Include="UI\Command\NoIndentAnnotationCommand.cs" />
     <Compile Include="UI\Command\IndentCurrentModuleCommand.cs" />
     <Compile Include="UI\Command\MenuItems\InspectionResultsCommandMenuItem.cs" />
     <Compile Include="UI\Command\ReparseCommand.cs" />

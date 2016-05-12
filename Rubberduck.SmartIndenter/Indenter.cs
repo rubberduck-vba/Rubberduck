@@ -72,37 +72,6 @@ namespace Rubberduck.SmartIndenter
             Indent(pane.CodeModule.Parent);
         }
 
-        public void Indent(VBProject project)
-        {
-            if (project == null)
-            {
-                throw new ArgumentNullException("project");
-            }
-            if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
-            {
-                throw new InvalidOperationException("Project is protected.");
-            }
-
-            var lineCount = 0; // to set progressbar max value
-            if (project.VBComponents.Cast<VBComponent>().All(component => !HasCode(component.CodeModule, ref lineCount)))
-            {
-                throw new InvalidOperationException("Project contains no code.");
-            }
-
-            _originalTopLine = _vbe.ActiveCodePane.TopLine;
-            _originalSelection = GetSelection(_vbe.ActiveCodePane);
-
-            var progress = 0; // to set progressbar value
-            foreach (var component in project.VBComponents.Cast<VBComponent>().Where(component => HasCode(component.CodeModule)))
-            {
-                Indent(component, true, progress);
-                progress += component.CodeModule.CountOfLines;
-            }
-
-            _vbe.ActiveCodePane.TopLine = _originalTopLine;
-            _vbe.ActiveCodePane.SetSelection(_originalSelection.StartLine, _originalSelection.StartColumn, _originalSelection.EndLine, _originalSelection.EndColumn);
-        }
-
         private static bool HasCode(CodeModule module, ref int lineCount)
         {
             lineCount += module.CountOfLines;

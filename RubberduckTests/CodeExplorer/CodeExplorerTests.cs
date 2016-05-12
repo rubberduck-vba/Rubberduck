@@ -509,6 +509,197 @@ End Sub";
         }
 
         [TestMethod]
+        public void IndentModule_DisabledWithNoIndentAnnotation()
+        {
+            var inputCode =
+@"'@NoIndent
+
+Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>
+            {
+                new CodeExplorer_IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+            };
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+
+            Assert.IsFalse(vm.IndenterCommand.CanExecute(vm.SelectedItem));
+        }
+
+        [TestMethod]
+        public void IndentProject()
+        {
+            var inputCode =
+@"Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            var expectedCode =
+@"Sub Foo()
+    Dim d As Boolean
+    d = True
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var projectMock = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, inputCode)
+                .AddComponent("ClassModule1", vbext_ComponentType.vbext_ct_ClassModule, inputCode);
+
+            var project = projectMock.Build();
+            var vbe = builder.AddProject(project).Build();
+            var component1 = project.Object.VBComponents.Item(0);
+            var module1 = component1.CodeModule;
+
+            var component2 = project.Object.VBComponents.Item(1);
+            var module2 = component2.CodeModule;
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>
+            {
+                new CodeExplorer_IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+            };
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First();
+            vm.IndenterCommand.Execute(vm.SelectedItem);
+
+            Assert.AreEqual(expectedCode, module1.Lines());
+            Assert.AreEqual(expectedCode, module2.Lines());
+        }
+
+        [TestMethod]
+        public void IndentProject_IndentsModulesWithoutNoIndentAnnotation()
+        {
+            var inputCode1 =
+@"Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            var inputCode2 =
+@"'@NoIndent
+
+Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            var expectedCode =
+@"Sub Foo()
+    Dim d As Boolean
+    d = True
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var projectMock = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, inputCode1)
+                .AddComponent("ClassModule1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2);
+
+            var project = projectMock.Build();
+            var vbe = builder.AddProject(project).Build();
+            var component1 = project.Object.VBComponents.Item(0);
+            var module1 = component1.CodeModule;
+
+            var component2 = project.Object.VBComponents.Item(1);
+            var module2 = component2.CodeModule;
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>
+            {
+                new CodeExplorer_IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+            };
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First();
+            vm.IndenterCommand.Execute(vm.SelectedItem);
+
+            Assert.AreEqual(expectedCode, module1.Lines());
+            Assert.AreEqual(inputCode2, module2.Lines());
+        }
+
+        [TestMethod]
+        public void IndentProject_DisabledWhenAllModulesHaveNoIndentAnnotation()
+        {
+            var inputCode1 =
+@"Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            var inputCode2 =
+@"'@NoIndent
+
+Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            var expectedCode =
+@"Sub Foo()
+    Dim d As Boolean
+    d = True
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var projectMock = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, inputCode1)
+                .AddComponent("ClassModule1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2);
+
+            var project = projectMock.Build();
+            var vbe = builder.AddProject(project).Build();
+            var component1 = project.Object.VBComponents.Item(0);
+            var module1 = component1.CodeModule;
+
+            var component2 = project.Object.VBComponents.Item(1);
+            var module2 = component2.CodeModule;
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>
+            {
+                new CodeExplorer_IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+            };
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First();
+            vm.IndenterCommand.Execute(vm.SelectedItem);
+
+            Assert.AreEqual(expectedCode, module1.Lines());
+            Assert.AreEqual(inputCode2, module2.Lines());
+        }
+
+        [TestMethod]
         public void RenameProcedure()
         {
             var inputCode =
