@@ -245,6 +245,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Commit....
+        /// </summary>
+        public static string CodeExplorer_Commit {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Commit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display member &amp;names.
         /// </summary>
         public static string CodeExplorer_DisplayMemberNamesText {
@@ -304,15 +313,6 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_Import {
             get {
                 return ResourceManager.GetString("CodeExplorer_Import", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &amp;Inspect.
-        /// </summary>
-        public static string CodeExplorer_Inspect {
-            get {
-                return ResourceManager.GetString("CodeExplorer_Inspect", resourceCulture);
             }
         }
         
@@ -403,6 +403,15 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_ShowSignaturesToolTip {
             get {
                 return ResourceManager.GetString("CodeExplorer_ShowSignaturesToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code Explorer.
+        /// </summary>
+        public static string CodeExplorer_Undo {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Undo", resourceCulture);
             }
         }
         
@@ -3663,6 +3672,24 @@ namespace Rubberduck.UI {
         public static string SourceControl_UndoChangesButton {
             get {
                 return ResourceManager.GetString("SourceControl_UndoChangesButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to undo your changes to {0}?.
+        /// </summary>
+        public static string SourceControl_UndoPrompt {
+            get {
+                return ResourceManager.GetString("SourceControl_UndoPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source Control - Undo.
+        /// </summary>
+        public static string SourceControl_UndoTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_UndoTitle", resourceCulture);
             }
         }
         

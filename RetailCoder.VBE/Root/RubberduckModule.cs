@@ -20,6 +20,7 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer;
+using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
@@ -82,7 +83,6 @@ namespace Rubberduck.Root
             ApplyAbstractFactoryConvention(assemblies);
 
             BindCommandsToMenuItems();
-            BindCommandsToCodeExplorer();
             
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();
@@ -103,16 +103,6 @@ namespace Rubberduck.Root
                 .WhenInjectedInto<InspectionResultsCommand>()
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>() });
-            
-            Bind<IPresenter>().To<CodeExplorerDockablePresenter>()
-                .WhenInjectedInto<CodeExplorerCommand>()
-                .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new CodeExplorerWindow { ViewModel = _kernel.Get<CodeExplorerViewModel>() });
-
-            Bind<IPresenter>().To<ToDoExplorerDockablePresenter>()
-                .WhenInjectedInto<ToDoExplorerCommand>()
-                .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new ToDoExplorerWindow { ViewModel = _kernel.Get<ToDoExplorerViewModel>() });
 
             Bind<IControlView>().To<ChangesView>().Named("changesView");
             Bind<IControlView>().To<BranchesView>().Named("branchesView");
@@ -131,10 +121,20 @@ namespace Rubberduck.Root
             Bind<ISourceControlProviderFactory>().To<SourceControlProviderFactory>()
                 .WhenInjectedInto<SourceControlViewViewModel>();
 
-            Bind<IPresenter>().To<SourceControlDockablePresenter>()
-                .WhenInjectedInto<ShowSourceControlPanelCommand>()
+            Bind<SourceControlDockablePresenter>().ToSelf()
                 .InSingletonScope()
-                .WithConstructorArgument<IDockableUserControl>(new SourceControlPanel { ViewModel = _kernel.Get<SourceControlViewViewModel>() });
+                .WithConstructorArgument(new SourceControlPanel { ViewModel = _kernel.Get<SourceControlViewViewModel>() });
+            
+            BindCommandsToCodeExplorer();
+            Bind<IPresenter>().To<CodeExplorerDockablePresenter>()
+                .WhenInjectedInto<CodeExplorerCommand>()
+                .InSingletonScope()
+                .WithConstructorArgument<IDockableUserControl>(new CodeExplorerWindow { ViewModel = _kernel.Get<CodeExplorerViewModel>() });
+
+            Bind<IPresenter>().To<ToDoExplorerDockablePresenter>()
+                .WhenInjectedInto<ToDoExplorerCommand>()
+                .InSingletonScope()
+                .WithConstructorArgument<IDockableUserControl>(new ToDoExplorerWindow { ViewModel = _kernel.Get<ToDoExplorerViewModel>() });
 
             ConfigureRubberduckMenu();
             ConfigureCodePaneContextMenu();
