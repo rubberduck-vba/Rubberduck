@@ -362,6 +362,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh component.
+        /// </summary>
+        public static string CodeExplorer_RefreshComponent {
+            get {
+                return ResourceManager.GetString("CodeExplorer_RefreshComponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove....
         /// </summary>
         public static string CodeExplorer_Remove {
@@ -407,7 +416,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Code Explorer.
+        ///   Looks up a localized string similar to Undo....
         /// </summary>
         public static string CodeExplorer_Undo {
             get {
