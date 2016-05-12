@@ -20,7 +20,7 @@ using System.IO;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class RubberduckParser : IRubberduckParser
+    public class RubberduckParser : IRubberduckParser, IDisposable
     {
         public RubberduckParserState State
         {
@@ -569,6 +569,23 @@ namespace Rubberduck.Parsing.VBA
 
             _state.SetModuleState(component, state);
             Debug.WriteLine("'{0}' is {1} (thread {2})", component.Name, _state.GetModuleState(component), Thread.CurrentThread.ManagedThreadId);
+        }
+
+        public void Dispose()
+        {
+            State.ParseRequest -= ReparseRequested;
+            State.StateChanged -= StateOnStateChanged;
+
+            if (_resolverTokenSource != null)
+            {
+                _resolverTokenSource.Dispose();
+            }
+
+            if (_central != null)
+            {
+                _central.Cancel();
+                _central.Dispose();
+            }
         }
     }
 }

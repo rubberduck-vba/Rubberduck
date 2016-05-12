@@ -15,7 +15,7 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerViewModel : ViewModelBase
+    public sealed class CodeExplorerViewModel : ViewModelBase, IDisposable
     {
         private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
@@ -368,6 +368,15 @@ namespace Rubberduck.Navigation.CodeExplorer
             SelectedItem = Projects.First(p => ((CodeExplorerProjectViewModel) p).Declaration.Project == node.Declaration.Project);
 
             _externalRemoveCommand.Execute(param);
+        }
+
+        public void Dispose()
+        {
+            if (_state != null)
+            {
+                _state.StateChanged -= ParserState_StateChanged;
+                _state.ModuleStateChanged -= ParserState_ModuleStateChanged;
+            }
         }
     }
 }

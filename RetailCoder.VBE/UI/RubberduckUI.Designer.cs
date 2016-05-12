@@ -407,7 +407,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Undo....
+        ///   Looks up a localized string similar to Code Explorer.
         /// </summary>
         public static string CodeExplorer_Undo {
             get {
@@ -1955,6 +1955,15 @@ namespace Rubberduck.UI {
         public static string Next {
             get {
                 return ResourceManager.GetString("Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add &apos;@NoIndent.
+        /// </summary>
+        public static string NoIndentAnnotation {
+            get {
+                return ResourceManager.GetString("NoIndentAnnotation", resourceCulture);
             }
         }
         

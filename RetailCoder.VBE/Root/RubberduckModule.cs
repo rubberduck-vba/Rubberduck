@@ -395,7 +395,8 @@ namespace Rubberduck.Root
             var items = new IMenuItem[]
             {
                 _kernel.Get<IndentCurrentProcedureCommandMenuItem>(),
-                _kernel.Get<IndentCurrentModuleCommandMenuItem>()
+                _kernel.Get<IndentCurrentModuleCommandMenuItem>(),
+                _kernel.Get<NoIndentAnnotationCommandMenuItem>()
             };
 
             return new SmartIndenterParentMenu(items);

@@ -392,7 +392,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void ClearStateCache(VBProject project)
+        public void ClearStateCache(VBProject project, bool notifyStateChanged = false)
         {
             try
             {
@@ -409,7 +409,10 @@ namespace Rubberduck.Parsing.VBA
                 _declarations.Clear();
             }
 
-            OnStateChanged();
+            if (notifyStateChanged)
+            {
+                OnStateChanged();
+            }
         }
 
         public void ClearBuiltInReferences()
@@ -420,19 +423,52 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public bool ClearStateCache(VBComponent component)
+        public bool ClearStateCache(VBComponent component, bool notifyStateChanged = false)
         {
             var match = new QualifiedModuleName(component);
             var keys = _declarations.Keys.Where(kvp => kvp.Equals(match))
                 .Union(new[] { match }).Distinct(); // make sure the key is present, even if there are no declarations left
 
+            var success = RemoveKeysFromCollections(keys);
+
+            var projectId = component.Collection.Parent.HelpFile;
+            var sameProjectDeclarations = _declarations.Where(item => item.Key.ProjectId == projectId).ToList();
+            if (sameProjectDeclarations.Any() &&
+                sameProjectDeclarations.Count(item => item.Value.Any(key => key.Key.DeclarationType == DeclarationType.Project)) == sameProjectDeclarations.Count)
+            {
+                // only the project declaration is left; remove it.
+                ConcurrentDictionary<Declaration, byte> declarations;
+                _declarations.TryRemove(sameProjectDeclarations.Single().Key, out declarations);
+                _projects.Remove(projectId);
+                Debug.WriteLine(string.Format("Removed Project declaration for project Id {0}", projectId));
+            }
+
+            if (notifyStateChanged)
+            {
+                OnStateChanged();
+            }
+
+            return success;
+        }
+
+        public bool RemoveRenamedComponent(VBComponent component, string oldComponentName)
+        {
+            var match = new QualifiedModuleName(component, oldComponentName);
+            var keys = _declarations.Keys.Where(kvp => kvp.ComponentName == oldComponentName && kvp.ProjectId == match.ProjectId);
+
+            var success = RemoveKeysFromCollections(keys);
+
+            OnStateChanged();
+            return success;
+        }
+
+        private bool RemoveKeysFromCollections(IEnumerable<QualifiedModuleName> keys)
+        {
             var success = true;
-            var declarationsRemoved = 0;
             foreach (var key in keys)
             {
-                ConcurrentDictionary<Declaration, byte> declarations = null;
+                ConcurrentDictionary<Declaration, byte> declarations;
                 success = success && (!_declarations.ContainsKey(key) || _declarations.TryRemove(key, out declarations));
-                declarationsRemoved = declarations == null ? 0 : declarations.Count;
 
                 IParseTree tree;
                 success = success && (!_parseTrees.ContainsKey(key) || _parseTrees.TryRemove(key, out tree));
@@ -454,22 +490,8 @@ namespace Rubberduck.Parsing.VBA
 
                 IList<CommentNode> nodes;
                 success = success && (!_comments.ContainsKey(key) || _comments.TryRemove(key, out nodes));
-
-                OnStateChanged();
             }
 
-            var projectId = component.Collection.Parent.HelpFile;
-            var sameProjectDeclarations = _declarations.Where(item => item.Key.ProjectId == projectId).ToList();
-            if (sameProjectDeclarations.Any() && sameProjectDeclarations.Count(item => item.Value.Any(key => key.Key.DeclarationType == DeclarationType.Project)) == sameProjectDeclarations.Count)
-            {
-                // only the project declaration is left; remove it.
-                ConcurrentDictionary<Declaration, byte> declarations;
-                _declarations.TryRemove(sameProjectDeclarations.Single().Key, out declarations);
-                _projects.Remove(projectId);
-                Debug.WriteLine(string.Format("Removed Project declaration for project Id {0}", projectId));
-            }
-
-            Debug.WriteLine("ClearDeclarations({0}): {1} - {2} declarations removed", component.Name, success ? "succeeded" : "failed", declarationsRemoved);
             return success;
         }
 

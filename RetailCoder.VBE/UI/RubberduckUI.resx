@@ -1563,4 +1563,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SourceControl_UndoTitle" xml:space="preserve">
     <value>Source Control - Undo</value>
   </data>
+  <data name="NoIndentAnnotation" xml:space="preserve">
+    <value>Add '@NoIndent</value>
+  </data>
 </root>
