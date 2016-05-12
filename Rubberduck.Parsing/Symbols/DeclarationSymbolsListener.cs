@@ -480,9 +480,9 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public override void EnterLineLabel(VBAParser.LineLabelContext context)
+        public override void EnterStatementLabelDefinition(VBAParser.StatementLabelDefinitionContext context)
         {
-            OnNewDeclaration(CreateDeclaration(context.identifier().GetText(), null, Accessibility.Private, DeclarationType.LineLabel, context, context.identifier().GetSelection(), true));
+            OnNewDeclaration(CreateDeclaration(context.statementLabel().GetText(), null, Accessibility.Private, DeclarationType.LineLabel, context, context.statementLabel().GetSelection(), true));
         }
 
         public override void EnterVariableSubStmt(VBAParser.VariableSubStmtContext context)

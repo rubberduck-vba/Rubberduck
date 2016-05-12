@@ -86,7 +86,7 @@ attributeValue : valueStmt;
 block : blockStmt (endOfStatement blockStmt)* endOfStatement;
 
 blockStmt :
-	lineLabel
+	statementLabelDefinition
 	| attributeStmt
 	| closeStmt
 	| constStmt
@@ -100,7 +100,8 @@ blockStmt :
 	| getStmt
 	| goSubStmt
 	| goToStmt
-	| ifThenElseStmt
+	| ifStmt
+    | singleLineIfStmt
 	| implementsStmt
 	| inputStmt
 	| letStmt
@@ -218,27 +219,38 @@ goSubStmt : GOSUB whiteSpace valueStmt;
 
 goToStmt : GOTO whiteSpace valueStmt;
 
-ifThenElseStmt : 
-	IF whiteSpace ifConditionStmt whiteSpace THEN whiteSpace blockStmt (whiteSpace ELSE whiteSpace blockStmt)?	# inlineIfThenElse
-	| ifBlockStmt ifElseIfBlockStmt* ifElseBlockStmt? END_IF			# blockIfThenElse
+// 5.4.2.8 If Statement
+ifStmt :
+     IF whiteSpace booleanExpression whiteSpace THEN endOfStatement
+     block?
+     elseIfBlock*
+     elseBlock?
+     END_IF
+;
+elseIfBlock :
+     ELSEIF whiteSpace booleanExpression whiteSpace THEN endOfStatement block?
+     | ELSEIF whiteSpace booleanExpression whiteSpace THEN whiteSpace? block?
+;
+elseBlock :
+     ELSE endOfStatement block?
 ;
 
-ifBlockStmt : 
-	IF whiteSpace ifConditionStmt whiteSpace THEN endOfStatement 
-	block?
+// 5.4.2.9 Single-line If Statement
+singleLineIfStmt : ifWithNonEmptyThen | ifWithEmptyThen;
+ifWithNonEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN whiteSpace? listOrLabel (whiteSpace singleLineElseClause)?;
+ifWithEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN endOfStatement whiteSpace? singleLineElseClause;
+singleLineElseClause : ELSE whiteSpace? listOrLabel?;
+// lineNumberLabel should actually be "statement-label" according to MS VBAL but they only allow lineNumberLabels:
+// A <statement-label> that occurs as the first element of a <list-or-label> element has the effect 
+// as if the <statement-label> was replaced with a <goto-statement> containing the same 
+// <statement-label>. This <goto-statement> takes the place of <line-number-label> in 
+// <statement-list>.  
+listOrLabel :
+    lineNumberLabel (whiteSpace? COLON whiteSpace? sameLineStatement?)*
+    | (COLON whiteSpace?)? sameLineStatement (whiteSpace? COLON whiteSpace? sameLineStatement?)*
 ;
-
-ifConditionStmt : valueStmt;
-
-ifElseIfBlockStmt : 
-	ELSEIF whiteSpace ifConditionStmt whiteSpace THEN endOfStatement
-	block?
-;
-
-ifElseBlockStmt : 
-	ELSE endOfStatement 
-	block?
-;
+sameLineStatement : blockStmt;
+booleanExpression : valueStmt;
 
 implementsStmt : IMPLEMENTS whiteSpace valueStmt;
 
@@ -478,7 +490,10 @@ complexType : identifier ((DOT | EXCLAMATIONPOINT) identifier)*;
 
 fieldLength : MULT whiteSpace? (numberLiteral | identifier);
 
-lineLabel : (identifier | numberLiteral) COLON;
+statementLabelDefinition : statementLabel whiteSpace? COLON;
+statementLabel : identifierStatementLabel | lineNumberLabel;
+identifierStatementLabel : unrestrictedIdentifier;
+lineNumberLabel : numberLiteral;
 
 literal : numberLiteral | DATELITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL | EMPTY;
 
