@@ -175,7 +175,29 @@ End Sub
             Assert.IsNotNull(reference);
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
-        
+
+        [TestMethod]
+        public void SingleLineIfStatementLabel_IsReferenceToLabel()
+        {
+            // arrange
+            var code = @"
+Public Sub DoSomething()
+    If True Then 5
+5:
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "5");
+
+            var reference = declaration.References.SingleOrDefault();
+            Assert.IsNotNull(reference);
+            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+        }
+
         [TestMethod]
         public void EncapsulatedVariableAssignment_DoesNotResolve()
         {

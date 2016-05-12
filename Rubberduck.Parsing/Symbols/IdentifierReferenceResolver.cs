@@ -241,21 +241,45 @@ namespace Rubberduck.Parsing.Symbols
             ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
         }
 
-        public void Resolve(VBAParser.BlockIfThenElseContext context)
+        public void Resolve(VBAParser.IfStmtContext context)
         {
-            ResolveDefault(context.ifBlockStmt().ifConditionStmt(), context.ifBlockStmt().ifConditionStmt().GetText());
-            if (context.ifElseIfBlockStmt() != null)
+            ResolveDefault(context.booleanExpression(), context.booleanExpression().GetText());
+            if (context.elseIfBlock() != null)
             {
-                foreach (var elseIfBlock in context.ifElseIfBlockStmt())
+                foreach (var elseIfBlock in context.elseIfBlock())
                 {
-                    ResolveDefault(elseIfBlock.ifConditionStmt(), elseIfBlock.ifConditionStmt().GetText());
+                    ResolveDefault(elseIfBlock.booleanExpression(), elseIfBlock.booleanExpression().GetText());
                 }
             }
         }
 
-        public void Resolve(VBAParser.InlineIfThenElseContext context)
+        public void Resolve(VBAParser.SingleLineIfStmtContext context)
         {
-            ResolveDefault(context.ifConditionStmt(), context.ifConditionStmt().GetText());
+            // The listOrLabel rule could be resolved separately but since it's such a special case, only appearing in
+            // single-line-if-statements, we do it here for better understanding.
+            if (context.ifWithEmptyThen() != null)
+            {
+                ResolveDefault(context.ifWithEmptyThen().booleanExpression(), context.ifWithEmptyThen().booleanExpression().GetText());                
+                ResolveListOrLabel(context.ifWithEmptyThen().singleLineElseClause().listOrLabel());
+            }
+            else
+            {
+                ResolveDefault(context.ifWithNonEmptyThen().booleanExpression(), context.ifWithNonEmptyThen().booleanExpression().GetText());
+                ResolveListOrLabel(context.ifWithNonEmptyThen().listOrLabel());
+                if (context.ifWithNonEmptyThen().singleLineElseClause() != null)
+                {
+                    ResolveListOrLabel(context.ifWithNonEmptyThen().singleLineElseClause().listOrLabel());
+                }
+            }
+        }
+
+        private void ResolveListOrLabel(VBAParser.ListOrLabelContext listOrLabel)
+        {
+            if (listOrLabel == null || listOrLabel.lineNumberLabel() == null)
+            {
+                return;
+            }
+            ResolveLabel(listOrLabel.lineNumberLabel(), listOrLabel.lineNumberLabel().GetText());
         }
 
         public void Resolve(VBAParser.SelectCaseStmtContext context)
@@ -268,22 +292,22 @@ namespace Rubberduck.Parsing.Symbols
                     var caseClause = caseClauseBlock.sC_Cond();
                     if (caseClause is VBAParser.CaseCondSelectionContext)
                     {
-                        foreach (var selectClause in ((VBAParser.CaseCondSelectionContext) caseClause).sC_Selection())
+                        foreach (var selectClause in ((VBAParser.CaseCondSelectionContext)caseClause).sC_Selection())
                         {
                             if (selectClause is VBAParser.CaseCondIsContext)
                             {
-                                var ctx = (VBAParser.CaseCondIsContext) selectClause;
+                                var ctx = (VBAParser.CaseCondIsContext)selectClause;
                                 ResolveDefault(ctx.valueStmt(), ctx.valueStmt().GetText());
                             }
                             else if (selectClause is VBAParser.CaseCondToContext)
                             {
-                                var ctx = (VBAParser.CaseCondToContext) selectClause;
+                                var ctx = (VBAParser.CaseCondToContext)selectClause;
                                 ResolveDefault(ctx.valueStmt()[0], ctx.valueStmt()[0].GetText());
                                 ResolveDefault(ctx.valueStmt()[0], ctx.valueStmt()[0].GetText());
                             }
                             else
                             {
-                                var ctx = (VBAParser.CaseCondValueContext) selectClause;
+                                var ctx = (VBAParser.CaseCondValueContext)selectClause;
                                 ResolveDefault(ctx.valueStmt(), ctx.valueStmt().GetText());
                             }
                         }
