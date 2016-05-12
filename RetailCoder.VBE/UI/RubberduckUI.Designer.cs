@@ -407,6 +407,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sort.
+        /// </summary>
+        public static string CodeExplorer_Sort {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Sort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Code Explorer.
         /// </summary>
         public static string CodeExplorerDockablePresenter_Caption {
@@ -3015,6 +3024,24 @@ namespace Rubberduck.UI {
         public static string SmartIndenterMenu {
             get {
                 return ResourceManager.GetString("SmartIndenterMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alphabetical.
+        /// </summary>
+        public static string SortStyle_Alphabetical {
+            get {
+                return ResourceManager.GetString("SortStyle_Alphabetical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By type.
+        /// </summary>
+        public static string SortStyle_ByType {
+            get {
+                return ResourceManager.GetString("SortStyle_ByType", resourceCulture);
             }
         }
         

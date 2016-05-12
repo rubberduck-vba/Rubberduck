@@ -1557,4 +1557,13 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="NoIndentAnnotation" xml:space="preserve">
     <value>Add '@NoIndent</value>
   </data>
+  <data name="CodeExplorer_Sort" xml:space="preserve">
+    <value>Sort</value>
+  </data>
+  <data name="SortStyle_Alphabetical" xml:space="preserve">
+    <value>Alphabetical</value>
+  </data>
+  <data name="SortStyle_ByType" xml:space="preserve">
+    <value>By type</value>
+  </data>
 </root>

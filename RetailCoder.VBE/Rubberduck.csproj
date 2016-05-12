@@ -1221,6 +1221,7 @@
     <Resource Include="Resources\folder-rename.png" />
     <Resource Include="Resources\cross-button.png" />
     <Resource Include="Resources\init-repo.png" />
+    <Resource Include="Resources\edit-list-order.png" />
     <Content Include="Resources\Microsoft\Mask\AddProperty_5538_32.bmp" />
     <None Include="Resources\Microsoft\Mask\AddVariable_5541_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
