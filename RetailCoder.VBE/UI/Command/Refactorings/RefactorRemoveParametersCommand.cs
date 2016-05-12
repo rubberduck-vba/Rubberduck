@@ -50,7 +50,6 @@ namespace Rubberduck.UI.Command.Refactorings
                     ? parameters.Count > 1
                     : parameters.Any();
 
-            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;
         }
 
