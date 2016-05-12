@@ -32,6 +32,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
             }
 
+            if (parameter is CodeExplorerProjectViewModel)
+            {
+                return _state.Status == ParserState.Ready &&
+                    _state.AllUserDeclarations.Any(c =>
+                            c.DeclarationType.HasFlag(DeclarationType.Module) &&
+                            c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent));
+            }
+
             return _state.Status == ParserState.Ready && !(parameter is CodeExplorerCustomFolderViewModel) &&
                    !(parameter is CodeExplorerErrorNodeViewModel);
         }
@@ -47,9 +55,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             if (node is CodeExplorerProjectViewModel)
             {
-                var moduleTypes = new[] {DeclarationType.ClassModule, DeclarationType.Module};
-                var components = _state.AllUserDeclarations.Where(c =>
-                            moduleTypes.Contains(c.DeclarationType) &&
+                var components = _state.AllUserDeclarations.Where(c => 
+                            c.DeclarationType.HasFlag(DeclarationType.Module) &&
                             c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent));
 
                 foreach (var component in components)
