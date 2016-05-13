@@ -7,7 +7,7 @@
              xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-             xmlns:converters="clr-namespace:Rubberduck.UI.CodeExplorer.Converters"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
              Name="CodeExplorer"
@@ -381,11 +381,11 @@
                     <ContextMenu DataContext="{Binding DataContext, Source={x:Reference CodeExplorer}}">
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_RefreshComponent}"
                                   Command="{Binding RefreshComponentCommand}"
-                                  CommandParameter="{Binding SelectedItem}"/>
+                                  CommandParameter="{Binding SelectedItem}" />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Navigate}"
                                   FontWeight="Bold"
                                   Command="{Binding NavigateCommand}"
-                                  CommandParameter="{Binding SelectedItem}"/>
+                                  CommandParameter="{Binding SelectedItem}" />
                         <Separator />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}"
                                   Command="{Binding RenameCommand}"
@@ -393,14 +393,18 @@
                         <Separator />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}">
                             <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddTestModuleText}"
-                                  Command="{Binding AddTestModuleCommand}" />
+                                  Command="{Binding AddTestModuleCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
                             <Separator />
                             <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddStdModuleText}"
-                                  Command="{Binding AddStdModuleCommand}" />
+                                  Command="{Binding AddStdModuleCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
                             <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddClassModuleText}"
-                                  Command="{Binding AddClsModuleCommand}" />
+                                  Command="{Binding AddClassModuleCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
                             <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddFormText}"
-                                  Command="{Binding AddFormCommand}" />
+                                  Command="{Binding AddUserFormCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
                         </MenuItem>
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Find}">
                             <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_FindAllReferencesText}"
@@ -652,11 +656,19 @@
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/plus-circle.png" />
                         </MenuItem.Icon>
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddTestModuleText}" Command="{Binding AddTestModuleCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddTestModuleText}"
+                                  Command="{Binding AddTestModuleCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
                         <Separator />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddStdModuleText}" Command="{Binding AddStdModuleCommand}" />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddClassModuleText}" Command="{Binding AddClassModuleCommand}" />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddFormText}" Command="{Binding AddUserFormCommand}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddStdModuleText}"
+                                  Command="{Binding AddStdModuleCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddClassModuleText}"
+                                  Command="{Binding AddClassModuleCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddFormText}"
+                                  Command="{Binding AddUserFormCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
                     </MenuItem>
                 </Menu>
 

@@ -170,19 +170,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                if (SelectedItem is CodeExplorerProjectViewModel)
+                if (SelectedItem is ICodeExplorerDeclarationViewModel)
                 {
-                    return ((CodeExplorerProjectViewModel) SelectedItem).Declaration.DescriptionString;
-                }
-
-                if (SelectedItem is CodeExplorerComponentViewModel)
-                {
-                    return ((CodeExplorerComponentViewModel) SelectedItem).Declaration.DescriptionString;
-                }
-
-                if (SelectedItem is CodeExplorerMemberViewModel)
-                {
-                    return ((CodeExplorerMemberViewModel) SelectedItem).Declaration.DescriptionString;
+                    return ((ICodeExplorerDeclarationViewModel) SelectedItem).Declaration.DescriptionString;
                 }
 
                 if (SelectedItem is CodeExplorerCustomFolderViewModel)
@@ -313,7 +303,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             Projects.Remove(projectNode);
             RemoveFailingComponent(projectNode, componentName);
 
-            folderNode.AddChild(new CodeExplorerErrorNodeViewModel(componentName));
+            folderNode.AddChild(new CodeExplorerErrorNodeViewModel(folderNode, componentName));
             Projects.Add(projectNode);
 
             if (SortByName)

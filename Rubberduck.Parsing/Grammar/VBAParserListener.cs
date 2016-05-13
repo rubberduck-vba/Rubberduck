@@ -905,6 +905,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitVsAnd([NotNull] VBAParser.VsAndContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.endStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEndStmt([NotNull] VBAParser.EndStmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.endStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEndStmt([NotNull] VBAParser.EndStmtContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.annotationList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

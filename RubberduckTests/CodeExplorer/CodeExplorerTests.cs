@@ -36,10 +36,17 @@ namespace RubberduckTests.CodeExplorer
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            var commands = new List<ICommand> { new CodeExplorer_AddStdModuleCommand(vbe.Object) };
+            var commands = new List<ICommand> { new CodeExplorer_AddStdModuleCommand() };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(new RubberduckParserState(), GetDelimiterConfigLoader()), new RubberduckParserState(), commands);
-            vm.AddStdModuleCommand.Execute(null);
+            var state = new RubberduckParserState();
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+            vm.AddStdModuleCommand.Execute(vm.SelectedItem);
 
             vbComponents.Verify(c => c.Add(vbext_ComponentType.vbext_ct_StdModule), Times.Once);
         }
@@ -57,10 +64,17 @@ namespace RubberduckTests.CodeExplorer
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            var commands = new List<ICommand> { new CodeExplorer_AddClassModuleCommand(vbe.Object) };
+            var commands = new List<ICommand> { new CodeExplorer_AddClassModuleCommand() };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(new RubberduckParserState(), GetDelimiterConfigLoader()), new RubberduckParserState(), commands);
-            vm.AddClassModuleCommand.Execute(null);
+            var state = new RubberduckParserState();
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+            vm.AddClassModuleCommand.Execute(vm.SelectedItem);
 
             vbComponents.Verify(c => c.Add(vbext_ComponentType.vbext_ct_ClassModule), Times.Once);
         }
@@ -78,10 +92,17 @@ namespace RubberduckTests.CodeExplorer
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            var commands = new List<ICommand> { new CodeExplorer_AddUserFormCommand(vbe.Object) };
+            var commands = new List<ICommand> { new CodeExplorer_AddUserFormCommand() };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(new RubberduckParserState(), GetDelimiterConfigLoader()), new RubberduckParserState(), commands);
-            vm.AddUserFormCommand.Execute(null);
+            var state = new RubberduckParserState();
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+            vm.AddUserFormCommand.Execute(vm.SelectedItem);
 
             vbComponents.Verify(c => c.Add(vbext_ComponentType.vbext_ct_MSForm), Times.Once);
         }
@@ -104,11 +125,18 @@ namespace RubberduckTests.CodeExplorer
 
             var commands = new List<ICommand>
             {
-                new CodeExplorer_AddTestModuleCommand(vbe.Object, new NewUnitTestModuleCommand(vbe.Object, configLoader.Object))
+                new CodeExplorer_AddTestModuleCommand(new NewUnitTestModuleCommand(vbe.Object, configLoader.Object))
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(new RubberduckParserState(), GetDelimiterConfigLoader()), new RubberduckParserState(), commands);
-            vm.AddTestModuleCommand.Execute(null);
+            var state = new RubberduckParserState();
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+            vm.AddTestModuleCommand.Execute(vm.SelectedItem);
 
             vbComponents.Verify(c => c.Add(vbext_ComponentType.vbext_ct_StdModule), Times.Once);
         }
@@ -647,13 +675,7 @@ End Sub";
         [TestMethod]
         public void IndentProject_DisabledWhenAllModulesHaveNoIndentAnnotation()
         {
-            var inputCode1 =
-@"Sub Foo()
-Dim d As Boolean
-d = True
-End Sub";
-
-            var inputCode2 =
+            var inputCode =
 @"'@NoIndent
 
 Sub Foo()
@@ -661,8 +683,107 @@ Dim d As Boolean
 d = True
 End Sub";
 
+            var builder = new MockVbeBuilder();
+            var projectMock = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, inputCode)
+                .AddComponent("ClassModule1", vbext_ComponentType.vbext_ct_ClassModule, inputCode);
+
+            var project = projectMock.Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>
+            {
+                new CodeExplorer_IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+            };
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First();
+            vm.IndenterCommand.Execute(vm.SelectedItem);
+
+            Assert.IsFalse(vm.IndenterCommand.CanExecute(vm.SelectedItem));
+        }
+
+        [TestMethod]
+        public void IndentFolder()
+        {
+            var inputCode =
+@"'@Folder ""folder""
+
+Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
             var expectedCode =
-@"Sub Foo()
+@"'@Folder ""folder""
+
+Sub Foo()
+    Dim d As Boolean
+    d = True
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var projectMock = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, inputCode)
+                .AddComponent("ClassModule1", vbext_ComponentType.vbext_ct_ClassModule, inputCode);
+
+            var project = projectMock.Build();
+            var vbe = builder.AddProject(project).Build();
+            var component1 = project.Object.VBComponents.Item(0);
+            var module1 = component1.CodeModule;
+
+            var component2 = project.Object.VBComponents.Item(1);
+            var module2 = component2.CodeModule;
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>
+            {
+                new CodeExplorer_IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+            };
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First();
+            vm.IndenterCommand.Execute(vm.SelectedItem);
+
+            Assert.AreEqual(expectedCode, module1.Lines());
+            Assert.AreEqual(expectedCode, module2.Lines());
+        }
+
+        [TestMethod]
+        public void IndentFolder_IndentsModulesWithoutNoIndentAnnotation()
+        {
+            var inputCode1 =
+@"'@Folder ""folder""
+
+Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            var inputCode2 =
+@"'@NoIndent
+'@Folder ""folder""
+
+Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            var expectedCode =
+@"'@Folder ""folder""
+
+Sub Foo()
     Dim d As Boolean
     d = True
 End Sub";
@@ -692,11 +813,47 @@ End Sub";
             parser.Parse();
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            vm.SelectedItem = vm.Projects.First();
+            vm.SelectedItem = vm.Projects.First().Items.First();
             vm.IndenterCommand.Execute(vm.SelectedItem);
 
             Assert.AreEqual(expectedCode, module1.Lines());
             Assert.AreEqual(inputCode2, module2.Lines());
+        }
+
+        [TestMethod]
+        public void IndentFolder_DisabledWhenAllModulesHaveNoIndentAnnotation()
+        {
+            var inputCode =
+@"'@NoIndent
+'@Folder ""folder""
+
+Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var projectMock = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, inputCode)
+                .AddComponent("ClassModule1", vbext_ComponentType.vbext_ct_ClassModule, inputCode);
+
+            var project = projectMock.Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>
+            {
+                new CodeExplorer_IndentCommand(state, new Indenter(vbe.Object, GetDefaultIndenterSettings), null)
+            };
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First();
+            Assert.IsFalse(vm.IndenterCommand.CanExecute(vm.SelectedItem));
         }
 
         [TestMethod]
@@ -756,7 +913,7 @@ End Sub";
         [TestMethod]
         public void CompareByName_ReturnsZeroForIdenticalNodes()
         {
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
             Assert.AreEqual(0, new CompareByName().Compare(errorNode, errorNode));
         }
 
@@ -764,8 +921,8 @@ End Sub";
         public void CompareByName_ReturnsZeroForIdenticalNames()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var errorNode1 = new CodeExplorerErrorNodeViewModel("Name");
-            var errorNode2 = new CodeExplorerErrorNodeViewModel("Name");
+            var errorNode1 = new CodeExplorerErrorNodeViewModel(null, "Name");
+            var errorNode2 = new CodeExplorerErrorNodeViewModel(null, "Name");
 
             Assert.AreEqual(0, new CompareByName().Compare(errorNode1, errorNode2));
         }
@@ -774,8 +931,8 @@ End Sub";
         public void CompareByName_ReturnsFolderAboveErrorNode_FolderPassedFirst()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
 
             Assert.AreEqual(-1, new CompareByName().Compare(folderNode, errorNode));
         }
@@ -784,8 +941,8 @@ End Sub";
         public void CompareByName_ReturnsFolderAboveErrorNode_FolderPassedSecond()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
 
             Assert.AreEqual(1, new CompareByName().Compare(errorNode, folderNode));
         }
@@ -794,8 +951,8 @@ End Sub";
         public void CompareByName_ReturnsCorrectOrdering()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var errorNode1 = new CodeExplorerErrorNodeViewModel("Name1");
-            var errorNode2 = new CodeExplorerErrorNodeViewModel("Name2");
+            var errorNode1 = new CodeExplorerErrorNodeViewModel(null, "Name1");
+            var errorNode2 = new CodeExplorerErrorNodeViewModel(null, "Name2");
 
             Assert.IsTrue(new CompareByName().Compare(errorNode1, errorNode2) < 0);
         }
@@ -803,7 +960,7 @@ End Sub";
         [TestMethod]
         public void CompareByType_ReturnsZeroForIdenticalNodes()
         {
-            var errorNode = new CodeExplorerCustomFolderViewModel("Name", "folder1.folder2");
+            var errorNode = new CodeExplorerCustomFolderViewModel(null, "Name", "folder1.folder2");
             Assert.AreEqual(0, new CompareByName().Compare(errorNode, errorNode));
         }
 
@@ -811,8 +968,8 @@ End Sub";
         public void CompareByType_ReturnsFolderAboveErrorNode_FolderPassedFirst()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
 
             Assert.AreEqual(-1, new CompareByType().Compare(folderNode, errorNode));
         }
@@ -821,8 +978,8 @@ End Sub";
         public void CompareByType_ReturnsFolderAboveErrorNode_FolderPassedSecond()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
 
             Assert.AreEqual(1, new CompareByType().Compare(errorNode, folderNode));
         }
@@ -831,8 +988,8 @@ End Sub";
         public void CompareByType_ReturnsZeroForErrorNodes()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var errorNode1 = new CodeExplorerErrorNodeViewModel("Name1");
-            var errorNode2 = new CodeExplorerErrorNodeViewModel("Name2");
+            var errorNode1 = new CodeExplorerErrorNodeViewModel(null, "Name1");
+            var errorNode2 = new CodeExplorerErrorNodeViewModel(null, "Name2");
 
             Assert.AreEqual(0, new CompareByType().Compare(errorNode1, errorNode2));
         }
@@ -933,8 +1090,8 @@ End Sub";
         public void CompareBySelection_ReturnsFolderAboveErrorNode_FolderPassedFirst()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
 
             Assert.AreEqual(-1, new CompareBySelection().Compare(folderNode, errorNode));
         }
@@ -943,8 +1100,8 @@ End Sub";
         public void CompareBySelection_ReturnsFolderAboveErrorNode_FolderPassedSecond()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
 
             Assert.AreEqual(1, new CompareBySelection().Compare(errorNode, folderNode));
         }
@@ -1015,8 +1172,8 @@ End Sub";
         public void CompareByNodeType_ReturnsFolderAboveErrorNode_FolderPassedFirst()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
 
             Assert.AreEqual(-1, new CompareByNodeType().Compare(folderNode, errorNode));
         }
@@ -1025,8 +1182,8 @@ End Sub";
         public void CompareByNodeType_ReturnsFolderAboveErrorNode_FolderPassedSecond()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
 
             Assert.AreEqual(1, new CompareByNodeType().Compare(errorNode, folderNode));
         }
@@ -1058,14 +1215,14 @@ End Sub";
 
             var componentNode = vm.Projects.First().Items.First().Items.OfType<CodeExplorerComponentViewModel>().Single();
 
-            Assert.AreEqual(-1, new CompareByNodeType().Compare(new CodeExplorerErrorNodeViewModel("Name"), componentNode));
+            Assert.AreEqual(-1, new CompareByNodeType().Compare(new CodeExplorerErrorNodeViewModel(null, "Name"), componentNode));
         }
 
         [TestMethod]
         public void CompareByNodeType_FoldersAreSortedByName()
         {
-            var folderNode1 = new CodeExplorerCustomFolderViewModel("AAA", string.Empty);
-            var folderNode2 = new CodeExplorerCustomFolderViewModel("zzz", string.Empty);
+            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "AAA", string.Empty);
+            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "zzz", string.Empty);
 
             Assert.IsTrue(new CompareByNodeType().Compare(folderNode1, folderNode2) < 0);
         }

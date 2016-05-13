@@ -400,8 +400,8 @@
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddClassModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddTestModuleCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Converters\InvertBoolValueConverter.cs" />
-    <Compile Include="UI\CodeExplorer\Converters\BoolToHiddenVisibilityConverter.cs" />
+    <Compile Include="UI\Converters\InvertBoolValueConverter.cs" />
+    <Compile Include="UI\Converters\BoolToHiddenVisibilityConverter.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_UndoCommand.cs" />
     <Compile Include="UI\Command\MenuItems\NoIndentAnnotationCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\IndentCurrentModuleCommandMenuItem.cs" />

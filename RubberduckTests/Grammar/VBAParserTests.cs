@@ -295,6 +295,17 @@ End Sub";
         }
 
         [TestMethod]
+        public void TestEmptyAnnotationsWithParentheses()
+        {
+            string code = @"
+'@NoIndent()
+Sub Test()
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//annotation");
+        }
+
+        [TestMethod]
         public void GivenIfElseBlock_ParsesElseBlockAsElseStatement()
         {
             var code = @"
@@ -470,15 +481,53 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt", matches => matches.Count == 2);
         }
 
+        [TestMethod]
+        public void TestEndStmt()
+        {
+            string code = @"
+Sub Test()
+    End
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//endStmt");
+        }
+
+        [TestMethod]
+        public void TestStringFunction()
+        {
+            string code = @"
+Sub Test()
+    a = String(5, ""a"")
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//iCS_S_VariableOrProcedureCall", matches => matches.Count == 2);
+        }
+
+        [TestMethod]
+        public void TestArrayWithTypeSuffix()
+        {
+            string code = @"
+Sub Test()
+    Dim a!()
+    Dim a@()
+    Dim a#()
+    Dim a$()
+    Dim a%()
+    Dim a^()
+    Dim a&()
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 7);
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);
             var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAParser(tokens);
-            //parser.AddErrorListener(new ExceptionErrorListener());
             var root = parser.startRule();
-            // Useful for figuring out what XPath to use for querying the parse tree.
+            var k = root.ToStringTree(parser);
             return Tuple.Create<VBAParser, ParserRuleContext>(parser, root);
         }
 

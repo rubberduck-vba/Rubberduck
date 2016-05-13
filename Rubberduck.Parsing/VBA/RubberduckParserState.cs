@@ -614,10 +614,13 @@ namespace Rubberduck.Parsing.VBA
 
         public void RebuildSelectionCache()
         {
-            _declarationSelections.Clear();
             var declarations = AllDeclarations.Where(d => !d.IsBuiltIn).Select(d => Tuple.Create(d, d.Selection, d.QualifiedSelection.QualifiedName));
             var references = AllDeclarations.SelectMany(d => d.References.Select(r => Tuple.Create(d, r.Selection, r.QualifiedModuleName)));
-            _declarationSelections.AddRange(declarations.Union(references));
+            lock (_declarationSelections)
+            {
+                _declarationSelections.Clear();
+                _declarationSelections.AddRange(declarations.Union(references));
+            }
         }
 
         public Declaration FindSelectedDeclaration(CodePane activeCodePane, bool procedureLevelOnly = false)
@@ -639,9 +642,13 @@ namespace Rubberduck.Parsing.VBA
 
             if (!selection.Equals(default(QualifiedSelection)))
             {
-                var matches = _declarationSelections.Where(t =>
-                                                t.Item3.Equals(selection.Value.QualifiedName)
-                                                && (t.Item2.ContainsFirstCharacter(selection.Value.Selection))).ToList();
+                List<Tuple<Declaration, Selection, QualifiedModuleName>> matches = new List<Tuple<Declaration, Selection, QualifiedModuleName>>();
+                lock (_declarationSelections)
+                {
+                    matches = _declarationSelections.Where(t =>
+                                                    t.Item3.Equals(selection.Value.QualifiedName)
+                                                    && (t.Item2.ContainsFirstCharacter(selection.Value.Selection))).ToList();
+                }
                 try
                 {
                     if (matches.Count == 1)
