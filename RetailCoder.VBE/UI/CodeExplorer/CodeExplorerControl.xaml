@@ -705,7 +705,7 @@
                         <ColumnDefinition Width="20" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center"
+                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Top"
                            Source="{Binding SelectedItem.CollapsedIcon}" Grid.Column="0"/>
                     <TextBlock Margin="4" Text="{Binding PanelTitle}" FontWeight="Bold"
                                TextWrapping="WrapWithOverflow" Grid.Column="1"/>
