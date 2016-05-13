@@ -36,10 +36,17 @@ namespace RubberduckTests.CodeExplorer
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            var commands = new List<ICommand> { new CodeExplorer_AddStdModuleCommand(vbe.Object) };
+            var commands = new List<ICommand> { new CodeExplorer_AddStdModuleCommand() };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(new RubberduckParserState(), GetDelimiterConfigLoader()), new RubberduckParserState(), commands);
-            vm.AddStdModuleCommand.Execute(null);
+            var state = new RubberduckParserState();
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+            vm.AddStdModuleCommand.Execute(vm.SelectedItem);
 
             vbComponents.Verify(c => c.Add(vbext_ComponentType.vbext_ct_StdModule), Times.Once);
         }
@@ -57,10 +64,17 @@ namespace RubberduckTests.CodeExplorer
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            var commands = new List<ICommand> { new CodeExplorer_AddClassModuleCommand(vbe.Object) };
+            var commands = new List<ICommand> { new CodeExplorer_AddClassModuleCommand() };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(new RubberduckParserState(), GetDelimiterConfigLoader()), new RubberduckParserState(), commands);
-            vm.AddClassModuleCommand.Execute(null);
+            var state = new RubberduckParserState();
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+            vm.AddClassModuleCommand.Execute(vm.SelectedItem);
 
             vbComponents.Verify(c => c.Add(vbext_ComponentType.vbext_ct_ClassModule), Times.Once);
         }
@@ -78,10 +92,17 @@ namespace RubberduckTests.CodeExplorer
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
 
-            var commands = new List<ICommand> { new CodeExplorer_AddUserFormCommand(vbe.Object) };
+            var commands = new List<ICommand> { new CodeExplorer_AddUserFormCommand() };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(new RubberduckParserState(), GetDelimiterConfigLoader()), new RubberduckParserState(), commands);
-            vm.AddUserFormCommand.Execute(null);
+            var state = new RubberduckParserState();
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+            vm.AddUserFormCommand.Execute(vm.SelectedItem);
 
             vbComponents.Verify(c => c.Add(vbext_ComponentType.vbext_ct_MSForm), Times.Once);
         }
@@ -104,11 +125,18 @@ namespace RubberduckTests.CodeExplorer
 
             var commands = new List<ICommand>
             {
-                new CodeExplorer_AddTestModuleCommand(vbe.Object, new NewUnitTestModuleCommand(vbe.Object, configLoader.Object))
+                new CodeExplorer_AddTestModuleCommand(new NewUnitTestModuleCommand(vbe.Object, configLoader.Object))
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(new RubberduckParserState(), GetDelimiterConfigLoader()), new RubberduckParserState(), commands);
-            vm.AddTestModuleCommand.Execute(null);
+            var state = new RubberduckParserState();
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+            vm.AddTestModuleCommand.Execute(vm.SelectedItem);
 
             vbComponents.Verify(c => c.Add(vbext_ComponentType.vbext_ct_StdModule), Times.Once);
         }

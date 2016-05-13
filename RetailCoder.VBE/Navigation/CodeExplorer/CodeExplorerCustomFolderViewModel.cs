@@ -68,8 +68,15 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly BitmapImage _expandedIcon;
         public override BitmapImage ExpandedIcon { get { return _expandedIcon; } }
-        
-        private readonly CodeExplorerItemViewModel _parent;
+
+        // I have to set the parent from a different location than
+        // the node is created because of the folder helper
+        internal void SetParent(CodeExplorerItemViewModel parent)
+        {
+            _parent = parent;
+        }
+
+        private CodeExplorerItemViewModel _parent;
         public override CodeExplorerItemViewModel Parent { get { return _parent; } }
     }
 }

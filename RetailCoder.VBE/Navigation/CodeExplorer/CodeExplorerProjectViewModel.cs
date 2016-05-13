@@ -43,6 +43,11 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 Console.WriteLine(e);
             }
+
+            foreach (var folder in _folderTree.Items.OfType<CodeExplorerCustomFolderViewModel>())
+            {
+                folder.SetParent(this);
+            }
         }
 
         private void FillFolders(IEnumerable<Declaration> declarations)
