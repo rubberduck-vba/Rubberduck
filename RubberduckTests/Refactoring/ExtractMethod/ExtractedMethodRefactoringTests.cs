@@ -91,31 +91,6 @@ End Function
          * - When there are multiple possible outputs, refactoring extracts a Function and returns whichever selected output the user selected; other outputs are ByRef parameters *
          * - When the return value is a reference - the return assignment is Set initially implement with return values returned as ByRef */
 
-        //[TestClass]
-        public class WhenSelectionSpansCodeBlockBoundaries: ExtractedMethodRefactoringTests
-        {
-            [TestMethod]
-            public void shouldReturnNull()
-            {
-
-            }
-            [TestMethod]
-            public void shouldReportInvalidSelectionSpansCodeBlockBoundaries()
-            {
-
-            }
-        }
-
-        //[TestClass]
-        public class when_local_variable_constant_is_internal : ExtractedMethodRefactoringTests
-        {
-            /* When a local variable/constant is only used within the selection
-             * its declaration is moved to the extracted method */
-            [TestMethod]
-            public void should_move_declaration_to_destination_method()
-            {
-            }
-        }
 
         //[TestClass]
         public class when_local_variable_is_only_used_before_the_selection : ExtractedMethodRefactoringTests

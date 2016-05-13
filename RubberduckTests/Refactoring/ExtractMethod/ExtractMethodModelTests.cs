@@ -11,10 +11,53 @@ namespace RubberduckTests.Refactoring.ExtractMethod
     {
 
         [TestClass]
-        public class when_declarations_contain_no_previous_newMethod
+        public class WhenLocalVariableConstantIsInternal
         {
             [TestMethod]
-            public void should_return_newMethod()
+            [TestCategory("ExtractMethodModelTests")]
+            public void shouldExcludeVariableInSignature()
+            {            
+
+                #region inputCode
+
+                var inputCode = @"
+Option explicit
+Public Sub CodeWithDeclaration()
+    Dim x as long
+    Dim y as long
+
+    x = 1 + 2
+    Debug.Print x
+    y = x + 1
+    Debug.Print y
+
+End Sub
+";
+
+                var selectedCode = @"
+y = x + 1 
+Debug.Print y";
+                #endregion
+
+                QualifiedModuleName qualifiedModuleName;
+                RubberduckParserState state;
+                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                var declarations = state.AllDeclarations;
+
+                var selection = new Selection(9, 1, 10, 17);
+                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                var extractedMethodModel = new ExtractMethodModel(declarations, qSelection.Value, selectedCode);
+
+                var actual = extractedMethodModel.Method;
+                var expected = "NewMethod  x";
+            }
+        }
+        [TestClass]
+        public class WhenDeclarationsContainNoPreviousNewMethod
+        {
+            [TestMethod]
+            [TestCategory("ExtractMethodModelTests")]
+            public void shouldReturnNewMethod()
             {
 
                 QualifiedModuleName qualifiedModuleName;
@@ -43,10 +86,11 @@ End Sub";
         }
 
         [TestClass]
-        public class when_declarations_contain_a_previous_newMethod
+        public class WhenDeclarationsContainAPreviousNewMethod
         {
             [TestMethod]
-            public void should_return_an_incremented_methodName()
+            [TestCategory("ExtractMethodModelTests")]
+            public void shouldReturnAnIncrementedMethodName()
             {
 
                 QualifiedModuleName qualifiedModuleName;
@@ -79,10 +123,11 @@ End Sub";
         }
 
         [TestClass]
-        public class when_declarations_contain_a_previous_unordered_newMethod
+        public class WhenDeclarationsContainAPreviousUnOrderedNewMethod
         {
             [TestMethod]
-            public void should_return_an_least_next_newMethod()
+            [TestCategory("ExtractMethodModelTests")]
+            public void shouldReturnAnLeastNextMethod()
             {
 
                 QualifiedModuleName qualifiedModuleName;
