@@ -40,8 +40,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                             c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent));
             }
 
-            return _state.Status == ParserState.Ready && !(parameter is CodeExplorerCustomFolderViewModel) &&
-                   !(parameter is CodeExplorerErrorNodeViewModel);
+            return _state.Status == ParserState.Ready && !(parameter is CodeExplorerErrorNodeViewModel);
         }
 
         public override void Execute(object parameter)
@@ -55,9 +54,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             if (node is CodeExplorerProjectViewModel)
             {
+                var declaration = ((ICodeExplorerDeclarationViewModel)node).Declaration;
+
                 var components = _state.AllUserDeclarations.Where(c => 
                             c.DeclarationType.HasFlag(DeclarationType.Module) &&
-                            c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent));
+                            c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent) &&
+                            c.Project == declaration.Project);
 
                 foreach (var component in components)
                 {
