@@ -352,6 +352,7 @@ reservedTypeIdentifier :
     | SINGLE
     | STRING
     | VARIANT
+    | ANY
 ;
 
 uncategorizedKeyword : 
