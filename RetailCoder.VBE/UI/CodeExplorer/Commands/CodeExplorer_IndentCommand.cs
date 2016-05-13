@@ -26,7 +26,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             if (parameter is CodeExplorerComponentViewModel)
             {
                 var node = (CodeExplorerComponentViewModel)parameter;
-                if (node.Declaration.Annotations.Any(a => a.AnnotationType == Parsing.Annotations.AnnotationType.NoIndent))
+                if (node.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.NoIndent))
                 {
                     return false;
                 }
@@ -34,34 +34,68 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             if (parameter is CodeExplorerProjectViewModel)
             {
-                return _state.Status == ParserState.Ready &&
-                    _state.AllUserDeclarations.Any(c =>
-                            c.DeclarationType.HasFlag(DeclarationType.Module) &&
-                            c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent));
+                if (_state.Status != ParserState.Ready)
+                {
+                    return false;
+                }
+
+                var declaration = ((ICodeExplorerDeclarationViewModel)parameter).Declaration;
+                return _state.AllUserDeclarations
+                            .Any(c => c.DeclarationType.HasFlag(DeclarationType.Module) &&
+                            c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent) &&
+                            c.Project == declaration.Project);
             }
 
-            return _state.Status == ParserState.Ready && !(parameter is CodeExplorerCustomFolderViewModel) &&
-                   !(parameter is CodeExplorerErrorNodeViewModel);
+            if (parameter is CodeExplorerCustomFolderViewModel)
+            {
+                if (_state.Status != ParserState.Ready)
+                {
+                    return false;
+                }
+
+                var node = (CodeExplorerCustomFolderViewModel) parameter;
+                return node.Items.OfType<CodeExplorerComponentViewModel>()
+                        .Select(s => s.Declaration)
+                        .Any(d => d.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent));
+            }
+
+            return _state.Status == ParserState.Ready && !(parameter is CodeExplorerErrorNodeViewModel);
         }
 
         public override void Execute(object parameter)
         {
             var node = (CodeExplorerItemViewModel)parameter;
 
-            if (!node.QualifiedSelection.HasValue)
+            if (!node.QualifiedSelection.HasValue && !(node is CodeExplorerCustomFolderViewModel))
             {
                 return;
             }
 
             if (node is CodeExplorerProjectViewModel)
             {
+                var declaration = ((ICodeExplorerDeclarationViewModel)node).Declaration;
+
                 var components = _state.AllUserDeclarations.Where(c => 
                             c.DeclarationType.HasFlag(DeclarationType.Module) &&
-                            c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent));
+                            c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent) &&
+                            c.Project == declaration.Project);
 
                 foreach (var component in components)
                 {
                     _indenter.Indent(component.QualifiedName.QualifiedModuleName.Component);
+                }
+            }
+
+            if (node is CodeExplorerCustomFolderViewModel)
+            {
+                var components = node.Items.OfType<CodeExplorerComponentViewModel>()
+                        .Select(s => s.Declaration)
+                        .Where(d => d.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent))
+                        .Select(d => d.QualifiedName.QualifiedModuleName.Component);
+
+                foreach (var component in components)
+                {
+                    _indenter.Indent(component);
                 }
             }
 
