@@ -503,6 +503,23 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//iCS_S_VariableOrProcedureCall", matches => matches.Count == 2);
         }
 
+        [TestMethod]
+        public void TestArrayWithTypeSuffix()
+        {
+            string code = @"
+Sub Test()
+    Dim a!()
+    Dim a@()
+    Dim a#()
+    Dim a$()
+    Dim a%()
+    Dim a^()
+    Dim a&()
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 7);
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);

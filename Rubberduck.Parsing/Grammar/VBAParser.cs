@@ -10090,52 +10090,11 @@ public partial class VBAParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 1834; identifier();
-			State = 1852;
-			switch ( Interpreter.AdaptivePredict(_input,281,_ctx) ) {
+			State = 1836;
+			switch ( Interpreter.AdaptivePredict(_input,276,_ctx) ) {
 			case 1:
 				{
-				State = 1836;
-				_la = _input.La(1);
-				if (_la==WS || _la==LINE_CONTINUATION) {
-					{
-					State = 1835; whiteSpace();
-					}
-				}
-
-				State = 1838; Match(LPAREN);
-				State = 1840;
-				switch ( Interpreter.AdaptivePredict(_input,277,_ctx) ) {
-				case 1:
-					{
-					State = 1839; whiteSpace();
-					}
-					break;
-				}
-				State = 1846;
-				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CIRCLE) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << EXIT) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << OPTION) | (1L << PSET) | (1L << SCALE) | (1L << SGN) | (1L << UBOUND) | (1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (CLASS - 64)) | (1L << (CLOSE - 64)) | (1L << (CONST - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DECLARE - 64)) | (1L << (DEFBOOL - 64)) | (1L << (DEFBYTE - 64)) | (1L << (DEFDATE - 64)) | (1L << (DEFDBL - 64)) | (1L << (DEFCUR - 64)) | (1L << (DEFINT - 64)) | (1L << (DEFLNG - 64)) | (1L << (DEFLNGLNG - 64)) | (1L << (DEFLNGPTR - 64)) | (1L << (DEFOBJ - 64)) | (1L << (DEFSNG - 64)) | (1L << (DEFSTR - 64)) | (1L << (DEFVAR - 64)) | (1L << (DIM - 64)) | (1L << (DO - 64)) | (1L << (DOUBLE - 64)) | (1L << (ELSE - 64)) | (1L << (ELSEIF - 64)) | (1L << (EMPTY - 64)) | (1L << (END_SELECT - 64)) | (1L << (END_WITH - 64)) | (1L << (END - 64)) | (1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LET - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (LIB - 128)) | (1L << (LIKE - 128)) | (1L << (LINE_INPUT - 128)) | (1L << (LOCK_READ - 128)) | (1L << (LOCK_WRITE - 128)) | (1L << (LOCK_READ_WRITE - 128)) | (1L << (LSET - 128)) | (1L << (ME - 128)) | (1L << (MID - 128)) | (1L << (MOD - 128)) | (1L << (NEXT - 128)) | (1L << (NEW - 128)) | (1L << (NOT - 128)) | (1L << (NOTHING - 128)) | (1L << (NULL - 128)) | (1L << (ON - 128)) | (1L << (ON_ERROR - 128)) | (1L << (OPEN - 128)) | (1L << (OPTIONAL - 128)) | (1L << (OR - 128)) | (1L << (OUTPUT - 128)) | (1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (READ_WRITE - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RSET - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SET - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (UNLOCK - 192)) | (1L << (UNTIL - 192)) | (1L << (VARIANT - 192)) | (1L << (VERSION - 192)) | (1L << (WEND - 192)) | (1L << (WHILE - 192)) | (1L << (WIDTH - 192)) | (1L << (WITH - 192)) | (1L << (WITHEVENTS - 192)) | (1L << (WRITE - 192)) | (1L << (XOR - 192)) | (1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (OCTLITERAL - 192)) | (1L << (HEXLITERAL - 192)) | (1L << (FLOATLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (WS - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (COLLECTION - 192)) | (1L << (DELETESETTING - 192)) | (1L << (LOAD - 192)) | (1L << (RMDIR - 192)) | (1L << (SENDKEYS - 192)) | (1L << (SETATTR - 192)) | (1L << (RESUME_NEXT - 192)))) != 0)) {
-					{
-					State = 1842; subscripts();
-					State = 1844;
-					_la = _input.La(1);
-					if (_la==WS || _la==LINE_CONTINUATION) {
-						{
-						State = 1843; whiteSpace();
-						}
-					}
-
-					}
-				}
-
-				State = 1848; Match(RPAREN);
-				State = 1850;
-				switch ( Interpreter.AdaptivePredict(_input,280,_ctx) ) {
-				case 1:
-					{
-					State = 1849; whiteSpace();
-					}
-					break;
-				}
+				State = 1835; typeHint();
 				}
 				break;
 			}
@@ -10143,7 +10102,48 @@ public partial class VBAParser : Parser {
 			switch ( Interpreter.AdaptivePredict(_input,282,_ctx) ) {
 			case 1:
 				{
-				State = 1854; typeHint();
+				State = 1839;
+				_la = _input.La(1);
+				if (_la==WS || _la==LINE_CONTINUATION) {
+					{
+					State = 1838; whiteSpace();
+					}
+				}
+
+				State = 1841; Match(LPAREN);
+				State = 1843;
+				switch ( Interpreter.AdaptivePredict(_input,278,_ctx) ) {
+				case 1:
+					{
+					State = 1842; whiteSpace();
+					}
+					break;
+				}
+				State = 1849;
+				_la = _input.La(1);
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CIRCLE) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << EXIT) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << MIDB) | (1L << MIDBTYPESUFFIX) | (1L << MIDTYPESUFFIX) | (1L << OPTION) | (1L << PSET) | (1L << SCALE) | (1L << SGN) | (1L << UBOUND) | (1L << EXCLAMATIONPOINT) | (1L << DOT) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (CLASS - 64)) | (1L << (CLOSE - 64)) | (1L << (CONST - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DECLARE - 64)) | (1L << (DEFBOOL - 64)) | (1L << (DEFBYTE - 64)) | (1L << (DEFDATE - 64)) | (1L << (DEFDBL - 64)) | (1L << (DEFCUR - 64)) | (1L << (DEFINT - 64)) | (1L << (DEFLNG - 64)) | (1L << (DEFLNGLNG - 64)) | (1L << (DEFLNGPTR - 64)) | (1L << (DEFOBJ - 64)) | (1L << (DEFSNG - 64)) | (1L << (DEFSTR - 64)) | (1L << (DEFVAR - 64)) | (1L << (DIM - 64)) | (1L << (DO - 64)) | (1L << (DOUBLE - 64)) | (1L << (ELSE - 64)) | (1L << (ELSEIF - 64)) | (1L << (EMPTY - 64)) | (1L << (END_SELECT - 64)) | (1L << (END_WITH - 64)) | (1L << (END - 64)) | (1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LET - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (LIB - 128)) | (1L << (LIKE - 128)) | (1L << (LINE_INPUT - 128)) | (1L << (LOCK_READ - 128)) | (1L << (LOCK_WRITE - 128)) | (1L << (LOCK_READ_WRITE - 128)) | (1L << (LSET - 128)) | (1L << (ME - 128)) | (1L << (MID - 128)) | (1L << (MOD - 128)) | (1L << (NEXT - 128)) | (1L << (NEW - 128)) | (1L << (NOT - 128)) | (1L << (NOTHING - 128)) | (1L << (NULL - 128)) | (1L << (ON - 128)) | (1L << (ON_ERROR - 128)) | (1L << (OPEN - 128)) | (1L << (OPTIONAL - 128)) | (1L << (OR - 128)) | (1L << (OUTPUT - 128)) | (1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (READ_WRITE - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RSET - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SET - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (UNLOCK - 192)) | (1L << (UNTIL - 192)) | (1L << (VARIANT - 192)) | (1L << (VERSION - 192)) | (1L << (WEND - 192)) | (1L << (WHILE - 192)) | (1L << (WIDTH - 192)) | (1L << (WITH - 192)) | (1L << (WITHEVENTS - 192)) | (1L << (WRITE - 192)) | (1L << (XOR - 192)) | (1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (OCTLITERAL - 192)) | (1L << (HEXLITERAL - 192)) | (1L << (FLOATLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (WS - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (LINE_CONTINUATION - 192)) | (1L << (COLLECTION - 192)) | (1L << (DELETESETTING - 192)) | (1L << (LOAD - 192)) | (1L << (RMDIR - 192)) | (1L << (SENDKEYS - 192)) | (1L << (SETATTR - 192)) | (1L << (RESUME_NEXT - 192)))) != 0)) {
+					{
+					State = 1845; subscripts();
+					State = 1847;
+					_la = _input.La(1);
+					if (_la==WS || _la==LINE_CONTINUATION) {
+						{
+						State = 1846; whiteSpace();
+						}
+					}
+
+					}
+				}
+
+				State = 1851; Match(RPAREN);
+				State = 1853;
+				switch ( Interpreter.AdaptivePredict(_input,281,_ctx) ) {
+				case 1:
+					{
+					State = 1852; whiteSpace();
+					}
+					break;
+				}
 				}
 				break;
 			}
@@ -16000,9 +16000,9 @@ public partial class VBAParser : Parser {
 		"^\x3_\x3_\x3_\x3_\x3_\x3_\x3_\x3_\x5_\x711\n_\x3`\x3`\x3`\x5`\x716\n`"+
 		"\x3`\x3`\x3`\x5`\x71B\n`\x3`\x3`\x3\x61\x3\x61\x5\x61\x721\n\x61\x3\x61"+
 		"\x3\x61\x5\x61\x725\n\x61\x3\x61\a\x61\x728\n\x61\f\x61\xE\x61\x72B\v"+
-		"\x61\x3\x62\x3\x62\x5\x62\x72F\n\x62\x3\x62\x3\x62\x5\x62\x733\n\x62\x3"+
-		"\x62\x3\x62\x5\x62\x737\n\x62\x5\x62\x739\n\x62\x3\x62\x3\x62\x5\x62\x73D"+
-		"\n\x62\x5\x62\x73F\n\x62\x3\x62\x5\x62\x742\n\x62\x3\x62\x3\x62\x3\x62"+
+		"\x61\x3\x62\x3\x62\x5\x62\x72F\n\x62\x3\x62\x5\x62\x732\n\x62\x3\x62\x3"+
+		"\x62\x5\x62\x736\n\x62\x3\x62\x3\x62\x5\x62\x73A\n\x62\x5\x62\x73C\n\x62"+
+		"\x3\x62\x3\x62\x5\x62\x740\n\x62\x5\x62\x742\n\x62\x3\x62\x3\x62\x3\x62"+
 		"\x5\x62\x747\n\x62\x3\x63\x3\x63\x3\x63\x3\x63\x3\x63\x5\x63\x74E\n\x63"+
 		"\x3\x63\x3\x63\x3\x64\x3\x64\x3\x64\x3\x64\x5\x64\x756\n\x64\x3\x64\x3"+
 		"\x64\x5\x64\x75A\n\x64\x3\x64\x3\x64\x3\x65\x3\x65\x3\x65\x3\x65\x3\x65"+
@@ -16731,15 +16731,15 @@ public partial class VBAParser : Parser {
 		"\x724\x723\x3\x2\x2\x2\x724\x725\x3\x2\x2\x2\x725\x726\x3\x2\x2\x2\x726"+
 		"\x728\x5\xC2\x62\x2\x727\x720\x3\x2\x2\x2\x728\x72B\x3\x2\x2\x2\x729\x727"+
 		"\x3\x2\x2\x2\x729\x72A\x3\x2\x2\x2\x72A\xC1\x3\x2\x2\x2\x72B\x729\x3\x2"+
-		"\x2\x2\x72C\x73E\x5\xFC\x7F\x2\x72D\x72F\x5\x136\x9C\x2\x72E\x72D\x3\x2"+
-		"\x2\x2\x72E\x72F\x3\x2\x2\x2\x72F\x730\x3\x2\x2\x2\x730\x732\a\xD4\x2"+
-		"\x2\x731\x733\x5\x136\x9C\x2\x732\x731\x3\x2\x2\x2\x732\x733\x3\x2\x2"+
-		"\x2\x733\x738\x3\x2\x2\x2\x734\x736\x5\xF6|\x2\x735\x737\x5\x136\x9C\x2"+
-		"\x736\x735\x3\x2\x2\x2\x736\x737\x3\x2\x2\x2\x737\x739\x3\x2\x2\x2\x738"+
-		"\x734\x3\x2\x2\x2\x738\x739\x3\x2\x2\x2\x739\x73A\x3\x2\x2\x2\x73A\x73C"+
-		"\a\xDB\x2\x2\x73B\x73D\x5\x136\x9C\x2\x73C\x73B\x3\x2\x2\x2\x73C\x73D"+
-		"\x3\x2\x2\x2\x73D\x73F\x3\x2\x2\x2\x73E\x72E\x3\x2\x2\x2\x73E\x73F\x3"+
-		"\x2\x2\x2\x73F\x741\x3\x2\x2\x2\x740\x742\x5\x116\x8C\x2\x741\x740\x3"+
+		"\x2\x2\x72C\x72E\x5\xFC\x7F\x2\x72D\x72F\x5\x116\x8C\x2\x72E\x72D\x3\x2"+
+		"\x2\x2\x72E\x72F\x3\x2\x2\x2\x72F\x741\x3\x2\x2\x2\x730\x732\x5\x136\x9C"+
+		"\x2\x731\x730\x3\x2\x2\x2\x731\x732\x3\x2\x2\x2\x732\x733\x3\x2\x2\x2"+
+		"\x733\x735\a\xD4\x2\x2\x734\x736\x5\x136\x9C\x2\x735\x734\x3\x2\x2\x2"+
+		"\x735\x736\x3\x2\x2\x2\x736\x73B\x3\x2\x2\x2\x737\x739\x5\xF6|\x2\x738"+
+		"\x73A\x5\x136\x9C\x2\x739\x738\x3\x2\x2\x2\x739\x73A\x3\x2\x2\x2\x73A"+
+		"\x73C\x3\x2\x2\x2\x73B\x737\x3\x2\x2\x2\x73B\x73C\x3\x2\x2\x2\x73C\x73D"+
+		"\x3\x2\x2\x2\x73D\x73F\a\xDB\x2\x2\x73E\x740\x5\x136\x9C\x2\x73F\x73E"+
+		"\x3\x2\x2\x2\x73F\x740\x3\x2\x2\x2\x740\x742\x3\x2\x2\x2\x741\x731\x3"+
 		"\x2\x2\x2\x741\x742\x3\x2\x2\x2\x742\x746\x3\x2\x2\x2\x743\x744\x5\x136"+
 		"\x9C\x2\x744\x745\x5\xFE\x80\x2\x745\x747\x3\x2\x2\x2\x746\x743\x3\x2"+
 		"\x2\x2\x746\x747\x3\x2\x2\x2\x747\xC3\x3\x2\x2\x2\x748\x749\a\xC7\x2\x2"+
@@ -17048,7 +17048,7 @@ public partial class VBAParser : Parser {
 		"\x64B\x650\x658\x65C\x664\x666\x66B\x670\x675\x679\x67F\x684\x68B\x68F"+
 		"\x695\x699\x69D\x6A2\x6A6\x6AB\x6AF\x6B4\x6B8\x6BD\x6C1\x6C6\x6CA\x6CF"+
 		"\x6D3\x6D8\x6DC\x6E1\x6E5\x6EA\x6EE\x6F3\x6F7\x6FC\x700\x703\x705\x710"+
-		"\x715\x71A\x720\x724\x729\x72E\x732\x736\x738\x73C\x73E\x741\x746\x74D"+
+		"\x715\x71A\x720\x724\x729\x72E\x731\x735\x739\x73B\x73F\x741\x746\x74D"+
 		"\x755\x759\x762\x76C\x770\x773\x776\x77F\x784\x787\x78B\x78F\x793\x796"+
 		"\x79E\x7A3\x7A6\x7AA\x7AE\x7B2\x7B5\x7BD\x7C0\x7C4\x7C7\x7CA\x7CE\x7D2"+
 		"\x7D7\x7DA\x7DD\x7E0\x7E8\x7EF\x7F2\x7FA\x801\x805\x808\x80B\x80E\x816"+
