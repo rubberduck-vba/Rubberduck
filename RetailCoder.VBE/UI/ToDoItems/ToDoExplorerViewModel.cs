@@ -39,7 +39,7 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
-        private bool _groupByMarker;
+        private bool _groupByMarker = true;
         public bool GroupByMarker
         {
             get { return _groupByMarker; }

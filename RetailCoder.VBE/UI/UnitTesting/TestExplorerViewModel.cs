@@ -89,6 +89,20 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
+        private bool _groupByOutcome = true;
+        public bool GroupByOutcome
+        {
+            get { return _groupByOutcome; }
+            set
+            {
+                if (_groupByOutcome != value)
+                {
+                    _groupByOutcome = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private readonly ICommand _runAllTestsCommand;
         public ICommand RunAllTestsCommand { get { return _runAllTestsCommand; } }
 
