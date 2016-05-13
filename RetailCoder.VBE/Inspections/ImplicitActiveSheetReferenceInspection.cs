@@ -37,8 +37,7 @@ namespace Rubberduck.Inspections
             }
 
             var matches = BuiltInDeclarations.Where(item =>
-                item.ParentScope.StartsWith("EXCEL.EXE;")
-                && Targets.Contains(item.IdentifierName)).ToList();
+                Targets.Contains(item.IdentifierName)).ToList();
 
             var issues = matches.Where(item => item.References.Any())
                 .SelectMany(declaration => declaration.References);
