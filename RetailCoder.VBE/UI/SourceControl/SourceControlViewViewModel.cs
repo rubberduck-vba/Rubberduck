@@ -17,6 +17,14 @@ using resx = Rubberduck.UI.RubberduckUI;
 
 namespace Rubberduck.UI.SourceControl
 {
+    public enum SourceControlTab
+    {
+        Changes,
+        Branches,
+        UnsyncedCommits,
+        Settings
+    }
+    
     public sealed class SourceControlViewViewModel : ViewModelBase, IDisposable
     {
         private readonly VBE _vbe;
@@ -69,9 +77,16 @@ namespace Rubberduck.UI.SourceControl
                 unsyncedCommitsView,
                 settingsView
             };
+            SetTab(SourceControlTab.Changes);
+
             Status = RubberduckUI.Offline;
 
             ListenForErrors();
+        }
+
+        public void SetTab(SourceControlTab tab)
+        {
+            SelectedItem = TabItems.First(t => t.ViewModel.Tab == tab);
         }
 
         private static readonly IDictionary<NotificationType, BitmapImage> IconMappings =
@@ -109,6 +124,20 @@ namespace Rubberduck.UI.SourceControl
                 if (_tabItems != value)
                 {
                     _tabItems = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private IControlView _selectedItem;
+        public IControlView SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                if (_selectedItem != value)
+                {
+                    _selectedItem = value;
                     OnPropertyChanged();
                 }
             }

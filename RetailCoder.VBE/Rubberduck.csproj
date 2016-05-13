@@ -235,6 +235,10 @@
     <Reference Include="Infralution.Localization.Wpf">
       <HintPath>..\libs\Infralution.Localization.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="LibGit2Sharp, Version=0.22.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\LibGit2Sharp.0.22.0-pre20150516171636\lib\net40\LibGit2Sharp.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject.Extensions.Conventions">
       <HintPath>..\packages\ninject.extensions.conventions.3.2.0.0\lib\net45-full\Ninject.Extensions.Conventions.dll</HintPath>
     </Reference>
@@ -379,7 +383,9 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_CommitCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddUserFormCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_RefreshComponentCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_RenameCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_FindAllReferencesCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_FindAllImplementationsCommand.cs" />
@@ -396,6 +402,7 @@
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddTestModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Converters\InvertBoolValueConverter.cs" />
     <Compile Include="UI\CodeExplorer\Converters\BoolToHiddenVisibilityConverter.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_UndoCommand.cs" />
     <Compile Include="UI\Command\MenuItems\NoIndentAnnotationCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\IndentCurrentModuleCommandMenuItem.cs" />
     <Compile Include="UI\Command\NoIndentAnnotationCommand.cs" />

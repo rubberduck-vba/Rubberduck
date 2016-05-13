@@ -848,9 +848,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_UntrackedFiles" xml:space="preserve">
     <value>Untracked files</value>
   </data>
-  <data name="CodeExplorer_Inspect" xml:space="preserve">
-    <value>&amp;Inspect</value>
-  </data>
   <data name="CodeExplorer_Navigate" xml:space="preserve">
     <value>Na&amp;vigate</value>
   </data>
@@ -1532,6 +1529,9 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
     <value>Slash (/)</value>
   </data>
+  <data name="CodeExplorer_Commit" xml:space="preserve">
+    <value>Commit...</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="cross_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1554,6 +1554,15 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SourceControl_MissingCredentials" xml:space="preserve">
     <value>Missing credentials.</value>
   </data>
+  <data name="CodeExplorer_Undo" xml:space="preserve">
+    <value>Undo...</value>
+  </data>
+  <data name="SourceControl_UndoPrompt" xml:space="preserve">
+    <value>Do you want to undo your changes to {0}?</value>
+  </data>
+  <data name="SourceControl_UndoTitle" xml:space="preserve">
+    <value>Source Control - Undo</value>
+  </data>
   <data name="NoIndentAnnotation" xml:space="preserve">
     <value>Add '@NoIndent</value>
   </data>
@@ -1568,5 +1577,8 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="SortStyle_BySelection" xml:space="preserve">
     <value>By selection</value>
+  </data>
+  <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
+    <value>Refresh component</value>
   </data>
 </root>

@@ -245,6 +245,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Commit....
+        /// </summary>
+        public static string CodeExplorer_Commit {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Commit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display member &amp;names.
         /// </summary>
         public static string CodeExplorer_DisplayMemberNamesText {
@@ -308,15 +317,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Inspect.
-        /// </summary>
-        public static string CodeExplorer_Inspect {
-            get {
-                return ResourceManager.GetString("CodeExplorer_Inspect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Na&amp;vigate.
         /// </summary>
         public static string CodeExplorer_Navigate {
@@ -358,6 +358,15 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_Refresh {
             get {
                 return ResourceManager.GetString("CodeExplorer_Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh component.
+        /// </summary>
+        public static string CodeExplorer_RefreshComponent {
+            get {
+                return ResourceManager.GetString("CodeExplorer_RefreshComponent", resourceCulture);
             }
         }
         
@@ -412,6 +421,15 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_Sort {
             get {
                 return ResourceManager.GetString("CodeExplorer_Sort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo....
+        /// </summary>
+        public static string CodeExplorer_Undo {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Undo", resourceCulture);
             }
         }
         
@@ -3699,6 +3717,24 @@ namespace Rubberduck.UI {
         public static string SourceControl_UndoChangesButton {
             get {
                 return ResourceManager.GetString("SourceControl_UndoChangesButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to undo your changes to {0}?.
+        /// </summary>
+        public static string SourceControl_UndoPrompt {
+            get {
+                return ResourceManager.GetString("SourceControl_UndoPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source Control - Undo.
+        /// </summary>
+        public static string SourceControl_UndoTitle {
+            get {
+                return ResourceManager.GetString("SourceControl_UndoTitle", resourceCulture);
             }
         }
         

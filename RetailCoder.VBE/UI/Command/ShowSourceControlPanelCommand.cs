@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Rubberduck.UI.SourceControl;
 
 namespace Rubberduck.UI.Command
 {
@@ -10,7 +11,7 @@ namespace Rubberduck.UI.Command
     {
         public readonly IPresenter _presenter;
 
-        public ShowSourceControlPanelCommand(IPresenter presenter)
+        public ShowSourceControlPanelCommand(SourceControlDockablePresenter presenter)
         {
             _presenter = presenter;
         }
