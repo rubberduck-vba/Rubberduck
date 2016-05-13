@@ -89,7 +89,6 @@ namespace Rubberduck.Navigation.CodeExplorer
                 OnPropertyChanged();
 
                 ReorderChildNodes(Projects);
-                Projects = new ObservableCollection<CodeExplorerItemViewModel>(Projects.OrderBy(o => o.NameWithSignature));
             }
         }
 
@@ -206,7 +205,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             get { return _projects; }
             set
             {
-                _projects = value;
+                _projects = new ObservableCollection<CodeExplorerItemViewModel>(value.OrderBy(o => o.NameWithSignature));
                 
                 ReorderChildNodes(_projects);
                 OnPropertyChanged();
@@ -244,10 +243,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             UpdateNodes(Projects, newProjects);
             
-            Projects = new ObservableCollection<CodeExplorerItemViewModel>(
-                    SortByName
-                        ? newProjects.OrderBy(o => o.NameWithSignature).ToList()
-                        : newProjects);
+            Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
         }
 
         private void UpdateNodes(IEnumerable<CodeExplorerItemViewModel> oldList,
@@ -318,7 +314,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             if (SortByName)
             {
-                Projects = new ObservableCollection<CodeExplorerItemViewModel>(Projects.OrderBy(o => o.NameWithSignature));
+                // this setter does not ensure the values are the same
+                // it also sorts the projects by name
+                Projects = Projects;
             }
         }
 

@@ -15,7 +15,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return 0;
             }
 
-            var nodeComparison = new CompareNodeType().Compare(x, y);
+            var nodeComparison = new CompareByNodeType().Compare(x, y);
             if (nodeComparison != 0)
             {
                 return nodeComparison;
@@ -34,7 +34,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return 0;
             }
 
-            var nodeComparison = new CompareNodeType().Compare(x, y);
+            var nodeComparison = new CompareByNodeType().Compare(x, y);
             if (nodeComparison != 0)
             {
                 return nodeComparison;
@@ -80,7 +80,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return 0;
             }
 
-            var nodeComparison = new CompareNodeType().Compare(x, y);
+            var nodeComparison = new CompareByNodeType().Compare(x, y);
             if (nodeComparison != 0)
             {
                 return nodeComparison;
@@ -105,7 +105,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
     }
 
-    public class CompareNodeType : IComparer<CodeExplorerItemViewModel>
+    public class CompareByNodeType : IComparer<CodeExplorerItemViewModel>
     {
         public int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
         {
