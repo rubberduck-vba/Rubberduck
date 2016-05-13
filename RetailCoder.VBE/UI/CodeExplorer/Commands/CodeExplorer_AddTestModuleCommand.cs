@@ -1,4 +1,3 @@
-using Microsoft.Vbe.Interop;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;

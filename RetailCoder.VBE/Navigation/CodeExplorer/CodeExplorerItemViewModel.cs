@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -178,6 +179,13 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             return null;
+        }
+
+        public Declaration GetSelectedDeclaration()
+        {
+            return this is ICodeExplorerDeclarationViewModel
+                ? ((ICodeExplorerDeclarationViewModel)this).Declaration
+                : null;
         }
 
         public void AddChild(CodeExplorerItemViewModel item)

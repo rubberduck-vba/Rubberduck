@@ -16,7 +16,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             try
             {
-                var declaration = GetSelectedDeclaration((CodeExplorerItemViewModel) parameter);
+                var declaration = ((CodeExplorerItemViewModel) parameter).GetSelectedDeclaration();
                 return declaration != null && declaration.DeclarationType == DeclarationType.ClassModule &&
                        declaration.QualifiedName.QualifiedModuleName.Component.Designer != null;
             }
@@ -28,29 +28,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override void Execute(object parameter)
         {
-            GetSelectedDeclaration((CodeExplorerItemViewModel) parameter)
+            ((ICodeExplorerDeclarationViewModel) parameter).Declaration
                 .QualifiedName.QualifiedModuleName.Component.DesignerWindow()
                 .Visible = true;
-        }
-
-        private Declaration GetSelectedDeclaration(CodeExplorerItemViewModel node)
-        {
-            if (node is CodeExplorerProjectViewModel)
-            {
-                return ((CodeExplorerProjectViewModel)node).Declaration;
-            }
-
-            if (node is CodeExplorerComponentViewModel)
-            {
-                return ((CodeExplorerComponentViewModel)node).Declaration;
-            }
-
-            if (node is CodeExplorerMemberViewModel)
-            {
-                return ((CodeExplorerMemberViewModel)node).Declaration;
-            }
-
-            return null;
         }
     }
 }
