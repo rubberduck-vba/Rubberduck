@@ -254,37 +254,6 @@
         </Style>
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-        
-        <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
-
-            <Setter Property="Width" Value="Auto"/>
-
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <ContentPresenter Content="{TemplateBinding Content}" 
-                                  ContentTemplate="{TemplateBinding  ContentTemplate}"
-                                  VerticalAlignment="Center">
-                            <ContentPresenter.Resources>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="TextDecorations" Value="Underline" />
-                                </Style>
-                            </ContentPresenter.Resources>
-                        </ContentPresenter>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Foreground" Value="Blue" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter Property="Foreground" Value="Red" />
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="false">
-                    <Setter Property="Foreground" Value="Gray" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
 
         <codeInspections:InspectionSeverityImageSourceConverter x:Key="SeverityIconConverter" />
         <codeInspections:InspectionImageSourceConverter x:Key="InspectionIconConverter" />
@@ -439,7 +408,7 @@
                         <ColumnDefinition Width="25" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center" Grid.Column="0"
+                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Top" Grid.Column="0"
                            Source="{Binding SelectedItem.Inspection.Severity, Converter={StaticResource SeverityIconConverter}}"/>
                     <TextBlock Grid.Column="1" Margin="4" Text="{Binding SelectedItem.Description}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
                 </Grid>
@@ -448,15 +417,15 @@
                 <TextBlock Margin="8" Text="{Binding SelectedItem.QualifiedSelection}" FontSize="10" TextWrapping="WrapWithOverflow" />
                 
                 <WrapPanel>
-                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                    <controls:LinkButton Margin="4"
                             Visibility="{Binding CanExecuteQuickFixInModule, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding QuickFixInModuleCommand}"
                             Content="{Resx ResxName=Rubberduck.Inspections.InspectionsUI, Key=QuickFix_ThisModule}" />
-                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                    <controls:LinkButton Margin="4"
                             Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding QuickFixInProjectCommand}"
                             Content="{Resx ResxName=Rubberduck.Inspections.InspectionsUI, Key=QuickFix_ThisProject}" />
-                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                    <controls:LinkButton Margin="4"
                             Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding DisableInspectionCommand}"
                             Content="{Resx ResxName=Rubberduck.Inspections.InspectionsUI, Key=DisableThisInspection}" />
