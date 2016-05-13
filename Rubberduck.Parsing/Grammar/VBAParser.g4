@@ -91,6 +91,7 @@ blockStmt :
 	| closeStmt
 	| constStmt
 	| doLoopStmt
+    | endStmt
 	| eraseStmt
 	| errorStmt
     | exitStmt
@@ -140,7 +141,7 @@ constStmt : (visibility whiteSpace)? CONST whiteSpace constSubStmt (whiteSpace? 
 
 constSubStmt : identifier typeHint? (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? valueStmt;
 
-declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? ((FUNCTION typeHint?) | SUB) whiteSpace identifier typeHint? whiteSpace LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)?;
+declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? (FUNCTION | SUB) whiteSpace identifier typeHint? whiteSpace LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)?;
 
 // 5.2.2 Implicit Definition Directives
 defDirective : defType whiteSpace letterSpec (whiteSpace? COMMA whiteSpace? letterSpec)*;
@@ -185,6 +186,9 @@ enumerationStmt:
 ;
 
 enumerationStmt_Constant : identifier (whiteSpace? EQ whiteSpace? valueStmt)? endOfStatement;
+
+// We add "END" as a statement so that it does not get resolved to some nonsensical property.
+endStmt : END;
 
 eraseStmt : ERASE whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)*;
 
@@ -403,7 +407,7 @@ variableStmt : (DIM | STATIC | visibility) whiteSpace (WITHEVENTS whiteSpace)? v
 
 variableListStmt : variableSubStmt (whiteSpace? COMMA whiteSpace? variableSubStmt)*;
 
-variableSubStmt : identifier (whiteSpace? LPAREN whiteSpace? (subscripts whiteSpace?)? RPAREN whiteSpace?)? typeHint? (whiteSpace asTypeClause)?;
+variableSubStmt : identifier typeHint? (whiteSpace? LPAREN whiteSpace? (subscripts whiteSpace?)? RPAREN whiteSpace?)? (whiteSpace asTypeClause)?;
 
 whileWendStmt : 
 	WHILE whiteSpace valueStmt endOfStatement 
@@ -542,6 +546,7 @@ keyword :
      | DELETESETTING
      | DOEVENTS
      | DOUBLE
+     | END
      | EQV
      | FALSE
      | FIX
@@ -650,7 +655,6 @@ statementKeyword :
     | DO
     | ELSE
     | ELSEIF
-    | END
     | ENUM
     | ERASE
     | EVENT
@@ -720,6 +724,7 @@ annotationName : unrestrictedIdentifier;
 annotationArgList : 
 	 whiteSpace annotationArg
 	 | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+
+	 | whiteSpace? LPAREN whiteSpace? RPAREN
 	 | whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN
 	 | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN;
 annotationArg : valueStmt;

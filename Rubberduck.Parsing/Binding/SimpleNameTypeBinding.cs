@@ -24,16 +24,55 @@ namespace Rubberduck.Parsing.Binding
             _expression = expression;
         }
 
+        public bool PreferProjectOverUdt { get; set; }
+
         public IBoundExpression Resolve()
         {
-            IBoundExpression boundExpression = null;
             string name = ExpressionName.GetName(_expression.name());
+            if (PreferProjectOverUdt)
+            {
+                return ResolvePreferProject(name);
+            }
+            return ResolvePreferUdt(name);
+        }
+
+        private IBoundExpression ResolvePreferUdt(string name)
+        {
+            IBoundExpression boundExpression = null;
             boundExpression = ResolveEnclosingModule(name);
             if (boundExpression != null)
             {
                 return boundExpression;
             }
             boundExpression = ResolveEnclosingProject(name);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            boundExpression = ResolveOtherModuleInEnclosingProject(name);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            boundExpression = ResolveReferencedProject(name);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            boundExpression = ResolveModuleInReferencedProject(name);
+            return boundExpression;
+        }
+
+        private IBoundExpression ResolvePreferProject(string name)
+        {
+            IBoundExpression boundExpression = null;
+            // EnclosingProject and EnclosingModule have been switched.
+            boundExpression = ResolveEnclosingProject(name);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            boundExpression = ResolveEnclosingModule(name);
             if (boundExpression != null)
             {
                 return boundExpression;

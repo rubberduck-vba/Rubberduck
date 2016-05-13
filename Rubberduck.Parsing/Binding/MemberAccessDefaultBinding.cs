@@ -326,14 +326,21 @@ namespace Rubberduck.Parsing.Binding
 
         private IBoundExpression ResolveDefaultInstanceVariableClass(bool lExpressionIsEnclosingProject, Declaration referencedProject)
         {
-            if (!lExpressionIsEnclosingProject)
+            if (lExpressionIsEnclosingProject)
             {
-                return null;
+                var defaultInstanceVariableClass = _declarationFinder.FindDefaultInstanceVariableClassEnclosingProject(_project, _module, _name);
+                if (defaultInstanceVariableClass != null)
+                {
+                    return new MemberAccessExpression(defaultInstanceVariableClass, ExpressionClassification.Type, _context, _unrestrictedNameContext, _lExpression);
+                }
             }
-            var defaultInstanceVariableClass = _declarationFinder.FindDefaultInstanceVariableClassEnclosingProject(_project, _module, _name);
-            if (defaultInstanceVariableClass != null)
+            else
             {
-                return new MemberAccessExpression(defaultInstanceVariableClass, ExpressionClassification.Type, _context, _unrestrictedNameContext,  _lExpression);
+                var defaultInstanceVariableClass = _declarationFinder.FindDefaultInstanceVariableClassReferencedProject(_project, _module, referencedProject, _name);
+                if (defaultInstanceVariableClass != null)
+                {
+                    return new MemberAccessExpression(defaultInstanceVariableClass, ExpressionClassification.Type, _context, _unrestrictedNameContext, _lExpression);
+                }
             }
             return null;
         }
@@ -430,7 +437,6 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new MemberAccessExpression(enclosingProjectType, classification, _context, _unrestrictedNameContext,  _lExpression);
             }
-
             var referencedProjectType = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, module, _name, memberType);
             if (referencedProjectType != null)
             {

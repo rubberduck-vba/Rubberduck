@@ -199,6 +199,56 @@ End Sub
         }
 
         [TestMethod]
+        public void ProjectUdtSameNameFirstProjectThenUdt_FirstReferenceIsToProject()
+        {
+            // arrange
+            var code = string.Format(@"
+Private Type {0}
+    anything As String
+End Type
+
+Public Sub DoSomething()
+    Dim a As {0}.{1}.{0}
+End Sub
+", MockVbeBuilder.TEST_PROJECT_NAME, MockVbeBuilder.TEST_MODULE_NAME);
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Project && item.IdentifierName == MockVbeBuilder.TEST_PROJECT_NAME);
+
+            var reference = declaration.References.SingleOrDefault();
+            Assert.IsNotNull(reference);
+            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+        }
+
+        [TestMethod]
+        public void ProjectUdtSameNameUdtOnly_IsReferenceToUdt()
+        {
+            // arrange
+            var code = string.Format(@"
+Private Type {0}
+    anything As String
+End Type
+
+Public Sub DoSomething()
+    Dim a As {1}.{0}
+End Sub
+", MockVbeBuilder.TEST_PROJECT_NAME, MockVbeBuilder.TEST_MODULE_NAME);
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == MockVbeBuilder.TEST_PROJECT_NAME);
+
+            var reference = declaration.References.SingleOrDefault();
+            Assert.IsNotNull(reference);
+            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+        }
+
+        [TestMethod]
         public void EncapsulatedVariableAssignment_DoesNotResolve()
         {
             // arrange

@@ -1035,6 +1035,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitVsAnd([NotNull] VBAParser.VsAndContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.endStmt"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEndStmt([NotNull] VBAParser.EndStmtContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.endStmt"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEndStmt([NotNull] VBAParser.EndStmtContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.annotationList"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
