@@ -13,11 +13,12 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <ContentPresenter Content="{TemplateBinding Content}" 
-                            ContentTemplate="{TemplateBinding  ContentTemplate}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
                             VerticalAlignment="Center">
                             <ContentPresenter.Resources>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Setter Property="TextDecorations" Value="Underline" />
+                                    <Setter Property="TextWrapping" Value="WrapWithOverflow" />
                                 </Style>
                             </ContentPresenter.Resources>
                         </ContentPresenter>
