@@ -6,9 +6,9 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CompareByName : IComparer<CodeExplorerItemViewModel>
+    public class CompareByName : Comparer<CodeExplorerItemViewModel>
     {
-        public int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
         {
             if (x == y)
             {
@@ -25,9 +25,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
     }
 
-    public class CompareByType : IComparer<CodeExplorerItemViewModel>
+    public class CompareByType : Comparer<CodeExplorerItemViewModel>
     {
-        public int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
         {
             if (x == y)
             {
@@ -71,9 +71,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
     }
 
-    public class CompareBySelection : IComparer<CodeExplorerItemViewModel>
+    public class CompareBySelection : Comparer<CodeExplorerItemViewModel>
     {
-        public int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
         {
             if (x == y)
             {
@@ -105,9 +105,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
     }
 
-    public class CompareByNodeType : IComparer<CodeExplorerItemViewModel>
+    public class CompareByNodeType : Comparer<CodeExplorerItemViewModel>
     {
-        public int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
         {
             if (x == y)
             {
