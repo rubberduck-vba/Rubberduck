@@ -27,7 +27,7 @@ namespace Rubberduck.Parsing.Binding
             _expression = expression;
             _propertySearchType = StatementContext.GetSearchDeclarationType(statementContext);
         }
-
+        
         public bool IsPotentialLeftMatch { get; internal set; }
 
         public IBoundExpression Resolve()
@@ -321,6 +321,15 @@ namespace Rubberduck.Parsing.Binding
 
         private bool IsValidMatch(Declaration match, string name)
         {
+            /*
+               If the match has the name value "Left", references a function or subroutine that has no 
+                parameters, or a property with a Property Get that has no parameters, the declared type of the 
+                match is any type except a specific class, Object or Variant, and this simple name expression is 
+                the <l-expression> within an index expression with an argument list containing 2 arguments, 
+                discard the match and continue searching for a match on lower tiers. 
+
+                Note: In other words, the built-in Left function is given highest priority?
+            */
             if (match == null)
             {
                 return false;

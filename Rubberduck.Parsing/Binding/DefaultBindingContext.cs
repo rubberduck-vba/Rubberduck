@@ -55,6 +55,7 @@ namespace Rubberduck.Parsing.Binding
 
         private void SetLeftMatch(IExpressionBinding binding, int argumentCount)
         {
+            // See SimpleNameDefaultBinding for a description on why we're doing this.
             if (!(binding is SimpleNameDefaultBinding))
             {
                 return;
