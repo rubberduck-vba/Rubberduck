@@ -252,36 +252,6 @@
             </Style.Triggers>
         </Style>
         
-        <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
-            <Setter Property="Width" Value="Auto"/>
-
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <ContentPresenter Content="{TemplateBinding Content}" 
-                                  ContentTemplate="{TemplateBinding  ContentTemplate}"
-                                  VerticalAlignment="Center">
-                            <ContentPresenter.Resources>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="TextDecorations" Value="Underline" />
-                                </Style>
-                            </ContentPresenter.Resources>
-                        </ContentPresenter>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Foreground" Value="Blue" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter Property="Foreground" Value="Red" />
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="false">
-                    <Setter Property="Foreground" Value="Gray" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
             <GradientStop Color="#FF9BDDFB" Offset="1"/>
@@ -744,17 +714,17 @@
                 <TextBlock Margin="4" Text="{Binding Description}" FontSize="10" TextWrapping="WrapWithOverflow"/>
 
                 <WrapPanel>
-                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                    <controls:LinkButton Margin="4"
                             Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}, UpdateSourceTrigger=PropertyChanged}"
                             Command="{Binding IndenterCommand}"
                             CommandParameter="{Binding SelectedItem}"
                             Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SmartIndenterMenu}" />
-                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                    <controls:LinkButton Margin="4"
                             Visibility="{Binding CanExecuteRenameCommand, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding RenameCommand}"
                             CommandParameter="{Binding SelectedItem}"
                             Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}" />
-                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                    <controls:LinkButton Margin="4"
                             Visibility="{Binding CanExecuteFindAllReferencesCommand, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding FindAllReferencesCommand}"
                             CommandParameter="{Binding SelectedItem}"
