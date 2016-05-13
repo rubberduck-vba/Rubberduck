@@ -826,8 +826,10 @@
     <Compile Include="UI\SourceControl\SourceControlPanel.Designer.cs">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\SourceControlView.xaml.cs">
+      <DependentUpon>SourceControlView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
-    <Compile Include="UI\SourceControl\SourceControlView.xaml.cs" />
     <Compile Include="UI\SourceControl\SourceControlViewViewModel.cs" />
     <Compile Include="UI\SourceControl\SourceControlDockablePresenter.cs" />
     <Compile Include="UI\Controls\INavigateSelection.cs" />
@@ -1472,10 +1474,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\NoOverflowToolbarStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
