@@ -753,6 +753,323 @@ End Sub";
             Assert.AreEqual(expectedCode, module.Lines());
         }
 
+        [TestMethod]
+        public void CompareByName_ReturnsZeroForIdenticalNodes()
+        {
+            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            Assert.AreEqual(0, new CompareByName().Compare(errorNode, errorNode));
+        }
+
+        [TestMethod]
+        public void CompareByName_ReturnsZeroForIdenticalNames()
+        {
+            // this won't happen, but just to be thorough...--besides, it is good for the coverage
+            var errorNode1 = new CodeExplorerErrorNodeViewModel("Name");
+            var errorNode2 = new CodeExplorerErrorNodeViewModel("Name");
+
+            Assert.AreEqual(0, new CompareByName().Compare(errorNode1, errorNode2));
+        }
+
+        [TestMethod]
+        public void CompareByName_ReturnsFolderAboveErrorNode_FolderPassedFirst()
+        {
+            // this won't happen, but just to be thorough...--besides, it is good for the coverage
+            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+
+            Assert.AreEqual(-1, new CompareByName().Compare(folderNode, errorNode));
+        }
+
+        [TestMethod]
+        public void CompareByName_ReturnsFolderAboveErrorNode_FolderPassedSecond()
+        {
+            // this won't happen, but just to be thorough...--besides, it is good for the coverage
+            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+
+            Assert.AreEqual(1, new CompareByName().Compare(errorNode, folderNode));
+        }
+
+        [TestMethod]
+        public void CompareByName_ReturnsCorrectOrdering()
+        {
+            // this won't happen, but just to be thorough...--besides, it is good for the coverage
+            var errorNode1 = new CodeExplorerErrorNodeViewModel("Name1");
+            var errorNode2 = new CodeExplorerErrorNodeViewModel("Name2");
+
+            Assert.IsTrue(new CompareByName().Compare(errorNode1, errorNode2) < 0);
+        }
+
+        [TestMethod]
+        public void CompareByType_ReturnsZeroForIdenticalNodes()
+        {
+            var errorNode = new CodeExplorerCustomFolderViewModel("Name", "folder1.folder2");
+            Assert.AreEqual(0, new CompareByName().Compare(errorNode, errorNode));
+        }
+
+        [TestMethod]
+        public void CompareByType_ReturnsFolderAboveErrorNode_FolderPassedFirst()
+        {
+            // this won't happen, but just to be thorough...--besides, it is good for the coverage
+            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+
+            Assert.AreEqual(-1, new CompareByType().Compare(folderNode, errorNode));
+        }
+
+        [TestMethod]
+        public void CompareByType_ReturnsFolderAboveErrorNode_FolderPassedSecond()
+        {
+            // this won't happen, but just to be thorough...--besides, it is good for the coverage
+            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+
+            Assert.AreEqual(1, new CompareByType().Compare(errorNode, folderNode));
+        }
+
+        [TestMethod]
+        public void CompareByType_ReturnsZeroForErrorNodes()
+        {
+            // this won't happen, but just to be thorough...--besides, it is good for the coverage
+            var errorNode1 = new CodeExplorerErrorNodeViewModel("Name1");
+            var errorNode2 = new CodeExplorerErrorNodeViewModel("Name2");
+
+            Assert.AreEqual(0, new CompareByType().Compare(errorNode1, errorNode2));
+        }
+
+        [TestMethod]
+        public void CompareByType_ReturnsFieldBelowSub()
+        {
+            var inputCode =
+@"Public Foo As Boolean
+
+Sub Bar()
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>();
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+
+            var subNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Bar");
+            var fieldNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo");
+
+            Assert.AreEqual(-1, new CompareByType().Compare(subNode, fieldNode));
+        }
+
+        [TestMethod]
+        public void CompareByType_ReturnsClassModuleBelowDocument()
+        {
+            var builder = new MockVbeBuilder();
+            var projectMock = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("ClassModule1", vbext_ComponentType.vbext_ct_ClassModule, "")
+                .AddComponent("Sheet1", vbext_ComponentType.vbext_ct_Document, "");
+
+            var project = projectMock.Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>();
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+
+            var docNode = vm.Projects.First().Items.First().Items.Single(s => s.Name == "Sheet1");
+            var clsNode = vm.Projects.First().Items.First().Items.Single(s => s.Name == "ClassModule1");
+
+            // this tests the logic I wrote to place docs above cls modules even though the parser calls them both cls modules
+            Assert.AreEqual(((ICodeExplorerDeclarationViewModel) clsNode).Declaration.DeclarationType,
+                ((ICodeExplorerDeclarationViewModel) docNode).Declaration.DeclarationType);
+
+            Assert.AreEqual(-1, new CompareByType().Compare(docNode, clsNode));
+        }
+
+        [TestMethod]
+        public void CompareBySelection_ReturnsZeroForIdenticalNodes()
+        {
+            var inputCode =
+@"Sub Foo()
+End Sub
+
+Sub Bar()
+    Foo
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>();
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First().Items.OfType<CodeExplorerMemberViewModel>().Single(item => item.Declaration.IdentifierName == "Foo");
+
+            Assert.AreEqual(0, new CompareByName().Compare(vm.SelectedItem, vm.SelectedItem));
+        }
+
+        [TestMethod]
+        public void CompareBySelection_ReturnsFolderAboveErrorNode_FolderPassedFirst()
+        {
+            // this won't happen, but just to be thorough...--besides, it is good for the coverage
+            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+
+            Assert.AreEqual(-1, new CompareBySelection().Compare(folderNode, errorNode));
+        }
+
+        [TestMethod]
+        public void CompareBySelection_ReturnsFolderAboveErrorNode_FolderPassedSecond()
+        {
+            // this won't happen, but just to be thorough...--besides, it is good for the coverage
+            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+
+            Assert.AreEqual(1, new CompareBySelection().Compare(errorNode, folderNode));
+        }
+
+        [TestMethod]
+        public void CompareByNodeType_ReturnsCorrectMemberFirst_MemberPassedFirst()
+        {
+            var inputCode =
+@"Sub Foo()
+End Sub
+
+Sub Bar()
+    Foo
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>();
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+
+            var memberNode1 = vm.Projects.First().Items.First().Items.First().Items.OfType<CodeExplorerMemberViewModel>().Single(s => s.Name == "Foo");
+            var memberNode2 = vm.Projects.First().Items.First().Items.First().Items.OfType<CodeExplorerMemberViewModel>().Single(s => s.Name == "Bar");
+
+            Assert.AreEqual(-1, new CompareBySelection().Compare(memberNode1, memberNode2));
+        }
+
+        [TestMethod]
+        public void CompareByNodeType_ReturnsZeroForIdenticalNodes()
+        {
+            var inputCode =
+@"Sub Foo()
+End Sub
+
+Sub Bar()
+    Foo
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>();
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First().Items.OfType<CodeExplorerMemberViewModel>().Single(item => item.Declaration.IdentifierName == "Foo");
+
+            Assert.AreEqual(0, new CompareByNodeType().Compare(vm.SelectedItem, vm.SelectedItem));
+        }
+
+        [TestMethod]
+        public void CompareByNodeType_ReturnsFolderAboveErrorNode_FolderPassedFirst()
+        {
+            // this won't happen, but just to be thorough...--besides, it is good for the coverage
+            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+
+            Assert.AreEqual(-1, new CompareByNodeType().Compare(folderNode, errorNode));
+        }
+
+        [TestMethod]
+        public void CompareByNodeType_ReturnsFolderAboveErrorNode_FolderPassedSecond()
+        {
+            // this won't happen, but just to be thorough...--besides, it is good for the coverage
+            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+
+            Assert.AreEqual(1, new CompareByNodeType().Compare(errorNode, folderNode));
+        }
+
+        [TestMethod]
+        public void CompareByNodeType_ReturnsErrorAboveComponentNode_ErrorPassedFirst()
+        {
+            var inputCode =
+@"Sub Foo()
+End Sub
+
+Sub Bar()
+    Foo
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>();
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+
+            var componentNode = vm.Projects.First().Items.First().Items.OfType<CodeExplorerComponentViewModel>().Single();
+
+            Assert.AreEqual(-1, new CompareByNodeType().Compare(new CodeExplorerErrorNodeViewModel("Name"), componentNode));
+        }
+
+        [TestMethod]
+        public void CompareByNodeType_FoldersAreSortedByName()
+        {
+            var folderNode1 = new CodeExplorerCustomFolderViewModel("AAA", string.Empty);
+            var folderNode2 = new CodeExplorerCustomFolderViewModel("zzz", string.Empty);
+
+            Assert.IsTrue(new CompareByNodeType().Compare(folderNode1, folderNode2) < 0);
+        }
+
         #region Helpers
         private Configuration GetDefaultUnitTestConfig()
         {

@@ -400,8 +400,9 @@
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddClassModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddTestModuleCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Converters\InvertBoolValueConverter.cs" />
+    <Compile Include="UI\CodeExplorer\Converters\BoolToHiddenVisibilityConverter.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_UndoCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Converters\BoolToHiddenVisibility.cs" />
     <Compile Include="UI\Command\MenuItems\NoIndentAnnotationCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\IndentCurrentModuleCommandMenuItem.cs" />
     <Compile Include="UI\Command\NoIndentAnnotationCommand.cs" />
@@ -1229,6 +1230,7 @@
     <Resource Include="Resources\folder-rename.png" />
     <Resource Include="Resources\cross-button.png" />
     <Resource Include="Resources\init-repo.png" />
+    <Resource Include="Resources\edit-list-order.png" />
     <Content Include="Resources\Microsoft\Mask\AddProperty_5538_32.bmp" />
     <None Include="Resources\Microsoft\Mask\AddVariable_5541_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />

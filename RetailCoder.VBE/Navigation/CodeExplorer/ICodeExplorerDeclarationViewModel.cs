@@ -4,6 +4,6 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public interface ICodeExplorerDeclarationViewModel
     {
-        Declaration Declaration { get; } 
+        Declaration Declaration { get; }
     }
 }
