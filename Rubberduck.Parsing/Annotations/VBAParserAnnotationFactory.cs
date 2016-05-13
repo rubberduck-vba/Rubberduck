@@ -20,6 +20,7 @@ namespace Rubberduck.Parsing.Annotations
             _creators.Add(AnnotationType.TestCleanup.ToString().ToUpperInvariant(), typeof(TestCleanupAnnotation));
             _creators.Add(AnnotationType.Ignore.ToString().ToUpperInvariant(), typeof(IgnoreAnnotation));
             _creators.Add(AnnotationType.Folder.ToString().ToUpperInvariant(), typeof(FolderAnnotation));
+            _creators.Add(AnnotationType.NoIndent.ToString().ToUpperInvariant(), typeof(NoIndentAnnotation));
         }
 
         public IAnnotation Create(VBAParser.AnnotationContext context, QualifiedSelection qualifiedSelection)

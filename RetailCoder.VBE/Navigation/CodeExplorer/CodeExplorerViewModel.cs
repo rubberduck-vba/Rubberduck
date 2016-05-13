@@ -15,7 +15,7 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerViewModel : ViewModelBase
+    public sealed class CodeExplorerViewModel : ViewModelBase, IDisposable
     {
         private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
@@ -31,6 +31,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
             _refreshCommand = commands.OfType<CodeExplorer_RefreshCommand>().FirstOrDefault();
+            _refreshComponentCommand = commands.OfType<CodeExplorer_RefreshComponentCommand>().FirstOrDefault();
             _navigateCommand = commands.OfType<CodeExplorer_NavigateCommand>().FirstOrDefault();
 
             _addTestModuleCommand = commands.OfType<CodeExplorer_AddTestModuleCommand>().FirstOrDefault();
@@ -54,6 +55,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             _printCommand = commands.OfType<CodeExplorer_PrintCommand>().FirstOrDefault();
+
+            _commitCommand = commands.OfType<CodeExplorer_CommitCommand>().FirstOrDefault();
+            _undoCommand = commands.OfType<CodeExplorer_UndoCommand>().FirstOrDefault();
         }
 
         private CodeExplorerItemViewModel _selectedItem;
@@ -71,6 +75,40 @@ namespace Rubberduck.Navigation.CodeExplorer
                 OnPropertyChanged("PanelTitle");
                 OnPropertyChanged("Description");
                 // ReSharper restore ExplicitCallerInfoArgument
+            }
+        }
+
+        private bool _sortByName = true;
+        public bool SortByName
+        {
+            get { return _sortByName; }
+            set
+            {
+                if (_sortByName == value)
+                {
+                    return;
+                }
+
+                _sortByName = value;
+                OnPropertyChanged();
+
+                ReorderChildNodes(Projects);
+            }
+        }
+
+        private bool _sortByType = true;
+        public bool SortByType
+        {
+            get { return _sortByType; }
+            set
+            {
+                if (_sortByType != value)
+                {
+                    _sortByType = value;
+                    OnPropertyChanged();
+
+                    ReorderChildNodes(Projects);
+                }
             }
         }
 
@@ -132,19 +170,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                if (SelectedItem is CodeExplorerProjectViewModel)
+                if (SelectedItem is ICodeExplorerDeclarationViewModel)
                 {
-                    return ((CodeExplorerProjectViewModel) SelectedItem).Declaration.DescriptionString;
-                }
-
-                if (SelectedItem is CodeExplorerComponentViewModel)
-                {
-                    return ((CodeExplorerComponentViewModel) SelectedItem).Declaration.DescriptionString;
-                }
-
-                if (SelectedItem is CodeExplorerMemberViewModel)
-                {
-                    return ((CodeExplorerMemberViewModel) SelectedItem).Declaration.DescriptionString;
+                    return ((ICodeExplorerDeclarationViewModel) SelectedItem).Declaration.DescriptionString;
                 }
 
                 if (SelectedItem is CodeExplorerCustomFolderViewModel)
@@ -171,7 +199,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             get { return _projects; }
             set
             {
-                _projects = value;
+                _projects = new ObservableCollection<CodeExplorerItemViewModel>(value.OrderBy(o => o.NameWithSignature));
+                
+                ReorderChildNodes(_projects);
                 OnPropertyChanged();
             }
         }
@@ -200,13 +230,14 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            var newProjects = new ObservableCollection<CodeExplorerItemViewModel>(userDeclarations.Select(grouping =>
+            var newProjects = userDeclarations.Select(grouping =>
                 new CodeExplorerProjectViewModel(_folderHelper,
                     grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
-                    grouping)));
+                    grouping)).ToList();
 
             UpdateNodes(Projects, newProjects);
-            Projects = newProjects;
+            
+            Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
         }
 
         private void UpdateNodes(IEnumerable<CodeExplorerItemViewModel> oldList,
@@ -272,8 +303,24 @@ namespace Rubberduck.Navigation.CodeExplorer
             Projects.Remove(projectNode);
             RemoveFailingComponent(projectNode, componentName);
 
-            folderNode.AddChild(new CodeExplorerErrorNodeViewModel(componentName));
+            folderNode.AddChild(new CodeExplorerErrorNodeViewModel(folderNode, componentName));
             Projects.Add(projectNode);
+
+            if (SortByName)
+            {
+                // this setter does not ensure the values are the same
+                // it also sorts the projects by name
+                Projects = Projects;
+            }
+        }
+
+        private void ReorderChildNodes(IEnumerable<CodeExplorerItemViewModel> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                node.ReorderItems(SortByName, SortByType);
+                ReorderChildNodes(node.Items);
+            }
         }
 
         private bool _removedNode;
@@ -307,6 +354,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly ICommand _refreshCommand;
         public ICommand RefreshCommand { get { return _refreshCommand; } }
+
+        private readonly ICommand _refreshComponentCommand;
+        public ICommand RefreshComponentCommand { get { return _refreshComponentCommand; } }
 
         private readonly ICommand _navigateCommand;
         public ICommand NavigateCommand { get { return _navigateCommand; } }
@@ -350,6 +400,12 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly ICommand _printCommand;
         public ICommand PrintCommand { get { return _printCommand; } }
 
+        private readonly ICommand _commitCommand;
+        public ICommand CommitCommand { get { return _commitCommand; } }
+
+        private readonly ICommand _undoCommand;
+        public ICommand UndoCommand { get { return _undoCommand; } }
+
         private readonly ICommand _externalRemoveCommand;
 
         // this is a special case--we have to reset SelectedItem to prevent a crash
@@ -359,6 +415,15 @@ namespace Rubberduck.Navigation.CodeExplorer
             SelectedItem = Projects.First(p => ((CodeExplorerProjectViewModel) p).Declaration.Project == node.Declaration.Project);
 
             _externalRemoveCommand.Execute(param);
+        }
+
+        public void Dispose()
+        {
+            if (_state != null)
+            {
+                _state.StateChanged -= ParserState_StateChanged;
+                _state.ModuleStateChanged -= ParserState_ModuleStateChanged;
+            }
         }
     }
 }

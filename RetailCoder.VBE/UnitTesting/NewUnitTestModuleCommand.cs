@@ -73,13 +73,12 @@ namespace Rubberduck.UnitTesting
             return formattedModuleTemplate;
         }
 
-        public void NewUnitTestModule()
+        public void NewUnitTestModule(VBProject project)
         {
             var settings = _configLoader.LoadConfiguration().UserSettings.UnitTestSettings;
             
             try
             {
-                var project = _vbe.ActiveVBProject;
                 project.EnsureReferenceToAddInLibrary();
 
                 var module = project.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);

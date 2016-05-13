@@ -72,6 +72,7 @@
     <Compile Include="Annotations\InvalidAnnotationArgumentException.cs" />
     <Compile Include="Annotations\ModuleCleanupAnnotation.cs" />
     <Compile Include="Annotations\ModuleInitializeAnnotation.cs" />
+    <Compile Include="Annotations\NoIndentAnnotation.cs" />
     <Compile Include="Annotations\TestCleanupAnnotation.cs" />
     <Compile Include="Annotations\TestInitializeAnnotation.cs" />
     <Compile Include="Annotations\TestMethodAnnotation.cs" />
@@ -226,6 +227,7 @@
     <Compile Include="StaTaskScheduler.cs" />
     <Compile Include="Symbols\AccessibilityCheck.cs" />
     <Compile Include="Symbols\ExternalProcedureDeclaration.cs" />
+    <Compile Include="Symbols\ICompilationPass.cs" />
     <Compile Include="Symbols\ParserRuleContextHelper.cs" />
     <Compile Include="Symbols\BoundExpressionVisitor.cs" />
     <Compile Include="Symbols\ClassModuleDeclaration.cs" />
@@ -240,6 +242,7 @@
     <Compile Include="Symbols\PropertyGetDeclaration.cs" />
     <Compile Include="Symbols\FunctionDeclaration.cs" />
     <Compile Include="Symbols\SubroutineDeclaration.cs" />
+    <Compile Include="Symbols\ProjectReferencePass.cs" />
     <Compile Include="Symbols\TypeHierarchyPass.cs" />
     <Compile Include="Symbols\TypeAnnotationPass.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />

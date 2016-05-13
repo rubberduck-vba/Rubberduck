@@ -133,7 +133,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             var projectQualifiedModuleName = new QualifiedModuleName(projectName, path, projectName);
             var projectQualifiedMemberName = new QualifiedMemberName(projectQualifiedModuleName, projectName);
-            var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName);
+            var projectDeclaration = new ProjectDeclaration(projectQualifiedMemberName, projectName, isBuiltIn: true);
             yield return projectDeclaration;
 
             var typeCount = typeLibrary.GetTypeInfoCount();

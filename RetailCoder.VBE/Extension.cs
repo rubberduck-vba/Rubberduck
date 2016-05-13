@@ -23,7 +23,7 @@ namespace Rubberduck
         private const string ClassId = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";
         private const string ProgId = "Rubberduck.Extension";
 
-        private readonly IKernel _kernel = new StandardKernel(new FuncModule());
+        private IKernel _kernel;
         private App _app;
 
         public void OnAddInsUpdate(ref Array custom)
@@ -37,6 +37,8 @@ namespace Rubberduck
         // ReSharper disable InconsistentNaming
         public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
         {
+            _kernel = new StandardKernel(new FuncModule());
+
             try
             {
                 var currentDomain = AppDomain.CurrentDomain;
@@ -69,8 +71,17 @@ namespace Rubberduck
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
         {
-            _app.Shutdown();
-            _kernel.Dispose();
+            if (_app != null)
+            {
+                _app.Shutdown();
+                _app = null;
+            }
+
+            if (_kernel != null)
+            {
+                _kernel.Dispose();
+                _kernel = null;
+            }
         }
     }
 }

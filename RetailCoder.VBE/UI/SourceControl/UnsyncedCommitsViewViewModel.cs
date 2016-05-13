@@ -37,6 +37,8 @@ namespace Rubberduck.UI.SourceControl
             OutgoingCommits = new ObservableCollection<ICommit>(Provider.UnsyncedLocalCommits);
         }
 
+        public SourceControlTab Tab { get { return SourceControlTab.UnsyncedCommits; } }
+
         private void Provider_BranchChanged(object sender, EventArgs e)
         {
             CurrentBranch = Provider.CurrentBranch.Name;

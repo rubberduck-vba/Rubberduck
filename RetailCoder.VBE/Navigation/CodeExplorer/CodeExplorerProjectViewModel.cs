@@ -10,7 +10,7 @@ using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerProjectViewModel : CodeExplorerItemViewModel
+    public class CodeExplorerProjectViewModel : CodeExplorerItemViewModel, ICodeExplorerDeclarationViewModel
     {
         private readonly Declaration _declaration;
         public Declaration Declaration { get { return _declaration; } }
@@ -42,6 +42,11 @@ namespace Rubberduck.Navigation.CodeExplorer
             catch (NullReferenceException e)
             {
                 Console.WriteLine(e);
+            }
+
+            foreach (var folder in _folderTree.Items.OfType<CodeExplorerCustomFolderViewModel>())
+            {
+                folder.SetParent(this);
             }
         }
 
@@ -85,6 +90,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly BitmapImage _icon;
         public override BitmapImage CollapsedIcon { get { return _icon; } }
         public override BitmapImage ExpandedIcon { get { return _icon; } }
+        
+        // projects are always at the top of the tree
+        public override CodeExplorerItemViewModel Parent { get { return null; } }
 
         public override string Name { get { return _declaration.IdentifierName; } }
         public override string NameWithSignature { get { return Name; } }

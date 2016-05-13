@@ -53,6 +53,20 @@ namespace Rubberduck.Parsing.Binding
             return Visit(module, parent, (dynamic)expression.expression(), withBlockVariable, statementContext);
         }
 
+        private void SetLeftMatch(IExpressionBinding binding, int argumentCount)
+        {
+            // See SimpleNameDefaultBinding for a description on why we're doing this.
+            if (!(binding is SimpleNameDefaultBinding))
+            {
+                return;
+            }
+            if (argumentCount != 2)
+            {
+                return;
+            }
+            ((SimpleNameDefaultBinding)binding).IsPotentialLeftMatch = true;
+        }
+
         private IExpressionBinding VisitCallStmt(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext)
         {
             if (expression is VBAExpressionParser.CallStmtContext)
@@ -73,6 +87,7 @@ namespace Rubberduck.Parsing.Binding
                 }
                 var lexprBinding = Visit(module, parent, lexpr, withBlockVariable, ResolutionStatementContext.Undefined);
                 var argList = VisitArgumentList(module, parent, callStmtExpression.argumentList(), withBlockVariable, ResolutionStatementContext.Undefined);
+                SetLeftMatch(lexprBinding, argList.Arguments.Count);
                 return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lexprBinding, argList);
             }
             else
@@ -157,6 +172,7 @@ namespace Rubberduck.Parsing.Binding
             dynamic lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, ResolutionStatementContext.Undefined);
             var argumentListBinding = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable, ResolutionStatementContext.Undefined);
+            SetLeftMatch(lExpressionBinding, argumentListBinding.Arguments.Count);
             return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, argumentListBinding);
         }
 
@@ -165,6 +181,7 @@ namespace Rubberduck.Parsing.Binding
             dynamic lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, ResolutionStatementContext.Undefined);
             var argumentListBinding = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable, ResolutionStatementContext.Undefined);
+            SetLeftMatch(lExpressionBinding, argumentListBinding.Arguments.Count);
             return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, argumentListBinding);
         }
 
@@ -308,7 +325,7 @@ namespace Rubberduck.Parsing.Binding
              */
             if (expression.withMemberAccessExpression() != null)
             {
-                return new MemberAccessDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression,  withBlockVariable, expression.withMemberAccessExpression().unrestrictedName().GetText(), statementContext, expression.withMemberAccessExpression().unrestrictedName());
+                return new MemberAccessDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, withBlockVariable, expression.withMemberAccessExpression().unrestrictedName().GetText(), statementContext, expression.withMemberAccessExpression().unrestrictedName());
             }
             else
             {

@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -26,15 +25,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override bool CanExecute(object parameter)
         {
-            return parameter is CodeExplorerProjectViewModel ||
-                   parameter is CodeExplorerComponentViewModel ||
-                   parameter is CodeExplorerMemberViewModel;
+            // I could import to a folder as well, if I had a
+            // MoveToFolder refactoring to call
+            return parameter is ICodeExplorerDeclarationViewModel;
         }
 
         public override void Execute(object parameter)
         {
             // I know this will never be null because of the CanExecute
-            var project = GetSelectedDeclaration((CodeExplorerItemViewModel)parameter).QualifiedName.QualifiedModuleName.Project;
+            var project = ((ICodeExplorerDeclarationViewModel)parameter).Declaration.QualifiedName.QualifiedModuleName.Project;
 
             if (_openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -46,26 +45,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
                 project.VBComponents.Import(_openFileDialog.FileName);
             }
-        }
-
-        private Declaration GetSelectedDeclaration(CodeExplorerItemViewModel node)
-        {
-            if (node is CodeExplorerProjectViewModel)
-            {
-                return ((CodeExplorerProjectViewModel)node).Declaration;
-            }
-
-            if (node is CodeExplorerComponentViewModel)
-            {
-                return ((CodeExplorerComponentViewModel)node).Declaration;
-            }
-
-            if (node is CodeExplorerMemberViewModel)
-            {
-                return ((CodeExplorerMemberViewModel)node).Declaration;
-            }
-
-            return null;
         }
 
         public void Dispose()

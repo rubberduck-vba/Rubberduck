@@ -3,9 +3,9 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Rubberduck.UI.CodeExplorer.Converters
+namespace Rubberduck.UI.Converters
 {
-    public class BoolToHiddenVisibility : IValueConverter
+    public class BoolToHiddenVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

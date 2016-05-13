@@ -9,6 +9,7 @@
         TestInitialize,
         TestCleanup,
         Ignore,
-        Folder
+        Folder,
+        NoIndent
     }
 }

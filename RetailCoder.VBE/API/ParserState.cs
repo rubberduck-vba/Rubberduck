@@ -38,7 +38,7 @@ namespace Rubberduck.API
     [ComDefaultInterface(typeof(IParserState))]
     [ComSourceInterfaces(typeof(IParserStateEvents))]
     [EditorBrowsable(EditorBrowsableState.Always)]
-    public class ParserState : IParserState
+    public sealed class ParserState : IParserState, IDisposable
     {
         private const string ClassId = "28754D11-10CC-45FD-9F6A-525A65412B7A";
         private const string ProgId = "Rubberduck.ParserState";
@@ -131,6 +131,22 @@ namespace Rubberduck.API
         {
             //[return: MarshalAs(UnmanagedType.SafeArray/*, SafeArraySubType = VarEnum.VT_VARIANT*/)]
             get { return _userDeclarations; }
+        }
+
+        private bool _disposed;
+        public void Dispose()
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (_state != null)
+            {
+                _state.StateChanged -= _state_StateChanged;
+            }
+
+            _disposed = true;
         }
     }
 }

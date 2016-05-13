@@ -11,10 +11,13 @@ using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel
+    public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel, ICodeExplorerDeclarationViewModel
     {
         private readonly Declaration _declaration;
         public Declaration Declaration { get { return _declaration; } }
+
+        private readonly CodeExplorerItemViewModel _parent;
+        public override CodeExplorerItemViewModel Parent { get { return _parent; } }
 
         private static readonly DeclarationType[] MemberTypes =
         {
@@ -32,8 +35,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.Variable, 
         };
 
-        public CodeExplorerComponentViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
+        public CodeExplorerComponentViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations)
         {
+            _parent = parent;
             _declaration = declaration;
             _icon = Icons[DeclarationType];
             Items = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
@@ -41,7 +45,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                                                 && item.ParentScope == declaration.Scope
                                                 && MemberTypes.Contains(item.DeclarationType))
                                 .OrderBy(item => item.QualifiedSelection.Selection.StartLine)
-                                .Select(item => new CodeExplorerMemberViewModel(item, grouping)))
+                                .Select(item => new CodeExplorerMemberViewModel(this, item, grouping)))
                                 .ToList<CodeExplorerItemViewModel>();
             
         }

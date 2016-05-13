@@ -20,7 +20,7 @@ using System.IO;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class RubberduckParser : IRubberduckParser
+    public class RubberduckParser : IRubberduckParser, IDisposable
     {
         public RubberduckParserState State
         {
@@ -480,8 +480,14 @@ namespace Rubberduck.Parsing.VBA
 
             // walk all parse trees (modified or not) for identifier references
             var finder = new DeclarationFinder(_state.AllDeclarations, _state.AllComments, _state.AllAnnotations);
-            new TypeAnnotationPass(finder).Annotate();
-            new TypeHierarchyPass(finder).Annotate();
+            var passes = new List<ICompilationPass>
+            {
+                // This pass has to come first because the type binding resolution depends on it.
+                new ProjectReferencePass(finder),
+                new TypeHierarchyPass(finder),
+                new TypeAnnotationPass(finder)
+            };
+            passes.ForEach(p => p.Execute());
             foreach (var kvp in _state.ParseTrees)
             {
                 if (token.IsCancellationRequested) return;
@@ -530,7 +536,7 @@ namespace Rubberduck.Parsing.VBA
         {
             var qualifiedName = projectQualifiedName.QualifyMemberName(project.Name);
             var projectId = qualifiedName.QualifiedModuleName.ProjectId;
-            var projectDeclaration = new ProjectDeclaration(qualifiedName, project.Name);
+            var projectDeclaration = new ProjectDeclaration(qualifiedName, project.Name, isBuiltIn: false);
             var references = _projectReferences.Where(projectContainingReference => projectContainingReference.ContainsKey(projectId));
             foreach (var reference in references)
             {
@@ -569,6 +575,23 @@ namespace Rubberduck.Parsing.VBA
 
             _state.SetModuleState(component, state);
             Debug.WriteLine("'{0}' is {1} (thread {2})", component.Name, _state.GetModuleState(component), Thread.CurrentThread.ManagedThreadId);
+        }
+
+        public void Dispose()
+        {
+            State.ParseRequest -= ReparseRequested;
+            State.StateChanged -= StateOnStateChanged;
+
+            if (_resolverTokenSource != null)
+            {
+                _resolverTokenSource.Dispose();
+            }
+
+            if (_central != null)
+            {
+                _central.Cancel();
+                _central.Dispose();
+            }
         }
     }
 }

@@ -278,7 +278,7 @@ Sub Test()
     10:
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//lineLabel");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 2);
         }
 
         [TestMethod]
@@ -294,16 +294,15 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//annotation", matches => matches.Count == 4);
         }
 
-        private Tuple<VBAParser, ParserRuleContext> Parse(string code)
+        [TestMethod]
+        public void TestEmptyAnnotationsWithParentheses()
         {
-            var stream = new AntlrInputStream(code);
-            var lexer = new VBALexer(stream);
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new VBAParser(tokens);
-            //parser.AddErrorListener(new ExceptionErrorListener());
-            var root = parser.startRule();
-            // Useful for figuring out what XPath to use for querying the parse tree.
-            return Tuple.Create<VBAParser, ParserRuleContext>(parser, root);
+            string code = @"
+'@NoIndent()
+Sub Test()
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//annotation");
         }
 
         [TestMethod]
@@ -319,7 +318,217 @@ Private Sub DoSomething()
 End Sub
 ";
             var parser = Parse(code);
-            AssertTree(parser.Item1, parser.Item2, "//ifElseBlockStmt", matches => matches.Count == 1);
+            AssertTree(parser.Item1, parser.Item2, "//elseBlock", matches => matches.Count == 1);
+        }
+
+        [TestMethod]
+        public void TestIfStmtSameLineElse()
+        {
+            string code = @"
+Sub Test()
+    If True Then
+    ElseIf False Then Debug.Print 5
+    Else
+    End If
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//elseIfBlock");
+        }
+
+        [TestMethod]
+        public void TestSingleLineIfEmptyThenEmptyElse()
+        {
+            string code = @"
+Sub Test()
+    If False Then Else
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [TestMethod]
+        public void TestSingleLineIfEmptyThenEndOfStatement()
+        {
+            string code = @"
+Sub Test()
+    If False Then: Else
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [TestMethod]
+        public void TestSingleLineIfMultipleThenNoElse()
+        {
+            string code = @"
+Sub Test()
+      If False Then MsgBox False: MsgBox False Else
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [TestMethod]
+        public void TestSingleLineIfMultipleThenMultipleElse()
+        {
+            string code = @"
+Sub Test()
+      If False Then MsgBox False: MsgBox False Else MsgBox False: MsgBox False
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [TestMethod]
+        public void TestSingleLineIfEmptyThen()
+        {
+            string code = @"
+Sub Test()
+      If False Then Else MsgBox True
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [TestMethod]
+        public void TestSingleLineIfSingleThenEmptyElse()
+        {
+            string code = @"
+Sub Test()
+      If False Then MsgBox True Else
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [TestMethod]
+        public void TestSingleLineIfImplicitGoTo()
+        {
+            string code = @"
+Sub Test()
+      ' This actually means: If True Then GoTo 5 Else GoTo 10
+      If True Then 5 Else 10
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lineNumberLabel", matches => matches.Count == 2);
+        }
+
+        [TestMethod]
+        public void TestSingleLineIfDoLoop()
+        {
+            string code = @"
+Sub Test()
+      If True Then Do: Loop Else
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//doLoopStmt");
+        }
+
+        [TestMethod]
+        public void TestSingleLineIfWendLoop()
+        {
+            string code = @"
+Sub Test()
+      If True Then While True: Beep: Wend Else
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//whileWendStmt");
+        }
+
+        [TestMethod]
+        public void TestSingleLineIfRealWorldExample1()
+        {
+            string code = @"
+Sub Test()
+      On Local Error Resume Next: If Not Empty Is Nothing Then Do While Null: ReDim i(True To False) As Currency: Loop: Else Debug.Assert CCur(CLng(CInt(CBool(False Imp True Xor False Eqv True)))): Stop: On Local Error GoTo 0
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [TestMethod]
+        public void TestSingleLineIfRealWorldExample2()
+        {
+            string code = @"
+Sub Test()
+    With Application
+        If bUpdate Then .Calculation = xlCalculationAutomatic: .Cursor = xlDefault Else .Calculation = xlCalculationManual: .Cursor = xlWait: .EnableEvents = bUpdate: .ScreenUpdating = bUpdate: .DisplayAlerts = bUpdate: .CutCopyMode = False: .StatusBar = False
+    End With
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [TestMethod]
+        public void TestSingleLineIfRealWorldExample3()
+        {
+            string code = @"
+Sub Test()
+    If Not oP_Window Is Nothing Then If Not oP_Window.Visible Then Unload oP_Window: Set oP_Window = Nothing
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt", matches => matches.Count == 2);
+        }
+
+        [TestMethod]
+        public void TestSingleLineIfRealWorldExample4()
+        {
+            string code = @"
+Sub Test()
+    If Err Then Set oP_Window = Nothing: TurnOff Else If oP_Window Is Nothing Then TurnOn
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt", matches => matches.Count == 2);
+        }
+
+        [TestMethod]
+        public void TestEndStmt()
+        {
+            string code = @"
+Sub Test()
+    End
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//endStmt");
+        }
+
+        [TestMethod]
+        public void TestStringFunction()
+        {
+            string code = @"
+Sub Test()
+    a = String(5, ""a"")
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//iCS_S_VariableOrProcedureCall", matches => matches.Count == 2);
+        }
+
+        [TestMethod]
+        public void TestArrayWithTypeSuffix()
+        {
+            string code = @"
+Sub Test()
+    Dim a!()
+    Dim a@()
+    Dim a#()
+    Dim a$()
+    Dim a%()
+    Dim a^()
+    Dim a&()
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 7);
+        }
+
+        private Tuple<VBAParser, ParserRuleContext> Parse(string code)
+        {
+            var stream = new AntlrInputStream(code);
+            var lexer = new VBALexer(stream);
+            var tokens = new CommonTokenStream(lexer);
+            var parser = new VBAParser(tokens);
+            var root = parser.startRule();
+            var k = root.ToStringTree(parser);
+            return Tuple.Create<VBAParser, ParserRuleContext>(parser, root);
         }
 
         private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath)

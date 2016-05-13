@@ -41,7 +41,6 @@ namespace Rubberduck.UI.Command.Refactorings
 
             var canExecute = targetInterface != null && targetClass != null;
 
-            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;
         }
 

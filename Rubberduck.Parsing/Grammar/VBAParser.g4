@@ -86,11 +86,12 @@ attributeValue : valueStmt;
 block : blockStmt (endOfStatement blockStmt)* endOfStatement;
 
 blockStmt :
-	lineLabel
+	statementLabelDefinition
 	| attributeStmt
 	| closeStmt
 	| constStmt
 	| doLoopStmt
+    | endStmt
 	| eraseStmt
 	| errorStmt
     | exitStmt
@@ -100,7 +101,8 @@ blockStmt :
 	| getStmt
 	| goSubStmt
 	| goToStmt
-	| ifThenElseStmt
+	| ifStmt
+    | singleLineIfStmt
 	| implementsStmt
 	| inputStmt
 	| letStmt
@@ -139,7 +141,7 @@ constStmt : (visibility whiteSpace)? CONST whiteSpace constSubStmt (whiteSpace? 
 
 constSubStmt : identifier typeHint? (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? valueStmt;
 
-declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? ((FUNCTION typeHint?) | SUB) whiteSpace identifier typeHint? whiteSpace LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)?;
+declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? (FUNCTION | SUB) whiteSpace identifier typeHint? whiteSpace LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)?;
 
 // 5.2.2 Implicit Definition Directives
 defDirective : defType whiteSpace letterSpec (whiteSpace? COMMA whiteSpace? letterSpec)*;
@@ -185,6 +187,9 @@ enumerationStmt:
 
 enumerationStmt_Constant : identifier (whiteSpace? EQ whiteSpace? valueStmt)? endOfStatement;
 
+// We add "END" as a statement so that it does not get resolved to some nonsensical property.
+endStmt : END;
+
 eraseStmt : ERASE whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)*;
 
 errorStmt : ERROR whiteSpace valueStmt;
@@ -218,27 +223,38 @@ goSubStmt : GOSUB whiteSpace valueStmt;
 
 goToStmt : GOTO whiteSpace valueStmt;
 
-ifThenElseStmt : 
-	IF whiteSpace ifConditionStmt whiteSpace THEN whiteSpace blockStmt (whiteSpace ELSE whiteSpace blockStmt)?	# inlineIfThenElse
-	| ifBlockStmt ifElseIfBlockStmt* ifElseBlockStmt? END_IF			# blockIfThenElse
+// 5.4.2.8 If Statement
+ifStmt :
+     IF whiteSpace booleanExpression whiteSpace THEN endOfStatement
+     block?
+     elseIfBlock*
+     elseBlock?
+     END_IF
+;
+elseIfBlock :
+     ELSEIF whiteSpace booleanExpression whiteSpace THEN endOfStatement block?
+     | ELSEIF whiteSpace booleanExpression whiteSpace THEN whiteSpace? block?
+;
+elseBlock :
+     ELSE endOfStatement block?
 ;
 
-ifBlockStmt : 
-	IF whiteSpace ifConditionStmt whiteSpace THEN endOfStatement 
-	block?
+// 5.4.2.9 Single-line If Statement
+singleLineIfStmt : ifWithNonEmptyThen | ifWithEmptyThen;
+ifWithNonEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN whiteSpace? listOrLabel (whiteSpace singleLineElseClause)?;
+ifWithEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN endOfStatement whiteSpace? singleLineElseClause;
+singleLineElseClause : ELSE whiteSpace? listOrLabel?;
+// lineNumberLabel should actually be "statement-label" according to MS VBAL but they only allow lineNumberLabels:
+// A <statement-label> that occurs as the first element of a <list-or-label> element has the effect 
+// as if the <statement-label> was replaced with a <goto-statement> containing the same 
+// <statement-label>. This <goto-statement> takes the place of <line-number-label> in 
+// <statement-list>.  
+listOrLabel :
+    lineNumberLabel (whiteSpace? COLON whiteSpace? sameLineStatement?)*
+    | (COLON whiteSpace?)? sameLineStatement (whiteSpace? COLON whiteSpace? sameLineStatement?)*
 ;
-
-ifConditionStmt : valueStmt;
-
-ifElseIfBlockStmt : 
-	ELSEIF whiteSpace ifConditionStmt whiteSpace THEN endOfStatement
-	block?
-;
-
-ifElseBlockStmt : 
-	ELSE endOfStatement 
-	block?
-;
+sameLineStatement : blockStmt;
+booleanExpression : valueStmt;
 
 implementsStmt : IMPLEMENTS whiteSpace valueStmt;
 
@@ -391,7 +407,7 @@ variableStmt : (DIM | STATIC | visibility) whiteSpace (WITHEVENTS whiteSpace)? v
 
 variableListStmt : variableSubStmt (whiteSpace? COMMA whiteSpace? variableSubStmt)*;
 
-variableSubStmt : identifier (whiteSpace? LPAREN whiteSpace? (subscripts whiteSpace?)? RPAREN whiteSpace?)? typeHint? (whiteSpace asTypeClause)?;
+variableSubStmt : identifier typeHint? (whiteSpace? LPAREN whiteSpace? (subscripts whiteSpace?)? RPAREN whiteSpace?)? (whiteSpace asTypeClause)?;
 
 whileWendStmt : 
 	WHILE whiteSpace valueStmt endOfStatement 
@@ -478,7 +494,10 @@ complexType : identifier ((DOT | EXCLAMATIONPOINT) identifier)*;
 
 fieldLength : MULT whiteSpace? (numberLiteral | identifier);
 
-lineLabel : (identifier | numberLiteral) COLON;
+statementLabelDefinition : statementLabel whiteSpace? COLON;
+statementLabel : identifierStatementLabel | lineNumberLabel;
+identifierStatementLabel : unrestrictedIdentifier;
+lineNumberLabel : numberLiteral;
 
 literal : numberLiteral | DATELITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL | EMPTY;
 
@@ -527,6 +546,7 @@ keyword :
      | DELETESETTING
      | DOEVENTS
      | DOUBLE
+     | END
      | EQV
      | FALSE
      | FIX
@@ -635,7 +655,6 @@ statementKeyword :
     | DO
     | ELSE
     | ELSEIF
-    | END
     | ENUM
     | ERASE
     | EVENT
@@ -705,6 +724,7 @@ annotationName : unrestrictedIdentifier;
 annotationArgList : 
 	 whiteSpace annotationArg
 	 | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+
+	 | whiteSpace? LPAREN whiteSpace? RPAREN
 	 | whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN
 	 | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN;
 annotationArg : valueStmt;
