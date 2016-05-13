@@ -313,7 +313,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             Projects.Remove(projectNode);
             RemoveFailingComponent(projectNode, componentName);
 
-            folderNode.AddChild(new CodeExplorerErrorNodeViewModel(componentName));
+            folderNode.AddChild(new CodeExplorerErrorNodeViewModel(folderNode, componentName));
             Projects.Add(projectNode);
 
             if (SortByName)

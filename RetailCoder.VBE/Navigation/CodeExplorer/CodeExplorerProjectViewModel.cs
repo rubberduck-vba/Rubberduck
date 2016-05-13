@@ -85,6 +85,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly BitmapImage _icon;
         public override BitmapImage CollapsedIcon { get { return _icon; } }
         public override BitmapImage ExpandedIcon { get { return _icon; } }
+        
+        // projects are always at the top of the tree
+        public override CodeExplorerItemViewModel Parent { get { return null; } }
 
         public override string Name { get { return _declaration.IdentifierName; } }
         public override string NameWithSignature { get { return Name; } }

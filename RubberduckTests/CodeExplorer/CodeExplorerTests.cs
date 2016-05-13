@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -886,7 +885,7 @@ End Sub";
         [TestMethod]
         public void CompareByName_ReturnsZeroForIdenticalNodes()
         {
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
             Assert.AreEqual(0, new CompareByName().Compare(errorNode, errorNode));
         }
 
@@ -894,8 +893,8 @@ End Sub";
         public void CompareByName_ReturnsZeroForIdenticalNames()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var errorNode1 = new CodeExplorerErrorNodeViewModel("Name");
-            var errorNode2 = new CodeExplorerErrorNodeViewModel("Name");
+            var errorNode1 = new CodeExplorerErrorNodeViewModel(null, "Name");
+            var errorNode2 = new CodeExplorerErrorNodeViewModel(null, "Name");
 
             Assert.AreEqual(0, new CompareByName().Compare(errorNode1, errorNode2));
         }
@@ -904,8 +903,8 @@ End Sub";
         public void CompareByName_ReturnsFolderAboveErrorNode_FolderPassedFirst()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
 
             Assert.AreEqual(-1, new CompareByName().Compare(folderNode, errorNode));
         }
@@ -914,8 +913,8 @@ End Sub";
         public void CompareByName_ReturnsFolderAboveErrorNode_FolderPassedSecond()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
 
             Assert.AreEqual(1, new CompareByName().Compare(errorNode, folderNode));
         }
@@ -924,8 +923,8 @@ End Sub";
         public void CompareByName_ReturnsCorrectOrdering()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var errorNode1 = new CodeExplorerErrorNodeViewModel("Name1");
-            var errorNode2 = new CodeExplorerErrorNodeViewModel("Name2");
+            var errorNode1 = new CodeExplorerErrorNodeViewModel(null, "Name1");
+            var errorNode2 = new CodeExplorerErrorNodeViewModel(null, "Name2");
 
             Assert.IsTrue(new CompareByName().Compare(errorNode1, errorNode2) < 0);
         }
@@ -933,7 +932,7 @@ End Sub";
         [TestMethod]
         public void CompareByType_ReturnsZeroForIdenticalNodes()
         {
-            var errorNode = new CodeExplorerCustomFolderViewModel("Name", "folder1.folder2");
+            var errorNode = new CodeExplorerCustomFolderViewModel(null, "Name", "folder1.folder2");
             Assert.AreEqual(0, new CompareByName().Compare(errorNode, errorNode));
         }
 
@@ -941,8 +940,8 @@ End Sub";
         public void CompareByType_ReturnsFolderAboveErrorNode_FolderPassedFirst()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
 
             Assert.AreEqual(-1, new CompareByType().Compare(folderNode, errorNode));
         }
@@ -951,8 +950,8 @@ End Sub";
         public void CompareByType_ReturnsFolderAboveErrorNode_FolderPassedSecond()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
 
             Assert.AreEqual(1, new CompareByType().Compare(errorNode, folderNode));
         }
@@ -961,8 +960,8 @@ End Sub";
         public void CompareByType_ReturnsZeroForErrorNodes()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var errorNode1 = new CodeExplorerErrorNodeViewModel("Name1");
-            var errorNode2 = new CodeExplorerErrorNodeViewModel("Name2");
+            var errorNode1 = new CodeExplorerErrorNodeViewModel(null, "Name1");
+            var errorNode2 = new CodeExplorerErrorNodeViewModel(null, "Name2");
 
             Assert.AreEqual(0, new CompareByType().Compare(errorNode1, errorNode2));
         }
@@ -1063,8 +1062,8 @@ End Sub";
         public void CompareBySelection_ReturnsFolderAboveErrorNode_FolderPassedFirst()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
 
             Assert.AreEqual(-1, new CompareBySelection().Compare(folderNode, errorNode));
         }
@@ -1073,8 +1072,8 @@ End Sub";
         public void CompareBySelection_ReturnsFolderAboveErrorNode_FolderPassedSecond()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
 
             Assert.AreEqual(1, new CompareBySelection().Compare(errorNode, folderNode));
         }
@@ -1145,8 +1144,8 @@ End Sub";
         public void CompareByNodeType_ReturnsFolderAboveErrorNode_FolderPassedFirst()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
 
             Assert.AreEqual(-1, new CompareByNodeType().Compare(folderNode, errorNode));
         }
@@ -1155,8 +1154,8 @@ End Sub";
         public void CompareByNodeType_ReturnsFolderAboveErrorNode_FolderPassedSecond()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var errorNode = new CodeExplorerErrorNodeViewModel("Name");
-            var folderNode = new CodeExplorerCustomFolderViewModel("Name", "Folder1.Folder2");
+            var errorNode = new CodeExplorerErrorNodeViewModel(null, "Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Folder1.Folder2");
 
             Assert.AreEqual(1, new CompareByNodeType().Compare(errorNode, folderNode));
         }
@@ -1188,14 +1187,14 @@ End Sub";
 
             var componentNode = vm.Projects.First().Items.First().Items.OfType<CodeExplorerComponentViewModel>().Single();
 
-            Assert.AreEqual(-1, new CompareByNodeType().Compare(new CodeExplorerErrorNodeViewModel("Name"), componentNode));
+            Assert.AreEqual(-1, new CompareByNodeType().Compare(new CodeExplorerErrorNodeViewModel(null, "Name"), componentNode));
         }
 
         [TestMethod]
         public void CompareByNodeType_FoldersAreSortedByName()
         {
-            var folderNode1 = new CodeExplorerCustomFolderViewModel("AAA", string.Empty);
-            var folderNode2 = new CodeExplorerCustomFolderViewModel("zzz", string.Empty);
+            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "AAA", string.Empty);
+            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "zzz", string.Empty);
 
             Assert.IsTrue(new CompareByNodeType().Compare(folderNode1, folderNode2) < 0);
         }

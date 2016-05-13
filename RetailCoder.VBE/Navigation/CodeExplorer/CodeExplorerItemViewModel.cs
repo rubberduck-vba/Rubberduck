@@ -142,7 +142,6 @@ namespace Rubberduck.Navigation.CodeExplorer
     public abstract class CodeExplorerItemViewModel : ViewModelBase
     {
         private List<CodeExplorerItemViewModel> _items = new List<CodeExplorerItemViewModel>();
-
         public List<CodeExplorerItemViewModel> Items
         {
             get { return _items; }
@@ -159,6 +158,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public abstract string NameWithSignature { get; }
         public abstract BitmapImage CollapsedIcon { get; }
         public abstract BitmapImage ExpandedIcon { get; }
+        public abstract CodeExplorerItemViewModel Parent { get; }
 
         public abstract QualifiedSelection? QualifiedSelection { get; }
 
