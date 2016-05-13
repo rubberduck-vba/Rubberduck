@@ -92,6 +92,30 @@ namespace Rubberduck.VBEditor
             return !(selection1 == selection2);
         }
 
+        public static bool operator >(Selection selection1, Selection selection2)
+        {
+            return selection1.StartLine > selection2.StartLine ||
+                   selection1.StartLine == selection2.StartLine &&
+                   selection1.StartColumn > selection2.StartColumn;
+        }
+
+        public static bool operator <(Selection selection1, Selection selection2)
+        {
+            return selection1.StartLine < selection2.StartLine ||
+                   selection1.StartLine == selection2.StartLine &&
+                   selection1.StartColumn < selection2.StartColumn;
+        }
+
+        public static bool operator >=(Selection selection1, Selection selection2)
+        {
+            return !(selection1 < selection2);
+        }
+
+        public static bool operator <=(Selection selection1, Selection selection2)
+        {
+            return !(selection1 > selection2);
+        }
+
         public override bool Equals(object obj)
         {
             return Equals((Selection) obj);

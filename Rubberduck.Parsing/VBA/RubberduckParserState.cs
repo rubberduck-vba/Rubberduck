@@ -52,7 +52,7 @@ namespace Rubberduck.Parsing.VBA
         public string Message { get { return _message; } }
     }
 
-    public sealed class RubberduckParserState
+    public sealed class RubberduckParserState : IDisposable
     {
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
         private readonly IDictionary<string, Func<VBProject>> _projects = new Dictionary<string, Func<VBProject>>();
@@ -267,6 +267,25 @@ namespace Rubberduck.Parsing.VBA
             return result;
         }
 
+        public ParserState GetOrCreateModuleState(VBComponent component)
+        {
+            var key = new QualifiedModuleName(component);
+            var state = _moduleStates.GetOrAdd(key, ParserState.Pending);
+
+            if (state == ParserState.Pending)
+            {
+                return state;   // we are slated for a reparse already
+            }
+
+            if (!IsNewOrModified(key))
+            {
+                return state;
+            }
+
+            _moduleStates.TryUpdate(key, ParserState.Pending, state);
+            return ParserState.Pending;
+        }
+
         public ParserState GetModuleState(VBComponent component)
         {
             return _moduleStates.GetOrAdd(new QualifiedModuleName(component), ParserState.Pending);
@@ -287,47 +306,9 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private IEnumerable<QualifiedContext> _obsoleteCallContexts = new List<QualifiedContext>();
-
-        /// <summary>
-        /// Gets <see cref="ParserRuleContext"/> objects representing 'Call' statements in the parse tree.
-        /// </summary>
-        public IEnumerable<QualifiedContext> ObsoleteCallContexts
-        {
-            get { return _obsoleteCallContexts; }
-            internal set { _obsoleteCallContexts = value; }
-        }
-
-        private IEnumerable<QualifiedContext> _obsoleteLetContexts = new List<QualifiedContext>();
-
-        /// <summary>
-        /// Gets <see cref="ParserRuleContext"/> objects representing explicit 'Let' statements in the parse tree.
-        /// </summary>
-        public IEnumerable<QualifiedContext> ObsoleteLetContexts
-        {
-            get { return _obsoleteLetContexts; }
-            internal set { _obsoleteLetContexts = value; }
-        }
-
         internal void SetModuleAttributes(VBComponent component, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
         {
             _moduleAttributes.AddOrUpdate(new QualifiedModuleName(component), attributes, (c, s) => attributes);
-        }
-
-        private IEnumerable<QualifiedContext> _emptyStringLiterals = new List<QualifiedContext>();
-
-        public IEnumerable<QualifiedContext> EmptyStringLiterals
-        {
-            get { return _emptyStringLiterals; }
-            internal set { _emptyStringLiterals = value; }
-        }
-
-        private IEnumerable<QualifiedContext> _argListsWithOneByRefParam = new List<QualifiedContext>();
-
-        public IEnumerable<QualifiedContext> ArgListsWithOneByRefParam
-        {
-            get { return _argListsWithOneByRefParam; }
-            internal set { _argListsWithOneByRefParam = value; }
         }
 
         public IEnumerable<CommentNode> AllComments
@@ -430,7 +411,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void ClearStateCache(VBProject project)
+        public void ClearStateCache(VBProject project, bool notifyStateChanged = false)
         {
             try
             {
@@ -446,6 +427,11 @@ namespace Rubberduck.Parsing.VBA
             {
                 _declarations.Clear();
             }
+
+            if (notifyStateChanged)
+            {
+                OnStateChanged();
+            }
         }
 
         public void ClearBuiltInReferences()
@@ -456,19 +442,52 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public bool ClearStateCache(VBComponent component)
+        public bool ClearStateCache(VBComponent component, bool notifyStateChanged = false)
         {
             var match = new QualifiedModuleName(component);
             var keys = _declarations.Keys.Where(kvp => kvp.Equals(match))
                 .Union(new[] { match }).Distinct(); // make sure the key is present, even if there are no declarations left
 
+            var success = RemoveKeysFromCollections(keys);
+
+            var projectId = component.Collection.Parent.HelpFile;
+            var sameProjectDeclarations = _declarations.Where(item => item.Key.ProjectId == projectId).ToList();
+            if (sameProjectDeclarations.Any() &&
+                sameProjectDeclarations.Count(item => item.Value.Any(key => key.Key.DeclarationType == DeclarationType.Project)) == sameProjectDeclarations.Count)
+            {
+                // only the project declaration is left; remove it.
+                ConcurrentDictionary<Declaration, byte> declarations;
+                _declarations.TryRemove(sameProjectDeclarations.Single().Key, out declarations);
+                _projects.Remove(projectId);
+                Debug.WriteLine(string.Format("Removed Project declaration for project Id {0}", projectId));
+            }
+
+            if (notifyStateChanged)
+            {
+                OnStateChanged();
+            }
+
+            return success;
+        }
+
+        public bool RemoveRenamedComponent(VBComponent component, string oldComponentName)
+        {
+            var match = new QualifiedModuleName(component, oldComponentName);
+            var keys = _declarations.Keys.Where(kvp => kvp.ComponentName == oldComponentName && kvp.ProjectId == match.ProjectId);
+
+            var success = RemoveKeysFromCollections(keys);
+
+            OnStateChanged();
+            return success;
+        }
+
+        private bool RemoveKeysFromCollections(IEnumerable<QualifiedModuleName> keys)
+        {
             var success = true;
-            var declarationsRemoved = 0;
             foreach (var key in keys)
             {
-                ConcurrentDictionary<Declaration, byte> declarations = null;
+                ConcurrentDictionary<Declaration, byte> declarations;
                 success = success && (!_declarations.ContainsKey(key) || _declarations.TryRemove(key, out declarations));
-                declarationsRemoved = declarations == null ? 0 : declarations.Count;
 
                 IParseTree tree;
                 success = success && (!_parseTrees.ContainsKey(key) || _parseTrees.TryRemove(key, out tree));
@@ -492,18 +511,6 @@ namespace Rubberduck.Parsing.VBA
                 success = success && (!_comments.ContainsKey(key) || _comments.TryRemove(key, out nodes));
             }
 
-            var projectId = component.Collection.Parent.HelpFile;
-            var sameProjectDeclarations = _declarations.Where(item => item.Key.ProjectId == projectId).ToList();
-            if (sameProjectDeclarations.Any() && sameProjectDeclarations.Count(item => item.Value.Any(key => key.Key.DeclarationType == DeclarationType.Project)) == sameProjectDeclarations.Count)
-            {
-                // only the project declaration is left; remove it.
-                ConcurrentDictionary<Declaration, byte> declarations;
-                _declarations.TryRemove(sameProjectDeclarations.Single().Key, out declarations);
-                _projects.Remove(projectId);
-                Debug.WriteLine(string.Format("Removed Project declaration for project Id {0}", projectId));
-            }
-
-            Debug.WriteLine("ClearDeclarations({0}): {1} - {2} declarations removed", component.Name, success ? "succeeded" : "failed", declarationsRemoved);
             return success;
         }
 
@@ -731,6 +738,29 @@ namespace Rubberduck.Parsing.VBA
             {
                 Debug.WriteLine("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));
             }
+        }
+
+        private bool _isDisposed;
+        public void Dispose()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            _declarations.Clear();
+            _tokenStreams.Clear();
+            _parseTrees.Clear();
+            _moduleStates.Clear();
+            _moduleContentHashCodes.Clear();
+            _comments.Clear();
+            _annotations.Clear();
+            _moduleExceptions.Clear();
+            _moduleAttributes.Clear();
+            _declarationSelections.Clear();
+            _projects.Clear();
+
+            _isDisposed = true;
         }
     }
 }

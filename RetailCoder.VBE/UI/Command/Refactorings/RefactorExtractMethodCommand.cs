@@ -44,14 +44,13 @@ namespace Rubberduck.UI.Command.Refactorings
                 && selection.Value.Selection.LineCount > 0
                 && !string.IsNullOrWhiteSpace(code);
 
-            Debug.WriteLine("{0}.CanExecute evaluates to {1}", GetType().Name, canExecute);
             return canExecute;
         }
 
         public override void Execute(object parameter)
         {
             var factory = new ExtractMethodPresenterFactory(Vbe, _state.AllDeclarations, _indenter);
-            var refactoring = new ExtractMethodRefactoring(Vbe, factory);
+            var refactoring = new ExtractMethodRefactoring(Vbe, _state, factory);
             refactoring.InvalidSelection += HandleInvalidSelection;
             refactoring.Refactor();
         }

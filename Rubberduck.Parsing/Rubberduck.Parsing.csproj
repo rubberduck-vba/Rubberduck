@@ -72,6 +72,7 @@
     <Compile Include="Annotations\InvalidAnnotationArgumentException.cs" />
     <Compile Include="Annotations\ModuleCleanupAnnotation.cs" />
     <Compile Include="Annotations\ModuleInitializeAnnotation.cs" />
+    <Compile Include="Annotations\NoIndentAnnotation.cs" />
     <Compile Include="Annotations\TestCleanupAnnotation.cs" />
     <Compile Include="Annotations\TestInitializeAnnotation.cs" />
     <Compile Include="Annotations\TestMethodAnnotation.cs" />

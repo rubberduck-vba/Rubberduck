@@ -6,10 +6,152 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
+    public class CompareByName : IComparer<CodeExplorerItemViewModel>
+    {
+        public int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        {
+            if (x == y)
+            {
+                return 0;
+            }
+
+            var nodeComparison = new CompareByNodeType().Compare(x, y);
+            if (nodeComparison != 0)
+            {
+                return nodeComparison;
+            }
+
+            return string.CompareOrdinal(x.NameWithSignature, y.NameWithSignature);
+        }
+    }
+
+    public class CompareByType : IComparer<CodeExplorerItemViewModel>
+    {
+        public int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        {
+            if (x == y)
+            {
+                return 0;
+            }
+
+            var nodeComparison = new CompareByNodeType().Compare(x, y);
+            if (nodeComparison != 0)
+            {
+                return nodeComparison;
+            }
+
+            // error nodes have the same sort value
+            if (x is CodeExplorerErrorNodeViewModel &&
+                y is CodeExplorerErrorNodeViewModel)
+            {
+                return 0;
+            }
+
+            var xNode = (ICodeExplorerDeclarationViewModel)x;
+            var yNode = (ICodeExplorerDeclarationViewModel)y;
+
+            // keep separate types separate
+            if (xNode.Declaration.DeclarationType != yNode.Declaration.DeclarationType)
+            {
+                return xNode.Declaration.DeclarationType < yNode.Declaration.DeclarationType ? -1 : 1;
+            }
+
+            // keep types with different icons and the same declaration type (document/class module) separate
+            // documents come first
+            if (x.ExpandedIcon != y.ExpandedIcon)
+            {
+                // ReSharper disable once PossibleInvalidOperationException - this will have a component
+                return x.QualifiedSelection.Value.QualifiedName.Component.Type ==
+                       Microsoft.Vbe.Interop.vbext_ComponentType.vbext_ct_Document
+                    ? -1
+                    : 1;
+            }
+
+            return 0;
+        }
+    }
+
+    public class CompareBySelection : IComparer<CodeExplorerItemViewModel>
+    {
+        public int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        {
+            if (x == y)
+            {
+                return 0;
+            }
+
+            var nodeComparison = new CompareByNodeType().Compare(x, y);
+            if (nodeComparison != 0)
+            {
+                return nodeComparison;
+            }
+
+            if (!x.QualifiedSelection.HasValue && !y.QualifiedSelection.HasValue)
+            {
+                return 0;
+            }
+
+            if (x.QualifiedSelection.HasValue ^ y.QualifiedSelection.HasValue)
+            {
+                return x.QualifiedSelection.HasValue ? -1 : 1;
+            }
+
+            if (x.QualifiedSelection.Value.Selection == y.QualifiedSelection.Value.Selection)
+            {
+                return 0;
+            }
+
+            return x.QualifiedSelection.Value.Selection < y.QualifiedSelection.Value.Selection ? -1 : 1;
+        }
+    }
+
+    public class CompareByNodeType : IComparer<CodeExplorerItemViewModel>
+    {
+        public int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        {
+            if (x == y)
+            {
+                return 0;
+            }
+
+            // folders come first
+            if (x is CodeExplorerCustomFolderViewModel ^
+                y is CodeExplorerCustomFolderViewModel)
+            {
+                return x is CodeExplorerCustomFolderViewModel ? -1 : 1;
+            }
+
+            // folders are always sorted by name
+            if (x is CodeExplorerCustomFolderViewModel &&
+                y is CodeExplorerCustomFolderViewModel)
+            {
+                return string.CompareOrdinal(x.NameWithSignature, y.NameWithSignature);
+            }
+
+            // error nodes come after folders
+            if (x is CodeExplorerErrorNodeViewModel ^
+                y is CodeExplorerErrorNodeViewModel)
+            {
+                return x is CodeExplorerErrorNodeViewModel ? -1 : 1;
+            }
+
+            return 0;
+        }
+    }
+
     public abstract class CodeExplorerItemViewModel : ViewModelBase
     {
         private List<CodeExplorerItemViewModel> _items = new List<CodeExplorerItemViewModel>();
-        public List<CodeExplorerItemViewModel> Items { get { return _items; } protected set { _items = value; } }
+
+        public List<CodeExplorerItemViewModel> Items
+        {
+            get { return _items; }
+            protected set
+            {
+                _items = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool IsExpanded { get; set; }
 
@@ -41,6 +183,22 @@ namespace Rubberduck.Navigation.CodeExplorer
         public void AddChild(CodeExplorerItemViewModel item)
         {
             _items.Add(item);
+        }
+
+        public void ReorderItems(bool sortByName, bool sortByType)
+        {
+            if (sortByType)
+            {
+                Items = sortByName
+                    ? Items.OrderBy(o => o, new CompareByType()).ThenBy(t => t, new CompareByName()).ToList()
+                    : Items.OrderBy(o => o, new CompareByType()).ThenBy(t => t, new CompareBySelection()).ToList();
+
+                return;
+            }
+
+            Items = sortByName
+                ? Items.OrderBy(t => t, new CompareByName()).ToList()
+                : Items.OrderBy(t => t, new CompareBySelection()).ToList();
         }
     }
 }

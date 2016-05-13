@@ -21,7 +21,7 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    public class InspectionResultsViewModel : ViewModelBase, INavigateSelection
+    public sealed class InspectionResultsViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
@@ -340,6 +340,14 @@ namespace Rubberduck.UI.CodeInspections
         private bool CanExecuteCopyResultsCommand(object parameter)
         {
             return !IsBusy && _results != null && _results.Any();
+        }
+
+        public void Dispose()
+        {
+            if (_state != null)
+            {
+                _state.StateChanged -= _state_StateChanged;
+            }
         }
     }
 }

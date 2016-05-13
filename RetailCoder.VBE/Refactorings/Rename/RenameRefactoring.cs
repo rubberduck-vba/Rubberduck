@@ -164,6 +164,33 @@ namespace Rubberduck.Refactorings.Rename
                     RenameUsages(member);
                 }
             }
+            else if (_model.Target.DeclarationType == DeclarationType.Parameter && _model.Target.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
+            {
+                var getter = _model.Target.DeclarationType == DeclarationType.PropertyGet
+                    ? _model.Target
+                    : GetProperty(_model.Target.ParentDeclaration, DeclarationType.PropertyGet);
+
+                var letter = _model.Target.DeclarationType == DeclarationType.PropertyLet
+                    ? _model.Target
+                    : GetProperty(_model.Target.ParentDeclaration, DeclarationType.PropertyLet);
+
+                var setter = _model.Target.DeclarationType == DeclarationType.PropertySet
+                    ? _model.Target
+                    : GetProperty(_model.Target.ParentDeclaration, DeclarationType.PropertySet);
+
+                var properties = new[] {getter, letter, setter};
+
+                var parameters = _model.Declarations.Where(d =>
+                    d.DeclarationType == DeclarationType.Parameter &&
+                    properties.Contains(d.ParentDeclaration) &&
+                    d.IdentifierName == _model.Target.IdentifierName);
+
+                foreach (var param in parameters)
+                {
+                    RenameUsages(param);
+                    RenameDeclaration(param, _model.NewName);
+                }
+            }
             else
             {
                 RenameUsages(_model.Target);
@@ -179,8 +206,21 @@ namespace Rubberduck.Refactorings.Rename
             }
             else
             {
-                RenameDeclaration(_model.Target, _model.NewName);
+                // we handled properties above
+                if (!_model.Target.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
+                {
+                    RenameDeclaration(_model.Target, _model.NewName);
+                }
             }
+
+            _state.OnParseRequested(this);
+        }
+        
+        private Declaration GetProperty(Declaration declaration, DeclarationType declarationType)
+        {
+            return _model.Declarations.FirstOrDefault(item => item.Scope == declaration.Scope &&
+                              item.IdentifierName == declaration.IdentifierName &&
+                              item.DeclarationType == declarationType);
         }
 
         private void RenameModule()
@@ -400,7 +440,7 @@ namespace Rubberduck.Refactorings.Rename
             if (target.DeclarationType == DeclarationType.Parameter)
             {
                 var argContext = (VBAParser.ArgContext)target.Context;
-                var rewriter = _model.ParseResult.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
+                var rewriter = _model.State.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
                 rewriter.Replace(argContext.unrestrictedIdentifier().Start.TokenIndex, _model.NewName);
 
                 // Target.Context is an ArgContext, its parent is an ArgsListContext;

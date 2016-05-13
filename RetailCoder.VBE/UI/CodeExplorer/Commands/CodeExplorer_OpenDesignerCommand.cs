@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
@@ -13,9 +14,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return false;   
             }
 
-            var declaration = GetSelectedDeclaration((CodeExplorerItemViewModel)parameter);
-            return declaration != null && declaration.DeclarationType == DeclarationType.ClassModule &&
-                    declaration.QualifiedName.QualifiedModuleName.Component.Designer != null;
+            try
+            {
+                var declaration = GetSelectedDeclaration((CodeExplorerItemViewModel) parameter);
+                return declaration != null && declaration.DeclarationType == DeclarationType.ClassModule &&
+                       declaration.QualifiedName.QualifiedModuleName.Component.Designer != null;
+            }
+            catch (COMException)
+            {
+                return false;   // component was probably removed
+            }
         }
 
         public override void Execute(object parameter)
