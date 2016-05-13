@@ -41,7 +41,7 @@ End Sub
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
 
             var excelDeclaration = new ProjectDeclaration(new QualifiedMemberName(new QualifiedModuleName("Excel",
-                    "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", "Excel"), "Excel"), "Excel");
+                    "C:\\Program Files\\Microsoft Office\\Root\\Office 16\\EXCEL.EXE", "Excel"), "Excel"), "Excel", false);
 
             var listColumnDeclaration = new ClassModuleDeclaration(new QualifiedMemberName(
                 new QualifiedModuleName("Excel",
