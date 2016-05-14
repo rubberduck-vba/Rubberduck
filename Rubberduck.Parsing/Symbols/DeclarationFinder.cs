@@ -57,6 +57,11 @@ namespace Rubberduck.Parsing.Symbols
             return _declarations.Where(d => d.DeclarationType == DeclarationType.ClassModule).ToList();
         }
 
+        public IEnumerable<Declaration> FindProjects()
+        {
+            return _declarations.Where(d => d.DeclarationType == DeclarationType.Project).ToList();
+        }
+
         public IEnumerable<CommentNode> ModuleComments(QualifiedModuleName module)
         {
             CommentNode[] result;
@@ -252,6 +257,25 @@ namespace Rubberduck.Parsing.Symbols
             return match;
         }
 
+        public Declaration FindDefaultInstanceVariableClassReferencedProject(Declaration callingProject, Declaration callingModule, string calleeModuleName)
+        {
+            var moduleMatches = FindAllInReferencedProjectByPriority(callingProject, calleeModuleName, p => p.DeclarationType == DeclarationType.ClassModule && ((ClassModuleDeclaration)p).HasDefaultInstanceVariable);
+            var accessibleModules = moduleMatches.Where(calledModule => AccessibilityCheck.IsModuleAccessible(callingProject, callingModule, calledModule));
+            var match = accessibleModules.FirstOrDefault();
+            return match;
+        }
+
+        public Declaration FindDefaultInstanceVariableClassReferencedProject(Declaration callingProject, Declaration callingModule, Declaration referencedProject, string calleeModuleName)
+        {
+            var moduleMatches = FindAllInReferencedProjectByPriority(callingProject, calleeModuleName,
+                p =>
+                    referencedProject.Equals(Declaration.GetProjectParent(p))
+                    && p.DeclarationType == DeclarationType.ClassModule && ((ClassModuleDeclaration)p).HasDefaultInstanceVariable);
+            var accessibleModules = moduleMatches.Where(calledModule => AccessibilityCheck.IsModuleAccessible(callingProject, callingModule, calledModule));
+            var match = accessibleModules.FirstOrDefault();
+            return match;
+        }
+
         public Declaration FindMemberWithParent(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration parent, string memberName, DeclarationType memberType)
         {
             var allMatches = MatchName(memberName);
@@ -334,7 +358,22 @@ namespace Rubberduck.Parsing.Symbols
                 && memberModule.Equals(Declaration.GetModuleParent(m)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
-            return match;
+            if (match != null)
+            {
+                return match;
+            }
+            if (memberModule.DeclarationType == DeclarationType.ClassModule)
+            {
+                foreach (var supertype in ((ClassModuleDeclaration)memberModule).Supertypes)
+                {
+                    var supertypeMember = FindMemberEnclosedProjectInModule(callingProject, callingModule, callingParent, supertype, memberName, memberType);
+                    if (supertypeMember != null)
+                    {
+                        return supertypeMember;
+                    }
+                }
+            }
+            return null;
         }
 
         public Declaration FindMemberReferencedProject(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
@@ -367,7 +406,22 @@ namespace Rubberduck.Parsing.Symbols
             var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType) && memberModule.Equals(Declaration.GetModuleParent(p)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
-            return match;
+            if (match != null)
+            {
+                return match;
+            }
+            if (memberModule.DeclarationType == DeclarationType.ClassModule)
+            {
+                foreach (var supertype in ((ClassModuleDeclaration)memberModule).Supertypes)
+                {
+                    var supertypeMember = FindMemberReferencedProjectInModule(callingProject, callingModule, callingParent, supertype, memberName, memberType);
+                    if (supertypeMember != null)
+                    {
+                        return supertypeMember;
+                    }
+                }
+            }
+            return null;
         }
 
         public Declaration FindMemberReferencedProject(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration referencedProject, string memberName, DeclarationType memberType)

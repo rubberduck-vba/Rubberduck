@@ -98,6 +98,20 @@ namespace Rubberduck.UI.CodeInspections
             }
         }
 
+        private bool _groupByInspectionType = true;
+        public bool GroupByInspectionType
+        {
+            get { return _groupByInspectionType; }
+            set
+            {
+                if (_groupByInspectionType != value)
+                {
+                    _groupByInspectionType = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private readonly INavigateCommand _navigateCommand;
         public INavigateCommand NavigateCommand { get { return _navigateCommand; } }
 

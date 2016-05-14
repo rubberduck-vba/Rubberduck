@@ -4,17 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:inspections="clr-namespace:Rubberduck.Inspections"
-             xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:codeInspections="clr-namespace:Rubberduck.UI.CodeInspections"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" 
              d:DataContext="{d:DesignInstance codeInspections:InspectionResultsViewModel}">
     <UserControl.Resources>
+        <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
+        
         <BitmapImage x:Key="SettingsImage" UriSource="../../Resources/gear.png" />
 
         <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}">
@@ -252,37 +254,6 @@
         </Style>
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-        
-        <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
-
-            <Setter Property="Width" Value="Auto"/>
-
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <ContentPresenter Content="{TemplateBinding Content}" 
-                                  ContentTemplate="{TemplateBinding  ContentTemplate}"
-                                  VerticalAlignment="Center">
-                            <ContentPresenter.Resources>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="TextDecorations" Value="Underline" />
-                                </Style>
-                            </ContentPresenter.Resources>
-                        </ContentPresenter>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Foreground" Value="Blue" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter Property="Foreground" Value="Red" />
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="false">
-                    <Setter Property="Foreground" Value="Gray" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
 
         <codeInspections:InspectionSeverityImageSourceConverter x:Key="SeverityIconConverter" />
         <codeInspections:InspectionImageSourceConverter x:Key="InspectionIconConverter" />
@@ -360,13 +331,21 @@
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/Microsoft/PNG/GroupBy_284_32.png" />
                     </MenuItem.Icon>
-                    
-                    <MenuItem x:Name="GroupByInspectionType" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
-                              Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByInspectionType}" IsChecked="True" 
-                              IsCheckable="True" controls:MenuItemGroup.GroupName="InspectionsResults_GroupingStyle" />
-                    <MenuItem x:Name="GroupByModule" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
-                              Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByLocation}" 
-                              IsCheckable="True" controls:MenuItemGroup.GroupName="InspectionsResults_GroupingStyle" />
+
+                    <MenuItem x:Name="GroupByInspectionType"
+                                  Style="{DynamicResource MenuItemStyle}"
+                                  VerticalAlignment="Center" 
+                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByInspectionType}"
+                                  IsChecked="{Binding GroupByInspectionType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                  IsCheckable="True"
+                                  controls:MenuItemGroup.GroupName="InspectionsResults_GroupingStyle" />
+                    <MenuItem x:Name="GroupByLocation"
+                                  Style="{DynamicResource MenuItemStyle}"
+                                  VerticalAlignment="Center" 
+                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByLocation}" 
+                                  IsChecked="{Binding GroupByInspectionType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBoolValue}}" 
+                                  IsCheckable="True"
+                                  controls:MenuItemGroup.GroupName="InspectionsResults_GroupingStyle" />
                 </MenuItem>
             </Menu>
 
@@ -402,7 +381,7 @@
                                ShowGroupingItemCount="True"
                                SelectedItem="{Binding SelectedItem}"
                                ItemsSource="{Binding Source={StaticResource ResultsByModule}}"
-                               Visibility="{Binding IsChecked, ElementName=GroupByModule, Converter={StaticResource BoolToVisibility}}">
+                               Visibility="{Binding IsChecked, ElementName=GroupByLocation, Converter={StaticResource BoolToVisibility}}">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}">
                     <DataGridTemplateColumn.CellTemplate>
@@ -429,7 +408,7 @@
                         <ColumnDefinition Width="25" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center" Grid.Column="0"
+                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Top" Grid.Column="0"
                            Source="{Binding SelectedItem.Inspection.Severity, Converter={StaticResource SeverityIconConverter}}"/>
                     <TextBlock Grid.Column="1" Margin="4" Text="{Binding SelectedItem.Description}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
                 </Grid>
@@ -438,15 +417,15 @@
                 <TextBlock Margin="8" Text="{Binding SelectedItem.QualifiedSelection}" FontSize="10" TextWrapping="WrapWithOverflow" />
                 
                 <WrapPanel>
-                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                    <controls:LinkButton Margin="4"
                             Visibility="{Binding CanExecuteQuickFixInModule, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding QuickFixInModuleCommand}"
                             Content="{Resx ResxName=Rubberduck.Inspections.InspectionsUI, Key=QuickFix_ThisModule}" />
-                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                    <controls:LinkButton Margin="4"
                             Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding QuickFixInProjectCommand}"
                             Content="{Resx ResxName=Rubberduck.Inspections.InspectionsUI, Key=QuickFix_ThisProject}" />
-                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                    <controls:LinkButton Margin="4"
                             Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding DisableInspectionCommand}"
                             Content="{Resx ResxName=Rubberduck.Inspections.InspectionsUI, Key=DisableThisInspection}" />

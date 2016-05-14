@@ -10,33 +10,38 @@ namespace Rubberduck.Parsing.Symbols
 
         public ProjectDeclaration(
             QualifiedMemberName qualifiedName,
-            string name)
+            string name,
+            bool isBuiltIn)
             : base(
                   qualifiedName,
                   null,
-                  (Declaration)null, 
+                  (Declaration)null,
                   name,
-                  false, 
-                  false, 
-                  Accessibility.Implicit, 
+                  false,
+                  false,
+                  Accessibility.Implicit,
                   DeclarationType.Project,
                   null,
                   Selection.Home,
-                  false)
+                  isBuiltIn)
         {
             _projectReferences = new List<ProjectReference>();
         }
 
-        public IEnumerable<ProjectReference> ProjectReferences
+        public IReadOnlyList<ProjectReference> ProjectReferences
         {
             get
             {
-                return _projectReferences.OrderBy(reference => reference.Priority);
+                return _projectReferences.OrderBy(reference => reference.Priority).ToList();
             }
         }
 
         public void AddProjectReference(string referencedProjectId, int priority)
         {
+            if (_projectReferences.Any(p => p.ReferencedProjectId == referencedProjectId))
+            {
+                return;
+            }
             _projectReferences.Add(new ProjectReference(referencedProjectId, priority));
         }
     }

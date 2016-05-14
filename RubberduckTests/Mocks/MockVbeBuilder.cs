@@ -12,6 +12,8 @@ namespace RubberduckTests.Mocks
     /// </summary>
     public class MockVbeBuilder
     {
+        public const string TEST_PROJECT_NAME = "TestProject1";
+        public const string TEST_MODULE_NAME = "TestModule1";
         private readonly Mock<VBE> _vbe;
 
         private Mock<VBProjects> _vbProjects;
@@ -91,8 +93,8 @@ namespace RubberduckTests.Mocks
 
         public Mock<VBE> BuildFromSingleModule(string content, vbext_ComponentType type, out VBComponent component, Selection selection)
         {
-            var builder = ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
-            builder.AddComponent("TestModule1", type, content, selection);
+            var builder = ProjectBuilder(TEST_PROJECT_NAME, vbext_ProjectProtection.vbext_pp_none);
+            builder.AddComponent(TEST_MODULE_NAME, type, content, selection);
             var project = builder.Build();
             component = project.Object.VBComponents.Item(0);
             return AddProject(project).Build();

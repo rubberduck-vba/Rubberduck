@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.Symbols;
+using System.Linq;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -14,8 +15,8 @@ namespace Rubberduck.Parsing.Binding
         public SimpleNameDefaultBinding(
             DeclarationFinder declarationFinder,
             Declaration project,
-            Declaration module, 
-            Declaration parent, 
+            Declaration module,
+            Declaration parent,
             VBAExpressionParser.SimpleNameExpressionContext expression,
             ResolutionStatementContext statementContext)
         {
@@ -26,6 +27,8 @@ namespace Rubberduck.Parsing.Binding
             _expression = expression;
             _propertySearchType = StatementContext.GetSearchDeclarationType(statementContext);
         }
+        
+        public bool IsPotentialLeftMatch { get; internal set; }
 
         public IBoundExpression Resolve()
         {
@@ -75,18 +78,17 @@ namespace Rubberduck.Parsing.Binding
                 return null;
             }
             var localVariable = _declarationFinder.FindMemberEnclosingProcedure(_parent, name, DeclarationType.Variable);
-            if (localVariable != null)
+            if (IsValidMatch(localVariable, name))
             {
                 return new SimpleNameExpression(localVariable, ExpressionClassification.Variable, _expression);
             }
-            //
             var parameter = _declarationFinder.FindMemberEnclosingProcedure(_parent, name, DeclarationType.Parameter);
-            if (parameter != null)
+            if (IsValidMatch(parameter, name))
             {
                 return new SimpleNameExpression(parameter, ExpressionClassification.Variable, _expression);
             }
             var constant = _declarationFinder.FindMemberEnclosingProcedure(_parent, name, DeclarationType.Constant);
-            if (constant != null)
+            if (IsValidMatch(constant, name))
             {
                 return new SimpleNameExpression(constant, ExpressionClassification.Value, _expression);
             }
@@ -100,37 +102,37 @@ namespace Rubberduck.Parsing.Binding
                 function or subroutine defined at the module-level in the enclosing module.
             */
             var moduleVariable = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Variable);
-            if (moduleVariable != null)
+            if (IsValidMatch(moduleVariable, name))
             {
                 return new SimpleNameExpression(moduleVariable, ExpressionClassification.Variable, _expression);
             }
             var moduleConstant = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Constant);
-            if (moduleConstant != null)
+            if (IsValidMatch(moduleConstant, name))
             {
                 return new SimpleNameExpression(moduleConstant, ExpressionClassification.Variable, _expression);
             }
             var enumType = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Enumeration);
-            if (enumType != null)
+            if (IsValidMatch(enumType, name))
             {
                 return new SimpleNameExpression(enumType, ExpressionClassification.Type, _expression);
             }
             var enumMember = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.EnumerationMember);
-            if (enumMember != null)
+            if (IsValidMatch(enumMember, name))
             {
                 return new SimpleNameExpression(enumMember, ExpressionClassification.Value, _expression);
             }
             var property = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, _propertySearchType);
-            if (property != null)
+            if (IsValidMatch(property, name))
             {
                 return new SimpleNameExpression(property, ExpressionClassification.Property, _expression);
             }
             var function = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Function);
-            if (function != null)
+            if (IsValidMatch(function, name))
             {
                 return new SimpleNameExpression(function, ExpressionClassification.Function, _expression);
             }
             var subroutine = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Procedure);
-            if (subroutine != null)
+            if (IsValidMatch(subroutine, name))
             {
                 return new SimpleNameExpression(subroutine, ExpressionClassification.Subroutine, _expression);
             }
@@ -151,6 +153,10 @@ namespace Rubberduck.Parsing.Binding
             if (referencedProject != null)
             {
                 return new SimpleNameExpression(referencedProject, ExpressionClassification.Project, _expression);
+            }
+            if (_module.DeclarationType == DeclarationType.ProceduralModule && _declarationFinder.IsMatch(_module.IdentifierName, name))
+            {
+                return new SimpleNameExpression(_module, ExpressionClassification.ProceduralModule, _expression);
             }
             var proceduralModuleEnclosingProject = _declarationFinder.FindModuleEnclosingProjectWithoutEnclosingModule(_project, _module, name, DeclarationType.ProceduralModule);
             if (proceduralModuleEnclosingProject != null)
@@ -173,37 +179,37 @@ namespace Rubberduck.Parsing.Binding
                 within the enclosing project other than the enclosing module.  
             */
             var accessibleVariable = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Variable);
-            if (accessibleVariable != null)
+            if (IsValidMatch(accessibleVariable, name))
             {
                 return new SimpleNameExpression(accessibleVariable, ExpressionClassification.Variable, _expression);
             }
             var accessibleConstant = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Constant);
-            if (accessibleConstant != null)
+            if (IsValidMatch(accessibleConstant, name))
             {
                 return new SimpleNameExpression(accessibleConstant, ExpressionClassification.Variable, _expression);
             }
             var accessibleType = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Enumeration);
-            if (accessibleType != null)
+            if (IsValidMatch(accessibleType, name))
             {
                 return new SimpleNameExpression(accessibleType, ExpressionClassification.Type, _expression);
             }
             var accessibleMember = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.EnumerationMember);
-            if (accessibleMember != null)
+            if (IsValidMatch(accessibleMember, name))
             {
                 return new SimpleNameExpression(accessibleMember, ExpressionClassification.Value, _expression);
             }
             var accessibleProperty = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, _propertySearchType);
-            if (accessibleProperty != null)
+            if (IsValidMatch(accessibleProperty, name))
             {
                 return new SimpleNameExpression(accessibleProperty, ExpressionClassification.Property, _expression);
             }
             var accessibleFunction = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Function);
-            if (accessibleFunction != null)
+            if (IsValidMatch(accessibleFunction, name))
             {
                 return new SimpleNameExpression(accessibleFunction, ExpressionClassification.Function, _expression);
             }
             var accessibleSubroutine = _declarationFinder.FindMemberEnclosedProjectWithoutEnclosingModule(_project, _module, _parent, name, DeclarationType.Procedure);
-            if (accessibleSubroutine != null)
+            if (IsValidMatch(accessibleSubroutine, name))
             {
                 return new SimpleNameExpression(accessibleSubroutine, ExpressionClassification.Subroutine, _expression);
             }
@@ -221,6 +227,11 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(accessibleModule, ExpressionClassification.ProceduralModule, _expression);
             }
+            var defaultInstanceVariableClass = _declarationFinder.FindDefaultInstanceVariableClassReferencedProject(_project, _module, name);
+            if (defaultInstanceVariableClass != null)
+            {
+                return new SimpleNameExpression(defaultInstanceVariableClass, ExpressionClassification.Type, _expression);
+            }
             return null;
         }
 
@@ -234,78 +245,118 @@ namespace Rubberduck.Parsing.Binding
 
             // Part 1: Procedural module as parent
             var accessibleVariable = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, DeclarationType.Variable);
-            if (accessibleVariable != null)
+            if (IsValidMatch(accessibleVariable, name))
             {
                 return new SimpleNameExpression(accessibleVariable, ExpressionClassification.Variable, _expression);
             }
             var accessibleConstant = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, DeclarationType.Constant);
-            if (accessibleConstant != null)
+            if (IsValidMatch(accessibleConstant, name))
             {
                 return new SimpleNameExpression(accessibleConstant, ExpressionClassification.Variable, _expression);
             }
             var accessibleType = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, DeclarationType.Enumeration);
-            if (accessibleType != null)
+            if (IsValidMatch(accessibleType, name))
             {
                 return new SimpleNameExpression(accessibleType, ExpressionClassification.Type, _expression);
             }
             var accessibleMember = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, DeclarationType.EnumerationMember);
-            if (accessibleMember != null)
+            if (IsValidMatch(accessibleMember, name))
             {
                 return new SimpleNameExpression(accessibleMember, ExpressionClassification.Value, _expression);
             }
             var accessibleProperty = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, _propertySearchType);
-            if (accessibleProperty != null)
+            if (IsValidMatch(accessibleProperty, name))
             {
                 return new SimpleNameExpression(accessibleProperty, ExpressionClassification.Property, _expression);
             }
             var accessibleFunction = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, DeclarationType.Function);
-            if (accessibleFunction != null)
+            if (IsValidMatch(accessibleFunction, name))
             {
                 return new SimpleNameExpression(accessibleFunction, ExpressionClassification.Function, _expression);
             }
             var accessibleSubroutine = _declarationFinder.FindMemberReferencedProjectInModule(_project, _module, _parent, DeclarationType.ProceduralModule, name, DeclarationType.Procedure);
-            if (accessibleSubroutine != null)
+            if (IsValidMatch(accessibleSubroutine, name))
             {
                 return new SimpleNameExpression(accessibleSubroutine, ExpressionClassification.Subroutine, _expression);
             }
 
             // Part 2: Global class module as parent
             var globalClassModuleVariable = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, DeclarationType.Variable);
-            if (globalClassModuleVariable != null)
+            if (IsValidMatch(globalClassModuleVariable, name))
             {
                 return new SimpleNameExpression(globalClassModuleVariable, ExpressionClassification.Variable, _expression);
             }
             var globalClassModuleConstant = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, DeclarationType.Constant);
-            if (globalClassModuleConstant != null)
+            if (IsValidMatch(globalClassModuleConstant, name))
             {
                 return new SimpleNameExpression(globalClassModuleConstant, ExpressionClassification.Variable, _expression);
             }
             var globalClassModuleType = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, DeclarationType.Enumeration);
-            if (globalClassModuleType != null)
+            if (IsValidMatch(globalClassModuleType, name))
             {
                 return new SimpleNameExpression(globalClassModuleType, ExpressionClassification.Type, _expression);
             }
             var globalClassModuleMember = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, DeclarationType.EnumerationMember);
-            if (globalClassModuleMember != null)
+            if (IsValidMatch(globalClassModuleMember, name))
             {
                 return new SimpleNameExpression(globalClassModuleMember, ExpressionClassification.Value, _expression);
             }
             var globalClassModuleProperty = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, _propertySearchType);
-            if (globalClassModuleProperty != null)
+            if (IsValidMatch(globalClassModuleProperty, name))
             {
                 return new SimpleNameExpression(globalClassModuleProperty, ExpressionClassification.Property, _expression);
             }
             var globalClassModuleFunction = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, DeclarationType.Function);
-            if (globalClassModuleFunction != null)
+            if (IsValidMatch(globalClassModuleFunction, name))
             {
                 return new SimpleNameExpression(globalClassModuleFunction, ExpressionClassification.Function, _expression);
             }
             var globalClassModuleSubroutine = _declarationFinder.FindMemberReferencedProjectInGlobalClassModule(_project, _module, _parent, name, DeclarationType.Procedure);
-            if (globalClassModuleSubroutine != null)
+            if (IsValidMatch(globalClassModuleSubroutine, name))
             {
                 return new SimpleNameExpression(globalClassModuleSubroutine, ExpressionClassification.Subroutine, _expression);
             }
             return null;
+        }
+
+        private bool IsValidMatch(Declaration match, string name)
+        {
+            /*
+               If the match has the name value "Left", references a function or subroutine that has no 
+                parameters, or a property with a Property Get that has no parameters, the declared type of the 
+                match is any type except a specific class, Object or Variant, and this simple name expression is 
+                the <l-expression> within an index expression with an argument list containing 2 arguments, 
+                discard the match and continue searching for a match on lower tiers. 
+
+                Note: In other words, the built-in Left function is given highest priority?
+            */
+            if (match == null)
+            {
+                return false;
+            }
+            if (!IsPotentialLeftMatch || name.ToUpperInvariant() != "LEFT")
+            {
+                return true;
+            }
+            var functionSubroutinePropertyGet = match.DeclarationType == DeclarationType.Function
+                || match.DeclarationType == DeclarationType.Procedure
+                || match.DeclarationType == DeclarationType.PropertyGet;
+            if (!functionSubroutinePropertyGet)
+            {
+                return true;
+            }
+            if (((IDeclarationWithParameter)match).Parameters.Count() > 0)
+            {
+                return true;
+            }
+            if (match.AsTypeName != null
+                && match.AsTypeName.ToUpperInvariant() != "VARIANT"
+                && match.AsTypeName.ToUpperInvariant() != "OBJECT"
+                && match.AsTypeIsBaseType)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

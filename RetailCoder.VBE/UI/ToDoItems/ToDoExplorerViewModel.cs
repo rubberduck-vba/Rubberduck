@@ -37,7 +37,21 @@ namespace Rubberduck.UI.ToDoItems
                     OnPropertyChanged();
                 }
             }
-        } 
+        }
+
+        private bool _groupByMarker = true;
+        public bool GroupByMarker
+        {
+            get { return _groupByMarker; }
+            set
+            {
+                if (_groupByMarker != value)
+                {
+                    _groupByMarker = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         private ICommand _refreshCommand;
         public ICommand RefreshCommand

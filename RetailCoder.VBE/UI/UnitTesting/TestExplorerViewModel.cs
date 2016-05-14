@@ -8,7 +8,6 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
 using Rubberduck.UnitTesting;
-using resx = Rubberduck.UI.RubberduckUI;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -86,6 +85,20 @@ namespace Rubberduck.UI.UnitTesting
             {
                 _selectedTest = value;
                 OnPropertyChanged();
+            }
+        }
+
+        private bool _groupByOutcome = true;
+        public bool GroupByOutcome
+        {
+            get { return _groupByOutcome; }
+            set
+            {
+                if (_groupByOutcome != value)
+                {
+                    _groupByOutcome = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
