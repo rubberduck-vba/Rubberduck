@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections;
 using Rubberduck.SettingsProvider;
@@ -8,11 +7,9 @@ namespace Rubberduck.Settings
 {
     public interface ICodeInspectionConfigProvider
     {
-        //CodeInspectionConfig Create();
         CodeInspectionSettings Create(IEnumerable<IInspection> inspections);
         CodeInspectionSettings CreateDefaults();
         void Save(CodeInspectionSettings settings);
-        event EventHandler LanguageChanged;
     }
 
     public class CodeInspectionConfigProvider : ICodeInspectionConfigProvider
@@ -24,13 +21,6 @@ namespace Rubberduck.Settings
         {
             _persister = persister;
         }
-
-        //public CodeInspectionConfig Create()
-        //{
-        //    //var prototype = new CodeInspectionConfig(_inspections);
-        //    //return _persister.Load(prototype) ?? prototype;
-        //    return null;
-        //}
 
         public CodeInspectionSettings Create(IEnumerable<IInspection> inspections)
         {
@@ -57,21 +47,6 @@ namespace Rubberduck.Settings
             return new HashSet<CodeInspectionSetting>(_inspections.Select(x =>
                         new CodeInspectionSetting(x.Name, x.Description, x.InspectionType, x.DefaultSeverity,
                             x.DefaultSeverity)));
-        }
-
-        private void ApplicationLanguageChanged(object sender, EventArgs e)
-        {
-            OnLanguageChanged(e);
-        }
-
-        public event EventHandler LanguageChanged;
-        protected virtual void OnLanguageChanged(EventArgs e)
-        {
-            var handler = LanguageChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
         }
     }
 }

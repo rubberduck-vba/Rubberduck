@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections;
 using Rubberduck.Settings;
@@ -13,7 +14,7 @@ namespace RubberduckTests.Settings
         {
             var inspectionSettings = new CodeInspectionSettings
             {
-                CodeInspections = new[]
+                CodeInspections = new HashSet<CodeInspectionSetting>(new[]
                 {
                     new CodeInspectionSetting("DoNotShowInspection", "Do not show me", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.DoNotShow, CodeInspectionSeverity.DoNotShow),
                     new CodeInspectionSetting("HintInspection", "I'm a hint", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Hint, CodeInspectionSeverity.Hint),
@@ -21,10 +22,10 @@ namespace RubberduckTests.Settings
                     new CodeInspectionSetting("WarningInspection", "I'm a warning", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Warning, CodeInspectionSeverity.Warning),
                     new CodeInspectionSetting("ErrorInspection", "FIX ME!", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error, CodeInspectionSeverity.Error),
                     new CodeInspectionSetting("NondefaultSeverityInspection", "I do not have my original severity", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Warning, CodeInspectionSeverity.DoNotShow)
-                }
+                })
             };
 
-            var userSettings = new UserSettings(null, null, inspectionSettings, null, null);
+            var userSettings = new UserSettings(null, null, null, inspectionSettings, null, null);
             return new Configuration(userSettings);
         }
 
@@ -32,7 +33,7 @@ namespace RubberduckTests.Settings
         {
             var inspectionSettings = new CodeInspectionSettings
             {
-                CodeInspections = new[]
+                CodeInspections = new HashSet<CodeInspectionSetting>(new[]
                 {
                     new CodeInspectionSetting("DoNotShowInspection", "Do not show me", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.DoNotShow, CodeInspectionSeverity.Warning),
                     new CodeInspectionSetting("HintInspection", "I'm a hint", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Hint, CodeInspectionSeverity.Suggestion),
@@ -40,10 +41,10 @@ namespace RubberduckTests.Settings
                     new CodeInspectionSetting("WarningInspection", "I'm a warning", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Warning, CodeInspectionSeverity.Error),
                     new CodeInspectionSetting("ErrorInspection", "FIX ME!", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Error, CodeInspectionSeverity.DoNotShow),
                     new CodeInspectionSetting("NondefaultSeverityInspection", "I do not have my original severity", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Warning, CodeInspectionSeverity.Error)
-                }
+                })
             };
 
-            var userSettings = new UserSettings(null, null, inspectionSettings, null, null);
+            var userSettings = new UserSettings(null, null, null, inspectionSettings, null, null);
             return new Configuration(userSettings);
         }
 
@@ -89,11 +90,11 @@ namespace RubberduckTests.Settings
             var viewModel = new InspectionSettingsViewModel(defaultConfig);
 
             viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>().First().Severity =
-                GetNondefaultConfig().UserSettings.CodeInspectionSettings.CodeInspections[0].Severity;
+                GetNondefaultConfig().UserSettings.CodeInspectionSettings.CodeInspections.First().Severity;
 
             var updatedConfig = defaultConfig;
-            updatedConfig.UserSettings.CodeInspectionSettings.CodeInspections[0].Severity =
-                GetNondefaultConfig().UserSettings.CodeInspectionSettings.CodeInspections[0].Severity;
+            updatedConfig.UserSettings.CodeInspectionSettings.CodeInspections.First().Severity =
+                GetNondefaultConfig().UserSettings.CodeInspectionSettings.CodeInspections.First().Severity;
 
             Assert.IsTrue(updatedConfig.UserSettings.CodeInspectionSettings.CodeInspections.SequenceEqual(
                     viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));

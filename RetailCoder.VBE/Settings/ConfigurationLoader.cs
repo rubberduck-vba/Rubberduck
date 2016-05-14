@@ -38,9 +38,9 @@ namespace Rubberduck.Settings
         /// <summary>
         /// Loads the configuration from Rubberduck.config xml file.
         /// </summary>
-        public Configuration LoadConfiguration()
+        public virtual Configuration LoadConfiguration()
         {
-            return new Configuration
+            var config = new Configuration
             {
                 UserSettings = new UserSettings
                 (
@@ -52,16 +52,18 @@ namespace Rubberduck.Settings
                     _indenterProvider.Create()
                 )
             };
+            MergeImplementedInspectionsNotInConfig(config.UserSettings.CodeInspectionSettings);
+            return config;
         }
 
-        private List<CodeInspectionSetting> MergeImplementedInspectionsNotInConfig(List<CodeInspectionSetting> configInspections, IEnumerable<IInspection> implementedInspections)
+        private void MergeImplementedInspectionsNotInConfig(ICodeInspectionSettings config)
         {
-            foreach (var implementedInspection in implementedInspections)
+            foreach (var implementedInspection in _inspections)
             {
-                var inspection = configInspections.SingleOrDefault(i => i.Name == implementedInspection.Name);
+                var inspection = config.CodeInspections.SingleOrDefault(i => i.Name.Equals(implementedInspection.Name));
                 if (inspection == null)
                 {
-                    configInspections.Add(new CodeInspectionSetting(implementedInspection));
+                    config.CodeInspections.Add(new CodeInspectionSetting(implementedInspection));
                 }
                 else
                 {
@@ -69,7 +71,6 @@ namespace Rubberduck.Settings
                     inspection.Description = implementedInspection.Description;
                 }
             }
-            return configInspections;
         }
 
         public Configuration GetDefaultConfiguration()
