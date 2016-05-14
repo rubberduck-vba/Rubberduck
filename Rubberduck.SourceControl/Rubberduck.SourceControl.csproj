@@ -66,6 +66,8 @@
     <Compile Include="IRepository.cs" />
     <Compile Include="ISourceControlProvider.cs" />
     <Compile Include="Repository.cs" />
+    <Compile Include="SourceControlSettings.cs" />
+    <Compile Include="SourceControlConfigProvider.cs" />
     <Compile Include="SourceControlException.cs" />
     <Compile Include="SourceControlProviderBase.cs" />
     <Compile Include="SourceControlText.Designer.cs">
@@ -78,6 +80,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
+      <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
+      <Name>Rubberduck.SettingsProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
