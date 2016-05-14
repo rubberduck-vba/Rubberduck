@@ -22,12 +22,10 @@ namespace Rubberduck.Settings
     public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IGeneralConfigService
     {
         private readonly IEnumerable<IInspection> _inspections;
-        private readonly IEnumerable<ICommand> _commands;
 
-        public ConfigurationLoader(IEnumerable<IInspection> inspections, IEnumerable<ICommand> commands)
+        public ConfigurationLoader(IEnumerable<IInspection> inspections)
         {
             _inspections = inspections;
-            _commands = commands;
         }
 
         protected override string ConfigFile
@@ -51,10 +49,6 @@ namespace Rubberduck.Settings
             if (config.UserSettings.GeneralSettings == null)
             {
                 config.UserSettings.GeneralSettings = GetDefaultGeneralSettings();
-            }
-            else
-            {
-                AssociateHotkeyCommands(config);
             }
 
             // 0 is the default, and parses just fine into a `char`.  We require '.' or '/'.
@@ -84,47 +78,11 @@ namespace Rubberduck.Settings
             }
 
             var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
-            
+
             configInspections = MergeImplementedInspectionsNotInConfig(configInspections, _inspections);
             config.UserSettings.CodeInspectionSettings.CodeInspections = configInspections.ToArray();
 
             return config;
-        }
-
-        private IDictionary<RubberduckHotkey, ICommand> GetCommandMappings()
-        {
-            return new Dictionary<RubberduckHotkey, ICommand>
-            {
-                { RubberduckHotkey.ParseAll, Command<ReparseCommand>() },
-                { RubberduckHotkey.CodeExplorer, Command<CodeExplorerCommand>() },
-                { RubberduckHotkey.IndentModule, Command<IndentCurrentModuleCommand>() },
-                { RubberduckHotkey.IndentProcedure, Command<IndentCurrentProcedureCommand>() },
-                { RubberduckHotkey.FindSymbol, Command<FindSymbolCommand>() },
-                { RubberduckHotkey.RefactorMoveCloserToUsage, Command<RefactorMoveCloserToUsageCommand>() },
-                { RubberduckHotkey.InspectionResults, Command<InspectionResultsCommand>() },
-                { RubberduckHotkey.RefactorExtractMethod, Command<RefactorExtractMethodCommand>() },
-                { RubberduckHotkey.RefactorRename, Command<CodePaneRefactorRenameCommand>() },
-                { RubberduckHotkey.TestExplorer, Command<TestExplorerCommand>() }
-            };
-        }
-
-        private ICommand Command<TCommand>() where TCommand : ICommand
-        {
-            return _commands.OfType<TCommand>().SingleOrDefault();
-        }
-
-        private void AssociateHotkeyCommands(Configuration config)
-        {
-            var mappings = GetCommandMappings();
-            foreach (var setting in config.UserSettings.GeneralSettings.HotkeySettings)
-            {
-                RubberduckHotkey hotkey;
-                if (Enum.TryParse(setting.Name, out hotkey))
-                {
-                    setting.Command = mappings[hotkey];
-                    ((CommandBase)setting.Command).ShortcutText = setting.ToMenuHotkeyString(); // yuck
-                }
-            }
         }
 
         protected override Configuration HandleIOException(IOException ex)
@@ -154,6 +112,15 @@ namespace Rubberduck.Settings
             return config;
         }
 
+        /// <summary>   Converts implemented code inspections into array of Config.CodeInspection objects. </summary>
+        /// <returns>   An array of Config.CodeInspection. </returns>
+        public CodeInspectionSetting[] GetDefaultCodeInspections()
+        {
+            return _inspections.Select(x =>
+                        new CodeInspectionSetting(x.Name, x.Description, x.InspectionType, x.DefaultSeverity,
+                            x.DefaultSeverity)).ToArray();
+        }
+
         private List<CodeInspectionSetting> MergeImplementedInspectionsNotInConfig(List<CodeInspectionSetting> configInspections, IEnumerable<IInspection> implementedInspections)
         {
             foreach (var implementedInspection in implementedInspections)
@@ -175,9 +142,11 @@ namespace Rubberduck.Settings
         public Configuration GetDefaultConfiguration()
         {
             var userSettings = new UserSettings(
-                                    GetDefaultGeneralSettings(), 
+                                    GetDefaultGeneralSettings(),
+                                    new HotkeySettings(), 
                                     new ToDoListSettings(GetDefaultTodoMarkers()),
                                     new CodeInspectionSettings(GetDefaultCodeInspections()),
+                                    //new CodeInspectionSettings(), 
                                     new UnitTestSettings(),
                                     GetDefaultIndenterSettings());
 
@@ -186,22 +155,7 @@ namespace Rubberduck.Settings
 
         private GeneralSettings GetDefaultGeneralSettings()
         {
-            var commandMappings = GetCommandMappings();
-            return new GeneralSettings(new DisplayLanguageSetting("en-US"),
-                new[]
-                {
-                    new HotkeySetting{Name=RubberduckHotkey.ParseAll.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="`", Command = commandMappings[RubberduckHotkey.ParseAll]},
-                    new HotkeySetting{Name=RubberduckHotkey.IndentProcedure.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="P", Command = commandMappings[RubberduckHotkey.IndentProcedure]},
-                    new HotkeySetting{Name=RubberduckHotkey.IndentModule.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="M", Command = commandMappings[RubberduckHotkey.IndentModule]},
-                    new HotkeySetting{Name=RubberduckHotkey.CodeExplorer.ToString(), IsEnabled=false, HasCtrlModifier = true, Key1="R", Command = commandMappings[RubberduckHotkey.CodeExplorer]},
-                    new HotkeySetting{Name=RubberduckHotkey.FindSymbol.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="T", Command = commandMappings[RubberduckHotkey.InspectionResults]},
-                    new HotkeySetting{Name=RubberduckHotkey.InspectionResults.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="I", Command = commandMappings[RubberduckHotkey.InspectionResults]},
-                    new HotkeySetting{Name=RubberduckHotkey.TestExplorer.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="T", Command = commandMappings[RubberduckHotkey.TestExplorer]},
-                    new HotkeySetting{Name=RubberduckHotkey.RefactorMoveCloserToUsage.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="C", Command = commandMappings[RubberduckHotkey.RefactorMoveCloserToUsage]},
-                    new HotkeySetting{Name=RubberduckHotkey.RefactorRename.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="R", Command = commandMappings[RubberduckHotkey.RefactorRename]},
-                    new HotkeySetting{Name=RubberduckHotkey.RefactorExtractMethod.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="M", Command = commandMappings[RubberduckHotkey.RefactorExtractMethod]}
-                },
-                false, 10, '.');
+            return new GeneralSettings();
         }
 
         public ToDoMarker[] GetDefaultTodoMarkers()
@@ -211,15 +165,6 @@ namespace Rubberduck.Settings
             var bug = new ToDoMarker(RubberduckUI.TodoMarkerBug);
 
             return new[] { note, todo, bug };
-        }
-
-        /// <summary>   Converts implemented code inspections into array of Config.CodeInspection objects. </summary>
-        /// <returns>   An array of Config.CodeInspection. </returns>
-        public CodeInspectionSetting[] GetDefaultCodeInspections()
-        {
-            return _inspections.Select(x =>
-                        new CodeInspectionSetting(x.Name, x.Description, x.InspectionType, x.DefaultSeverity,
-                            x.DefaultSeverity)).ToArray();
         }
 
         public IndenterSettings GetDefaultIndenterSettings()

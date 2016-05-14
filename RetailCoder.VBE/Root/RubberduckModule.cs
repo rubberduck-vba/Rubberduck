@@ -299,10 +299,10 @@ namespace Rubberduck.Root
                         var binding = _kernel.Bind<ICommand>().To(command);
                         var whenCommandMenuItemCondition =
                             binding.WhenInjectedInto(item).BindingConfiguration.Condition;
-                        var whenConfigurationLoaderCondition =
-                            binding.WhenInjectedInto<ConfigurationLoader>().BindingConfiguration.Condition;
+                        var whenHooksCondition =
+                            binding.WhenInjectedInto<RubberduckHooks>().BindingConfiguration.Condition;
 
-                        binding.When(request => whenCommandMenuItemCondition(request) || whenConfigurationLoaderCondition(request))
+                        binding.When(request => whenCommandMenuItemCondition(request) || whenHooksCondition(request))
                                .InSingletonScope();
 
                         //_kernel.Bind<ICommand>().To(command).WhenInjectedExactlyInto(item);

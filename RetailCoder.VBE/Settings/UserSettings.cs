@@ -6,6 +6,7 @@ namespace Rubberduck.Settings
     public class UserSettings
     {
         public GeneralSettings GeneralSettings { get; set; }
+        public HotkeySettings HotkeySettings { get; set; }
         public ToDoListSettings ToDoListSettings { get; set; }
         public CodeInspectionSettings CodeInspectionSettings { get; set; }
         public UnitTestSettings UnitTestSettings { get; set; }
@@ -17,12 +18,14 @@ namespace Rubberduck.Settings
         }
 
         public UserSettings(GeneralSettings generalSettings,
+                            HotkeySettings hotkeySettings,
                             ToDoListSettings todoSettings, 
                             CodeInspectionSettings codeInspectionSettings,
                             UnitTestSettings unitTestSettings,
                             IndenterSettings indenterSettings)
         {
             GeneralSettings = generalSettings;
+            HotkeySettings = hotkeySettings;
             ToDoListSettings = todoSettings;
             CodeInspectionSettings = codeInspectionSettings;
             UnitTestSettings = unitTestSettings;

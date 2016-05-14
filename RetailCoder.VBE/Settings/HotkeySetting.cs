@@ -22,9 +22,6 @@ namespace Rubberduck.Settings
         public bool HasCtrlModifier { get; set; }
 
         [XmlIgnore]
-        public ICommand Command { get; set; }
-
-        [XmlIgnore]
         public string Prompt
         {
             get { return RubberduckUI.ResourceManager.GetString("HotkeyDescription_" + Name); } 

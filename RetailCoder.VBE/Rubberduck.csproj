@@ -372,6 +372,8 @@
     <Compile Include="Navigation\CodeExplorer\CodeExplorerErrorNodeViewModel.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
+    <Compile Include="Settings\HotkeySettings.cs" />
+    <Compile Include="Settings\HotkeyConfigProvider.cs" />
     <Compile Include="Settings\RubberduckHotkey.cs" />
     <Compile Include="UI\About\AboutControl.xaml.cs">
       <DependentUpon>AboutControl.xaml</DependentUpon>
@@ -1424,6 +1426,10 @@
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</Project>
       <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
+      <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
+      <Name>Rubberduck.SettingsProvider</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
       <Project>{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}</Project>

@@ -17,13 +17,7 @@ namespace Rubberduck.Settings
         public string DefaultRepositoryLocation { get; set; }
         public List<Repository> Repositories;
 
-        public SourceControlConfiguration()
-        {
-            Repositories = new List<Repository>();
-            UserName = string.Empty;
-            EmailAddress = string.Empty;
-            DefaultRepositoryLocation = string.Empty;
-        }
+        public SourceControlConfiguration() : this(string.Empty, string.Empty, string.Empty, new List<Repository>()) { }
 
         public SourceControlConfiguration
             (
