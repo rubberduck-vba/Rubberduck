@@ -29,9 +29,10 @@ Public Sub CodeWithDeclaration()
     x = 1 + 2
     DebugPrint x
     y = x + 1
+    x = 2
     DebugPrint y
 
-    z = 2
+    z = x
     DebugPrint z
 
 End Sub
@@ -43,6 +44,7 @@ End Sub
 
                 var selectedCode = @"
 y = x + 1 
+x = 2
 Debug.Print y";
                 #endregion
 
@@ -51,7 +53,7 @@ Debug.Print y";
                 MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
                 var declarations = state.AllDeclarations;
 
-                var selection = new Selection(10, 1, 11, 17);
+                var selection = new Selection(10, 1, 12, 17);
                 QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
                 var extractedMethodModel = new ExtractMethodModel(declarations, qSelection.Value, selectedCode);
 

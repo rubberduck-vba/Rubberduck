@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
@@ -12,6 +14,46 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
+
+    public interface IExtractMethodRule
+    {
+        void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection);
+    }
+    public class ExtractMethodRuleUsedBefore : IExtractMethodRule
+    {
+        public void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection)
+        {
+            if (reference.Selection.StartLine < selection.StartLine)
+                flags = (byte)(flags | 1);
+        }
+    }
+    public class ExtractMethodRuleUsedAfter : IExtractMethodRule
+    {
+        public void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection)
+        {
+            if (reference.Selection.StartLine > selection.EndLine)
+                flags = (byte)(flags | 2);
+        }
+    }
+    public class ExtractMethodRuleIsAssignedInSelection : IExtractMethodRule
+    {
+        public void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection)
+        {
+            if (selection.StartLine <= reference.Selection.StartLine && reference.Selection.StartLine <= selection.EndLine)
+            {
+                if (reference.IsAssignment)
+                    flags = (byte)(flags | 4);
+            }
+        }
+    }
+    public class ExtractMethodRuleInSelection : IExtractMethodRule
+    {
+        public void setValidFlag(ref byte flags, IdentifierReference reference, Selection selection)
+        {
+            if (selection.StartLine <= reference.Selection.StartLine && reference.Selection.StartLine <= selection.EndLine)
+                flags = (byte)(flags | 8);
+        }
+    }
     public class ExtractMethodModel : IExtractMethodModel
     {
         private const string NEW_METHOD = "NewMethod";
@@ -34,75 +76,45 @@ namespace Rubberduck.Refactorings.ExtractMethod
             var selectionEndLine = selection.Selection.EndLine;
 
             var inScopeDeclarations = items.Where(item => item.ParentScope == _sourceMember.Scope).ToList();
-            var inScopeReferences = inScopeDeclarations.SelectMany(item => item.References).ToList();
 
-            // | w  -----------  x  ------------  y  --------------  z |
-            // ( w -< x )
-            var usedBeforeStart = inScopeReferences.Where(inSRef => inSRef.Selection.StartLine < selectionStartLine).ToList();
-            // ( y <- z )
-            var usedAfterEnd = inScopeReferences.Where(inSRef => inSRef.Selection.StartLine > selectionStartLine).ToList();
-
-            // ( x -- y ) + assigned
-            var inSelection = inScopeReferences.Except(usedAfterEnd).Except(usedBeforeStart).ToList();
-            var assignedInSelection = inSelection.Where(insRef => insRef.IsAssignment).ToList();
+            var rules = new List<IExtractMethodRule>(){
+                new ExtractMethodRuleUsedBefore(),
+                new ExtractMethodRuleUsedAfter(),
+                new ExtractMethodRuleInSelection(),
+                new ExtractMethodRuleIsAssignedInSelection()};
+            
+            _byref = new List<Declaration>();
+            _byval = new List<Declaration>();
+            _moveIn = new List<Declaration>();
+            _declarationsToMove = new List<Declaration>();
 
             // https://github.com/rubberduck-vba/Rubberduck/wiki/Extract-Method-Refactoring-%3A-Workings---Determining-what-params-to-move
-            // usedIn + assignedInSelection + !usedAfter + !usedBefore
-            var moveIn = inScopeReferences.Where(insRef => 
-                            inSelection.Contains(insRef) && 
-                            assignedInSelection.Contains(insRef) && 
-                            !usedAfterEnd.Contains(insRef) && 
-                            !usedBeforeStart.Contains(insRef)).ToList();
-            // usedIn + !assignedIn + usedBefore
-            var byVal = inScopeReferences.Where(insRef => 
-                            inSelection.Contains(insRef) && 
-                            !assignedInSelection.Contains(insRef) && 
-                            !usedBeforeStart.Contains(insRef)).ToList();
-            // usedIn + assignedIn + usedAfter + usedBefore
-            var byRef = inScopeReferences.Where(insRef => 
-                            inSelection.Contains(insRef) && 
-                            assignedInSelection.Contains(insRef) && 
-                            usedAfterEnd.Contains(insRef)).ToList();
+            foreach (var item in inScopeDeclarations)
+            {
+                var flags = new Byte();
 
-            var usedInSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
-                selection.Selection.Contains(item.Selection) ||
-                item.References.Any(reference => inSelection.Contains(reference))));
+                foreach (var oRef in item.References)
+                {
+                    foreach (var rule in rules)
+                    {
+                        rule.setValidFlag(ref flags, oRef, _selection.Selection);
+                    }
+                }
 
-            var usedBeforeSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
-                item.Selection.StartLine < selection.Selection.StartLine ||
-                item.References.Any(reference => reference.Selection.StartLine < selection.Selection.StartLine)));
+                if (flags < 4) { }
+                else if (flags < 12)
+                    _byref.Add(item);
+                else if (flags == 12)
+                    _declarationsToMove.Add(item);
+                else if (flags > 12)
+                    _byval.Add(item);
 
-            var usedAfterSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
-                item.Selection.StartLine > selection.Selection.StartLine ||
-                item.References.Any(reference => reference.Selection.StartLine > selection.Selection.EndLine)));
+            }
 
-            // identifiers used inside selection and before selection (or if it's a parameter) are candidates for parameters:
-            var input = inScopeDeclarations.Where(item =>
-                usedInSelection.Contains(item) && (usedBeforeSelection.Contains(item) || item.DeclarationType == DeclarationType.Parameter)).ToList();
 
-            // identifiers used inside selection and after selection are candidates for return values:
-            var output = inScopeDeclarations.Where(item =>
-                usedInSelection.Contains(item) && usedAfterSelection.Contains(item))
-                .ToList();
+            var methodParams = _byref.Select(dec => new ExtractedParameter(dec.AsTypeName, ExtractedParameter.PassedBy.ByRef,dec.IdentifierName))
+                                .Union(_byval.Select(dec => new ExtractedParameter(dec.AsTypeName, ExtractedParameter.PassedBy.ByVal ,dec.IdentifierName)));
 
-            // identifiers used only inside and/or after selection are candidates for locals:
-            _locals = inScopeDeclarations.Where(item => item.DeclarationType != DeclarationType.Parameter && (
-                item.References.All(reference => inSelection.Contains(reference))
-                || (usedAfterSelection.Contains(item) && (!usedBeforeSelection.Contains(item)))))
-                .ToList();
-
-            // locals that are only used in selection are candidates for being moved into the new method:
-            _declarationsToMove = _locals.Where(item => !usedAfterSelection.Contains(item)).ToList();
-
-            _output = output.Select(declaration =>
-                new ExtractedParameter(declaration.AsTypeName, ExtractedParameter.PassedBy.ByRef, declaration.IdentifierName));
-
-            _input = input.Where(declaration => !output.Contains(declaration))
-                .Select(declaration =>
-                    new ExtractedParameter(declaration.AsTypeName, ExtractedParameter.PassedBy.ByRef, declaration.IdentifierName));
-
-            var methodParams = _output.Union(_input);
-            
             var newMethodName = NEW_METHOD;
 
             var newMethodInc = 0;
@@ -120,6 +132,10 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _extractedMethod.SetReturnValue = false;
             _extractedMethod.Parameters = methodParams.ToList();
         }
+
+        private readonly List<Declaration> _byref;
+        private readonly List<Declaration> _byval;
+        private readonly List<Declaration> _moveIn;
 
         private readonly Declaration _sourceMember;
         public Declaration SourceMember { get { return _sourceMember; } }
