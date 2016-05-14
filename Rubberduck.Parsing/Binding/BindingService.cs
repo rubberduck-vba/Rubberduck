@@ -37,15 +37,8 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression ResolveDefault(Declaration module, Declaration parent, string expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext)
         {
-            try
-            {
-                var expr = Parse(expression.Trim());
-                return _defaultBindingContext.Resolve(module, parent, expr, withBlockVariable, statementContext);
-            }
-            catch
-            {
-                return null;
-            }
+            var expr = Parse(expression.Trim());
+            return _defaultBindingContext.Resolve(module, parent, expr, withBlockVariable, statementContext);
         }
 
         public IBoundExpression ResolveType(Declaration module, Declaration parent, string expression)

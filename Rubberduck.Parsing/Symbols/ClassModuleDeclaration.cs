@@ -45,6 +45,15 @@ namespace Rubberduck.Parsing.Symbols
             _subtypes = new HashSet<Declaration>();
         }
 
+        public static IEnumerable<Declaration> GetSupertypes(Declaration type)
+        {
+            if (type.DeclarationType != DeclarationType.ClassModule)
+            {
+                return new List<Declaration>();
+            }
+            return ((ClassModuleDeclaration)type).Supertypes;
+        }
+
         /// <summary>
         /// Gets an attribute value indicating whether a class is exposed to other projects.
         /// If this value is false, any public types and members cannot be accessed from outside the project they're declared in.
