@@ -51,7 +51,7 @@ Debug.Print y";
                 MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
                 var declarations = state.AllDeclarations;
 
-                var selection = new Selection(9, 1, 10, 17);
+                var selection = new Selection(10, 1, 11, 17);
                 QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
                 var extractedMethodModel = new ExtractMethodModel(declarations, qSelection.Value, selectedCode);
 

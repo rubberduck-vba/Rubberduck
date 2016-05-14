@@ -38,20 +38,31 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             // | w  -----------  x  ------------  y  --------------  z |
             // ( w -< x )
-            var usedBeforeStart = inScopeReferences.Where(inSRef => inSRef.Selection.StartLine < selectionStartLine);
+            var usedBeforeStart = inScopeReferences.Where(inSRef => inSRef.Selection.StartLine < selectionStartLine).ToList();
             // ( y <- z )
-            var usedAfterEnd = inScopeReferences.Where(inSRef => inSRef.Selection.StartLine > selectionStartLine);
+            var usedAfterEnd = inScopeReferences.Where(inSRef => inSRef.Selection.StartLine > selectionStartLine).ToList();
 
             // ( x -- y ) + assigned
-            var inSelection = inScopeReferences.Except(usedAfterEnd).Except(usedBeforeStart);
-            var assignedInSelection = inSelection.Where(insRef => insRef.IsAssignment);
+            var inSelection = inScopeReferences.Except(usedAfterEnd).Except(usedBeforeStart).ToList();
+            var assignedInSelection = inSelection.Where(insRef => insRef.IsAssignment).ToList();
 
+            // https://github.com/rubberduck-vba/Rubberduck/wiki/Extract-Method-Refactoring-%3A-Workings---Determining-what-params-to-move
             // usedIn + assignedInSelection + !usedAfter + !usedBefore
-            var moveIn = inSelection.Intersect(assignedInSelection).Except(usedBeforeStart).Except(usedAfterEnd);
+            var moveIn = inScopeReferences.Where(insRef => 
+                            inSelection.Contains(insRef) && 
+                            assignedInSelection.Contains(insRef) && 
+                            !usedAfterEnd.Contains(insRef) && 
+                            !usedBeforeStart.Contains(insRef)).ToList();
             // usedIn + !assignedIn + usedBefore
-            var byVal = inSelection.Except(assignedInSelection).Intersect(usedBeforeStart);
+            var byVal = inScopeReferences.Where(insRef => 
+                            inSelection.Contains(insRef) && 
+                            !assignedInSelection.Contains(insRef) && 
+                            !usedBeforeStart.Contains(insRef)).ToList();
             // usedIn + assignedIn + usedAfter + usedBefore
-            var byRef = inSelection.Intersect(assignedInSelection).Intersect(usedAfterEnd).Intersect(usedBeforeStart);
+            var byRef = inScopeReferences.Where(insRef => 
+                            inSelection.Contains(insRef) && 
+                            assignedInSelection.Contains(insRef) && 
+                            usedAfterEnd.Contains(insRef)).ToList();
 
             var usedInSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
                 selection.Selection.Contains(item.Selection) ||
