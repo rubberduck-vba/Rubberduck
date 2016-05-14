@@ -31,60 +31,18 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.listOrLabel"/>.
+	/// Visit a parse tree produced by <see cref="VBAParser.tabNumber"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitListOrLabel([NotNull] VBAParser.ListOrLabelContext context);
+	Result VisitTabNumber([NotNull] VBAParser.TabNumberContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.seekStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBAParser.spcClause"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitSeekStmt([NotNull] VBAParser.SeekStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.fileNumber"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitFileNumber([NotNull] VBAParser.FileNumberContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.constStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitConstStmt([NotNull] VBAParser.ConstStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.argDefaultValue"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitArgDefaultValue([NotNull] VBAParser.ArgDefaultValueContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.propertyLetStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitPropertyLetStmt([NotNull] VBAParser.PropertyLetStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.moduleAttributes"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitModuleAttributes([NotNull] VBAParser.ModuleAttributesContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.typeStmt_Element"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitTypeStmt_Element([NotNull] VBAParser.TypeStmt_ElementContext context);
+	Result VisitSpcClause([NotNull] VBAParser.SpcClauseContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>ECS_ProcedureCall</c>
@@ -95,25 +53,11 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitECS_ProcedureCall([NotNull] VBAParser.ECS_ProcedureCallContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.type"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitType([NotNull] VBAParser.TypeContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.rsetStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitRsetStmt([NotNull] VBAParser.RsetStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.inputStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitInputStmt([NotNull] VBAParser.InputStmtContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsAdd</c>
@@ -131,13 +75,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitLsetStmt([NotNull] VBAParser.LsetStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.declareStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitDeclareStmt([NotNull] VBAParser.DeclareStmtContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.implicitCallStmt_InBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -145,40 +82,11 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitImplicitCallStmt_InBlock([NotNull] VBAParser.ImplicitCallStmt_InBlockContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.resetStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitResetStmt([NotNull] VBAParser.ResetStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>vsNew</c>
-	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitVsNew([NotNull] VBAParser.VsNewContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.remComment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitRemComment([NotNull] VBAParser.RemCommentContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.block"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitBlock([NotNull] VBAParser.BlockContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.setStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitSetStmt([NotNull] VBAParser.SetStmtContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsNegation</c>
@@ -196,13 +104,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitLetterSpec([NotNull] VBAParser.LetterSpecContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.onErrorStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitOnErrorStmt([NotNull] VBAParser.OnErrorStmtContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.fieldLength"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -216,13 +117,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitECS_MemberCall([NotNull] VBAParser.ECS_MemberCallContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.identifier"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitIdentifier([NotNull] VBAParser.IdentifierContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.dictionaryCallStmt"/>.
@@ -244,20 +138,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitRedimSubStmt([NotNull] VBAParser.RedimSubStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.attributeStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAttributeStmt([NotNull] VBAParser.AttributeStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.enumerationStmt_Constant"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitEnumerationStmt_Constant([NotNull] VBAParser.EnumerationStmt_ConstantContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.module"/>.
@@ -289,39 +169,11 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVsICS([NotNull] VBAParser.VsICSContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.implicitCallStmt_InStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitImplicitCallStmt_InStmt([NotNull] VBAParser.ImplicitCallStmt_InStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.typeOfIsExpression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitTypeOfIsExpression([NotNull] VBAParser.TypeOfIsExpressionContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.moduleDeclarations"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitModuleDeclarations([NotNull] VBAParser.ModuleDeclarationsContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.explicitCallStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitExplicitCallStmt([NotNull] VBAParser.ExplicitCallStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.onGoSubStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitOnGoSubStmt([NotNull] VBAParser.OnGoSubStmtContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.iCS_B_MemberProcedureCall"/>.
@@ -331,11 +183,19 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitICS_B_MemberProcedureCall([NotNull] VBAParser.ICS_B_MemberProcedureCallContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.outputList"/>.
+	/// Visit a parse tree produced by <see cref="VBAParser.inputList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitOutputList([NotNull] VBAParser.OutputListContext context);
+	Result VisitInputList([NotNull] VBAParser.InputListContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>vsMarkedFileNumber</c>
+	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVsMarkedFileNumber([NotNull] VBAParser.VsMarkedFileNumberContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.selectCaseStmt"/>.
@@ -343,14 +203,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitSelectCaseStmt([NotNull] VBAParser.SelectCaseStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>vsIntDiv</c>
-	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitVsIntDiv([NotNull] VBAParser.VsIntDivContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.moduleBody"/>.
@@ -367,19 +219,11 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitLetterRange([NotNull] VBAParser.LetterRangeContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.defDirective"/>.
+	/// Visit a parse tree produced by <see cref="VBAParser.access"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitDefDirective([NotNull] VBAParser.DefDirectiveContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>caseCondSelection</c>
-	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCaseCondSelection([NotNull] VBAParser.CaseCondSelectionContext context);
+	Result VisitAccess([NotNull] VBAParser.AccessContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.widthStmt"/>.
@@ -403,18 +247,18 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitArgCall([NotNull] VBAParser.ArgCallContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.endRecordNumber"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEndRecordNumber([NotNull] VBAParser.EndRecordNumberContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.annotationName"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitAnnotationName([NotNull] VBAParser.AnnotationNameContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.typeHint"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitTypeHint([NotNull] VBAParser.TypeHintContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.constSubStmt"/>.
@@ -431,13 +275,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitEndOfStatement([NotNull] VBAParser.EndOfStatementContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.elseBlock"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitElseBlock([NotNull] VBAParser.ElseBlockContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by the <c>optionCompareStmt</c>
 	/// labeled alternative in <see cref="VBAParser.moduleOption"/>.
 	/// </summary>
@@ -446,11 +283,11 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitOptionCompareStmt([NotNull] VBAParser.OptionCompareStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.redimStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBAParser.lineWidth"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitRedimStmt([NotNull] VBAParser.RedimStmtContext context);
+	Result VisitLineWidth([NotNull] VBAParser.LineWidthContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.literal"/>.
@@ -481,14 +318,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitErrorStmt([NotNull] VBAParser.ErrorStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>vsAddressOf</c>
-	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitVsAddressOf([NotNull] VBAParser.VsAddressOfContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.arg"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -511,25 +340,11 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitEventStmt([NotNull] VBAParser.EventStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.firstLetter"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitFirstLetter([NotNull] VBAParser.FirstLetterContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.lockStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitLockStmt([NotNull] VBAParser.LockStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.resumeStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitResumeStmt([NotNull] VBAParser.ResumeStmtContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>optionExplicitStmt</c>
@@ -555,40 +370,11 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVsNot([NotNull] VBAParser.VsNotContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.endOfLine"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitEndOfLine([NotNull] VBAParser.EndOfLineContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.startRule"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitStartRule([NotNull] VBAParser.StartRuleContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.writeStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitWriteStmt([NotNull] VBAParser.WriteStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>vsAnd</c>
-	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitVsAnd([NotNull] VBAParser.VsAndContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.endStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitEndStmt([NotNull] VBAParser.EndStmtContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.annotationList"/>.
@@ -605,21 +391,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitSingleLetter([NotNull] VBAParser.SingleLetterContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.singleLineElseClause"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitSingleLineElseClause([NotNull] VBAParser.SingleLineElseClauseContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>vsAmp</c>
-	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitVsAmp([NotNull] VBAParser.VsAmpContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.ifStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -634,34 +405,11 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitSubroutineName([NotNull] VBAParser.SubroutineNameContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.forNextStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBAParser.inputVariable"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitForNextStmt([NotNull] VBAParser.ForNextStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>caseCondTo</c>
-	/// labeled alternative in <see cref="VBAParser.sC_Selection"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCaseCondTo([NotNull] VBAParser.CaseCondToContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>vsImp</c>
-	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitVsImp([NotNull] VBAParser.VsImpContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.iCS_S_MembersCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitICS_S_MembersCall([NotNull] VBAParser.ICS_S_MembersCallContext context);
+	Result VisitInputVariable([NotNull] VBAParser.InputVariableContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.forEachStmt"/>.
@@ -671,25 +419,11 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitForEachStmt([NotNull] VBAParser.ForEachStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.exitStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitExitStmt([NotNull] VBAParser.ExitStmtContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.numberLiteral"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitNumberLiteral([NotNull] VBAParser.NumberLiteralContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.argList"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitArgList([NotNull] VBAParser.ArgListContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.singleLineIfStmt"/>.
@@ -699,21 +433,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitSingleLineIfStmt([NotNull] VBAParser.SingleLineIfStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>vsStruct</c>
-	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitVsStruct([NotNull] VBAParser.VsStructContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.subscripts"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitSubscripts([NotNull] VBAParser.SubscriptsContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.lastLetter"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -721,18 +440,18 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitLastLetter([NotNull] VBAParser.LastLetterContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.spcNumber"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSpcNumber([NotNull] VBAParser.SpcNumberContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.letStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitLetStmt([NotNull] VBAParser.LetStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.propertySetStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitPropertySetStmt([NotNull] VBAParser.PropertySetStmtContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.subStmt"/>.
@@ -758,13 +477,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVsRelational([NotNull] VBAParser.VsRelationalContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.statementLabelDefinition"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitStatementLabelDefinition([NotNull] VBAParser.StatementLabelDefinitionContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.lineInputStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -772,11 +484,18 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitLineInputStmt([NotNull] VBAParser.LineInputStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.typeStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBAParser.outputExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitTypeStmt([NotNull] VBAParser.TypeStmtContext context);
+	Result VisitOutputExpression([NotNull] VBAParser.OutputExpressionContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.tabClause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTabClause([NotNull] VBAParser.TabClauseContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
@@ -793,18 +512,11 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitICS_S_MemberCall([NotNull] VBAParser.ICS_S_MemberCallContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.outputList_Expression"/>.
+	/// Visit a parse tree produced by <see cref="VBAParser.fileNumberList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitOutputList_Expression([NotNull] VBAParser.OutputList_ExpressionContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.ifWithNonEmptyThen"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitIfWithNonEmptyThen([NotNull] VBAParser.IfWithNonEmptyThenContext context);
+	Result VisitFileNumberList([NotNull] VBAParser.FileNumberListContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>optionPrivateModuleStmt</c>
@@ -815,32 +527,11 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitOptionPrivateModuleStmt([NotNull] VBAParser.OptionPrivateModuleStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.putStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitPutStmt([NotNull] VBAParser.PutStmtContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.keyword"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitKeyword([NotNull] VBAParser.KeywordContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.iCS_S_DictionaryCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitICS_S_DictionaryCall([NotNull] VBAParser.ICS_S_DictionaryCallContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.annotationArg"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAnnotationArg([NotNull] VBAParser.AnnotationArgContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsAssign</c>
@@ -851,25 +542,11 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVsAssign([NotNull] VBAParser.VsAssignContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.variableStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitVariableStmt([NotNull] VBAParser.VariableStmtContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.elseIfBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitElseIfBlock([NotNull] VBAParser.ElseIfBlockContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.subscript"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitSubscript([NotNull] VBAParser.SubscriptContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.visibility"/>.
@@ -894,33 +571,18 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVsTypeOf([NotNull] VBAParser.VsTypeOfContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.comparisonOperator"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitComparisonOperator([NotNull] VBAParser.ComparisonOperatorContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>caseCondValue</c>
-	/// labeled alternative in <see cref="VBAParser.sC_Selection"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCaseCondValue([NotNull] VBAParser.CaseCondValueContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.whileWendStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitWhileWendStmt([NotNull] VBAParser.WhileWendStmtContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.functionStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitFunctionStmt([NotNull] VBAParser.FunctionStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.recordRange"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRecordRange([NotNull] VBAParser.RecordRangeContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.returnStmt"/>.
@@ -944,63 +606,18 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitUniversalLetterRange([NotNull] VBAParser.UniversalLetterRangeContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>vsMod</c>
-	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitVsMod([NotNull] VBAParser.VsModContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>vsOr</c>
-	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitVsOr([NotNull] VBAParser.VsOrContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.variableSubStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitVariableSubStmt([NotNull] VBAParser.VariableSubStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>caseCondElse</c>
-	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCaseCondElse([NotNull] VBAParser.CaseCondElseContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.getStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitGetStmt([NotNull] VBAParser.GetStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.raiseEventStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitRaiseEventStmt([NotNull] VBAParser.RaiseEventStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.sameLineStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitSameLineStatement([NotNull] VBAParser.SameLineStatementContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.ifWithEmptyThen"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitIfWithEmptyThen([NotNull] VBAParser.IfWithEmptyThenContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.modeClause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitModeClause([NotNull] VBAParser.ModeClauseContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.annotationArgList"/>.
@@ -1023,27 +640,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitOnGoToStmt([NotNull] VBAParser.OnGoToStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.argsCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitArgsCall([NotNull] VBAParser.ArgsCallContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.moduleConfigElement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitModuleConfigElement([NotNull] VBAParser.ModuleConfigElementContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.propertyGetStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitPropertyGetStmt([NotNull] VBAParser.PropertyGetStmtContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.upperCaseA"/>.
@@ -1116,11 +712,11 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitStopStmt([NotNull] VBAParser.StopStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.identifierStatementLabel"/>.
+	/// Visit a parse tree produced by <see cref="VBAParser.variableName"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitIdentifierStatementLabel([NotNull] VBAParser.IdentifierStatementLabelContext context);
+	Result VisitVariableName([NotNull] VBAParser.VariableNameContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.whiteSpace"/>.
@@ -1137,53 +733,11 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitSC_Case([NotNull] VBAParser.SC_CaseContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.functionName"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitFunctionName([NotNull] VBAParser.FunctionNameContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.variableListStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.statementLabel"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitStatementLabel([NotNull] VBAParser.StatementLabelContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.upperCaseZ"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitUpperCaseZ([NotNull] VBAParser.UpperCaseZContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.iCS_S_VariableOrProcedureCallUnrestricted"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitICS_S_VariableOrProcedureCallUnrestricted([NotNull] VBAParser.ICS_S_VariableOrProcedureCallUnrestrictedContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.iCS_B_ProcedureCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitICS_B_ProcedureCall([NotNull] VBAParser.ICS_B_ProcedureCallContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.unlockStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitUnlockStmt([NotNull] VBAParser.UnlockStmtContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsXor</c>
@@ -1215,13 +769,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitMidStmt([NotNull] VBAParser.MidStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.booleanExpression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitBooleanExpression([NotNull] VBAParser.BooleanExpressionContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by the <c>vsPow</c>
 	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
 	/// </summary>
@@ -1249,6 +796,714 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitDoLoopStmt([NotNull] VBAParser.DoLoopStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.enumerationStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEnumerationStmt([NotNull] VBAParser.EnumerationStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>vsLiteral</c>
+	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVsLiteral([NotNull] VBAParser.VsLiteralContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.comment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitComment([NotNull] VBAParser.CommentContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.moduleBodyElement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitModuleBodyElement([NotNull] VBAParser.ModuleBodyElementContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>vsMid</c>
+	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVsMid([NotNull] VBAParser.VsMidContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.seekStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSeekStmt([NotNull] VBAParser.SeekStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.listOrLabel"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitListOrLabel([NotNull] VBAParser.ListOrLabelContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.fileNumber"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFileNumber([NotNull] VBAParser.FileNumberContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.constStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitConstStmt([NotNull] VBAParser.ConstStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.argDefaultValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArgDefaultValue([NotNull] VBAParser.ArgDefaultValueContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.propertyLetStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPropertyLetStmt([NotNull] VBAParser.PropertyLetStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.moduleAttributes"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitModuleAttributes([NotNull] VBAParser.ModuleAttributesContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.typeStmt_Element"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTypeStmt_Element([NotNull] VBAParser.TypeStmt_ElementContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.type"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitType([NotNull] VBAParser.TypeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.inputStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitInputStmt([NotNull] VBAParser.InputStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.declareStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeclareStmt([NotNull] VBAParser.DeclareStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.resetStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitResetStmt([NotNull] VBAParser.ResetStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>vsNew</c>
+	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVsNew([NotNull] VBAParser.VsNewContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.lock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLock([NotNull] VBAParser.LockContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.block"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBlock([NotNull] VBAParser.BlockContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.fileMode"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFileMode([NotNull] VBAParser.FileModeContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.setStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSetStmt([NotNull] VBAParser.SetStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.onErrorStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitOnErrorStmt([NotNull] VBAParser.OnErrorStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.identifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIdentifier([NotNull] VBAParser.IdentifierContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.attributeStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAttributeStmt([NotNull] VBAParser.AttributeStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.enumerationStmt_Constant"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEnumerationStmt_Constant([NotNull] VBAParser.EnumerationStmt_ConstantContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.implicitCallStmt_InStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitImplicitCallStmt_InStmt([NotNull] VBAParser.ImplicitCallStmt_InStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.typeOfIsExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTypeOfIsExpression([NotNull] VBAParser.TypeOfIsExpressionContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.explicitCallStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExplicitCallStmt([NotNull] VBAParser.ExplicitCallStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.onGoSubStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitOnGoSubStmt([NotNull] VBAParser.OnGoSubStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.outputList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitOutputList([NotNull] VBAParser.OutputListContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>vsIntDiv</c>
+	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVsIntDiv([NotNull] VBAParser.VsIntDivContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.defDirective"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDefDirective([NotNull] VBAParser.DefDirectiveContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>caseCondSelection</c>
+	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCaseCondSelection([NotNull] VBAParser.CaseCondSelectionContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.typeHint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTypeHint([NotNull] VBAParser.TypeHintContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.fileStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFileStmt([NotNull] VBAParser.FileStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.elseBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitElseBlock([NotNull] VBAParser.ElseBlockContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.redimStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRedimStmt([NotNull] VBAParser.RedimStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>vsAddressOf</c>
+	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVsAddressOf([NotNull] VBAParser.VsAddressOfContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.recLength"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRecLength([NotNull] VBAParser.RecLengthContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.unmarkedFileNumber"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUnmarkedFileNumber([NotNull] VBAParser.UnmarkedFileNumberContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.firstLetter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFirstLetter([NotNull] VBAParser.FirstLetterContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.resumeStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitResumeStmt([NotNull] VBAParser.ResumeStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.endOfLine"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEndOfLine([NotNull] VBAParser.EndOfLineContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.startRule"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStartRule([NotNull] VBAParser.StartRuleContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>vsAnd</c>
+	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVsAnd([NotNull] VBAParser.VsAndContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.endStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEndStmt([NotNull] VBAParser.EndStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.singleLineElseClause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSingleLineElseClause([NotNull] VBAParser.SingleLineElseClauseContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>vsAmp</c>
+	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVsAmp([NotNull] VBAParser.VsAmpContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.forNextStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitForNextStmt([NotNull] VBAParser.ForNextStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>caseCondTo</c>
+	/// labeled alternative in <see cref="VBAParser.sC_Selection"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCaseCondTo([NotNull] VBAParser.CaseCondToContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>vsImp</c>
+	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVsImp([NotNull] VBAParser.VsImpContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.iCS_S_MembersCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitICS_S_MembersCall([NotNull] VBAParser.ICS_S_MembersCallContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.exitStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExitStmt([NotNull] VBAParser.ExitStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.argList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArgList([NotNull] VBAParser.ArgListContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>vsStruct</c>
+	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVsStruct([NotNull] VBAParser.VsStructContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.data"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitData([NotNull] VBAParser.DataContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.subscripts"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSubscripts([NotNull] VBAParser.SubscriptsContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.propertySetStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPropertySetStmt([NotNull] VBAParser.PropertySetStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.statementLabelDefinition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStatementLabelDefinition([NotNull] VBAParser.StatementLabelDefinitionContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.typeStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTypeStmt([NotNull] VBAParser.TypeStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.ifWithNonEmptyThen"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIfWithNonEmptyThen([NotNull] VBAParser.IfWithNonEmptyThenContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.putStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPutStmt([NotNull] VBAParser.PutStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.iCS_S_DictionaryCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitICS_S_DictionaryCall([NotNull] VBAParser.ICS_S_DictionaryCallContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.annotationArg"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAnnotationArg([NotNull] VBAParser.AnnotationArgContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.recordNumber"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRecordNumber([NotNull] VBAParser.RecordNumberContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.variableStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVariableStmt([NotNull] VBAParser.VariableStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.subscript"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSubscript([NotNull] VBAParser.SubscriptContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.outputClause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitOutputClause([NotNull] VBAParser.OutputClauseContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.comparisonOperator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitComparisonOperator([NotNull] VBAParser.ComparisonOperatorContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>caseCondValue</c>
+	/// labeled alternative in <see cref="VBAParser.sC_Selection"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCaseCondValue([NotNull] VBAParser.CaseCondValueContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.startRecordNumber"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStartRecordNumber([NotNull] VBAParser.StartRecordNumberContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.whileWendStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWhileWendStmt([NotNull] VBAParser.WhileWendStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>vsMod</c>
+	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVsMod([NotNull] VBAParser.VsModContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>vsOr</c>
+	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVsOr([NotNull] VBAParser.VsOrContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.outputItem"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitOutputItem([NotNull] VBAParser.OutputItemContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.variableSubStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVariableSubStmt([NotNull] VBAParser.VariableSubStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by the <c>caseCondElse</c>
+	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCaseCondElse([NotNull] VBAParser.CaseCondElseContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.position"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPosition([NotNull] VBAParser.PositionContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.getStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGetStmt([NotNull] VBAParser.GetStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.raiseEventStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRaiseEventStmt([NotNull] VBAParser.RaiseEventStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.sameLineStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSameLineStatement([NotNull] VBAParser.SameLineStatementContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.pathName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPathName([NotNull] VBAParser.PathNameContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.tabNumberClause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTabNumberClause([NotNull] VBAParser.TabNumberClauseContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.charPosition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCharPosition([NotNull] VBAParser.CharPositionContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.argsCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArgsCall([NotNull] VBAParser.ArgsCallContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.moduleConfigElement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitModuleConfigElement([NotNull] VBAParser.ModuleConfigElementContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.propertyGetStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPropertyGetStmt([NotNull] VBAParser.PropertyGetStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.markedFileNumber"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMarkedFileNumber([NotNull] VBAParser.MarkedFileNumberContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.accessClause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAccessClause([NotNull] VBAParser.AccessClauseContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.identifierStatementLabel"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIdentifierStatementLabel([NotNull] VBAParser.IdentifierStatementLabelContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.functionName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFunctionName([NotNull] VBAParser.FunctionNameContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.variableListStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.statementLabel"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStatementLabel([NotNull] VBAParser.StatementLabelContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.iCS_S_VariableOrProcedureCallUnrestricted"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitICS_S_VariableOrProcedureCallUnrestricted([NotNull] VBAParser.ICS_S_VariableOrProcedureCallUnrestrictedContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.iCS_B_ProcedureCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitICS_B_ProcedureCall([NotNull] VBAParser.ICS_B_ProcedureCallContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.unlockStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUnlockStmt([NotNull] VBAParser.UnlockStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.booleanExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBooleanExpression([NotNull] VBAParser.BooleanExpressionContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.lenClause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLenClause([NotNull] VBAParser.LenClauseContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.iCS_S_VariableOrProcedureCall"/>.
@@ -1279,6 +1534,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitWithStmtExpression([NotNull] VBAParser.WithStmtExpressionContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.variable"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVariable([NotNull] VBAParser.VariableContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.eraseStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1293,21 +1555,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitCommentBody([NotNull] VBAParser.CommentBodyContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.enumerationStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitEnumerationStmt([NotNull] VBAParser.EnumerationStmtContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>vsLiteral</c>
-	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitVsLiteral([NotNull] VBAParser.VsLiteralContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by the <c>vsEqv</c>
 	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
 	/// </summary>
@@ -1316,32 +1563,10 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVsEqv([NotNull] VBAParser.VsEqvContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.comment"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitComment([NotNull] VBAParser.CommentContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.moduleBodyElement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitModuleBodyElement([NotNull] VBAParser.ModuleBodyElementContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.unrestrictedIdentifier"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitUnrestrictedIdentifier([NotNull] VBAParser.UnrestrictedIdentifierContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>vsMid</c>
-	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitVsMid([NotNull] VBAParser.VsMidContext context);
 }
 } // namespace Rubberduck.Parsing.Grammar

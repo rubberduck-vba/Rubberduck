@@ -31,6 +31,7 @@ namespace Rubberduck.Parsing.Symbols
                 IdentifierName = declaration.IdentifierName.ToLowerInvariant()
             })
             .ToDictionary(grouping => grouping.Key.IdentifierName, grouping => grouping.ToArray());
+            var k = declarations.Where(d => d.IdentifierName == "Input").ToList();
         }
 
         private readonly HashSet<Accessibility> _projectScopePublicModifiers =

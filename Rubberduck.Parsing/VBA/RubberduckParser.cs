@@ -220,12 +220,11 @@ namespace Rubberduck.Parsing.VBA
             Debug.Assert(informationModule != null);
             var arrayFunction = new FunctionDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Array"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
             var circleFunction = new FunctionDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Circle"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
-            // INPUT is treated as an inputstmt in the grammar thus does not have a declaration created for it.
-            //var inputFunction = new SubroutineDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Input"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
-            //var numberParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Number"), inputFunction, "Integer", false, false);
-            //var filenumberParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Filenumber"), inputFunction, "Integer", false, false);
-            //inputFunction.AddParameter(numberParam);
-            //inputFunction.AddParameter(filenumberParam);
+            var inputFunction = new SubroutineDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Input"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
+            var numberParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Number"), inputFunction, "Integer", false, false);
+            var filenumberParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Filenumber"), inputFunction, "Integer", false, false);
+            inputFunction.AddParameter(numberParam);
+            inputFunction.AddParameter(filenumberParam);
             var inputBFunction = new SubroutineDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "InputB"), informationModule, informationModule, "Variant", Accessibility.Public, null, Selection.Home, true, null, new Attributes());
             var numberBParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Number"), inputBFunction, "Integer", false, false);
             var filenumberBParam = new ParameterDeclaration(new QualifiedMemberName(informationModule.QualifiedName.QualifiedModuleName, "Filenumber"), inputBFunction, "Integer", false, false);
@@ -256,6 +255,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 _state.AddDeclaration(arrayFunction);
                 _state.AddDeclaration(circleFunction);
+                _state.AddDeclaration(inputFunction);
                 _state.AddDeclaration(inputBFunction);
                 _state.AddDeclaration(lboundFunction);
                 _state.AddDeclaration(scaleFunction);

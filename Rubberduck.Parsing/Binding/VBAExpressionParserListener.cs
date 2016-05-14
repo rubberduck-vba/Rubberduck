@@ -824,6 +824,19 @@ public interface IVBAExpressionParserListener : IParseTreeListener {
 	void ExitReservedName([NotNull] VBAExpressionParser.ReservedNameContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by the <c>markedFileNumberExpr</c>
+	/// labeled alternative in <see cref="VBAExpressionParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMarkedFileNumberExpr([NotNull] VBAExpressionParser.MarkedFileNumberExprContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>markedFileNumberExpr</c>
+	/// labeled alternative in <see cref="VBAExpressionParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMarkedFileNumberExpr([NotNull] VBAExpressionParser.MarkedFileNumberExprContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>logicalXorOp</c>
 	/// labeled alternative in <see cref="VBAExpressionParser.expression"/>.
 	/// </summary>
