@@ -17,7 +17,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _openFileDialog.AddExtension = true;
             _openFileDialog.AutoUpgradeEnabled = true;
             _openFileDialog.CheckFileExists = true;
-            _openFileDialog.Multiselect = false;
+            _openFileDialog.Multiselect = true;
             _openFileDialog.ShowHelp = false;   // we don't want 1996's file picker.
             _openFileDialog.Filter = @"VB Files|*.cls;*.bas;*.frm";
             _openFileDialog.CheckFileExists = true;
@@ -37,13 +37,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             if (_openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                var fileExt = _openFileDialog.FileName.Split('.').Last();
-                if (!new[]{"bas", "cls", "frm"}.Contains(fileExt))
+                var fileExts = _openFileDialog.FileNames.Select(s => s.Split('.').Last());
+                if (fileExts.Any(fileExt => !new[] {"bas", "cls", "frm"}.Contains(fileExt)))
                 {
                     return;
                 }
 
-                project.VBComponents.Import(_openFileDialog.FileName);
+                foreach (var filename in _openFileDialog.FileNames)
+                {
+                    project.VBComponents.Import(filename);
+                }
             }
         }
 
