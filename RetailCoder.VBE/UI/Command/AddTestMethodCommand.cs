@@ -21,11 +21,7 @@ namespace Rubberduck.UI.Command
 
         public override void Execute(object parameter)
         {
-            var test = _command.NewTestMethod();
-            if (test != null)
-            {
-                _model.Tests.Add(test);
-            }
+            _command.NewTestMethod();
         }
     }
 }

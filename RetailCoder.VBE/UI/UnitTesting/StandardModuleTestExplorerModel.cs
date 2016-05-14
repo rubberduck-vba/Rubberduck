@@ -1,7 +1,5 @@
-using System.Linq;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Reflection;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
@@ -12,24 +10,19 @@ namespace Rubberduck.UI.UnitTesting
     public class StandardModuleTestExplorerModel : TestExplorerModelBase
     {
         private readonly VBE _vbe;
+        private readonly RubberduckParserState _state;
 
-        public StandardModuleTestExplorerModel(VBE vbe)
+        public StandardModuleTestExplorerModel(VBE vbe, RubberduckParserState state)
         {
             _vbe = vbe;
+            _state = state;
         }
 
         public override void Refresh()
         {
             IsBusy = true;
 
-            // todo: implement using IRubberduckParser and parse results.
-            var tests = _vbe.VBProjects.Cast<VBProject>()
-                .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
-                .SelectMany(project => project.VBComponents.Cast<VBComponent>())
-                .Where(component => component.CodeModule.HasAttribute<TestModuleAttribute>())
-                .Select(component => new { Component = component, Members = component.GetMembers(vbext_ProcKind.vbext_pk_Proc).Where(IsTestMethod) })
-                .SelectMany(component => component.Members.Select(method =>
-                    new TestMethod(method.QualifiedMemberName, _vbe)));
+            var tests = UnitTestHelpers.GetAllTests(_vbe, _state);
 
             ClearLastRun();
             ExecutedCount = 0;
@@ -38,6 +31,7 @@ namespace Rubberduck.UI.UnitTesting
                 AddExecutedTest(test);
             }
 
+            // ReSharper disable once ExplicitCallerInfoArgument
             OnPropertyChanged("Tests");
             IsBusy = false;
         }

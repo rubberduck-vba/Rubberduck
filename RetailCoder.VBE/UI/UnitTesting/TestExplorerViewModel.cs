@@ -42,7 +42,7 @@ namespace Rubberduck.UI.UnitTesting
 
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
 
-            _openSettingsCommand = new DelegateCommand(OpenSettings);
+            _openTestSettingsCommand = new DelegateCommand(OpenSettings);
         }
 
         private bool CanExecuteRunPassedTestsCommand(object obj)
@@ -138,8 +138,8 @@ namespace Rubberduck.UI.UnitTesting
         private readonly ICommand _runSelectedTestCommand;
         public ICommand RunSelectedTestCommand { get { return _runSelectedTestCommand; } }
         
-        private readonly ICommand _openSettingsCommand;
-        public ICommand OpenTodoSettings { get { return _openSettingsCommand; } }
+        private readonly ICommand _openTestSettingsCommand;
+        public ICommand OpenTestSettingsCommand { get { return _openTestSettingsCommand; } }
 
         private void OpenSettings(object param)
         {
@@ -229,8 +229,9 @@ namespace Rubberduck.UI.UnitTesting
             var passed = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Succeeded) + " " + TestOutcome.Succeeded;
             var failed = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Failed) + " " + TestOutcome.Failed;
             var inconclusive = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Inconclusive) + " " + TestOutcome.Inconclusive;
+            var ignored = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Ignored) + " " + TestOutcome.Ignored;
             var resource = "Rubberduck Unit Tests - {0}\n{1} | {2} | {3}\n";
-            var text = string.Format(resource, DateTime.Now, passed, failed, inconclusive) + results;
+            var text = string.Format(resource, DateTime.Now, passed, failed, inconclusive, ignored) + results;
 
             _clipboard.Write(text);
         }

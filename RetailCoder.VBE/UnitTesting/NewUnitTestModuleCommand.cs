@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.VBEditor.Extensions;
@@ -10,11 +11,13 @@ namespace Rubberduck.UnitTesting
     public class NewUnitTestModuleCommand
     {
         private readonly VBE _vbe;
+        private readonly RubberduckParserState _state;
         private readonly ConfigurationLoader _configLoader;
 
-        public NewUnitTestModuleCommand(VBE vbe, ConfigurationLoader configLoader)
+        public NewUnitTestModuleCommand(VBE vbe, RubberduckParserState state, ConfigurationLoader configLoader)
         {
             _vbe = vbe;
+            _state = state;
             _configLoader = configLoader;
         }
 
@@ -102,7 +105,7 @@ namespace Rubberduck.UnitTesting
 
             if (settings.DefaultTestStubInNewModule)
             {
-                var newTestMethodCommand = new NewTestMethodCommand(_vbe);
+                var newTestMethodCommand = new NewTestMethodCommand(_vbe, _state);
                 newTestMethodCommand.NewTestMethod();
             }
         }

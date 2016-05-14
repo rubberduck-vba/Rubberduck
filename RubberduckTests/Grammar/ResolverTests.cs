@@ -1034,7 +1034,7 @@ End Sub
             var annotation = (IgnoreAnnotation)usage.Annotations.First();
             Assert.IsTrue(
                 usage.Annotations.Count() == 1
-                && annotation.AnnotationType == AnnotationType.Ignore
+                && annotation.AnnotationType == AnnotationType.IgnoreTest
                 && annotation.InspectionNames.Count() == 1
                 && annotation.InspectionNames.First() == "UnassignedVariableUsage");
         }

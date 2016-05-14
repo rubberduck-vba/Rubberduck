@@ -19,6 +19,7 @@ namespace Rubberduck.UI.UnitTesting
                 { TestOutcome.Succeeded, ToImageSource(Properties.Resources.tick_circle) },
                 { TestOutcome.Failed, ToImageSource(Properties.Resources.cross_circle) },
                 { TestOutcome.Inconclusive, ToImageSource(Properties.Resources.exclamation) },
+                { TestOutcome.Ignored, ToImageSource(Properties.Resources.minus_white) },
             };
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

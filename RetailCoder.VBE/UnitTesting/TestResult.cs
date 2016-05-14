@@ -17,6 +17,11 @@
             return new TestResult(TestOutcome.Inconclusive, message);
         }
 
+        public static TestResult Ignored()
+        {
+            return new TestResult(TestOutcome.Ignored);
+        }
+
         public TestResult(TestOutcome outcome, string output = null)
         {
             _outcome = outcome;

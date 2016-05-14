@@ -21,12 +21,7 @@ namespace Rubberduck.UI.Command
 
         public override void Execute(object parameter)
         {
-            // legacy static class...
-            var test = _command.NewExpectedErrorTestMethod();
-            if (test != null)
-            {
-                _model.Tests.Add(test);
-            }
+            _command.NewExpectedErrorTestMethod();
         }
     }
 }

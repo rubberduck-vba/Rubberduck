@@ -373,7 +373,7 @@
             <Button Command="{Binding CopyResultsCommand}">
                 <Image Height="16" Source="../../Resources/document-copy.png" />
             </Button>
-            <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings}" Command="{Binding OpenTodoSettings}" BorderThickness="0" Background="Transparent">
+            <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings}" Command="{Binding OpenTestSettingsCommand}" BorderThickness="0" Background="Transparent">
                 <Image Height="16" Source="{StaticResource SettingsImage}" />
             </Button>
         </ToolBar>

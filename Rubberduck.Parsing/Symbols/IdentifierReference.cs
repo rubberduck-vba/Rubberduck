@@ -71,7 +71,7 @@ namespace Rubberduck.Parsing.Symbols
         public bool IsInspectionDisabled(string inspectionName)
         {
             return Annotations.Any(annotation =>
-                annotation.AnnotationType == AnnotationType.Ignore
+                annotation.AnnotationType == AnnotationType.IgnoreTest
                 && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
         }
 
