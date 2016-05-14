@@ -400,6 +400,9 @@
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddClassModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_AddTestModuleCommand.cs" />
+    <Compile Include="UI\Controls\LinkButton.xaml.cs">
+      <DependentUpon>LinkButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Converters\InvertBoolValueConverter.cs" />
     <Compile Include="UI\Converters\BoolToHiddenVisibilityConverter.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorer_UndoCommand.cs" />
@@ -823,8 +826,10 @@
     <Compile Include="UI\SourceControl\SourceControlPanel.Designer.cs">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\SourceControlView.xaml.cs">
+      <DependentUpon>SourceControlView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
-    <Compile Include="UI\SourceControl\SourceControlView.xaml.cs" />
     <Compile Include="UI\SourceControl\SourceControlViewViewModel.cs" />
     <Compile Include="UI\SourceControl\SourceControlDockablePresenter.cs" />
     <Compile Include="UI\Controls\INavigateSelection.cs" />
@@ -1444,6 +1449,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Controls\LinkButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Controls\NumberPicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1465,10 +1474,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\NoOverflowToolbarStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

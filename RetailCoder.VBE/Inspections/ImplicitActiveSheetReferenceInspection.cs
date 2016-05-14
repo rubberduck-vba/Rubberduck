@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 
@@ -13,12 +11,12 @@ namespace Rubberduck.Inspections
 {
     public sealed class ImplicitActiveSheetReferenceInspection : InspectionBase
     {
-        private readonly Lazy<IHostApplication> _hostApp;
+        private readonly IHostApplication _hostApp;
 
         public ImplicitActiveSheetReferenceInspection(VBE vbe, RubberduckParserState state)
             : base(state)
         {
-            _hostApp = new Lazy<IHostApplication>(vbe.HostApplication);
+            _hostApp = vbe.HostApplication();
         }
 
         public override string Meta { get { return InspectionsUI.ImplicitActiveSheetReferenceInspectionMeta; } }
@@ -32,15 +30,14 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            if (!_hostApp.IsValueCreated || _hostApp.Value == null || _hostApp.Value.ApplicationName != "Excel")
+            if (_hostApp == null || _hostApp.ApplicationName != "Excel")
             {
                 return new InspectionResultBase[] {};
                 // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
             }
 
             var matches = BuiltInDeclarations.Where(item =>
-                (item.ParentScope == "Excel.Global" || item.ParentScope == "Excel.Application")
-                && Targets.Contains(item.IdentifierName)).ToList();
+                Targets.Contains(item.IdentifierName)).ToList();
 
             var issues = matches.Where(item => item.References.Any())
                 .SelectMany(declaration => declaration.References);
