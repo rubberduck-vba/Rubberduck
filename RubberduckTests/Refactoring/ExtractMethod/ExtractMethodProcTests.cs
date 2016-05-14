@@ -41,6 +41,7 @@ Public Sub CodeWithDeclaration()
     y = x + 1
     Debug.Print y
 
+    x = 4
 End Sub
 ";
 

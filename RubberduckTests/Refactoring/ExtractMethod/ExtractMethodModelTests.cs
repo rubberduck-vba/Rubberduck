@@ -19,19 +19,26 @@ namespace RubberduckTests.Refactoring.ExtractMethod
             {            
 
                 #region inputCode
-
                 var inputCode = @"
 Option explicit
 Public Sub CodeWithDeclaration()
     Dim x as long
     Dim y as long
+    Dim z as long
 
     x = 1 + 2
-    Debug.Print x
+    DebugPrint x
     y = x + 1
-    Debug.Print y
+    DebugPrint y
+
+    z = 2
+    DebugPrint z
 
 End Sub
+Public Sub DebugPrint(byval g as long)
+End Sub
+
+
 ";
 
                 var selectedCode = @"
@@ -48,8 +55,10 @@ Debug.Print y";
                 QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
                 var extractedMethodModel = new ExtractMethodModel(declarations, qSelection.Value, selectedCode);
 
-                var actual = extractedMethodModel.Method;
+                var actual = extractedMethodModel.Method.AsString();
                 var expected = "NewMethod  x";
+
+                Assert.AreEqual(expected, actual);
             }
         }
         [TestClass]

@@ -27,15 +27,31 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             _extractedMethod = new ExtractedMethod();
 
-
             _selection = selection;
             _selectedCode = selectedCode;
 
-            var inScopeDeclarations = items.Where(item => item.ParentScope == _sourceMember.Scope).ToList();
+            var selectionStartLine = selection.Selection.StartLine;
+            var selectionEndLine = selection.Selection.EndLine;
 
-            var inSelection = inScopeDeclarations.SelectMany(item => item.References)
-                .Where(item => selection.Selection.Contains(item.Selection))
-                .ToList();
+            var inScopeDeclarations = items.Where(item => item.ParentScope == _sourceMember.Scope).ToList();
+            var inScopeReferences = inScopeDeclarations.SelectMany(item => item.References).ToList();
+
+            // | w  -----------  x  ------------  y  --------------  z |
+            // ( w -< x )
+            var usedBeforeStart = inScopeReferences.Where(inSRef => inSRef.Selection.StartLine < selectionStartLine);
+            // ( y <- z )
+            var usedAfterEnd = inScopeReferences.Where(inSRef => inSRef.Selection.StartLine > selectionStartLine);
+
+            // ( x -- y ) + assigned
+            var inSelection = inScopeReferences.Except(usedAfterEnd).Except(usedBeforeStart);
+            var assignedInSelection = inSelection.Where(insRef => insRef.IsAssignment);
+
+            // usedIn + assignedInSelection + !usedAfter + !usedBefore
+            var moveIn = inSelection.Intersect(assignedInSelection).Except(usedBeforeStart).Except(usedAfterEnd);
+            // usedIn + !assignedIn + usedBefore
+            var byVal = inSelection.Except(assignedInSelection).Intersect(usedBeforeStart);
+            // usedIn + assignedIn + usedAfter + usedBefore
+            var byRef = inSelection.Intersect(assignedInSelection).Intersect(usedAfterEnd).Intersect(usedBeforeStart);
 
             var usedInSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
                 selection.Selection.Contains(item.Selection) ||
@@ -74,6 +90,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 .Select(declaration =>
                     new ExtractedParameter(declaration.AsTypeName, ExtractedParameter.PassedBy.ByRef, declaration.IdentifierName));
 
+            var methodParams = _output.Union(_input);
+            
             var newMethodName = NEW_METHOD;
 
             var newMethodInc = 0;
@@ -89,7 +107,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _extractedMethod.ReturnValue = null;
             _extractedMethod.Accessibility = Accessibility.Private;
             _extractedMethod.SetReturnValue = false;
-            _extractedMethod.Parameters = _output.Union(_input).ToList();
+            _extractedMethod.Parameters = methodParams.ToList();
         }
 
         private readonly Declaration _sourceMember;

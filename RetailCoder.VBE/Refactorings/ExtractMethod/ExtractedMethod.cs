@@ -14,9 +14,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public IEnumerable<ExtractedParameter> Parameters { get; set; }
         public string AsString()
         {
-            string result;
-            var argsList = string.Join(", ", Parameters.Select(p => p.Name));
-            result = "" + MethodName + " " + argsList + " ";
+            string result = "" + MethodName;
+            string argList;
+            if (Parameters.Any())
+            {
+                argList = string.Join(", ", Parameters.Select(p => p.Name));
+                result += " " + argList;
+            }
             return result;
         }
 

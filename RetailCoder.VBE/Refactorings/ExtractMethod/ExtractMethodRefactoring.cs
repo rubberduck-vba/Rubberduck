@@ -76,6 +76,11 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _codeModule.InsertLines(selection.StartLine, newMethodSignature);
             _codeModule.InsertLines(insertionLine, newMethod);
 
+            foreach (var declaration in model.DeclarationsToMove)
+            {
+                _codeModule.DeleteLines(declaration.Selection);
+            }
+
         }
 
         public void Refactor(QualifiedSelection target)
