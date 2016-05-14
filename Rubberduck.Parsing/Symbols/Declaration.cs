@@ -33,7 +33,8 @@ namespace Rubberduck.Parsing.Symbols
                 "SINGLE",
                 "STRING",
                 "VARIANT",
-                "OBJECT"
+                "OBJECT",
+                "ANY"
         };
 
         public Declaration(

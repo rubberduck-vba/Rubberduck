@@ -55,6 +55,7 @@ namespace Rubberduck.Parsing.Binding
         {
             dynamic lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression);
+            SetPreferProjectOverUdt(lExpressionBinding);
             return new MemberAccessTypeBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, expression.unrestrictedName(), lExpressionBinding);
         }
 
@@ -62,7 +63,18 @@ namespace Rubberduck.Parsing.Binding
         {
             dynamic lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression);
+            SetPreferProjectOverUdt(lExpressionBinding);
             return new MemberAccessTypeBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, expression.unrestrictedName() , lExpressionBinding);
+        }
+
+        private void SetPreferProjectOverUdt(IExpressionBinding lExpression)
+        {
+            if (!(lExpression is MemberAccessTypeBinding))
+            {
+                return;
+            }
+            var simpleNameBinding = (SimpleNameTypeBinding)((MemberAccessTypeBinding)lExpression).LExpressionBinding;
+            simpleNameBinding.PreferProjectOverUdt = true;
         }
     }
 }

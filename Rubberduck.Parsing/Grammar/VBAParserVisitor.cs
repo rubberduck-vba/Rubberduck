@@ -584,6 +584,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVsAnd([NotNull] VBAParser.VsAndContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.endStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEndStmt([NotNull] VBAParser.EndStmtContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.annotationList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

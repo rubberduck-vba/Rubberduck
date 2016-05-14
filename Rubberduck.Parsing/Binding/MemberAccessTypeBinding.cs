@@ -50,6 +50,14 @@ namespace Rubberduck.Parsing.Binding
             _unrestrictedNameContext = unrestrictedNameContext;
         }
 
+        public IExpressionBinding LExpressionBinding
+        {
+            get
+            {
+                return _lExpressionBinding;
+            }
+        }
+
         private ParserRuleContext GetExpressionContext()
         {
             if (_memberAccessExpression != null)

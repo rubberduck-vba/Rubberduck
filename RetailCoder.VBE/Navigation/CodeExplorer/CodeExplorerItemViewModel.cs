@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CompareByName : IComparer<CodeExplorerItemViewModel>
+    public class CompareByName : Comparer<CodeExplorerItemViewModel>
     {
-        public int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
         {
             if (x == y)
             {
@@ -25,9 +26,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
     }
 
-    public class CompareByType : IComparer<CodeExplorerItemViewModel>
+    public class CompareByType : Comparer<CodeExplorerItemViewModel>
     {
-        public int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
         {
             if (x == y)
             {
@@ -71,9 +72,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
     }
 
-    public class CompareBySelection : IComparer<CodeExplorerItemViewModel>
+    public class CompareBySelection : Comparer<CodeExplorerItemViewModel>
     {
-        public int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
         {
             if (x == y)
             {
@@ -105,9 +106,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
     }
 
-    public class CompareByNodeType : IComparer<CodeExplorerItemViewModel>
+    public class CompareByNodeType : Comparer<CodeExplorerItemViewModel>
     {
-        public int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
+        public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
         {
             if (x == y)
             {
@@ -142,7 +143,6 @@ namespace Rubberduck.Navigation.CodeExplorer
     public abstract class CodeExplorerItemViewModel : ViewModelBase
     {
         private List<CodeExplorerItemViewModel> _items = new List<CodeExplorerItemViewModel>();
-
         public List<CodeExplorerItemViewModel> Items
         {
             get { return _items; }
@@ -159,6 +159,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public abstract string NameWithSignature { get; }
         public abstract BitmapImage CollapsedIcon { get; }
         public abstract BitmapImage ExpandedIcon { get; }
+        public abstract CodeExplorerItemViewModel Parent { get; }
 
         public abstract QualifiedSelection? QualifiedSelection { get; }
 
@@ -178,6 +179,13 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             return null;
+        }
+
+        public Declaration GetSelectedDeclaration()
+        {
+            return this is ICodeExplorerDeclarationViewModel
+                ? ((ICodeExplorerDeclarationViewModel)this).Declaration
+                : null;
         }
 
         public void AddChild(CodeExplorerItemViewModel item)

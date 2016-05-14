@@ -58,14 +58,16 @@ namespace Rubberduck.Navigation.CodeExplorer
                 { Tuple.Create(DeclarationType.Variable, Accessibility.Public ), GetImageSource(resx.VSObject_Field)},
             };
 
-        public CodeExplorerMemberViewModel(Declaration declaration, IEnumerable<Declaration> declarations)
+        public CodeExplorerMemberViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations)
         {
+            _parent = parent;
+
             _declaration = declaration;
             if (declarations != null)
             {
                 Items = declarations.Where(item => SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(declaration))
                                     .OrderBy(item => item.Selection.StartLine)
-                                    .Select(item => new CodeExplorerMemberViewModel(item, null))
+                                    .Select(item => new CodeExplorerMemberViewModel(this, item, null))
                                     .ToList<CodeExplorerItemViewModel>();
             }
 
@@ -80,6 +82,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly string _name;
         public override string Name { get { return _name; } }
+
+        private readonly CodeExplorerItemViewModel _parent;
+        public override CodeExplorerItemViewModel Parent { get { return _parent; } }
 
         private string _signature = null;
         public override string NameWithSignature

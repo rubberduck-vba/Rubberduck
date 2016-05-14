@@ -36,7 +36,7 @@ namespace Rubberduck.UI.Command
 
         public override void Execute(object parameter)
         {
-            _command.NewUnitTestModule();
+            _command.NewUnitTestModule(_vbe.ActiveVBProject);
         }
     }
 }
