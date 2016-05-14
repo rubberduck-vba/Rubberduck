@@ -67,6 +67,7 @@ namespace Rubberduck.UnitTesting
 
             try
             {
+                // bug when module is not known
                 var declaration = _state.AllUserDeclarations.First(f =>
                             f.DeclarationType == Parsing.Symbols.DeclarationType.ProceduralModule &&
                             f.QualifiedName.QualifiedModuleName.Component.CodeModule == _vbe.ActiveCodePane.CodeModule);
