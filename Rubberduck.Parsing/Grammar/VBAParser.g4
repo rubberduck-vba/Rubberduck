@@ -121,6 +121,8 @@ blockStmt :
 	| variableStmt
 	| whileWendStmt
 	| withStmt
+    | circleSpecialForm
+    | scaleSpecialForm
 	| implicitCallStmt_InBlock
 ;
 
@@ -497,6 +499,11 @@ withStmt :
 	END_WITH
 ;
 
+// Special forms with special syntax, only available in a report.
+circleSpecialForm : (valueStmt whiteSpace? DOT whiteSpace?)? CIRCLE whiteSpace (STEP whiteSpace?)? tuple (whiteSpace? COMMA whiteSpace? valueStmt)+;
+scaleSpecialForm : (valueStmt whiteSpace? DOT whiteSpace?)? SCALE whiteSpace tuple whiteSpace? MINUS whiteSpace? tuple;
+tuple : LPAREN whiteSpace? valueStmt whiteSpace? COMMA whiteSpace? valueStmt whiteSpace? RPAREN;
+
 withStmtExpression : valueStmt;
 
 explicitCallStmt : CALL whiteSpace explicitCallStmtExpression;
@@ -599,7 +606,6 @@ keyword :
      | CDBL
      | CDEC
      | CINT
-     | CIRCLE
      | CLASS
      | CLNG
      | CLNGLNG
@@ -653,7 +659,6 @@ keyword :
      | PSET
      | REM
      | RMDIR
-     | SCALE
      | SENDKEYS
      | SETATTR
      | SGN

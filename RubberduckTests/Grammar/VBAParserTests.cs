@@ -689,6 +689,28 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//implicitCallStmt_InStmt");
         }
 
+        [TestMethod]
+        public void TestCircleSpecialForm()
+        {
+            string code = @"
+Sub Test()
+    Me.Circle Step(1, 2), 3, 4, 5, 6, 7
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
+        }
+
+        [TestMethod]
+        public void TestScaleSpecialForm()
+        {
+            string code = @"
+Sub Test()
+    Scale (1, 2)-(3, 4)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//scaleSpecialForm");
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);

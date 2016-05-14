@@ -1758,6 +1758,46 @@ End Sub
             Assert.AreEqual(3, declaration.References.Count());
         }
 
+        [TestMethod]
+        public void CircleSpecialForm_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Me.Circle Step(referenced, referenced), referenced, referenced, referenced, referenced, referenced
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(7, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void ScaleSpecialForm_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Scale (referenced, referenced)-(referenced, referenced)
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(4, declaration.References.Count());
+        }
+
         // Ignored because handling forms/hierarchies is an open issue.
         [Ignore]
         [TestMethod]

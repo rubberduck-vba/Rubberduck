@@ -333,6 +333,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVsMult([NotNull] VBAParser.VsMultContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.scaleSpecialForm"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitScaleSpecialForm([NotNull] VBAParser.ScaleSpecialFormContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.eventStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -496,6 +503,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitTabClause([NotNull] VBAParser.TabClauseContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.circleSpecialForm"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCircleSpecialForm([NotNull] VBAParser.CircleSpecialFormContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
@@ -1067,6 +1081,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitRedimStmt([NotNull] VBAParser.RedimStmtContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.tuple"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTuple([NotNull] VBAParser.TupleContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsAddressOf</c>

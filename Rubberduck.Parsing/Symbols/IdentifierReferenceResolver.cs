@@ -619,6 +619,36 @@ namespace Rubberduck.Parsing.Symbols
             ResolveLabel(context.valueStmt(), context.valueStmt().GetText());
         }
 
+        public void Resolve(VBAParser.CircleSpecialFormContext context)
+        {
+            foreach (var expr in context.valueStmt())
+            {
+                ResolveDefault(expr, expr.GetText());
+            }
+            ResolveTuple(context.tuple());
+        }
+
+        public void Resolve(VBAParser.ScaleSpecialFormContext context)
+        {
+            if (context.valueStmt() != null)
+            {
+                ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
+
+            }
+            foreach (var tuple in context.tuple())
+            {
+                ResolveTuple(tuple);
+            }
+        }
+
+        private void ResolveTuple(VBAParser.TupleContext tuple)
+        {
+            foreach (var expr in tuple.valueStmt())
+            {
+                ResolveDefault(expr, expr.GetText());
+            }
+        }
+
         public void Resolve(VBAParser.ImplicitCallStmt_InBlockContext context)
         {
             ParserRuleContext subContext;

@@ -580,6 +580,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitVsMult([NotNull] VBAParser.VsMultContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.scaleSpecialForm"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterScaleSpecialForm([NotNull] VBAParser.ScaleSpecialFormContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.scaleSpecialForm"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitScaleSpecialForm([NotNull] VBAParser.ScaleSpecialFormContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.eventStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -877,6 +890,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitTabClause([NotNull] VBAParser.TabClauseContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.circleSpecialForm"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCircleSpecialForm([NotNull] VBAParser.CircleSpecialFormContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.circleSpecialForm"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCircleSpecialForm([NotNull] VBAParser.CircleSpecialFormContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.statementKeyword"/>.
@@ -1917,6 +1943,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitRedimStmt([NotNull] VBAParser.RedimStmtContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.tuple"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTuple([NotNull] VBAParser.TupleContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.tuple"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTuple([NotNull] VBAParser.TupleContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.vsAddressOf"/>.
