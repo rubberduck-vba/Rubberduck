@@ -181,7 +181,7 @@ End Sub";
 End Sub";
 
             //Arrange
-            var settings = new Mock<ConfigurationLoader>(null, null);
+            var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
@@ -578,17 +578,15 @@ End Sub";
 
         private Configuration GetTestConfig()
         {
+            var settings = new CodeInspectionSettings();
+            settings.CodeInspections.Add(new CodeInspectionSetting
+            {
+                Description = new ProcedureCanBeWrittenAsFunctionInspection(null).Description,
+                Severity = CodeInspectionSeverity.Suggestion
+            });
             return new Configuration
             {
-                UserSettings = new UserSettings
-                {
-                    CodeInspectionSettings = new CodeInspectionSettings
-                    {
-                        CodeInspections = new[] {
-                           new CodeInspectionSetting { Description = new ProcedureCanBeWrittenAsFunctionInspection(null).Description, Severity=CodeInspectionSeverity.Suggestion,  }
-                        }
-                    }
-                }
+                UserSettings = new UserSettings(null, null, null, settings, null, null)
             };
         }
     }

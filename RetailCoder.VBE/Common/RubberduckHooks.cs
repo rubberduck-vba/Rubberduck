@@ -4,10 +4,13 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Common.WinAPI;
 using Rubberduck.Settings;
+using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.Refactorings;
 
 namespace Rubberduck.Common
 {
@@ -22,9 +25,11 @@ namespace Rubberduck.Common
         private IRawDevice _kb;
         private IRawDevice _mouse;
         private readonly IGeneralConfigService _config;
+        private readonly IEnumerable<ICommand> _commands;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
+        private readonly IDictionary<RubberduckHotkey, ICommand> _mappings;
 
-        public RubberduckHooks(VBE vbe, IGeneralConfigService config)
+        public RubberduckHooks(VBE vbe, IGeneralConfigService config, IEnumerable<ICommand> commands)
         {
             _vbe = vbe;
             _mainWindowHandle = (IntPtr)vbe.MainWindow.HWnd;
@@ -33,8 +38,31 @@ namespace Rubberduck.Common
             _oldWndPointer = User32.SetWindowLong(_mainWindowHandle, (int)WindowLongFlags.GWL_WNDPROC, _newWndProc);
             _oldWndProc = (User32.WndProc)Marshal.GetDelegateForFunctionPointer(_oldWndPointer, typeof(User32.WndProc));
 
+            _commands = commands;
             _config = config;
+            _mappings = GetCommandMappings();
+        }
 
+        private ICommand Command<TCommand>() where TCommand : ICommand
+        {
+            return _commands.OfType<TCommand>().SingleOrDefault();
+        }
+
+        private IDictionary<RubberduckHotkey, ICommand> GetCommandMappings()
+        {
+            return new Dictionary<RubberduckHotkey, ICommand>
+            {
+                { RubberduckHotkey.ParseAll, Command<ReparseCommand>() },
+                { RubberduckHotkey.CodeExplorer, Command<CodeExplorerCommand>() },
+                { RubberduckHotkey.IndentModule, Command<IndentCurrentModuleCommand>() },
+                { RubberduckHotkey.IndentProcedure, Command<IndentCurrentProcedureCommand>() },
+                { RubberduckHotkey.FindSymbol, Command<FindSymbolCommand>() },
+                { RubberduckHotkey.RefactorMoveCloserToUsage, Command<RefactorMoveCloserToUsageCommand>() },
+                { RubberduckHotkey.InspectionResults, Command<InspectionResultsCommand>() },
+                { RubberduckHotkey.RefactorExtractMethod, Command<RefactorExtractMethodCommand>() },
+                { RubberduckHotkey.RefactorRename, Command<CodePaneRefactorRenameCommand>() },
+                { RubberduckHotkey.TestExplorer, Command<TestExplorerCommand>() }
+            };
         }
 
         public void HookHotkeys()
@@ -43,7 +71,7 @@ namespace Rubberduck.Common
             _hooks.Clear();
 
             var config = _config.LoadConfiguration();
-            var settings = config.UserSettings.GeneralSettings.HotkeySettings;
+            var settings = config.UserSettings.HotkeySettings;
 
             _rawinput = new RawInput(_mainWindowHandle);
 
@@ -57,9 +85,9 @@ namespace Rubberduck.Common
             mouse.RawMouseInputReceived += Mouse_RawMouseInputReceived;
             _mouse = mouse;
 
-            foreach (var hotkey in settings.Where(hotkey => hotkey.IsEnabled))
+            foreach (var hotkey in settings.Settings.Where(hotkey => hotkey.IsEnabled))
             {
-                AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), hotkey.Command));
+                AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), _mappings[(RubberduckHotkey)Enum.Parse(typeof(RubberduckHotkey), hotkey.Name)]));
             }
             Attach();
         }

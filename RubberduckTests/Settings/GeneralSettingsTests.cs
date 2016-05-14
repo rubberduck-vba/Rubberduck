@@ -14,17 +14,21 @@ namespace RubberduckTests.Settings
             var generalSettings = new GeneralSettings
             {
                 Language = new DisplayLanguageSetting("en-US"),
-                HotkeySettings = new[]
-                {
-                    new HotkeySetting{Name="IndentProcedure", IsEnabled=true, Key1="CTRL-P"},
-                    new HotkeySetting{Name="IndentModule", IsEnabled=true, Key1="CTRL-M"}
-                },
                 AutoSaveEnabled = false,
                 AutoSavePeriod = 10,
                 Delimiter = '.'
             };
 
-            var userSettings = new UserSettings(generalSettings, null, null, null, null);
+            var hotkeySettings = new HotkeySettings()
+            {
+                Settings = new[]
+                {
+                    new HotkeySetting {Name = "IndentProcedure", IsEnabled = true, Key1 = "CTRL-P"},
+                    new HotkeySetting {Name = "IndentModule", IsEnabled = true, Key1 = "CTRL-M"}
+                }
+            };
+
+            var userSettings = new UserSettings(generalSettings, hotkeySettings, null, null, null, null);
             return new Configuration(userSettings);
         }
 
@@ -33,17 +37,21 @@ namespace RubberduckTests.Settings
             var generalSettings = new GeneralSettings
             {
                 Language = new DisplayLanguageSetting("sv-SE"),
-                HotkeySettings = new[]
-                {
-                    new HotkeySetting{Name="IndentProcedure", IsEnabled=false, Key1="CTRL-C"},
-                    new HotkeySetting{Name="IndentModule", IsEnabled=false, Key1="CTRL-X"}
-                },
                 AutoSaveEnabled = true,
                 AutoSavePeriod = 5,
                 Delimiter = '/'
             };
 
-            var userSettings = new UserSettings(generalSettings, null, null, null, null);
+            var hotkeySettings = new HotkeySettings()
+            {
+                Settings = new[]
+                {
+                    new HotkeySetting{Name="IndentProcedure", IsEnabled=false, Key1="CTRL-C"},
+                    new HotkeySetting{Name="IndentModule", IsEnabled=false, Key1="CTRL-X"}
+                }
+            };
+
+            var userSettings = new UserSettings(generalSettings, hotkeySettings, null, null, null, null);
             return new Configuration(userSettings);
         }
 
@@ -58,7 +66,7 @@ namespace RubberduckTests.Settings
 
             MultiAssert.Aggregate(
                 () => Assert.AreEqual(config.UserSettings.GeneralSettings.Language, viewModel.SelectedLanguage),
-                () => Assert.IsTrue(config.UserSettings.GeneralSettings.HotkeySettings.SequenceEqual(viewModel.Hotkeys)),
+                () => Assert.IsTrue(config.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys)),
                 () => Assert.AreEqual(config.UserSettings.GeneralSettings.AutoSaveEnabled, viewModel.AutoSaveEnabled),
                 () => Assert.AreEqual(config.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod),
                 () => Assert.AreEqual(config.UserSettings.GeneralSettings.Delimiter, (char)viewModel.Delimiter));
@@ -74,7 +82,7 @@ namespace RubberduckTests.Settings
 
             MultiAssert.Aggregate(
                 () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Language, viewModel.SelectedLanguage),
-                () => Assert.IsTrue(defaultConfig.UserSettings.GeneralSettings.HotkeySettings.SequenceEqual(viewModel.Hotkeys)),
+                () => Assert.IsTrue(defaultConfig.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys)),
                 () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSaveEnabled, viewModel.AutoSaveEnabled),
                 () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod),
                 () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Delimiter, (char)viewModel.Delimiter));
@@ -95,7 +103,7 @@ namespace RubberduckTests.Settings
             var defaultConfig = GetDefaultConfig();
             var viewModel = new GeneralSettingsViewModel(defaultConfig);
 
-            Assert.IsTrue(defaultConfig.UserSettings.GeneralSettings.HotkeySettings.SequenceEqual(viewModel.Hotkeys));
+            Assert.IsTrue(defaultConfig.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys));
         }
 
         [TestMethod]
