@@ -1,22 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 using Rubberduck.Inspections;
 using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
+    public interface ICodeInspectionSettings
+    {
+        HashSet<CodeInspectionSetting> CodeInspections { get; set; }
+    }
+
     [XmlType(AnonymousType = true)]
-    public class CodeInspectionSettings
+    public class CodeInspectionSettings : ICodeInspectionSettings
     {
         [XmlArrayItem("CodeInspection", IsNullable = false)]
-        public CodeInspectionSetting[] CodeInspections { get; set; }
+        public HashSet<CodeInspectionSetting> CodeInspections { get; set; }
 
         public CodeInspectionSettings()
         {
             //default constructor requied for serialization
         }
 
-        public CodeInspectionSettings(CodeInspectionSetting[] inspections)
+        public CodeInspectionSettings(HashSet<CodeInspectionSetting> inspections)
         {
             CodeInspections = inspections;
         }

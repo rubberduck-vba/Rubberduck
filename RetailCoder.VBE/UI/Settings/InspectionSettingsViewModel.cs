@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Data;
+using Rubberduck.Inspections;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
@@ -33,8 +35,7 @@ namespace Rubberduck.UI.Settings
 
         public void UpdateConfig(Configuration config)
         {
-            config.UserSettings.CodeInspectionSettings.CodeInspections =
-                InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>().ToArray();
+            config.UserSettings.CodeInspectionSettings.CodeInspections = new HashSet<CodeInspectionSetting>(InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>());
         }
 
         public void SetToDefaults(Configuration config)

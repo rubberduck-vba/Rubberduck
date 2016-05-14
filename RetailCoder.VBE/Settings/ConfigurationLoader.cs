@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.Windows.Input;
-using Microsoft.Win32;
 using Rubberduck.Inspections;
-using Rubberduck.UI;
-using Rubberduck.UI.Command;
-using Rubberduck.UI.Command.Refactorings;
-using MessageBox = System.Windows.Forms.MessageBox;
+using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.Settings
 {
@@ -19,18 +11,33 @@ namespace Rubberduck.Settings
         Configuration GetDefaultConfiguration();
     }
 
-    public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IGeneralConfigService
+    public class ConfigurationLoader : IGeneralConfigService
     {
+        //        /// <summary>
+        ///// Defines the root path where all Rubberduck Configuration files are stored.
+        ///// </summary>
+        //protected readonly string rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck");
+
+        private readonly IGeneralConfigProvider _generalProvider;
+        private readonly IHotkeyConfigProvider _hotkeyProvider;
+        private readonly IToDoListConfigProvider _todoProvider;
+        private readonly ICodeInspectionConfigProvider _inspectionProvider;
+        private readonly IUnitTestConfigProvider _unitTestProvider;
+        private readonly IIndenterConfigProvider _indenterProvider;
+
         private readonly IEnumerable<IInspection> _inspections;
 
-        public ConfigurationLoader(IEnumerable<IInspection> inspections)
+        public ConfigurationLoader(IGeneralConfigProvider generalProvider, IHotkeyConfigProvider hotkeyProvider, IToDoListConfigProvider todoProvider,
+                                   ICodeInspectionConfigProvider inspectionProvider, IUnitTestConfigProvider unitTestProvider, IIndenterConfigProvider indenterProvider,
+                                   IEnumerable<IInspection> inspections)
         {
+            _generalProvider = generalProvider;
+            _hotkeyProvider = hotkeyProvider;
+            _todoProvider = todoProvider;
+            _inspectionProvider = inspectionProvider;
+            _unitTestProvider = unitTestProvider;
+            _indenterProvider = indenterProvider;
             _inspections = inspections;
-        }
-
-        protected override string ConfigFile
-        {
-            get { return Path.Combine(rootPath, "rubberduck.config"); }
         }
 
         /// <summary>
@@ -39,86 +46,22 @@ namespace Rubberduck.Settings
         /// <remarks>
         /// Returns default configuration when an IOException is caught.
         /// </remarks>
-        public override Configuration LoadConfiguration()
+        public Configuration LoadConfiguration()
         {
             //deserialization can silently fail for just parts of the config, 
             //so we null-check and return defaults if necessary.
-
-            var config = base.LoadConfiguration();
-
-            if (config.UserSettings.GeneralSettings == null)
+            return new Configuration
             {
-                config.UserSettings.GeneralSettings = GetDefaultGeneralSettings();
-            }
-
-            // 0 is the default, and parses just fine into a `char`.  We require '.' or '/'.
-            if (!new[] {',', '/'}.Contains(config.UserSettings.GeneralSettings.Delimiter))
-            {
-                config.UserSettings.GeneralSettings.Delimiter = '.';
-            }
-
-            if (config.UserSettings.ToDoListSettings == null)
-            {
-                config.UserSettings.ToDoListSettings = new ToDoListSettings(GetDefaultTodoMarkers());
-            }
-
-            if (config.UserSettings.CodeInspectionSettings == null)
-            {
-                config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
-            }
-
-            if (config.UserSettings.UnitTestSettings == null)
-            {
-                config.UserSettings.UnitTestSettings = new UnitTestSettings();
-            }
-
-            if (config.UserSettings.IndenterSettings == null)
-            {
-                config.UserSettings.IndenterSettings = GetDefaultIndenterSettings();
-            }
-
-            var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
-
-            configInspections = MergeImplementedInspectionsNotInConfig(configInspections, _inspections);
-            config.UserSettings.CodeInspectionSettings.CodeInspections = configInspections.ToArray();
-
-            return config;
-        }
-
-        protected override Configuration HandleIOException(IOException ex)
-        {
-            return GetDefaultConfiguration();
-        }
-
-        protected override Configuration HandleInvalidOperationException(InvalidOperationException ex)
-        {
-            var folder = Path.GetDirectoryName(ConfigFile);
-            var newFilePath = folder + "\\rubberduck.config." + DateTime.UtcNow.ToString().Replace('/', '.').Replace(':', '.') + ".bak";
-
-            var message = string.Format(RubberduckUI.PromptLoadDefaultConfig, ex.Message, ex.InnerException.Message, ConfigFile, newFilePath);
-            MessageBox.Show(message, RubberduckUI.LoadConfigError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-
-            using (var fs = File.Create(@newFilePath))
-            {
-                using (var reader = new StreamReader(folder + "\\rubberduck.config"))
-                using (var writer = new StreamWriter(fs, Encoding.UTF8))
+                UserSettings = new UserSettings
                 {
-                    writer.Write(reader.ReadToEnd());
+                    GeneralSettings = _generalProvider.Create(),
+                    HotkeySettings = _hotkeyProvider.Create(),
+                    ToDoListSettings = _todoProvider.Create(),
+                    CodeInspectionSettings = _inspectionProvider.Create(_inspections),
+                    UnitTestSettings = _unitTestProvider.Create(),
+                    IndenterSettings = _indenterProvider.Create()
                 }
-            }
-
-            var config = GetDefaultConfiguration();
-            SaveConfiguration(config);
-            return config;
-        }
-
-        /// <summary>   Converts implemented code inspections into array of Config.CodeInspection objects. </summary>
-        /// <returns>   An array of Config.CodeInspection. </returns>
-        public CodeInspectionSetting[] GetDefaultCodeInspections()
-        {
-            return _inspections.Select(x =>
-                        new CodeInspectionSetting(x.Name, x.Description, x.InspectionType, x.DefaultSeverity,
-                            x.DefaultSeverity)).ToArray();
+            };
         }
 
         private List<CodeInspectionSetting> MergeImplementedInspectionsNotInConfig(List<CodeInspectionSetting> configInspections, IEnumerable<IInspection> implementedInspections)
@@ -141,60 +84,61 @@ namespace Rubberduck.Settings
 
         public Configuration GetDefaultConfiguration()
         {
-            var userSettings = new UserSettings(
-                                    GetDefaultGeneralSettings(),
-                                    new HotkeySettings(), 
-                                    new ToDoListSettings(GetDefaultTodoMarkers()),
-                                    new CodeInspectionSettings(GetDefaultCodeInspections()),
-                                    //new CodeInspectionSettings(), 
-                                    new UnitTestSettings(),
-                                    GetDefaultIndenterSettings());
-
-            return new Configuration(userSettings);
-        }
-
-        private GeneralSettings GetDefaultGeneralSettings()
-        {
-            return new GeneralSettings();
-        }
-
-        public ToDoMarker[] GetDefaultTodoMarkers()
-        {
-            var note = new ToDoMarker(RubberduckUI.TodoMarkerNote);
-            var todo = new ToDoMarker(RubberduckUI.TodoMarkerTodo);
-            var bug = new ToDoMarker(RubberduckUI.TodoMarkerBug);
-
-            return new[] { note, todo, bug };
-        }
-
-        public IndenterSettings GetDefaultIndenterSettings()
-        {
-            var tabWidth = 4;
-            var reg = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\6.0\Common", false) ??
-                      Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\7.0\Common", false);
-            if (reg != null)
+            return new Configuration
             {
-                tabWidth = Convert.ToInt32(reg.GetValue("TabWidth") ?? tabWidth);
-            }
-            return new IndenterSettings
-            {
-                IndentEntireProcedureBody = true,
-                IndentFirstCommentBlock = true,
-                IndentFirstDeclarationBlock = true,
-                AlignCommentsWithCode = true,
-                AlignContinuations = true,
-                IgnoreOperatorsInContinuations = true,
-                IndentCase = false,
-                ForceDebugStatementsInColumn1 = false,
-                ForceCompilerDirectivesInColumn1 = false,
-                IndentCompilerDirectives = true,
-                AlignDims = false,
-                AlignDimColumn = 15,
-                EnableUndo = true,
-                EndOfLineCommentStyle = SmartIndenter.EndOfLineCommentStyle.AlignInColumn,
-                EndOfLineCommentColumnSpaceAlignment = 50,
-                IndentSpaces = tabWidth
+                UserSettings = new UserSettings
+                {
+                    GeneralSettings = _generalProvider.CreateDefaults(),
+                    HotkeySettings = _hotkeyProvider.CreateDefaults(),
+                    ToDoListSettings = _todoProvider.CreateDefaults(),
+                    CodeInspectionSettings = _inspectionProvider.CreateDefaults(),
+                    UnitTestSettings = _unitTestProvider.CreateDefaults(),
+                    IndenterSettings = _indenterProvider.CreateDefaults()
+                }
             };
+        }
+
+
+        public void SaveConfiguration(Configuration toSerialize)
+        {
+            _generalProvider.Save(toSerialize.UserSettings.GeneralSettings);
+            _hotkeyProvider.Save(toSerialize.UserSettings.HotkeySettings);
+            _todoProvider.Save(toSerialize.UserSettings.ToDoListSettings);
+            _inspectionProvider.Save(toSerialize.UserSettings.CodeInspectionSettings);
+            _unitTestProvider.Save(toSerialize.UserSettings.UnitTestSettings);
+            _indenterProvider.Save(toSerialize.UserSettings.IndenterSettings);
+        }
+
+        public void SaveConfiguration(Configuration toSerialize, bool languageChanged)
+        {
+            SaveConfiguration(toSerialize);
+
+            if (languageChanged)
+            {
+                OnLanguageChanged(EventArgs.Empty);
+            }
+
+            OnSettingsChanged(EventArgs.Empty);
+        }
+
+        public event EventHandler LanguageChanged;
+        protected virtual void OnLanguageChanged(EventArgs e)
+        {
+            var handler = LanguageChanged;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        public event EventHandler SettingsChanged;
+        protected virtual void OnSettingsChanged(EventArgs e)
+        {
+            var handler = SettingsChanged;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
         }
     }
 }

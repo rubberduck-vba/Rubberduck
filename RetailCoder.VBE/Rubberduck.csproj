@@ -372,9 +372,13 @@
     <Compile Include="Navigation\CodeExplorer\CodeExplorerErrorNodeViewModel.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
+    <Compile Include="Settings\CodeInspectionConfigProvider.cs" />
+    <Compile Include="Settings\GeneralConfigProvider.cs" />
     <Compile Include="Settings\HotkeySettings.cs" />
     <Compile Include="Settings\HotkeyConfigProvider.cs" />
     <Compile Include="Settings\RubberduckHotkey.cs" />
+    <Compile Include="Settings\ToDoListConfigProvider.cs" />
+    <Compile Include="Settings\UnitTestConfigProvider.cs" />
     <Compile Include="UI\About\AboutControl.xaml.cs">
       <DependentUpon>AboutControl.xaml</DependentUpon>
     </Compile>
