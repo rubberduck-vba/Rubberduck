@@ -13,11 +13,6 @@ namespace Rubberduck.Settings
         public UnitTestSettings UnitTestSettings { get; set; }
         public IndenterSettings IndenterSettings { get; set; }
 
-        public UserSettings()
-        {
-            //default constructor required for serialization
-        }
-
         public UserSettings(GeneralSettings generalSettings,
                             HotkeySettings hotkeySettings,
                             ToDoListSettings todoSettings, 

@@ -504,11 +504,7 @@
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
     <Compile Include="Settings\GeneralSettings.cs" />
     <Compile Include="Settings\HotkeySetting.cs" />
-    <Compile Include="Settings\IndenterSettings.cs" />
-    <Compile Include="Settings\SourceControlConfiguration.cs" />
-    <Compile Include="Settings\SourceControlConfigurationService.cs" />
     <Compile Include="Settings\UnitTestSettings.cs" />
-    <Compile Include="Settings\XmlConfigurationServiceBase.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspection.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionResult.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspection.cs" />

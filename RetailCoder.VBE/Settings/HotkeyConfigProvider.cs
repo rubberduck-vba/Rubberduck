@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows.Input;
-using Rubberduck.SettingsProvider;
+﻿using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings
 {
@@ -17,8 +15,7 @@ namespace Rubberduck.Settings
 
         public HotkeyConfigProvider(IPersistanceService<HotkeySettings> persister)
         {
-            _persister = persister;
-            
+            _persister = persister;          
         }
 
         public HotkeySettings Create()

@@ -1,5 +1,4 @@
-﻿using System.Windows.Input;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 using Rubberduck.UI;
 
 namespace Rubberduck.Settings

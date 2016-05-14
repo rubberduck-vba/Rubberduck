@@ -185,10 +185,10 @@ namespace Rubberduck.Root
             _kernel.Bind<IPersistanceService<ToDoListSettings>>().To<XmlPersistanceService<ToDoListSettings>>().InSingletonScope();
             _kernel.Bind<IPersistanceService<UnitTestSettings>>().To<XmlPersistanceService<UnitTestSettings>>().InSingletonScope();
             _kernel.Bind<IPersistanceService<IndenterSettings>>().To<XmlPersistanceService<IndenterSettings>>().InSingletonScope();
-            //_kernel.Bind<IPersistanceService<SourceControlSettings>>().To<XmlPersistanceService<SourceControlSettings>>().InSingletonScope();
+            _kernel.Bind<IFilePersistanceService<SourceControlSettings>>().To<XmlPersistanceService<SourceControlSettings>>().InSingletonScope();
 
             _kernel.Bind<IIndenterConfigProvider>().To<IndenterConfigProvider>().InSingletonScope();
-            //_kernel.Bind<ISourceControlConfigProvider>().To<SourceControlConfigProvider>().InSingletonScope();
+            _kernel.Bind<ISourceControlConfigProvider>().To<SourceControlConfigProvider>().InSingletonScope();
 
             _kernel.Bind<ICodeInspectionSettings>().To<CodeInspectionSettings>();
             _kernel.Bind<IGeneralSettings>().To<GeneralSettings>();
@@ -196,7 +196,7 @@ namespace Rubberduck.Root
             _kernel.Bind<IToDoListSettings>().To<ToDoListSettings>();
             _kernel.Bind<IUnitTestSettings>().To<UnitTestSettings>();
             _kernel.Bind<IIndenterSettings>().To<IndenterSettings>();
-            //_kernel.Bind<ISourceControlSettings>().To<SourceControlSettings>();        
+            _kernel.Bind<ISourceControlSettings>().To<SourceControlSettings>();        
         }
 
         // note convention: abstract factory interface names end with "Factory".

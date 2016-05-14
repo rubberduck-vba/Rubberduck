@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Rubberduck.Inspections;
-using Rubberduck.Settings;
-using Rubberduck.SettingsProvider;
+﻿using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings
 {

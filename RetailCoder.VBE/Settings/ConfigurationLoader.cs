@@ -13,11 +13,6 @@ namespace Rubberduck.Settings
 
     public class ConfigurationLoader : IGeneralConfigService
     {
-        //        /// <summary>
-        ///// Defines the root path where all Rubberduck Configuration files are stored.
-        ///// </summary>
-        //protected readonly string rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck");
-
         private readonly IGeneralConfigProvider _generalProvider;
         private readonly IHotkeyConfigProvider _hotkeyProvider;
         private readonly IToDoListConfigProvider _todoProvider;
@@ -43,24 +38,19 @@ namespace Rubberduck.Settings
         /// <summary>
         /// Loads the configuration from Rubberduck.config xml file.
         /// </summary>
-        /// <remarks>
-        /// Returns default configuration when an IOException is caught.
-        /// </remarks>
         public Configuration LoadConfiguration()
         {
-            //deserialization can silently fail for just parts of the config, 
-            //so we null-check and return defaults if necessary.
             return new Configuration
             {
                 UserSettings = new UserSettings
-                {
-                    GeneralSettings = _generalProvider.Create(),
-                    HotkeySettings = _hotkeyProvider.Create(),
-                    ToDoListSettings = _todoProvider.Create(),
-                    CodeInspectionSettings = _inspectionProvider.Create(_inspections),
-                    UnitTestSettings = _unitTestProvider.Create(),
-                    IndenterSettings = _indenterProvider.Create()
-                }
+                (
+                    _generalProvider.Create(),
+                    _hotkeyProvider.Create(),
+                    _todoProvider.Create(),
+                    _inspectionProvider.Create(_inspections),
+                    _unitTestProvider.Create(),
+                    _indenterProvider.Create()
+                )
             };
         }
 
@@ -87,14 +77,14 @@ namespace Rubberduck.Settings
             return new Configuration
             {
                 UserSettings = new UserSettings
-                {
-                    GeneralSettings = _generalProvider.CreateDefaults(),
-                    HotkeySettings = _hotkeyProvider.CreateDefaults(),
-                    ToDoListSettings = _todoProvider.CreateDefaults(),
-                    CodeInspectionSettings = _inspectionProvider.CreateDefaults(),
-                    UnitTestSettings = _unitTestProvider.CreateDefaults(),
-                    IndenterSettings = _indenterProvider.CreateDefaults()
-                }
+                (
+                    _generalProvider.CreateDefaults(),
+                    _hotkeyProvider.CreateDefaults(),
+                    _todoProvider.CreateDefaults(),
+                    _inspectionProvider.CreateDefaults(),
+                    _unitTestProvider.CreateDefaults(),
+                    _indenterProvider.CreateDefaults()
+                )
             };
         }
 

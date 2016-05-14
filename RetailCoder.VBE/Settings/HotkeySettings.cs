@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Input;
-using Rubberduck.Settings;
-using Rubberduck.UI.Command;
-using Rubberduck.UI.Command.Refactorings;
-
-namespace Rubberduck.Settings
+﻿namespace Rubberduck.Settings
 {
     public interface IHotkeySettings
     {

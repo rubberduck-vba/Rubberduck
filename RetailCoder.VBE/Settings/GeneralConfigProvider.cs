@@ -1,5 +1,4 @@
 ﻿using System;
-using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings

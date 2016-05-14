@@ -31,8 +31,10 @@ namespace Rubberduck.UI.SourceControl
         private readonly RubberduckParserState _state;
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
-        private readonly IConfigurationService<SourceControlConfiguration> _configService;
-        private readonly SourceControlConfiguration _config;
+        //private readonly IConfigurationService<SourceControlConfiguration> _configService;
+        private readonly ISourceControlConfigProvider _configService;
+        //private readonly SourceControlConfiguration _config;
+        private readonly SourceControlSettings _config;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public SourceControlViewViewModel(
@@ -40,7 +42,8 @@ namespace Rubberduck.UI.SourceControl
             RubberduckParserState state,
             ISourceControlProviderFactory providerFactory,
             IFolderBrowserFactory folderBrowserFactory,
-            IConfigurationService<SourceControlConfiguration> configService,
+            //IConfigurationService<SourceControlConfiguration> configService,
+            ISourceControlConfigProvider configService,
             [Named("changesView")] IControlView changesView,
             [Named("branchesView")] IControlView branchesView,
             [Named("unsyncedCommitsView")] IControlView unsyncedCommitsView,
@@ -55,7 +58,8 @@ namespace Rubberduck.UI.SourceControl
             _state.StateChanged += _state_StateChanged;
 
             _configService = configService;
-            _config = _configService.LoadConfiguration();
+            //_config = _configService.LoadConfiguration();
+            _config = _configService.Create();
             _wrapperFactory = wrapperFactory;
 
             _initRepoCommand = new DelegateCommand(_ => InitRepo());
@@ -360,7 +364,8 @@ namespace Rubberduck.UI.SourceControl
             if (_config.Repositories.All(repository => repository.LocalLocation != repo.LocalLocation))
             {
                 _config.Repositories.Add(repo);
-                _configService.SaveConfiguration(_config);
+                //_configService.SaveConfiguration(_config);
+                _configService.Save(_config);
             }
             else
             {
@@ -374,7 +379,8 @@ namespace Rubberduck.UI.SourceControl
                 existing.Name = repo.Name;
                 existing.RemoteLocation = repo.RemoteLocation;
 
-                _configService.SaveConfiguration(_config);
+                //_configService.SaveConfiguration(_config);
+                _configService.Save(_config);
             }
         }
 
