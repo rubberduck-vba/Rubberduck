@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Rubberduck.UI.CodeExplorer.Converters
+namespace Rubberduck.UI.Converters
 {
     public class InvertBoolValueConverter : IValueConverter
     {

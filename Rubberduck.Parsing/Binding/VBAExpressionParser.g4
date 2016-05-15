@@ -33,9 +33,9 @@ name : untypedName | typedName;
 reservedIdentifierName : reservedUntypedName | reservedTypedName;
 reservedUntypedName : reservedIdentifier;
 reservedTypedName : reservedIdentifier typeSuffix;
-untypedName : IDENTIFIER | FOREIGNNAME | reservedProcedureName | specialForm | optionCompareArgument | OBJECT | uncategorizedKeyword | ERROR;
+untypedName : IDENTIFIER | FOREIGNNAME | reservedProcedureName | specialForm | optionCompareArgument | OBJECT | uncategorizedKeyword | ERROR | reservedTypeIdentifier;
 typedName : typedNameValue typeSuffix;
-typedNameValue : IDENTIFIER | reservedProcedureName | specialForm | optionCompareArgument | OBJECT | uncategorizedKeyword | ERROR;
+typedNameValue : IDENTIFIER | reservedProcedureName | specialForm | optionCompareArgument | OBJECT | uncategorizedKeyword | ERROR | reservedTypeIdentifier;
 typeSuffix : PERCENT | AMPERSAND | POW | EXCLAMATIONPOINT | HASH | AT | DOLLAR;
 
 optionCompareArgument : BINARY | TEXT | DATABASE;
@@ -188,7 +188,6 @@ statementKeyword :
     | DO
     | ELSE
     | ELSEIF
-    | END
     | END_IF
     | ENUM
     | ERASE
@@ -329,6 +328,7 @@ reservedProcedureName :
     | RESET
     | LINE_INPUT
     | WIDTH
+    | END
 ;
 specialForm :
     ARRAY
@@ -352,6 +352,7 @@ reservedTypeIdentifier :
     | SINGLE
     | STRING
     | VARIANT
+    | ANY
 ;
 
 uncategorizedKeyword : 
