@@ -23,10 +23,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override bool CanExecute(object parameter)
         {
-            if (parameter is CodeExplorerComponentViewModel)
+            if (parameter == null)
             {
-                var node = (CodeExplorerComponentViewModel)parameter;
-                if (node.Declaration.Annotations.Any(a => a.AnnotationType == Parsing.Annotations.AnnotationType.NoIndent))
+                return false;
+            }
+
+            var model = parameter as CodeExplorerComponentViewModel;
+            if (model != null)
+            {
+                var node = model;
+                if (node.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.NoIndent))
                 {
                     return false;
                 }
@@ -40,12 +46,18 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                             c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent));
             }
 
-            return _state.Status == ParserState.Ready && !(parameter is CodeExplorerCustomFolderViewModel) &&
-                   !(parameter is CodeExplorerErrorNodeViewModel);
+            return _state.Status == ParserState.Ready 
+                && !(parameter is CodeExplorerCustomFolderViewModel) 
+                && !(parameter is CodeExplorerErrorNodeViewModel);
         }
 
         public override void Execute(object parameter)
         {
+            if (parameter == null)
+            {
+                return;
+            }
+
             var node = (CodeExplorerItemViewModel)parameter;
 
             if (!node.QualifiedSelection.HasValue)
