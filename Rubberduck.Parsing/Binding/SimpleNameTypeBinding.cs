@@ -97,12 +97,12 @@ namespace Rubberduck.Parsing.Binding
                 Enclosing Module namespace: A UDT or Enum type defined at the module-level in the 
                 enclosing module.
             */
-            var udt = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.UserDefinedType);
+            var udt = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.UserDefinedType);
             if (udt != null)
             {
                 return new SimpleNameExpression(udt, ExpressionClassification.Type, _expression);
             }
-            var enumType = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Enumeration);
+            var enumType = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Enumeration);
             if (enumType != null)
             {
                 return new SimpleNameExpression(enumType, ExpressionClassification.Type, _expression);
