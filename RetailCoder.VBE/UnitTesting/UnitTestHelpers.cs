@@ -27,6 +27,7 @@ namespace Rubberduck.UnitTesting
         {
             return !state.AllUserDeclarations.Any(
                     d => d.DeclarationType == DeclarationType.Parameter && d.ParentScopeDeclaration == item) &&
+                item.Accessibility == Accessibility.Public &&
                 item.Annotations.Any(a => a.AnnotationType == AnnotationType.TestMethod);
         }
 
