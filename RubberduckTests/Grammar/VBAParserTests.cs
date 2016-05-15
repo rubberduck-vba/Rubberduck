@@ -520,6 +520,197 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 7);
         }
 
+        [TestMethod]
+        public void TestOpenStmt()
+        {
+            string code = @"
+Sub Test()
+    Open ""TESTFILE"" For Binary Access Read Lock Read As #1 Len = 2
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//openStmt");
+        }
+
+        [TestMethod]
+        public void TestResetStmt()
+        {
+            string code = @"
+Sub Test()
+    Reset
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//resetStmt");
+        }
+
+        [TestMethod]
+        public void TestCloseStmt()
+        {
+            string code = @"
+Sub Test()
+    Close #1, 2, 3
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//closeStmt");
+        }
+
+        [TestMethod]
+        public void TestSeekStmt()
+        {
+            string code = @"
+Sub Test()
+    Seek #1, 2
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//seekStmt");
+        }
+
+        [TestMethod]
+        public void TestSeekFunction()
+        {
+            // Tests whether SEEK, which is actually a special keyword, can also be used in a "function call context".
+            string code = @"
+Sub Test()
+    anything = Seek(50)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//implicitCallStmt_InStmt");
+        }
+
+        [TestMethod]
+        public void TestLockStmt()
+        {
+            string code = @"
+Sub Test()
+    Lock #1, 2
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lockStmt");
+        }
+
+        [TestMethod]
+        public void TestUnlockStmt()
+        {
+            string code = @"
+Sub Test()
+    Unlock #1, 2
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//unlockStmt");
+        }
+
+        [TestMethod]
+        public void TestLineInputStmt()
+        {
+            string code = @"
+Sub Test()
+    Line Input #2, ""ABC""
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lineInputStmt");
+        }
+
+        [TestMethod]
+        public void TestWidthStmt()
+        {
+            string code = @"
+Sub Test()
+    Width #2, 5
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//widthStmt");
+        }
+
+        [TestMethod]
+        public void TestPrintStmt()
+        {
+            string code = @"
+Sub Test()
+    Print #2, Spc(5) ;
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//printStmt");
+        }
+
+        [TestMethod]
+        public void TestDebugPrintStmt()
+        {
+            // Sanity check so that we don't break Debug.Print because of the Print statement.
+            string code = @"
+Sub Test()
+    Debug.Print ""Anything""
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//implicitCallStmt_InBlock");
+        }
+
+        [TestMethod]
+        public void TestWriteStmt()
+        {
+            string code = @"
+Sub Test()
+    Write #1, ""ABC"", 234
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//writeStmt");
+        }
+
+        [TestMethod]
+        public void TestInputStmt()
+        {
+            string code = @"
+Sub Test()
+    Input #1, ""ABC""
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//inputStmt");
+        }
+
+        [TestMethod]
+        public void TestInputFunction()
+        {
+            string code = @"
+Sub Test()
+    s = Input(LOF(file1), #file1)
+    s = Input$(LOF(file1), #file1)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//implicitCallStmt_InStmt");
+        }
+
+        [TestMethod]
+        public void TestInputBFunction()
+        {
+            string code = @"
+Sub Test()
+    s = InputB(LOF(file1), #file1)
+    s = InputB$(LOF(file1), #file1)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//implicitCallStmt_InStmt");
+        }
+
+        [TestMethod]
+        public void TestCircleSpecialForm()
+        {
+            string code = @"
+Sub Test()
+    Me.Circle Step(1, 2), 3, 4, 5, 6, 7
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
+        }
+
+        [TestMethod]
+        public void TestScaleSpecialForm()
+        {
+            string code = @"
+Sub Test()
+    Scale (1, 2)-(3, 4)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//scaleSpecialForm");
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);

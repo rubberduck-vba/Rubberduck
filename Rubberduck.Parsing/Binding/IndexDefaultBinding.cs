@@ -269,8 +269,7 @@ namespace Rubberduck.Parsing.Binding
              */
             if (lExpression.Classification == ExpressionClassification.Property
                || lExpression.Classification == ExpressionClassification.Function
-               || lExpression.Classification == ExpressionClassification.Subroutine
-               || lExpression.Classification == ExpressionClassification.Type)
+               || lExpression.Classification == ExpressionClassification.Subroutine)
             {
                 return new IndexExpression(lExpression.ReferencedDeclaration, lExpression.Classification, _expression, lExpression, _argumentList);
             }

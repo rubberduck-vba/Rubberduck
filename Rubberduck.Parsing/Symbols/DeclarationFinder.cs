@@ -221,7 +221,7 @@ namespace Rubberduck.Parsing.Symbols
         public Declaration FindModuleEnclosingProjectWithoutEnclosingModule(Declaration callingProject, Declaration callingModule, string calleeModuleName, DeclarationType moduleType)
         {
             var nameMatches = MatchName(calleeModuleName);
-            var moduleMatches = nameMatches.Where(m => 
+            var moduleMatches = nameMatches.Where(m =>
                 m.DeclarationType.HasFlag(moduleType)
                 && Declaration.GetProjectParent(m).Equals(callingProject)
                 && !m.Equals(callingModule));
@@ -288,23 +288,22 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return match;
             }
-            // If we don't have a match, try to find the match in one of the implemented interfaces/classes.
-            if (parent.DeclarationType == DeclarationType.ClassModule)
+            foreach (var supertype in ClassModuleDeclaration.GetSupertypes(parent))
             {
-                foreach (var supertype in ((ClassModuleDeclaration)parent).Supertypes)
+                var supertypeMember = FindMemberWithParent(callingProject, callingModule, callingParent, supertype, memberName, memberType);
+                if (supertypeMember != null)
                 {
-                    var supertypeMember = FindMemberWithParent(callingProject, callingModule, callingParent, supertype, memberName, memberType);
-                    if (supertypeMember != null)
-                    {
-                        return supertypeMember;
-                    }
+                    return supertypeMember;
                 }
             }
             return null;
         }
 
-        public Declaration FindMemberEnclosingModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
+        public Declaration FindMemberEnclosingModule(Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
         {
+            // We do not explicitly pass the callingProject here because we have to walk up the type hierarchy
+            // and thus the project differs depending on the callingModule.
+            var callingProject = Declaration.GetProjectParent(callingModule);
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m =>
                 m.DeclarationType.HasFlag(memberType)
@@ -312,6 +311,26 @@ namespace Rubberduck.Parsing.Symbols
                 && callingModule.Equals(Declaration.GetModuleParent(m)));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
+            if (match != null)
+            {
+                return match;
+            }
+            // Classes such as Worksheet have properties such as Range that can be access in a user defined class such as Sheet1,
+            // that's why we have to walk the type hierarchy and find these implementations.
+            foreach (var supertype in ClassModuleDeclaration.GetSupertypes(callingModule))
+            {
+                // Only built-in classes such as Worksheet can be considered "real base classes".
+                // User created interfaces work differently and don't allow accessing accessing implementations.
+                if (!supertype.IsBuiltIn)
+                {
+                    continue;
+                }
+                var supertypeMatch = FindMemberEnclosingModule(supertype, callingParent, memberName, memberType);
+                if (supertypeMatch != null)
+                {
+                    return supertypeMatch;
+                }
+            }
             return match;
         }
 
@@ -362,15 +381,12 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return match;
             }
-            if (memberModule.DeclarationType == DeclarationType.ClassModule)
+            foreach (var supertype in ClassModuleDeclaration.GetSupertypes(memberModule))
             {
-                foreach (var supertype in ((ClassModuleDeclaration)memberModule).Supertypes)
+                var supertypeMember = FindMemberEnclosedProjectInModule(callingProject, callingModule, callingParent, supertype, memberName, memberType);
+                if (supertypeMember != null)
                 {
-                    var supertypeMember = FindMemberEnclosedProjectInModule(callingProject, callingModule, callingParent, supertype, memberName, memberType);
-                    if (supertypeMember != null)
-                    {
-                        return supertypeMember;
-                    }
+                    return supertypeMember;
                 }
             }
             return null;
@@ -410,15 +426,12 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return match;
             }
-            if (memberModule.DeclarationType == DeclarationType.ClassModule)
+            foreach (var supertype in ClassModuleDeclaration.GetSupertypes(memberModule))
             {
-                foreach (var supertype in ((ClassModuleDeclaration)memberModule).Supertypes)
+                var supertypeMember = FindMemberReferencedProjectInModule(callingProject, callingModule, callingParent, supertype, memberName, memberType);
+                if (supertypeMember != null)
                 {
-                    var supertypeMember = FindMemberReferencedProjectInModule(callingProject, callingModule, callingParent, supertype, memberName, memberType);
-                    if (supertypeMember != null)
-                    {
-                        return supertypeMember;
-                    }
+                    return supertypeMember;
                 }
             }
             return null;

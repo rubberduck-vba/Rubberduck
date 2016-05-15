@@ -48,17 +48,17 @@ namespace Rubberduck.Parsing.Binding
                 Enclosing Module namespace: A function, subroutine or property with a Property Get defined 
                 at the module-level in the enclosing module.
             */
-            var function = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Function);
+            var function = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Function);
             if (function != null)
             {
                 return new SimpleNameExpression(function, ExpressionClassification.Function, _expression);
             }
-            var subroutine = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Procedure);
+            var subroutine = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Procedure);
             if (subroutine != null)
             {
                 return new SimpleNameExpression(subroutine, ExpressionClassification.Subroutine, _expression);
             }
-            var propertyGet = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.PropertyGet);
+            var propertyGet = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.PropertyGet);
             if (propertyGet != null)
             {
                 return new SimpleNameExpression(propertyGet, ExpressionClassification.Property, _expression);

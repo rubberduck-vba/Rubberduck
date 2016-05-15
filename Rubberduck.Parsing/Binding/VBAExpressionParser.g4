@@ -69,6 +69,9 @@ expression :
 	| expression whiteSpace? EQV whiteSpace? expression                                             # logicalEqvOp
 	| expression whiteSpace? IMP whiteSpace? expression                                             # logicalImpOp
     | literalExpression                                                                             # literalExpr
+    // This has been added so that we can deal with legacy functions that allow file numbers as arguments which are usually not allowed
+    // e.g. Input(file1, #file1)
+    | HASH expression                                                                               # markedFileNumberExpr 
 ;
 
 // 5.6.5 Literal Expressions
@@ -168,7 +171,6 @@ reservedIdentifier :
 statementKeyword :
     CALL
     | CASE
-    | CLOSE
     | CONST
     | DECLARE
     | DEFBOOL
@@ -196,42 +198,34 @@ statementKeyword :
     | FOR
     | FRIEND
     | FUNCTION
-    | GET
     | GLOBAL
     | GOSUB
     | GOTO
     | IF
     | IMPLEMENTS
-    | INPUT
     | LET
-    | LOCK
     | LOOP
     | LSET
     | NEXT
     | ON
-    | OPEN
     | OPTION
     | PRINT
     | PRIVATE
     | PUBLIC
-    | PUT
     | RAISEEVENT
     | REDIM
     | RESUME
     | RETURN
     | RSET
-    | SEEK
     | SELECT
     | SET
     | STATIC
     | STOP
     | SUB
     | TYPE
-    | UNLOCK
     | WEND
     | WHILE
     | WITH
-    | WRITE
 ;
 remKeyword : REM;
 markerKeyword :
@@ -329,6 +323,15 @@ reservedProcedureName :
     | LINE_INPUT
     | WIDTH
     | END
+    | CLOSE
+    | GET
+    | INPUT
+    | LOCK
+    | OPEN
+    | PUT
+    | SEEK
+    | UNLOCK
+    | WRITE
 ;
 specialForm :
     ARRAY
