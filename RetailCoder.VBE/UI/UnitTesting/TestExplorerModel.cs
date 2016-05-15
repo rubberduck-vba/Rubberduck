@@ -2,13 +2,72 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
+using System.Windows.Threading;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    public abstract class TestExplorerModelBase : ViewModelBase
+    public class TestExplorerModel : ViewModelBase
     {
-        public abstract void Refresh();
+        private readonly VBE _vbe;
+        private readonly RubberduckParserState _state;
+        private readonly Dispatcher _uiDispatcher;
+
+        public TestExplorerModel(VBE vbe, RubberduckParserState state)
+        {
+            _vbe = vbe;
+            _state = state;
+            _state.StateChanged += State_StateChanged;
+
+            _uiDispatcher = Dispatcher.CurrentDispatcher;
+        }
+
+        private void State_StateChanged(object sender, ParserStateEventArgs e)
+        {
+            if (e.State != ParserState.Ready) { return; }
+
+            var tests = UnitTestHelpers.GetAllTests(_vbe, _state).ToList();
+
+            UpdateTestList addTest = AddTest;
+            UpdateTestList removeTest = RemoveTest;
+
+            // add new tests
+            foreach (var test in tests)
+            {
+                if (!_tests.Any(t =>
+                    t.Declaration.ComponentName == test.Declaration.ComponentName &&
+                    t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+                    t.Declaration.ProjectId == test.Declaration.ProjectId))
+                {
+                    _uiDispatcher.Invoke(addTest, test);
+                }
+            }
+
+            var removedTests =_tests.Where(test =>
+                        !tests.Any(t =>
+                                t.Declaration.ComponentName == test.Declaration.ComponentName &&
+                                t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+                                t.Declaration.ProjectId == test.Declaration.ProjectId)).ToList();
+
+            // remove old tests
+            foreach (var test in removedTests)
+            {
+                _uiDispatcher.Invoke(removeTest, test);
+            }
+        }
+
+        private delegate void UpdateTestList(TestMethod test);
+        private void AddTest(TestMethod test)
+        {
+            _tests.Add(test);
+        }
+
+        private void RemoveTest(TestMethod test)
+        {
+            _tests.Remove(test);
+        }
 
         private readonly ObservableCollection<TestMethod> _tests = new ObservableCollection<TestMethod>();
         public ObservableCollection<TestMethod> Tests { get { return _tests; } }
@@ -44,11 +103,16 @@ namespace Rubberduck.UI.UnitTesting
             OnPropertyChanged("Tests");
         }
 
+        public void Refresh()
+        {
+            _state.OnParseRequested(this);
+        }
+
         private int _executedCount;
         public int ExecutedCount
         {
             get { return _executedCount; }
-            protected set
+            private set
             {
                 _executedCount = value;
                 OnPropertyChanged();

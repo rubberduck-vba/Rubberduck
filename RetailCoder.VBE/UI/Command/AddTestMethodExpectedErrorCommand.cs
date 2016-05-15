@@ -10,10 +10,10 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class AddTestMethodExpectedErrorCommand : CommandBase
     {
-        private readonly TestExplorerModelBase _model;
+        private readonly TestExplorerModel _model;
         private readonly NewTestMethodCommand _command;
 
-        public AddTestMethodExpectedErrorCommand(TestExplorerModelBase model, NewTestMethodCommand command)
+        public AddTestMethodExpectedErrorCommand(TestExplorerModel model, NewTestMethodCommand command)
         {
             _model = model;
             _command = command;

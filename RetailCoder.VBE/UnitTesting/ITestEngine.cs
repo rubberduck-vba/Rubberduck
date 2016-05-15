@@ -7,7 +7,7 @@ namespace Rubberduck.UnitTesting
 {
     public interface ITestEngine
     {
-        TestExplorerModelBase Model { get; }
+        TestExplorerModel Model { get; }
         void Run();
         void Run(IEnumerable<TestMethod> tests);
         void Refresh();

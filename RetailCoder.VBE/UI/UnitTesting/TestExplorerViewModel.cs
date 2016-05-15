@@ -14,11 +14,11 @@ namespace Rubberduck.UI.UnitTesting
     public class TestExplorerViewModel : ViewModelBase, INavigateSelection
     {
         private readonly ITestEngine _testEngine;
-        private readonly TestExplorerModelBase _model;
+        private readonly TestExplorerModel _model;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
 
-        public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, TestExplorerModelBase model, IClipboardWriter clipboard, NewUnitTestModuleCommand newTestModuleCommand, NewTestMethodCommand newTestMethodCommand, IGeneralConfigService configService)
+        public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, TestExplorerModel model, IClipboardWriter clipboard, NewUnitTestModuleCommand newTestModuleCommand, NewTestMethodCommand newTestMethodCommand, IGeneralConfigService configService)
         {
             _testEngine = testEngine;
             _testEngine.TestCompleted += TestEngineTestCompleted;
@@ -149,7 +149,7 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        public TestExplorerModelBase Model { get { return _model; } }
+        public TestExplorerModel Model { get { return _model; } }
 
         private void ExecuteRefreshCommand(object parameter)
         {

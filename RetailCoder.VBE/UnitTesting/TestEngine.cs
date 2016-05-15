@@ -13,21 +13,21 @@ namespace Rubberduck.UnitTesting
 {
     public class TestEngine : ITestEngine
     {
-        private readonly TestExplorerModelBase _model;
+        private readonly TestExplorerModel _model;
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
 
         // can't be assigned from constructor because ActiveVBProject is null at startup:
         private IHostApplication _hostApplication; 
 
-        public TestEngine(TestExplorerModelBase model, VBE vbe, RubberduckParserState state)
+        public TestEngine(TestExplorerModel model, VBE vbe, RubberduckParserState state)
         {
             _model = model;
             _vbe = vbe;
             _state = state;
         }
 
-        public TestExplorerModelBase Model { get { return _model; } }
+        public TestExplorerModel Model { get { return _model; } }
 
         public event EventHandler TestCompleted;
 
