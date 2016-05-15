@@ -295,7 +295,7 @@ namespace Rubberduck.Parsing.VBA
         public ParserState Status
         {
             get { return _status; }
-            private set
+            internal set
             {
                 if (_status != value)
                 {

@@ -139,6 +139,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (!toParse.Any())
             {
+                State.Status = ParserState.Ready;
                 return;
             }
 
