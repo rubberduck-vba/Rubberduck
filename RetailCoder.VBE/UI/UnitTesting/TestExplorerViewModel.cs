@@ -47,22 +47,22 @@ namespace Rubberduck.UI.UnitTesting
 
         private bool CanExecuteRunPassedTestsCommand(object obj)
         {
-            return true; //_model.Tests.Any(test => test.Outcome == TestOutcome.Succeeded);
+            return _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Succeeded);
         }
 
         private bool CanExecuteRunFailedTestsCommand(object obj)
         {
-            return true; //_model.Tests.Any(test => test.Outcome == TestOutcome.Failed);
+            return _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Failed);
         }
 
         private bool CanExecuteRunNotExecutedTestsCommand(object obj)
         {
-            return true; //_model.Tests.Any(test => test.Outcome == TestOutcome.Unknown);
+            return _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Unknown);
         }
 
         private bool CanExecuteRepeatLastRunCommand(object obj)
         {
-            return true; //_model.LastRun.Any();
+            return _model.LastRun.Any();
         }
 
         public event EventHandler<EventArgs> TestCompleted;
@@ -75,7 +75,7 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        public INavigateSource SelectedItem { get { return SelectedTest; } set { SelectedTest = value as TestMethod; } }
+        public INavigateSource SelectedItem { get { return SelectedTest; } }
 
         private TestMethod _selectedTest;
         public TestMethod SelectedTest
@@ -206,7 +206,7 @@ namespace Rubberduck.UI.UnitTesting
 
         private bool CanExecuteSelectedTestCommand(object obj)
         {
-            return !Model.IsBusy; //true; //SelectedItem != null;
+            return !Model.IsBusy && SelectedItem != null;
         }
 
         private void ExecuteSelectedTestCommand(object obj)
