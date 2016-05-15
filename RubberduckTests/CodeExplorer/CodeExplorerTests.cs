@@ -162,7 +162,7 @@ namespace RubberduckTests.CodeExplorer
             openFileDialog.Setup(o => o.ShowHelp);
             openFileDialog.Setup(o => o.Filter);
             openFileDialog.Setup(o => o.CheckFileExists);
-            openFileDialog.Setup(o => o.FileName).Returns("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas");
+            openFileDialog.Setup(o => o.FileNames).Returns(new[] {"C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"});
             openFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
 
             var state = new RubberduckParserState();
@@ -177,10 +177,53 @@ namespace RubberduckTests.CodeExplorer
             parser.Parse();
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+            vm.SelectedItem = vm.Projects.First();
             vm.ImportCommand.Execute(vm.SelectedItem);
 
             vbComponents.Verify(c => c.Import("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Once);
+        }
+
+        [TestMethod]
+        public void ImportMultipleModules()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, "");
+
+            var vbComponents = project.MockVBComponents;
+
+            var vbe = builder.AddProject(project.Build()).Build();
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+
+            var openFileDialog = new Mock<IOpenFileDialog>();
+            openFileDialog.Setup(o => o.AddExtension);
+            openFileDialog.Setup(o => o.AutoUpgradeEnabled);
+            openFileDialog.Setup(o => o.CheckFileExists);
+            openFileDialog.Setup(o => o.Multiselect);
+            openFileDialog.Setup(o => o.ShowHelp);
+            openFileDialog.Setup(o => o.Filter);
+            openFileDialog.Setup(o => o.CheckFileExists);
+            openFileDialog.Setup(o => o.FileNames).Returns(new[] { "C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas", "C:\\Users\\Rubberduck\\Desktop\\ClsModule1.cls" });
+            openFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
+
+            var state = new RubberduckParserState();
+            var commands = new List<ICommand>
+            {
+                new CodeExplorer_ImportCommand(openFileDialog.Object)
+            };
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse();
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First();
+            vm.ImportCommand.Execute(vm.SelectedItem);
+
+            vbComponents.Verify(c => c.Import("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Once);
+            vbComponents.Verify(c => c.Import("C:\\Users\\Rubberduck\\Desktop\\ClsModule1.cls"), Times.Once);
         }
 
         [TestMethod]
