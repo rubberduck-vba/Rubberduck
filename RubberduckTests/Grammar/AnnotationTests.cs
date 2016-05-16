@@ -1,14 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEHost;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Grammar
 {
