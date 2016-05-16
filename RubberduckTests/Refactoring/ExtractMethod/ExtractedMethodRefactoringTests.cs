@@ -42,9 +42,14 @@ End Function
             const string inputCode = @"
     Public Sub ChangeMeIntoDecs()
         Dim x As Integer
+        x = 1
         x = 1 + 2
     End Sub
-    ";
+";
+            const string newMethod = @"
+Private Sub Bar(ByRef x as integer)
+    x = 1
+End Function";
 
             [TestCategory("ExtractedMethodRefactoringTests")]
             [TestMethod]
@@ -58,9 +63,13 @@ End Function
                 var selection = new Selection(4, 4, 4, 14);
                 QualifiedSelection? qualifiedSelection = new QualifiedSelection(qualifiedModuleName, selection);
                 var codeModule = new Mock<ICodeModuleWrapper>();
-                IExtractMethodModel model = new ExtractMethodModel(declarations, qualifiedSelection.Value, extractCode);
+
+                var emRules = new List<IExtractMethodRule>() { 
+                    new ExtractMethodRuleUsedAfter(), new ExtractMethodRuleUsedBefore(), new ExtractMethodRuleInSelection(), new ExtractMethodRuleIsAssignedInSelection()};
+                IExtractMethodModel model = new ExtractMethodModel(emRules);
+                model.extract(declarations, qualifiedSelection.Value, extractCode);
                 model.Method.MethodName = "Bar";
-                var insertCode = "Bar x ";
+                var insertCode = "Bar x";
                 var createProc = new Mock<IExtractMethodProc>();
 
 
@@ -79,7 +88,7 @@ End Function
 
                 codeModule.Verify(cm => cm.DeleteLines(selection));
                 codeModule.Verify(cm => cm.InsertLines(4, insertCode));
-                codeModule.Verify(cm => cm.InsertLines(6, newMethod));
+                codeModule.Verify(cm => cm.InsertLines(7, newMethod));
             }
         }
 
@@ -92,6 +101,7 @@ End Function
          * - When the return value is a reference - the return assignment is Set initially implement with return values returned as ByRef */
 
 
+        [TestClass]
         //[TestClass]
         public class when_local_variable_is_only_used_before_the_selection : ExtractedMethodRefactoringTests
         {

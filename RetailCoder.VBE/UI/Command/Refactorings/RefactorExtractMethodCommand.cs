@@ -10,6 +10,7 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodeModule;
 using System;
 using Rubberduck.VBEditor;
+using System.Collections.Generic;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -64,8 +65,15 @@ namespace Rubberduck.UI.Command.Refactorings
                 {
                     return null;
                 }
-
-                return new ExtractMethodModel(declarations, qs.Value, code);
+                //TODO: Pull these even further back;
+                var rules = new List<IExtractMethodRule>(){ 
+                    new ExtractMethodRuleInSelection(),
+                    new ExtractMethodRuleIsAssignedInSelection(),
+                    new ExtractMethodRuleUsedAfter(),
+                    new ExtractMethodRuleUsedBefore()};
+                var extractedMethodModel = new ExtractMethodModel(rules);
+                extractedMethodModel.extract(declarations, qs.Value, code);
+                return extractedMethodModel;
             };
 
             var createProc = new ExtractMethodProc();

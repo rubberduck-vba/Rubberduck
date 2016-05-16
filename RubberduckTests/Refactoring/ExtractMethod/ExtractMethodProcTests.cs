@@ -64,7 +64,9 @@ Debug.Print y";
 
                 var selection = new Selection(9, 1, 10, 17);
                 QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-                var extractedMethodModel = new ExtractMethodModel(declarations, qSelection.Value, selectedCode);
+                var emRules = new List<IExtractMethodRule>() { };
+                var extractedMethodModel = new ExtractMethodModel(emRules);
+                extractedMethodModel.extract(declarations, qSelection.Value, selectedCode);
                 var SUT = new ExtractMethodProc();
 
                 var actual = SUT.createProc(extractedMethodModel);

@@ -27,19 +27,19 @@ namespace RubberduckTests.Refactoring.ExtractMethod
 
             [TestCategory("ExtractedMethodTests")]
             [TestMethod]
-            public void shouldReturnStringCorreclt()
+            public void shouldReturnStringCorrectly()
             {
                 var method = new ExtractedMethod();
                 method.Accessibility = Accessibility.Private;
                 method.MethodName = "Bar";
                 method.ReturnValue = null;
-                var insertCode = "Bar x ";
+                var insertCode = "Bar x";
                 var newParam = new ExtractedParameter("Integer", ExtractedParameter.PassedBy.ByVal, "x");
                 method.Parameters = new List<ExtractedParameter>() { newParam };
 
                 var actual = method.AsString();
                 Debug.Print(method.AsString());
-
+                
                 Assert.AreEqual(insertCode, actual);
 
 
