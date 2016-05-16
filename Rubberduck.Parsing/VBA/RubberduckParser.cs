@@ -485,6 +485,8 @@ namespace Rubberduck.Parsing.VBA
         private readonly Dictionary<string, Declaration> _projectDeclarations = new Dictionary<string, Declaration>(); 
         private void ResolveDeclarations(VBComponent component, IParseTree tree)
         {
+            if (component == null) { return; }
+
             var qualifiedModuleName = new QualifiedModuleName(component);
             
             try

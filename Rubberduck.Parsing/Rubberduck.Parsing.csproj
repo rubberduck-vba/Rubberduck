@@ -272,6 +272,7 @@
     <Compile Include="VBA\EnumerableExtensions.cs" />
     <Compile Include="VBA\IAttributeParser.cs" />
     <Compile Include="VBA\IModuleExporter.cs" />
+    <Compile Include="VBA\ModuleState.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
