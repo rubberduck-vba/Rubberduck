@@ -265,7 +265,7 @@ namespace Rubberduck.Parsing.Symbols
             // single-line-if-statements, we do it here for better understanding.
             if (context.ifWithEmptyThen() != null)
             {
-                ResolveDefault(context.ifWithEmptyThen().booleanExpression(), context.ifWithEmptyThen().booleanExpression().GetText());                
+                ResolveDefault(context.ifWithEmptyThen().booleanExpression(), context.ifWithEmptyThen().booleanExpression().GetText());
                 ResolveListOrLabel(context.ifWithEmptyThen().singleLineElseClause().listOrLabel());
             }
             else
@@ -361,106 +361,141 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.OpenStmtContext context)
         {
-            foreach (var expr in context.valueStmt())
+            ResolveDefault(context.pathName(), context.pathName().GetText());
+            ResolveDefault(context.fileNumber(), context.fileNumber().GetText());
+            if (context.lenClause() != null)
             {
-                ResolveDefault(expr, expr.GetText());
+                ResolveDefault(context.lenClause().recLength(), context.lenClause().recLength().GetText());
             }
-            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
         }
 
         public void Resolve(VBAParser.CloseStmtContext context)
         {
-            foreach (var expr in context.fileNumber())
+            if (context.fileNumberList() != null)
             {
-                ResolveDefault(expr.valueStmt(), expr.valueStmt().GetText());
+                foreach (var fileNumber in context.fileNumberList().fileNumber())
+                {
+                    ResolveDefault(fileNumber, fileNumber.GetText());
+                }
             }
         }
 
         public void Resolve(VBAParser.SeekStmtContext context)
         {
-            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
-            ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
+            ResolveDefault(context.fileNumber(), context.fileNumber().GetText());
+            ResolveDefault(context.position(), context.position().GetText());
         }
 
         public void Resolve(VBAParser.LockStmtContext context)
         {
-            foreach (var expr in context.valueStmt())
-            {
-                ResolveDefault(expr, expr.GetText());
-            }
+            ResolveDefault(context.fileNumber(), context.fileNumber().GetText());
+            ResolveRecordRange(context.recordRange());
         }
 
         public void Resolve(VBAParser.UnlockStmtContext context)
         {
-            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
-            foreach (var expr in context.valueStmt())
+            ResolveDefault(context.fileNumber(), context.fileNumber().GetText());
+            ResolveRecordRange(context.recordRange());
+        }
+
+        private void ResolveRecordRange(VBAParser.RecordRangeContext recordRange)
+        {
+            if (recordRange == null)
             {
-                ResolveDefault(expr, expr.GetText());
+                return;
+            }
+            if (recordRange.startRecordNumber() != null)
+            {
+                ResolveDefault(recordRange.startRecordNumber(), recordRange.startRecordNumber().GetText());
+            }
+            if (recordRange.endRecordNumber() != null)
+            {
+                ResolveDefault(recordRange.endRecordNumber(), recordRange.endRecordNumber().GetText());
             }
         }
 
         public void Resolve(VBAParser.LineInputStmtContext context)
         {
-            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
-            ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
+            ResolveDefault(context.markedFileNumber(), context.markedFileNumber().GetText());
+            ResolveDefault(context.variableName(), context.variableName().GetText());
         }
 
         public void Resolve(VBAParser.WidthStmtContext context)
         {
-            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
-            ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
+            ResolveDefault(context.markedFileNumber(), context.markedFileNumber().GetText());
+            ResolveDefault(context.lineWidth(), context.lineWidth().GetText());
         }
 
         public void Resolve(VBAParser.PrintStmtContext context)
         {
-            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
-            foreach (var expr in context.outputList().outputList_Expression())
-            {
-                if (expr.valueStmt() != null)
-                {
-                    ResolveDefault(expr.valueStmt(), expr.valueStmt().GetText());
-                }
-                ResolveArgsCall(expr.argsCall());
-            }
+            ResolveDefault(context.markedFileNumber(), context.markedFileNumber().GetText());
+            ResolveOutputList(context.outputList());
         }
 
         public void Resolve(VBAParser.WriteStmtContext context)
         {
-            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
-            foreach (var expr in context.outputList().outputList_Expression())
+            ResolveDefault(context.markedFileNumber(), context.markedFileNumber().GetText());
+            ResolveOutputList(context.outputList());
+        }
+
+        private void ResolveOutputList(VBAParser.OutputListContext outputList)
+        {
+            if (outputList == null)
             {
-                if (expr.valueStmt() != null)
+                return;
+            }
+            foreach (var outputItem in outputList.outputItem())
+            {
+                if (outputItem.outputClause() != null)
                 {
-                    ResolveDefault(expr.valueStmt(), expr.valueStmt().GetText());
+                    if (outputItem.outputClause().spcClause() != null)
+                    {
+                        ResolveDefault(outputItem.outputClause().spcClause().spcNumber(), outputItem.outputClause().spcClause().spcNumber().GetText());
+                    }
+                    if (outputItem.outputClause().tabClause() != null && outputItem.outputClause().tabClause().tabNumberClause() != null)
+                    {
+                        ResolveDefault(outputItem.outputClause().tabClause().tabNumberClause().tabNumber(), outputItem.outputClause().tabClause().tabNumberClause().tabNumber().GetText());
+                    }
+                    if (outputItem.outputClause().outputExpression() != null)
+                    {
+                        ResolveDefault(outputItem.outputClause().outputExpression(), outputItem.outputClause().outputExpression().GetText());
+                    }
                 }
-                ResolveArgsCall(expr.argsCall());
             }
         }
 
         public void Resolve(VBAParser.InputStmtContext context)
         {
-            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
-            foreach (var expr in context.valueStmt())
+            ResolveDefault(context.markedFileNumber(), context.markedFileNumber().GetText());
+            foreach (var inputVariable in context.inputList().inputVariable())
             {
-                ResolveDefault(expr, expr.GetText());
+                ResolveDefault(inputVariable, inputVariable.GetText());
             }
         }
 
         public void Resolve(VBAParser.PutStmtContext context)
         {
-            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
-            foreach (var expr in context.valueStmt())
+            ResolveDefault(context.fileNumber(), context.fileNumber().GetText());
+            if (context.recordNumber() != null)
             {
-                ResolveDefault(expr, expr.GetText());
+                ResolveDefault(context.recordNumber(), context.recordNumber().GetText());
+            }
+            if (context.data() != null)
+            {
+                ResolveDefault(context.data(), context.data().GetText());
             }
         }
 
         public void Resolve(VBAParser.GetStmtContext context)
         {
-            ResolveDefault(context.fileNumber().valueStmt(), context.fileNumber().valueStmt().GetText());
-            foreach (var expr in context.valueStmt())
+            ResolveDefault(context.fileNumber(), context.fileNumber().GetText());
+            if (context.recordNumber() != null)
             {
-                ResolveDefault(expr, expr.GetText());
+                ResolveDefault(context.recordNumber(), context.recordNumber().GetText());
+            }
+            if (context.variable() != null)
+            {
+                ResolveDefault(context.variable(), context.variable().GetText());
             }
         }
 
@@ -588,6 +623,36 @@ namespace Rubberduck.Parsing.Symbols
                 return;
             }
             ResolveLabel(context.valueStmt(), context.valueStmt().GetText());
+        }
+
+        public void Resolve(VBAParser.CircleSpecialFormContext context)
+        {
+            foreach (var expr in context.valueStmt())
+            {
+                ResolveDefault(expr, expr.GetText());
+            }
+            ResolveTuple(context.tuple());
+        }
+
+        public void Resolve(VBAParser.ScaleSpecialFormContext context)
+        {
+            if (context.valueStmt() != null)
+            {
+                ResolveDefault(context.valueStmt(), context.valueStmt().GetText());
+
+            }
+            foreach (var tuple in context.tuple())
+            {
+                ResolveTuple(tuple);
+            }
+        }
+
+        private void ResolveTuple(VBAParser.TupleContext tuple)
+        {
+            foreach (var expr in tuple.valueStmt())
+            {
+                ResolveDefault(expr, expr.GetText());
+            }
         }
 
         public void Resolve(VBAParser.ImplicitCallStmt_InBlockContext context)

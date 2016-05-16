@@ -918,6 +918,19 @@ public partial class VBAExpressionParserBaseListener : IVBAExpressionParserListe
 	public virtual void ExitReservedName([NotNull] VBAExpressionParser.ReservedNameContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAExpressionParser.markedFileNumberExpr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMarkedFileNumberExpr([NotNull] VBAExpressionParser.MarkedFileNumberExprContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAExpressionParser.markedFileNumberExpr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMarkedFileNumberExpr([NotNull] VBAExpressionParser.MarkedFileNumberExprContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAExpressionParser.logicalXorOp"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

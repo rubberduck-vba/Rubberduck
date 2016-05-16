@@ -1565,6 +1565,286 @@ End Sub
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestMethod]
+        public void OpenStmt_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Open referenced For Binary Access Read Lock Read As #referenced Len = referenced
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(3, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void CloseStmt_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Close referenced, referenced
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(2, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void SeekStmt_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Seek #referenced, referenced
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(2, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void LockStmt_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Lock referenced, referenced To referenced
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(3, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void UnlockStmt_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Unlock referenced, referenced To referenced
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(3, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void LineInputStmt_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Line Input #referenced, referenced
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(2, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void WidthStmt_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Width #referenced, referenced
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(2, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void PrintStmt_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Print #referenced,,referenced; SPC(referenced), TAB(referenced)
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(4, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void WriteStmt_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Write #referenced,,referenced; SPC(referenced), TAB(referenced)
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(4, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void InputStmt_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Input #referenced,referenced
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(2, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void PutStmt_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Put referenced,referenced,referenced
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(3, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void GetStmt_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Get referenced,referenced,referenced
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(3, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void CircleSpecialForm_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Me.Circle Step(referenced, referenced), referenced, referenced, referenced, referenced, referenced
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(7, declaration.References.Count());
+        }
+
+        [TestMethod]
+        public void ScaleSpecialForm_IsReferenceToLocalVariable()
+        {
+            // arrange
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    Scale (referenced, referenced)-(referenced, referenced)
+End Sub
+";
+            // act
+            var state = Resolve(code);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+            Assert.AreEqual(4, declaration.References.Count());
+        }
+
         // Ignored because handling forms/hierarchies is an open issue.
         [Ignore]
         [TestMethod]
