@@ -87,9 +87,8 @@ block : blockStmt (endOfStatement blockStmt)* endOfStatement;
 
 blockStmt :
 	statementLabelDefinition
-    // Put before the implicitCallStmt_InBlock rule so that RESET statements are not treated as function calls but as resetStmt.
-    | fileStmt
 	| attributeStmt
+	| closeStmt
 	| constStmt
 	| doLoopStmt
     | endStmt
@@ -99,155 +98,44 @@ blockStmt :
 	| explicitCallStmt
 	| forEachStmt
 	| forNextStmt
+	| getStmt
 	| goSubStmt
 	| goToStmt
 	| ifStmt
     | singleLineIfStmt
 	| implementsStmt
+	| inputStmt
 	| letStmt
+	| lineInputStmt
+	| lockStmt
 	| lsetStmt
 	| midStmt
 	| onErrorStmt
 	| onGoToStmt
 	| onGoSubStmt
+	| openStmt
+	| printStmt
+	| putStmt
 	| raiseEventStmt
 	| redimStmt
+	| resetStmt
 	| resumeStmt
 	| returnStmt
 	| rsetStmt
+	| seekStmt
 	| selectCaseStmt
 	| setStmt
     | stopStmt
+	| unlockStmt
 	| variableStmt
 	| whileWendStmt
+	| widthStmt
 	| withStmt
-    | circleSpecialForm
-    | scaleSpecialForm
+	| writeStmt
 	| implicitCallStmt_InBlock
 ;
 
-
-// 5.4.5 File Statements
-fileStmt :
-    openStmt
-    | resetStmt
-    | closeStmt
-    | seekStmt
-    | lockStmt
-    | unlockStmt
-    | lineInputStmt
-    | widthStmt
-    | printStmt
-    | writeStmt
-    | inputStmt
-    | putStmt
-    | getStmt
-;
-
-
-// 5.4.5.1 Open Statement
-openStmt : OPEN whiteSpace pathName (whiteSpace modeClause)? (whiteSpace accessClause)? (whiteSpace lock)? whiteSpace AS whiteSpace fileNumber (whiteSpace lenClause)?;
-pathName : valueStmt;
-modeClause : FOR whiteSpace fileMode;
-fileMode : APPEND | BINARY | INPUT | OUTPUT | RANDOM;
-accessClause : ACCESS whiteSpace access;
-access :
-    READ
-    | WRITE
-    | READ_WRITE
-;
-lock :
-    SHARED
-    | LOCK_READ
-    | LOCK_WRITE
-    | LOCK_READ_WRITE
-;
-lenClause : LEN whiteSpace? EQ whiteSpace? recLength;
-recLength : valueStmt;
-
-
-// 5.4.5.1.1 File Numbers
-fileNumber : markedFileNumber | unmarkedFileNumber;
-markedFileNumber : HASH valueStmt;
-unmarkedFileNumber : valueStmt;
-
-
-// 5.4.5.2 Close and Reset Statements
-closeStmt : CLOSE (whiteSpace fileNumberList)?;
-resetStmt : RESET;
-fileNumberList : fileNumber (whiteSpace? COMMA whiteSpace? fileNumber)*;
-
-
-// 5.4.5.3 Seek Statement
-seekStmt : SEEK whiteSpace fileNumber whiteSpace? COMMA whiteSpace? position;
-position : valueStmt;
-
-
-// 5.4.5.4 Lock Statement
-lockStmt : LOCK whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? recordRange)?;
-recordRange :
-    startRecordNumber
-    | (startRecordNumber whiteSpace)? TO whiteSpace endRecordNumber
-;
-startRecordNumber : valueStmt;
-endRecordNumber : valueStmt;
-
-
-// 5.4.5.5 Unlock Statement
-unlockStmt : UNLOCK whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? recordRange)?;
-
-
-// 5.4.5.6 Line Input Statement
-lineInputStmt : LINE_INPUT whiteSpace markedFileNumber whiteSpace? COMMA whiteSpace? variableName;
-variableName : valueStmt;
-
-
-// 5.4.5.7 Width Statement
-widthStmt : WIDTH whiteSpace markedFileNumber whiteSpace? COMMA whiteSpace? lineWidth;
-lineWidth : valueStmt;
-
-
-// 5.4.5.8   Print Statement 
-printStmt : PRINT whiteSpace markedFileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
-
-// 5.4.5.8.1 Output Lists
-outputList : outputItem (whiteSpace? outputItem)*;
-outputItem :
-    outputClause
-    | charPosition
-    | outputClause whiteSpace? charPosition
-;
-outputClause : spcClause | tabClause | outputExpression;
-charPosition : SEMICOLON | COMMA;
-outputExpression : valueStmt;
-spcClause : SPC whiteSpace? LPAREN whiteSpace? spcNumber whiteSpace? RPAREN;
-spcNumber : valueStmt; 
-tabClause : TAB (whiteSpace? tabNumberClause)?;
-tabNumberClause : LPAREN whiteSpace? tabNumber whiteSpace? RPAREN;
-tabNumber : valueStmt;
-
-
-// 5.4.5.9 Write Statement
-writeStmt : WRITE whiteSpace markedFileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
-
-
-// 5.4.5.10 Input Statement
-inputStmt : INPUT whiteSpace markedFileNumber whiteSpace? COMMA whiteSpace? inputList;
-inputList : inputVariable (whiteSpace? COMMA whiteSpace? inputVariable)*;  
-inputVariable : valueStmt;
-
-
-// 5.4.5.11   Put Statement
-putStmt : PUT whiteSpace fileNumber whiteSpace? COMMA whiteSpace? recordNumber? whiteSpace? COMMA whiteSpace? data;
-recordNumber : valueStmt;
-data : valueStmt;
-
-
-// 5.4.5.12 Get Statement
-getStmt : GET whiteSpace fileNumber whiteSpace? COMMA whiteSpace? recordNumber? whiteSpace? COMMA whiteSpace? variable; 
-variable : valueStmt;
-
-
+closeStmt : CLOSE (whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? fileNumber)*)?;
 
 constStmt : (visibility whiteSpace)? CONST whiteSpace constSubStmt (whiteSpace? COMMA whiteSpace? constSubStmt)*;
 
@@ -329,6 +217,8 @@ functionStmt :
 ;
 functionName : identifier;
 
+getStmt : GET whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt? whiteSpace? COMMA whiteSpace? valueStmt;
+
 goSubStmt : GOSUB whiteSpace valueStmt;
 
 goToStmt : GOTO whiteSpace valueStmt;
@@ -368,7 +258,13 @@ booleanExpression : valueStmt;
 
 implementsStmt : IMPLEMENTS whiteSpace valueStmt;
 
+inputStmt : INPUT whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? valueStmt)+;
+
 letStmt : (LET whiteSpace)? valueStmt whiteSpace? EQ whiteSpace? valueStmt;
+
+lineInputStmt : LINE_INPUT whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt;
+
+lockStmt : LOCK whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt (whiteSpace TO whiteSpace valueStmt)?)?;
 
 lsetStmt : LSET whiteSpace valueStmt whiteSpace? EQ whiteSpace? valueStmt;
 
@@ -379,6 +275,26 @@ onErrorStmt : (ON_ERROR | ON_LOCAL_ERROR) whiteSpace (GOTO whiteSpace valueStmt 
 onGoToStmt : ON whiteSpace valueStmt whiteSpace GOTO whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)*;
 
 onGoSubStmt : ON whiteSpace valueStmt whiteSpace GOSUB whiteSpace valueStmt (whiteSpace? COMMA whiteSpace? valueStmt)*;
+
+openStmt : 
+	OPEN whiteSpace valueStmt whiteSpace FOR whiteSpace (APPEND | BINARY | INPUT | OUTPUT | RANDOM) 
+	(whiteSpace ACCESS whiteSpace (READ | WRITE | READ_WRITE))?
+	(whiteSpace (SHARED | LOCK_READ | LOCK_WRITE | LOCK_READ_WRITE))?
+	whiteSpace AS whiteSpace fileNumber
+	(whiteSpace LEN whiteSpace? EQ whiteSpace? valueStmt)?
+;
+
+outputList :
+	outputList_Expression (whiteSpace? (SEMICOLON | COMMA) whiteSpace? outputList_Expression?)*
+	| outputList_Expression? (whiteSpace? (SEMICOLON | COMMA) whiteSpace? outputList_Expression?)+
+;
+
+outputList_Expression : 
+	valueStmt
+	| (SPC | TAB) (whiteSpace? LPAREN whiteSpace? argsCall whiteSpace? RPAREN)?
+;
+
+printStmt : PRINT whiteSpace fileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
 
 propertyGetStmt : 
 	(visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_GET whiteSpace functionName typeHint? (whiteSpace? argList)? (whiteSpace asTypeClause)? endOfStatement 
@@ -398,11 +314,15 @@ propertyLetStmt :
 	END_PROPERTY
 ;
 
+putStmt : PUT whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt? whiteSpace? COMMA whiteSpace? valueStmt;
+
 raiseEventStmt : RAISEEVENT whiteSpace identifier (whiteSpace? LPAREN whiteSpace? (argsCall whiteSpace?)? RPAREN)?;
 
 redimStmt : REDIM whiteSpace (PRESERVE whiteSpace)? redimSubStmt (whiteSpace? COMMA whiteSpace? redimSubStmt)*;
 
 redimSubStmt : implicitCallStmt_InStmt whiteSpace? LPAREN whiteSpace? subscripts whiteSpace? RPAREN (whiteSpace asTypeClause)?;
+
+resetStmt : RESET;
 
 resumeStmt : RESUME (whiteSpace (NEXT | valueStmt))?;
 
@@ -412,6 +332,8 @@ rsetStmt : RSET whiteSpace valueStmt whiteSpace? EQ whiteSpace? valueStmt;
 
 // 5.4.2.11 Stop Statement
 stopStmt : STOP;
+
+seekStmt : SEEK whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt;
 
 selectCaseStmt : 
 	SELECT whiteSpace CASE whiteSpace valueStmt endOfStatement 
@@ -452,6 +374,8 @@ typeStmt :
 
 typeStmt_Element : identifier (whiteSpace? LPAREN (whiteSpace? subscripts)? whiteSpace? RPAREN)? (whiteSpace asTypeClause)? endOfStatement;
 
+unlockStmt : UNLOCK whiteSpace fileNumber (whiteSpace? COMMA whiteSpace? valueStmt (whiteSpace TO whiteSpace valueStmt)?)?;
+
 valueStmt : 
 	literal                                                                                         # vsLiteral
 	| implicitCallStmt_InStmt                                                                       # vsICS
@@ -475,8 +399,6 @@ valueStmt :
 	| valueStmt whiteSpace? XOR whiteSpace? valueStmt                                               # vsXor
 	| valueStmt whiteSpace? EQV whiteSpace? valueStmt                                               # vsEqv
 	| valueStmt whiteSpace? IMP whiteSpace? valueStmt                                               # vsImp
-    // Added so that functions such as the Input Function, which takes a file number as argument, is supported.
-    | markedFileNumber                                                                              # vsMarkedFileNumber
 ;
 
 typeOfIsExpression : TYPEOF whiteSpace valueStmt (whiteSpace IS whiteSpace type)?;
@@ -493,18 +415,19 @@ whileWendStmt :
 	WEND
 ;
 
+widthStmt : WIDTH whiteSpace fileNumber whiteSpace? COMMA whiteSpace? valueStmt;
+
 withStmt :
 	WITH whiteSpace withStmtExpression endOfStatement 
 	block? 
 	END_WITH
 ;
 
-// Special forms with special syntax, only available in a report.
-circleSpecialForm : (valueStmt whiteSpace? DOT whiteSpace?)? CIRCLE whiteSpace (STEP whiteSpace?)? tuple (whiteSpace? COMMA whiteSpace? valueStmt)+;
-scaleSpecialForm : (valueStmt whiteSpace? DOT whiteSpace?)? SCALE whiteSpace tuple whiteSpace? MINUS whiteSpace? tuple;
-tuple : LPAREN whiteSpace? valueStmt whiteSpace? COMMA whiteSpace? valueStmt whiteSpace? RPAREN;
-
 withStmtExpression : valueStmt;
+
+writeStmt : WRITE whiteSpace fileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
+
+fileNumber : HASH? valueStmt;
 
 explicitCallStmt : CALL whiteSpace explicitCallStmtExpression;
 
@@ -606,6 +529,7 @@ keyword :
      | CDBL
      | CDEC
      | CINT
+     | CIRCLE
      | CLASS
      | CLNG
      | CLNGLNG
@@ -659,6 +583,7 @@ keyword :
      | PSET
      | REM
      | RMDIR
+     | SCALE
      | SENDKEYS
      | SETATTR
      | SGN
@@ -703,15 +628,6 @@ keyword :
      | LINE_INPUT    
      | RESET
      | WIDTH
-     | GET
-     | PUT
-     | CLOSE
-     | INPUT
-     | LOCK
-     | OPEN
-     | SEEK
-     | UNLOCK
-     | WRITE
 ;
 
 markerKeyword : AS;
@@ -719,6 +635,7 @@ markerKeyword : AS;
 statementKeyword :
     CALL
     | CASE
+    | CLOSE
     | CONST
     | DECLARE
     | DEFBOOL
@@ -745,34 +662,42 @@ statementKeyword :
     | FOR
     | FRIEND
     | FUNCTION
+    | GET
     | GLOBAL
     | GOSUB
     | GOTO
     | IF
     | IMPLEMENTS
+    | INPUT
     | LET
+    | LOCK
     | LOOP
     | LSET
     | NEXT
     | ON
+    | OPEN
     | OPTION
     | PRINT
     | PRIVATE
     | PUBLIC
+    | PUT
     | RAISEEVENT
     | REDIM
     | RESUME
     | RETURN
     | RSET
+    | SEEK
     | SELECT
     | SET
     | STATIC
     | STOP
     | SUB
     | TYPE
+    | UNLOCK
     | WEND
     | WHILE
     | WITH
+    | WRITE
 ;
 
 endOfLine :

@@ -1,5 +1,4 @@
 ﻿using System.Xml.Serialization;
-using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
@@ -16,11 +15,7 @@ namespace Rubberduck.Settings
 
         public ToDoListSettings()
         {
-            var note = new ToDoMarker(RubberduckUI.TodoMarkerNote);
-            var todo = new ToDoMarker(RubberduckUI.TodoMarkerTodo);
-            var bug = new ToDoMarker(RubberduckUI.TodoMarkerBug);
-
-            ToDoMarkers = new[] { note, todo, bug };
+            //empty constructor needed for serialization
         }
 
         public ToDoListSettings(ToDoMarker[] markers)

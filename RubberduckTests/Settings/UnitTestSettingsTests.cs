@@ -19,7 +19,7 @@ namespace RubberduckTests.Settings
                 DefaultTestStubInNewModule = false
             };
 
-            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null);
+            var userSettings = new UserSettings(null, null, null, unitTestSettings, null);
             return new Configuration(userSettings);
         }
 
@@ -34,7 +34,7 @@ namespace RubberduckTests.Settings
                 DefaultTestStubInNewModule = true
             };
 
-            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null);
+            var userSettings = new UserSettings(null, null, null, unitTestSettings, null);
             return new Configuration(userSettings);
         }
 

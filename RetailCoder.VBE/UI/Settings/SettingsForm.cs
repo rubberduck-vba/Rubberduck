@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms;
-using Rubberduck.Inspections;
+﻿using System.Windows.Forms;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings

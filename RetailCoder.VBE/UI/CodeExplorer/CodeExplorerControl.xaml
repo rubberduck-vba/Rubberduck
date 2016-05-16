@@ -14,10 +14,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeExplorer:CodeExplorerViewModel}">
     <UserControl.Resources>
-        <BitmapImage x:Key="RefreshImage" UriSource="../../Resources/arrow-circle-double.png" />
-        <BitmapImage x:Key="UndoImage" UriSource="../../Resources/arrow-circle-left.png" />
-        <BitmapImage x:Key="PrintImage" UriSource="../../Resources/printer.png" />
-        
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
         <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
@@ -355,11 +351,7 @@
                     <ContextMenu DataContext="{Binding DataContext, Source={x:Reference CodeExplorer}}">
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_RefreshComponent}"
                                   Command="{Binding RefreshComponentCommand}"
-                                  CommandParameter="{Binding SelectedItem}">
-                            <MenuItem.Icon>
-                                <Image Source="{StaticResource RefreshImage}" />
-                            </MenuItem.Icon>
-                        </MenuItem>
+                                  CommandParameter="{Binding SelectedItem}" />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Navigate}"
                                   FontWeight="Bold"
                                   Command="{Binding NavigateCommand}"
@@ -408,22 +400,14 @@
                         <Separator />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Print}"
                                   Command="{Binding PrintCommand}"
-                                  CommandParameter="{Binding SelectedItem}">
-                            <MenuItem.Icon>
-                                <Image Source="{StaticResource PrintImage}" />
-                            </MenuItem.Icon>
-                        </MenuItem>
+                                  CommandParameter="{Binding SelectedItem}" />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControlPanel_Caption}">
                             <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Commit}"
                                   Command="{Binding CommitCommand}"
                                   CommandParameter="{Binding SelectedItem}" />
                             <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Undo}"
                                   Command="{Binding UndoCommand}"
-                                  CommandParameter="{Binding SelectedItem}">
-                                <MenuItem.Icon>
-                                    <Image Source="{StaticResource UndoImage}" />
-                                </MenuItem.Icon>
-                            </MenuItem>
+                                  CommandParameter="{Binding SelectedItem}" />
                         </MenuItem>
                     </ContextMenu>
                 </Setter.Value>

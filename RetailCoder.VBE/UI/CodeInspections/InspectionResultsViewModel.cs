@@ -28,10 +28,8 @@ namespace Rubberduck.UI.CodeInspections
         private readonly VBE _vbe;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
-        private readonly IEnumerable<IInspection> _inspections;
 
-        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, 
-                                          IGeneralConfigService configService, IEnumerable<IInspection> inspections)
+        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, IGeneralConfigService configService)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
 
@@ -48,7 +46,6 @@ namespace Rubberduck.UI.CodeInspections
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
             _openSettingsCommand = new DelegateCommand(OpenSettings);
-            _inspections = inspections;
 
             _state.StateChanged += _state_StateChanged;
         }

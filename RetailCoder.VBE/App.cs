@@ -140,7 +140,14 @@ namespace Rubberduck
             CleanReloadConfig();
             _appMenus.Initialize();
             _appMenus.Localize();
-            Task.Delay(1000).ContinueWith(t => UiDispatcher.Invoke(() => _parser.State.OnParseRequested(this))).ConfigureAwait(false);
+            Task.Delay(1000).ContinueWith(t =>
+            {
+                // run this on UI thread
+                UiDispatcher.Invoke(() =>
+                {
+                    _parser.State.OnParseRequested(this);
+                });
+            }).ConfigureAwait(false);
             _hooks.HookHotkeys();
         }
 

@@ -530,14 +530,6 @@ public interface IVBAExpressionParserVisitor<Result> : IParseTreeVisitor<Result>
 	Result VisitReservedName([NotNull] VBAExpressionParser.ReservedNameContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by the <c>markedFileNumberExpr</c>
-	/// labeled alternative in <see cref="VBAExpressionParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitMarkedFileNumberExpr([NotNull] VBAExpressionParser.MarkedFileNumberExprContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by the <c>logicalXorOp</c>
 	/// labeled alternative in <see cref="VBAExpressionParser.expression"/>.
 	/// </summary>

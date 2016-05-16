@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
-//using LibGit2Sharp;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Ninject;
@@ -18,7 +16,6 @@ using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
-using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
@@ -165,7 +162,7 @@ namespace Rubberduck.Root
             _kernel.Bind(t => t.From(assemblies)
                 .SelectAllClasses()
                 // inspections & factories have their own binding rules
-                .Where(type => !type.Name.EndsWith("Factory") && !type.Name.EndsWith("ConfigProvider") && !type.GetInterfaces().Contains(typeof(IInspection)))
+                .Where(type => !type.Name.EndsWith("Factory") && !type.GetInterfaces().Contains(typeof(IInspection)))
                 .BindDefaultInterface()
                 .Configure(binding => binding.InCallScope())); // TransientScope wouldn't dispose disposables
         }
@@ -178,25 +175,6 @@ namespace Rubberduck.Root
                 .InNamespaceOf<Configuration>()
                 .BindAllInterfaces()
                 .Configure(binding => binding.InSingletonScope()));
-
-            _kernel.Bind<IPersistanceService<CodeInspectionSettings>>().To<XmlPersistanceService<CodeInspectionSettings>>().InSingletonScope();
-            _kernel.Bind<IPersistanceService<GeneralSettings>>().To<XmlPersistanceService<GeneralSettings>>().InSingletonScope();
-            _kernel.Bind<IPersistanceService<HotkeySettings>>().To<XmlPersistanceService<HotkeySettings>>().InSingletonScope();
-            _kernel.Bind<IPersistanceService<ToDoListSettings>>().To<XmlPersistanceService<ToDoListSettings>>().InSingletonScope();
-            _kernel.Bind<IPersistanceService<UnitTestSettings>>().To<XmlPersistanceService<UnitTestSettings>>().InSingletonScope();
-            _kernel.Bind<IPersistanceService<IndenterSettings>>().To<XmlPersistanceService<IndenterSettings>>().InSingletonScope();
-            _kernel.Bind<IFilePersistanceService<SourceControlSettings>>().To<XmlPersistanceService<SourceControlSettings>>().InSingletonScope();
-
-            _kernel.Bind<IIndenterConfigProvider>().To<IndenterConfigProvider>().InSingletonScope();
-            _kernel.Bind<ISourceControlConfigProvider>().To<SourceControlConfigProvider>().InSingletonScope();
-
-            _kernel.Bind<ICodeInspectionSettings>().To<CodeInspectionSettings>();
-            _kernel.Bind<IGeneralSettings>().To<GeneralSettings>();
-            _kernel.Bind<IHotkeySettings>().To<HotkeySettings>();
-            _kernel.Bind<IToDoListSettings>().To<ToDoListSettings>();
-            _kernel.Bind<IUnitTestSettings>().To<UnitTestSettings>();
-            _kernel.Bind<IIndenterSettings>().To<IndenterSettings>();
-            _kernel.Bind<ISourceControlSettings>().To<SourceControlSettings>();        
         }
 
         // note convention: abstract factory interface names end with "Factory".
@@ -321,10 +299,10 @@ namespace Rubberduck.Root
                         var binding = _kernel.Bind<ICommand>().To(command);
                         var whenCommandMenuItemCondition =
                             binding.WhenInjectedInto(item).BindingConfiguration.Condition;
-                        var whenHooksCondition =
-                            binding.WhenInjectedInto<RubberduckHooks>().BindingConfiguration.Condition;
+                        var whenConfigurationLoaderCondition =
+                            binding.WhenInjectedInto<ConfigurationLoader>().BindingConfiguration.Condition;
 
-                        binding.When(request => whenCommandMenuItemCondition(request) || whenHooksCondition(request))
+                        binding.When(request => whenCommandMenuItemCondition(request) || whenConfigurationLoaderCondition(request))
                                .InSingletonScope();
 
                         //_kernel.Bind<ICommand>().To(command).WhenInjectedExactlyInto(item);

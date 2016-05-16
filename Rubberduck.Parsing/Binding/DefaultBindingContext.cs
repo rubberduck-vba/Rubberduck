@@ -38,9 +38,7 @@ namespace Rubberduck.Parsing.Binding
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.StartRuleContext expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext)
         {
-            // Call statements always have an argument list.
-            // One of the reasons we're doing this is that an empty argument list could represent a call to a default member,
-            // which requires us to use an IndexDefaultBinding.
+            // Call statements always have an argument list
             if (statementContext == ResolutionStatementContext.CallStatement)
             {
                 if (expression.callStmt() != null)
@@ -115,14 +113,6 @@ namespace Rubberduck.Parsing.Binding
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.NewExprContext expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext)
         {
             return Visit(module, parent, expression.newExpression(), withBlockVariable, ResolutionStatementContext.Undefined);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.MarkedFileNumberExprContext expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext)
-        {
-            // The MarkedFileNumberExpr doesn't actually exist but for backwards compatibility reasons we support it, ignore the "hash tag" of the file number
-            // and resolve it as a normal expression.
-            // This allows us to support functions such as Input(file1, #file1) which would otherwise not work.
-            return Visit(module, parent, (dynamic)expression.expression(), withBlockVariable, ResolutionStatementContext.Undefined);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAExpressionParser.NewExpressionContext expression, IBoundExpression withBlockVariable, ResolutionStatementContext statementContext)

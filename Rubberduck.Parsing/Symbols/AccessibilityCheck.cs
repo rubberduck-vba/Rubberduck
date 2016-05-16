@@ -51,7 +51,8 @@
 
         public static bool IsMemberAccessible(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration calleeMember)
         {
-            if (IsEnclosingModule(callingModule, calleeMember))
+            bool enclosingModule = callingModule.Equals(calleeMember.ParentScopeDeclaration);
+            if (enclosingModule)
             {
                 return true;
             }
@@ -79,22 +80,6 @@
                 else
                 {
                     return IsValidAccessibility(calleeMember);
-                }
-            }
-            return false;
-        }
-
-        private static bool IsEnclosingModule(Declaration callingModule, Declaration calleeMember)
-        {
-            if (callingModule.Equals(calleeMember.ParentScopeDeclaration))
-            {
-                return true;
-            }
-            foreach (var supertype in ClassModuleDeclaration.GetSupertypes(callingModule))
-            {
-                if (IsEnclosingModule(supertype, calleeMember))
-                {
-                    return true;
                 }
             }
             return false;

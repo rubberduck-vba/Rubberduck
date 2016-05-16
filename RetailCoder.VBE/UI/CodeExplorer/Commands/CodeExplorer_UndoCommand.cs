@@ -42,8 +42,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             panelVM.SetTab(SourceControlTab.Changes);
             var changesVM = panelVM.SelectedItem.ViewModel as ChangesViewViewModel;
 
-            return changesVM != null && changesVM.IncludedChanges != null &&
-                   changesVM.IncludedChanges.Select(s => s.FilePath).Contains(GetFileName(node));
+            return changesVM != null && changesVM.IncludedChanges.Select(s => s.FilePath).Contains(GetFileName(node));
         }
 
         public override void Execute(object parameter)

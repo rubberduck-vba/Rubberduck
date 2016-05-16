@@ -218,15 +218,17 @@ End Sub";
 
         private Configuration GetTestConfig()
         {
-            var settings = new CodeInspectionSettings();
-            settings.CodeInspections.Add(new CodeInspectionSetting
-            {
-                Description = new ObsoleteLetStatementInspection(null).Description,
-                Severity = CodeInspectionSeverity.Suggestion
-            });
             return new Configuration
             {
-                UserSettings = new UserSettings(null, null, null, settings, null, null)
+                UserSettings = new UserSettings
+                {
+                    CodeInspectionSettings = new CodeInspectionSettings
+                    {
+                        CodeInspections = new[] {
+                           new CodeInspectionSetting { Description = new ObsoleteLetStatementInspection(null).Description, Severity=CodeInspectionSeverity.Suggestion,  }
+                        }
+                    }
+                }
             };
         }
     }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Settings;
-using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Settings;
 
 namespace RubberduckTests.Settings
@@ -10,7 +9,7 @@ namespace RubberduckTests.Settings
     {
         private Configuration GetDefaultConfig()
         {
-            var indenterSettings = new Rubberduck.SmartIndenter.IndenterSettings
+            var indenterSettings = new Rubberduck.Settings.IndenterSettings
             {
                 IndentEntireProcedureBody = true,
                 IndentFirstCommentBlock = true,
@@ -25,18 +24,18 @@ namespace RubberduckTests.Settings
                 AlignDims = false,
                 AlignDimColumn = 15,
                 EnableUndo = true,
-                EndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn,
+                EndOfLineCommentStyle = Rubberduck.SmartIndenter.EndOfLineCommentStyle.AlignInColumn,
                 EndOfLineCommentColumnSpaceAlignment = 50,
                 IndentSpaces = 4
             };
 
-            var userSettings = new UserSettings(null, null, null, null, null, indenterSettings);
+            var userSettings = new UserSettings(null, null, null, null, indenterSettings);
             return new Configuration(userSettings);
         }
 
         private Configuration GetNondefaultConfig()
         {
-            var indenterSettings = new Rubberduck.SmartIndenter.IndenterSettings
+            var indenterSettings = new Rubberduck.Settings.IndenterSettings
             {
                 IndentEntireProcedureBody = false,
                 IndentFirstCommentBlock = false,
@@ -51,12 +50,12 @@ namespace RubberduckTests.Settings
                 AlignDims = true,
                 AlignDimColumn = 16,
                 EnableUndo = false,
-                EndOfLineCommentStyle = EndOfLineCommentStyle.Absolute,
+                EndOfLineCommentStyle = Rubberduck.SmartIndenter.EndOfLineCommentStyle.Absolute,
                 EndOfLineCommentColumnSpaceAlignment = 60,
                 IndentSpaces = 2
             };
 
-            var userSettings = new UserSettings(null, null, null, null, null, indenterSettings);
+            var userSettings = new UserSettings(null, null, null, null, indenterSettings);
             return new Configuration(userSettings);
         }
 

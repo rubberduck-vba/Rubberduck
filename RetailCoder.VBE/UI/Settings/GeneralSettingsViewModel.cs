@@ -26,7 +26,7 @@ namespace Rubberduck.UI.Settings
 
             SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
 
-            Hotkeys = new ObservableCollection<HotkeySetting>(config.UserSettings.HotkeySettings.Settings);
+            Hotkeys = new ObservableCollection<HotkeySetting>(config.UserSettings.GeneralSettings.HotkeySettings);
             AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
             AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
 
@@ -108,7 +108,7 @@ namespace Rubberduck.UI.Settings
         public void UpdateConfig(Configuration config)
         {
             config.UserSettings.GeneralSettings.Language = SelectedLanguage;
-            config.UserSettings.HotkeySettings.Settings = Hotkeys.ToArray();
+            config.UserSettings.GeneralSettings.HotkeySettings = Hotkeys.ToArray();
             config.UserSettings.GeneralSettings.AutoSaveEnabled = AutoSaveEnabled;
             config.UserSettings.GeneralSettings.AutoSavePeriod = AutoSavePeriod;
             config.UserSettings.GeneralSettings.Delimiter = (char)Delimiter;
@@ -117,7 +117,7 @@ namespace Rubberduck.UI.Settings
         public void SetToDefaults(Configuration config)
         {
             SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
-            Hotkeys = new ObservableCollection<HotkeySetting>(config.UserSettings.HotkeySettings.Settings);
+            Hotkeys = new ObservableCollection<HotkeySetting>(config.UserSettings.GeneralSettings.HotkeySettings);
             AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
             AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
             Delimiter = (DelimiterOptions)config.UserSettings.GeneralSettings.Delimiter;

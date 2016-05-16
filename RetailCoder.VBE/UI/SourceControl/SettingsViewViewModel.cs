@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.SourceControl;
 
@@ -10,17 +11,17 @@ namespace Rubberduck.UI.SourceControl
 {
     public class SettingsViewViewModel : ViewModelBase, IControlViewModel
     {
-        private readonly ISourceControlConfigProvider _configService;
+        private readonly IConfigurationService<SourceControlConfiguration> _configService;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
-        private readonly SourceControlSettings _config;
+        private readonly SourceControlConfiguration _config;
 
         public SettingsViewViewModel(
-            ISourceControlConfigProvider configService,
+            IConfigurationService<SourceControlConfiguration> configService,
             IFolderBrowserFactory folderBrowserFactory)
         {
             _configService = configService;
             _folderBrowserFactory = folderBrowserFactory;
-            _config = _configService.Create();
+            _config = _configService.LoadConfiguration();
 
             UserName = _config.UserName;
             EmailAddress = _config.EmailAddress;
@@ -104,7 +105,7 @@ namespace Rubberduck.UI.SourceControl
             _config.EmailAddress = EmailAddress;
             _config.DefaultRepositoryLocation = DefaultRepositoryLocation;
 
-            _configService.Save(_config);
+            _configService.SaveConfiguration(_config);
 
             RaiseErrorEvent(RubberduckUI.SourceControl_UpdateSettingsTitle,
                 RubberduckUI.SourceControl_UpdateSettingsMessage, NotificationType.Info);

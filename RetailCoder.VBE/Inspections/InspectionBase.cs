@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Gets a value the severity level to reset to, the "factory default" setting.
         /// </summary>
-        public CodeInspectionSeverity DefaultSeverity { get { return _defaultSeverity; }}
+        public CodeInspectionSeverity DefaultSeverity { get { return _defaultSeverity; } }
 
         /// <summary>
         /// Gets a localized string representing a short name/description for the inspection.

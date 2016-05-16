@@ -101,37 +101,37 @@ namespace Rubberduck.Parsing.Binding
                 Enclosing Module namespace: A variable, constant, Enum type, Enum member, property, 
                 function or subroutine defined at the module-level in the enclosing module.
             */
-            var moduleVariable = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Variable);
+            var moduleVariable = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Variable);
             if (IsValidMatch(moduleVariable, name))
             {
                 return new SimpleNameExpression(moduleVariable, ExpressionClassification.Variable, _expression);
             }
-            var moduleConstant = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Constant);
+            var moduleConstant = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Constant);
             if (IsValidMatch(moduleConstant, name))
             {
                 return new SimpleNameExpression(moduleConstant, ExpressionClassification.Variable, _expression);
             }
-            var enumType = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Enumeration);
+            var enumType = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Enumeration);
             if (IsValidMatch(enumType, name))
             {
                 return new SimpleNameExpression(enumType, ExpressionClassification.Type, _expression);
             }
-            var enumMember = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.EnumerationMember);
+            var enumMember = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.EnumerationMember);
             if (IsValidMatch(enumMember, name))
             {
                 return new SimpleNameExpression(enumMember, ExpressionClassification.Value, _expression);
             }
-            var property = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, _propertySearchType);
+            var property = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, _propertySearchType);
             if (IsValidMatch(property, name))
             {
                 return new SimpleNameExpression(property, ExpressionClassification.Property, _expression);
             }
-            var function = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Function);
+            var function = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Function);
             if (IsValidMatch(function, name))
             {
                 return new SimpleNameExpression(function, ExpressionClassification.Function, _expression);
             }
-            var subroutine = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Procedure);
+            var subroutine = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, DeclarationType.Procedure);
             if (IsValidMatch(subroutine, name))
             {
                 return new SimpleNameExpression(subroutine, ExpressionClassification.Subroutine, _expression);

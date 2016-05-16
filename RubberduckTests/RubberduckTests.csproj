@@ -141,7 +141,6 @@
     <Compile Include="Refactoring\RemoveParametersTests.cs" />
     <Compile Include="Refactoring\RenameTests.cs" />
     <Compile Include="Refactoring\ReorderParametersTests.cs" />
-    <Compile Include="Settings\HotkeySettingsTests.cs" />
     <Compile Include="Settings\InspectionSettingsTests.cs" />
     <Compile Include="Settings\GeneralSettingsTests.cs" />
     <Compile Include="Settings\IndenterSettingsTests.cs" />
@@ -175,10 +174,6 @@
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
       <Name>Rubberduck.Parsing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
-      <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
-      <Name>Rubberduck.SettingsProvider</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
       <Project>{b9c0bf22-4d8a-4bf4-89f9-e789c0063deb}</Project>

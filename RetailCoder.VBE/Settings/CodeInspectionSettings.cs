@@ -1,41 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Serialization;
 using Rubberduck.Inspections;
 using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
-    public interface ICodeInspectionSettings
-    {
-        HashSet<CodeInspectionSetting> CodeInspections { get; set; }
-    }
-
     [XmlType(AnonymousType = true)]
-    public class CodeInspectionSettings : ICodeInspectionSettings
+    public class CodeInspectionSettings
     {
         [XmlArrayItem("CodeInspection", IsNullable = false)]
-        public HashSet<CodeInspectionSetting> CodeInspections { get; set; }
+        public CodeInspectionSetting[] CodeInspections { get; set; }
 
         public CodeInspectionSettings()
         {
-            CodeInspections =new HashSet<CodeInspectionSetting>();
+            //default constructor requied for serialization
         }
 
-        public CodeInspectionSettings(HashSet<CodeInspectionSetting> inspections)
+        public CodeInspectionSettings(CodeInspectionSetting[] inspections)
         {
             CodeInspections = inspections;
-        }
-
-        public CodeInspectionSetting GetSetting(Type inspection)
-        {
-            var proto = Convert.ChangeType(Activator.CreateInstance(inspection), inspection);
-            var existing = CodeInspections.FirstOrDefault(s => s.Name.Equals(proto.GetType().ToString()));
-            if (existing != null) return existing;
-            var setting = new CodeInspectionSetting(proto as IInspectionModel);
-            CodeInspections.Add(setting);
-            return setting;
         }
     }
 

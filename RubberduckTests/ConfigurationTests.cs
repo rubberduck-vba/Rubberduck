@@ -1,10 +1,7 @@
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Settings;
-using Rubberduck.SettingsProvider;
 
 namespace RubberduckTests
 {
@@ -14,9 +11,9 @@ namespace RubberduckTests
         [TestMethod]
         public void GetDefaultTodoMarkersTest()
         {
-            var settings = new ToDoListSettings();
+            var configService = new ConfigurationLoader(null, null);
 
-            ToDoMarker[] markers = settings.ToDoMarkers;
+            ToDoMarker[] markers = configService.GetDefaultTodoMarkers();
             Assert.AreEqual("NOTE", markers[0].Text.Trim(),"Note failed to load.");
             Assert.AreEqual("TODO", markers[1].Text.Trim(),"Todo failed to load.");
             Assert.AreEqual("BUG" , markers[2].Text.Trim(),"Bug failed to load.");
@@ -31,11 +28,13 @@ namespace RubberduckTests
             inspection.SetupGet(m => m.Severity).Returns(CodeInspectionSeverity.DoNotShow);
 
             var expected = new[] { inspection.Object };
-            var actual = new CodeInspectionSettings(new HashSet<CodeInspectionSetting> {new CodeInspectionSetting(inspection.Object)}).CodeInspections;
+            var configService = new ConfigurationLoader(expected, null);
 
-            Assert.AreEqual(expected.Length, actual.Count);
-            Assert.AreEqual(inspection.Object.Name, actual.First().Name);
-            Assert.AreEqual(inspection.Object.Severity, actual.First().Severity);
+            var actual = configService.GetDefaultCodeInspections();
+
+            Assert.AreEqual(expected.Length, actual.Length);
+            Assert.AreEqual(inspection.Object.Name, actual[0].Name);
+            Assert.AreEqual(inspection.Object.Severity, actual[0].Severity);
         }
 
         [TestMethod]
