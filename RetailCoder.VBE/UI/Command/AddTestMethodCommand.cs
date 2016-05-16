@@ -10,10 +10,10 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class AddTestMethodCommand : CommandBase
     {
-        private readonly TestExplorerModelBase _model;
+        private readonly TestExplorerModel _model;
         private readonly NewTestMethodCommand _command;
 
-        public AddTestMethodCommand(TestExplorerModelBase model, NewTestMethodCommand command)
+        public AddTestMethodCommand(TestExplorerModel model, NewTestMethodCommand command)
         {
             _model = model;
             _command = command;
@@ -21,11 +21,7 @@ namespace Rubberduck.UI.Command
 
         public override void Execute(object parameter)
         {
-            var test = _command.NewTestMethod();
-            if (test != null)
-            {
-                _model.Tests.Add(test);
-            }
+            _command.NewTestMethod();
         }
     }
 }

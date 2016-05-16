@@ -8,7 +8,7 @@ namespace Rubberduck.Parsing.Annotations
         public ModuleCleanupAnnotation(
             QualifiedSelection qualifiedSelection,
             IEnumerable<string> parameters)
-            : base(AnnotationType.TestMethod, qualifiedSelection)
+            : base(AnnotationType.ModuleCleanup, qualifiedSelection)
         {
         }
     }
