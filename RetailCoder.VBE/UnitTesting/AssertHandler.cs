@@ -34,5 +34,14 @@ namespace Rubberduck.UnitTesting
                 handler(null, new AssertCompletedEventArgs(TestResult.Inconclusive(message)));
             }
         }
+
+        public static void OnAssertIgnored()
+        {
+            var handler = OnAssertCompleted;
+            if (handler != null)
+            {
+                handler(null, new AssertCompletedEventArgs(TestResult.Ignored()));
+            }
+        }
     }
 }

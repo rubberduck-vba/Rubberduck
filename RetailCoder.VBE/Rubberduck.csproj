@@ -888,14 +888,12 @@
     <Compile Include="UI\ToDoItems\ToDoExplorerViewModel.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
     <Compile Include="UI\Controls\BindableSelectedItemBehavior.cs" />
-    <Compile Include="UI\UnitTesting\StandardModuleTestExplorerModel.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerControl.xaml.cs">
       <DependentUpon>TestExplorerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\UnitTesting\TestExplorerDockablePresenter.cs" />
-    <Compile Include="UI\UnitTesting\TestExplorerModelBase.cs" />
+    <Compile Include="UI\UnitTesting\TestExplorerModel.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerViewModel.cs" />
-    <Compile Include="UI\UnitTesting\TestResultExtensions.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerWindow.cs">
       <SubType>UserControl</SubType>
@@ -921,6 +919,7 @@
     <Compile Include="UnitTesting\AssertClass.cs" />
     <Compile Include="UnitTesting\AssertCompletedEventArgs.cs" />
     <Compile Include="UnitTesting\AssertHandler.cs" />
+    <Compile Include="UnitTesting\UnitTestHelpers.cs" />
     <Compile Include="UnitTesting\IAssert.cs" />
     <Compile Include="UnitTesting\ITestEngine.cs" />
     <Compile Include="UnitTesting\ITestRunner.cs" />
@@ -1086,7 +1085,6 @@
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\rubberduck.config" />
     <Resource Include="Resources\rubberduck_adsize.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1249,6 +1247,7 @@
     <None Include="Resources\Microsoft\Mask\PromoteLocal_6784_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\ReorderParameters_6780_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\TestManager_8590_32.bmp" />
+    <Resource Include="Resources\minus-white.png" />
     <Resource Include="Resources\printer.png" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />

@@ -87,11 +87,7 @@ namespace Rubberduck.Common
 
             foreach (var hotkey in settings.Settings.Where(hotkey => hotkey.IsEnabled))
             {
-                RubberduckHotkey assigned;
-                if (Enum.TryParse(hotkey.Name, out assigned))
-                {
-                    AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), _mappings[assigned]));
-                }
+                AddHook(new Hotkey(_mainWindowHandle, hotkey.ToString(), _mappings[(RubberduckHotkey)Enum.Parse(typeof(RubberduckHotkey), hotkey.Name)]));
             }
             Attach();
         }

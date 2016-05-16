@@ -88,6 +88,7 @@
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
     <Compile Include="ComponentTypeExtensionTests.cs" />
     <Compile Include="ConfigurationTests.cs" />
+    <Compile Include="Grammar\AnnotationTests.cs" />
     <Compile Include="Grammar\ResolverTests.cs" />
     <Compile Include="Grammar\VBAParserTests.cs" />
     <Compile Include="Grammar\VBAParserValidityTests.cs" />
@@ -140,7 +141,6 @@
     <Compile Include="Refactoring\RemoveParametersTests.cs" />
     <Compile Include="Refactoring\RenameTests.cs" />
     <Compile Include="Refactoring\ReorderParametersTests.cs" />
-    <Compile Include="Settings\HotkeySettingsTests.cs" />
     <Compile Include="Settings\InspectionSettingsTests.cs" />
     <Compile Include="Settings\GeneralSettingsTests.cs" />
     <Compile Include="Settings\IndenterSettingsTests.cs" />
@@ -160,6 +160,7 @@
     <Compile Include="TodoExplorer\TodoExplorerTests.cs" />
     <Compile Include="UnitTesting\AssertTests.cs" />
     <Compile Include="UnitTesting\EngineTests.cs" />
+    <Compile Include="UnitTesting\DiscoveryTests.cs" />
     <Compile Include="VbeTestBase.cs" />
   </ItemGroup>
   <ItemGroup>

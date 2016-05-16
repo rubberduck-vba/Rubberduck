@@ -123,12 +123,12 @@ namespace RubberduckTests.CodeExplorer
             var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
+            var state = new RubberduckParserState();
             var commands = new List<ICommand>
             {
-                new CodeExplorer_AddTestModuleCommand(new NewUnitTestModuleCommand(vbe.Object, configLoader.Object))
+                new CodeExplorer_AddTestModuleCommand(new NewUnitTestModuleCommand(vbe.Object, state, configLoader.Object))
             };
 
-            var state = new RubberduckParserState();
             var vm = new CodeExplorerViewModel(new FolderHelper(state, GetDelimiterConfigLoader()), state, commands);
 
             var parser = MockParser.Create(vbe.Object, state);
