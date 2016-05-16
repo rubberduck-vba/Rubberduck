@@ -98,33 +98,5 @@ namespace RubberduckTests.Grammar
             var annotation = new NoIndentAnnotation(new QualifiedSelection(), null);
             Assert.AreEqual(AnnotationType.NoIndent, annotation.AnnotationType);
         }
-
-        [TestMethod]
-        public void DeclarationHasMultipleAnnotations()
-        {
-            var input =
-@"'@TestMethod
-'@IgnoreTest
-Public Sub Foo()
-End Sub";
-
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, input);
-
-            var vbe = builder.AddProject(project.Build()).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState());
-
-            parser.Parse();
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var declaration = parser.State.AllUserDeclarations.First(f => f.DeclarationType == DeclarationType.Procedure);
-
-            Assert.IsTrue(declaration.Annotations.Count() == 2);
-            Assert.IsTrue(declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.TestMethod));
-            Assert.IsTrue(declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest));
-        }
     }
 }

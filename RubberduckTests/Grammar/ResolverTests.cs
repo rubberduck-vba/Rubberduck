@@ -1034,9 +1034,56 @@ End Sub
             var annotation = (IgnoreAnnotation)usage.Annotations.First();
             Assert.IsTrue(
                 usage.Annotations.Count() == 1
-                && annotation.AnnotationType == AnnotationType.IgnoreTest
+                && annotation.AnnotationType == AnnotationType.Ignore
                 && annotation.InspectionNames.Count() == 1
                 && annotation.InspectionNames.First() == "UnassignedVariableUsage");
+        }
+
+        [TestMethod]
+        public void AnnotatedReference_LinesAbove_HaveAnnotations()
+        {
+            var code = @"
+Public Sub DoSomething()
+    Dim foo As Integer
+    '@Ignore UseMeaningfulName
+    '@Ignore UnassignedVariableUsage
+    a = foo
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable);
+
+            var usage = declaration.References.Single();
+
+            var annotation1 = (IgnoreAnnotation)usage.Annotations.ElementAt(0);
+            var annotation2 = (IgnoreAnnotation)usage.Annotations.ElementAt(1);
+
+            Assert.AreEqual(2, usage.Annotations.Count());
+            Assert.AreEqual(AnnotationType.Ignore, annotation1.AnnotationType);
+            Assert.AreEqual(AnnotationType.Ignore, annotation2.AnnotationType);
+
+            Assert.IsTrue(usage.Annotations.Any(a => ((IgnoreAnnotation)a).InspectionNames.First() == "UseMeaningfulName"));
+            Assert.IsTrue(usage.Annotations.Any(a => ((IgnoreAnnotation)a).InspectionNames.First() == "UnassignedVariableUsage"));
+        }
+
+        [TestMethod]
+        public void AnnotatedDeclaration_LinesAbove_HaveAnnotations()
+        {
+            var code =
+@"'@TestMethod
+'@IgnoreTest
+Public Sub Foo()
+End Sub";
+
+
+            var state = Resolve(code);
+            var declaration = state.AllUserDeclarations.First(f => f.DeclarationType == DeclarationType.Procedure);
+
+            Assert.IsTrue(declaration.Annotations.Count() == 2);
+            Assert.IsTrue(declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.TestMethod));
+            Assert.IsTrue(declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest));
         }
 
         [TestMethod]
