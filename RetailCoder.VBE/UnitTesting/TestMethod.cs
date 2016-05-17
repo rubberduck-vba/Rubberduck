@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
@@ -17,15 +18,17 @@ namespace Rubberduck.UnitTesting
         private readonly ICollection<TestResult> _assertResults = new List<TestResult>();
         private readonly IHostApplication _hostApp;
 
-        public TestMethod(QualifiedMemberName qualifiedMemberName, VBE vbe)
+        public TestMethod(Declaration declaration, VBE vbe)
         {
-            _qualifiedMemberName = qualifiedMemberName;
-            _vbe = vbe;
+            _declaration = declaration;
+            _qualifiedMemberName = declaration.QualifiedName;
             _hostApp = vbe.HostApplication();
         }
 
+        private readonly Declaration _declaration;
+        public Declaration Declaration { get { return _declaration; } }
+
         private readonly QualifiedMemberName _qualifiedMemberName;
-        private readonly VBE _vbe;
         public QualifiedMemberName QualifiedMemberName { get { return _qualifiedMemberName; } }
 
         public void Run()
@@ -37,7 +40,7 @@ namespace Rubberduck.UnitTesting
             try
             {
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                duration = _hostApp.TimedMethodCall(_qualifiedMemberName);
+                duration = _hostApp.TimedMethodCall(QualifiedMemberName);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
                 
                 result = EvaluateResults();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.VBEditor.Extensions;
@@ -10,11 +11,13 @@ namespace Rubberduck.UnitTesting
     public class NewUnitTestModuleCommand
     {
         private readonly VBE _vbe;
+        private readonly RubberduckParserState _state;
         private readonly ConfigurationLoader _configLoader;
 
-        public NewUnitTestModuleCommand(VBE vbe, ConfigurationLoader configLoader)
+        public NewUnitTestModuleCommand(VBE vbe, RubberduckParserState state, ConfigurationLoader configLoader)
         {
             _vbe = vbe;
+            _state = state;
             _configLoader = configLoader;
         }
 
@@ -76,35 +79,42 @@ namespace Rubberduck.UnitTesting
         public void NewUnitTestModule(VBProject project)
         {
             var settings = _configLoader.LoadConfiguration().UserSettings.UnitTestSettings;
+            VBComponent component;
             
             try
             {
                 project.EnsureReferenceToAddInLibrary();
 
-                var module = project.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
-                module.Name = GetNextTestModuleName(project);
+                component = project.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
+                component.Name = GetNextTestModuleName(project);
 
                 var hasOptionExplicit = false;
-                if (module.CodeModule.CountOfLines > 0 && module.CodeModule.CountOfDeclarationLines > 0)
+                if (component.CodeModule.CountOfLines > 0 && component.CodeModule.CountOfDeclarationLines > 0)
                 {
-                    hasOptionExplicit = module.CodeModule.Lines[1, module.CodeModule.CountOfDeclarationLines].Contains("Option Explicit");
+                    hasOptionExplicit = component.CodeModule.Lines[1, component.CodeModule.CountOfDeclarationLines].Contains("Option Explicit");
                 }
 
                 var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\n", "Option Private Module\n\n");
 
-                module.CodeModule.AddFromString(options + GetTestModule(settings));
-                module.Activate();
+                component.CodeModule.AddFromString(options + GetTestModule(settings));
+                component.Activate();
             }
             catch (Exception)
             {
                 //can we please comment when we swallow every possible exception?
+                return;
             }
 
-            if (settings.DefaultTestStubInNewModule)
+            _state.StateChanged += (sender, args) =>
             {
-                var newTestMethodCommand = new NewTestMethodCommand(_vbe);
-                newTestMethodCommand.NewTestMethod();
-            }
+                if (args.State == ParserState.Ready && settings.DefaultTestStubInNewModule)
+                {
+                    var newTestMethodCommand = new NewTestMethodCommand(_vbe, _state);
+                    newTestMethodCommand.NewTestMethod();
+                }
+            };
+
+            _state.OnParseRequested(this, component);
         }
 
         private string GetNextTestModuleName(VBProject project)
