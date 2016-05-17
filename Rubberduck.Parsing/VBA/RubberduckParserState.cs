@@ -291,6 +291,18 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public void SetStatusAndFireStateChanged(ParserState status)
+        {
+            if (Status == status)
+            {
+                OnStateChanged(status);
+            }
+            else
+            {
+                Status = status;
+            }
+        }
+
         internal void SetModuleAttributes(VBComponent component, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
         {
             _moduleStates.AddOrUpdate(new QualifiedModuleName(component), new ModuleState(attributes), (c, s) => s.SetModuleAttributes(attributes));
