@@ -139,7 +139,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (!toParse.Any())
             {
-                State.Status = ParserState.Ready;
+                State.SetStatusAndFireStateChanged(ParserState.Ready);
                 return;
             }
 

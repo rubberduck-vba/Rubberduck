@@ -72,8 +72,8 @@ namespace Rubberduck.UI.UnitTesting
         private readonly ObservableCollection<TestMethod> _tests = new ObservableCollection<TestMethod>();
         public ObservableCollection<TestMethod> Tests { get { return _tests; } }
 
-        private readonly IList<TestMethod> _lastRun = new List<TestMethod>();
-        public IEnumerable<TestMethod> LastRun { get { return _lastRun; } } 
+        private readonly List<TestMethod> _lastRun = new List<TestMethod>();
+        public List<TestMethod> LastRun { get { return _lastRun; } } 
 
         public void ClearLastRun()
         {

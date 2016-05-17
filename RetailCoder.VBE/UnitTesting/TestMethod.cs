@@ -13,7 +13,7 @@ using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.UnitTesting
 {
-    public class TestMethod : ViewModelBase, IEquatable<TestMethod>, IEditableObject, INavigateSource
+    public class TestMethod : ViewModelBase, IEquatable<TestMethod>, INavigateSource
     {
         private readonly ICollection<AssertCompletedEventArgs> _assertResults = new List<AssertCompletedEventArgs>();
         private readonly IHostApplication _hostApp;
@@ -51,6 +51,7 @@ namespace Rubberduck.UnitTesting
             }
             
             Result.SetValues(result.Outcome, result.Message, duration.Milliseconds);
+            OnPropertyChanged("Result");
         }
 
         private TestResult _result = new TestResult(TestOutcome.Unknown);
@@ -112,34 +113,6 @@ namespace Rubberduck.UnitTesting
         public override int GetHashCode()
         {
             return QualifiedMemberName.GetHashCode();
-        }
-
-        private TestResult _cachedResult;
-
-        private bool _isEditing;
-        public bool IsEditing { get { return _isEditing; } set { _isEditing = value; OnPropertyChanged(); } }
-
-        public void BeginEdit()
-        {
-            _cachedResult.SetValues(Result.Outcome, Result.Output, Result.Duration);
-            IsEditing = true;
-        }
-
-        public void EndEdit()
-        {
-            _cachedResult = null;
-            IsEditing = false;
-        }
-
-        public void CancelEdit()
-        {
-            if (_cachedResult != null)
-            {
-                Result = _cachedResult;
-            }
-
-            _cachedResult = null;
-            IsEditing = false;
         }
 
         public override string ToString()
