@@ -82,6 +82,8 @@ namespace Rubberduck.UnitTesting
             catch (COMException)
             {
             }
+
+            _state.OnParseRequested(this, _vbe.SelectedVBComponent);
         }
     
         public void NewExpectedErrorTestMethod()
@@ -108,6 +110,8 @@ namespace Rubberduck.UnitTesting
             catch (COMException)
             {
             }
+
+            _state.OnParseRequested(this, _vbe.SelectedVBComponent);
         }
 
         private string GetNextTestMethodName(VBComponent component)
