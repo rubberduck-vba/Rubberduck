@@ -1558,4 +1558,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="CodeExplorer_Commit" xml:space="preserve">
     <value>Commit...</value>
   </data>
+  <data name="TestOutcome_Ignored" xml:space="preserve">
+    <value>Ingoriert</value>
+  </data>
 </root>
