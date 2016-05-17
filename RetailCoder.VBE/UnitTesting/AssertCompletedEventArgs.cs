@@ -4,12 +4,16 @@ namespace Rubberduck.UnitTesting
 {
     public class AssertCompletedEventArgs : EventArgs
     {
-        public AssertCompletedEventArgs(TestResult result)
+        public AssertCompletedEventArgs(TestOutcome outcome, string message = "")
         {
-            _result = result;
+            _outcome = outcome;
+            _message = message;
         }
 
-        private readonly TestResult _result;
-        public TestResult Result { get { return _result; } }
+        private readonly TestOutcome _outcome;
+        public TestOutcome Outcome { get { return _outcome; } }
+
+        private readonly string _message;
+        public string Message { get { return _message; } }
     }
 }

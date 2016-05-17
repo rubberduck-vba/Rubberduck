@@ -71,7 +71,7 @@ namespace Rubberduck.UnitTesting
                     // no need to run setup/teardown for ignored tests
                     if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
                     {
-                        test.Result = TestResult.Ignored();
+                        test.Result.SetValues(TestOutcome.Ignored);
                         continue;
                     }
 

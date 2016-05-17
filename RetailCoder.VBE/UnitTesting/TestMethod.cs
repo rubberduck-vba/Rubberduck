@@ -15,7 +15,7 @@ namespace Rubberduck.UnitTesting
 {
     public class TestMethod : ViewModelBase, IEquatable<TestMethod>, IEditableObject, INavigateSource
     {
-        private readonly ICollection<TestResult> _assertResults = new List<TestResult>();
+        private readonly ICollection<AssertCompletedEventArgs> _assertResults = new List<AssertCompletedEventArgs>();
         private readonly IHostApplication _hostApp;
 
         public TestMethod(Declaration declaration, VBE vbe)
@@ -35,7 +35,7 @@ namespace Rubberduck.UnitTesting
         {
             _assertResults.Clear(); //clear previous results to account for changes being made
 
-            TestResult result;
+            AssertCompletedEventArgs result;
             var duration = new TimeSpan();
             try
             {
@@ -47,13 +47,13 @@ namespace Rubberduck.UnitTesting
             }
             catch(Exception exception)
             {
-                result = TestResult.Inconclusive("Test raised an error. " + exception.Message);
+                result = new AssertCompletedEventArgs(TestOutcome.Inconclusive, "Test raised an error. " + exception.Message);
             }
             
-            Result = new TestResult(result, duration.Milliseconds);
+            Result.SetValues(result.Outcome, result.Message, duration.Milliseconds);
         }
 
-        private TestResult _result = TestResult.Unknown();
+        private TestResult _result = new TestResult(TestOutcome.Unknown);
         public TestResult Result
         {
             get { return _result; } 
@@ -62,12 +62,12 @@ namespace Rubberduck.UnitTesting
 
         void HandleAssertCompleted(object sender, AssertCompletedEventArgs e)
         {
-            _assertResults.Add(e.Result);
+            _assertResults.Add(e);
         }
 
-        private TestResult EvaluateResults()
+        private AssertCompletedEventArgs EvaluateResults()
         {
-            var result = TestResult.Success();
+            var result = new AssertCompletedEventArgs(TestOutcome.Succeeded);
 
             if (_assertResults.Any(assertion => assertion.Outcome == TestOutcome.Failed || assertion.Outcome == TestOutcome.Inconclusive))
             {
@@ -121,7 +121,7 @@ namespace Rubberduck.UnitTesting
 
         public void BeginEdit()
         {
-            _cachedResult = new TestResult(Result, Result.Duration);
+            _cachedResult.SetValues(Result.Outcome, Result.Output, Result.Duration);
             IsEditing = true;
         }
 
