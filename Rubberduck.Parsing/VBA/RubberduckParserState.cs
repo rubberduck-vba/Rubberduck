@@ -464,13 +464,13 @@ namespace Rubberduck.Parsing.VBA
         public bool RemoveRenamedComponent(VBComponent component, string oldComponentName)
         {
             var match = new QualifiedModuleName(component, oldComponentName);
-            var keys = _declarations.Keys.Where(kvp => kvp.ComponentName == oldComponentName && kvp.ProjectId == match.ProjectId).ToList();
+            var keys = _moduleStates.Keys.Where(kvp => kvp.ComponentName == oldComponentName && kvp.ProjectId == match.ProjectId).ToList();
 
             var success = keys.Any() && RemoveKeysFromCollections(keys);
 
             if (success)
             {
-            OnStateChanged();
+                OnStateChanged();
             }
             return success;
         }
