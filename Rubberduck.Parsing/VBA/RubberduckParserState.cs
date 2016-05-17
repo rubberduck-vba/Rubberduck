@@ -126,7 +126,7 @@ namespace Rubberduck.Parsing.VBA
                 return _moduleStates.Select(kvp => Tuple.Create(kvp.Key.Component, kvp.Value.ModuleException))
                     .Where(item => item.Item2 != null)
                     .ToList();
-            }
+        }
         }
 
         public event EventHandler<ParserStateEventArgs> StateChanged;
@@ -364,7 +364,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 return _moduleStates.Values.Where(item => item.Declarations != null && item.Declarations.Keys.Any(d => !d.IsBuiltIn))
                         .SelectMany(d => d.Declarations.Keys)
-                        .ToList();
+                    .ToList();
             }
         }
 
@@ -464,11 +464,14 @@ namespace Rubberduck.Parsing.VBA
         public bool RemoveRenamedComponent(VBComponent component, string oldComponentName)
         {
             var match = new QualifiedModuleName(component, oldComponentName);
-            var keys = _moduleStates.Keys.Where(kvp => kvp.ComponentName == oldComponentName && kvp.ProjectId == match.ProjectId);
+            var keys = _moduleStates.Keys.Where(kvp => kvp.ComponentName == oldComponentName && kvp.ProjectId == match.ProjectId).ToList();
 
-            var success = RemoveKeysFromCollections(keys);
+            var success = keys.Any() && RemoveKeysFromCollections(keys);
 
-            OnStateChanged();
+            if (success)
+            {
+                OnStateChanged();
+            }
             return success;
         }
 
@@ -725,7 +728,7 @@ namespace Rubberduck.Parsing.VBA
             if (!_moduleStates.TryRemove(key, out moduleState))
             {
                 if (moduleState != null)
-                {
+            {
                     moduleState.Dispose();
                 }
 
