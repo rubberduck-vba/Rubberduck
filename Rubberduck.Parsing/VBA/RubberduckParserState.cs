@@ -197,8 +197,10 @@ namespace Rubberduck.Parsing.VBA
                 return ParserState.Pending;
             }
 
-            var moduleStates = _moduleStates.Values.Where(s => s.Declarations != null && !s.Declarations.Any(d => d.Key.IsBuiltIn)).Select(s => s.State).ToList();
-            var modules = _moduleStates.Keys.Where(k => k.ComponentName == "Sheet1" || k.ComponentName == "ThisWorkbook").ToList();
+            var moduleStates = _moduleStates.Where(s => s.Key.Component != null && s.Key.ComponentName != string.Empty)
+                    .Select(s => s.Value.State)
+                    .ToList();
+
             if (!moduleStates.Any())
             {
                 return ParserState.Pending;
@@ -426,6 +428,8 @@ namespace Rubberduck.Parsing.VBA
 
         public bool ClearStateCache(VBComponent component, bool notifyStateChanged = false)
         {
+            if (component == null) { return false; }
+
             var match = new QualifiedModuleName(component);
             var keys = _moduleStates.Keys.Where(kvp => kvp.Equals(match))
                 .Union(new[] { match }).Distinct(); // make sure the key is present, even if there are no declarations left
@@ -494,7 +498,7 @@ namespace Rubberduck.Parsing.VBA
         {
             var key = new QualifiedModuleName(component);
             _moduleStates[key].SetParseTree(parseTree);
-            _moduleStates[key].WithModuleContentHashCode(key.ContentHashCode);
+            _moduleStates[key].SetModuleContentHashCode(key.ContentHashCode);
         }
 
         public IParseTree GetParseTree(VBComponent component)
@@ -522,12 +526,12 @@ namespace Rubberduck.Parsing.VBA
         public bool HasAllParseTrees(IReadOnlyList<VBComponent> expected)
         {
             var expectedModules = expected.Select(module => new QualifiedModuleName(module));
-            foreach (var module in _moduleStates.Keys.Where(item => !expectedModules.Contains(item)))
+            foreach (var module in _moduleStates.Keys.Where(item => item.Component != null && !expectedModules.Contains(item)))
             {
                 ClearStateCache(module.Component);
             }
 
-            return _moduleStates.Select(item => item.Value.ParseTree).Count() == expected.Count;
+            return _moduleStates.Count(item => item.Value.ParseTree != null) == expected.Count;
         }
 
         public TokenStreamRewriter GetRewriter(VBComponent component)
@@ -698,7 +702,6 @@ namespace Rubberduck.Parsing.VBA
 
         public static Selection CreateBindingSelection(ParserRuleContext vbaGrammarContext, ParserRuleContext exprContext)
         {
-            var k = exprContext.GetText();
             Selection vbaGrammarSelection = vbaGrammarContext.GetSelection();
             Selection exprSelection = exprContext.GetSelection();
             int lineOffset = vbaGrammarSelection.StartLine - 1;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Annotations;
@@ -26,7 +27,16 @@ namespace Rubberduck.Parsing.VBA
             Declarations = declarations;
             TokenStream = null;
             ParseTree = null;
-            State = ParserState.None;
+
+            if (declarations.Any() && declarations.ElementAt(0).Key.QualifiedName.QualifiedModuleName.Component != null)
+            {
+                State = ParserState.Pending;
+            }
+            else
+            {
+                State = ParserState.Pending;
+            }
+
             ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
             Annotations = new List<IAnnotation>();
@@ -91,7 +101,7 @@ namespace Rubberduck.Parsing.VBA
             return this;
         }
 
-        public ModuleState WithModuleContentHashCode(int moduleContentHashCode)
+        public ModuleState SetModuleContentHashCode(int moduleContentHashCode)
         {
             ModuleContentHashCode = moduleContentHashCode;
             return this;
