@@ -152,6 +152,24 @@ END";
         }
 
         [TestMethod]
+        public void TestForeignIdentifier()
+        {
+            string code = @"
+Sub FooFoo()
+  [Sheet2!A2]
+  [[Book2]Sheet1!A1]
+  [Book2!NamedRange]
+  [""Hello World!""]
+  [""!""]
+  [""[]""]
+  []
+End Sub";
+            var parseResult = Parse(code);
+            // 7 foreign names + 1 for the subroutine's name.
+            AssertTree(parseResult.Item1, parseResult.Item2, "//identifier", matches => matches.Count == 8);
+        }
+
+        [TestMethod]
         public void TestOneCharComment()
         {
             string code = @"'a";
