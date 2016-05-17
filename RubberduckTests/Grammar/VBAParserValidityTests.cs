@@ -14,6 +14,7 @@ namespace RubberduckTests.Grammar
     [TestClass]
     public class VBAParserValidityTests
     {
+        [Ignore] // runs for 19 seconds. todo: improve performance
         [TestMethod]
         [DeploymentItem(@"Testfiles\")]
         public void TestParser()
@@ -36,7 +37,7 @@ namespace RubberduckTests.Grammar
             return Directory.EnumerateFiles("Grammar").Select(file => Tuple.Create(file, File.ReadAllText(file))).ToList();
         }
 
-        private string Parse(string code, string filename)
+        private static string Parse(string code, string filename)
         {
             var builder = new MockVbeBuilder();
             VBComponent component;
