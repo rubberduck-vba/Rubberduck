@@ -22,6 +22,8 @@ namespace Rubberduck.Parsing.VBA
         public SyntaxErrorException ModuleException { get; private set; }
         public IDictionary<Tuple<string, DeclarationType>, Attributes> ModuleAttributes { get; private set; }
 
+        public bool IsNew { get; private set; }
+
         public ModuleState(ConcurrentDictionary<Declaration, byte> declarations)
         {
             Declarations = declarations;
@@ -42,6 +44,8 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = null;
             ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+
+            IsNew = true;
         }
 
         public ModuleState(ParserState state)
@@ -55,6 +59,8 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = null;
             ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+
+            IsNew = true;
         }
 
         public ModuleState(SyntaxErrorException moduleException)
@@ -68,6 +74,8 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = moduleException;
             ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+
+            IsNew = true;
         }
 
         public ModuleState(IDictionary<Tuple<string, DeclarationType>, Attributes> moduleAttributes)
@@ -81,6 +89,8 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = null;
             ModuleAttributes = moduleAttributes;
+
+            IsNew = true;
         }
 
         public ModuleState SetTokenStream(ITokenStream tokenStream)
@@ -104,6 +114,7 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState SetModuleContentHashCode(int moduleContentHashCode)
         {
             ModuleContentHashCode = moduleContentHashCode;
+            IsNew = false;
             return this;
         }
 
