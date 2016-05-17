@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -76,7 +77,7 @@ namespace Rubberduck.SettingsProvider
                 else
                 {
                     var parent = doc.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(RootElement));
-                    Debug.Assert(parent != null);
+                    // ReSharper disable once PossibleNullReferenceException
                     parent.Add(settings);
                 }                
             }
@@ -89,22 +90,21 @@ namespace Rubberduck.SettingsProvider
 
         private static XDocument GetConfigurationDoc(string file)
         {
+            XDocument output;
             try
             {
-                return XDocument.Load(file);
-            }
-            catch
-            {
-                var output = new XDocument();
-                var root = output.Descendants(RootElement).FirstOrDefault();
-                if (root == null)
+                output = XDocument.Load(file);
+                if (output.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(RootElement)) != null)
                 {
-                    output.Add(new XElement(RootElement));
-                    root = output.Descendants(RootElement).FirstOrDefault();
+                    return output;
                 }
-                Debug.Assert(root != null);
-                return output;
             }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch { }
+            
+            output = new XDocument();
+            output.Add(new XElement(RootElement));
+            return output;
         }
     }
 }
