@@ -586,7 +586,7 @@ namespace Rubberduck.Parsing.VBA
             if (_moduleStates.TryGetValue(key, out moduleState))
             {
                 // existing/modified
-                return key.ContentHashCode != moduleState.ModuleContentHashCode;
+                return moduleState.IsNew || key.ContentHashCode != moduleState.ModuleContentHashCode;
             }
 
             // new
