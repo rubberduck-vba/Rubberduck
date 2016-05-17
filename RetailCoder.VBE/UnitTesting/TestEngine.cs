@@ -53,38 +53,39 @@ namespace Rubberduck.UnitTesting
 
         public void Run(IEnumerable<TestMethod> tests)
         {
-            //var testMethods = tests as IList<TestMethod> ?? tests.ToList();
-            /*if (!tests.Any())
+            var testMethods = tests as IList<TestMethod> ?? tests.ToList();
+            if (!testMethods.Any())
             {
                 return;
-            }*/
+            }
 
-            //var modules = tests.GroupBy(test => test.QualifiedMemberName.QualifiedModuleName);
-            //foreach (var module in modules)
+            var modules = testMethods.GroupBy(test => test.QualifiedMemberName.QualifiedModuleName);
+            foreach (var module in modules)
             {
-                //var testInitialize = module.Key.FindTestInitializeMethods(_state).ToList();
-                //var testCleanup = module.Key.FindTestCleanupMethods(_state).ToList();
+                var testInitialize = module.Key.FindTestInitializeMethods(_state).ToList();
+                var testCleanup = module.Key.FindTestCleanupMethods(_state).ToList();
 
-                //Run(module.Key.FindModuleInitializeMethods(_state));
+                Run(module.Key.FindModuleInitializeMethods(_state));
                 foreach (var test in tests)
                 {
                     // no need to run setup/teardown for ignored tests
                     if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
                     {
                         test.Result.SetValues(TestOutcome.Ignored);
+                        test.UpdateResult(TestOutcome.Ignored);
                         continue;
                     }
 
-                    //Run(testInitialize);
+                    Run(testInitialize);
                     test.Run();
 
                     OnTestCompleted();
                     _model.AddExecutedTest(test);
 
-                    //Run(testCleanup);
+                    Run(testCleanup);
 
                 }
-                //Run(module.Key.FindModuleCleanupMethods(_state));
+                Run(module.Key.FindModuleCleanupMethods(_state));
             }
         }
 

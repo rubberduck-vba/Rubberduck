@@ -25,8 +25,13 @@ namespace Rubberduck.UnitTesting
             _hostApp = vbe.HostApplication();
         }
 
-        private readonly Declaration _declaration;
+        private Declaration _declaration;
         public Declaration Declaration { get { return _declaration; } }
+
+        public void SetDeclaration(Declaration declaration)
+        {
+            _declaration = declaration;
+        }
 
         private readonly QualifiedMemberName _qualifiedMemberName;
         public QualifiedMemberName QualifiedMemberName { get { return _qualifiedMemberName; } }
@@ -50,7 +55,12 @@ namespace Rubberduck.UnitTesting
                 result = new AssertCompletedEventArgs(TestOutcome.Inconclusive, "Test raised an error. " + exception.Message);
             }
             
-            Result.SetValues(result.Outcome, result.Message, duration.Milliseconds);
+            UpdateResult(result.Outcome, result.Message, duration.Milliseconds);
+        }
+        
+        public void UpdateResult(TestOutcome outcome, string message = "", long duration = 0)
+        {
+            Result.SetValues(outcome, message, duration);
             OnPropertyChanged("Result");
         }
 

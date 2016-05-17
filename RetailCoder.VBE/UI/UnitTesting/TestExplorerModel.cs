@@ -33,6 +33,30 @@ namespace Rubberduck.UI.UnitTesting
             UpdateTestList addTest = AddTest;
             UpdateTestList removeTest = RemoveTest;
 
+            var removedTests = _tests.Where(test =>
+                         !tests.Any(t =>
+                                 t.Declaration.ComponentName == test.Declaration.ComponentName &&
+                                 t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+                                 t.Declaration.ProjectId == test.Declaration.ProjectId)).ToList();
+
+            // remove old tests
+            foreach (var test in removedTests)
+            {
+                _uiDispatcher.Invoke(removeTest, test);
+            }
+
+
+            // update declarations for existing tests--declarations are immutable
+            foreach (var test in _tests.Except(removedTests))
+            {
+                var declaration = tests.First(t =>
+                    t.Declaration.ComponentName == test.Declaration.ComponentName &&
+                    t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+                    t.Declaration.ProjectId == test.Declaration.ProjectId).Declaration;
+
+                test.SetDeclaration(declaration);
+            }
+
             // add new tests
             foreach (var test in tests)
             {
@@ -44,21 +68,10 @@ namespace Rubberduck.UI.UnitTesting
                     _uiDispatcher.Invoke(addTest, test);
                 }
             }
-
-            var removedTests =_tests.Where(test =>
-                        !tests.Any(t =>
-                                t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                                t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                                t.Declaration.ProjectId == test.Declaration.ProjectId)).ToList();
-
-            // remove old tests
-            foreach (var test in removedTests)
-            {
-                _uiDispatcher.Invoke(removeTest, test);
-            }
         }
 
         private delegate void UpdateTestList(TestMethod test);
+
         private void AddTest(TestMethod test)
         {
             _tests.Add(test);
