@@ -183,7 +183,7 @@ namespace Rubberduck.UI.UnitTesting
             _model.ClearLastRun();
 
             Model.IsBusy = true;
-            _testEngine.Run(_model.LastRun.Where(test => test.Result.Outcome == TestOutcome.Unknown));
+            _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Unknown));
             Model.IsBusy = false;
         }
 
@@ -192,7 +192,7 @@ namespace Rubberduck.UI.UnitTesting
             _model.ClearLastRun();
 
             Model.IsBusy = true;
-            _testEngine.Run(_model.LastRun.Where(test => test.Result.Outcome == TestOutcome.Failed));
+            _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Failed));
             Model.IsBusy = false;
         }
 
@@ -201,7 +201,7 @@ namespace Rubberduck.UI.UnitTesting
             _model.ClearLastRun();
 
             Model.IsBusy = true;
-            _testEngine.Run(_model.LastRun.Where(test => test.Result.Outcome == TestOutcome.Succeeded));
+            _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Succeeded));
             Model.IsBusy = false;
         }
 
