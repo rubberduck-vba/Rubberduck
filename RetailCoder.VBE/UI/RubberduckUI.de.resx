@@ -1528,4 +1528,34 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="SourceControl_CommitStatus" xml:space="preserve">
     <value>Commit Status.</value>
   </data>
+  <data name="SortStyle_BySelection" xml:space="preserve">
+    <value>Nach Auswahl</value>
+  </data>
+  <data name="SortStyle_ByType" xml:space="preserve">
+    <value>Nach Typ</value>
+  </data>
+  <data name="SortStyle_ByName" xml:space="preserve">
+    <value>Nach Name</value>
+  </data>
+  <data name="CodeExplorer_Sort" xml:space="preserve">
+    <value>Sortieren</value>
+  </data>
+  <data name="NoIndentAnnotation" xml:space="preserve">
+    <value>Füge '@NoIndent hinzu</value>
+  </data>
+  <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
+    <value>Aktualisiere Komponente</value>
+  </data>
+  <data name="SourceControl_UndoTitle" xml:space="preserve">
+    <value>Versionskontrolle - Rückgänig</value>
+  </data>
+  <data name="SourceControl_UndoPrompt" xml:space="preserve">
+    <value>Sollen die Änderungen in {0} rückgängig gemacht werden?</value>
+  </data>
+  <data name="CodeExplorer_Undo" xml:space="preserve">
+    <value>Rückgängig ...</value>
+  </data>
+  <data name="CodeExplorer_Commit" xml:space="preserve">
+    <value>Commit...</value>
+  </data>
 </root>
