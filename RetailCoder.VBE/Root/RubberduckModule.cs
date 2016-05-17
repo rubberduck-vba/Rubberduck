@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
+//using LibGit2Sharp;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Ninject;
@@ -21,6 +23,7 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer;
+using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
@@ -67,8 +70,7 @@ namespace Rubberduck.Root
             _kernel.Bind<NewUnitTestModuleCommand>().ToSelf().InSingletonScope();
             _kernel.Bind<NewTestMethodCommand>().ToSelf().InSingletonScope();
             _kernel.Bind<RubberduckCommandBar>().ToSelf().InSingletonScope();
-            _kernel.Bind<TestExplorerModel>().ToSelf().InSingletonScope();
-
+            
             BindCodeInspectionTypes();
 
             var assemblies = new[]
@@ -329,7 +331,7 @@ namespace Rubberduck.Root
                         //_kernel.Bind<ICommand>().To(command);
                     }
                 }
-                catch (InvalidOperationException)
+                catch (InvalidOperationException exception)
                 {
                     // rename one of the classes, "FooCommand" is expected to match exactly 1 "FooBarXyzCommandMenuItem"
                 }
@@ -352,7 +354,7 @@ namespace Rubberduck.Root
 
         private IEnumerable<IMenuItem> GetRubberduckMenuItems()
         {
-            return new[]
+            return new IMenuItem[]
             {
                 _kernel.Get<AboutCommandMenuItem>(),
                 _kernel.Get<SettingsCommandMenuItem>(),
@@ -424,7 +426,7 @@ namespace Rubberduck.Root
 
         private IEnumerable<IMenuItem> GetCodePaneContextMenuItems()
         {
-            return new[]
+            return new IMenuItem[]
             {
                 GetRefactoringsParentMenu(),
                 GetSmartIndenterParentMenu(),

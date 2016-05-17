@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.Command
@@ -9,10 +10,12 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class AddTestMethodExpectedErrorCommand : CommandBase
     {
+        private readonly TestExplorerModel _model;
         private readonly NewTestMethodCommand _command;
 
-        public AddTestMethodExpectedErrorCommand(NewTestMethodCommand command)
+        public AddTestMethodExpectedErrorCommand(TestExplorerModel model, NewTestMethodCommand command)
         {
+            _model = model;
             _command = command;
         }
 

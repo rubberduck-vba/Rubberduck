@@ -563,16 +563,20 @@
             </ToolBar>
         </ToolBarTray>
 
-        <ProgressBar Height="6"
-                     Grid.Row="1"
-                     Margin="2"
-                     Background="DimGray" 
-                     Maximum="{Binding Model.Tests.Count, Mode=OneWay}" 
-                     Value="{Binding Model.ExecutedCount, Mode=OneWay}">
-            <ProgressBar.Foreground>
-                <SolidColorBrush Color="{Binding Model.ProgressBarColor, UpdateSourceTrigger=PropertyChanged}" />
-            </ProgressBar.Foreground>
-        </ProgressBar>
+        <StackPanel Grid.Row="1" Margin="2">
+
+            <Border BorderBrush="DimGray" BorderThickness="1,1,0,0">
+                <ProgressBar Height="6" 
+                                Background="DimGray" 
+                                Maximum="{Binding Model.Tests.Count, Mode=OneWay}" 
+                                Value="{Binding Model.ExecutedCount, Mode=OneWay}">
+                    <ProgressBar.Foreground>
+                        <SolidColorBrush Color="{Binding Model.ProgressBarColor}" />
+                    </ProgressBar.Foreground>
+                </ProgressBar>
+            </Border>
+
+        </StackPanel>
 
         <Border Grid.Row="2" Padding="2">
             <ScrollViewer VerticalScrollBarVisibility="Auto">

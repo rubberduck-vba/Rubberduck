@@ -98,16 +98,11 @@ namespace Rubberduck.UI.UnitTesting
             _lastRun.Add(test);
             ExecutedCount = Tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
 
-            if (Tests.Any(t => t.Result.Outcome == TestOutcome.Failed))
-            {
-                ProgressBarColor = Colors.Red;
-            }
-            else
-            {
-                ProgressBarColor = Tests.Any(t => t.Result.Outcome == TestOutcome.Inconclusive)
+            ProgressBarColor = Tests.Any(t => t.Result.Outcome == TestOutcome.Failed)
+                ? Colors.Red
+                : Tests.Any(t => t.Result.Outcome == TestOutcome.Inconclusive) 
                     ? Colors.Gold
                     : Colors.LimeGreen;
-            }
 
             if (!Tests.Any(t =>
                         t.Declaration.ComponentName == test.Declaration.ComponentName &&
