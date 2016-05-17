@@ -265,7 +265,7 @@ namespace Rubberduck
                 return;
             }
 
-            Debug.WriteLine(string.Format("Component '{0}' was renamed.", e.Item.Name));
+            Debug.WriteLine("Component '{0}' was renamed to '{1}'.", e.OldName, e.Item.Name);
 
             _parser.State.RemoveRenamedComponent(e.Item, e.OldName);
         }

@@ -1040,6 +1040,53 @@ End Sub
         }
 
         [TestMethod]
+        public void AnnotatedReference_LinesAbove_HaveAnnotations()
+        {
+            var code = @"
+Public Sub DoSomething()
+    Dim foo As Integer
+    '@Ignore UseMeaningfulName
+    '@Ignore UnassignedVariableUsage
+    a = foo
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable);
+
+            var usage = declaration.References.Single();
+
+            var annotation1 = (IgnoreAnnotation)usage.Annotations.ElementAt(0);
+            var annotation2 = (IgnoreAnnotation)usage.Annotations.ElementAt(1);
+
+            Assert.AreEqual(2, usage.Annotations.Count());
+            Assert.AreEqual(AnnotationType.Ignore, annotation1.AnnotationType);
+            Assert.AreEqual(AnnotationType.Ignore, annotation2.AnnotationType);
+
+            Assert.IsTrue(usage.Annotations.Any(a => ((IgnoreAnnotation)a).InspectionNames.First() == "UseMeaningfulName"));
+            Assert.IsTrue(usage.Annotations.Any(a => ((IgnoreAnnotation)a).InspectionNames.First() == "UnassignedVariableUsage"));
+        }
+
+        [TestMethod]
+        public void AnnotatedDeclaration_LinesAbove_HaveAnnotations()
+        {
+            var code =
+@"'@TestMethod
+'@IgnoreTest
+Public Sub Foo()
+End Sub";
+
+
+            var state = Resolve(code);
+            var declaration = state.AllUserDeclarations.First(f => f.DeclarationType == DeclarationType.Procedure);
+
+            Assert.IsTrue(declaration.Annotations.Count() == 2);
+            Assert.IsTrue(declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.TestMethod));
+            Assert.IsTrue(declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest));
+        }
+
+        [TestMethod]
         public void AnnotatedReference_SameLine_HasNoAnnotations()
         {
             var code = @"
@@ -1805,7 +1852,7 @@ End Sub
         {
             var code = @"
 Public Sub DoSomething()
-    TextBox1.Text = ""Test""
+    TextBox1.Height = 20
 End Sub
 ";
             var builder = new MockVbeBuilder();
@@ -1830,6 +1877,99 @@ End Sub
             var declaration = parser.State.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Control
                 && item.IdentifierName == "TextBox1");
+
+            var usages = declaration.References.Where(item =>
+                item.ParentNonScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenLocalDeclarationAsQualifiedClassName_ResolvesFirstPartToProject()
+        {
+            var code_class1 = @"
+Public Sub DoSomething
+    Dim foo As TestProject1.Class2
+End Sub
+";
+            var code_class2 = @"
+Public Type TFoo
+    Bar As Integer
+End Type
+
+Private this As TFoo
+
+Public Property Get Bar() As Integer
+    Bar = this.Bar
+End Property
+";
+            var state = Resolve(code_class1, code_class2);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Project
+                && item.IdentifierName == "TestProject1");
+
+            var usages = declaration.References.Where(item =>
+                item.ParentNonScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenLocalDeclarationAsQualifiedClassName_ResolvesSecondPartToClassModule()
+        {
+            var code_class1 = @"
+Public Sub DoSomething
+    Dim foo As TestProject1.Class2
+End Sub
+";
+            var code_class2 = @"
+Public Type TFoo
+    Bar As Integer
+End Type
+
+Private this As TFoo
+
+Public Property Get Bar() As Integer
+    Bar = this.Bar
+End Property
+";
+            var state = Resolve(code_class1, code_class2);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.ClassModule
+                && item.IdentifierName == "Class2");
+
+            var usages = declaration.References.Where(item =>
+                item.ParentNonScoping.IdentifierName == "DoSomething");
+
+            Assert.AreEqual(1, usages.Count());
+        }
+
+        [TestMethod]
+        public void GivenLocalDeclarationAsQualifiedClassName_ResolvesThirdPartToUDT()
+        {
+            var code_class1 = @"
+Public Sub DoSomething
+    Dim foo As TestProject1.Class2.TFoo
+End Sub
+";
+            var code_class2 = @"
+Public Type TFoo
+    Bar As Integer
+End Type
+
+Private this As TFoo
+
+Public Property Get Bar() As Integer
+    Bar = this.Bar
+End Property
+";
+            var state = Resolve(code_class1, code_class2);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.UserDefinedType
+                && item.IdentifierName == "TFoo");
 
             var usages = declaration.References.Where(item =>
                 item.ParentNonScoping.IdentifierName == "DoSomething");

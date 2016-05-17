@@ -97,15 +97,23 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return null;
             }
-            var annotationAbove = _annotations.SingleOrDefault(annotation => annotation.QualifiedSelection.Selection.EndLine == line - 1);
-            if (annotationAbove == null)
+
+            var annotations = new List<IAnnotation>();
+
+            // VBE 1-based indexing
+            for (var i = line - 1; i >= 1; i--)
             {
-                return new List<IAnnotation>();
+                var annotation = _annotations.SingleOrDefault(a => a.QualifiedSelection.Selection.StartLine == i);
+
+                if (annotation == null)
+                {
+                    break;
+                }
+
+                annotations.Add(annotation);
             }
-            return new List<IAnnotation>()
-            {
-                annotationAbove
-            };
+
+            return annotations;
         }
 
         public void CreateModuleDeclarations()

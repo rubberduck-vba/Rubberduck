@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
@@ -14,11 +15,11 @@ namespace Rubberduck.UI.UnitTesting
     public class TestExplorerViewModel : ViewModelBase, INavigateSelection
     {
         private readonly ITestEngine _testEngine;
-        private readonly TestExplorerModelBase _model;
+        private readonly TestExplorerModel _model;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
 
-        public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, TestExplorerModelBase model, IClipboardWriter clipboard, NewUnitTestModuleCommand newTestModuleCommand, NewTestMethodCommand newTestMethodCommand, IGeneralConfigService configService)
+        public TestExplorerViewModel(VBE vbe, RubberduckParserState state, ITestEngine testEngine, TestExplorerModel model, IClipboardWriter clipboard, NewUnitTestModuleCommand newTestModuleCommand, NewTestMethodCommand newTestMethodCommand, IGeneralConfigService configService)
         {
             _testEngine = testEngine;
             _testEngine.TestCompleted += TestEngineTestCompleted;
@@ -28,7 +29,7 @@ namespace Rubberduck.UI.UnitTesting
 
             _navigateCommand = new NavigateCommand();
 
-            _runAllTestsCommand = new RunAllTestsCommand(testEngine, model);
+            _runAllTestsCommand = new RunAllTestsCommand(testEngine, model, state);
             _addTestModuleCommand = new AddTestModuleCommand(vbe, newTestModuleCommand);
             _addTestMethodCommand = new AddTestMethodCommand(model, newTestMethodCommand);
             _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(model, newTestMethodCommand);
@@ -42,27 +43,27 @@ namespace Rubberduck.UI.UnitTesting
 
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
 
-            _openSettingsCommand = new DelegateCommand(OpenSettings);
+            _openTestSettingsCommand = new DelegateCommand(OpenSettings);
         }
 
         private bool CanExecuteRunPassedTestsCommand(object obj)
         {
-            return true; //_model.Tests.Any(test => test.Outcome == TestOutcome.Succeeded);
+            return _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Succeeded);
         }
 
         private bool CanExecuteRunFailedTestsCommand(object obj)
         {
-            return true; //_model.Tests.Any(test => test.Outcome == TestOutcome.Failed);
+            return _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Failed);
         }
 
         private bool CanExecuteRunNotExecutedTestsCommand(object obj)
         {
-            return true; //_model.Tests.Any(test => test.Outcome == TestOutcome.Unknown);
+            return _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Unknown);
         }
 
         private bool CanExecuteRepeatLastRunCommand(object obj)
         {
-            return true; //_model.LastRun.Any();
+            return _model.LastRun.Any();
         }
 
         public event EventHandler<EventArgs> TestCompleted;
@@ -75,7 +76,7 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        public INavigateSource SelectedItem { get { return SelectedTest; } set { SelectedTest = value as TestMethod; } }
+        public INavigateSource SelectedItem { get { return SelectedTest; } }
 
         private TestMethod _selectedTest;
         public TestMethod SelectedTest
@@ -138,8 +139,8 @@ namespace Rubberduck.UI.UnitTesting
         private readonly ICommand _runSelectedTestCommand;
         public ICommand RunSelectedTestCommand { get { return _runSelectedTestCommand; } }
         
-        private readonly ICommand _openSettingsCommand;
-        public ICommand OpenTodoSettings { get { return _openSettingsCommand; } }
+        private readonly ICommand _openTestSettingsCommand;
+        public ICommand OpenTestSettingsCommand { get { return _openTestSettingsCommand; } }
 
         private void OpenSettings(object param)
         {
@@ -149,7 +150,7 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        public TestExplorerModelBase Model { get { return _model; } }
+        public TestExplorerModel Model { get { return _model; } }
 
         private void ExecuteRefreshCommand(object parameter)
         {
@@ -206,7 +207,7 @@ namespace Rubberduck.UI.UnitTesting
 
         private bool CanExecuteSelectedTestCommand(object obj)
         {
-            return !Model.IsBusy; //true; //SelectedItem != null;
+            return !Model.IsBusy && SelectedItem != null;
         }
 
         private void ExecuteSelectedTestCommand(object obj)
@@ -229,8 +230,9 @@ namespace Rubberduck.UI.UnitTesting
             var passed = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Succeeded) + " " + TestOutcome.Succeeded;
             var failed = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Failed) + " " + TestOutcome.Failed;
             var inconclusive = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Inconclusive) + " " + TestOutcome.Inconclusive;
+            var ignored = _model.LastRun.Count(test => test.Result.Outcome == TestOutcome.Ignored) + " " + TestOutcome.Ignored;
             var resource = "Rubberduck Unit Tests - {0}\n{1} | {2} | {3}\n";
-            var text = string.Format(resource, DateTime.Now, passed, failed, inconclusive) + results;
+            var text = string.Format(resource, DateTime.Now, passed, failed, inconclusive, ignored) + results;
 
             _clipboard.Write(text);
         }

@@ -113,17 +113,23 @@ namespace Rubberduck.Parsing.Symbols
 
         private IEnumerable<IAnnotation> FindAnnotations(int line)
         {
-            var annotationAbove =
-                _declarationFinder.ModuleAnnotations(_qualifiedModuleName)
-                    .SingleOrDefault(annotation => annotation.QualifiedSelection.Selection.EndLine == line - 1);
-            if (annotationAbove != null)
+            var annotations = new List<IAnnotation>();
+            var moduleAnnotations = _declarationFinder.ModuleAnnotations(_qualifiedModuleName).ToList();
+
+            // VBE 1-based indexing
+            for (var i = line - 1; i >= 1; i--)
             {
-                return new List<IAnnotation>()
+                var annotation = moduleAnnotations.SingleOrDefault(a => a.QualifiedSelection.Selection.StartLine == i);
+
+                if (annotation == null)
                 {
-                    annotationAbove
-                };
+                    break;
+                }
+
+                annotations.Add(annotation);
             }
-            return new List<IAnnotation>();
+
+            return annotations;
         }
 
         public void Resolve(VBAParser.OnErrorStmtContext context)

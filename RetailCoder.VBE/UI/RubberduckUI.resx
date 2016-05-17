@@ -1581,4 +1581,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeExplorer_RefreshComponent" xml:space="preserve">
     <value>Refresh component</value>
   </data>
+  <data name="TestOutcome_Ignored" xml:space="preserve">
+    <value>Ignored</value>
+  </data>
 </root>

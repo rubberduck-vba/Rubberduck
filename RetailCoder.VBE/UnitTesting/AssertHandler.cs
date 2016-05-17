@@ -11,7 +11,7 @@ namespace Rubberduck.UnitTesting
             var handler = OnAssertCompleted;
             if (handler != null)
             {
-                handler(null, new AssertCompletedEventArgs(TestResult.Success()));
+                handler(null, new AssertCompletedEventArgs(TestOutcome.Succeeded));
             }
         }
 
@@ -20,9 +20,8 @@ namespace Rubberduck.UnitTesting
             var handler = OnAssertCompleted;
             if (handler != null)
             {
-                handler(null, new AssertCompletedEventArgs(
-                                new TestResult(TestOutcome.Failed,
-                                methodName + " assertion failed." + (string.IsNullOrEmpty(message) ? string.Empty : " " + message))));
+                handler(null, new AssertCompletedEventArgs(TestOutcome.Failed,
+                                methodName + " assertion failed." + (string.IsNullOrEmpty(message) ? string.Empty : " " + message)));
             }
         }
 
@@ -31,7 +30,16 @@ namespace Rubberduck.UnitTesting
             var handler = OnAssertCompleted;
             if (handler != null)
             {
-                handler(null, new AssertCompletedEventArgs(TestResult.Inconclusive(message)));
+                handler(null, new AssertCompletedEventArgs(TestOutcome.Inconclusive, message));
+            }
+        }
+
+        public static void OnAssertIgnored()
+        {
+            var handler = OnAssertCompleted;
+            if (handler != null)
+            {
+                handler(null, new AssertCompletedEventArgs(TestOutcome.Ignored));
             }
         }
     }
