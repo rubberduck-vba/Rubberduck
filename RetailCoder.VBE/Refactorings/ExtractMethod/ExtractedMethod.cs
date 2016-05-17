@@ -12,7 +12,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public bool SetReturnValue { get; set; }
         public ExtractedParameter ReturnValue { get; set; }
         public IEnumerable<ExtractedParameter> Parameters { get; set; }
-        public string AsString()
+        public string NewMethodCall()
         {
             string result = "" + MethodName;
             string argList;

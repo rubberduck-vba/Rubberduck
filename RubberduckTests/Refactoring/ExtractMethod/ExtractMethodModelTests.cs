@@ -306,8 +306,8 @@ namespace RubberduckTests.Refactoring.ExtractMethod
         [TestClass]
         public class WhenExtractingFromASelection
         {
-                #region inputCode
-                string inputCode = @"
+            #region hard coded data
+            string inputCode = @"
 Option explicit
 Public Sub CodeWithDeclaration()
     Dim x as long
@@ -329,23 +329,31 @@ End Sub
 
 
 ";
-                #endregion
+            string selectedCode = @"
+y = x + 1 
+x = 2
+Debug.Print y";
+
+            string outputCode = @"
+Public Sub NewVal( byval x as long)
+    Dim y as long
+    y = x + 1
+    x = 2
+    DebugPrint y
+End Sub";
+            #endregion
 
             List<IExtractMethodRule> emRules = new List<IExtractMethodRule>(){
                 new ExtractMethodRuleInSelection(),
                 new ExtractMethodRuleIsAssignedInSelection(),
                 new ExtractMethodRuleUsedBefore(),
                 new ExtractMethodRuleUsedAfter()};
-            
+
             [TestMethod]
             [TestCategory("ExtractMethodModelTests")]
-            public void shouldProvideTheSelectionOfLinesOfDeclarationsToRemove()
+            public void shouldIncludeDeclarationsToRemoveInLinesToRemove()
             {
 
-                var selectedCode = @"
-y = x + 1 
-x = 2
-Debug.Print y";
                 QualifiedModuleName qualifiedModuleName;
                 RubberduckParserState state;
                 MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
@@ -355,7 +363,8 @@ Debug.Print y";
                 QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
                 var emr = new Mock<IExtractMethodRule>();
-                var extractedMethodModel = new ExtractMethodModel(emRules);
+                var extractedMethod = new Mock<IExtractedMethod>();
+                var extractedMethodModel = new ExtractMethodModel(emRules, extractedMethod.Object);
                 extractedMethodModel.extract(declarations, qSelection.Value, selectedCode);
 
                 var expected = new Selection(5, 9, 5, 10);
@@ -367,36 +376,101 @@ Debug.Print y";
             [TestCategory("ExtractMethodModelTests")]
             public void shouldProvideTheSelectionOfLinesOfToRemove()
             {
-                Assert.Fail();
-                
+                QualifiedModuleName qualifiedModuleName;
+                RubberduckParserState state;
+                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                var declarations = state.AllDeclarations;
+
+                var selection = new Selection(10, 1, 12, 17);
+                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+
+                var emr = new Mock<IExtractMethodRule>();
+                var extractedMethod = new Mock<IExtractedMethod>();
+                var extractedMethodModel = new ExtractMethodModel(emRules,extractedMethod.Object);
+                extractedMethodModel.extract(declarations, qSelection.Value, selectedCode);
+
+                var selections = new List<Selection>() { new Selection(5, 9, 5, 10), selection };
+
+
+                Assert.AreEqual(selections.Count(), extractedMethodModel.SelectionToRemove.Count(), "Selection To Remove doesn't have the right number of members");
+                selections.ForEach(s => Assert.IsTrue(extractedMethodModel.SelectionToRemove.Contains(s), string.Format("selection {0} missing from actual SelectionToRemove", s)));
+
             }
             [TestMethod]
             [TestCategory("ExtractMethodModelTests")]
-            public void shouldProvideTheExtractMethodSignature()
+            public void shouldProvideTheExtractMethodCaller()
             {
-                Assert.Fail();
-                
+                QualifiedModuleName qualifiedModuleName;
+                RubberduckParserState state;
+                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                var declarations = state.AllDeclarations;
+
+                var selection = new Selection(10, 1, 12, 17);
+                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+
+                var emr = new Mock<IExtractMethodRule>();
+                var extractedMethod = new Mock<IExtractedMethod>();
+                var SUT = new ExtractMethodModel(emRules, extractedMethod.Object);
+
+
+                var x = SUT.NewMethodCall;
+
+                extractedMethod.Verify(em => em.NewMethodCall());
+
+
             }
             [TestMethod]
             [TestCategory("ExtractMethodModelTests")]
-            public void shouldProvideTheExtractMethod()
+            public void shouldProvideTheNewExtractedMethod()
             {
-                
-                Assert.Fail();
+                QualifiedModuleName qualifiedModuleName;
+                RubberduckParserState state;
+                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                var declarations = state.AllDeclarations;
+
+                var selection = new Selection(10, 1, 12, 17);
+                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+
+                var emr = new Mock<IExtractMethodRule>();
+                var extractedMethod = new Mock<IExtractedMethod>();
+                var extractedMethodProc = new Mock<IExtractMethodProc>();
+                var SUT = new ExtractMethodModel(emRules, extractedMethod.Object);
+
+                var actual = SUT.NewExtractedMethod(extractedMethodProc.Object);
+                extractedMethodProc.Verify( emp => emp.createProc(SUT));
+
             }
             [TestMethod]
             [TestCategory("ExtractMethodModelTests")]
-            public void shouldProvideThePositionForTheMethodSignature()
+            public void shouldProvideThePositionForTheMethodCall()
             {
-                Assert.Fail();
-                
+                QualifiedModuleName qualifiedModuleName;
+                RubberduckParserState state;
+                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                var declarations = state.AllDeclarations;
+
+                var selection = new Selection(10, 1, 12, 17);
+                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+
+                var emr = new Mock<IExtractMethodRule>();
+                var extractedMethod = new Mock<IExtractedMethod>();
+                var extractedMethodProc = new Mock<IExtractMethodProc>();
+                var SUT = new ExtractMethodModel(emRules, extractedMethod.Object);
+                SUT.extract(declarations, qSelection.Value, selectedCode);
+
+                var expected = new Selection(9,1,9,1);
+                var actual = SUT.MethodCallPosition;
+
+                Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual );
+
+
             }
             [TestMethod]
             [TestCategory("ExtractMethodModelTests")]
             public void shouldProvideThePositionForTheNewMethod()
             {
                 Assert.Fail();
-                
+
             }
 
         }
@@ -404,8 +478,8 @@ Debug.Print y";
         [TestClass]
         public class WhenExtracting
         {
-                #region inputCode
-                string inputCode = @"
+            #region inputCode
+            string inputCode = @"
 Option explicit
 Public Sub CodeWithDeclaration()
     Dim x as long
@@ -427,7 +501,7 @@ End Sub
 
 
 ";
-                #endregion
+            #endregion
 
             List<IExtractMethodRule> emRules = new List<IExtractMethodRule>(){
                 new ExtractMethodRuleInSelection(),
@@ -456,7 +530,8 @@ Debug.Print y";
 
                 var emr = new Mock<IExtractMethodRule>();
                 var emRules = new List<IExtractMethodRule>() { emr.Object, emr.Object };
-                var extractedMethodModel = new ExtractMethodModel(emRules);
+                var extractedMethod = new Mock<IExtractedMethod>();
+                var extractedMethodModel = new ExtractMethodModel(emRules,extractedMethod.Object);
                 extractedMethodModel.extract(declarations, qSelection.Value, selectedCode);
                 var _byte = new Byte();
 
@@ -517,10 +592,11 @@ Debug.Print y";
                     new ExtractMethodRuleIsAssignedInSelection(),
                     new ExtractMethodRuleUsedAfter(),
                     new ExtractMethodRuleUsedBefore()};
-                var extractedMethodModel = new ExtractMethodModel(emRules);
+                var extractedMethod = new Mock<IExtractedMethod>();
+                var extractedMethodModel = new ExtractMethodModel(emRules,extractedMethod.Object);
                 extractedMethodModel.extract(declarations, qSelection.Value, selectedCode);
 
-                var actual = extractedMethodModel.Method.AsString();
+                var actual = extractedMethodModel.Method.NewMethodCall();
                 var expected = "NewMethod x";
 
                 Assert.AreEqual(expected, actual);
@@ -549,7 +625,8 @@ End Sub";
                 QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
                 var emRules = new List<IExtractMethodRule>() { };
-                var SUT = new ExtractMethodModel(emRules);
+                var extractedMethod = new Mock<IExtractedMethod>();
+                var SUT = new ExtractMethodModel(emRules,extractedMethod.Object);
                 SUT.extract(declarations, qSelection.Value, "x = 1 + 2");
 
                 var actual = SUT.Method.MethodName;
@@ -588,7 +665,8 @@ End Sub";
                 QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
                 var emRules = new List<IExtractMethodRule>() { };
-                var SUT = new ExtractMethodModel(emRules);
+                var extractedMethod = new Mock<IExtractedMethod>();
+                var SUT = new ExtractMethodModel(emRules,extractedMethod.Object);
                 SUT.extract(declarations, qSelection.Value, "x = 1 + 2");
 
                 var actual = SUT.Method.MethodName;
@@ -635,7 +713,8 @@ End Sub";
                 QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
                 var emRules = new List<IExtractMethodRule>() { };
-                var SUT = new ExtractMethodModel(emRules);
+                var extractedMethod = new Mock<IExtractedMethod>();
+                var SUT = new ExtractMethodModel(emRules,extractedMethod.Object);
                 SUT.extract(declarations, qSelection.Value, "x = 1 + 2");
 
                 var actual = SUT.Method.MethodName;

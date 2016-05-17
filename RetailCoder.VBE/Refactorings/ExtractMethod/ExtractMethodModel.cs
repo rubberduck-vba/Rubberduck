@@ -19,9 +19,10 @@ namespace Rubberduck.Refactorings.ExtractMethod
     {
         private const string NEW_METHOD = "NewMethod";
 
-        public ExtractMethodModel(IEnumerable<IExtractMethodRule> rules)
+        public ExtractMethodModel(List<IExtractMethodRule> emRules, IExtractedMethod extractedMethod)
         {
-            _rules = rules;
+            _rules = emRules;
+            _extractedMethod = extractedMethod;
         }
 
 
@@ -60,6 +61,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     }
                 }
 
+                //TODO: extract this to seperate class.
                 if (flags < 4) { /*ignore the variable*/ }
                 else if (flags < 12)
                     _byref.Add(item);
@@ -72,7 +74,10 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             selectionToRemove.Add(selection.Selection);
             _declarationsToMove.ForEach(d => selectionToRemove.Add(d.Selection));
-            _selectionToRemove = selectionToRemove;
+
+            var methodCallPositionStartLine = selectionStartLine - selectionToRemove.Count(s => s.StartLine < selectionStartLine);
+            _methodCallPosition = new Selection(methodCallPositionStartLine, 1, methodCallPositionStartLine, 1);
+
             var methodParams = _byref.Select(dec => new ExtractedParameter(dec.AsTypeName, ExtractedParameter.PassedBy.ByRef, dec.IdentifierName))
                                 .Union(_byval.Select(dec => new ExtractedParameter(dec.AsTypeName, ExtractedParameter.PassedBy.ByVal, dec.IdentifierName)));
 
@@ -95,6 +100,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             _selection = selection;
             _selectedCode = selectedCode;
+            _selectionToRemove = selectionToRemove;
 
         }
 
@@ -129,8 +135,24 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public IExtractedMethod Method { get { return _extractedMethod; } }
 
+
+        private Selection _methodCallPosition;
+        public Selection MethodCallPosition { get { return _methodCallPosition; } }
+
+        public string NewMethodCall { get { return _extractedMethod.NewMethodCall(); } }
+        public string NewExtractedMethod(IExtractMethodProc extractedMethodProc) 
+        { 
+            //TODO:
+            //This is aweful design. 
+            //refactor out EMP & MethodModel.
+            return extractedMethodProc.createProc(this); 
+        }
+
         IEnumerable<Selection> _selectionToRemove;
+        private List<IExtractMethodRule> emRules;
+
         public IEnumerable<Selection> SelectionToRemove { get { return _selectionToRemove; } }
+
 
     }
 }

@@ -69,7 +69,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             */
 
             var newMethod = _createProc.createProc(model);
-            var newMethodSignature = model.Method.AsString();
+            var newMethodSignature = model.Method.NewMethodCall();
             var insertionLine = model.SourceMember.Context.GetSelection().EndLine - selection.LineCount + 2;
 
             _codeModule.DeleteLines(selection);

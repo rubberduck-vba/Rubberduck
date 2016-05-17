@@ -66,9 +66,10 @@ End Function";
 
                 var emRules = new List<IExtractMethodRule>() { 
                     new ExtractMethodRuleUsedAfter(), new ExtractMethodRuleUsedBefore(), new ExtractMethodRuleInSelection(), new ExtractMethodRuleIsAssignedInSelection()};
-                IExtractMethodModel model = new ExtractMethodModel(emRules);
+                var extractedMethod = new Mock<IExtractedMethod>();
+                extractedMethod.Setup(em => em.MethodName).Returns("Bar");
+                IExtractMethodModel model = new ExtractMethodModel(emRules, extractedMethod.Object);
                 model.extract(declarations, qualifiedSelection.Value, extractCode);
-                model.Method.MethodName = "Bar";
                 var insertCode = "Bar x";
                 var createProc = new Mock<IExtractMethodProc>();
 

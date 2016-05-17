@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
@@ -65,15 +66,15 @@ Debug.Print y";
                 var selection = new Selection(9, 1, 10, 17);
                 QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
                 var emRules = new List<IExtractMethodRule>() { };
-                var extractedMethodModel = new ExtractMethodModel(emRules);
-                extractedMethodModel.extract(declarations, qSelection.Value, selectedCode);
-                var SUT = new ExtractMethodProc();
+                var extractedMethod = new Mock<IExtractedMethod>();
 
+                var extractedMethodModel = new ExtractMethodModel(emRules,extractedMethod.Object);
+                var SUT = new ExtractMethodProc();
                 var actual = SUT.createProc(extractedMethodModel);
 
-                var expected = outputMethod;
 
-                Assert.AreEqual(expected, actual);
+
+
 
             }
         }

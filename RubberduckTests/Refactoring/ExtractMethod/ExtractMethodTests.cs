@@ -37,8 +37,8 @@ namespace RubberduckTests.Refactoring.ExtractMethod
                 var newParam = new ExtractedParameter("Integer", ExtractedParameter.PassedBy.ByVal, "x");
                 method.Parameters = new List<ExtractedParameter>() { newParam };
 
-                var actual = method.AsString();
-                Debug.Print(method.AsString());
+                var actual = method.NewMethodCall();
+                Debug.Print(method.NewMethodCall());
                 
                 Assert.AreEqual(insertCode, actual);
 
