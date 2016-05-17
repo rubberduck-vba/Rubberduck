@@ -66,13 +66,13 @@ namespace Rubberduck.UnitTesting
                 var testCleanup = module.Key.FindTestCleanupMethods(_state).ToList();
 
                 Run(module.Key.FindModuleInitializeMethods(_state));
-                foreach (var test in tests)
+                foreach (var test in testMethods)
                 {
                     // no need to run setup/teardown for ignored tests
                     if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
                     {
-                        test.Result.SetValues(TestOutcome.Ignored);
                         test.UpdateResult(TestOutcome.Ignored);
+                        OnTestCompleted();
                         continue;
                     }
 
