@@ -8,7 +8,7 @@ namespace Rubberduck.Parsing.Annotations
         public TestInitializeAnnotation(
             QualifiedSelection qualifiedSelection,
             IEnumerable<string> parameters)
-            : base(AnnotationType.TestMethod, qualifiedSelection)
+            : base(AnnotationType.TestInitialize, qualifiedSelection)
         {
         }
     }

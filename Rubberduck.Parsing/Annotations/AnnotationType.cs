@@ -8,6 +8,7 @@
         TestMethod,
         TestInitialize,
         TestCleanup,
+        IgnoreTest,
         Ignore,
         Folder,
         NoIndent

@@ -104,7 +104,7 @@ namespace Rubberduck.Inspections
             {
                 var result = new ParseTreeResults();
 
-                foreach (var componentTreePair in state.ParseTrees)
+                foreach (var componentTreePair in state.ParseTrees.Where(kvp => kvp.Value != null))
                 {
                     /*
                     Need to reinitialize these for each and every ParseTree we process, since the results are aggregated in the instances themselves 

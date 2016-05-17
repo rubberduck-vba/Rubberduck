@@ -91,7 +91,7 @@ namespace Rubberduck.Root
             Rebind<IIndenterSettings>().To<IndenterSettings>();
             Bind<Func<IIndenterSettings>>().ToMethod(t => () => _kernel.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
 
-            Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>().InSingletonScope();
+            //Bind<TestExplorerModel>().To<StandardModuleTestExplorerModel>().InSingletonScope();
             Rebind<IRubberduckParser>().To<RubberduckParser>().InSingletonScope();
 
             _kernel.Rebind<ISearchResultsWindowViewModel>().To<SearchResultsWindowViewModel>().InSingletonScope();

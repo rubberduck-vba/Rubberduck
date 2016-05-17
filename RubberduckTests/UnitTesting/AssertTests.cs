@@ -288,5 +288,37 @@ namespace RubberduckTests.UnitTesting
 
             Assert.AreEqual(TestOutcome.Inconclusive, _args.Result.Outcome);
         }
+
+        [TestMethod]
+        public void OnAssertSucceeded_ReturnsResultSuccess()
+        {
+            AssertHandler.OnAssertSucceeded();
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Result.Outcome);
+        }
+
+        [TestMethod]
+        public void OnAssertFailed_ReturnsResultFailed()
+        {
+            AssertHandler.OnAssertFailed("MyMethod", "I Failed");
+
+            Assert.AreEqual(TestOutcome.Failed, _args.Result.Outcome);
+        }
+
+        [TestMethod]
+        public void OnAssertInconclusive_ReturnsResultInconclusive()
+        {
+            AssertHandler.OnAssertInconclusive("Inconclusive");
+
+            Assert.AreEqual(TestOutcome.Inconclusive, _args.Result.Outcome);
+        }
+
+        [TestMethod]
+        public void OnAssertIgnored_ReturnsResultIgnored()
+        {
+            AssertHandler.OnAssertIgnored();
+
+            Assert.AreEqual(TestOutcome.Ignored, _args.Result.Outcome);
+        }
     }
 }
