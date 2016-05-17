@@ -4036,6 +4036,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignored.
+        /// </summary>
+        public static string TestOutcome_Ignored {
+            get {
+                return ResourceManager.GetString("TestOutcome_Ignored", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inconclusive.
         /// </summary>
         public static string TestOutcome_Inconclusive {

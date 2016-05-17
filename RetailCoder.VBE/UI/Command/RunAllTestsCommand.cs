@@ -9,9 +9,9 @@ namespace Rubberduck.UI.Command
     public class RunAllTestsCommand : CommandBase
     {
         private readonly ITestEngine _engine;
-        private readonly TestExplorerModelBase _model;
+        private readonly TestExplorerModel _model;
 
-        public RunAllTestsCommand(ITestEngine engine, TestExplorerModelBase model)
+        public RunAllTestsCommand(ITestEngine engine, TestExplorerModel model)
         {
             _engine = engine;
             _model = model;

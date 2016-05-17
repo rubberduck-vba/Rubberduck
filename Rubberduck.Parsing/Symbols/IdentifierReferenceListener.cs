@@ -298,5 +298,15 @@ namespace Rubberduck.Parsing.Symbols
         {
             _resolver.Resolve(context);
         }
+
+        public override void EnterCircleSpecialForm(VBAParser.CircleSpecialFormContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterScaleSpecialForm(VBAParser.ScaleSpecialFormContext context)
+        {
+            _resolver.Resolve(context);
+        }
     }
 }

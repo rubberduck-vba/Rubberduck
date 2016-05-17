@@ -219,7 +219,7 @@ namespace Rubberduck.Parsing.Binding
              */
             if (lExpressionIsEnclosingProject)
             {
-                var foundType = _declarationFinder.FindMemberEnclosingModule(_project, _module, _parent, name, memberType);
+                var foundType = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, memberType);
                 if (foundType != null)
                 {
                     return new MemberAccessExpression(foundType, ExpressionClassification.Type, GetExpressionContext(), _unrestrictedNameContext, lExpression);
