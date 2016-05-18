@@ -27,6 +27,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CodeExplorerProjectViewModel(FolderHelper folderHelper, Declaration declaration, IEnumerable<Declaration> declarations)
         {
             _declaration = declaration;
+            _name = _declaration.IdentifierName;
             IsExpanded = true;
             _folderTree = folderHelper.GetFolderTree(declaration);
 
@@ -42,11 +43,6 @@ namespace Rubberduck.Navigation.CodeExplorer
             catch (NullReferenceException e)
             {
                 Console.WriteLine(e);
-            }
-
-            foreach (var folder in _folderTree.Items.OfType<CodeExplorerCustomFolderViewModel>())
-            {
-                folder.SetParent(this);
             }
         }
 
@@ -72,6 +68,11 @@ namespace Rubberduck.Navigation.CodeExplorer
                     continue;
                 }
 
+                if (folder.Parent.Name == string.Empty)
+                {
+                    folder.SetParent(this);
+                }
+
                 var parents = grouping.Where(
                         item => ComponentTypes.Contains(item.DeclarationType) &&
                             item.CustomFolder.Replace("\"", string.Empty) == folder.FullPath)
@@ -94,8 +95,14 @@ namespace Rubberduck.Navigation.CodeExplorer
         // projects are always at the top of the tree
         public override CodeExplorerItemViewModel Parent { get { return null; } }
 
-        public override string Name { get { return _declaration.IdentifierName; } }
-        public override string NameWithSignature { get { return Name; } }
+        private string _name;
+        public override string Name { get { return _name; } }
+        public override string NameWithSignature { get { return _name; } }
         public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
+
+        public void SetParenthesizedName(string parenthesizedName)
+        {
+            _name += " (" + parenthesizedName + ")";
+        }
     }
 }
