@@ -31,8 +31,8 @@ namespace Rubberduck.UI.UnitTesting
 
             _runAllTestsCommand = new RunAllTestsCommand(state, testEngine, model);
             _addTestModuleCommand = new AddTestModuleCommand(vbe, state, newTestModuleCommand);
-            _addTestMethodCommand = new AddTestMethodCommand(state, newTestMethodCommand);
-            _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(state, newTestMethodCommand);
+            _addTestMethodCommand = new AddTestMethodCommand(vbe, state, newTestMethodCommand);
+            _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe, state, newTestMethodCommand);
 
             _refreshCommand = new DelegateCommand(ExecuteRefreshCommand, CanExecuteRefreshCommand);
             _repeatLastRunCommand = new DelegateCommand(ExecuteRepeatLastRunCommand, CanExecuteRepeatLastRunCommand);
