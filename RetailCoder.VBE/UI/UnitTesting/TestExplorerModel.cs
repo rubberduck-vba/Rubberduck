@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
-using System.Windows.Threading;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
@@ -13,15 +13,12 @@ namespace Rubberduck.UI.UnitTesting
     {
         private readonly VBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly Dispatcher _uiDispatcher;
 
         public TestExplorerModel(VBE vbe, RubberduckParserState state)
         {
             _vbe = vbe;
             _state = state;
             _state.StateChanged += State_StateChanged;
-
-            _uiDispatcher = Dispatcher.CurrentDispatcher;
         }
 
         private void State_StateChanged(object sender, ParserStateEventArgs e)
@@ -29,9 +26,6 @@ namespace Rubberduck.UI.UnitTesting
             if (e.State != ParserState.Ready) { return; }
 
             var tests = UnitTestHelpers.GetAllTests(_vbe, _state).ToList();
-
-            UpdateTestList addTest = AddTest;
-            UpdateTestList removeTest = RemoveTest;
 
             var removedTests = Tests.Where(test =>
                          !tests.Any(t =>
@@ -42,7 +36,7 @@ namespace Rubberduck.UI.UnitTesting
             // remove old tests
             foreach (var test in removedTests)
             {
-                _uiDispatcher.Invoke(removeTest, test);
+                UiDispatcher.Invoke(() => { Tests.Remove(test); });
             }
 
             // update declarations for existing tests--declarations are immutable
@@ -64,21 +58,9 @@ namespace Rubberduck.UI.UnitTesting
                     t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
                     t.Declaration.ProjectId == test.Declaration.ProjectId))
                 {
-                    _uiDispatcher.Invoke(addTest, test);
+                    UiDispatcher.Invoke(() => { Tests.Add(test); });
                 }
             }
-        }
-
-        private delegate void UpdateTestList(TestMethod test);
-
-        private void AddTest(TestMethod test)
-        {
-            Tests.Add(test);
-        }
-
-        private void RemoveTest(TestMethod test)
-        {
-            Tests.Remove(test);
         }
 
         private readonly ObservableCollection<TestMethod> _tests = new ObservableCollection<TestMethod>();

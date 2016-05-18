@@ -68,21 +68,6 @@ namespace Rubberduck.VBEditor.VBEHost
 
         public abstract void Run(QualifiedMemberName qualifiedMemberName);
 
-        public TimeSpan TimedMethodCall(QualifiedMemberName qualifiedMemberName)
-        {
-			if (_disposed)
-			{
-				throw new ObjectDisposedException(GetType().Name);
-			}
-		
-            var stopwatch = Stopwatch.StartNew();
-
-            Run(qualifiedMemberName);
-
-            stopwatch.Stop();
-            return stopwatch.Elapsed;
-        }
-
         public void Dispose()
         {
             Dispose(true);
