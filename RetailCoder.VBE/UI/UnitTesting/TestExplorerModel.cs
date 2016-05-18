@@ -33,10 +33,33 @@ namespace Rubberduck.UI.UnitTesting
             UpdateTestList addTest = AddTest;
             UpdateTestList removeTest = RemoveTest;
 
+            var removedTests = Tests.Where(test =>
+                         !tests.Any(t =>
+                                 t.Declaration.ComponentName == test.Declaration.ComponentName &&
+                                 t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+                                 t.Declaration.ProjectId == test.Declaration.ProjectId)).ToList();
+
+            // remove old tests
+            foreach (var test in removedTests)
+            {
+                _uiDispatcher.Invoke(removeTest, test);
+            }
+
+            // update declarations for existing tests--declarations are immutable
+            foreach (var test in Tests.Except(removedTests))
+            {
+                var declaration = tests.First(t =>
+                    t.Declaration.ComponentName == test.Declaration.ComponentName &&
+                    t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+                    t.Declaration.ProjectId == test.Declaration.ProjectId).Declaration;
+
+                test.SetDeclaration(declaration);
+            }
+
             // add new tests
             foreach (var test in tests)
             {
-                if (!_tests.Any(t =>
+                if (!Tests.Any(t =>
                     t.Declaration.ComponentName == test.Declaration.ComponentName &&
                     t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
                     t.Declaration.ProjectId == test.Declaration.ProjectId))
@@ -44,36 +67,25 @@ namespace Rubberduck.UI.UnitTesting
                     _uiDispatcher.Invoke(addTest, test);
                 }
             }
-
-            var removedTests =_tests.Where(test =>
-                        !tests.Any(t =>
-                                t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                                t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                                t.Declaration.ProjectId == test.Declaration.ProjectId)).ToList();
-
-            // remove old tests
-            foreach (var test in removedTests)
-            {
-                _uiDispatcher.Invoke(removeTest, test);
-            }
         }
 
         private delegate void UpdateTestList(TestMethod test);
+
         private void AddTest(TestMethod test)
         {
-            _tests.Add(test);
+            Tests.Add(test);
         }
 
         private void RemoveTest(TestMethod test)
         {
-            _tests.Remove(test);
+            Tests.Remove(test);
         }
 
         private readonly ObservableCollection<TestMethod> _tests = new ObservableCollection<TestMethod>();
         public ObservableCollection<TestMethod> Tests { get { return _tests; } }
 
-        private readonly IList<TestMethod> _lastRun = new List<TestMethod>();
-        public IEnumerable<TestMethod> LastRun { get { return _lastRun; } } 
+        private readonly List<TestMethod> _lastRun = new List<TestMethod>();
+        public List<TestMethod> LastRun { get { return _lastRun; } } 
 
         public void ClearLastRun()
         {
@@ -83,24 +95,26 @@ namespace Rubberduck.UI.UnitTesting
         public void AddExecutedTest(TestMethod test)
         {
             _lastRun.Add(test);
-            ExecutedCount = _tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
+            ExecutedCount = Tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
 
-            ProgressBarColor = _tests.Any(t => t.Result.Outcome == TestOutcome.Failed)
-                ? Colors.Red
-                : _tests.Any(t => t.Result.Outcome == TestOutcome.Inconclusive) 
+            if (Tests.Any(t => t.Result.Outcome == TestOutcome.Failed))
+            {
+                ProgressBarColor = Colors.Red;
+            }
+            else
+            {
+                ProgressBarColor = Tests.Any(t => t.Result.Outcome == TestOutcome.Inconclusive)
                     ? Colors.Gold
                     : Colors.LimeGreen;
+            }
 
-            if (!_tests.Any(t =>
+            if (!Tests.Any(t =>
                         t.Declaration.ComponentName == test.Declaration.ComponentName &&
                         t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
                         t.Declaration.ProjectId == test.Declaration.ProjectId))
             {
-                _tests.Add(test);
+                Tests.Add(test);
             }
-
-            // ReSharper disable once ExplicitCallerInfoArgument
-            OnPropertyChanged("Tests");
         }
 
         public void Refresh()

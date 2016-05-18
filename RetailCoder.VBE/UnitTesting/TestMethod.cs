@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
@@ -13,9 +12,9 @@ using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.UnitTesting
 {
-    public class TestMethod : ViewModelBase, IEquatable<TestMethod>, IEditableObject, INavigateSource
+    public class TestMethod : ViewModelBase, IEquatable<TestMethod>, INavigateSource
     {
-        private readonly ICollection<TestResult> _assertResults = new List<TestResult>();
+        private readonly ICollection<AssertCompletedEventArgs> _assertResults = new List<AssertCompletedEventArgs>();
         private readonly IHostApplication _hostApp;
 
         public TestMethod(Declaration declaration, VBE vbe)
@@ -25,8 +24,13 @@ namespace Rubberduck.UnitTesting
             _hostApp = vbe.HostApplication();
         }
 
-        private readonly Declaration _declaration;
+        private Declaration _declaration;
         public Declaration Declaration { get { return _declaration; } }
+
+        public void SetDeclaration(Declaration declaration)
+        {
+            _declaration = declaration;
+        }
 
         private readonly QualifiedMemberName _qualifiedMemberName;
         public QualifiedMemberName QualifiedMemberName { get { return _qualifiedMemberName; } }
@@ -35,7 +39,7 @@ namespace Rubberduck.UnitTesting
         {
             _assertResults.Clear(); //clear previous results to account for changes being made
 
-            TestResult result;
+            AssertCompletedEventArgs result;
             var duration = new TimeSpan();
             try
             {
@@ -47,13 +51,19 @@ namespace Rubberduck.UnitTesting
             }
             catch(Exception exception)
             {
-                result = TestResult.Inconclusive("Test raised an error. " + exception.Message);
+                result = new AssertCompletedEventArgs(TestOutcome.Inconclusive, "Test raised an error. " + exception.Message);
             }
             
-            Result = new TestResult(result, duration.Milliseconds);
+            UpdateResult(result.Outcome, result.Message, duration.Milliseconds);
+        }
+        
+        public void UpdateResult(TestOutcome outcome, string message = "", long duration = 0)
+        {
+            Result.SetValues(outcome, message, duration);
+            OnPropertyChanged("Result");
         }
 
-        private TestResult _result = TestResult.Unknown();
+        private TestResult _result = new TestResult(TestOutcome.Unknown);
         public TestResult Result
         {
             get { return _result; } 
@@ -62,12 +72,12 @@ namespace Rubberduck.UnitTesting
 
         void HandleAssertCompleted(object sender, AssertCompletedEventArgs e)
         {
-            _assertResults.Add(e.Result);
+            _assertResults.Add(e);
         }
 
-        private TestResult EvaluateResults()
+        private AssertCompletedEventArgs EvaluateResults()
         {
-            var result = TestResult.Success();
+            var result = new AssertCompletedEventArgs(TestOutcome.Succeeded);
 
             if (_assertResults.Any(assertion => assertion.Outcome == TestOutcome.Failed || assertion.Outcome == TestOutcome.Inconclusive))
             {
@@ -112,34 +122,6 @@ namespace Rubberduck.UnitTesting
         public override int GetHashCode()
         {
             return QualifiedMemberName.GetHashCode();
-        }
-
-        private TestResult _cachedResult;
-
-        private bool _isEditing;
-        public bool IsEditing { get { return _isEditing; } set { _isEditing = value; OnPropertyChanged(); } }
-
-        public void BeginEdit()
-        {
-            _cachedResult = new TestResult(Result, Result.Duration);
-            IsEditing = true;
-        }
-
-        public void EndEdit()
-        {
-            _cachedResult = null;
-            IsEditing = false;
-        }
-
-        public void CancelEdit()
-        {
-            if (_cachedResult != null)
-            {
-                Result = _cachedResult;
-            }
-
-            _cachedResult = null;
-            IsEditing = false;
         }
 
         public override string ToString()

@@ -462,7 +462,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="16"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
          
@@ -563,25 +563,19 @@
             </ToolBar>
         </ToolBarTray>
 
-        <Border Grid.Row="1" Margin="2">
-            <StackPanel>
-
-                <Border BorderBrush="DimGray" BorderThickness="1,1,0,0">
-                    <ProgressBar Height="12" 
-                                 Background="DimGray" 
-                                 Maximum="{Binding Model.Tests.Count, Mode=OneWay}" 
-                                 Value="{Binding Model.ExecutedCount, Mode=OneWay}">
-                        <ProgressBar.Foreground>
-                            <SolidColorBrush Color="{Binding Model.ProgressBarColor}" />
-                        </ProgressBar.Foreground>
-                    </ProgressBar>
-                </Border>
-
-            </StackPanel>
-        </Border>
+        <ProgressBar Height="6"
+                     Grid.Row="1"
+                     Margin="2"
+                     Background="DimGray" 
+                     Maximum="{Binding Model.Tests.Count, Mode=OneWay}" 
+                     Value="{Binding Model.ExecutedCount, Mode=OneWay}">
+            <ProgressBar.Foreground>
+                <SolidColorBrush Color="{Binding Model.ProgressBarColor, UpdateSourceTrigger=PropertyChanged}" />
+            </ProgressBar.Foreground>
+        </ProgressBar>
 
         <Border Grid.Row="2" Padding="2">
-            <ScrollViewer VerticalScrollBarVisibility="Visible">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <Grid>
                     <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByOutcome}}"
                                            SelectedItem="{Binding SelectedTest}"

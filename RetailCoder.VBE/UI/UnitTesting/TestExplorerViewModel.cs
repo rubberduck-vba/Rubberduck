@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
@@ -18,7 +19,7 @@ namespace Rubberduck.UI.UnitTesting
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
 
-        public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, TestExplorerModel model, IClipboardWriter clipboard, NewUnitTestModuleCommand newTestModuleCommand, NewTestMethodCommand newTestMethodCommand, IGeneralConfigService configService)
+        public TestExplorerViewModel(VBE vbe, RubberduckParserState state, ITestEngine testEngine, TestExplorerModel model, IClipboardWriter clipboard, NewUnitTestModuleCommand newTestModuleCommand, NewTestMethodCommand newTestMethodCommand, IGeneralConfigService configService)
         {
             _testEngine = testEngine;
             _testEngine.TestCompleted += TestEngineTestCompleted;
@@ -28,10 +29,10 @@ namespace Rubberduck.UI.UnitTesting
 
             _navigateCommand = new NavigateCommand();
 
-            _runAllTestsCommand = new RunAllTestsCommand(testEngine, model);
+            _runAllTestsCommand = new RunAllTestsCommand(testEngine, model, state);
             _addTestModuleCommand = new AddTestModuleCommand(vbe, newTestModuleCommand);
-            _addTestMethodCommand = new AddTestMethodCommand(model, newTestMethodCommand);
-            _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(model, newTestMethodCommand);
+            _addTestMethodCommand = new AddTestMethodCommand(newTestMethodCommand);
+            _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(newTestMethodCommand);
 
             _refreshCommand = new DelegateCommand(ExecuteRefreshCommand, CanExecuteRefreshCommand);
             _repeatLastRunCommand = new DelegateCommand(ExecuteRepeatLastRunCommand, CanExecuteRepeatLastRunCommand);
@@ -182,7 +183,7 @@ namespace Rubberduck.UI.UnitTesting
             _model.ClearLastRun();
 
             Model.IsBusy = true;
-            _testEngine.Run(_model.LastRun.Where(test => test.Result.Outcome == TestOutcome.Unknown));
+            _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Unknown));
             Model.IsBusy = false;
         }
 
@@ -191,7 +192,7 @@ namespace Rubberduck.UI.UnitTesting
             _model.ClearLastRun();
 
             Model.IsBusy = true;
-            _testEngine.Run(_model.LastRun.Where(test => test.Result.Outcome == TestOutcome.Failed));
+            _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Failed));
             Model.IsBusy = false;
         }
 
@@ -200,7 +201,7 @@ namespace Rubberduck.UI.UnitTesting
             _model.ClearLastRun();
 
             Model.IsBusy = true;
-            _testEngine.Run(_model.LastRun.Where(test => test.Result.Outcome == TestOutcome.Succeeded));
+            _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Succeeded));
             Model.IsBusy = false;
         }
 
