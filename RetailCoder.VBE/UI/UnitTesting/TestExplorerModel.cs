@@ -45,7 +45,6 @@ namespace Rubberduck.UI.UnitTesting
                 _uiDispatcher.Invoke(removeTest, test);
             }
 
-
             // update declarations for existing tests--declarations are immutable
             foreach (var test in Tests.Except(removedTests))
             {
