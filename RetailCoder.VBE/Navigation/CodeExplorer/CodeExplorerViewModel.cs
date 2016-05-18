@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -218,7 +219,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 return;
             }
-
+            
             var userDeclarations = _state.AllUserDeclarations
                 .GroupBy(declaration => declaration.Project)
                 .Where(grouping => grouping.Key != null)
@@ -229,6 +230,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 return;
             }
+
+
+            var components = userDeclarations.SelectMany(s => s.Key.VBComponents.Cast<VBComponent>()).FirstOrDefault(s => s.Name == "asdf");
 
             var newProjects = userDeclarations.Select(grouping =>
                 new CodeExplorerProjectViewModel(_folderHelper,
