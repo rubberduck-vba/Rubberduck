@@ -2,22 +2,27 @@
 {
     public class TestResult
     {
-        public void SetValues(TestOutcome outcome, string output = "", long elapsedMilliseconds = 0)
+        public void SetValues(TestOutcome outcome, string output = "", long duration = 0)
         {
             _outcome = outcome;
             _output = output;
-            _elapsedMilliseconds = elapsedMilliseconds;
+            _duration = duration;
         }
 
-        public TestResult(TestOutcome outcome, string output = "", long elapsedMilliseconds = 0)
+        public void SetDuration(long duration)
+        {
+            _duration = duration;
+        }
+
+        public TestResult(TestOutcome outcome, string output = "", long duration = 0)
         {
             _outcome = outcome;
             _output = output;
-            _elapsedMilliseconds = elapsedMilliseconds;
+            _duration = duration;
         }
 
-        private long _elapsedMilliseconds;
-        public long Duration { get { return _elapsedMilliseconds; } }
+        private long _duration;
+        public long Duration { get { return _duration; } }
 
         private TestOutcome _outcome;
         public TestOutcome Outcome { get { return _outcome; } }

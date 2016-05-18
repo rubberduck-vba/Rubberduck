@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Annotations;
@@ -76,14 +77,18 @@ namespace Rubberduck.UnitTesting
                         continue;
                     }
 
+                    var stopwatch = new Stopwatch();
+                    stopwatch.Start();
+
                     Run(testInitialize);
                     test.Run();
+                    Run(testCleanup);
+
+                    stopwatch.Stop();
+                    test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
 
                     OnTestCompleted();
                     _model.AddExecutedTest(test);
-
-                    Run(testCleanup);
-
                 }
                 Run(module.Key.FindModuleCleanupMethods(_state));
             }
