@@ -1976,5 +1976,89 @@ End Property
 
             Assert.AreEqual(1, usages.Count());
         }
+
+        [TestMethod]
+        public void QualifiedSetStatement_FirstSectionDoesNotHaveAssignmentFlag()
+        {
+            // arrange
+            var variableDeclarationClass = @"
+Public foo As Boolean
+";
+
+            var classVariableDeclarationClass = @"
+Public myClass As Class1
+";
+
+            var variableCallClass = @"
+Public Sub bar()
+    Dim myClassN As Class2
+    Set myClassN.myClass.foo = True
+End Sub
+";
+            // act
+            var state = Resolve(variableDeclarationClass, classVariableDeclarationClass, variableCallClass);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "myClassN");
+
+            Assert.IsFalse(declaration.References.ElementAt(0).IsAssignment);
+        }
+
+        [TestMethod]
+        public void QualifiedSetStatement_MiddleSectionDoesNotHaveAssignmentFlag()
+        {
+            // arrange
+            var variableDeclarationClass = @"
+Public foo As Boolean
+";
+
+            var classVariableDeclarationClass = @"
+Public myClass As Class1
+";
+
+            var variableCallClass = @"
+Public Sub bar()
+    Dim myClassN As Class2
+    Set myClassN.myClass.foo = True
+End Sub
+";
+            // act
+            var state = Resolve(variableDeclarationClass, classVariableDeclarationClass, variableCallClass);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "myClass");
+
+            Assert.IsFalse(declaration.References.ElementAt(0).IsAssignment);
+        }
+
+        [TestMethod]
+        public void QualifiedSetStatement_LastSectionHasAssignmentFlag()
+        {
+            // arrange
+            var variableDeclarationClass = @"
+Public foo As Boolean
+";
+
+            var classVariableDeclarationClass = @"
+Public myClass As Class1
+";
+
+            var variableCallClass = @"
+Public Sub bar()
+    Dim myClassN As Class2
+    Set myClassN.myClass.foo = True
+End Sub
+";
+            // act
+            var state = Resolve(variableDeclarationClass, classVariableDeclarationClass, variableCallClass);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+
+            Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
+        }
     }
 }
