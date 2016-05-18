@@ -7,7 +7,7 @@ namespace Rubberduck.UI.UnitTesting
     /// <summary>
     /// Interaction logic for TestExplorerControl.xaml
     /// </summary>
-    public partial class TestExplorerControl
+    public partial class TestExplorerControl : IDisposable
     {
         private readonly Dispatcher _dispatcher;
 
@@ -35,16 +35,25 @@ namespace Rubberduck.UI.UnitTesting
 
         private void OnTestCompleted(object sender, EventArgs eventArgs)
         {
-            _dispatcher.Invoke(UpdateUI);
+            _dispatcher.Invoke(() =>
+            {
+                var resource = FindResource("ResultsByOutcome") as CollectionViewSource;
+                if (resource != null)
+                {
+                    resource.View.Refresh();
+                }
+            });
         }
 
-        private void UpdateUI()
+        private bool _isDisposed;
+        public void Dispose()
         {
-            var resource = FindResource("ResultsByOutcome") as CollectionViewSource;
-            if (resource != null)
-            {
-                resource.View.Refresh();
-            }
+            if (_isDisposed || DataContext == null) { return; }
+
+            DataContextChanged -= TestExplorerControl_DataContextChanged;
+            ((TestExplorerViewModel)DataContext).TestCompleted -= OnTestCompleted;
+
+            _isDisposed = true;
         }
     }
 }

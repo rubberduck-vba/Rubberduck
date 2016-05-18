@@ -28,10 +28,9 @@ namespace Rubberduck.UI.CodeInspections
         private readonly VBE _vbe;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
-        private readonly IEnumerable<IInspection> _inspections;
 
         public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, 
-                                          IGeneralConfigService configService, IEnumerable<IInspection> inspections)
+                                          IGeneralConfigService configService)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
 
@@ -48,15 +47,19 @@ namespace Rubberduck.UI.CodeInspections
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
             _openSettingsCommand = new DelegateCommand(OpenSettings);
-            _inspections = inspections;
 
             _state.StateChanged += _state_StateChanged;
         }
 
-        private readonly ObservableCollection<ICodeInspectionResult> _results = new ObservableCollection<ICodeInspectionResult>();
+        private ObservableCollection<ICodeInspectionResult> _results = new ObservableCollection<ICodeInspectionResult>();
         public ObservableCollection<ICodeInspectionResult> Results
         {
-            get { return _results; } 
+            get { return _results; }
+            private set
+            {
+                _results = value;
+                OnPropertyChanged();
+            }
         }
 
         private CodeInspectionQuickFix _defaultFix;
@@ -90,7 +93,6 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private IInspection _selectedInspection;
-
         public IInspection SelectedInspection
         {
             get { return _selectedInspection; }
@@ -148,7 +150,6 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private bool _canRefresh = true;
-
         public bool CanRefresh
         {
             get { return _canRefresh; }
@@ -196,14 +197,13 @@ namespace Rubberduck.UI.CodeInspections
 
             Debug.WriteLine("Running code inspections...");
             IsBusy = true;
-            var results = await _inspector.FindIssuesAsync(_state, CancellationToken.None);
+
+            var results = (await _inspector.FindIssuesAsync(_state, CancellationToken.None)).ToList();
+
             _dispatcher.Invoke(() =>
             {
-                Results.Clear();
-                foreach (var codeInspectionResult in results)
-                {
-                    Results.Add(codeInspectionResult);
-                }
+                Results = new ObservableCollection<ICodeInspectionResult>(results);
+
                 CanRefresh = true;
                 IsBusy = false;
                 SelectedItem = null;
