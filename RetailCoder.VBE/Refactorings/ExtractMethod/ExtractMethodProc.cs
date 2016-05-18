@@ -29,10 +29,11 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
             */
 
-            var extractedParams = method.Parameters.Select(p => "ByRef " + p.Name + " As " + p.TypeName);
+            var extractedParams = method.Parameters.Select(p => ExtractedParameter.PassedBy.ByRef + " " + p.Name + " " + Tokens.As + " " + p.TypeName);
             var parameters = "(" + string.Join(", ", extractedParams) + ")";
 
             var result = access + ' ' + keyword + ' ' + method.MethodName + parameters + ' ' + asTypeClause + newLine;
+            
             
             var localConsts = model.Locals.Where(e => e.DeclarationType == DeclarationType.Constant)
                 .Cast<ValuedDeclaration>()

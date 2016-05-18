@@ -459,7 +459,7 @@ End Sub";
                 SUT.extract(declarations, qSelection.Value, selectedCode);
 
                 var expected = new Selection(9,1,9,1);
-                var actual = SUT.MethodCallPosition;
+                var actual = SUT.PositionForMethodCall;
 
                 Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual );
 
@@ -469,7 +469,24 @@ End Sub";
             [TestCategory("ExtractMethodModelTests")]
             public void shouldProvideThePositionForTheNewMethod()
             {
-                Assert.Fail();
+                QualifiedModuleName qualifiedModuleName;
+                RubberduckParserState state;
+                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                var declarations = state.AllDeclarations;
+
+                var selection = new Selection(10, 1, 12, 17);
+                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+
+                var emr = new Mock<IExtractMethodRule>();
+                var extractedMethod = new Mock<IExtractedMethod>();
+                var extractedMethodProc = new Mock<IExtractMethodProc>();
+                var SUT = new ExtractMethodModel(emRules, extractedMethod.Object);
+                SUT.extract(declarations, qSelection.Value, selectedCode);
+
+                var expected = new Selection(18,1,18,1);
+                var actual = SUT.PositionForNewMethod;
+
+                Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual );
 
             }
 

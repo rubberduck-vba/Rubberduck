@@ -19,18 +19,20 @@ namespace Rubberduck.Refactorings.ExtractMethod
     public class ExtractMethodRefactoring : IRefactoring
     {
         private readonly ICodeModuleWrapper _codeModule;
-        private Func<QualifiedSelection?,string,IExtractMethodModel> _createMethodModel;
+        private Func<QualifiedSelection?, string, IExtractMethodModel> _createMethodModel;
+        private IExtractMethodExtraction _extraction;
         private readonly IExtractMethodProc _createProc;
 
         public ExtractMethodRefactoring(
             ICodeModuleWrapper codeModule,
-            Func<QualifiedSelection?,string, IExtractMethodModel> createMethodModel,
-            IExtractMethodProc createProc)
-
+            Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel,
+            IExtractMethodProc createProc,
+            IExtractMethodExtraction extraction)
         {
             _codeModule = codeModule;
             _createMethodModel = createMethodModel;
             _createProc = createProc;
+            _extraction = extraction;
 
         }
 
@@ -68,19 +70,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
             */
 
-            var newMethod = _createProc.createProc(model);
-            var newMethodSignature = model.Method.NewMethodCall();
-            var insertionLine = model.SourceMember.Context.GetSelection().EndLine - selection.LineCount + 2;
-
-            _codeModule.DeleteLines(selection);
-            _codeModule.InsertLines(selection.StartLine, newMethodSignature);
-            _codeModule.InsertLines(insertionLine, newMethod);
-
-            foreach (var declaration in model.DeclarationsToMove)
-            {
-                _codeModule.DeleteLines(declaration.Selection);
-            }
-
+            _extraction.apply(model, selection);
         }
 
         public void Refactor(QualifiedSelection target)

@@ -42,11 +42,14 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _declarationsToMove = new List<Declaration>();
 
             _extractedMethod = new ExtractedMethod();
-
+            
 
             var selectionToRemove = new List<Selection>();
             var selectionStartLine = selection.Selection.StartLine;
             var selectionEndLine = selection.Selection.EndLine;
+
+            var methodInsertLine = sourceMember.Context.Stop.Line + 1;
+            _positionForNewMethod = new Selection(methodInsertLine, 1, methodInsertLine, 1);
 
             // https://github.com/rubberduck-vba/Rubberduck/wiki/Extract-Method-Refactoring-%3A-Workings---Determining-what-params-to-move
             foreach (var item in inScopeDeclarations)
@@ -76,11 +79,12 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _declarationsToMove.ForEach(d => selectionToRemove.Add(d.Selection));
 
             var methodCallPositionStartLine = selectionStartLine - selectionToRemove.Count(s => s.StartLine < selectionStartLine);
-            _methodCallPosition = new Selection(methodCallPositionStartLine, 1, methodCallPositionStartLine, 1);
+            _positionForMethodCall = new Selection(methodCallPositionStartLine, 1, methodCallPositionStartLine, 1);
 
             var methodParams = _byref.Select(dec => new ExtractedParameter(dec.AsTypeName, ExtractedParameter.PassedBy.ByRef, dec.IdentifierName))
                                 .Union(_byval.Select(dec => new ExtractedParameter(dec.AsTypeName, ExtractedParameter.PassedBy.ByVal, dec.IdentifierName)));
 
+            // iterate until we have a non-clashing method name.
             var newMethodName = NEW_METHOD;
 
             var newMethodInc = 0;
@@ -100,7 +104,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             _selection = selection;
             _selectedCode = selectedCode;
-            _selectionToRemove = selectionToRemove;
+            _selectionToRemove = selectionToRemove.ToList();
 
         }
 
@@ -136,8 +140,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public IExtractedMethod Method { get { return _extractedMethod; } }
 
 
-        private Selection _methodCallPosition;
-        public Selection MethodCallPosition { get { return _methodCallPosition; } }
+        private Selection _positionForMethodCall;
+        public Selection PositionForMethodCall { get { return _positionForMethodCall; } }
 
         public string NewMethodCall { get { return _extractedMethod.NewMethodCall(); } }
         public string NewExtractedMethod(IExtractMethodProc extractedMethodProc) 
@@ -148,6 +152,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
             return extractedMethodProc.createProc(this); 
         }
 
+        private Selection _positionForNewMethod;
+        public Selection PositionForNewMethod { get { return _positionForNewMethod; } } 
         IEnumerable<Selection> _selectionToRemove;
         private List<IExtractMethodRule> emRules;
 

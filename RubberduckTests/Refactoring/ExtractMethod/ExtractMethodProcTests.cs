@@ -16,7 +16,7 @@ namespace RubberduckTests.Refactoring.ExtractMethod
     {
 
         [TestClass]
-        public class WhenLocalVariableConstantIsInternal : ExtractedMethodRefactoringTests
+        public class WhenLocalVariableConstantIsInternal : ExtractMethodProcTests
         {
             /* When a local variable/constant is only used within the selection
              * its declaration is moved to the extracted method */

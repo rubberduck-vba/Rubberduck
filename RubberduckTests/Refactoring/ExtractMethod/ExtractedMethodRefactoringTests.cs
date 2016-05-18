@@ -17,7 +17,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
     [TestClass]
-    public class ExtractedMethodRefactoringTests
+    public class Example
     {
 
         #region desired process
@@ -37,7 +37,7 @@ End Function
 ";
         #endregion codeparts
         [TestClass]
-        public class WhenASimpleExampleIsRun : ExtractedMethodRefactoringTests
+        public class WhenASimpleExampleIsRun : Example
         {
             const string inputCode = @"
     Public Sub ChangeMeIntoDecs()
@@ -74,7 +74,7 @@ End Function";
                 var createProc = new Mock<IExtractMethodProc>();
 
 
-                Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel = (q,s) => { return model; };
+                Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel = (q, s) => { return model; };
                 createProc.Setup(cp => cp.createProc(model)).Returns(newMethod);
 
                 codeModule.SetupGet(cm => cm.QualifiedSelection).Returns(qualifiedSelection);
@@ -82,8 +82,10 @@ End Function";
                 codeModule.Setup(cm => cm.DeleteLines(It.IsAny<Selection>()));
                 codeModule.Setup(cm => cm.InsertLines(It.IsAny<int>(), It.IsAny<String>()));
 
-                var SUT = new ExtractMethodRefactoring(
-                    codeModule.Object, createMethodModel , createProc.Object);
+
+                var extraction = new Mock<IExtractMethodExtraction>();
+
+                var SUT = new ExtractMethodRefactoring(codeModule.Object, createMethodModel, createProc.Object, extraction.Object);
 
                 SUT.Refactor();
 
@@ -92,6 +94,9 @@ End Function";
                 codeModule.Verify(cm => cm.InsertLines(7, newMethod));
             }
         }
+
+
+
 
         /* Initially I want default output to be only Subs with Byref Params */
 
@@ -104,7 +109,7 @@ End Function";
 
         [TestClass]
         //[TestClass]
-        public class when_local_variable_is_only_used_before_the_selection : ExtractedMethodRefactoringTests
+        public class when_local_variable_is_only_used_before_the_selection : ExtractMethodModelTests
         {
             /* When a local variable/constant is only used before the selection, 
              * its declaration remains where it was */
@@ -115,7 +120,7 @@ End Function";
             }
         }
         //[TestClass]
-        public class when_local_variable_is_only_used_after_the_selection : ExtractedMethodRefactoringTests
+        public class when_local_variable_is_only_used_after_the_selection : ExtractMethodModelTests 
         {
             /* When a local variable/constant is only used after the selection, 
              * its declaration remains where it was */
@@ -127,7 +132,7 @@ End Function";
 
         }
         //[TestClass]
-        public class when_local_variable_is_used_before_and_within_the_selection : ExtractedMethodRefactoringTests
+        public class when_local_variable_is_used_before_and_within_the_selection : ExtractMethodModelTests
         {
             /* When a local variable is used before and within the selction, 
              * it's considered an input */
@@ -137,7 +142,7 @@ End Function";
             }
         }
         //[TestClass]
-        public class when_local_variable_is_used_after_and_within_the_selection : ExtractedMethodRefactoringTests
+        public class when_local_variable_is_used_after_and_within_the_selection : ExtractMethodModelTests
         {
             /* When a local variable is used after and within the selection, 
              * it's considered an output */
@@ -150,7 +155,7 @@ End Function";
 
 
         //[TestClass]
-        public class when_multiple_values_are_updated_within_selection : ExtractedMethodRefactoringTests
+        public class when_multiple_values_are_updated_within_selection : ExtractMethodModelTests    
         {
             public void should_add_byref_param_for_each()
             {
@@ -159,7 +164,7 @@ End Function";
         }
 
         //[TestClass]
-        public class when_selection_contains_a_line_label_refered_to_before_the_selection : ExtractedMethodRefactoringTests
+        public class when_selection_contains_a_line_label_refered_to_before_the_selection : ExtractMethodModelTests
         {
             /* This rules out extracting ErrHandler subroutines 
              * and avoids having to deal with Return and Resume statements. */
@@ -173,7 +178,7 @@ End Function";
         }
 
         //[TestClass]
-        public class when_selection_contains_a_line_label_only_referred_to_within_the_selection : ExtractedMethodRefactoringTests
+        public class when_selection_contains_a_line_label_only_referred_to_within_the_selection : ExtractMethodModelTests
         {
             [TestMethod]
             public void should_move_the_label_and_reference_to_destination_method()
