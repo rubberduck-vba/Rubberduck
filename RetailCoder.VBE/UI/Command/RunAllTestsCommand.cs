@@ -13,7 +13,7 @@ namespace Rubberduck.UI.Command
         private readonly TestExplorerModel _model;
         private readonly RubberduckParserState _state;
 
-        public RunAllTestsCommand(ITestEngine engine, TestExplorerModel model, RubberduckParserState state)
+        public RunAllTestsCommand(RubberduckParserState state, ITestEngine engine, TestExplorerModel model)
         {
             _engine = engine;
             _model = model;

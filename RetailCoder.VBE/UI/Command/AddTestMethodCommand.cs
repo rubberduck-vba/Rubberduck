@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using Rubberduck.UI.UnitTesting;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.Command
@@ -11,10 +11,17 @@ namespace Rubberduck.UI.Command
     public class AddTestMethodCommand : CommandBase
     {
         private readonly NewTestMethodCommand _command;
+        private readonly RubberduckParserState _state;
 
-        public AddTestMethodCommand(NewTestMethodCommand command)
+        public AddTestMethodCommand(RubberduckParserState state, NewTestMethodCommand command)
         {
             _command = command;
+            _state = state;
+        }
+
+        public override bool CanExecute(object parameter)
+        {
+            return _state.Status == ParserState.Ready;
         }
 
         public override void Execute(object parameter)
