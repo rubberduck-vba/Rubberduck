@@ -18,10 +18,10 @@ namespace Rubberduck.UnitTesting
             _state = state;
         }
 
-        private static readonly string NamePlaceholder = "%METHODNAME%";
-        private readonly string _testMethodBaseName = "TestMethod";
+        public const string NamePlaceholder = "%METHODNAME%";
+        private const string TestMethodBaseName = "TestMethod";
 
-        private readonly string _testMethodTemplate = string.Concat(
+        public static readonly string TestMethodTemplate = string.Concat(
             "'@TestMethod\n",
             "Public Sub ", NamePlaceholder, "() 'TODO ", RubberduckUI.UnitTest_NewMethod_Rename, "\n",
             "    On Error GoTo TestFail\n",
@@ -37,7 +37,7 @@ namespace Rubberduck.UnitTesting
             "End Sub\n"
             );
 
-        private readonly string _testMethodExpectedErrorTemplate = string.Concat(
+        public static readonly string TestMethodExpectedErrorTemplate = string.Concat(
             "'@TestMethod\n",
             "Public Sub ", NamePlaceholder, "() 'TODO ", RubberduckUI.UnitTest_NewMethod_Rename, "\n",
             "    Const ExpectedError As Long = 0 'TODO ", RubberduckUI.UnitTest_NewMethod_ChangeErrorNo, "\n",
@@ -75,7 +75,7 @@ namespace Rubberduck.UnitTesting
                 {
                     var module = _vbe.ActiveCodePane.CodeModule;
                     var name = GetNextTestMethodName(module.Parent);
-                    var body = _testMethodTemplate.Replace(NamePlaceholder, name);
+                    var body = TestMethodTemplate.Replace(NamePlaceholder, name);
                     module.InsertLines(module.CountOfLines, body);
                 }
             }
@@ -103,7 +103,7 @@ namespace Rubberduck.UnitTesting
                 {
                     var module = _vbe.ActiveCodePane.CodeModule;
                     var name = GetNextTestMethodName(module.Parent);
-                    var body = _testMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
+                    var body = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
                     module.InsertLines(module.CountOfLines, body);
                 }
             }
@@ -117,9 +117,9 @@ namespace Rubberduck.UnitTesting
         private string GetNextTestMethodName(VBComponent component)
         {
             var names = component.GetTests(_vbe, _state).Select(test => test.QualifiedMemberName.MemberName);
-            var index = names.Count(n => n.StartsWith(_testMethodBaseName)) + 1;
+            var index = names.Count(n => n.StartsWith(TestMethodBaseName)) + 1;
 
-            return string.Concat(_testMethodBaseName, index);
+            return string.Concat(TestMethodBaseName, index);
         }
     }
 }
