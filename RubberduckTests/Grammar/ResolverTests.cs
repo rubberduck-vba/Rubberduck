@@ -2060,5 +2060,68 @@ End Sub
 
             Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
         }
+
+        [TestMethod]
+        public void SetStatement_HasAssignmentFlag()
+        {
+            // arrange
+            var variableDeclarationClass = @"
+Public foo As Variant
+
+Public Sub bar()
+    Set foo = New Class2
+End Sub
+";
+            // act
+            var state = Resolve(variableDeclarationClass, string.Empty);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+
+            Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
+        }
+
+        [TestMethod]
+        public void ImplicitLetStatement_HasAssignmentFlag()
+        {
+            // arrange
+            var variableDeclarationClass = @"
+Public foo As Boolean
+
+Public Sub bar()
+    foo = True
+End Sub
+";
+            // act
+            var state = Resolve(variableDeclarationClass);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+
+            Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
+        }
+
+        [TestMethod]
+        public void ExplicitLetStatement_HasAssignmentFlag()
+        {
+            // arrange
+            var variableDeclarationClass = @"
+Public foo As Boolean
+
+Public Sub bar()
+    Let foo = True
+End Sub
+";
+            // act
+            var state = Resolve(variableDeclarationClass);
+
+            // assert
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+
+            Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
+        }
     }
 }
