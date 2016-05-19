@@ -53,7 +53,7 @@ End Function";
 
             [TestCategory("ExtractedMethodRefactoringTests")]
             [TestMethod]
-            public void ShouldInsertAndDeleteAtAppropriateLines()
+            public void shouldCallTheExtraction()
             {
                 QualifiedModuleName qualifiedModuleName;
                 RubberduckParserState state;
@@ -71,11 +71,8 @@ End Function";
                 IExtractMethodModel model = new ExtractMethodModel(emRules, extractedMethod.Object);
                 model.extract(declarations, qualifiedSelection.Value, extractCode);
                 var insertCode = "Bar x";
-                var createProc = new Mock<IExtractMethodProc>();
-
 
                 Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel = (q, s) => { return model; };
-                createProc.Setup(cp => cp.createProc(model)).Returns(newMethod);
 
                 codeModule.SetupGet(cm => cm.QualifiedSelection).Returns(qualifiedSelection);
                 codeModule.Setup(cm => cm.GetLines(selection)).Returns(extractCode);
@@ -85,14 +82,14 @@ End Function";
 
                 var extraction = new Mock<IExtractMethodExtraction>();
 
-                var SUT = new ExtractMethodRefactoring(codeModule.Object, createMethodModel, createProc.Object, extraction.Object);
+                var SUT = new ExtractMethodRefactoring(codeModule.Object, createMethodModel,  extraction.Object);
 
                 SUT.Refactor();
 
-                codeModule.Verify(cm => cm.DeleteLines(selection));
-                codeModule.Verify(cm => cm.InsertLines(4, insertCode));
-                codeModule.Verify(cm => cm.InsertLines(7, newMethod));
+                extraction.Verify(ext => ext.apply(codeModule.Object, It.IsAny<IExtractMethodModel>(), selection));
             }
+
+
         }
 
 

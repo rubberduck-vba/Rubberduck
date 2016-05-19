@@ -78,9 +78,8 @@ namespace Rubberduck.UI.Command.Refactorings
                 return extractedMethodModel;
             };
 
-            var createProc = new ExtractMethodProc();
-            var extraction = new ExtractMethodExtraction(codeModuleWrapper, createProc);
-            var refactoring = new ExtractMethodRefactoring(codeModuleWrapper, createMethodModel, createProc, extraction);
+            var extraction = new ExtractMethodExtraction();
+            var refactoring = new ExtractMethodRefactoring(codeModuleWrapper, createMethodModel, extraction);
             refactoring.InvalidSelection += HandleInvalidSelection;
             refactoring.Refactor();
         }

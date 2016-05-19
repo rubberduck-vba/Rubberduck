@@ -144,13 +144,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public Selection PositionForMethodCall { get { return _positionForMethodCall; } }
 
         public string NewMethodCall { get { return _extractedMethod.NewMethodCall(); } }
-        public string NewExtractedMethod(IExtractMethodProc extractedMethodProc) 
-        { 
-            //TODO:
-            //This is aweful design. 
-            //refactor out EMP & MethodModel.
-            return extractedMethodProc.createProc(this); 
-        }
 
         private Selection _positionForNewMethod;
         public Selection PositionForNewMethod { get { return _positionForNewMethod; } } 

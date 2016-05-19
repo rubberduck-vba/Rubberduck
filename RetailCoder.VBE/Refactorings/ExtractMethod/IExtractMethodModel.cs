@@ -20,6 +20,5 @@ namespace Rubberduck.Refactorings.ExtractMethod
         Selection PositionForMethodCall { get; }
         Selection PositionForNewMethod { get; }
         string NewMethodCall { get; }
-        string NewExtractedMethod(IExtractMethodProc extractMethodProc);
     }
 }

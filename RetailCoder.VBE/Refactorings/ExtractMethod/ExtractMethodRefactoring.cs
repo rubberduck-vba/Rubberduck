@@ -21,17 +21,14 @@ namespace Rubberduck.Refactorings.ExtractMethod
         private readonly ICodeModuleWrapper _codeModule;
         private Func<QualifiedSelection?, string, IExtractMethodModel> _createMethodModel;
         private IExtractMethodExtraction _extraction;
-        private readonly IExtractMethodProc _createProc;
 
         public ExtractMethodRefactoring(
             ICodeModuleWrapper codeModule,
             Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel,
-            IExtractMethodProc createProc,
             IExtractMethodExtraction extraction)
         {
             _codeModule = codeModule;
             _createMethodModel = createMethodModel;
-            _createProc = createProc;
             _extraction = extraction;
 
         }
@@ -70,7 +67,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
             */
 
-            _extraction.apply(model, selection);
+            _extraction.apply(_codeModule, model, selection);
         }
 
         public void Refactor(QualifiedSelection target)

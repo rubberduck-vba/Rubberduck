@@ -421,27 +421,6 @@ End Sub";
             }
             [TestMethod]
             [TestCategory("ExtractMethodModelTests")]
-            public void shouldProvideTheNewExtractedMethod()
-            {
-                QualifiedModuleName qualifiedModuleName;
-                RubberduckParserState state;
-                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
-                var declarations = state.AllDeclarations;
-
-                var selection = new Selection(10, 1, 12, 17);
-                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-
-                var emr = new Mock<IExtractMethodRule>();
-                var extractedMethod = new Mock<IExtractedMethod>();
-                var extractedMethodProc = new Mock<IExtractMethodProc>();
-                var SUT = new ExtractMethodModel(emRules, extractedMethod.Object);
-
-                var actual = SUT.NewExtractedMethod(extractedMethodProc.Object);
-                extractedMethodProc.Verify( emp => emp.createProc(SUT));
-
-            }
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
             public void shouldProvideThePositionForTheMethodCall()
             {
                 QualifiedModuleName qualifiedModuleName;
@@ -454,7 +433,6 @@ End Sub";
 
                 var emr = new Mock<IExtractMethodRule>();
                 var extractedMethod = new Mock<IExtractedMethod>();
-                var extractedMethodProc = new Mock<IExtractMethodProc>();
                 var SUT = new ExtractMethodModel(emRules, extractedMethod.Object);
                 SUT.extract(declarations, qSelection.Value, selectedCode);
 
@@ -462,8 +440,6 @@ End Sub";
                 var actual = SUT.PositionForMethodCall;
 
                 Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual );
-
-
             }
             [TestMethod]
             [TestCategory("ExtractMethodModelTests")]
