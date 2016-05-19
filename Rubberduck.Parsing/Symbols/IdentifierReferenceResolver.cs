@@ -168,9 +168,9 @@ namespace Rubberduck.Parsing.Symbols
                     (exprCtx, identifier, declaration) =>
                         CreateReference(context, identifier, declaration,
                             RubberduckParserState.CreateBindingSelection(context, exprCtx),
-                            statementContext != ResolutionStatementContext.SetStatement || boundExpression.Context.children.Count == 1 
-                                ? isAssignmentTarget 
-                                : isAssignmentTarget && boundExpression.Context.children.Last() == exprCtx,
+                            boundExpression is MemberAccessExpression
+                                ? isAssignmentTarget && boundExpression.Context.children.Last() == exprCtx
+                                : isAssignmentTarget,
                             hasExplicitLetStatement));
             }
             else
