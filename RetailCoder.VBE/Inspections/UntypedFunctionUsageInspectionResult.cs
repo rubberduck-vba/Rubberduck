@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
@@ -72,6 +73,8 @@ namespace Rubberduck.Inspections
 
         private static string GetNewSignature(ParserRuleContext context)
         {
+            Debug.Assert(context != null);
+
             return context.children.Aggregate(string.Empty, (current, member) =>
             {
                 var isIdentifierNode = member is VBAParser.IdentifierContext;
