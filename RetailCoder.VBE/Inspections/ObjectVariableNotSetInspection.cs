@@ -90,9 +90,9 @@ namespace Rubberduck.Inspections
                 State.AllUserDeclarations.Where(item =>
                         !item.IsSelfAssigned &&
                         !ValueTypes.Contains(item.AsTypeName) &&
-                        item.AsTypeDeclaration != null &&
+                        (item.AsTypeDeclaration == null ||
                         item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration &&
-                        item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType &&
+                        item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType) &&
                         (item.DeclarationType == DeclarationType.Variable ||
                          item.DeclarationType == DeclarationType.Parameter));
 
